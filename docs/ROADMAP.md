@@ -32,21 +32,22 @@
 
 ### Deliverables
 
-| Deliverable | Timeline | Task |
-|---|---|---|
-| Project setup: repo, CI/CD, deployment pipeline | Week 1 | TASK-001 |
-| Database schema + migrations (auth tables included) | Week 1–2 | TASK-003 |
-| Authentication system (email + OAuth) | Week 2 | TASK-002 ← TASK-003'ten sonra |
-| Riot API integration + account connection | Week 2–3 | TASK-004 |
-| Match history sync + storage pipeline | Week 3–4 |
-| Match history UI (list + detail views) | Week 4–5 |
-| Champion performance stats | Week 5 |
-| Ranked history + LP chart | Week 6 |
-| AI coaching pipeline (session review) | Week 7–9 |
-| Coaching report UI | Week 9–10 |
-| Subscription / Stripe integration | Week 10–11 |
-| Marketing landing page + pricing | Week 11–12 |
-| Beta launch (invite-only) | End of Week 12 |
+| Deliverable | Timeline | Task | Status |
+|---|---|---|---|
+| Project setup: repo, CI/CD, deployment pipeline | Week 1 | TASK-001 | ✅ Done |
+| Database schema + migrations (auth tables included) | Week 1–2 | TASK-003 | ✅ Done |
+| Authentication system (email + OAuth) | Week 2 | TASK-002 | ✅ Done |
+| API abstraction layer (withAuth, response utils) | Week 2 | TASK-002.5 | ✅ Done |
+| Riot HTTP client (cache + retry + rate limit) | Week 2–3 | TASK-003.5 | ✅ Done |
+| Data lifecycle layer (cache invalidation, stale detection) | Week 3 | TASK-003.6 | ✅ Done |
+| Riot API integration + account connection + match sync | Week 3–4 | TASK-004 | ✅ Done |
+| Match analysis + AI coaching pipeline | Week 5–6 | TASK-005 | ✅ Done |
+| Dashboard UI + coaching report pages + React Query | Week 6–7 | TASK-006 | ✅ Done |
+| Sidebar + auth UX + account management | Week 7 | TASK-007 | ✅ Done |
+| UI consistency layer (EmptyState, ErrorState, PageHeader) | Week 7–8 | TASK-008 | ✅ Done |
+| Subscription / Stripe integration | Week 10–11 | — | ⏳ Pending |
+| Marketing landing page + pricing | Week 11–12 | — | ⏳ Pending |
+| Beta launch (invite-only) | End of Week 12 | — | ⏳ Pending |
 
 ### Key Risks
 

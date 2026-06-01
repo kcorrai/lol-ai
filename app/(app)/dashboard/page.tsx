@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Gamepad2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { ErrorState } from "@/components/ui/error-state";
+import { PageHeader } from "@/components/layout/PageHeader";
+import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { PerformanceSummaryCards } from "@/domains/analysis/components/PerformanceSummaryCards";
 import { PerformanceTrendChart } from "@/domains/analysis/components/PerformanceTrendChart";
 import { RecentMatchList } from "@/domains/analysis/components/RecentMatchList";
@@ -19,7 +24,7 @@ export default function DashboardPage() {
   const primaryId = selectedAccountId ?? accounts?.[0]?.id ?? null;
   const primaryAccount = accounts?.find((a) => a.id === primaryId);
 
-  const { data: profile, isLoading: profileLoading, error: profileError } = usePerformanceProfile(primaryId);
+  const { data: profile, isLoading: profileLoading, error: profileError, refetch } = usePerformanceProfile(primaryId);
   const { data: reports, isLoading: reportsLoading } = useCoachingReports(primaryId ?? undefined);
   const generateReport = useGenerateReport();
 
@@ -29,75 +34,77 @@ export default function DashboardPage() {
     generateReport.mutate({ riotAccountId: primaryId, reportType: "session_review", matchIds });
   }
 
-  if (accountsLoading) {
-    return (
-      <div className="p-8 text-text-muted text-sm">Loading accounts…</div>
-    );
-  }
+  if (accountsLoading) return <PageSkeleton />;
 
   if (!accounts || accounts.length === 0) {
     return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 p-8">
-        <h1 className="font-display text-2xl font-bold text-text">Welcome to LoL AI Coach</h1>
-        <p className="text-sm text-text-muted">Connect your Riot account to get started.</p>
-        <Link href="/settings/accounts">
-          <Button>Connect Riot Account</Button>
-        </Link>
+      <div className="mx-auto max-w-4xl p-6">
+        <EmptyState
+          icon={<Gamepad2 className="h-16 w-16" />}
+          title="Connect Your Riot Account"
+          description="Link your League of Legends account to get AI-powered coaching on your recent matches."
+          action={
+            <Link href="/settings/accounts">
+              <Button size="lg">Get Started →</Button>
+            </Link>
+          }
+        />
       </div>
     );
   }
 
+  const accountSelector =
+    accounts.length > 1 ? (
+      <select
+        className="rounded-md border border-border bg-surface px-2 py-1.5 text-sm text-text"
+        value={primaryId ?? ""}
+        onChange={(e) => setSelectedAccountId(e.target.value)}
+      >
+        {accounts.map((a) => (
+          <option key={a.id} value={a.id}>
+            {a.gameName}#{a.tagLine}
+          </option>
+        ))}
+      </select>
+    ) : null;
+
   return (
     <div className="mx-auto max-w-4xl space-y-6 p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-display text-2xl font-bold text-text">Dashboard</h1>
-          {primaryAccount && (
-            <p className="text-sm text-text-muted">
-              {primaryAccount.gameName}#{primaryAccount.tagLine} · {primaryAccount.region.toUpperCase()}
-            </p>
-          )}
-        </div>
-        {accounts.length > 1 && (
-          <select
-            className="rounded-md border border-border bg-surface px-2 py-1 text-sm text-text"
-            value={primaryId ?? ""}
-            onChange={(e) => setSelectedAccountId(e.target.value)}
-          >
-            {accounts.map((a) => (
-              <option key={a.id} value={a.id}>
-                {a.gameName}#{a.tagLine}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
+      <PageHeader
+        title="Dashboard"
+        subtitle={
+          primaryAccount
+            ? `${primaryAccount.gameName}#${primaryAccount.tagLine} · ${primaryAccount.region.toUpperCase()}`
+            : undefined
+        }
+        action={accountSelector ?? undefined}
+      />
 
       {profileError ? (
-        <div className="rounded-lg bg-surface-2 p-4">
-          <p className="text-sm text-text-muted">
-            No match data found.{" "}
-            <Link href="/settings/accounts" className="text-accent underline">
-              Sync your account
-            </Link>{" "}
-            to see performance stats.
-          </p>
-        </div>
+        <EmptyState
+          title="No match data yet"
+          description="Sync your Riot account to load your match history and get coaching insights."
+          action={
+            <Link href="/settings/accounts">
+              <Button variant="secondary" size="sm">Sync Account</Button>
+            </Link>
+          }
+        />
       ) : (
         <>
           <section>
-            <h2 className="mb-3 text-xs font-medium uppercase tracking-widest text-text-muted">
+            <p className="mb-3 text-xs font-medium uppercase tracking-widest text-text-muted">
               Performance
-            </h2>
+            </p>
             <PerformanceSummaryCards profile={profile} isLoading={profileLoading} />
           </section>
 
           <PerformanceTrendChart matches={profile?.recentMatches} isLoading={profileLoading} />
 
           <section>
-            <h2 className="mb-3 text-xs font-medium uppercase tracking-widest text-text-muted">
+            <p className="mb-3 text-xs font-medium uppercase tracking-widest text-text-muted">
               Recent Matches
-            </h2>
+            </p>
             <RecentMatchList matches={profile?.recentMatches} isLoading={profileLoading} />
           </section>
         </>
@@ -105,9 +112,9 @@ export default function DashboardPage() {
 
       <section>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-xs font-medium uppercase tracking-widest text-text-muted">
+          <p className="text-xs font-medium uppercase tracking-widest text-text-muted">
             Coaching Reports
-          </h2>
+          </p>
           <Button
             size="sm"
             onClick={handleGenerate}
