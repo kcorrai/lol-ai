@@ -101,7 +101,7 @@ export async function syncAccount(riotAccountId: string): Promise<SyncResult> {
   // ── Ranked snapshot ────────────────────────────────────────────────────────
   let rankedSnapshotted = false;
   try {
-    const entries = await getRankedEntries(account.summonerId, account.region);
+    const entries = await getRankedEntries(account.summonerId ?? "", account.region);
     for (const entry of entries) {
       const tier = RANK_TIERS[entry.tier];
       const division = RANK_DIVISIONS[entry.rank];
@@ -138,7 +138,7 @@ export async function syncAccount(riotAccountId: string): Promise<SyncResult> {
     data: { lastSyncedAt: new Date() },
   });
 
-  await invalidateAccountCache(account.puuid, account.summonerId, account.region);
+  await invalidateAccountCache(account.puuid, account.summonerId ?? "", account.region);
 
   logger.info(
     `[sync] Done: +${newCount} new matches, ${skipped} skipped, ranked=${rankedSnapshotted}`

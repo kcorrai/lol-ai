@@ -195,8 +195,8 @@ model RiotAccount {
   id            String    @id @default(uuid()) @db.Uuid
   userId        String    @db.Uuid
   puuid         String    @unique
-  summonerId    String
-  accountId     String
+  summonerId    String?
+  accountId     String?
   gameName      String
   tagLine       String
   summonerLevel Int
