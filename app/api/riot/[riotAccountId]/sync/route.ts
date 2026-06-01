@@ -3,7 +3,6 @@ import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
 import { assertOwnsRiotAccount } from "@/lib/auth/authorization";
 import { syncAccount } from "@/domains/riot/services/matchSyncService";
-import { isDataStale } from "@/lib/riot/lifecycle";
 import { prisma } from "@/lib/db/prisma";
 import { Errors } from "@/lib/api/errors";
 
@@ -21,10 +20,7 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   });
   if (!account) throw Errors.notFound("Riot account");
 
-  if (!isDataStale(account.lastSyncedAt, 5)) {
-    return apiSuccess({ status: "fresh", newMatches: 0 });
-  }
-
-  const result = await syncAccount(riotAccountId);
+  // Manual sync always runs (staleness guard only applies to background auto-sync)
+  const result = await syncAccount(riotAccountId, true);
   return apiSuccess({ status: "synced", ...result });
 });

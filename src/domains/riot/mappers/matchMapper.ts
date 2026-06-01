@@ -5,7 +5,8 @@ import type { MatchDTO, ParticipantDTO } from "@/domains/riot/types/riot.types";
 const QUEUE_MAP: Partial<Record<number, QueueType>> = {
   420: "RANKED_SOLO_5x5",
   440: "RANKED_FLEX_SR",
-  430: "NORMAL_BLIND",
+  490: "NORMAL_BLIND",  // Quick Play (replaced Blind Pick in 2023)
+  430: "NORMAL_BLIND",  // Legacy Blind Pick
   400: "NORMAL_DRAFT",
   450: "ARAM",
 };

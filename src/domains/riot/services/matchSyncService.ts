@@ -36,13 +36,13 @@ const RANK_DIVISIONS: Record<string, RankDivision> = {
   IV: "IV",
 };
 
-export async function syncAccount(riotAccountId: string): Promise<SyncResult> {
+export async function syncAccount(riotAccountId: string, force = false): Promise<SyncResult> {
   const account = await prisma.riotAccount.findUnique({
     where: { id: riotAccountId },
   });
   if (!account) throw Errors.notFound("Riot account");
 
-  if (!isDataStale(account.lastSyncedAt, 5)) {
+  if (!force && !isDataStale(account.lastSyncedAt, 5)) {
     return { newMatches: 0, skipped: 0, rankedSnapshotted: false };
   }
 
