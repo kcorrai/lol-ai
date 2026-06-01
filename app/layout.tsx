@@ -23,9 +23,7 @@ export const metadata: Metadata = {
   description:
     "Connect your Riot account. Get specific, honest feedback on what's holding you back. Stop being hardstuck.",
   keywords: ["League of Legends", "coaching", "AI", "improve", "rank"],
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
-  ),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
 };
 
 export default function RootLayout({
@@ -35,9 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={`${inter.variable} ${rajdhani.variable} font-sans`}>
-        {children}
-      </body>
+      <body className={`${inter.variable} ${rajdhani.variable} font-sans`}>{children}</body>
     </html>
   );
 }
