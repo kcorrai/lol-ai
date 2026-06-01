@@ -9,8 +9,10 @@ import "@/types/auth.types";
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
 
+  secret: process.env.AUTH_SECRET,
+
   session: {
-    strategy: "database",
+    strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
 
@@ -63,13 +65,17 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    // Add user.id to session object (database strategy provides full User object)
-    session({ session, user }) {
+    // Persist user.id into the JWT so session can expose it
+    async jwt({ token, user }) {
+      if (user) token.id = user.id;
+      return token;
+    },
+    session({ session, token }) {
       return {
         ...session,
         user: {
           ...session.user,
-          id: user.id,
+          id: token.id as string,
         },
       };
     },
