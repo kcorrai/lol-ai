@@ -21,12 +21,21 @@ export type ConnectedAccount = {
   lastSyncedAt: Date | null;
 };
 
+// Strip Unicode directional formatting characters that some browsers inject
+// into form inputs (e.g. U+2066 LTR Isolate added by Turkish locale in Opera/Chrome)
+function sanitizeRiotIdPart(s: string): string {
+  return s.replace(/[⁦-⁩‎‏‪-‮]/g, "").trim();
+}
+
 export async function connectAccount(
   userId: string,
   gameName: string,
   tagLine: string,
   region: string
 ): Promise<ConnectedAccount> {
+  const cleanGameName = sanitizeRiotIdPart(gameName);
+  const cleanTagLine = sanitizeRiotIdPart(tagLine);
+
   if (!VALID_REGIONS.includes(region)) {
     throw Errors.validation(`Invalid region "${region}"`);
   }
@@ -34,7 +43,7 @@ export async function connectAccount(
   await assertCanAddRiotAccount(userId);
 
   // Resolve PUUID from Riot ID — throws RIOT_NOT_FOUND on 404
-  const riotAccountDto = await getAccountByRiotId(gameName, tagLine, region).catch(
+  const riotAccountDto = await getAccountByRiotId(cleanGameName, cleanTagLine, region).catch(
     (err: ApiError) => {
       if (err.code === "RIOT_NOT_FOUND") {
         throw Errors.notFound("Riot ID");
