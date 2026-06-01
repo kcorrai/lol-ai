@@ -6,6 +6,19 @@ This document records every production and development dependency added after th
 
 ## Production Dependencies
 
+### `@tanstack/react-query` (v5.x)
+
+**Added in:** TASK-006  
+**Purpose:** Client-side server-state management. All API data fetching in UI components goes through React Query hooks in `src/hooks/` — per architecture rule "No frontend components that fetch data directly."  
+**Why this, not alternatives:**
+- SWR: similar but less ergonomic for mutations and cache invalidation.
+- Zustand: architecture prohibits Zustand for server state. Zustand is client-only UI state only.
+- Raw fetch + useState: no caching, no deduplication, no background refresh, more boilerplate.
+
+**Scope:** Used exclusively through `src/hooks/` hooks. No direct `useQuery`/`useMutation` calls in UI components.
+
+---
+
 ### `openai` (v6.x)
 
 **Added in:** TASK-005  
