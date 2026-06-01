@@ -1,0 +1,96 @@
+"use client";
+
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+
+const VALID_REGIONS = [
+  "na1", "euw1", "eun1", "kr", "jp1", "br1", "la1", "la2", "oc1", "tr1", "ru",
+] as const;
+
+const schema = z.object({
+  gameName: z.string().min(1, "Enter your Riot game name").max(16),
+  tagLine: z.string().min(2, "Enter your tag (e.g. EUW)").max(5),
+  region: z.enum(VALID_REGIONS),
+});
+
+type FormValues = z.infer<typeof schema>;
+
+export function AccountConnectionForm() {
+  const router = useRouter();
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: { region: "euw1" },
+  });
+
+  async function onSubmit(values: FormValues) {
+    setServerError(null);
+    const res = await fetch("/api/riot/connect", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    });
+    const json = (await res.json()) as { error?: { message: string } };
+    if (!res.ok) {
+      setServerError(json.error?.message ?? "Failed to connect account");
+      return;
+    }
+    router.push("/dashboard");
+    router.refresh();
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Connect Riot Account</CardTitle>
+        <CardDescription>Enter your Riot ID (GameName#TAG)</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div className="flex gap-2">
+            <div className="flex-1 space-y-1">
+              <label className="text-sm text-text-muted">Game Name</label>
+              <Input placeholder="YourName" {...register("gameName")} />
+              {errors.gameName && <p className="text-xs text-danger">{errors.gameName.message}</p>}
+            </div>
+            <div className="w-24 space-y-1">
+              <label className="text-sm text-text-muted">Tag</label>
+              <Input placeholder="EUW" {...register("tagLine")} />
+              {errors.tagLine && <p className="text-xs text-danger">{errors.tagLine.message}</p>}
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-sm text-text-muted">Region</label>
+            <select
+              className="flex h-10 w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text"
+              {...register("region")}
+            >
+              {VALID_REGIONS.map((r) => (
+                <option key={r} value={r}>{r.toUpperCase()}</option>
+              ))}
+            </select>
+            {errors.region && <p className="text-xs text-danger">{errors.region.message}</p>}
+          </div>
+
+          {serverError && (
+            <p className="rounded-md border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">
+              {serverError}
+            </p>
+          )}
+
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? "Connecting…" : "Connect Account"}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
