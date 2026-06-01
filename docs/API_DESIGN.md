@@ -1,0 +1,720 @@
+# API Design — LoL AI Coach
+
+**Version:** 1.0  
+**Base URL:** `/api`  
+**Format:** REST, JSON  
+**Auth:** Session cookie + Bearer JWT
+
+---
+
+## 1. Conventions
+
+### Request/Response Format
+
+All endpoints accept and return `application/json`.
+
+**Success response:**
+```json
+{
+  "data": { ... },
+  "meta": { "requestId": "uuid" }
+}
+```
+
+**Error response:**
+```json
+{
+  "error": {
+    "code": "RESOURCE_NOT_FOUND",
+    "message": "Match not found",
+    "details": {}
+  },
+  "meta": { "requestId": "uuid" }
+}
+```
+
+### HTTP Status Codes
+
+| Code | Meaning |
+|---|---|
+| 200 | Success |
+| 201 | Created |
+| 202 | Accepted (async processing started) |
+| 400 | Bad Request (invalid input) |
+| 401 | Unauthorized (not authenticated) |
+| 403 | Forbidden (authenticated but not authorized) |
+| 404 | Not Found |
+| 409 | Conflict |
+| 422 | Unprocessable Entity (validation error) |
+| 429 | Too Many Requests |
+| 500 | Internal Server Error |
+| 503 | Service Unavailable (e.g., Riot API down) |
+
+### Pagination
+
+List endpoints support cursor-based pagination:
+
+```
+GET /api/matches?cursor=<base64-cursor>&limit=20
+```
+
+**Paginated response:**
+```json
+{
+  "data": [...],
+  "pagination": {
+    "nextCursor": "base64string",
+    "hasMore": true,
+    "total": 147
+  }
+}
+```
+
+### Rate Limiting Headers
+
+Every response includes:
+```
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 87
+X-RateLimit-Reset: 1717200000
+```
+
+---
+
+## 2. Authentication Endpoints
+
+### `POST /api/auth/register`
+
+Create a new user account.
+
+**Request:**
+```json
+{
+  "email": "player@example.com",
+  "password": "securepassword",
+  "name": "PlayerName"
+}
+```
+
+**Response 201:**
+```json
+{
+  "data": {
+    "userId": "uuid",
+    "email": "player@example.com"
+  }
+}
+```
+
+**Errors:** `400` invalid input, `409` email already registered
+
+---
+
+### `POST /api/auth/login`
+
+Authenticate with email/password.
+
+**Request:**
+```json
+{
+  "email": "player@example.com",
+  "password": "securepassword"
+}
+```
+
+**Response 200:** Sets `session` cookie, returns user object.
+
+---
+
+### `POST /api/auth/logout`
+
+Invalidate current session.
+
+**Response 200:** Clears session cookie.
+
+---
+
+### `GET /api/auth/session`
+
+Return current authenticated user.
+
+**Response 200:**
+```json
+{
+  "data": {
+    "userId": "uuid",
+    "email": "player@example.com",
+    "name": "PlayerName",
+    "subscription": {
+      "plan": "pro",
+      "status": "active"
+    }
+  }
+}
+```
+
+---
+
+## 3. Riot Account Endpoints
+
+### `POST /api/riot/connect`
+
+Initiate connection of a Riot account by Riot ID.
+
+**Auth required.** **Subscription check:** Free tier max 1 account.
+
+**Request:**
+```json
+{
+  "gameName": "Faker",
+  "tagLine": "KR1",
+  "region": "kr"
+}
+```
+
+**Response 201:**
+```json
+{
+  "data": {
+    "riotAccountId": "uuid",
+    "gameName": "Faker",
+    "tagLine": "KR1",
+    "summonerLevel": 500,
+    "profileIconId": 4361,
+    "region": "kr",
+    "isPrimary": true
+  }
+}
+```
+
+**Errors:** `404` Riot ID not found, `409` account already connected, `422` invalid region
+
+---
+
+### `DELETE /api/riot/:riotAccountId`
+
+Disconnect a Riot account. Preserves historical data.
+
+**Auth required.** User must own the account.
+
+**Response 200:**
+```json
+{ "data": { "disconnected": true } }
+```
+
+---
+
+### `POST /api/riot/:riotAccountId/sync`
+
+Trigger a manual match history sync.
+
+**Auth required.**
+
+**Response 202:**
+```json
+{
+  "data": {
+    "jobId": "uuid",
+    "status": "queued",
+    "estimatedSeconds": 15
+  }
+}
+```
+
+**Notes:** Debounced — max 1 sync per 5 minutes per account.
+
+---
+
+### `GET /api/riot/:riotAccountId/ranked`
+
+Get current ranked standing.
+
+**Response 200:**
+```json
+{
+  "data": {
+    "soloQueue": {
+      "tier": "GOLD",
+      "rank": "II",
+      "lp": 67,
+      "wins": 143,
+      "losses": 128,
+      "winRate": 52.7
+    },
+    "flexQueue": null
+  }
+}
+```
+
+---
+
+### `GET /api/riot/:riotAccountId/ranked/history`
+
+Ranked LP history for charting.
+
+**Query params:** `queueType=RANKED_SOLO_5x5&days=30`
+
+**Response 200:**
+```json
+{
+  "data": [
+    { "lp": 45, "tier": "GOLD", "rank": "III", "recordedAt": "2024-05-01T10:00:00Z" },
+    { "lp": 62, "tier": "GOLD", "rank": "III", "recordedAt": "2024-05-02T10:00:00Z" }
+  ]
+}
+```
+
+---
+
+## 4. Match Endpoints
+
+### `GET /api/matches`
+
+Get paginated match history for the authenticated user's primary account.
+
+**Query params:**
+- `riotAccountId` — optional, defaults to primary
+- `queueType` — `RANKED_SOLO_5x5 | RANKED_FLEX_SR | NORMAL | ALL`
+- `championId` — filter by champion
+- `cursor` — pagination cursor
+- `limit` — default 20, max 50
+
+**Response 200:**
+```json
+{
+  "data": [
+    {
+      "matchId": "uuid",
+      "riotMatchId": "NA1_4829...",
+      "gameStart": "2024-05-20T14:30:00Z",
+      "gameDuration": 1842,
+      "queueType": "RANKED_SOLO_5x5",
+      "gameVersion": "14.10",
+      "player": {
+        "champion": { "id": 103, "name": "Ahri" },
+        "position": "MIDDLE",
+        "kills": 8,
+        "deaths": 2,
+        "assists": 11,
+        "kda": 9.5,
+        "cs": 198,
+        "csPerMinute": 6.45,
+        "visionScore": 32,
+        "won": true,
+        "lpChange": 18
+      }
+    }
+  ],
+  "pagination": { "nextCursor": "...", "hasMore": true, "total": 87 }
+}
+```
+
+---
+
+### `GET /api/matches/:matchId`
+
+Get full detail for a single match.
+
+**Response 200:**
+```json
+{
+  "data": {
+    "matchId": "uuid",
+    "riotMatchId": "NA1_4829...",
+    "gameStart": "2024-05-20T14:30:00Z",
+    "gameDuration": 1842,
+    "queueType": "RANKED_SOLO_5x5",
+    "blueTeam": {
+      "won": true,
+      "players": [ { ... } ]
+    },
+    "redTeam": {
+      "won": false,
+      "players": [ { ... } ]
+    },
+    "playerStats": {
+      "kills": 8,
+      "deaths": 2,
+      "assists": 11,
+      "kda": 9.5,
+      "cs": 198,
+      "csPerMinute": 6.45,
+      "goldEarned": 14820,
+      "goldPerMinute": 482,
+      "damageDealt": 38400,
+      "damageTaken": 21300,
+      "visionScore": 32,
+      "wardsPlaced": 12,
+      "wardsKilled": 4,
+      "controlWardsBought": 3,
+      "items": [3157, 4629, 3165, 3174, 3089, 3040],
+      "firstBlood": false,
+      "timeSpentDead": 48,
+      "summonerSpells": [4, 14]
+    }
+  }
+}
+```
+
+---
+
+## 5. Analysis Endpoints
+
+### `GET /api/analysis/champion-stats`
+
+Champion performance statistics for a riot account.
+
+**Query params:** `riotAccountId`, `queueType`, `limit=20`
+
+**Response 200:**
+```json
+{
+  "data": [
+    {
+      "champion": { "id": 103, "name": "Ahri" },
+      "gamesPlayed": 47,
+      "wins": 27,
+      "losses": 20,
+      "winRate": 57.4,
+      "avgKDA": 4.2,
+      "avgKills": 7.3,
+      "avgDeaths": 2.8,
+      "avgAssists": 9.2,
+      "avgCSPerMinute": 6.1,
+      "avgVisionScore": 28.4,
+      "masteryLevel": 7,
+      "masteryPoints": 312000,
+      "tier": "S"
+    }
+  ]
+}
+```
+
+---
+
+### `GET /api/analysis/performance-snapshot`
+
+Recent performance summary with trend data.
+
+**Query params:** `riotAccountId`, `days=14`
+
+**Response 200:**
+```json
+{
+  "data": {
+    "period": { "start": "2024-05-06", "end": "2024-05-20" },
+    "gamesAnalyzed": 32,
+    "winRate": 53.1,
+    "avgKDA": 3.8,
+    "avgCSPerMinute": 5.9,
+    "avgVisionScore": 26.1,
+    "tiltScore": 34,
+    "strongestArea": "laning_phase",
+    "weakestArea": "vision_control",
+    "trends": {
+      "winRate": { "direction": "up", "delta": 4.2 },
+      "csPerMinute": { "direction": "down", "delta": -0.3 }
+    }
+  }
+}
+```
+
+---
+
+### `GET /api/analysis/champion-pool`
+
+Analysis of a player's champion pool health.
+
+**Response 200:**
+```json
+{
+  "data": {
+    "poolHealth": "moderate",
+    "primaryChampions": [
+      { "championId": 103, "name": "Ahri", "tier": "strong", "gamesPlayed": 47 }
+    ],
+    "weaknesses": ["no tank option", "vulnerable to hard engage"],
+    "metaAlignmentScore": 72,
+    "recommendations": [
+      {
+        "championId": 245,
+        "name": "Ekko",
+        "reason": "High mobility, complements your aggressive early style",
+        "priority": "high"
+      }
+    ]
+  }
+}
+```
+
+---
+
+## 6. Coaching Endpoints
+
+### `GET /api/coaching/reports`
+
+List coaching reports for the user.
+
+**Query params:** `riotAccountId`, `reportType`, `cursor`, `limit=10`
+
+**Response 200:**
+```json
+{
+  "data": [
+    {
+      "reportId": "uuid",
+      "reportType": "session_review",
+      "status": "complete",
+      "summary": "Strong laning phase but vision control needs work...",
+      "matchesAnalyzed": 5,
+      "userRating": 4,
+      "createdAt": "2024-05-20T16:00:00Z"
+    }
+  ]
+}
+```
+
+---
+
+### `GET /api/coaching/reports/:reportId`
+
+Full coaching report detail.
+
+**Response 200:**
+```json
+{
+  "data": {
+    "reportId": "uuid",
+    "reportType": "session_review",
+    "status": "complete",
+    "summary": "...",
+    "strengths": [
+      { "area": "Laning Phase", "description": "Consistent CS above 6.5/min", "evidence": "47 CS at 10 min average" }
+    ],
+    "weaknesses": [
+      { "area": "Vision Control", "description": "Control wards rarely purchased", "priority": "high", "evidence": "Avg 1.2 control wards per game" }
+    ],
+    "actionItems": [
+      { "priority": 1, "action": "Buy control ward every back, no exceptions", "expectedImpact": "Reduces vision disadvantage by ~30%" },
+      { "priority": 2, "action": "Practice Ahri E-W-Q combo in practice tool 15 min/day", "expectedImpact": "Improved combo execution for kill opportunities" }
+    ],
+    "coachPersonaResponse": "Alright, let's talk about your last five games. The good news is your mechanics are clearly there...",
+    "estimatedRankPotential": "PLATINUM I",
+    "championRecommendations": [ ... ],
+    "matchesAnalyzed": ["uuid1", "uuid2", "uuid3", "uuid4", "uuid5"],
+    "createdAt": "2024-05-20T16:00:00Z",
+    "completedAt": "2024-05-20T16:01:23Z"
+  }
+}
+```
+
+---
+
+### `POST /api/coaching/generate`
+
+Request generation of a new coaching report.
+
+**Auth required.** **Subscription check:** Free tier = 1/week limit.
+
+**Request:**
+```json
+{
+  "riotAccountId": "uuid",
+  "reportType": "session_review",
+  "matchIds": ["uuid1", "uuid2", "uuid3", "uuid4", "uuid5"],
+  "focusArea": "vision_control"
+}
+```
+
+**`reportType` options:** `session_review`, `champion_focus`, `climb_roadmap`
+
+**Response 202:**
+```json
+{
+  "data": {
+    "reportId": "uuid",
+    "status": "processing",
+    "estimatedSeconds": 45
+  }
+}
+```
+
+---
+
+### `GET /api/coaching/reports/:reportId/status`
+
+Poll report generation status (for client-side polling).
+
+**Response 200:**
+```json
+{
+  "data": {
+    "reportId": "uuid",
+    "status": "processing",
+    "progress": 60
+  }
+}
+```
+
+---
+
+### `POST /api/coaching/reports/:reportId/rate`
+
+Submit user rating for a report.
+
+**Request:**
+```json
+{
+  "rating": 4,
+  "feedback": "Very accurate, helped me identify my ward problem"
+}
+```
+
+**Response 200:** `{ "data": { "rated": true } }`
+
+---
+
+## 7. Training Plan Endpoints
+
+### `GET /api/training/plans`
+
+List active training plans for user.
+
+---
+
+### `POST /api/training/plans`
+
+Generate a new AI training plan.
+
+**Request:**
+```json
+{
+  "riotAccountId": "uuid",
+  "focusArea": "laning",
+  "targetRank": "PLATINUM",
+  "durationWeeks": 4
+}
+```
+
+**Response 202:** Returns plan ID with `processing` status.
+
+---
+
+### `PATCH /api/training/tasks/:taskId/complete`
+
+Mark a training task as completed.
+
+**Response 200:** Updated task object.
+
+---
+
+## 8. Subscription Endpoints
+
+### `GET /api/subscription`
+
+Get current user's subscription status.
+
+**Response 200:**
+```json
+{
+  "data": {
+    "plan": "pro",
+    "status": "active",
+    "currentPeriodEnd": "2024-06-20T00:00:00Z",
+    "cancelAtPeriodEnd": false,
+    "features": {
+      "maxRiotAccounts": 3,
+      "reportsPerWeek": -1,
+      "matchHistoryDepth": 100
+    }
+  }
+}
+```
+
+---
+
+### `POST /api/subscription/checkout`
+
+Create Stripe Checkout session.
+
+**Request:** `{ "plan": "pro", "interval": "monthly" }`
+
+**Response 200:** `{ "data": { "checkoutUrl": "https://checkout.stripe.com/..." } }`
+
+---
+
+### `POST /api/subscription/portal`
+
+Create Stripe Customer Portal session (manage billing).
+
+**Response 200:** `{ "data": { "portalUrl": "https://billing.stripe.com/..." } }`
+
+---
+
+### `POST /api/webhooks/stripe`
+
+Stripe webhook handler. Receives subscription lifecycle events.
+
+**Note:** Validates `stripe-signature` header. Not authenticated by session.
+
+---
+
+## 9. Notifications Endpoints
+
+### `GET /api/notifications`
+
+Get recent notifications for user.
+
+**Query params:** `unreadOnly=true`, `limit=20`
+
+---
+
+### `PATCH /api/notifications/:id/read`
+
+Mark notification as read.
+
+---
+
+### `PATCH /api/notifications/read-all`
+
+Mark all notifications as read.
+
+---
+
+## 10. Admin Endpoints
+
+### `GET /api/admin/stats`
+
+Platform-level statistics. Admin role required.
+
+**Response 200:**
+```json
+{
+  "data": {
+    "totalUsers": 5200,
+    "activeSubscriptions": 312,
+    "reportsGeneratedToday": 847,
+    "aiCostTodayUsd": 23.40,
+    "avgReportGenerationMs": 42000
+  }
+}
+```
+
+---
+
+## 11. Error Codes Reference
+
+| Code | HTTP | Meaning |
+|---|---|---|
+| `UNAUTHORIZED` | 401 | No valid session |
+| `FORBIDDEN` | 403 | Insufficient permissions or subscription |
+| `RESOURCE_NOT_FOUND` | 404 | Entity does not exist |
+| `VALIDATION_ERROR` | 422 | Input validation failed |
+| `RIOT_ACCOUNT_NOT_FOUND` | 404 | Riot ID does not exist |
+| `RIOT_API_UNAVAILABLE` | 503 | Riot API is down |
+| `RIOT_RATE_LIMIT` | 429 | Riot API rate limit hit |
+| `ACCOUNT_LIMIT_REACHED` | 403 | Free tier max accounts reached |
+| `REPORT_LIMIT_REACHED` | 403 | Weekly report limit reached |
+| `REPORT_IN_PROGRESS` | 409 | Report already generating for this account |
+| `AI_PROVIDER_ERROR` | 503 | AI provider unavailable |
+| `INSUFFICIENT_MATCH_DATA` | 422 | Not enough matches to analyze |

@@ -1,0 +1,42 @@
+# Claude Code local settings
+.claude/settings.local.json
+
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Local env files — NEVER commit these
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Next.js build output
+.next
+out
+build
+
+# Prisma
+prisma/migrations/dev.db
+
+# Misc
+.DS_Store
+*.pem
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Vercel
+.vercel
+
+# Testing
+coverage
+playwright-report
+test-results

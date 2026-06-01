@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 47% 8%;
+    --foreground: 220 50% 95%;
+    --card: 222 40% 11%;
+    --card-foreground: 220 50% 95%;
+    --popover: 222 40% 11%;
+    --popover-foreground: 220 50% 95%;
+    --primary: 38 60% 50%;
+    --primary-foreground: 222 47% 8%;
+    --secondary: 222 30% 18%;
+    --secondary-foreground: 220 50% 95%;
+    --muted: 222 30% 18%;
+    --muted-foreground: 220 20% 60%;
+    --accent: 38 60% 50%;
+    --accent-foreground: 222 47% 8%;
+    --destructive: 355 70% 58%;
+    --destructive-foreground: 220 50% 95%;
+    --border: 222 30% 24%;
+    --input: 222 30% 24%;
+    --ring: 38 60% 50%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-text antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-surface;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-border;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-text-muted;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Skeleton loading animation */
+  .skeleton {
+    @apply relative overflow-hidden bg-surface-2;
+  }
+
+  .skeleton::after {
+    @apply absolute inset-0;
+    content: "";
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.04),
+      transparent
+    );
+    animation: shimmer 2s infinite;
+  }
+}
