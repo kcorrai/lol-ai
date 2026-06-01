@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Rajdhani } from "next/font/google";
+import { AuthProvider } from "@/lib/auth/provider";
 import "@/styles/globals.css";
 
 const inter = Inter({
@@ -33,7 +34,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={`${inter.variable} ${rajdhani.variable} font-sans`}>{children}</body>
+      <body className={`${inter.variable} ${rajdhani.variable} font-sans`}>
+          <AuthProvider>{children}</AuthProvider>
+        </body>
     </html>
   );
 }
