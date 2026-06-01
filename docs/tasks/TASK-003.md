@@ -2,7 +2,8 @@
 
 **Phase:** 1 — MVP  
 **Status:** Not Started  
-**Estimated Effort:** 1 day
+**Estimated Effort:** 1 day  
+**Must complete before:** TASK-002 (Authentication)
 
 ---
 
@@ -80,10 +81,22 @@ Champions: Import champion list from Data Dragon static JSON (or mock 10 champio
 ## Dependencies
 
 - TASK-001 (project bootstrap)
-- TASK-002 uses this schema for auth tables (coordinate ordering)
+
+## Blocks
+
+- TASK-002 — auth kodu `users`, `accounts`, `sessions`, `verification_tokens` tablolarını
+  ve `prisma migrate dev`'in başarılı olmasını gerektirir. TASK-003 migrate çalıştırılmadan
+  NextAuth Prisma Adapter initialize edilemez.
 
 ---
 
 ## Notes
 
-Do not add any application logic in this task. Schema and seed only. When the schema needs to change in future tasks, create a new migration rather than editing existing ones.
+Do not add any application logic in this task. Schema and seed only. When the schema needs
+to change in future tasks, create a new migration rather than editing existing ones.
+
+**Execution order:** TASK-003 must run BEFORE TASK-002. The authentication system's Prisma
+Adapter writes directly to the `users`, `accounts`, `sessions`, and `verification_tokens`
+tables. These tables must exist (via `prisma migrate dev`) before NextAuth can initialize.
+Running TASK-002 without a migrated database will produce runtime errors that cannot be
+resolved without TASK-003.

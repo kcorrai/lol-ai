@@ -23,9 +23,11 @@ Task'lar bağımlılık zinciri dikkate alınarak aşağıdaki sırada uygulanı
 ```
 TASK-001  Project Bootstrap          ← bağımlılık yok, temel altyapı
     │
-TASK-002  Authentication             ← 001'e bağlı
+TASK-003  Database Schema            ← 001'e bağlı
+    │                                  ⚠️ Auth tabloları burada migrate edilir.
+    │                                  TASK-002 başlamadan önce bu tamamlanmalı.
     │
-TASK-003  Database Schema            ← 001'e bağlı (002 ile paralel başlayabilir)
+TASK-002  Authentication             ← 001 + 003 (migrate uygulanmış olmalı)
     │
 TASK-014  Champion Static Data       ← 003'e bağlı, erken tamamlanması iyi
     │
@@ -56,11 +58,11 @@ TASK-015  Beta Launch Checklist      ← tüm task'lar tamamlandıktan sonra
 
 Bağımlılıklar karşılandığında şu task'lar paralel yürütülebilir:
 
-| Paralel Grup | Task'lar | Koşul |
-|---|---|---|
-| Grup A | 002 + 003 | TASK-001 tamamlandıktan sonra |
-| Grup B | 006 + 007 + 010 | TASK-005 tamamlandıktan sonra |
-| Grup C | 011 + 013 | TASK-002, 003 tamamlandıktan sonra |
+| Paralel Grup | Task'lar | Koşul | Not |
+|---|---|---|---|
+| ~~Grup A~~ | ~~002 + 003~~ | ~~TASK-001 sonrası~~ | ❌ **Geçersiz** — 002, 003'ün migrate çıktısına bağımlı |
+| Grup B | 006 + 007 + 010 | TASK-005 tamamlandıktan sonra | ✅ Geçerli |
+| Grup C | 011 + 013 | TASK-002, 003 tamamlandıktan sonra | ✅ Geçerli |
 
 **Tek geliştirici ortamında:** Paralel çalışma önerilmez. Sıralı ilerle, bağımlılıkları bloke eden task'ı önce bitir.
 

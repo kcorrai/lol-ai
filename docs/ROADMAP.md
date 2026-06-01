@@ -32,11 +32,12 @@
 
 ### Deliverables
 
-| Deliverable | Timeline |
-|---|---|
-| Project setup: repo, CI/CD, deployment pipeline | Week 1 |
-| Authentication system (email + OAuth) | Week 1–2 |
-| Riot API integration + account connection | Week 2–3 |
+| Deliverable | Timeline | Task |
+|---|---|---|
+| Project setup: repo, CI/CD, deployment pipeline | Week 1 | TASK-001 |
+| Database schema + migrations (auth tables included) | Week 1–2 | TASK-003 |
+| Authentication system (email + OAuth) | Week 2 | TASK-002 ← TASK-003'ten sonra |
+| Riot API integration + account connection | Week 2–3 | TASK-004 |
 | Match history sync + storage pipeline | Week 3–4 |
 | Match history UI (list + detail views) | Week 4–5 |
 | Champion performance stats | Week 5 |

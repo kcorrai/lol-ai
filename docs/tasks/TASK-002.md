@@ -2,7 +2,8 @@
 
 **Phase:** 1 — MVP  
 **Status:** Not Started  
-**Estimated Effort:** 2 days
+**Estimated Effort:** 2 days  
+**Depends on:** TASK-003 (database schema + migration must be applied first)
 
 ---
 
@@ -41,10 +42,16 @@ Implement a complete authentication system: email/password registration + login,
 
 ## Database Migrations Required
 
-- Create `users` table
-- Create `accounts` table
-- Create `sessions` table
-- Create `profiles` table (auto-created on first session via `signIn` callback)
+> ⚠️ These tables are defined and migrated in **TASK-003**, not here.
+> TASK-002 consumes them — it does not create them.
+> Do not write any migration files in this task.
+
+Tables that must already exist when TASK-002 begins (created by TASK-003):
+- `users`
+- `accounts`
+- `sessions`
+- `verification_tokens` (required by NextAuth Email provider)
+- `profiles` — defined in TASK-003 schema, auto-populated here via `signIn` callback
 
 ---
 
@@ -67,6 +74,17 @@ Implement a complete authentication system: email/password registration + login,
 ## Dependencies
 
 - TASK-001 (project bootstrap)
+- TASK-003 (database schema — must be migrated before this task starts)
+
+## Pre-conditions Checklist
+
+Before writing a single line of auth code, verify:
+```
+□ docker-compose up -d is running (postgres + redis healthy)
+□ .env.local has DATABASE_URL set
+□ TASK-003 prisma migrate dev has been run successfully
+□ psql or prisma studio confirms tables exist: users, accounts, sessions, verification_tokens
+```
 
 ---
 
