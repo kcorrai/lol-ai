@@ -1,0 +1,84 @@
+import { riotCache, type CacheStore } from "@/lib/riot/cache";
+import { riotRateLimiter, type TokenBucket } from "@/lib/riot/rateLimit";
+import { withRetry } from "@/lib/riot/retry";
+import { normalizeRiotError } from "@/lib/riot/errors";
+import { logger } from "@/lib/utils/logger";
+
+type RequestOptions = {
+  // TTL in seconds for caching the response (0 = no cache)
+  cacheTtl?: number;
+  // Override cache key (defaults to the URL)
+  cacheKey?: string;
+  // Skip rate limiter — use only in tests
+  skipRateLimit?: boolean;
+};
+
+export class RiotHttpClient {
+  private readonly apiKey: string;
+  private readonly cache: CacheStore;
+  private readonly limiter: TokenBucket;
+
+  constructor(
+    apiKey: string = process.env.RIOT_API_KEY ?? "",
+    cache: CacheStore = riotCache,
+    limiter: TokenBucket = riotRateLimiter
+  ) {
+    this.apiKey = apiKey;
+    this.cache = cache;
+    this.limiter = limiter;
+  }
+
+  async get<T>(url: string, options: RequestOptions = {}): Promise<T> {
+    const { cacheTtl = 0, cacheKey, skipRateLimit = false } = options;
+    const key = cacheKey ?? url;
+
+    // Cache hit — skip rate limiter and network call
+    if (cacheTtl > 0) {
+      const cached = await this.cache.get<T>(key);
+      if (cached !== null) {
+        logger.debug(`[RiotClient] cache hit: ${key}`);
+        return cached;
+      }
+    }
+
+    if (!skipRateLimit) {
+      await this.limiter.consume();
+    }
+
+    const result = await withRetry(
+      () => this.fetch<T>(url),
+      { maxAttempts: 3, baseDelayMs: 1000, maxDelayMs: 10_000 }
+    );
+
+    if (cacheTtl > 0) {
+      await this.cache.set(key, result, cacheTtl);
+    }
+
+    return result;
+  }
+
+  private async fetch<T>(url: string): Promise<T> {
+    logger.debug(`[RiotClient] GET ${url}`);
+
+    const response = await fetch(url, {
+      headers: {
+        "X-Riot-Token": this.apiKey,
+        "Accept-Language": "en-US,en;q=0.9",
+        "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
+      },
+      // Disable Next.js fetch cache — we manage caching ourselves
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      const retryAfter = response.headers.get("Retry-After");
+      const retryAfterSeconds = retryAfter ? Number(retryAfter) : undefined;
+      throw normalizeRiotError(response.status, retryAfterSeconds);
+    }
+
+    return response.json() as Promise<T>;
+  }
+}
+
+// Singleton — one client per process (shares rate limiter and cache)
+export const riotClient = new RiotHttpClient();
