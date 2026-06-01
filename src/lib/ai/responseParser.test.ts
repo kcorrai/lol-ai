@@ -46,7 +46,8 @@ describe("parseCoachingResponse", () => {
   });
 
   it("throws when summary field is missing", () => {
-    const { summary: _, ...withoutSummary } = validOutput;
+    // JSON.stringify omits undefined values — effectively removes the field
+    const withoutSummary = { ...validOutput, summary: undefined };
     expect(() => parseCoachingResponse(JSON.stringify(withoutSummary))).toThrow(
       /schema/
     );
@@ -66,7 +67,7 @@ describe("parseCoachingResponse", () => {
   });
 
   it("throws when coachPersonaResponse is missing", () => {
-    const { coachPersonaResponse: _, ...withoutPersona } = validOutput;
+    const withoutPersona = { ...validOutput, coachPersonaResponse: undefined };
     expect(() => parseCoachingResponse(JSON.stringify(withoutPersona))).toThrow(
       /schema/
     );

@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Gamepad2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
-import { ErrorState } from "@/components/ui/error-state";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { PerformanceSummaryCards } from "@/domains/analysis/components/PerformanceSummaryCards";
@@ -24,7 +23,7 @@ export default function DashboardPage() {
   const primaryId = selectedAccountId ?? accounts?.[0]?.id ?? null;
   const primaryAccount = accounts?.find((a) => a.id === primaryId);
 
-  const { data: profile, isLoading: profileLoading, error: profileError, refetch } = usePerformanceProfile(primaryId);
+  const { data: profile, isLoading: profileLoading, error: profileError } = usePerformanceProfile(primaryId);
   const { data: reports, isLoading: reportsLoading } = useCoachingReports(primaryId ?? undefined);
   const generateReport = useGenerateReport();
 
