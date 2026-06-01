@@ -1,5 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// LoL AI Coach — Prisma Schema
+// Prisma v5, PostgreSQL
+// Full MVP schema (TASK-003)
 
 generator client {
   provider = "prisma-client-js"
@@ -10,8 +11,448 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Full schema implemented in TASK-003
-// Tables: users, accounts, sessions, profiles, subscriptions,
-//         riot_accounts, matches, match_participants, champions,
-//         champion_stats, ranked_history, performance_snapshots,
-//         coaching_reports, ai_analyses, notifications
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum SubscriptionPlan {
+  free
+  pro
+  elite
+}
+
+enum SubscriptionStatus {
+  active
+  canceled
+  past_due
+  trialing
+}
+
+enum QueueType {
+  RANKED_SOLO_5x5
+  RANKED_FLEX_SR
+  NORMAL_BLIND
+  NORMAL_DRAFT
+  ARAM
+}
+
+enum Position {
+  TOP
+  JUNGLE
+  MIDDLE
+  BOTTOM
+  UTILITY
+}
+
+enum RankTier {
+  IRON
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+  EMERALD
+  DIAMOND
+  MASTER
+  GRANDMASTER
+  CHALLENGER
+}
+
+enum RankDivision {
+  I
+  II
+  III
+  IV
+}
+
+enum ReportType {
+  session_review
+  champion_focus
+  climb_roadmap
+}
+
+enum ReportStatus {
+  pending
+  processing
+  complete
+  failed
+}
+
+// ============================================================
+// IDENTITY & AUTH
+// NextAuth v4 Prisma Adapter — field names are exact contract.
+// DO NOT rename fields in this section without updating the
+// NextAuth adapter configuration in TASK-002.
+// ============================================================
+
+model User {
+  id            String    @id @default(uuid()) @db.Uuid
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+  profile       Profile?
+  subscription  Subscription?
+  riotAccounts  RiotAccount[]
+  notifications Notification[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(uuid()) @db.Uuid
+  userId            String  @db.Uuid
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(uuid()) @db.Uuid
+  sessionToken String   @unique
+  userId       String   @db.Uuid
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+// Required by NextAuth for email magic-link / credentials flows.
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ============================================================
+// USER PROFILE & SUBSCRIPTION
+// ============================================================
+
+model Profile {
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String    @unique @db.Uuid
+  preferredRole   Position?
+  coachingStyle   String    @default("balanced")
+  rankGoal        String?
+  weeklyPlayHours Int?
+  timezone        String    @default("UTC")
+  language        String    @default("en")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+model Subscription {
+  id                   String             @id @default(uuid()) @db.Uuid
+  userId               String             @unique @db.Uuid
+  stripeCustomerId     String?            @unique
+  stripeSubscriptionId String?            @unique
+  plan                 SubscriptionPlan   @default(free)
+  status               SubscriptionStatus @default(active)
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([stripeCustomerId])
+  @@map("subscriptions")
+}
+
+// ============================================================
+// RIOT INTEGRATION
+// ============================================================
+
+model RiotAccount {
+  id            String    @id @default(uuid()) @db.Uuid
+  userId        String    @db.Uuid
+  puuid         String    @unique
+  summonerId    String
+  accountId     String
+  gameName      String
+  tagLine       String
+  summonerLevel Int
+  profileIconId Int
+  region        String
+  isPrimary     Boolean   @default(false)
+  lastSyncedAt  DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user                 User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  matchParticipants    MatchParticipant[]
+  championStats        ChampionStat[]
+  rankedHistory        RankedHistory[]
+  performanceSnapshots PerformanceSnapshot[]
+  coachingReports      CoachingReport[]
+
+  @@index([userId])
+  @@map("riot_accounts")
+}
+
+// ============================================================
+// MATCH DATA
+// ============================================================
+
+model Match {
+  id           String    @id @default(uuid()) @db.Uuid
+  matchId      String    @unique
+  region       String
+  queueId      Int
+  queueType    QueueType
+  gameMode     String
+  gameDuration Int
+  gameStart    DateTime
+  gameEnd      DateTime
+  gameVersion  String
+  winningTeam  Int
+  rawDataHash  String
+  createdAt    DateTime  @default(now())
+
+  participants MatchParticipant[]
+
+  @@index([gameStart])
+  @@index([queueType, gameStart])
+  @@map("matches")
+}
+
+model MatchParticipant {
+  id                 String   @id @default(uuid()) @db.Uuid
+  matchId            String   @db.Uuid
+  riotAccountId      String?  @db.Uuid
+  puuid              String
+  teamId             Int
+  championId         Int
+  championName       String
+  position           Position
+  kills              Int
+  deaths             Int
+  assists            Int
+  cs                 Int
+  csPerMinute        Decimal  @db.Decimal(5, 2)
+  goldEarned         Int
+  goldPerMinute      Decimal  @db.Decimal(7, 2)
+  damageDealt        Int
+  damageTaken        Int
+  damageHealed       Int
+  visionScore        Int
+  wardsPlaced        Int
+  wardsKilled        Int
+  controlWardsBought Int
+  turretsDestroyed   Int
+  objectivesStolen   Int
+  firstBlood         Boolean
+  won                Boolean
+  timeSpentDead      Int
+  totalTimeCCDealt   Int
+  itemIds            Int[]
+  runePrimaryPath    Int?
+  runePrimaryKeystone Int?
+  runeSecondaryPath  Int?
+  summonerSpell1     Int
+  summonerSpell2     Int
+
+  match       Match        @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  riotAccount RiotAccount? @relation(fields: [riotAccountId], references: [id])
+
+  @@index([matchId])
+  @@index([riotAccountId, matchId])
+  @@index([riotAccountId, championId])
+  @@map("match_participants")
+}
+
+// ============================================================
+// CHAMPION REFERENCE DATA
+// Note: PK is Int (Riot champion ID), not UUID.
+// ============================================================
+
+model Champion {
+  id           Int      @id
+  key          String   @unique
+  name         String
+  title        String
+  roles        String[]
+  difficulty   Int
+  imageUrl     String
+  patchVersion String
+  updatedAt    DateTime @updatedAt
+
+  championStats ChampionStat[]
+
+  @@map("champions")
+}
+
+// ============================================================
+// ANALYTICS
+// ============================================================
+
+model ChampionStat {
+  id             String    @id @default(uuid()) @db.Uuid
+  riotAccountId  String    @db.Uuid
+  championId     Int
+  gamesPlayed    Int       @default(0)
+  wins           Int       @default(0)
+  losses         Int       @default(0)
+  avgKda         Decimal   @db.Decimal(5, 2)
+  avgKills       Decimal   @db.Decimal(4, 2)
+  avgDeaths      Decimal   @db.Decimal(4, 2)
+  avgAssists     Decimal   @db.Decimal(4, 2)
+  avgCs          Decimal   @db.Decimal(6, 2)
+  avgCsPerMinute Decimal   @db.Decimal(5, 2)
+  avgVisionScore Decimal   @db.Decimal(5, 2)
+  avgDamageDealt Decimal   @db.Decimal(10, 2)
+  avgGoldPerMin  Decimal   @db.Decimal(7, 2)
+  masteryLevel   Int?
+  masteryPoints  BigInt?
+  queueType      QueueType
+  computedAt     DateTime
+
+  riotAccount RiotAccount @relation(fields: [riotAccountId], references: [id], onDelete: Cascade)
+  champion    Champion    @relation(fields: [championId], references: [id])
+
+  @@unique([riotAccountId, championId, queueType])
+  @@index([riotAccountId, gamesPlayed(sort: Desc)])
+  @@map("champion_stats")
+}
+
+model RankedHistory {
+  id            String      @id @default(uuid()) @db.Uuid
+  riotAccountId String      @db.Uuid
+  queueType     QueueType
+  tier          RankTier
+  division      RankDivision
+  lp            Int
+  wins          Int
+  losses        Int
+  recordedAt    DateTime
+
+  riotAccount RiotAccount @relation(fields: [riotAccountId], references: [id], onDelete: Cascade)
+
+  @@index([riotAccountId, queueType, recordedAt(sort: Desc)])
+  @@map("ranked_history")
+}
+
+model PerformanceSnapshot {
+  id                     String   @id @default(uuid()) @db.Uuid
+  riotAccountId          String   @db.Uuid
+  periodStart            DateTime
+  periodEnd              DateTime
+  gamesAnalyzed          Int
+  winRate                Decimal  @db.Decimal(5, 2)
+  avgKda                 Decimal  @db.Decimal(5, 2)
+  avgCsPerMinute         Decimal  @db.Decimal(5, 2)
+  avgVisionScore         Decimal  @db.Decimal(5, 2)
+  tiltScore              Decimal? @db.Decimal(5, 2)
+  mostPlayedChampionIds  Int[]
+  strongestArea          String?
+  weakestArea            String?
+  createdAt              DateTime @default(now())
+
+  riotAccount RiotAccount @relation(fields: [riotAccountId], references: [id], onDelete: Cascade)
+
+  @@index([riotAccountId, periodEnd(sort: Desc)])
+  @@map("performance_snapshots")
+}
+
+// ============================================================
+// AI COACHING
+// ============================================================
+
+model CoachingReport {
+  id                     String       @id @default(uuid()) @db.Uuid
+  riotAccountId          String       @db.Uuid
+  reportType             ReportType
+  status                 ReportStatus @default(pending)
+  matchesAnalyzed        String[]
+  summary                String?      @db.Text
+  strengths              Json?
+  weaknesses             Json?
+  actionItems            Json?
+  championRecommendations Json?
+  estimatedRankPotential String?
+  coachPersonaResponse   String?      @db.Text
+  userRating             Int?
+  userFeedback           String?      @db.Text
+  aiModelUsed            String?
+  processingTimeMs       Int?
+  createdAt              DateTime     @default(now())
+  completedAt            DateTime?
+
+  riotAccount RiotAccount  @relation(fields: [riotAccountId], references: [id], onDelete: Cascade)
+  aiAnalyses  AiAnalysis[]
+
+  @@index([riotAccountId, createdAt(sort: Desc)])
+  @@index([status])
+  @@map("coaching_reports")
+}
+
+model AiAnalysis {
+  id               String   @id @default(uuid()) @db.Uuid
+  coachingReportId String?  @db.Uuid
+  analysisType     String
+  inputHash        String   @unique
+  provider         String
+  model            String
+  promptTokens     Int
+  completionTokens Int
+  totalTokens      Int
+  costUsd          Decimal? @db.Decimal(10, 6)
+  responseRaw      String   @db.Text
+  cacheHit         Boolean  @default(false)
+  latencyMs        Int
+  createdAt        DateTime @default(now())
+
+  coachingReport CoachingReport? @relation(fields: [coachingReportId], references: [id])
+
+  @@index([coachingReportId])
+  @@index([createdAt(sort: Desc)])
+  @@map("ai_analyses")
+}
+
+// ============================================================
+// NOTIFICATIONS
+// ============================================================
+
+model Notification {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  type      String
+  title     String
+  body      String   @db.Text
+  actionUrl String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead, createdAt(sort: Desc)])
+  @@map("notifications")
+}
