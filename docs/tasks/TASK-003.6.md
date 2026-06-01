@@ -1,7 +1,7 @@
 # TASK-003.6 — Data Lifecycle & Invalidation Layer
 
 **Phase:** 1 — MVP  
-**Status:** Not Started  
+**Status:** Complete  
 **Estimated Effort:** 0.5 day  
 **Depends on:** TASK-003.5 (RiotHttpClient, CacheStore must exist)  
 **Blocks:** TASK-004 (Riot API Integration)
@@ -27,13 +27,13 @@ responses. This task adds only what is **genuinely missing**:
 
 ## Acceptance Criteria
 
-- [ ] `dedup.ts` — `dedup(key, fn)` returns same promise for concurrent callers with same key
-- [ ] `lifecycle.ts` — `CacheKeys.*` factory: centralized key definitions for all Riot resources
-- [ ] `lifecycle.ts` — `isDataStale(lastSyncedAt, maxAgeMinutes)` returns boolean
-- [ ] `lifecycle.ts` — `backgroundRefresh(fn)` fire-and-forget with error logging
-- [ ] `lifecycle.ts` — `invalidateAccountCache(puuid, summonerId, region)` batch-deletes related keys
-- [ ] TypeScript: 0 errors. ESLint: 0 warnings.
-- [ ] No new npm packages.
+- [x] `dedup.ts` — `dedup(key, fn)` returns same promise for concurrent callers with same key
+- [x] `lifecycle.ts` — `CacheKeys.*` factory: centralized key definitions for all Riot resources
+- [x] `lifecycle.ts` — `isDataStale(lastSyncedAt, maxAgeMinutes)` returns boolean
+- [x] `lifecycle.ts` — `backgroundRefresh(fn)` fire-and-forget with error logging
+- [x] `lifecycle.ts` — `invalidateAccountCache(puuid, summonerId, region)` batch-deletes related keys
+- [x] TypeScript: 0 errors. ESLint: 0 warnings.
+- [x] No new npm packages.
 
 ---
 

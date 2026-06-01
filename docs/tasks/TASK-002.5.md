@@ -1,7 +1,7 @@
 # TASK-002.5 — Auth → Domain Integration Layer Stabilization
 
 **Phase:** 1 — MVP  
-**Status:** Not Started  
+**Status:** Complete  
 **Estimated Effort:** 0.5 day  
 **Depends on:** TASK-002 (auth must be working)  
 **Blocks:** TASK-004 (Riot API) — cannot safely access user context without this layer
@@ -19,15 +19,15 @@ inconsistency and security gaps.
 
 ## Acceptance Criteria
 
-- [ ] `getRequiredSession()` — server-side helper throws/returns typed session or 401
-- [ ] `getDomainContext()` — returns `{ userId, user, subscription }` in one call
-- [ ] `withAuth()` — route handler wrapper: injects context, returns 401 if unauthenticated
-- [ ] `apiSuccess()` / `apiError()` — typed response builders matching API_DESIGN.md format
-- [ ] `ApiError` class — throwable error in service layer, auto-caught by `withAuth`
-- [ ] `assertOwnsRiotAccount()` — throws 403 if riotAccountId doesn't belong to userId
-- [ ] `getPlanLimits()` — returns current user's plan limits, defaults to free tier
-- [ ] Middleware updated: authenticated users on `/login` or `/register` → redirect `/dashboard`
-- [ ] Middleware updated: unauthenticated access adds `callbackUrl` query param
+- [x] `getRequiredSession()` — server-side helper throws/returns typed session or 401
+- [x] `getDomainContext()` — returns `{ userId, user, subscription }` in one call
+- [x] `withAuth()` — route handler wrapper: injects context, returns 401 if unauthenticated
+- [x] `apiSuccess()` / `apiError()` — typed response builders matching API_DESIGN.md format
+- [x] `ApiError` class — throwable error in service layer, auto-caught by `withAuth`
+- [x] `assertOwnsRiotAccount()` — throws 403 if riotAccountId doesn't belong to userId
+- [x] `getPlanLimits()` — returns current user's plan limits, defaults to free tier
+- [x] Middleware updated: authenticated users on `/login` or `/register` → redirect `/dashboard`
+- [x] Middleware updated: unauthenticated access adds `callbackUrl` query param
 
 ---
 

@@ -1,7 +1,7 @@
 # TASK-002 — Authentication System
 
 **Phase:** 1 — MVP  
-**Status:** Not Started  
+**Status:** Complete  
 **Estimated Effort:** 2 days  
 **Depends on:** TASK-003 (database schema + migration must be applied first)
 
@@ -15,16 +15,16 @@ Implement a complete authentication system: email/password registration + login,
 
 ## Acceptance Criteria
 
-- [ ] User can register with email + password
-- [ ] User can log in with email + password
-- [ ] User can log in with Google OAuth
-- [ ] Invalid credentials show user-friendly error message
-- [ ] Successful login redirects to `/dashboard`
-- [ ] Unauthenticated users accessing `/dashboard` or any `(app)/` route are redirected to `/login`
-- [ ] Session persists across browser refreshes
-- [ ] Logout clears session and redirects to `/`
-- [ ] `users` and `accounts` tables exist in database (see `DATABASE_SCHEMA.md`)
-- [ ] `profiles` table created and auto-populated on first login
+- [x] User can register with email + password
+- [x] User can log in with email + password
+- [x] User can log in with Google OAuth
+- [x] Invalid credentials show user-friendly error message
+- [x] Successful login redirects to `/dashboard`
+- [x] Unauthenticated users accessing `/dashboard` or any `(app)/` route are redirected to `/login`
+- [x] Session persists across browser refreshes
+- [x] Logout clears session and redirects to `/`
+- [x] `users` and `accounts` tables exist in database (see `DATABASE_SCHEMA.md`)
+- [x] `profiles` table created and auto-populated on first login
 
 ---
 

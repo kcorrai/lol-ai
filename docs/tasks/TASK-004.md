@@ -1,7 +1,7 @@
 # TASK-004 — Riot API Integration & Account Connection
 
 **Phase:** 1 — MVP  
-**Status:** Not Started  
+**Status:** Complete  
 **Estimated Effort:** 3 days
 
 ---
@@ -14,16 +14,16 @@ Build the Riot API integration layer: connect a Riot account by Riot ID, validat
 
 ## Acceptance Criteria
 
-- [ ] User can enter a Riot ID (GameName#TAG) and connect their account
-- [ ] System validates the account exists via Riot Account API
-- [ ] Summoner data is fetched and stored in `riot_accounts` table
-- [ ] Error shown if Riot ID does not exist: "This Riot ID was not found. Check the spelling and try again."
-- [ ] Error shown if account already connected to this user
-- [ ] Error shown if region is invalid
-- [ ] API rate limit (429) is handled gracefully: retry with exponential backoff
-- [ ] Primary account flag set correctly (first connected account = primary)
-- [ ] User can view their connected accounts in settings
-- [ ] User can disconnect an account (preserves match data)
+- [x] User can enter a Riot ID (GameName#TAG) and connect their account
+- [x] System validates the account exists via Riot Account API
+- [x] Summoner data is fetched and stored in `riot_accounts` table
+- [x] Error shown if Riot ID does not exist: "This Riot ID was not found. Check the spelling and try again."
+- [x] Error shown if account already connected to this user
+- [x] Error shown if region is invalid
+- [x] API rate limit (429) is handled gracefully: retry with exponential backoff
+- [x] Primary account flag set correctly (first connected account = primary)
+- [x] User can view their connected accounts in settings
+- [x] User can disconnect an account (preserves match data)
 
 ---
 

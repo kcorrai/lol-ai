@@ -1,7 +1,7 @@
 # TASK-003 — Database Schema Implementation
 
 **Phase:** 1 — MVP  
-**Status:** Not Started  
+**Status:** Complete  
 **Estimated Effort:** 1 day  
 **Must complete before:** TASK-002 (Authentication)
 
@@ -15,12 +15,12 @@ Define the full Prisma schema for all MVP tables and run the initial migration. 
 
 ## Acceptance Criteria
 
-- [ ] All MVP tables exist in `prisma/schema.prisma`
-- [ ] All foreign key relationships are defined
-- [ ] All indexes defined as per `DATABASE_SCHEMA.md`
-- [ ] `prisma migrate dev` runs without errors
-- [ ] `prisma generate` produces correct TypeScript types
-- [ ] `prisma/seed.ts` creates: 1 test user, 1 riot account, 5 sample matches
+- [x] All MVP tables exist in `prisma/schema.prisma`
+- [x] All foreign key relationships are defined
+- [x] All indexes defined as per `DATABASE_SCHEMA.md`
+- [x] `prisma migrate dev` runs without errors
+- [x] `prisma generate` produces correct TypeScript types
+- [x] `prisma/seed.ts` creates: 1 test user, 1 riot account, 5 sample matches
 
 ---
 

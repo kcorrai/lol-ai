@@ -1,7 +1,7 @@
 # TASK-001 — Project Bootstrap & Development Environment
 
 **Phase:** 1 — MVP  
-**Status:** Not Started  
+**Status:** Complete  
 **Estimated Effort:** 1 day
 
 ---
@@ -14,17 +14,17 @@ Initialize the Next.js project with the full technology stack configured and ver
 
 ## Acceptance Criteria
 
-- [ ] Next.js 14 project created with App Router and TypeScript strict mode
-- [ ] TailwindCSS configured with custom design tokens (colors, fonts from `FRONTEND_ARCHITECTURE.md`)
-- [ ] shadcn/ui initialized with base components (Button, Card, Input, Badge)
-- [ ] Prisma configured with PostgreSQL connection (local dev via Docker)
-- [ ] `docker-compose.yml` spins up PostgreSQL and Redis locally
-- [ ] ESLint + Prettier configured and passing
-- [ ] `tsconfig.json` has strict mode, path aliases (`@/` → `src/`)
-- [ ] `.env.example` populated with all required env vars
-- [ ] `README.md` contains local setup instructions
-- [ ] CI pipeline (GitHub Actions) runs lint + type check on every PR
-- [ ] Deployed to Vercel preview environment successfully
+- [x] Next.js 14 project created with App Router and TypeScript strict mode
+- [x] TailwindCSS configured with custom design tokens (colors, fonts from `FRONTEND_ARCHITECTURE.md`)
+- [x] shadcn/ui initialized with base components (Button, Card, Input, Badge)
+- [x] Prisma configured with PostgreSQL connection (local dev via Docker)
+- [x] `docker-compose.yml` spins up PostgreSQL and Redis locally
+- [x] ESLint + Prettier configured and passing
+- [x] `tsconfig.json` has strict mode, path aliases (`@/` → `src/`)
+- [x] `.env.example` populated with all required env vars
+- [x] `README.md` contains local setup instructions
+- [x] CI pipeline (GitHub Actions) runs lint + type check on every PR
+- [x] Deployed to Vercel preview environment successfully
 
 ---
 

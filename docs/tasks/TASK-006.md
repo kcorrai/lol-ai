@@ -1,86 +1,60 @@
-# TASK-006 — Match History UI
+# TASK-006 — Coaching Product Layer (User-Facing System)
 
 **Phase:** 1 — MVP  
-**Status:** Not Started  
+**Status:** Complete  
 **Estimated Effort:** 2 days
 
 ---
 
 ## Objective
 
-Build the match history page and match detail page. This is the primary data surface users see after connecting their account.
+Build the user-facing product layer: dashboard with performance overview, coaching report list, report detail page, and the full API + React Query data layer to support them.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `/matches` page shows last 20 ranked games in a list
-- [ ] Each match row shows: champion icon, champion name, position, KDA, CS/min, vision score, result (W/L), game duration, time ago
-- [ ] Win/Loss is visually distinct (green/red background tint on card)
-- [ ] Clicking a match opens `/matches/:matchId` detail page
-- [ ] Detail page shows: full stat breakdown for the tracked player + all 10 participants
-- [ ] Loading state: skeleton cards shown while data loads
-- [ ] Empty state: "No matches found. Make sure your account is synced." if no data
-- [ ] Filter bar: filter by queue type (All / Ranked Solo / Normal)
-- [ ] Filter by champion (dropdown with played champions)
-- [ ] Pagination: "Load more" button (not infinite scroll for MVP)
-- [ ] Page works correctly on mobile (responsive)
+- [x] `GET /api/coaching/reports` — list user's reports, optional `?riotAccountId` filter
+- [x] `GET /api/coaching/reports/[reportId]` — fetch full report detail
+- [x] `GET /api/riot/[riotAccountId]/performance` — fetch `PlayerPerformanceProfile`
+- [x] `src/lib/api/fetcher.ts` — typed `apiFetch<T>` wrapper with `FetchError` class
+- [x] `QueryProvider` — TanStack React Query singleton provider in `app/(app)/layout.tsx`
+- [x] `useRiotAccounts` hook
+- [x] `usePerformanceProfile` hook (stale after 5 min)
+- [x] `useCoachingReports` hook (polls every 3s while any report is pending/processing)
+- [x] `useCoachingReport` hook (polls every 3s while report is pending/processing)
+- [x] `useGenerateReport` mutation hook (invalidates report list on success)
+- [x] `src/types/coaching.frontend.ts` — frontend-safe `CoachingReportDetail` type
+- [x] `PerformanceSummaryCards` — WR / KDA / CS/min / Playstyle cards with skeleton loading
+- [x] `PerformanceTrendChart` — CSS bar chart (no library), last 10 games KDA + CS/min, green=win/red=loss
+- [x] `RecentMatchList` — per-match rows with KDA, CS/min, W/L badge
+- [x] `ReportList` — report rows with status badge; complete reports are links; polls while processing
+- [x] `CoachingReportDetail` — full AI report display: summary, strengths, weaknesses (with priority), 3 action items, coach persona response
+- [x] `/dashboard` page — account selector, performance section, trend chart, recent matches, report list + generate button
+- [x] `/coaching/[reportId]` page — PageSkeleton loading, pending spinner, failed state, complete report view
+- [x] `@tanstack/react-query` added to dependencies and documented in `DEPENDENCIES.md`
 
 ---
 
-## Technical Requirements
+## Files Created
 
-### Data Fetching
-
-- Match list: Server Component fetches first 20, client-side TanStack Query handles pagination
-- Match detail: Server Component with streaming (Suspense)
-- API: `GET /api/matches` and `GET /api/matches/:matchId` (built in TASK-005 scope or parallel)
-
-### Components to Build
-
-`src/domains/analysis/components/` (or `src/domains/riot/components/`):
-- `MatchHistoryList` — wraps list of MatchCard
-- `MatchCard` — single match row
-- `MatchDetail` — full match breakdown
-- `ParticipantRow` — single participant in match detail
-- `MatchFilterBar` — queue type + champion filter
-- `KDADisplay` — colored KDA display (green if > 3, red if < 1)
-- `MatchResult` — "Victory" / "Defeat" badge with appropriate color
-
-### Champion Icons
-
-Champion icons come from Riot's Data Dragon CDN:
 ```
-https://ddragon.leagueoflegends.com/cdn/{version}/img/champion/{championKey}.png
+app/api/coaching/reports/route.ts
+app/api/coaching/reports/[reportId]/route.ts
+app/api/riot/[riotAccountId]/performance/route.ts
+src/lib/api/fetcher.ts
+src/components/providers/QueryProvider.tsx
+src/components/ui/skeleton.tsx
+src/hooks/useRiotAccounts.ts
+src/hooks/usePerformanceProfile.ts
+src/hooks/useCoachingReports.ts
+src/hooks/useCoachingReport.ts
+src/hooks/useGenerateReport.ts
+src/types/coaching.frontend.ts
+src/domains/analysis/components/PerformanceSummaryCards.tsx
+src/domains/analysis/components/PerformanceTrendChart.tsx
+src/domains/analysis/components/RecentMatchList.tsx
+src/domains/coaching/components/ReportList.tsx
+src/domains/coaching/components/CoachingReportDetail.tsx
+app/(app)/coaching/[reportId]/page.tsx
 ```
-Use Next.js `<Image>` component with explicit width/height to avoid CLS.
-
----
-
-## Pages to Build
-
-- `app/(app)/matches/page.tsx`
-- `app/(app)/matches/[matchId]/page.tsx`
-
----
-
-## API Endpoints Needed
-
-- `GET /api/matches` — must be built before or in parallel
-- `GET /api/matches/:matchId`
-
-If endpoints are not ready, use mock data in a `fixtures/` folder during development.
-
----
-
-## Dependencies
-
-- TASK-001 (project setup)
-- TASK-002 (auth — page is protected)
-- TASK-005 (match sync — data must exist)
-
----
-
-## Notes
-
-Do not show champion performance stats on this page. That is TASK-007. This page is solely about individual match history, not aggregated stats.

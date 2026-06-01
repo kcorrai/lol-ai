@@ -1,7 +1,7 @@
 # TASK-003.5 — External API Resilience & Data Ingestion Layer
 
 **Phase:** 1 — MVP  
-**Status:** Not Started  
+**Status:** Complete  
 **Estimated Effort:** 0.5 day  
 **Depends on:** TASK-002.5 (ApiError + withAuth must exist)  
 **Blocks:** TASK-004 (Riot API Integration)
@@ -22,13 +22,13 @@ and production incidents.
 
 ## Acceptance Criteria
 
-- [ ] `cache.ts` — async TTL cache with in-memory backend; interface allows drop-in Redis swap
-- [ ] `rateLimit.ts` — token bucket implementation, configurable capacity + refill rate
-- [ ] `retry.ts` — `withRetry()` utility with exponential backoff + jitter; respects `Retry-After` header
-- [ ] `errors.ts` — `normalizeRiotError()` maps Riot HTTP status codes to internal `ApiError`
-- [ ] `client.ts` — `RiotHttpClient` class: injects API key header, integrates rate limiter + retry + error normalization
-- [ ] TypeScript: 0 errors. ESLint: 0 warnings.
-- [ ] No new npm packages (pure Node.js built-ins + native fetch)
+- [x] `cache.ts` — async TTL cache with in-memory backend; interface allows drop-in Redis swap
+- [x] `rateLimit.ts` — token bucket implementation, configurable capacity + refill rate
+- [x] `retry.ts` — `withRetry()` utility with exponential backoff + jitter; respects `Retry-After` header
+- [x] `errors.ts` — `normalizeRiotError()` maps Riot HTTP status codes to internal `ApiError`
+- [x] `client.ts` — `RiotHttpClient` class: injects API key header, integrates rate limiter + retry + error normalization
+- [x] TypeScript: 0 errors. ESLint: 0 warnings.
+- [x] No new npm packages (pure Node.js built-ins + native fetch)
 
 ---
 
