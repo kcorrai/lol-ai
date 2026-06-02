@@ -7,6 +7,7 @@ interface SyncResult {
   status: "synced" | "fresh";
   newMatches?: number;
   skipped?: number;
+  errors?: string[];
 }
 
 export function useSyncAccount() {

@@ -14,6 +14,7 @@ export type SyncResult = {
   newMatches: number;
   skipped: number;
   rankedSnapshotted: boolean;
+  errors: string[];
 };
 
 const RANK_TIERS: Record<string, RankTier> = {
@@ -43,7 +44,7 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   if (!account) throw Errors.notFound("Riot account");
 
   if (!force && !isDataStale(account.lastSyncedAt, 5)) {
-    return { newMatches: 0, skipped: 0, rankedSnapshotted: false };
+    return { newMatches: 0, skipped: 0, rankedSnapshotted: false, errors: [] };
   }
 
   logger.info(`[sync] Starting sync for ${account.gameName}#${account.tagLine}`);
@@ -61,20 +62,19 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   const newMatchIds = matchIds.filter((id) => !existingByRiotId.has(id));
   let newCount = 0;
   let skipped = 0;
+  const errors: string[] = [];
 
   for (const riotMatchId of newMatchIds) {
     try {
       const dto = await getMatch(riotMatchId, account.region);
 
-      // Generate a stable DB UUID from the match — same match always gets same ID
-      // so concurrent syncs are safe even without a unique constraint on the create
       const { randomUUID } = await import("crypto");
       const matchDbId = randomUUID();
 
       const mapped = mapMatch(dto, matchDbId, account.puuid, account.id);
       if (!mapped) {
         skipped++;
-        continue; // unknown queue type
+        continue;
       }
 
       await prisma.$transaction(async (tx) => {
@@ -84,8 +84,9 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
 
       newCount++;
     } catch (err) {
-      logger.warn(`[sync] Failed to fetch match ${riotMatchId}`, err);
-      // Continue with remaining matches — partial sync is better than none
+      const msg = err instanceof Error ? err.message : String(err);
+      logger.warn(`[sync] Failed for match ${riotMatchId}: ${msg}`);
+      errors.push(`${riotMatchId}: ${msg}`);
     }
   }
 
@@ -141,8 +142,11 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   await invalidateAccountCache(account.puuid, account.summonerId ?? "", account.region);
 
   logger.info(
-    `[sync] Done: +${newCount} new matches, ${skipped} skipped, ranked=${rankedSnapshotted}`
+    `[sync] Done: +${newCount} new, ${skipped} skipped, ${errors.length} errors, ranked=${rankedSnapshotted}`
   );
+  if (errors.length > 0) {
+    logger.warn(`[sync] First error sample: ${errors[0]}`);
+  }
 
-  return { newMatches: newCount, skipped, rankedSnapshotted };
+  return { newMatches: newCount, skipped, rankedSnapshotted, errors };
 }

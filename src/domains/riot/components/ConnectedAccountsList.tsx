@@ -51,11 +51,18 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt }:
       </div>
 
       {syncResult && (
-        <p className="text-xs text-success">
-          {syncResult.status === "fresh"
-            ? "Data is up to date"
-            : `Synced — ${syncResult.newMatches ?? 0} new matches`}
-        </p>
+        <>
+          <p className="text-xs text-success">
+            {syncResult.status === "fresh"
+              ? "Data is up to date"
+              : `Synced — ${syncResult.newMatches ?? 0} new, ${syncResult.skipped ?? 0} skipped`}
+          </p>
+          {syncResult.errors && syncResult.errors.length > 0 && (
+            <p className="text-xs text-danger break-all">
+              Error: {syncResult.errors[0]}
+            </p>
+          )}
+        </>
       )}
       {sync.isError && sync.variables === id && (
         <p className="text-xs text-danger">{sync.error.message}</p>
