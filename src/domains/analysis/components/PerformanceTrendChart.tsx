@@ -29,7 +29,7 @@ function Bar({
   const pct = Math.max(4, (value / maxValue) * 100);
   return (
     <div
-      className="group relative flex flex-1 flex-col items-center justify-end"
+      className="group relative flex h-full flex-1 flex-col items-center justify-end"
       title={label}
     >
       <div
