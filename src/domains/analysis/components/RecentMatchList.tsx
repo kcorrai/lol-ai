@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { MatchPerformance } from "@/domains/analysis/types/analysis.types";
@@ -12,7 +13,10 @@ interface Props {
 function MatchRow({ match }: { match: MatchPerformance }) {
   const kda = ((match.kills + match.assists) / Math.max(match.deaths, 1)).toFixed(2);
   return (
-    <div className="flex items-center gap-3 rounded-lg bg-surface-2 px-3 py-2">
+    <Link
+      href={`/match/${match.matchDbId}`}
+      className="flex items-center gap-3 rounded-lg bg-surface-2 px-3 py-2 transition-colors hover:bg-surface-2/80 hover:ring-1 hover:ring-border"
+    >
       <div
         className={`h-full w-1 self-stretch rounded-full ${match.won ? "bg-success" : "bg-danger"}`}
       />
@@ -33,7 +37,7 @@ function MatchRow({ match }: { match: MatchPerformance }) {
       <Badge variant={match.won ? "success" : "destructive"} className="text-xs">
         {match.won ? "W" : "L"}
       </Badge>
-    </div>
+    </Link>
   );
 }
 
