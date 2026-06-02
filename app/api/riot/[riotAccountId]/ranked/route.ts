@@ -12,9 +12,12 @@ export const GET = withAuth(async (req: NextRequest, { userId }) => {
 
   await assertOwnsRiotAccount(userId, riotAccountId);
 
+  const queue = req.nextUrl.searchParams.get("queue");
+  const queueType = queue === "flex" ? "RANKED_FLEX_SR" : "RANKED_SOLO_5x5";
+
   const [rank, lpHistory] = await Promise.all([
-    getCurrentRank(riotAccountId),
-    getLpHistory(riotAccountId, 10),
+    getCurrentRank(riotAccountId, queueType),
+    getLpHistory(riotAccountId, 10, queueType),
   ]);
 
   return apiSuccess({ rank, lpHistory });

@@ -17,7 +17,6 @@ import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 import { useCoachingReports } from "@/hooks/useCoachingReports";
 import { useGenerateReport } from "@/hooks/useGenerateReport";
-import { useRankedData } from "@/hooks/useRankedData";
 import { useSubscription } from "@/hooks/useSubscription";
 
 export default function DashboardPage() {
@@ -29,7 +28,6 @@ export default function DashboardPage() {
 
   const { data: profile, isLoading: profileLoading, error: profileError } = usePerformanceProfile(primaryId);
   const { data: reports, isLoading: reportsLoading } = useCoachingReports(primaryId ?? undefined);
-  const { data: rankedData, isLoading: rankedLoading } = useRankedData(primaryId);
   const { data: sub } = useSubscription();
   const generateReport = useGenerateReport();
 
@@ -109,11 +107,7 @@ export default function DashboardPage() {
         />
       ) : (
         <>
-          <RankedCard
-            rank={rankedData?.rank}
-            lpHistory={rankedData?.lpHistory}
-            isLoading={rankedLoading}
-          />
+          <RankedCard riotAccountId={primaryId} />
 
           <section>
             <p className="mb-3 text-xs font-medium uppercase tracking-widest text-text-muted">

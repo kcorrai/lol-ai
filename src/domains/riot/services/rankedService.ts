@@ -14,9 +14,14 @@ export type LpSnapshot = {
   recordedAt: string;
 };
 
-export async function getCurrentRank(riotAccountId: string): Promise<CurrentRank | null> {
+type RankedQueue = "RANKED_SOLO_5x5" | "RANKED_FLEX_SR";
+
+export async function getCurrentRank(
+  riotAccountId: string,
+  queueType: RankedQueue = "RANKED_SOLO_5x5"
+): Promise<CurrentRank | null> {
   const entry = await prisma.rankedHistory.findFirst({
-    where: { riotAccountId, queueType: "RANKED_SOLO_5x5" },
+    where: { riotAccountId, queueType },
     orderBy: { recordedAt: "desc" },
     select: { tier: true, division: true, lp: true, wins: true, losses: true },
   });
@@ -25,10 +30,11 @@ export async function getCurrentRank(riotAccountId: string): Promise<CurrentRank
 
 export async function getLpHistory(
   riotAccountId: string,
-  limit = 10
+  limit = 10,
+  queueType: RankedQueue = "RANKED_SOLO_5x5"
 ): Promise<LpSnapshot[]> {
   const rows = await prisma.rankedHistory.findMany({
-    where: { riotAccountId, queueType: "RANKED_SOLO_5x5" },
+    where: { riotAccountId, queueType },
     orderBy: { recordedAt: "asc" },
     take: limit,
     select: { lp: true, recordedAt: true },
