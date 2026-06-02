@@ -1,7 +1,7 @@
 # TASK-011 — Subscription & Stripe Integration
 
 **Phase:** 1 — MVP  
-**Status:** In Progress  
+**Status:** In Progress — code complete, blocked on Stripe account (Turkey not supported)  
 **Estimated Effort:** 2 days
 
 ---
