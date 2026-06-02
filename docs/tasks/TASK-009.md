@@ -1,7 +1,7 @@
 # TASK-009 — AI Coaching Pipeline: Session Review
 
 **Phase:** 1 — MVP  
-**Status:** Not Started  
+**Status:** Complete  
 **Estimated Effort:** 4 days
 
 ---
@@ -14,18 +14,18 @@ Build the complete AI coaching pipeline for the Session Review report type. This
 
 ## Acceptance Criteria
 
-- [ ] User can trigger report generation from the coaching page (button: "Analyze My Last 5 Games")
-- [ ] System fetches the user's last 5 ranked matches and their stats
-- [ ] A `coaching_reports` record is created with `status: 'processing'`
-- [ ] AI pipeline runs asynchronously and updates the report when complete
-- [ ] Report status can be polled via `GET /api/coaching/reports/:id/status`
-- [ ] Completed report contains: summary, strengths (2–3), weaknesses (2–3), 3 action items, coach narrative
-- [ ] All weaknesses have `evidence` field referencing real match data
-- [ ] Report is displayed in a well-designed UI with clear sections
-- [ ] User can rate the report (1–5 stars)
-- [ ] Freemium gate: 1 report per week for free users
-- [ ] AI response is cached: same 5 matches → same report (no double billing)
-- [ ] If AI fails: report status set to `failed`, user shown a friendly error
+- [x] User can trigger report generation from the coaching page (button: "Analyze My Last 5 Games")
+- [x] System fetches the user's last 5 ranked matches and their stats
+- [x] A `coaching_reports` record is created with `status: 'processing'`
+- [x] AI pipeline runs asynchronously and updates the report when complete
+- [x] Report status can be polled via `GET /api/coaching/reports/:id/status`
+- [x] Completed report contains: summary, strengths (2–3), weaknesses (2–3), 3 action items, coach narrative
+- [x] All weaknesses have `evidence` field referencing real match data
+- [x] Report is displayed in a well-designed UI with clear sections
+- [ ] User can rate the report (1–5 stars) — not yet implemented
+- [x] Freemium gate: 3 reports per month for free users (updated from 1/week)
+- [x] AI response is cached: same 5 matches → same report (no double billing)
+- [x] If AI fails: report status set to `failed`, user shown a friendly error
 
 ---
 

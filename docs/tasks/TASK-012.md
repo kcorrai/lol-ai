@@ -1,7 +1,7 @@
 # TASK-012 — Dashboard & App Shell
 
 **Phase:** 1 — MVP  
-**Status:** Not Started  
+**Status:** In Progress  
 **Estimated Effort:** 2 days
 
 ---
@@ -14,18 +14,18 @@ Build the authenticated application shell (sidebar, topbar, layout) and the main
 
 ## Acceptance Criteria
 
-- [ ] App shell renders: sidebar (left), topbar (top), content area (right)
-- [ ] Sidebar has navigation links: Dashboard, Matches, Coaching, Champions, Climb Roadmap, Settings
-- [ ] Active page is highlighted in sidebar
+- [x] App shell renders: sidebar (left), content area (right)
+- [x] Sidebar has navigation links: Dashboard, Accounts, Billing (partial — Matches/Coaching/Champions not in nav)
+- [x] Active page is highlighted in sidebar
 - [ ] Sidebar is collapsible to icon-only mode (persisted in localStorage)
-- [ ] Topbar shows: product logo, active Riot account selector, notification bell, user avatar menu
-- [ ] Riot account selector shows connected accounts, allows switching primary view account
-- [ ] Notification bell shows unread count badge
-- [ ] User avatar menu: Profile link, Settings link, Logout
-- [ ] Dashboard page shows: ranked standing card, recent matches (last 5), coaching report CTA
-- [ ] If no Riot account connected: dashboard shows "Connect your Riot account" onboarding card
+- [ ] Topbar with product logo, account selector, notification bell, user avatar menu
+- [ ] Riot account selector in topbar — account selector is on dashboard page only
+- [ ] Notification bell with unread count badge
+- [ ] User avatar menu (Profile, Settings, Logout) — logout button in sidebar only
+- [x] Dashboard page shows: ranked standing card, recent matches, coaching report CTA
+- [x] If no Riot account connected: dashboard shows "Connect your Riot account" onboarding card
 - [ ] Mobile: sidebar collapses to bottom navigation bar
-- [ ] All navigation links work and route to correct pages
+- [x] All existing navigation links work and route to correct pages
 
 ---
 

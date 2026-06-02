@@ -1,7 +1,7 @@
 # TASK-010 — Ranked History & LP Tracker
 
 **Phase:** 1 — MVP  
-**Status:** Not Started  
+**Status:** In Progress  
 **Estimated Effort:** 1.5 days
 
 ---
@@ -14,14 +14,14 @@ Display the player's ranked standing and LP history over time as a line chart. T
 
 ## Acceptance Criteria
 
-- [ ] Dashboard page shows current rank (tier, division, LP, wins, losses, win rate)
-- [ ] LP history chart shows progression over last 30 days
-- [ ] Chart has tooltips showing LP on hover
+- [x] Dashboard page shows current rank (tier, division, LP, wins, losses, win rate)
+- [x] LP history chart shows progression (bar chart, last 10 snapshots)
+- [ ] Chart has tooltips showing LP on hover — title attribute only, no visible tooltip
 - [ ] Rank promotions/demotions visible on chart as marked points
-- [ ] Ranked history is snapshotted once per day (via sync trigger)
+- [x] Ranked history is snapshotted on every sync (via syncAccount)
 - [ ] If < 3 data points exist, show a message: "Play more games to see your LP progression"
-- [ ] Both Solo Queue and Flex Queue supported (toggle)
-- [ ] Correct rank icon/emblem shown per tier
+- [ ] Both Solo Queue and Flex Queue supported (toggle) — Solo only for now
+- [ ] Correct rank icon/emblem shown per tier — tier color only, no emblem image
 
 ---
 

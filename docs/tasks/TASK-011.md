@@ -1,7 +1,7 @@
 # TASK-011 — Subscription & Stripe Integration
 
 **Phase:** 1 — MVP  
-**Status:** Not Started  
+**Status:** In Progress  
 **Estimated Effort:** 2 days
 
 ---
@@ -14,17 +14,15 @@ Implement the monetization layer: Stripe Checkout for upgrading to Pro, Stripe C
 
 ## Acceptance Criteria
 
-- [ ] Pricing page shows Free vs. Pro plans with feature comparison
-- [ ] "Upgrade to Pro" button opens Stripe Checkout in a new tab
-- [ ] Successful payment updates user's `subscriptions` record to `plan: 'pro'`
-- [ ] Stripe webhook handles: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
-- [ ] Canceled subscription downgrades to free tier at period end
-- [ ] "Manage Billing" opens Stripe Customer Portal
-- [ ] Current subscription status shown in settings
-- [ ] Plan limits enforced:
-  - Free: 1 riot account, 1 AI report/week, 10 matches history
-  - Pro: 3 riot accounts, unlimited reports, 100 matches
-- [ ] Users hitting limit see upgrade prompt, not a generic error
+- [ ] Pricing page shows Free vs. Pro plans with feature comparison — not yet built
+- [x] "Upgrade to Pro" button opens Stripe Checkout (Settings > Billing)
+- [x] Successful payment updates user's `subscriptions` record to `plan: 'pro'` via webhook
+- [x] Stripe webhook handles: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
+- [x] Canceled subscription downgrades to free tier
+- [ ] "Manage Billing" opens Stripe Customer Portal — not yet built
+- [x] Current subscription status shown in Settings > Billing page
+- [x] Plan limits enforced: Free: 1 riot account, 3 AI reports/month; Pro: 3 accounts, unlimited
+- [ ] Users hitting limit see upgrade prompt UI — shows error message only, no redirect
 
 ---
 
