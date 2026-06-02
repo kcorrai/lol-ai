@@ -36,7 +36,7 @@ export const Errors = {
   reportLimitReached: () =>
     new ApiError(
       "REPORT_LIMIT_REACHED",
-      "You have used your weekly AI report limit. Upgrade to Pro for unlimited reports.",
+      "You have used your monthly AI report limit. Upgrade to Pro for unlimited reports.",
       403
     ),
 

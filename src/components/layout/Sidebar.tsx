@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { LayoutDashboard, Gamepad2, LogOut, Zap } from "lucide-react";
+import { LayoutDashboard, Gamepad2, LogOut, Zap, CreditCard } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 const NAV = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/settings/accounts", icon: Gamepad2, label: "Accounts" },
+  { href: "/settings/billing", icon: CreditCard, label: "Billing" },
 ] as const;
 
 function NavItem({

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Gamepad2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { PageSkeleton } from "@/components/layout/PageSkeleton";
@@ -11,10 +12,13 @@ import { PerformanceSummaryCards } from "@/domains/analysis/components/Performan
 import { PerformanceTrendChart } from "@/domains/analysis/components/PerformanceTrendChart";
 import { RecentMatchList } from "@/domains/analysis/components/RecentMatchList";
 import { ReportList } from "@/domains/coaching/components/ReportList";
+import { RankedCard } from "@/domains/riot/components/RankedCard";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 import { useCoachingReports } from "@/hooks/useCoachingReports";
 import { useGenerateReport } from "@/hooks/useGenerateReport";
+import { useRankedData } from "@/hooks/useRankedData";
+import { useSubscription } from "@/hooks/useSubscription";
 
 export default function DashboardPage() {
   const { data: accounts, isLoading: accountsLoading } = useRiotAccounts();
@@ -25,6 +29,8 @@ export default function DashboardPage() {
 
   const { data: profile, isLoading: profileLoading, error: profileError } = usePerformanceProfile(primaryId);
   const { data: reports, isLoading: reportsLoading } = useCoachingReports(primaryId ?? undefined);
+  const { data: rankedData, isLoading: rankedLoading } = useRankedData(primaryId);
+  const { data: sub } = useSubscription();
   const generateReport = useGenerateReport();
 
   function handleGenerate() {
@@ -52,6 +58,13 @@ export default function DashboardPage() {
     );
   }
 
+  const isPro = sub?.plan === "pro" || sub?.plan === "elite";
+  const planBadge = (
+    <Badge variant={isPro ? "success" : "secondary"}>
+      {isPro ? "Pro" : "Free"}
+    </Badge>
+  );
+
   const accountSelector =
     accounts.length > 1 ? (
       <select
@@ -76,7 +89,12 @@ export default function DashboardPage() {
             ? `${primaryAccount.gameName}#${primaryAccount.tagLine} · ${primaryAccount.region.toUpperCase()}`
             : undefined
         }
-        action={accountSelector ?? undefined}
+        action={
+          <div className="flex items-center gap-2">
+            {planBadge}
+            {accountSelector}
+          </div>
+        }
       />
 
       {profileError ? (
@@ -91,6 +109,12 @@ export default function DashboardPage() {
         />
       ) : (
         <>
+          <RankedCard
+            rank={rankedData?.rank}
+            lpHistory={rankedData?.lpHistory}
+            isLoading={rankedLoading}
+          />
+
           <section>
             <p className="mb-3 text-xs font-medium uppercase tracking-widest text-text-muted">
               Performance

@@ -7,24 +7,24 @@ import type { SubscriptionPlan } from "@prisma/client";
 export const PLAN_LIMITS = {
   free: {
     maxRiotAccounts: 1,
-    reportsPerWeek: 1,
+    reportsPerMonth: 3,
     matchHistoryDepth: 10,
   },
   pro: {
     maxRiotAccounts: 3,
-    reportsPerWeek: -1, // unlimited
+    reportsPerMonth: -1, // unlimited
     matchHistoryDepth: 100,
   },
   elite: {
     maxRiotAccounts: 5,
-    reportsPerWeek: -1,
+    reportsPerMonth: -1,
     matchHistoryDepth: 200,
   },
 } satisfies Record<SubscriptionPlan, PlanLimits>;
 
 export type PlanLimits = {
   maxRiotAccounts: number;
-  reportsPerWeek: number;
+  reportsPerMonth: number;
   matchHistoryDepth: number;
 };
 
@@ -69,23 +69,23 @@ export async function assertCanAddRiotAccount(userId: string): Promise<void> {
   }
 }
 
-// Throws 403 if user has reached their weekly AI report limit.
+// Throws 403 if user has reached their monthly AI report limit.
 export async function assertCanGenerateReport(userId: string): Promise<void> {
   const limits = await getPlanLimits(userId);
-  if (limits.reportsPerWeek === -1) return; // unlimited
+  if (limits.reportsPerMonth === -1) return; // unlimited
 
-  const weekStart = new Date();
-  weekStart.setDate(weekStart.getDate() - 7);
+  const monthStart = new Date();
+  monthStart.setDate(monthStart.getDate() - 30);
 
   const recentReportCount = await prisma.coachingReport.count({
     where: {
       riotAccount: { userId },
-      createdAt: { gte: weekStart },
-      status: { in: ["complete", "processing", "pending"] },
+      createdAt: { gte: monthStart },
+      status: { in: ["complete", "pending"] },
     },
   });
 
-  if (recentReportCount >= limits.reportsPerWeek) {
+  if (recentReportCount >= limits.reportsPerMonth) {
     throw Errors.reportLimitReached();
   }
 }

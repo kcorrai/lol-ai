@@ -3,6 +3,9 @@
   "buildCommand": "npx prisma generate && next build",
   "installCommand": "npm install",
   "regions": ["iad1"],
+  "functions": {
+    "app/api/coaching/generate/route.ts": { "maxDuration": 60 }
+  },
   "env": {
     "NODE_ENV": "production"
   },
