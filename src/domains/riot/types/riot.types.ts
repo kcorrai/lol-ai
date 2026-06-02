@@ -75,7 +75,7 @@ export interface ParticipantDTO {
   wardsPlaced: number;
   wardsKilled: number;
   visionWardsBoughtInGame: number; // control wards
-  turretsKilled: number;
+  turretKills: number;
   objectivesStolen: number;
   firstBloodKill: boolean;
   win: boolean;

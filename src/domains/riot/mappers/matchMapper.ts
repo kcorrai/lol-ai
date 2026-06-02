@@ -62,7 +62,7 @@ function mapParticipant(
     wardsPlaced: p.wardsPlaced,
     wardsKilled: p.wardsKilled,
     controlWardsBought: p.visionWardsBoughtInGame,
-    turretsDestroyed: p.turretsKilled,
+    turretsDestroyed: p.turretKills ?? 0,
     objectivesStolen: p.objectivesStolen,
     firstBlood: p.firstBloodKill,
     won: p.win,
