@@ -34,6 +34,10 @@ enum QueueType {
   NORMAL_BLIND
   NORMAL_DRAFT
   ARAM
+  ARENA
+  URF
+  ONE_FOR_ALL
+  NEXUS_BLITZ
 }
 
 enum Position {

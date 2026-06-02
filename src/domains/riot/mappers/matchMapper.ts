@@ -1,14 +1,20 @@
 import { createHash } from "crypto";
 import type { Prisma, QueueType, Position } from "@prisma/client";
 import type { MatchDTO, ParticipantDTO } from "@/domains/riot/types/riot.types";
+import { logger } from "@/lib/utils/logger";
 
 const QUEUE_MAP: Partial<Record<number, QueueType>> = {
   420: "RANKED_SOLO_5x5",
   440: "RANKED_FLEX_SR",
-  490: "NORMAL_BLIND",  // Quick Play (replaced Blind Pick in 2023)
+  490: "NORMAL_BLIND",  // Quick Play
   430: "NORMAL_BLIND",  // Legacy Blind Pick
   400: "NORMAL_DRAFT",
   450: "ARAM",
+  1700: "ARENA",        // Arena (2v2v2v2)
+  900:  "URF",          // ARURF
+  1900: "URF",          // Pick URF
+  1020: "ONE_FOR_ALL",
+  1300: "NEXUS_BLITZ",
 };
 
 function mapPosition(teamPosition: string): Position {
@@ -85,7 +91,10 @@ export function mapMatch(
   riotAccountId: string
 ): MappedMatch | null {
   const queueType = QUEUE_MAP[dto.info.queueId];
-  if (!queueType) return null;
+  if (!queueType) {
+    logger.debug(`[matchMapper] skipping unknown queueId=${dto.info.queueId} matchId=${dto.metadata.matchId}`);
+    return null;
+  }
 
   // Riot sends gameDuration in seconds post-patch 11.20.1
   // Guard against old millisecond format just in case
