@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Rajdhani } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { AuthProvider } from "@/lib/auth/provider";
 import "@/styles/globals.css";
 
@@ -36,6 +37,7 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className={`${inter.variable} ${rajdhani.variable} font-sans`}>
           <AuthProvider>{children}</AuthProvider>
+        <Analytics />
         </body>
     </html>
   );

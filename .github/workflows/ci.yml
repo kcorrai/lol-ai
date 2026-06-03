@@ -50,8 +50,7 @@ jobs:
         run: npm ci
 
       - name: Generate Prisma client
-        # Skip generate until TASK-003 adds schema models
-        run: npx prisma generate || echo "No models yet — skipping"
+        run: npx prisma generate
 
       - name: Run TypeScript compiler
         run: npm run typecheck
@@ -59,8 +58,6 @@ jobs:
   test:
     name: Tests
     runs-on: ubuntu-latest
-    # Tests will be added in TASK-003 and beyond
-    # Placeholder to keep CI structure consistent
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -74,5 +71,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Generate Prisma client
+        run: npx prisma generate
+
       - name: Run tests
-        run: echo "No tests yet — added in TASK-003+"
+        run: npm test

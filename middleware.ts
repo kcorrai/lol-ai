@@ -4,6 +4,7 @@ import { getToken } from "next-auth/jwt";
 
 const PROTECTED_PATHS = [
   "/dashboard",
+  "/match",
   "/matches",
   "/coaching",
   "/champions",
@@ -40,6 +41,7 @@ export const config = {
   // Run middleware on all app + auth paths; skip API internals and static assets
   matcher: [
     "/dashboard/:path*",
+    "/match/:path*",
     "/matches/:path*",
     "/coaching/:path*",
     "/champions/:path*",
