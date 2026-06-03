@@ -5,8 +5,14 @@ import { assertOwnsRiotAccount } from "@/lib/auth/authorization";
 import { syncAccount } from "@/domains/riot/services/matchSyncService";
 import { prisma } from "@/lib/db/prisma";
 import { Errors } from "@/lib/api/errors";
+import { checkRateLimit, rateLimitResponse } from "@/lib/api/rateLimit";
+
+const SYNC_LIMIT = { limit: 30, windowMs: 3_600_000 };
 
 export const POST = withAuth(async (req: NextRequest, { userId }) => {
+  const rateCheck = checkRateLimit(`sync:${userId}`, SYNC_LIMIT);
+  if (!rateCheck.allowed) return rateLimitResponse(rateCheck.retryAfterMs, rateCheck.limit);
+
   // URL: /api/riot/[riotAccountId]/sync
   const segments = req.nextUrl.pathname.split("/");
   const riotAccountId = segments.at(-2) ?? "";

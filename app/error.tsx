@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import * as Sentry from "@sentry/nextjs";
 import Link from "next/link";
 
 interface Props {
@@ -10,11 +11,7 @@ interface Props {
 
 export default function GlobalError({ error, reset }: Props) {
   useEffect(() => {
-    // In production, forward to error tracking (e.g. Sentry) here
-    if (process.env.NODE_ENV === "development") {
-      // eslint-disable-next-line no-console
-      console.error(error);
-    }
+    Sentry.captureException(error);
   }, [error]);
 
   return (

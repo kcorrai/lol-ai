@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
 import { ApiError } from "@/lib/api/errors";
 import { apiError } from "@/lib/api/response";
+import { logger } from "@/lib/utils/logger";
 
 type AuthContext = {
   userId: string;
@@ -38,8 +40,9 @@ export function withAuth(handler: AuthenticatedHandler) {
       if (err instanceof ApiError) {
         return apiError(err.code, err.message, err.statusCode);
       }
-      // Unexpected errors — log and return generic 500
-      console.error("[withAuth] Unhandled error:", err);
+      // Unexpected errors — capture and return generic 500
+      logger.error("[withAuth] Unhandled error", err);
+      Sentry.captureException(err);
       return apiError("INTERNAL_ERROR", "An unexpected error occurred", 500);
     }
   };

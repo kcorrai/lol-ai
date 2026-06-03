@@ -1,3 +1,5 @@
+import { withSentryConfig } from "@sentry/nextjs";
+
 /** @type {import('next').NextConfig} */
 
 const CSP = [
@@ -42,4 +44,19 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  silent: true,
+  // No SENTRY_AUTH_TOKEN needed — source map upload disabled
+  sourcemaps: {
+    disable: true,
+  },
+  webpack: {
+    // Disable auto-instrumentation to keep build times fast
+    autoInstrumentServerFunctions: false,
+    autoInstrumentMiddleware: false,
+    autoInstrumentAppDirectory: false,
+    treeshake: {
+      removeDebugLogging: true,
+    },
+  },
+});

@@ -7,6 +7,7 @@ import { assertOwnsRiotAccount, assertCanGenerateReport } from "@/lib/auth/autho
 import { buildCoachingInput } from "@/domains/coaching/pipeline/dataPreparator";
 import { createPendingReport } from "@/domains/coaching/services/reportService";
 import { runCoachingPipeline } from "@/domains/coaching/pipeline/coachingPipeline";
+import { checkRateLimit, rateLimitResponse } from "@/lib/api/rateLimit";
 
 const generateSchema = z.object({
   riotAccountId: z.string().uuid(),
@@ -15,7 +16,12 @@ const generateSchema = z.object({
   focusArea: z.string().max(50).optional(),
 });
 
+const GENERATE_LIMIT = { limit: 10, windowMs: 3_600_000 };
+
 export const POST = withAuth(async (req: NextRequest, { userId }) => {
+  const rateCheck = checkRateLimit(`generate:${userId}`, GENERATE_LIMIT);
+  if (!rateCheck.allowed) return rateLimitResponse(rateCheck.retryAfterMs, rateCheck.limit);
+
   let body: unknown;
   try {
     body = await req.json();

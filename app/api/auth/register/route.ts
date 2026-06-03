@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/db/prisma";
+import { checkRateLimit, getIp, rateLimitResponse } from "@/lib/api/rateLimit";
+
+const REGISTER_LIMIT = { limit: 5, windowMs: 3_600_000 };
 
 const registerSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -10,6 +13,10 @@ const registerSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const ip = getIp(req);
+  const rateCheck = checkRateLimit(`register:${ip}`, REGISTER_LIMIT);
+  if (!rateCheck.allowed) return rateLimitResponse(rateCheck.retryAfterMs, rateCheck.limit);
+
   let body: unknown;
   try {
     body = await req.json();
