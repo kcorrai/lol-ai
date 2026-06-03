@@ -6,26 +6,16 @@ import {
   RankDivision,
   ReportStatus,
 } from "@prisma/client";
+import { syncChampions } from "../scripts/syncChampions";
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log("🌱 Seeding development database...");
 
-  // ── Champions (10 mock) ──────────────────────────────────────
-  const champions = await Promise.all([
-    upsertChampion(103, "Ahri", "the Nine-Tailed Fox", ["Mage", "Assassin"], 2),
-    upsertChampion(64, "LeeSin", "the Blind Monk", ["Fighter", "Assassin"], 3),
-    upsertChampion(412, "Thresh", "the Chain Warden", ["Support", "Fighter"], 3),
-    upsertChampion(157, "Yasuo", "the Unforgiven", ["Fighter", "Assassin"], 3),
-    upsertChampion(11, "MasterYi", "the Wuju Bladesman", ["Fighter", "Assassin"], 1),
-    upsertChampion(222, "Jinx", "the Loose Cannon", ["Marksman"], 2),
-    upsertChampion(238, "Zed", "the Master of Shadows", ["Assassin", "Fighter"], 3),
-    upsertChampion(99, "Lux", "the Lady of Luminosity", ["Mage", "Support"], 1),
-    upsertChampion(235, "Senna", "the Redeemer", ["Marksman", "Support"], 2),
-    upsertChampion(57, "Maokai", "the Twisted Treant", ["Tank", "Support"], 1),
-  ]);
-  console.log(`  ✓ ${champions.length} champions upserted`);
+  // ── Champions (real Data Dragon sync) ───────────────────────
+  console.log("  Syncing champions from Data Dragon...");
+  await syncChampions(prisma);
 
   // ── Test User ────────────────────────────────────────────────
   const user = await prisma.user.upsert({
@@ -246,28 +236,6 @@ async function main() {
   console.log("   Matches: 5 ranked games");
 }
 
-async function upsertChampion(
-  id: number,
-  key: string,
-  title: string,
-  roles: string[],
-  difficulty: number
-) {
-  return prisma.champion.upsert({
-    where: { id },
-    update: { patchVersion: "14.10" },
-    create: {
-      id,
-      key,
-      name: key.replace(/([A-Z])/g, " $1").trim(),
-      title,
-      roles,
-      difficulty,
-      imageUrl: `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${key}.png`,
-      patchVersion: "14.10",
-    },
-  });
-}
 
 main()
   .catch((e) => {
