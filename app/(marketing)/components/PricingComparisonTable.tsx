@@ -14,7 +14,8 @@ const ROWS: FeatureRow[] = [
   { feature: "Match History Depth", free: "10 games", pro: "100 games" },
   { feature: "Match Deep Dive", free: true, pro: true },
   { feature: "Ranked Progress Tracking", free: true, pro: true },
-  { feature: "Champion Analytics", free: false, pro: true },
+  { feature: "Champion Pool Analytics", free: "Top 3 only", pro: "Full pool" },
+  { feature: "Weekly AI Improvement Emails", free: "Basic stats", pro: "Full AI insights" },
   { feature: "Priority AI Processing", free: false, pro: true },
 ];
 

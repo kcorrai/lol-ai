@@ -27,7 +27,8 @@ const PRO_FEATURES = [
   "100-game match history",
   "Match deep dive",
   "Ranked progress tracking",
-  "Champion analytics",
+  "Champion pool analytics",
+  "Weekly AI improvement emails",
   "Priority AI processing",
 ];
 
@@ -63,8 +64,8 @@ export default function PricingPage() {
             period="/month"
             description="For players serious about climbing."
             features={PRO_FEATURES}
-            cta="Start Pro"
-            ctaHref="/register"
+            cta="Start Pro — $9.99/mo"
+            ctaHref="/settings/billing"
             highlighted
           />
         </div>
