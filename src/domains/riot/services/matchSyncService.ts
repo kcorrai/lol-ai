@@ -8,6 +8,7 @@ import {
   getRankedEntries,
 } from "@/domains/riot/services/riotApiClient";
 import { mapMatch } from "@/domains/riot/mappers/matchMapper";
+import { getLastRankedSnapshot } from "@/domains/riot/services/rankedService";
 import type { RankTier, RankDivision } from "@prisma/client";
 
 export type SyncResult = {
@@ -101,36 +102,52 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
 
   // ── Ranked snapshot ────────────────────────────────────────────────────────
   let rankedSnapshotted = false;
-  try {
-    const entries = await getRankedEntries(account.summonerId ?? "", account.region);
-    for (const entry of entries) {
-      const tier = RANK_TIERS[entry.tier];
-      const division = RANK_DIVISIONS[entry.rank];
-      const queueType =
-        entry.queueType === "RANKED_SOLO_5x5"
-          ? ("RANKED_SOLO_5x5" as const)
-          : entry.queueType === "RANKED_FLEX_SR"
-            ? ("RANKED_FLEX_SR" as const)
-            : null;
+  if (!account.summonerId) {
+    logger.warn(`[sync] Skipping ranked snapshot — summonerId missing for ${account.gameName}#${account.tagLine}`);
+  } else {
+    try {
+      const entries = await getRankedEntries(account.summonerId, account.region);
+      for (const entry of entries) {
+        const tier = RANK_TIERS[entry.tier];
+        const division = RANK_DIVISIONS[entry.rank];
+        const queueType =
+          entry.queueType === "RANKED_SOLO_5x5"
+            ? ("RANKED_SOLO_5x5" as const)
+            : entry.queueType === "RANKED_FLEX_SR"
+              ? ("RANKED_FLEX_SR" as const)
+              : null;
 
-      if (!tier || !division || !queueType) continue;
+        if (!tier || !division || !queueType) continue;
 
-      await prisma.rankedHistory.create({
-        data: {
-          riotAccountId: account.id,
-          queueType,
-          tier,
-          division,
-          lp: entry.leaguePoints,
-          wins: entry.wins,
-          losses: entry.losses,
-          recordedAt: new Date(),
-        },
-      });
+        const lastSnapshot = await getLastRankedSnapshot(account.id, queueType);
+        if (
+          lastSnapshot &&
+          lastSnapshot.tier === tier &&
+          lastSnapshot.division === division &&
+          lastSnapshot.lp === entry.leaguePoints
+        ) {
+          continue;
+        }
+
+        await prisma.rankedHistory.create({
+          data: {
+            riotAccountId: account.id,
+            queueType,
+            tier,
+            division,
+            lp: entry.leaguePoints,
+            wins: entry.wins,
+            losses: entry.losses,
+            hotStreak: entry.hotStreak,
+            inactive: entry.inactive,
+            recordedAt: new Date(),
+          },
+        });
+      }
+      rankedSnapshotted = true;
+    } catch (err) {
+      logger.warn("[sync] Ranked snapshot failed", err);
     }
-    rankedSnapshotted = true;
-  } catch (err) {
-    logger.warn("[sync] Ranked snapshot failed", err);
   }
 
   // ── Finalize ───────────────────────────────────────────────────────────────

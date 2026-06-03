@@ -348,14 +348,16 @@ model ChampionStat {
 }
 
 model RankedHistory {
-  id            String      @id @default(uuid()) @db.Uuid
-  riotAccountId String      @db.Uuid
+  id            String       @id @default(uuid()) @db.Uuid
+  riotAccountId String       @db.Uuid
   queueType     QueueType
   tier          RankTier
   division      RankDivision
   lp            Int
   wins          Int
   losses        Int
+  hotStreak     Boolean      @default(false)
+  inactive      Boolean      @default(false)
   recordedAt    DateTime
 
   riotAccount RiotAccount @relation(fields: [riotAccountId], references: [id], onDelete: Cascade)

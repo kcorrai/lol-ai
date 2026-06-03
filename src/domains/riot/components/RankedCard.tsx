@@ -7,16 +7,16 @@ import { useRankedData, type RankedQueue } from "@/hooks/useRankedData";
 import type { LpSnapshot } from "@/domains/riot";
 
 const TIER_COLOR: Record<string, string> = {
-  IRON: "text-stone-400",
-  BRONZE: "text-amber-700",
-  SILVER: "text-slate-400",
-  GOLD: "text-yellow-400",
-  PLATINUM: "text-teal-400",
-  EMERALD: "text-emerald-400",
-  DIAMOND: "text-blue-400",
-  MASTER: "text-purple-400",
-  GRANDMASTER: "text-red-400",
-  CHALLENGER: "text-yellow-300",
+  IRON: "text-rank-iron",
+  BRONZE: "text-rank-bronze",
+  SILVER: "text-rank-silver",
+  GOLD: "text-rank-gold",
+  PLATINUM: "text-rank-platinum",
+  EMERALD: "text-rank-emerald",
+  DIAMOND: "text-rank-diamond",
+  MASTER: "text-rank-master",
+  GRANDMASTER: "text-rank-grandmaster",
+  CHALLENGER: "text-rank-challenger",
 };
 
 const TIER_BG: Record<string, string> = {
@@ -31,6 +31,9 @@ const TIER_BG: Record<string, string> = {
   GRANDMASTER: "bg-red-900",
   CHALLENGER: "bg-yellow-900",
 };
+
+// Apex tiers have no divisions in Riot's ranking system
+const APEX_TIERS = new Set(["MASTER", "GRANDMASTER", "CHALLENGER"]);
 
 function TierEmblem({ tier }: { tier: string }) {
   const color = TIER_COLOR[tier] ?? "text-text";
@@ -65,15 +68,16 @@ function LpChart({ history }: { history: LpSnapshot[] }) {
               key={i}
               className="group relative flex h-full flex-1 flex-col items-center justify-end"
             >
-              {/* CSS tooltip — appears above bar on hover */}
-              <div className="pointer-events-none absolute bottom-full left-1/2 mb-1 -translate-x-1/2 whitespace-nowrap rounded bg-surface px-1.5 py-0.5 text-xs text-text opacity-0 ring-1 ring-border transition-opacity group-hover:opacity-100">
-                {snap.lp} LP
-                <span className="ml-1 text-text-muted">{date}</span>
-              </div>
+              {/* Tooltip attached to the bar fill so it tracks bar height, not full chart height */}
               <div
-                className="w-full rounded-t bg-accent opacity-70 transition-all group-hover:opacity-100"
+                className="relative w-full rounded-t bg-accent opacity-70 transition-all group-hover:opacity-100"
                 style={{ height: `${pct}%` }}
-              />
+              >
+                <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 -translate-x-1/2 whitespace-nowrap rounded bg-surface px-1.5 py-0.5 text-xs text-text opacity-0 ring-1 ring-border transition-opacity group-hover:opacity-100">
+                  {snap.lp} LP
+                  <span className="ml-1 text-text-muted">{date}</span>
+                </div>
+              </div>
             </div>
           );
         })}
@@ -147,7 +151,7 @@ export function RankedCard({ riotAccountId }: Props) {
               <div>
                 <div className="flex items-baseline gap-2">
                   <span className={`text-xl font-display font-bold ${tierColor}`}>
-                    {rank.tier} {rank.division}
+                    {rank.tier}{APEX_TIERS.has(rank.tier) ? "" : ` ${rank.division}`}
                   </span>
                   <span className="text-sm text-text-muted">{rank.lp} LP</span>
                 </div>
@@ -156,6 +160,20 @@ export function RankedCard({ riotAccountId }: Props) {
                 </p>
               </div>
             </div>
+            {(rank.hotStreak || rank.inactive) && (
+              <div className="flex gap-2">
+                {rank.hotStreak && (
+                  <span className="rounded bg-warning/20 px-1.5 py-0.5 text-xs font-medium text-warning">
+                    Hot Streak
+                  </span>
+                )}
+                {rank.inactive && (
+                  <span className="rounded bg-danger/20 px-1.5 py-0.5 text-xs font-medium text-danger">
+                    LP Decay Risk
+                  </span>
+                )}
+              </div>
+            )}
             <LpChart history={lpHistory} />
           </>
         )}
