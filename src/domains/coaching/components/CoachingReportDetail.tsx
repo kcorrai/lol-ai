@@ -1,6 +1,9 @@
 "use client";
 
+import Link from "next/link";
+import { Lock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { CoachingReportDetail } from "@/types/coaching.frontend";
 
@@ -46,14 +49,19 @@ function WeaknessesList({
       <CardContent className="space-y-3">
         {weaknesses.map((w, i) => (
           <div key={i} className="flex gap-2">
-            <Badge variant={PRIORITY_BADGE[w.priority] ?? "secondary"} className="mt-0.5 shrink-0 self-start text-xs">
+            <Badge
+              variant={PRIORITY_BADGE[w.priority] ?? "secondary"}
+              className="mt-0.5 shrink-0 self-start text-xs"
+            >
               {w.priority}
             </Badge>
             <div>
               <p className="text-sm font-semibold text-text">{w.area}</p>
               <p className="text-sm text-text-muted">{w.description}</p>
               {w.rootCause && (
-                <p className="mt-0.5 text-xs text-text-muted/70 italic">Root cause: {w.rootCause}</p>
+                <p className="mt-0.5 text-xs text-text-muted/70 italic">
+                  Root cause: {w.rootCause}
+                </p>
               )}
               <p className="mt-0.5 text-xs text-text-muted/70 italic">{w.evidence}</p>
             </div>
@@ -96,13 +104,46 @@ function ActionItems({
   );
 }
 
-interface Props {
-  report: CoachingReportDetail;
+// Overlay shown when detailed analysis is gated behind Pro
+function ProInsightsGate() {
+  return (
+    <div className="relative overflow-hidden rounded-xl border border-accent/30">
+      {/* Blurred ghost content */}
+      <div className="pointer-events-none select-none space-y-4 p-4 blur-sm">
+        <div className="h-32 rounded-lg bg-surface-2" />
+        <div className="grid gap-4 lg:grid-cols-2">
+          <div className="h-40 rounded-lg bg-surface-2" />
+          <div className="h-40 rounded-lg bg-surface-2" />
+        </div>
+      </div>
+      {/* Lock overlay */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/20">
+          <Lock className="h-5 w-5 text-accent" />
+        </div>
+        <p className="mt-3 font-display text-base font-semibold text-text">
+          Full insights require Pro
+        </p>
+        <p className="mt-1 max-w-xs text-center text-xs text-text-muted">
+          Upgrade to unlock weaknesses analysis, all action items, and champion recommendations.
+        </p>
+        <Link href="/settings/billing" className="mt-4">
+          <Button size="sm">Upgrade to Pro</Button>
+        </Link>
+      </div>
+    </div>
+  );
 }
 
-export function CoachingReportDetail({ report }: Props) {
+interface Props {
+  report: CoachingReportDetail;
+  isPro: boolean;
+}
+
+export function CoachingReportDetail({ report, isPro }: Props) {
   return (
     <div className="space-y-4">
+      {/* Summary — visible to all plans */}
       {report.summary && (
         <Card>
           <CardContent className="pt-5">
@@ -111,6 +152,7 @@ export function CoachingReportDetail({ report }: Props) {
         </Card>
       )}
 
+      {/* Coach persona — visible to all plans */}
       {report.coachPersonaResponse && (
         <Card className="border-accent/30 bg-accent/5">
           <CardHeader className="pb-1">
@@ -126,24 +168,33 @@ export function CoachingReportDetail({ report }: Props) {
         </Card>
       )}
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        {report.strengths && report.strengths.length > 0 && (
-          <StrengthsList strengths={report.strengths} />
-        )}
-        {report.weaknesses && report.weaknesses.length > 0 && (
-          <WeaknessesList weaknesses={report.weaknesses} />
-        )}
-      </div>
+      {/* Detailed analysis — Pro only */}
+      {isPro ? (
+        <>
+          <div className="grid gap-4 lg:grid-cols-2">
+            {report.strengths && report.strengths.length > 0 && (
+              <StrengthsList strengths={report.strengths} />
+            )}
+            {report.weaknesses && report.weaknesses.length > 0 && (
+              <WeaknessesList weaknesses={report.weaknesses} />
+            )}
+          </div>
 
-      {report.actionItems && report.actionItems.length > 0 && (
-        <ActionItems items={report.actionItems} />
-      )}
+          {report.actionItems && report.actionItems.length > 0 && (
+            <ActionItems items={report.actionItems} />
+          )}
 
-      {report.estimatedRankPotential && (
-        <p className="text-center text-sm text-text-muted">
-          Estimated rank potential:{" "}
-          <span className="font-semibold text-accent">{report.estimatedRankPotential}</span>
-        </p>
+          {report.estimatedRankPotential && (
+            <p className="text-center text-sm text-text-muted">
+              Estimated rank potential:{" "}
+              <span className="font-semibold text-accent">
+                {report.estimatedRankPotential}
+              </span>
+            </p>
+          )}
+        </>
+      ) : (
+        <ProInsightsGate />
       )}
     </div>
   );

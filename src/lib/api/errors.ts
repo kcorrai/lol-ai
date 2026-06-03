@@ -40,6 +40,20 @@ export const Errors = {
       403
     ),
 
+  dailyReportLimitReached: () =>
+    new ApiError(
+      "DAILY_REPORT_LIMIT_REACHED",
+      "You can generate 1 report per day on the Free plan. Come back tomorrow or upgrade to Pro.",
+      429
+    ),
+
+  proRequired: (feature: string) =>
+    new ApiError(
+      "PRO_REQUIRED",
+      `${feature} requires a Pro subscription.`,
+      403
+    ),
+
   riotAccountNotOwned: () =>
     new ApiError(
       "RIOT_ACCOUNT_NOT_OWNED",

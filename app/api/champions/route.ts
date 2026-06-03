@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
 import { Errors } from "@/lib/api/errors";
-import { assertOwnsRiotAccount } from "@/lib/auth/authorization";
+import { assertOwnsRiotAccount, getPlanLimits } from "@/lib/auth/authorization";
 import { getChampionPool } from "@/domains/champions/services/championStatsService";
 import { checkRateLimit, getIp, rateLimitResponse } from "@/lib/api/rateLimit";
 
@@ -22,5 +22,11 @@ export const GET = withAuth(async (req: NextRequest, { userId }) => {
   const minGames = rawMin ? Math.max(1, Math.min(Number(rawMin), 20)) : 3;
 
   const pool = await getChampionPool(riotAccountId, minGames);
-  return apiSuccess(pool);
+
+  // Hard server-side limit — prevents UI bypass via direct API calls
+  const limits = await getPlanLimits(userId);
+  const result =
+    limits.championPoolLimit === -1 ? pool : pool.slice(0, limits.championPoolLimit);
+
+  return apiSuccess(result);
 });

@@ -8,6 +8,7 @@ import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { CoachingReportDetail } from "@/domains/coaching/components/CoachingReportDetail";
 import { ReportRating } from "@/domains/coaching/components/ReportRating";
 import { useCoachingReport } from "@/hooks/useCoachingReport";
+import { useSubscription } from "@/hooks/useSubscription";
 
 const REPORT_TYPE_LABEL: Record<string, string> = {
   session_review: "Session Review",
@@ -25,6 +26,9 @@ const STATUS_VARIANT = {
 export default function ReportDetailPage() {
   const { reportId } = useParams<{ reportId: string }>();
   const { data: report, isLoading, error, refetch } = useCoachingReport(reportId);
+  const { data: sub } = useSubscription();
+
+  const isPro = sub?.plan === "pro" || sub?.plan === "elite";
 
   if (isLoading) return <PageSkeleton />;
 
@@ -33,7 +37,9 @@ export default function ReportDetailPage() {
       <div className="mx-auto max-w-3xl p-6">
         <ErrorState
           title="Report not found"
-          message={error?.message ?? "This report does not exist or you don't have access to it."}
+          message={
+            error?.message ?? "This report does not exist or you don't have access to it."
+          }
           onRetry={() => refetch()}
         />
       </div>
@@ -74,7 +80,7 @@ export default function ReportDetailPage() {
 
       {report.status === "complete" && (
         <>
-          <CoachingReportDetail report={report} />
+          <CoachingReportDetail report={report} isPro={isPro} />
           <ReportRating reportId={report.id} currentRating={report.userRating} />
         </>
       )}

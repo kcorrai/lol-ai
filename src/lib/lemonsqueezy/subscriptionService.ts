@@ -3,7 +3,11 @@ import { createCheckout } from "@lemonsqueezy/lemonsqueezy.js";
 import { prisma } from "@/lib/db/prisma";
 import { getLsClient, getLsStoreId, getLsProVariantId } from "@/lib/lemonsqueezy/client";
 import { logger } from "@/lib/utils/logger";
-import type { LsSubscriptionAttributes, LsSubscriptionStatus, LsWebhookPayload } from "@/lib/lemonsqueezy/types";
+import type {
+  LsSubscriptionAttributes,
+  LsSubscriptionStatus,
+  LsWebhookPayload,
+} from "@/lib/lemonsqueezy/types";
 import type { SubscriptionPlan, SubscriptionStatus } from "@prisma/client";
 
 // ── Checkout ────────────────────────────────────────────────────────────────
@@ -39,7 +43,7 @@ export async function createLsCheckoutUrl(
   return data.data.attributes.url;
 }
 
-// ── Webhook helpers ──────────────────────────────────────────────────────────
+// ── Webhook signature ────────────────────────────────────────────────────────
 
 export function verifyLsWebhookSignature(
   rawBody: string,
@@ -53,6 +57,29 @@ export function verifyLsWebhookSignature(
     return false;
   }
 }
+
+// ── Idempotency ──────────────────────────────────────────────────────────────
+
+// Builds a stable deduplication key from the LS subscription payload.
+// Format: "{event_name}:{subscription_id}:{status}:{renews_at}"
+// Same event retried by LS produces the identical key → safely skipped.
+function buildEventKey(eventName: string, subscriptionId: string, attrs: LsSubscriptionAttributes): string {
+  return `${eventName}:${subscriptionId}:${attrs.status}:${attrs.renews_at ?? attrs.ends_at ?? ""}`;
+}
+
+// Returns true if this event was already processed (duplicate delivery).
+// Creates a log entry atomically when first seen.
+export async function checkAndRecordEvent(eventKey: string): Promise<boolean> {
+  try {
+    await prisma.webhookEvent.create({ data: { eventKey } });
+    return false; // not a duplicate — proceed
+  } catch {
+    // Unique constraint violation → duplicate
+    return true;
+  }
+}
+
+// ── Status mapping ───────────────────────────────────────────────────────────
 
 function lsStatusToSubscriptionStatus(status: LsSubscriptionStatus): SubscriptionStatus {
   const map: Record<LsSubscriptionStatus, SubscriptionStatus> = {
@@ -71,7 +98,7 @@ function isActiveLsStatus(status: LsSubscriptionStatus): boolean {
   return status === "active" || status === "on_trial";
 }
 
-// ── Webhook event handlers ───────────────────────────────────────────────────
+// ── Event handlers ───────────────────────────────────────────────────────────
 
 export async function handleLsSubscriptionCreated(
   payload: LsWebhookPayload
@@ -81,9 +108,7 @@ export async function handleLsSubscriptionCreated(
     logger.warn("[lemonsqueezy] subscription_created without userId in custom_data");
     return;
   }
-
-  const attrs = payload.data.attributes;
-  await upsertSubscription(userId, payload.data.id, attrs);
+  await upsertSubscription(userId, payload.data.id, payload.data.attributes);
 }
 
 export async function handleLsSubscriptionUpdated(
@@ -98,10 +123,9 @@ export async function handleLsSubscriptionUpdated(
   });
 
   if (!existing) {
-    // Subscription not in DB yet — use custom_data userId if present
     const userId = payload.meta.custom_data?.userId;
     if (!userId) {
-      logger.warn("[lemonsqueezy] subscription_updated: no matching subscription found", {
+      logger.warn("[lemonsqueezy] subscription_updated: no matching subscription", {
         subscriptionId,
       });
       return;
@@ -118,12 +142,10 @@ export async function handleLsSubscriptionCancelled(
 ): Promise<void> {
   const subscriptionId = payload.data.id;
 
+  // Mark as pending cancellation — stays active until period end
   await prisma.subscription.updateMany({
     where: { lsSubscriptionId: subscriptionId },
-    data: {
-      cancelAtPeriodEnd: true,
-      status: "active", // remains active until period end
-    },
+    data: { cancelAtPeriodEnd: true, status: "active" },
   });
 }
 
@@ -136,7 +158,6 @@ async function upsertSubscription(
 ): Promise<void> {
   const plan: SubscriptionPlan = isActiveLsStatus(attrs.status) ? "pro" : "free";
   const status = lsStatusToSubscriptionStatus(attrs.status);
-
   const periodEnd = attrs.renews_at ?? attrs.ends_at;
 
   await prisma.subscription.upsert({
@@ -160,3 +181,6 @@ async function upsertSubscription(
     },
   });
 }
+
+// Re-export for webhook route
+export { buildEventKey };
