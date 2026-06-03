@@ -4,8 +4,15 @@
   "installCommand": "npm install",
   "regions": ["iad1"],
   "functions": {
-    "app/api/coaching/generate/route.ts": { "maxDuration": 60 }
+    "app/api/coaching/generate/route.ts": { "maxDuration": 60 },
+    "app/api/cron/weekly-report/route.ts": { "maxDuration": 300 }
   },
+  "crons": [
+    {
+      "path": "/api/cron/weekly-report",
+      "schedule": "0 9 * * 1"
+    }
+  ],
   "env": {
     "NODE_ENV": "production"
   },
