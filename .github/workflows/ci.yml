@@ -11,6 +11,34 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  migrations-check:
+    name: Migration Safety
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Fail fast if any script uses prisma db push (banned in production flow)
+      - name: Reject prisma db push usage
+        run: |
+          if grep -r "prisma db push\|prisma push" --include="*.ts" --include="*.mjs" --include="*.json" --include="*.yml" --include="*.sh" . \
+              --exclude-dir=node_modules --exclude-dir=.next \
+              | grep -v "^\.\/\.github\/workflows\/ci\.yml" \
+              | grep -v "^Binary"; then
+            echo "ERROR: 'prisma db push' found — use 'prisma migrate deploy' instead."
+            exit 1
+          fi
+          echo "✓ No prisma db push usage detected"
+
+      # Verify migration folder exists and has content
+      - name: Verify migrations exist
+        run: |
+          if [ ! -d "prisma/migrations" ] || [ -z "$(ls prisma/migrations/)" ]; then
+            echo "ERROR: prisma/migrations is missing or empty."
+            exit 1
+          fi
+          echo "✓ Migrations folder present ($(ls prisma/migrations/ | wc -l) entries)"
+
   lint:
     name: Lint
     runs-on: ubuntu-latest

@@ -8,7 +8,7 @@ const CHECKOUT_LIMIT = { limit: 5, windowMs: 3_600_000 };
 
 export const POST = withAuth(async (req: NextRequest, { userId, userEmail }) => {
   const ip = getIp(req);
-  const rateCheck = checkRateLimit(`ls-checkout:${ip}`, CHECKOUT_LIMIT);
+  const rateCheck = await checkRateLimit(`ls-checkout:${ip}`, CHECKOUT_LIMIT);
   if (!rateCheck.allowed) return rateLimitResponse(rateCheck.retryAfterMs, rateCheck.limit);
 
   const url = await createLsCheckoutUrl(userId, userEmail);

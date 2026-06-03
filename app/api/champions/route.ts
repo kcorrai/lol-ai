@@ -10,7 +10,7 @@ const CHAMPIONS_LIMIT = { limit: 60, windowMs: 3_600_000 };
 
 export const GET = withAuth(async (req: NextRequest, { userId }) => {
   const ip = getIp(req);
-  const rateCheck = checkRateLimit(`champions:${ip}`, CHAMPIONS_LIMIT);
+  const rateCheck = await checkRateLimit(`champions:${ip}`, CHAMPIONS_LIMIT);
   if (!rateCheck.allowed) return rateLimitResponse(rateCheck.retryAfterMs, rateCheck.limit);
 
   const riotAccountId = req.nextUrl.searchParams.get("riotAccountId");

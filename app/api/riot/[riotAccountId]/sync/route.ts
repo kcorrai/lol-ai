@@ -10,7 +10,7 @@ import { checkRateLimit, rateLimitResponse } from "@/lib/api/rateLimit";
 const SYNC_LIMIT = { limit: 30, windowMs: 3_600_000 };
 
 export const POST = withAuth(async (req: NextRequest, { userId }) => {
-  const rateCheck = checkRateLimit(`sync:${userId}`, SYNC_LIMIT);
+  const rateCheck = await checkRateLimit(`sync:${userId}`, SYNC_LIMIT);
   if (!rateCheck.allowed) return rateLimitResponse(rateCheck.retryAfterMs, rateCheck.limit);
 
   // URL: /api/riot/[riotAccountId]/sync

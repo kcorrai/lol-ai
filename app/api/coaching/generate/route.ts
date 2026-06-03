@@ -6,7 +6,7 @@ import { Errors } from "@/lib/api/errors";
 import { assertOwnsRiotAccount, assertCanGenerateReport } from "@/lib/auth/authorization";
 import { buildCoachingInput } from "@/domains/coaching/pipeline/dataPreparator";
 import { createPendingReport } from "@/domains/coaching/services/reportService";
-import { runCoachingPipeline } from "@/domains/coaching/pipeline/coachingPipeline";
+import { inngest } from "@/inngest/client";
 import { checkRateLimit, rateLimitResponse } from "@/lib/api/rateLimit";
 
 const generateSchema = z.object({
@@ -19,7 +19,7 @@ const generateSchema = z.object({
 const GENERATE_LIMIT = { limit: 10, windowMs: 3_600_000 };
 
 export const POST = withAuth(async (req: NextRequest, { userId }) => {
-  const rateCheck = checkRateLimit(`generate:${userId}`, GENERATE_LIMIT);
+  const rateCheck = await checkRateLimit(`generate:${userId}`, GENERATE_LIMIT);
   if (!rateCheck.allowed) return rateLimitResponse(rateCheck.retryAfterMs, rateCheck.limit);
 
   let body: unknown;
@@ -37,14 +37,18 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   await assertOwnsRiotAccount(userId, riotAccountId);
   await assertCanGenerateReport(userId);
 
-  // Validate the data is ready (will throw if insufficient match data)
+  // Validate data is ready before creating the DB record
   await buildCoachingInput(riotAccountId, matchIds, focusArea);
 
   const reportId = await createPendingReport(riotAccountId, matchIds, reportType);
 
-  // Fire-and-forget: pipeline updates the report to "complete"/"failed" async.
-  // In production this should move to a proper job queue (BullMQ/Redis).
-  void runCoachingPipeline(reportId, riotAccountId, matchIds, reportType, focusArea);
+  // Enqueue via Inngest — durable, retryable, concurrency-capped (5 parallel max).
+  // Event ID is scoped to this report so retries are idempotent.
+  await inngest.send({
+    id: `coaching-${reportId}`,
+    name: "coaching/report.requested",
+    data: { reportId, riotAccountId, matchIds, reportType, focusArea },
+  });
 
   return apiSuccess({ reportId, status: "pending" }, 202);
 });

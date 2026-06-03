@@ -14,7 +14,7 @@ const registerSchema = z.object({
 
 export async function POST(req: NextRequest) {
   const ip = getIp(req);
-  const rateCheck = checkRateLimit(`register:${ip}`, REGISTER_LIMIT);
+  const rateCheck = await checkRateLimit(`register:${ip}`, REGISTER_LIMIT);
   if (!rateCheck.allowed) return rateLimitResponse(rateCheck.retryAfterMs, rateCheck.limit);
 
   let body: unknown;
