@@ -3,7 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { LayoutDashboard, Gamepad2, LogOut, Zap, CreditCard } from "lucide-react";
+import {
+  LayoutDashboard,
+  Gamepad2,
+  LogOut,
+  Zap,
+  CreditCard,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
@@ -18,10 +26,12 @@ function NavItem({
   href,
   icon: Icon,
   label,
+  collapsed,
 }: {
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   label: string;
+  collapsed: boolean;
 }) {
   const pathname = usePathname();
   const active = pathname === href || pathname.startsWith(`${href}/`);
@@ -29,56 +39,106 @@ function NavItem({
   return (
     <Link
       href={href}
+      title={collapsed ? label : undefined}
       className={cn(
-        "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
+        "flex items-center rounded-md py-2 text-sm transition-colors",
+        collapsed ? "justify-center px-2" : "gap-3 px-3",
         active
           ? "bg-accent/10 font-medium text-accent"
           : "text-text-muted hover:bg-surface-2 hover:text-text"
       )}
     >
       <Icon className="h-4 w-4 shrink-0" />
-      {label}
+      {!collapsed && <span>{label}</span>}
     </Link>
   );
 }
 
-export function Sidebar() {
+interface SidebarProps {
+  collapsed: boolean;
+  onToggle: () => void;
+}
+
+export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { user } = useAuth();
   const displayName = user?.name ?? user?.email ?? "Player";
 
   return (
-    <aside className="sticky top-0 flex h-screen w-60 shrink-0 flex-col border-r border-border bg-surface">
+    <aside
+      className={cn(
+        "sticky top-0 hidden h-screen shrink-0 flex-col border-r border-border bg-surface transition-[width] duration-200 md:flex",
+        collapsed ? "w-16" : "w-60"
+      )}
+    >
       {/* Brand */}
-      <div className="flex h-14 items-center gap-2 border-b border-border px-4">
-        <Zap className="h-5 w-5 text-accent" />
-        <span className="font-display text-base font-bold text-text">LoL AI Coach</span>
+      <div
+        className={cn(
+          "flex h-14 items-center border-b border-border",
+          collapsed ? "justify-center px-2" : "gap-2 px-4"
+        )}
+      >
+        <Zap className="h-5 w-5 shrink-0 text-accent" />
+        {!collapsed && (
+          <span className="font-display text-base font-bold text-text">LoL AI Coach</span>
+        )}
       </div>
 
       {/* Nav */}
       <nav className="flex-1 space-y-0.5 p-2">
         {NAV.map((item) => (
-          <NavItem key={item.href} {...item} />
+          <NavItem key={item.href} {...item} collapsed={collapsed} />
         ))}
       </nav>
 
+      {/* Collapse toggle */}
+      <div
+        className={cn(
+          "border-t border-border p-2",
+          collapsed ? "flex justify-center" : ""
+        )}
+      >
+        <button
+          onClick={onToggle}
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          className="flex items-center rounded p-1.5 text-text-muted transition-colors hover:bg-surface-2 hover:text-text"
+        >
+          {collapsed ? (
+            <ChevronRight className="h-4 w-4" />
+          ) : (
+            <ChevronLeft className="h-4 w-4" />
+          )}
+        </button>
+      </div>
+
       {/* User */}
-      <div className="border-t border-border p-3">
-        <div className="flex items-center gap-2">
-          <Avatar name={displayName} size="sm" />
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-xs font-medium text-text">{displayName}</p>
-            {user?.email && user.name && (
-              <p className="truncate text-xs text-text-muted">{user.email}</p>
-            )}
+      <div
+        className={cn(
+          "border-t border-border p-3",
+          collapsed ? "flex justify-center" : ""
+        )}
+      >
+        {collapsed ? (
+          <div title={displayName}>
+            <Avatar name={displayName} size="sm" />
           </div>
-          <button
-            onClick={() => signOut({ callbackUrl: "/login" })}
-            title="Log out"
-            className="rounded p-1 text-text-muted transition-colors hover:text-danger"
-          >
-            <LogOut className="h-4 w-4" />
-          </button>
-        </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Avatar name={displayName} size="sm" />
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-xs font-medium text-text">{displayName}</p>
+              {user?.email && user.name && (
+                <p className="truncate text-xs text-text-muted">{user.email}</p>
+              )}
+            </div>
+            <button
+              onClick={() => signOut({ callbackUrl: "/login" })}
+              title="Log out"
+              className="rounded p-1 text-text-muted transition-colors hover:text-danger"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          </div>
+        )}
       </div>
     </aside>
   );

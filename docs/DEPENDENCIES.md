@@ -32,6 +32,19 @@ This document records every production and development dependency added after th
 
 ---
 
+### `zustand` (v5.x)
+
+**Added in:** TASK-012  
+**Purpose:** Client-only UI state management. Used exclusively for `sidebarCollapsed` and `activeRiotAccountId` — state that is ephemeral to the browser session and has no server-side representation.  
+**Why this, not alternatives:**
+- TanStack Query: architecture prohibits using React Query for non-server state.
+- `useState` + prop-drilling: sidebar collapsed state is needed across sibling components (Sidebar, AppShell) — Zustand avoids threading props.
+- Redux/Jotai: heavier; Zustand is the established pattern for this project (referenced in CLAUDE.md).
+
+**Scope:** Only `src/lib/stores/uiStore.ts`. No direct Zustand imports in UI components — only the store hook is imported.
+
+---
+
 ## Development Dependencies
 
 ### `vitest` (v4.x)
