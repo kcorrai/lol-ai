@@ -33,6 +33,7 @@ export interface CoachingReportDetail {
   }> | null;
   aiModelUsed: string | null;
   processingTimeMs: number | null;
+  userRating: number | null;
   createdAt: string;
   completedAt: string | null;
 }

@@ -6,6 +6,7 @@ import { ErrorState } from "@/components/ui/error-state";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { CoachingReportDetail } from "@/domains/coaching/components/CoachingReportDetail";
+import { ReportRating } from "@/domains/coaching/components/ReportRating";
 import { useCoachingReport } from "@/hooks/useCoachingReport";
 
 const REPORT_TYPE_LABEL: Record<string, string> = {
@@ -71,7 +72,12 @@ export default function ReportDetailPage() {
         />
       )}
 
-      {report.status === "complete" && <CoachingReportDetail report={report} />}
+      {report.status === "complete" && (
+        <>
+          <CoachingReportDetail report={report} />
+          <ReportRating reportId={report.id} currentRating={report.userRating} />
+        </>
+      )}
     </div>
   );
 }
