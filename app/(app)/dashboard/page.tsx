@@ -13,6 +13,7 @@ import { PerformanceTrendChart } from "@/domains/analysis/components/Performance
 import { RecentMatchList } from "@/domains/analysis/components/RecentMatchList";
 import { ReportList } from "@/domains/coaching/components/ReportList";
 import { RankedCard } from "@/domains/riot/components/RankedCard";
+import { TiltWidget } from "@/domains/analysis/components/TiltWidget";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 import { useCoachingReports } from "@/hooks/useCoachingReports";
@@ -108,6 +109,8 @@ export default function DashboardPage() {
       ) : (
         <>
           <RankedCard riotAccountId={primaryId} />
+
+          <TiltWidget riotAccountId={primaryId} />
 
           <section>
             <p className="mb-3 text-xs font-medium uppercase tracking-widest text-text-muted">
