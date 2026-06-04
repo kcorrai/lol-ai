@@ -145,6 +145,24 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
             recordedAt: new Date(),
           },
         });
+
+        // Fire rank change event when tier or division shifted (LP-only moves are skipped in the handler)
+        if (lastSnapshot) {
+          inngest
+            .send({
+              name: "rank/changed",
+              data: {
+                riotAccountId: account.id,
+                previousTier: lastSnapshot.tier,
+                previousDivision: lastSnapshot.division,
+                previousLp: lastSnapshot.lp,
+                newTier: tier,
+                newDivision: division,
+                newLp: entry.leaguePoints,
+              },
+            })
+            .catch((err) => logger.warn("[sync] Failed to fire rank/changed event", err));
+        }
       }
       rankedSnapshotted = true;
     } catch (err) {
