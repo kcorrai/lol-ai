@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Gamepad2, CreditCard } from "lucide-react";
+import { LayoutDashboard, Shield, MessageCircle, Gamepad2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/settings/accounts", icon: Gamepad2, label: "Accounts" },
-  { href: "/settings/billing", icon: CreditCard, label: "Billing" },
+  { href: "/dashboard",         icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/champions",         icon: Shield,          label: "Champions" },
+  { href: "/coaching/chat",     icon: MessageCircle,   label: "Chat" },
+  { href: "/settings/accounts", icon: Gamepad2,        label: "Accounts" },
 ] as const;
 
 export function BottomNav() {
