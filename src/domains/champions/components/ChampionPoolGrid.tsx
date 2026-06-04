@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { ChampionFocusButton } from "@/domains/champions/components/ChampionFocusButton";
 import { CounterPickCard } from "@/domains/champions/components/CounterPickCard";
 import type { ChampionPoolEntry } from "@/domains/champions/services/championStatsService";
@@ -37,21 +37,7 @@ function ChampionCard({
       )}
 
       <div className="flex items-center gap-3">
-        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-surface">
-          {entry.imageUrl ? (
-            <Image
-              src={entry.imageUrl}
-              alt={entry.championName}
-              width={48}
-              height={48}
-              className="object-cover"
-            />
-          ) : (
-            <div className="flex h-12 w-12 items-center justify-center text-lg font-bold text-text-muted">
-              {entry.championName[0]}
-            </div>
-          )}
-        </div>
+        <ChampionIcon name={entry.championName} size={48} className="shrink-0" />
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5">

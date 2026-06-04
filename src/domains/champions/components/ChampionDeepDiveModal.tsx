@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { X } from "lucide-react";
+import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { useChampionDeepDive } from "@/hooks/useChampionDeepDive";
 import type { DeathCluster } from "@/domains/analysis/types/analysis.types";
 
@@ -36,11 +36,7 @@ export function ChampionDeepDiveModal({ riotAccountId, championName, onClose }: 
         {/* Header */}
         <div className="sticky top-0 flex items-center justify-between border-b border-border bg-surface px-5 py-4">
           <div className="flex items-center gap-3">
-            {data?.imageUrl && (
-              <div className="h-10 w-10 overflow-hidden rounded-lg bg-surface-2">
-                <Image src={data.imageUrl} alt={championName} width={40} height={40} className="object-cover" />
-              </div>
-            )}
+            <ChampionIcon name={championName} size={40} />
             <div>
               <p className="font-display text-base font-semibold text-text">{championName}</p>
               {data && (
