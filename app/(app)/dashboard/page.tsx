@@ -38,6 +38,12 @@ export default function DashboardPage() {
     generateReport.mutate({ riotAccountId: primaryId, reportType: "session_review", matchIds });
   }
 
+  function handleClimbRoadmap() {
+    if (!primaryId || !profile) return;
+    const matchIds = profile.recentMatches.slice(0, 10).map((m) => m.matchDbId);
+    generateReport.mutate({ riotAccountId: primaryId, reportType: "climb_roadmap", matchIds });
+  }
+
   if (accountsLoading) return <PageSkeleton />;
 
   if (!accounts || accounts.length === 0) {
@@ -131,17 +137,28 @@ export default function DashboardPage() {
       )}
 
       <section>
-        <div className="mb-3 flex items-center justify-between">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <p className="text-xs font-medium uppercase tracking-widest text-text-muted">
             Coaching Reports
           </p>
-          <Button
-            size="sm"
-            onClick={handleGenerate}
-            disabled={generateReport.isPending || !profile || profileLoading}
-          >
-            {generateReport.isPending ? "Generating…" : "Generate Report"}
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={handleClimbRoadmap}
+              disabled={generateReport.isPending || !profile || profileLoading}
+              title="AI climb plan using your last 10 games"
+            >
+              {generateReport.isPending ? "Generating…" : "Climb Roadmap"}
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleGenerate}
+              disabled={generateReport.isPending || !profile || profileLoading}
+            >
+              {generateReport.isPending ? "Generating…" : "Session Review"}
+            </Button>
+          </div>
         </div>
         {generateReport.isError && (
           <p className="mb-2 text-xs text-danger">{generateReport.error.message}</p>

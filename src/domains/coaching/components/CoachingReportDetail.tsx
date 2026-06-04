@@ -104,6 +104,52 @@ function ActionItems({
   );
 }
 
+function ClimbRoadmapHeader({
+  rankPotential,
+  championRecs,
+}: {
+  rankPotential: string | null;
+  championRecs: NonNullable<CoachingReportDetail["championRecommendations"]> | null;
+}) {
+  return (
+    <div className="space-y-3">
+      {rankPotential && (
+        <div className="rounded-xl border border-accent/40 bg-accent/5 p-4 text-center">
+          <p className="text-xs font-medium uppercase tracking-widest text-accent">
+            Estimated Rank Potential
+          </p>
+          <p className="mt-1 font-display text-2xl font-bold text-accent">
+            {rankPotential}
+          </p>
+          <p className="mt-1 text-xs text-text-muted">
+            Based on your current performance trajectory
+          </p>
+        </div>
+      )}
+      {championRecs && championRecs.length > 0 && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base text-accent">Champions to Focus</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {championRecs.map((rec, i) => (
+              <div key={i} className="flex items-start gap-2">
+                <Badge variant={rec.priority === "high" ? "destructive" : "warning"} className="mt-0.5 shrink-0">
+                  {rec.priority}
+                </Badge>
+                <div>
+                  <p className="text-sm font-semibold text-text">{rec.championName}</p>
+                  <p className="text-xs text-text-muted">{rec.reason}</p>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
+
 // Overlay shown when detailed analysis is gated behind Pro
 function ProInsightsGate() {
   return (
@@ -141,8 +187,18 @@ interface Props {
 }
 
 export function CoachingReportDetail({ report, isPro }: Props) {
+  const isClimbRoadmap = report.reportType === "climb_roadmap";
+
   return (
     <div className="space-y-4">
+      {/* Climb Roadmap: rank potential + champion recs shown to all plans */}
+      {isClimbRoadmap && (
+        <ClimbRoadmapHeader
+          rankPotential={report.estimatedRankPotential}
+          championRecs={report.championRecommendations}
+        />
+      )}
+
       {/* Summary — visible to all plans */}
       {report.summary && (
         <Card>
@@ -182,15 +238,6 @@ export function CoachingReportDetail({ report, isPro }: Props) {
 
           {report.actionItems && report.actionItems.length > 0 && (
             <ActionItems items={report.actionItems} />
-          )}
-
-          {report.estimatedRankPotential && (
-            <p className="text-center text-sm text-text-muted">
-              Estimated rank potential:{" "}
-              <span className="font-semibold text-accent">
-                {report.estimatedRankPotential}
-              </span>
-            </p>
           )}
         </>
       ) : (
