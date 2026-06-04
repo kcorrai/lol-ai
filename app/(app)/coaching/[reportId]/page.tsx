@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { CoachingReportDetail } from "@/domains/coaching/components/CoachingReportDetail";
 import { ReportRating } from "@/domains/coaching/components/ReportRating";
+import { ShareReportButton } from "@/domains/coaching/components/ShareReportButton";
 import { useCoachingReport } from "@/hooks/useCoachingReport";
 import { useSubscription } from "@/hooks/useSubscription";
 
@@ -81,6 +82,7 @@ export default function ReportDetailPage() {
       {report.status === "complete" && (
         <>
           <CoachingReportDetail report={report} isPro={isPro} />
+          <ShareReportButton reportId={report.id} />
           <ReportRating reportId={report.id} currentRating={report.userRating} />
         </>
       )}

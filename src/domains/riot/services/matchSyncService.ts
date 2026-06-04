@@ -9,6 +9,7 @@ import {
 } from "@/domains/riot/services/riotApiClient";
 import { mapMatch } from "@/domains/riot/mappers/matchMapper";
 import { getLastRankedSnapshot } from "@/domains/riot/services/rankedService";
+import { refreshChampionStats } from "@/domains/champions/services/championCacheService";
 import type { RankTier, RankDivision } from "@prisma/client";
 
 export type SyncResult = {
@@ -157,6 +158,11 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   });
 
   await invalidateAccountCache(account.puuid, account.summonerId ?? "", account.region);
+
+  // Refresh pre-computed champion stats cache (non-blocking — failure doesn't abort sync)
+  refreshChampionStats(account.id).catch((err) =>
+    logger.warn("[sync] Champion cache refresh failed", err)
+  );
 
   logger.info(
     `[sync] Done: +${newCount} new, ${skipped} skipped, ${errors.length} errors, ranked=${rankedSnapshotted}`

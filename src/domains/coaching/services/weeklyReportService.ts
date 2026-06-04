@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { getEmailClient, EMAIL_FROM } from "@/lib/email/client";
 import { logger } from "@/lib/utils/logger";
+import { computeRetentionSignals, NUDGE_MESSAGES } from "@/domains/analysis/services/retentionService";
 
 interface WeeklyStats {
   gamesPlayed: number;
@@ -9,6 +10,7 @@ interface WeeklyStats {
   csMinChange: number | null; // null if < 2 weeks of data
   biggestWeakness: string | null;
   topChampion: string | null;
+  smartNudge: string | null;   // deterministic behavioral insight
   isPro: boolean;
   gameName: string;
   appUrl: string;
@@ -133,6 +135,10 @@ async function buildWeeklyStats(
     championRecs?.[0]?.championName ??
     null;
 
+  // Behavioral signals for deterministic nudge (no AI call)
+  const signals = await computeRetentionSignals(riotAccountId);
+  const smartNudge = signals.primaryNudge ? NUDGE_MESSAGES[signals.primaryNudge] ?? null : null;
+
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
 
   return {
@@ -142,6 +148,7 @@ async function buildWeeklyStats(
     csMinChange,
     biggestWeakness,
     topChampion,
+    smartNudge,
     isPro,
     gameName: account.gameName,
     appUrl,
@@ -149,7 +156,7 @@ async function buildWeeklyStats(
 }
 
 function renderEmail(stats: WeeklyStats): { subject: string; html: string } {
-  const { gamesPlayed, wins, lpChange, csMinChange, biggestWeakness, topChampion, isPro, gameName, appUrl } = stats;
+  const { gamesPlayed, wins, lpChange, csMinChange, biggestWeakness, topChampion, smartNudge, isPro, gameName, appUrl } = stats;
   const losses = gamesPlayed - wins;
   const winRate = Math.round((wins / gamesPlayed) * 100);
 
@@ -162,6 +169,17 @@ function renderEmail(stats: WeeklyStats): { subject: string; html: string } {
     csMinChange !== null
       ? `${csMinChange >= 0 ? "+" : ""}${csMinChange} CS/min vs last week`
       : "Not enough data for comparison";
+
+  // Smart nudge — shown to all tiers (deterministic, no AI)
+  const nudgeSection = smartNudge
+    ? `
+    <tr><td style="padding:0 0 16px">
+      <div style="background:#E6394615;border:1px solid #E6394640;border-radius:8px;padding:12px 16px">
+        <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#E63946">Coach Nudge</p>
+        <p style="margin:0;font-size:12px;color:#E8F0FF">${smartNudge}</p>
+      </div>
+    </td></tr>`
+    : "";
 
   const proSection = isPro
     ? `
@@ -225,6 +243,8 @@ function renderEmail(stats: WeeklyStats): { subject: string; html: string } {
             <tr><td style="padding:0 0 16px">
               <p style="margin:0;font-size:12px;color:#8899BB">CS/min: <span style="color:#E8F0FF">${csText}</span></p>
             </td></tr>
+
+            ${nudgeSection}
 
             ${proSection}
 

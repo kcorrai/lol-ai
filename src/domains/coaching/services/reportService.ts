@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto";
 import { prisma } from "@/lib/db/prisma";
 import { Errors } from "@/lib/api/errors";
 import type { ReportType } from "@prisma/client";
@@ -81,6 +82,113 @@ export async function listReports(
     createdAt: r.createdAt,
     completedAt: r.completedAt,
   }));
+}
+
+// ── Share token ──────────────────────────────────────────────────────────────
+
+export type PublicReport = {
+  reportId: string;
+  reportType: ReportType;
+  summary: string | null;
+  coachPersonaResponse: string | null;
+  firstActionItem: { action: string; expectedImpact: string } | null;
+  gameName: string;
+  tagLine: string;
+  region: string;
+  rankDisplay: string | null;
+  topChampionName: string | null;
+  completedAt: Date | null;
+};
+
+export async function generateShareToken(
+  reportId: string,
+  userId: string
+): Promise<string> {
+  const report = await prisma.coachingReport.findFirst({
+    where: { id: reportId, riotAccount: { userId }, status: "complete" },
+    select: { id: true, shareToken: true },
+  });
+  if (!report) throw Errors.notFound("Coaching report");
+  if (report.shareToken) return report.shareToken;
+
+  const token = randomBytes(16).toString("hex");
+
+  // Atomically set token only if still null — prevents race condition where two
+  // concurrent requests both read null, generate different tokens, and the second
+  // write silently overwrites the first, breaking already-distributed share links.
+  const updated = await prisma.coachingReport.updateMany({
+    where: { id: reportId, shareToken: null },
+    data: { shareToken: token },
+  });
+
+  if (updated.count === 0) {
+    const refreshed = await prisma.coachingReport.findUnique({
+      where: { id: reportId },
+      select: { shareToken: true },
+    });
+    return refreshed!.shareToken!;
+  }
+
+  return token;
+}
+
+export async function getPublicReport(shareToken: string): Promise<PublicReport> {
+  if (!shareToken || shareToken.length < 8) throw Errors.notFound("Shared report");
+
+  const report = await prisma.coachingReport.findUnique({
+    where: { shareToken },
+    select: {
+      id: true,
+      reportType: true,
+      summary: true,
+      coachPersonaResponse: true,
+      actionItems: true,
+      championRecommendations: true,
+      completedAt: true,
+      shareToken: true,
+      riotAccount: {
+        select: {
+          gameName: true,
+          tagLine: true,
+          region: true,
+          rankedHistory: {
+            where: { queueType: "RANKED_SOLO_5x5" },
+            orderBy: { recordedAt: "desc" },
+            take: 1,
+            select: { tier: true, division: true },
+          },
+        },
+      },
+    },
+  });
+  if (!report || !report.shareToken) throw Errors.notFound("Shared report");
+
+  const items = report.actionItems as Array<{ action: string; expectedImpact: string }> | null;
+  const champRecs = report.championRecommendations as Array<{ championName: string; priority: string }> | null;
+  const latestRank = report.riotAccount.rankedHistory[0];
+
+  const rankDisplay = latestRank
+    ? `${latestRank.tier.charAt(0).toUpperCase() + latestRank.tier.slice(1).toLowerCase()} ${latestRank.division}`
+    : null;
+
+  const topChampionName =
+    champRecs?.find((c) => c.priority === "high")?.championName ??
+    champRecs?.[0]?.championName ??
+    null;
+
+  return {
+    reportId: report.id,
+    reportType: report.reportType,
+    summary: report.summary,
+    coachPersonaResponse: report.coachPersonaResponse,
+    firstActionItem: items?.[0] ?? null,
+    gameName: report.riotAccount.gameName,
+    tagLine: report.riotAccount.tagLine,
+    region: report.riotAccount.region,
+    rankDisplay,
+    topChampionName,
+    completedAt: report.completedAt,
+  };
 }
 
 export async function submitRating(

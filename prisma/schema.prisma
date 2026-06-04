@@ -413,6 +413,7 @@ model CoachingReport {
   userFeedback           String?      @db.Text
   aiModelUsed            String?
   processingTimeMs       Int?
+  shareToken             String?      @unique
   createdAt              DateTime     @default(now())
   completedAt            DateTime?
 
