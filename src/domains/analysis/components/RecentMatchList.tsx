@@ -17,7 +17,7 @@ interface Props {
 
 const ROLES = ["TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"] as const;
 const ROLE_SHORT: Record<string, string> = {
-  TOP: "Top", JUNGLE: "Jgl", MIDDLE: "Mid", BOTTOM: "Bot", UTILITY: "Sup",
+  TOP: "Top", JUNGLE: "Jungle", MIDDLE: "Mid", BOTTOM: "ADC", UTILITY: "Support",
 };
 
 function timeAgo(iso: string): string {
@@ -47,7 +47,7 @@ function RoleFilterBtn({
         <Image src={roleIconUrl(role)} alt={role} width={18} height={18}
           onError={() => setErrored(true)} unoptimized />
       ) : (
-        <span className="text-[10px] font-bold text-text-muted">{role[0]}</span>
+        <span className="text-[10px] font-bold text-text-muted">{ROLE_SHORT[role]}</span>
       )}
     </button>
   );
