@@ -8,12 +8,12 @@ import { profileIconUrl } from "@/lib/ddragon";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { PerformanceSummaryCards } from "@/domains/analysis/components/PerformanceSummaryCards";
 import { PerformanceTrendChart } from "@/domains/analysis/components/PerformanceTrendChart";
 import { RecentMatchList } from "@/domains/analysis/components/RecentMatchList";
 import { ReportList } from "@/domains/coaching/components/ReportList";
+import { CoachingActionsCard } from "@/domains/coaching/components/CoachingActionsCard";
 import { RankedCard } from "@/domains/riot/components/RankedCard";
 import { RankUpWidget } from "@/domains/riot/components/RankUpWidget";
 import { TiltWidget } from "@/domains/analysis/components/TiltWidget";
@@ -81,52 +81,64 @@ export default function DashboardPage() {
 
   const isPro = sub?.plan === "pro" || sub?.plan === "elite";
 
-  const headerAction = (
-    <div className="flex items-center gap-2">
-      <Badge variant={isPro ? "success" : "secondary"}>{isPro ? "Pro" : "Free"}</Badge>
-      {accounts.length > 1 && (
-        <select
-          className="rounded-md border border-border bg-surface px-2 py-1.5 text-sm text-text"
-          value={primaryId ?? ""}
-          onChange={(e) => setSelectedAccountId(e.target.value)}
-        >
-          {accounts.map((a) => (
-            <option key={a.id} value={a.id}>{a.gameName}#{a.tagLine}</option>
-          ))}
-        </select>
-      )}
-      <Link href="/coaching/chat">
-        <Button size="sm" className="gap-1.5">
-          <MessageCircle className="h-4 w-4" />
-          Ask Your Coach
-        </Button>
-      </Link>
-    </div>
-  );
-
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6">
       <TiltBreakModal riotAccountId={primaryId} />
 
-      <PageHeader
-        title="Dashboard"
-        subtitle={primaryAccount ? (
-          <span className="inline-flex items-center gap-1.5">
-            <Image
-              src={profileIconUrl(primaryAccount.profileIconId)}
-              alt={primaryAccount.gameName}
-              width={20}
-              height={20}
-              unoptimized
-              className="rounded-full"
-            />
-            {primaryAccount.gameName}#{primaryAccount.tagLine}
-            {" · "}{primaryAccount.region.toUpperCase()}
-            {" · "}Lv.{primaryAccount.summonerLevel}
-          </span>
-        ) : undefined}
-        action={headerAction}
-      />
+      {/* ── Player Header ──────────────────────────────────────────────── */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          {primaryAccount && (
+            <div className="relative shrink-0">
+              <Image
+                src={profileIconUrl(primaryAccount.profileIconId)}
+                alt={primaryAccount.gameName}
+                width={72}
+                height={72}
+                unoptimized
+                className="rounded-full border-2 border-border"
+              />
+              <span className="absolute -bottom-1 -right-1 rounded-full bg-surface px-1.5 py-0.5 text-[10px] font-bold text-text-muted ring-1 ring-border">
+                {primaryAccount.summonerLevel}
+              </span>
+            </div>
+          )}
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="font-display text-2xl font-bold text-text">
+                {primaryAccount
+                  ? <>{primaryAccount.gameName}<span className="text-text-muted">#{primaryAccount.tagLine}</span></>
+                  : "Dashboard"}
+              </h1>
+              <Badge variant={isPro ? "success" : "secondary"} className="text-xs">
+                {isPro ? "Pro" : "Free"}
+              </Badge>
+            </div>
+            {primaryAccount && (
+              <p className="text-sm text-text-muted">
+                {primaryAccount.region.toUpperCase()}
+                {accounts.length > 1 && (
+                  <select
+                    className="ml-2 rounded border border-border bg-surface px-1.5 py-0.5 text-xs text-text"
+                    value={primaryId ?? ""}
+                    onChange={(e) => setSelectedAccountId(e.target.value)}
+                  >
+                    {accounts.map((a) => (
+                      <option key={a.id} value={a.id}>{a.gameName}#{a.tagLine}</option>
+                    ))}
+                  </select>
+                )}
+              </p>
+            )}
+          </div>
+        </div>
+        <Link href="/coaching/chat">
+          <Button size="sm" className="gap-1.5">
+            <MessageCircle className="h-4 w-4" />
+            Ask Your Coach
+          </Button>
+        </Link>
+      </div>
 
       {profileError ? (
         <EmptyState
@@ -139,6 +151,20 @@ export default function DashboardPage() {
           {/* ── Top summary ────────────────────────────────────────────── */}
           <PerformanceSummaryCards profile={profile} isLoading={profileLoading} />
 
+          {/* ── AI Coaching Actions ────────────────────────────────────── */}
+          <div>
+            <SectionLabel>Generate AI Report</SectionLabel>
+            <CoachingActionsCard
+              onSessionReview={handleGenerate}
+              onClimbRoadmap={handleClimbRoadmap}
+              isPending={generateReport.isPending}
+              isDisabled={!profile || profileLoading}
+            />
+            {generateReport.isError && (
+              <p className="mt-2 text-xs text-danger">{generateReport.error.message}</p>
+            )}
+          </div>
+
           {/* ── Today's Brief ──────────────────────────────────────────── */}
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             <TodaysFocusCard riotAccountId={primaryId} />
@@ -147,8 +173,6 @@ export default function DashboardPage() {
 
           {/* ── Main 2-column layout ───────────────────────────────────── */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-
-            {/* Left column — rank, champions, roles, mental */}
             <div className="space-y-4 lg:col-span-2">
               <div>
                 <SectionLabel>Ranked</SectionLabel>
@@ -157,17 +181,14 @@ export default function DashboardPage() {
                   <RankUpWidget riotAccountId={primaryId} />
                 </div>
               </div>
-
               <div>
                 <SectionLabel>Top Champions</SectionLabel>
                 <TopChampionsWidget matches={profile?.recentMatches} isLoading={profileLoading} />
               </div>
-
               <div>
                 <SectionLabel>Roles</SectionLabel>
                 <RoleDistributionWidget matches={profile?.recentMatches} isLoading={profileLoading} />
               </div>
-
               <div>
                 <SectionLabel>Mental State</SectionLabel>
                 <div className="space-y-3">
@@ -176,8 +197,6 @@ export default function DashboardPage() {
                 </div>
               </div>
             </div>
-
-            {/* Right column — matches & trends */}
             <div className="space-y-4 lg:col-span-3">
               <LastGameInsightCard match={profile?.recentMatches[0]} isLoading={profileLoading} />
               <ImprovementPlanWidget riotAccountId={primaryId} />
@@ -186,7 +205,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* ── Recent Matches — full width ────────────────────────────── */}
+          {/* ── Recent Matches ─────────────────────────────────────────── */}
           <section>
             <SectionLabel>Recent Matches</SectionLabel>
             <RecentMatchList matches={profile?.recentMatches} isLoading={profileLoading} />
@@ -196,22 +215,7 @@ export default function DashboardPage() {
 
       {/* ── Coaching Reports ────────────────────────────────────────── */}
       <section>
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-          <SectionLabel>Coaching Reports</SectionLabel>
-          <div className="flex gap-2">
-            <Button size="sm" variant="secondary" onClick={handleClimbRoadmap}
-              disabled={generateReport.isPending || !profile || profileLoading}>
-              {generateReport.isPending ? "Generating…" : "Climb Roadmap"}
-            </Button>
-            <Button size="sm" onClick={handleGenerate}
-              disabled={generateReport.isPending || !profile || profileLoading}>
-              {generateReport.isPending ? "Generating…" : "Session Review"}
-            </Button>
-          </div>
-        </div>
-        {generateReport.isError && (
-          <p className="mb-2 text-xs text-danger">{generateReport.error.message}</p>
-        )}
+        <SectionLabel>Coaching Reports</SectionLabel>
         <ReportList reports={reports} isLoading={reportsLoading} />
       </section>
     </div>
