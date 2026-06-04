@@ -7,6 +7,7 @@ import {
   getMatchIds,
   getMatch,
   getRankedEntries,
+  getSummonerByPuuid,
 } from "@/domains/riot/services/riotApiClient";
 import { mapMatch } from "@/domains/riot/mappers/matchMapper";
 import { getLastRankedSnapshot } from "@/domains/riot/services/rankedService";
@@ -45,7 +46,7 @@ const RANK_DIVISIONS: Record<string, RankDivision> = {
 const APEX_TIERS = new Set(["MASTER", "GRANDMASTER", "CHALLENGER"]);
 
 export async function syncAccount(riotAccountId: string, force = false): Promise<SyncResult> {
-  const account = await prisma.riotAccount.findUnique({
+  let account = await prisma.riotAccount.findUnique({
     where: { id: riotAccountId },
   });
   if (!account) throw Errors.notFound("Riot account");
@@ -107,6 +108,26 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   }
 
   // ── Ranked snapshot ────────────────────────────────────────────────────────
+  // Auto-repair summonerId if it was missing (e.g. accounts connected before this field was added)
+  if (!account.summonerId) {
+    try {
+      const summoner = await getSummonerByPuuid(account.puuid, account.region);
+      await prisma.riotAccount.update({
+        where: { id: account.id },
+        data: {
+          summonerId: summoner.id,
+          accountId: summoner.accountId,
+          summonerLevel: summoner.summonerLevel,
+          profileIconId: summoner.profileIconId,
+        },
+      });
+      account = { ...account, summonerId: summoner.id };
+      logger.info(`[sync] Auto-repaired summonerId for ${account.gameName}#${account.tagLine}`);
+    } catch (err) {
+      logger.warn("[sync] Failed to auto-repair summonerId", err);
+    }
+  }
+
   let rankedSnapshotted = false;
   if (!account.summonerId) {
     const msg = "Ranked data unavailable — summonerId missing. Reconnect your account.";
