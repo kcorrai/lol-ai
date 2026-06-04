@@ -9,11 +9,16 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const cronSecret = process.env.CRON_SECRET;
 
-  if (cronSecret) {
-    const authHeader = req.headers.get("authorization");
-    if (authHeader !== `Bearer ${cronSecret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  // CRON_SECRET must be set — a missing secret is a misconfiguration, not a
+  // reason to allow unauthenticated access to a mass email trigger.
+  if (!cronSecret) {
+    logger.error("[cron] CRON_SECRET env var is not set — refusing to execute");
+    return NextResponse.json({ error: "Cron is not configured" }, { status: 500 });
+  }
+
+  const authHeader = req.headers.get("authorization");
+  if (authHeader !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   logger.info("[cron] weekly-report: starting");
