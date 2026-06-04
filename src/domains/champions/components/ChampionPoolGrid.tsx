@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChampionFocusButton } from "@/domains/champions/components/ChampionFocusButton";
+import { CounterPickCard } from "@/domains/champions/components/CounterPickCard";
 import type { ChampionPoolEntry } from "@/domains/champions/services/championStatsService";
 
 function winRateVariant(wr: number): "success" | "warning" | "destructive" {
@@ -64,7 +65,10 @@ function ChampionCard({ entry, riotAccountId }: { entry: ChampionPoolEntry; riot
         </div>
       </div>
       {riotAccountId && (
-        <ChampionFocusButton riotAccountId={riotAccountId} championName={entry.championName} />
+        <>
+          <ChampionFocusButton riotAccountId={riotAccountId} championName={entry.championName} />
+          <CounterPickCard riotAccountId={riotAccountId} championName={entry.championName} />
+        </>
       )}
     </div>
   );
