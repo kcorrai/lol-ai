@@ -6,6 +6,19 @@ This document records every production and development dependency added after th
 
 ## Production Dependencies
 
+### `@react-pdf/renderer` (v4.x)
+
+**Added in:** TASK-028
+**Purpose:** Server-side PDF generation for coaching report export. Renders React component trees to PDF buffers in a Next.js API route — no headless browser required.
+**Why this, not alternatives:**
+- Puppeteer: requires Chromium binary (~300MB), incompatible with Vercel serverless limits.
+- jsPDF + html2canvas: client-side DOM screenshot → rasterized, low quality output.
+- pdfmake: no React component model, more verbose document definition.
+
+**Scope:** Used exclusively in `src/domains/coaching/pdf/` and `app/api/coaching/reports/[reportId]/pdf/route.ts`.
+
+---
+
 ### `@tanstack/react-query` (v5.x)
 
 **Added in:** TASK-006  

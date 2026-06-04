@@ -82,7 +82,16 @@ export default function ReportDetailPage() {
       {report.status === "complete" && (
         <>
           <CoachingReportDetail report={report} isPro={isPro} />
-          <ShareReportButton reportId={report.id} />
+          <div className="mt-4 flex flex-wrap gap-3">
+            <a
+              href={`/api/coaching/reports/${report.id}/pdf`}
+              download
+              className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-text-muted hover:border-accent/50 hover:text-text transition-colors"
+            >
+              ↓ Download PDF
+            </a>
+            <ShareReportButton reportId={report.id} />
+          </div>
           <ReportRating reportId={report.id} currentRating={report.userRating} />
         </>
       )}
