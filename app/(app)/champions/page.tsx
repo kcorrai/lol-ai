@@ -69,7 +69,7 @@ export default function ChampionsPage() {
         )}
       </p>
 
-      <ChampionPoolGrid entries={visiblePool} isLoading={poolLoading} />
+      <ChampionPoolGrid entries={visiblePool} isLoading={poolLoading} riotAccountId={primaryId ?? undefined} />
 
       {/* Viral CTA — share best champion (visible to all, Pro or Free) */}
       {best && !poolLoading && (

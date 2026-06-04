@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ChampionFocusButton } from "@/domains/champions/components/ChampionFocusButton";
 import type { ChampionPoolEntry } from "@/domains/champions/services/championStatsService";
 
 function winRateVariant(wr: number): "success" | "warning" | "destructive" {
@@ -11,7 +12,7 @@ function winRateVariant(wr: number): "success" | "warning" | "destructive" {
   return "destructive";
 }
 
-function ChampionCard({ entry }: { entry: ChampionPoolEntry }) {
+function ChampionCard({ entry, riotAccountId }: { entry: ChampionPoolEntry; riotAccountId?: string }) {
   return (
     <div
       className={`relative rounded-lg border bg-surface-2 p-4 transition-colors ${
@@ -62,6 +63,9 @@ function ChampionCard({ entry }: { entry: ChampionPoolEntry }) {
           </div>
         </div>
       </div>
+      {riotAccountId && (
+        <ChampionFocusButton riotAccountId={riotAccountId} championName={entry.championName} />
+      )}
     </div>
   );
 }
@@ -83,9 +87,10 @@ function SkeletonCard() {
 interface Props {
   entries: ChampionPoolEntry[];
   isLoading: boolean;
+  riotAccountId?: string;
 }
 
-export function ChampionPoolGrid({ entries, isLoading }: Props) {
+export function ChampionPoolGrid({ entries, isLoading, riotAccountId }: Props) {
   if (isLoading) {
     return (
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -110,7 +115,7 @@ export function ChampionPoolGrid({ entries, isLoading }: Props) {
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {entries.map((entry) => (
-        <ChampionCard key={entry.championId} entry={entry} />
+        <ChampionCard key={entry.championId} entry={entry} riotAccountId={riotAccountId} />
       ))}
     </div>
   );
