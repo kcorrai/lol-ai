@@ -124,7 +124,9 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
       account = { ...account, summonerId: summoner.id };
       logger.info(`[sync] Auto-repaired summonerId for ${account.gameName}#${account.tagLine}`);
     } catch (err) {
-      logger.warn("[sync] Failed to auto-repair summonerId", err);
+      const repairErr = err instanceof Error ? err.message : String(err);
+      logger.warn(`[sync] Failed to auto-repair summonerId: ${repairErr}`);
+      errors.push(`summonerId repair failed: ${repairErr}`);
     }
   }
 
