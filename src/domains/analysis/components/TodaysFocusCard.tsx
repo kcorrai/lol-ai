@@ -18,7 +18,7 @@ export function TodaysFocusCard({ riotAccountId }: TodaysFocusCardProps) {
   return (
     <div className="rounded-xl border border-accent/30 bg-accent/5 p-4">
       <p className="mb-1 text-xs font-medium uppercase tracking-widest text-accent">
-        Today's Focus
+        Today&apos;s Focus
       </p>
       <p className="mb-2 text-sm font-semibold text-text">{focus.action}</p>
       <p className="mb-3 text-xs text-text-muted">{focus.howTo}</p>

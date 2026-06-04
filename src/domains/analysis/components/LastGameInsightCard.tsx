@@ -20,12 +20,6 @@ const SENTIMENT_ICON = {
   negative: "✦",
 } as const;
 
-function timeAgo(matchId: string): string {
-  // matchId is used as a stable key; actual time isn't stored in MatchPerformance.
-  // Return a stable label — real time-ago requires gameStart which lives in match DB.
-  return "Last game";
-}
-
 export function LastGameInsightCard({ match, isLoading }: LastGameInsightCardProps) {
   if (isLoading) {
     return <div className="h-24 animate-pulse rounded-xl border border-border bg-surface" />;

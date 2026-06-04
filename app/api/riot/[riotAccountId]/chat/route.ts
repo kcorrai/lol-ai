@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
-import { Errors } from "@/lib/api/errors";
 import { assertOwnsRiotAccount } from "@/lib/auth/authorization";
 import { getAiClient } from "@/lib/ai/client";
 import { buildChatSystemPrompt } from "@/lib/ai/chatSystemPrompt";

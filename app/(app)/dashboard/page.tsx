@@ -121,7 +121,7 @@ export default function DashboardPage() {
         <>
           {/* ── Today's Brief ──────────────────────────────────────── */}
           <section>
-            <SectionLabel>Today's Brief</SectionLabel>
+            <SectionLabel>Today&apos;s Brief</SectionLabel>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
               <TodaysFocusCard riotAccountId={primaryId} />
               <SessionReadinessWidget riotAccountId={primaryId} />
