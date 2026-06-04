@@ -33,6 +33,7 @@ export interface MatchPerformance {
   goldPerMinute: number;
   damageShare: number;
   notableEvents: string[];
+  itemIds: number[];
 }
 
 export type RankUpLevel = "high" | "moderate" | "low";

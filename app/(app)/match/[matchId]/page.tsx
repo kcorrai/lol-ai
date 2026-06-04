@@ -10,6 +10,7 @@ import { ErrorState } from "@/components/ui/error-state";
 import { useMatchDetail } from "@/hooks/useMatchDetail";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { ItemIcon } from "@/components/ui/ItemIcon";
+import { SummonerSpellIcon } from "@/components/ui/SummonerSpellIcon";
 import type { ParticipantDetail, AiInsight, MatchDetail } from "@/domains/match";
 
 function fmt(n: number, decimals = 1): string {
@@ -27,6 +28,7 @@ function TeamTable({
 }) {
   const team = participants.filter((p) => p.teamId === teamId);
   const won = team[0]?.won;
+  const maxDamage = Math.max(...team.map((p) => p.damageDealt), 1);
 
   return (
     <div>
@@ -56,6 +58,10 @@ function TeamTable({
                 >
                   <td className="px-3 py-2">
                     <div className="flex items-center gap-1.5">
+                      <div className="flex shrink-0 flex-col gap-0.5">
+                        <SummonerSpellIcon spellId={p.summonerSpell1} size={16} />
+                        <SummonerSpellIcon spellId={p.summonerSpell2} size={16} />
+                      </div>
                       <ChampionIcon name={p.championName} size={24} className="shrink-0" />
                       <span className="text-text">{p.championName}</span>
                       <span className="text-text-muted">{p.position}</span>
@@ -67,7 +73,17 @@ function TeamTable({
                   </td>
                   <td className="px-3 py-2 text-center">{p.cs}</td>
                   <td className="px-3 py-2 text-center">{fmt(p.goldEarned / 1000)}k</td>
-                  <td className="px-3 py-2 text-center">{fmt(p.damageDealt / 1000)}k</td>
+                  <td className="px-3 py-2">
+                    <div className="flex flex-col items-end gap-0.5">
+                      <span>{fmt(p.damageDealt / 1000)}k</span>
+                      <div className="h-1 w-20 overflow-hidden rounded-full bg-surface-2">
+                        <div
+                          className="h-full rounded-full bg-danger/60"
+                          style={{ width: `${(p.damageDealt / maxDamage) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  </td>
                   <td className="px-3 py-2 text-center">{p.visionScore}</td>
                   <td className="px-3 py-2">
                     <div className="flex gap-0.5">

@@ -28,6 +28,8 @@ export type ParticipantDetail = {
   damageShare: number;
   killParticipation: number;
   itemIds: number[];
+  summonerSpell1: number;
+  summonerSpell2: number;
 };
 
 export type AiInsight = {
@@ -107,6 +109,8 @@ export async function getMatchDetail(
       damageShare: computeDamageShare(p.damageDealt, team.damage),
       killParticipation: computeKillParticipation(p.kills, p.assists, team.kills),
       itemIds: p.itemIds,
+      summonerSpell1: p.summonerSpell1,
+      summonerSpell2: p.summonerSpell2,
     };
   });
 

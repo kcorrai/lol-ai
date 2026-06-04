@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
+import { ItemIcon } from "@/components/ui/ItemIcon";
 import type { MatchPerformance } from "@/domains/analysis/types/analysis.types";
 
 interface Props {
@@ -26,17 +27,26 @@ function MatchRow({ match }: { match: MatchPerformance }) {
         <p className="text-sm font-medium text-text">{match.champion}</p>
         <p className="text-xs text-text-muted">{match.position}</p>
       </div>
-      <div className="flex flex-1 gap-4 text-xs text-text-muted">
-        <span>
-          <span className="font-medium text-text">{match.kills}</span>/
-          <span className="text-danger">{match.deaths}</span>/
-          <span className="font-medium text-text">{match.assists}</span>
-          <span className="ml-1 text-text-muted">({kda})</span>
-        </span>
-        <span>{match.csPerMinute.toFixed(1)} CS/min</span>
-        <span>{match.gameDurationMinutes} min</span>
+      <div className="flex flex-1 flex-col gap-1">
+        <div className="flex gap-4 text-xs text-text-muted">
+          <span>
+            <span className="font-medium text-text">{match.kills}</span>/
+            <span className="text-danger">{match.deaths}</span>/
+            <span className="font-medium text-text">{match.assists}</span>
+            <span className="ml-1 text-text-muted">({kda})</span>
+          </span>
+          <span>{match.csPerMinute.toFixed(1)} CS/min</span>
+          <span>{match.gameDurationMinutes} min</span>
+        </div>
+        {match.itemIds?.length > 0 && (
+          <div className="flex gap-0.5">
+            {match.itemIds.slice(0, 6).map((id, i) => (
+              <ItemIcon key={i} itemId={id} size={20} />
+            ))}
+          </div>
+        )}
       </div>
-      <Badge variant={match.won ? "success" : "destructive"} className="text-xs">
+      <Badge variant={match.won ? "success" : "destructive"} className="shrink-0 text-xs">
         {match.won ? "W" : "L"}
       </Badge>
     </Link>

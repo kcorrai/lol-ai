@@ -26,3 +26,25 @@ export function itemIconUrl(itemId: number): string {
 export function rankEmblemUrl(tier: string): string {
   return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-mini-crests/${tier.toLowerCase()}.png`;
 }
+
+const SUMMONER_SPELL_NAMES: Record<number, string> = {
+  1: "SummonerBoost",
+  3: "SummonerExhaust",
+  4: "SummonerFlash",
+  6: "SummonerHaste",
+  7: "SummonerHeal",
+  11: "SummonerSmite",
+  12: "SummonerTeleport",
+  13: "SummonerMana",
+  14: "SummonerDot",
+  21: "SummonerBarrier",
+  30: "SummonerPoroRecall",
+  32: "SummonerSnowball",
+  39: "SummonerCherry",
+};
+
+export function summonerSpellUrl(spellId: number): string {
+  const name = SUMMONER_SPELL_NAMES[spellId];
+  if (!name) return "";
+  return `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/img/spell/${name}.png`;
+}

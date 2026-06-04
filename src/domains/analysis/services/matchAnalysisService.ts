@@ -66,6 +66,7 @@ export async function getPlayerPerformanceProfile(
         p.kills, p.deaths, Number(p.csPerMinute),
         p.visionScore, p.firstBlood, p.position, p.won, teamKills
       ),
+      itemIds: p.itemIds,
     });
   }
 
