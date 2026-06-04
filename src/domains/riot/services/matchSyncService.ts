@@ -40,6 +40,10 @@ const RANK_DIVISIONS: Record<string, RankDivision> = {
   IV: "IV",
 };
 
+// Apex tiers (Master/GM/Challenger) have no division subdivision in Riot's API —
+// the rank field is returned as "" but logically maps to "I".
+const APEX_TIERS = new Set(["MASTER", "GRANDMASTER", "CHALLENGER"]);
+
 export async function syncAccount(riotAccountId: string, force = false): Promise<SyncResult> {
   const account = await prisma.riotAccount.findUnique({
     where: { id: riotAccountId },
@@ -111,7 +115,8 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
       const entries = await getRankedEntries(account.summonerId, account.region);
       for (const entry of entries) {
         const tier = RANK_TIERS[entry.tier];
-        const division = RANK_DIVISIONS[entry.rank];
+        const division: RankDivision | undefined =
+          RANK_DIVISIONS[entry.rank] ?? (APEX_TIERS.has(entry.tier) ? "I" : undefined);
         const queueType =
           entry.queueType === "RANKED_SOLO_5x5"
             ? ("RANKED_SOLO_5x5" as const)
