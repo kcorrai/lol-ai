@@ -92,3 +92,7 @@ export function summonerSpellUrl(spellId: number): string {
   if (!name) return "";
   return `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/img/spell/${name}.png`;
 }
+
+export function profileIconUrl(iconId: number): string {
+  return `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/img/profileicon/${iconId}.png`;
+}

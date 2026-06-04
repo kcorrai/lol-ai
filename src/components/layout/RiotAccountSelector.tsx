@@ -1,11 +1,29 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { ChevronDown, Gamepad2 } from "lucide-react";
+import { profileIconUrl } from "@/lib/ddragon";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { useUIStore } from "@/lib/stores/uiStore";
 import { cn } from "@/lib/utils";
+
+function SummonerAvatar({ iconId, size = 20 }: { iconId: number; size?: number }) {
+  const [errored, setErrored] = useState(false);
+  if (errored) return <Gamepad2 className="shrink-0 text-accent" style={{ width: size, height: size }} />;
+  return (
+    <Image
+      src={profileIconUrl(iconId)}
+      alt=""
+      width={size}
+      height={size}
+      unoptimized
+      className="shrink-0 rounded-full"
+      onError={() => setErrored(true)}
+    />
+  );
+}
 
 export function RiotAccountSelector() {
   const pathname = usePathname();
@@ -45,7 +63,7 @@ export function RiotAccountSelector() {
           "text-text transition-colors hover:bg-surface-2"
         )}
       >
-        <Gamepad2 className="h-3.5 w-3.5 text-accent" />
+        <SummonerAvatar iconId={active.profileIconId} size={20} />
         <span className="font-medium">
           {active.gameName}
           <span className="text-text-muted">#{active.tagLine}</span>
@@ -70,7 +88,7 @@ export function RiotAccountSelector() {
                     : "text-text-muted hover:bg-surface-2 hover:text-text"
                 )}
               >
-                <Gamepad2 className="h-3.5 w-3.5 shrink-0" />
+                <SummonerAvatar iconId={account.profileIconId} size={16} />
                 <span className="truncate">
                   {account.gameName}#{account.tagLine}
                 </span>

@@ -1,9 +1,10 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 
 interface PageHeaderProps {
   title: string;
-  subtitle?: string;
+  subtitle?: ReactNode;
   backHref?: string;
   backLabel?: string;
   action?: React.ReactNode;

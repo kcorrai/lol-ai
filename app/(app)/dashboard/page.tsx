@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Gamepad2, MessageCircle } from "lucide-react";
+import { profileIconUrl } from "@/lib/ddragon";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -108,9 +110,21 @@ export default function DashboardPage() {
 
       <PageHeader
         title="Dashboard"
-        subtitle={primaryAccount
-          ? `${primaryAccount.gameName}#${primaryAccount.tagLine} · ${primaryAccount.region.toUpperCase()}`
-          : undefined}
+        subtitle={primaryAccount ? (
+          <span className="inline-flex items-center gap-1.5">
+            <Image
+              src={profileIconUrl(primaryAccount.profileIconId)}
+              alt={primaryAccount.gameName}
+              width={20}
+              height={20}
+              unoptimized
+              className="rounded-full"
+            />
+            {primaryAccount.gameName}#{primaryAccount.tagLine}
+            {" · "}{primaryAccount.region.toUpperCase()}
+            {" · "}Lv.{primaryAccount.summonerLevel}
+          </span>
+        ) : undefined}
         action={headerAction}
       />
 

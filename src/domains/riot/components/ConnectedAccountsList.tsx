@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { profileIconUrl } from "@/lib/ddragon";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { useSyncAccount } from "@/hooks/useSyncAccount";
 import { useDisconnectAccount } from "@/hooks/useDisconnectAccount";
@@ -17,13 +19,15 @@ function relativeTime(date: string | Date | null): string {
   return `${Math.floor(secs / 86400)}d ago`;
 }
 
-function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt }: {
+function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, profileIconId, summonerLevel }: {
   id: string;
   gameName: string;
   tagLine: string;
   region: string;
   isPrimary: boolean;
   lastSyncedAt: Date | null;
+  profileIconId: number;
+  summonerLevel: number;
 }) {
   const [confirmDisconnect, setConfirmDisconnect] = useState(false);
   const sync = useSyncAccount();
@@ -36,14 +40,29 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt }:
   return (
     <div className="rounded-lg border border-border bg-surface-2 p-4 space-y-3">
       <div className="flex items-start justify-between gap-2">
-        <div>
-          <p className="font-medium text-text">
-            {gameName}
-            <span className="text-text-muted">#{tagLine}</span>
-          </p>
-          <p className="text-xs text-text-muted mt-0.5">
-            {region.toUpperCase()} · {relativeTime(lastSyncedAt)}
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="relative shrink-0">
+            <Image
+              src={profileIconUrl(profileIconId)}
+              alt={gameName}
+              width={48}
+              height={48}
+              unoptimized
+              className="rounded-full border-2 border-border"
+            />
+            <span className="absolute -bottom-1 -right-1 rounded-full bg-surface px-1 text-[10px] font-bold text-text-muted ring-1 ring-border">
+              {summonerLevel}
+            </span>
+          </div>
+          <div>
+            <p className="font-medium text-text">
+              {gameName}
+              <span className="text-text-muted">#{tagLine}</span>
+            </p>
+            <p className="text-xs text-text-muted mt-0.5">
+              {region.toUpperCase()} · {relativeTime(lastSyncedAt)}
+            </p>
+          </div>
         </div>
         <div className="flex gap-1.5 shrink-0">
           {isPrimary && <Badge variant="secondary" className="text-xs">Primary</Badge>}
