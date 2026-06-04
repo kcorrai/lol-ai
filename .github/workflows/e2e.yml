@@ -1,0 +1,84 @@
+name: E2E
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    name: Playwright Smoke Suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: lolai_e2e
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      E2E_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/lolai_e2e
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/lolai_e2e
+      E2E_MOCK: "true"
+      AUTH_SECRET: ci-e2e-secret-not-for-production
+      NEXTAUTH_SECRET: ci-e2e-secret-not-for-production
+      NEXTAUTH_URL: http://localhost:3001
+      NEXT_PUBLIC_APP_URL: http://localhost:3001
+      RIOT_API_KEY: ci-fake-riot-api-key
+      CRON_SECRET: ci-fake-cron-secret
+      NEXT_PUBLIC_SENTRY_DSN: ""
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Build Next.js
+        run: npm run build
+        env:
+          # Build-time env vars — must be set even if not used at runtime
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/lolai_e2e
+          AUTH_SECRET: ci-e2e-secret-not-for-production
+          NEXTAUTH_SECRET: ci-e2e-secret-not-for-production
+          NEXTAUTH_URL: http://localhost:3001
+          NEXT_PUBLIC_APP_URL: http://localhost:3001
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: playwright-report/
+          retention-days: 14
