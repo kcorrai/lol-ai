@@ -12,8 +12,8 @@ const CSP = [
   "font-src 'self' data: https://fonts.gstatic.com",
   // Champion images via Data Dragon (proxied through /_next/image) + data URIs for placeholders
   "img-src 'self' data: blob: https://ddragon.leagueoflegends.com",
-  // All API calls are same-origin; OpenAI/Riot called server-side only
-  "connect-src 'self'",
+  // Same-origin API calls + Sentry error reporting (client-side DSN upload)
+  "connect-src 'self' https://*.ingest.sentry.io https://*.sentry.io",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",

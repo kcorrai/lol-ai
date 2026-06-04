@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { logger } from "@/lib/utils/logger";
 
 export interface RateLimitConfig {
   limit: number;
@@ -18,9 +19,23 @@ export interface RateLimitResult {
 // Cache limiter instances by config key to avoid re-creating on every call.
 let upstashLimiters: Map<string, import("@upstash/ratelimit").Ratelimit> | null = null;
 
+// Warn once per process startup if Upstash is not configured.
+// In Vercel serverless, each cold start emits this — that's intentional.
+let _upstashWarned = false;
+
 function isUpstashConfigured(): boolean {
   return Boolean(
     process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+  );
+}
+
+function warnUpstashNotConfigured(): void {
+  if (_upstashWarned) return;
+  _upstashWarned = true;
+  logger.warn(
+    "[rateLimit] Upstash Redis is not configured — falling back to per-instance in-memory " +
+      "rate limiting. This is NOT effective in production serverless environments where each " +
+      "instance has independent memory. Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN."
   );
 }
 
@@ -97,6 +112,7 @@ export async function checkRateLimit(
     // Redis unavailable — fall through to in-memory fallback
   }
 
+  warnUpstashNotConfigured();
   return checkInMemory(key, config, now);
 }
 

@@ -18,16 +18,20 @@ export function createOpenAiProvider(): AiProvider {
     ): Promise<AiCompletionResult> {
       const startMs = Date.now();
 
-      const response = await client.chat.completions.create({
-        model: DEFAULT_MODEL,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userMessage },
-        ],
-        max_tokens: options.maxTokens ?? DEFAULT_MAX_TOKENS,
-        temperature: options.temperature ?? DEFAULT_TEMPERATURE,
-        response_format: { type: "json_object" },
-      });
+      const response = await client.chat.completions.create(
+        {
+          model: DEFAULT_MODEL,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userMessage },
+          ],
+          max_tokens: options.maxTokens ?? DEFAULT_MAX_TOKENS,
+          temperature: options.temperature ?? DEFAULT_TEMPERATURE,
+          response_format: { type: "json_object" },
+        },
+        // Prevent Inngest jobs from hanging indefinitely if OpenAI is slow
+        { signal: AbortSignal.timeout(45_000) }
+      );
 
       const latencyMs = Date.now() - startMs;
       const choice = response.choices[0];

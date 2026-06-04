@@ -11,6 +11,7 @@ import {
   CreditCard,
   ChevronLeft,
   ChevronRight,
+  UserCircle,
 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
@@ -20,6 +21,7 @@ const NAV = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/settings/accounts", icon: Gamepad2, label: "Accounts" },
   { href: "/settings/billing", icon: CreditCard, label: "Billing" },
+  { href: "/settings/profile", icon: UserCircle, label: "Profile" },
 ] as const;
 
 function NavItem({

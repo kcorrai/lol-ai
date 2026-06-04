@@ -1,4 +1,5 @@
 import { createHash } from "crypto";
+import * as Sentry from "@sentry/nextjs";
 import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
 import { getAiClient } from "@/lib/ai/client";
@@ -99,6 +100,7 @@ export async function runCoachingPipeline(
     logger.info("Coaching pipeline complete", { reportId, cacheHit, totalTokens, latencyMs });
   } catch (error) {
     logger.error("Coaching pipeline failed", { reportId, error });
+    Sentry.captureException(error, { extra: { reportId } });
     await prisma.coachingReport.update({
       where: { id: reportId },
       data: { status: "failed" },

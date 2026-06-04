@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +21,11 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [serverError, setServerError] = useState<string | null>(null);
+
+  const justRegistered = searchParams.get("registered") === "1";
+  const justReset = searchParams.get("reset") === "success";
 
   const {
     register,
@@ -56,6 +60,17 @@ export function LoginForm() {
         <CardDescription>Enter your email and password to continue</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {justRegistered && (
+          <p className="rounded-md border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
+            Account created! Sign in to get started.
+          </p>
+        )}
+        {justReset && (
+          <p className="rounded-md border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
+            Password updated successfully. Sign in with your new password.
+          </p>
+        )}
+
         <OAuthButton provider="google" />
 
         <div className="relative">
@@ -85,9 +100,17 @@ export function LoginForm() {
           </div>
 
           <div className="space-y-1">
-            <label htmlFor="password" className="text-sm text-text-muted">
-              Password
-            </label>
+            <div className="flex items-center justify-between">
+              <label htmlFor="password" className="text-sm text-text-muted">
+                Password
+              </label>
+              <Link
+                href="/forgot-password"
+                className="text-xs text-text-muted hover:text-accent hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
             <Input
               id="password"
               type="password"
