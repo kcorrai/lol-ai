@@ -21,6 +21,8 @@ import { SessionReadinessWidget } from "@/domains/analysis/components/SessionRea
 import { TodaysFocusCard } from "@/domains/analysis/components/TodaysFocusCard";
 import { LastGameInsightCard } from "@/domains/analysis/components/LastGameInsightCard";
 import { ImprovementPlanWidget } from "@/domains/analysis/components/ImprovementPlanWidget";
+import { WinrateTrendWidget } from "@/domains/analysis/components/WinrateTrendWidget";
+import { RoleDistributionWidget } from "@/domains/analysis/components/RoleDistributionWidget";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 import { useCoachingReports } from "@/hooks/useCoachingReports";
@@ -157,6 +159,10 @@ export default function DashboardPage() {
             <SectionLabel>Performance</SectionLabel>
             <div className="space-y-3">
               <PerformanceSummaryCards profile={profile} isLoading={profileLoading} />
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                <WinrateTrendWidget matches={profile?.recentMatches} isLoading={profileLoading} />
+                <RoleDistributionWidget matches={profile?.recentMatches} isLoading={profileLoading} />
+              </div>
               <PerformanceTrendChart matches={profile?.recentMatches} isLoading={profileLoading} />
             </div>
           </section>
