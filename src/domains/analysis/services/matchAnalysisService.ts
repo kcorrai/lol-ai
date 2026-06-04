@@ -67,6 +67,7 @@ export async function getPlayerPerformanceProfile(
         p.visionScore, p.firstBlood, p.position, p.won, teamKills
       ),
       itemIds: p.itemIds,
+      gameStart: p.match.gameStart.toISOString(),
     });
   }
 

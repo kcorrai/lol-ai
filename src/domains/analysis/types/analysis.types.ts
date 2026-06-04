@@ -34,6 +34,7 @@ export interface MatchPerformance {
   damageShare: number;
   notableEvents: string[];
   itemIds: number[];
+  gameStart: string;
 }
 
 export type RankUpLevel = "high" | "moderate" | "low";
