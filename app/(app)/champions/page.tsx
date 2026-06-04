@@ -28,7 +28,7 @@ export default function ChampionsPage() {
 
   if (!accounts || accounts.length === 0) {
     return (
-      <div className="mx-auto max-w-4xl p-6">
+      <div className="mx-auto max-w-6xl p-6">
         <EmptyState
           icon={<Gamepad2 className="h-16 w-16" />}
           title="No Riot Account Connected"

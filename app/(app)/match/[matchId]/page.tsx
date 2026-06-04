@@ -182,7 +182,7 @@ export default function MatchDetailPage() {
 
   if (error || !match) {
     return (
-      <div className="mx-auto max-w-4xl p-6">
+      <div className="mx-auto max-w-6xl p-6">
         <ErrorState title="Match not found" message="This match doesn't exist or you didn't participate in it." />
       </div>
     );
@@ -193,7 +193,7 @@ export default function MatchDetailPage() {
   const userWon = match.participants.find((p) => p.riotAccountId === match.userRiotAccountId)?.won;
 
   return (
-    <div className="mx-auto max-w-4xl space-y-5 p-6">
+    <div className="mx-auto max-w-6xl space-y-5 p-6">
       <PageHeader
         title={match.gameMode}
         subtitle={`${new Date(match.gameStart).toLocaleString()} · ${durationMin}:${String(durationSec).padStart(2, "0")}`}

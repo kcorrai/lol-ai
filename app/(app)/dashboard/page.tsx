@@ -22,6 +22,7 @@ import { TodaysFocusCard } from "@/domains/analysis/components/TodaysFocusCard";
 import { LastGameInsightCard } from "@/domains/analysis/components/LastGameInsightCard";
 import { ImprovementPlanWidget } from "@/domains/analysis/components/ImprovementPlanWidget";
 import { WinrateTrendWidget } from "@/domains/analysis/components/WinrateTrendWidget";
+import { TopChampionsWidget } from "@/domains/analysis/components/TopChampionsWidget";
 import { RoleDistributionWidget } from "@/domains/analysis/components/RoleDistributionWidget";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
@@ -65,7 +66,7 @@ export default function DashboardPage() {
 
   if (!accounts || accounts.length === 0) {
     return (
-      <div className="mx-auto max-w-4xl p-6">
+      <div className="mx-auto max-w-6xl p-6">
         <EmptyState
           icon={<Gamepad2 className="h-16 w-16" />}
           title="Connect Your Riot Account"
@@ -102,7 +103,7 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 p-6">
+    <div className="mx-auto max-w-6xl space-y-6 p-6">
       <TiltBreakModal riotAccountId={primaryId} />
 
       <PageHeader
@@ -121,68 +122,69 @@ export default function DashboardPage() {
         />
       ) : (
         <>
-          {/* ── Today's Brief ──────────────────────────────────────── */}
-          <section>
-            <SectionLabel>Today&apos;s Brief</SectionLabel>
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              <TodaysFocusCard riotAccountId={primaryId} />
-              <SessionReadinessWidget riotAccountId={primaryId} />
-            </div>
-          </section>
+          {/* ── Top summary ────────────────────────────────────────────── */}
+          <PerformanceSummaryCards profile={profile} isLoading={profileLoading} />
 
-          {/* ── Improvement Plan ───────────────────────────────────── */}
-          <ImprovementPlanWidget riotAccountId={primaryId} />
+          {/* ── Today's Brief ──────────────────────────────────────────── */}
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            <TodaysFocusCard riotAccountId={primaryId} />
+            <SessionReadinessWidget riotAccountId={primaryId} />
+          </div>
 
-          {/* ── Last Game ──────────────────────────────────────────── */}
-          <LastGameInsightCard match={profile?.recentMatches[0]} isLoading={profileLoading} />
+          {/* ── Main 2-column layout ───────────────────────────────────── */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
 
-          {/* ── Ranked ─────────────────────────────────────────────── */}
-          <section>
-            <SectionLabel>Ranked</SectionLabel>
-            <div className="space-y-3">
-              <RankedCard riotAccountId={primaryId} />
-              <RankUpWidget riotAccountId={primaryId} />
-            </div>
-          </section>
+            {/* Left column — rank, champions, roles, mental */}
+            <div className="space-y-4 lg:col-span-2">
+              <div>
+                <SectionLabel>Ranked</SectionLabel>
+                <div className="space-y-3">
+                  <RankedCard riotAccountId={primaryId} />
+                  <RankUpWidget riotAccountId={primaryId} />
+                </div>
+              </div>
 
-          {/* ── Mental State ───────────────────────────────────────── */}
-          <section>
-            <SectionLabel>Mental State</SectionLabel>
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              <TiltWidget riotAccountId={primaryId} />
-              <WarmupWidget riotAccountId={primaryId} />
-            </div>
-          </section>
+              <div>
+                <SectionLabel>Top Champions</SectionLabel>
+                <TopChampionsWidget matches={profile?.recentMatches} isLoading={profileLoading} />
+              </div>
 
-          {/* ── Performance ────────────────────────────────────────── */}
-          <section>
-            <SectionLabel>Performance</SectionLabel>
-            <div className="space-y-3">
-              <PerformanceSummaryCards profile={profile} isLoading={profileLoading} />
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                <WinrateTrendWidget matches={profile?.recentMatches} isLoading={profileLoading} />
+              <div>
+                <SectionLabel>Roles</SectionLabel>
                 <RoleDistributionWidget matches={profile?.recentMatches} isLoading={profileLoading} />
               </div>
-              <PerformanceTrendChart matches={profile?.recentMatches} isLoading={profileLoading} />
-            </div>
-          </section>
 
-          {/* ── Recent Matches ─────────────────────────────────────── */}
-          <section>
-            <SectionLabel>Recent Matches</SectionLabel>
-            <RecentMatchList matches={profile?.recentMatches} isLoading={profileLoading} />
-          </section>
+              <div>
+                <SectionLabel>Mental State</SectionLabel>
+                <div className="space-y-3">
+                  <TiltWidget riotAccountId={primaryId} />
+                  <WarmupWidget riotAccountId={primaryId} />
+                </div>
+              </div>
+            </div>
+
+            {/* Right column — matches & trends */}
+            <div className="space-y-4 lg:col-span-3">
+              <LastGameInsightCard match={profile?.recentMatches[0]} isLoading={profileLoading} />
+              <ImprovementPlanWidget riotAccountId={primaryId} />
+              <WinrateTrendWidget matches={profile?.recentMatches} isLoading={profileLoading} />
+              <PerformanceTrendChart matches={profile?.recentMatches} isLoading={profileLoading} />
+              <div>
+                <SectionLabel>Recent Matches</SectionLabel>
+                <RecentMatchList matches={profile?.recentMatches} isLoading={profileLoading} />
+              </div>
+            </div>
+          </div>
         </>
       )}
 
-      {/* ── Coaching Reports ─────────────────────────────────────── */}
+      {/* ── Coaching Reports ────────────────────────────────────────── */}
       <section>
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <SectionLabel>Coaching Reports</SectionLabel>
           <div className="flex gap-2">
             <Button size="sm" variant="secondary" onClick={handleClimbRoadmap}
-              disabled={generateReport.isPending || !profile || profileLoading}
-              title="AI climb plan using your last 10 games">
+              disabled={generateReport.isPending || !profile || profileLoading}>
               {generateReport.isPending ? "Generating…" : "Climb Roadmap"}
             </Button>
             <Button size="sm" onClick={handleGenerate}

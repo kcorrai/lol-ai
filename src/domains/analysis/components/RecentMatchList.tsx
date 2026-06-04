@@ -12,43 +12,59 @@ interface Props {
   isLoading: boolean;
 }
 
+const ROLE_SHORT: Record<string, string> = {
+  TOP: "Top", JUNGLE: "Jgl", MIDDLE: "Mid", BOTTOM: "Bot", UTILITY: "Sup",
+};
+
 function MatchRow({ match }: { match: MatchPerformance }) {
   const kda = ((match.kills + match.assists) / Math.max(match.deaths, 1)).toFixed(2);
+  const kdaColor = Number(kda) >= 4 ? "text-success" : Number(kda) >= 2 ? "text-warning" : "text-text-muted";
+
   return (
     <Link
       href={`/match/${match.matchDbId}`}
-      className="flex items-center gap-3 rounded-lg bg-surface-2 px-3 py-2 transition-colors hover:bg-surface-2/80 hover:ring-1 hover:ring-border"
+      className={`flex items-center gap-4 rounded-xl border px-4 py-3 transition-colors hover:bg-surface-2/60 ${
+        match.won ? "border-success/20 bg-success/5" : "border-danger/20 bg-danger/5"
+      }`}
     >
-      <div
-        className={`h-full w-1 self-stretch rounded-full ${match.won ? "bg-success" : "bg-danger"}`}
-      />
-      <ChampionIcon name={match.champion} size={36} className="shrink-0" />
-      <div className="min-w-[80px]">
-        <p className="text-sm font-medium text-text">{match.champion}</p>
-        <p className="text-xs text-text-muted">{match.position}</p>
+      {/* W/L bar */}
+      <div className={`h-12 w-1 shrink-0 rounded-full ${match.won ? "bg-success" : "bg-danger"}`} />
+
+      {/* Champion */}
+      <ChampionIcon name={match.champion} size={48} className="shrink-0" />
+
+      {/* Name + role + result */}
+      <div className="w-28 shrink-0">
+        <p className="text-sm font-semibold text-text">{match.champion}</p>
+        <p className="text-xs text-text-muted">{ROLE_SHORT[match.position] ?? match.position}</p>
+        <Badge variant={match.won ? "success" : "destructive"} className="mt-0.5 text-[10px]">
+          {match.won ? "Victory" : "Defeat"}
+        </Badge>
       </div>
-      <div className="flex flex-1 flex-col gap-1">
-        <div className="flex gap-4 text-xs text-text-muted">
-          <span>
-            <span className="font-medium text-text">{match.kills}</span>/
-            <span className="text-danger">{match.deaths}</span>/
-            <span className="font-medium text-text">{match.assists}</span>
-            <span className="ml-1 text-text-muted">({kda})</span>
-          </span>
-          <span>{match.csPerMinute.toFixed(1)} CS/min</span>
-          <span>{match.gameDurationMinutes} min</span>
+
+      {/* KDA */}
+      <div className="w-24 shrink-0 text-center">
+        <p className="text-sm font-semibold text-text">
+          {match.kills}/<span className="text-danger">{match.deaths}</span>/{match.assists}
+        </p>
+        <p className={`text-xs font-medium ${kdaColor}`}>{kda} KDA</p>
+      </div>
+
+      {/* Stats */}
+      <div className="hidden w-28 shrink-0 text-xs text-text-muted sm:block">
+        <p>{match.csPerMinute.toFixed(1)} CS/min</p>
+        <p>{match.visionScore} vision</p>
+        <p>{match.gameDurationMinutes} min</p>
+      </div>
+
+      {/* Items */}
+      {match.itemIds?.length > 0 && (
+        <div className="hidden flex-1 flex-wrap gap-0.5 lg:flex">
+          {match.itemIds.slice(0, 6).map((id, i) => (
+            <ItemIcon key={i} itemId={id} size={24} />
+          ))}
         </div>
-        {match.itemIds?.length > 0 && (
-          <div className="flex gap-0.5">
-            {match.itemIds.slice(0, 6).map((id, i) => (
-              <ItemIcon key={i} itemId={id} size={20} />
-            ))}
-          </div>
-        )}
-      </div>
-      <Badge variant={match.won ? "success" : "destructive"} className="shrink-0 text-xs">
-        {match.won ? "W" : "L"}
-      </Badge>
+      )}
     </Link>
   );
 }
@@ -58,7 +74,7 @@ export function RecentMatchList({ matches, isLoading }: Props) {
     return (
       <div className="space-y-2">
         {Array.from({ length: 5 }).map((_, i) => (
-          <Skeleton key={i} className="h-12 w-full" />
+          <Skeleton key={i} className="h-20 w-full rounded-xl" />
         ))}
       </div>
     );
@@ -69,7 +85,7 @@ export function RecentMatchList({ matches, isLoading }: Props) {
   }
 
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2">
       {matches.slice(0, 10).map((m) => (
         <MatchRow key={m.riotMatchId} match={m} />
       ))}

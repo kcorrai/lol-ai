@@ -1,6 +1,5 @@
 export const DDRAGON_VERSION = "15.14.1";
 
-// Riot match API v5 returns display names with spaces/apostrophes; DDragon keys differ
 const CHAMPION_KEY_OVERRIDES: Record<string, string> = {
   Wukong: "MonkeyKing",
   "Nunu & Willump": "Nunu",
@@ -10,7 +9,6 @@ const CHAMPION_KEY_OVERRIDES: Record<string, string> = {
 
 export function normalizeChampionKey(name: string): string {
   if (CHAMPION_KEY_OVERRIDES[name]) return CHAMPION_KEY_OVERRIDES[name];
-  // Strip spaces, apostrophes, periods — e.g. "Lee Sin"→"LeeSin", "Kai'Sa"→"KaiSa"
   return name.replace(/[' .]/g, "").replace(/&.*/, "").trim();
 }
 
@@ -25,6 +23,12 @@ export function itemIconUrl(itemId: number): string {
 
 export function rankEmblemUrl(tier: string): string {
   return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-mini-crests/${tier.toLowerCase()}.png`;
+}
+
+// Position/role icons — DB stores: TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY
+export function roleIconUrl(position: string): string {
+  const p = position.toLowerCase();
+  return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/position-selector/positions/icon-position-${p}.png`;
 }
 
 const SUMMONER_SPELL_NAMES: Record<number, string> = {
