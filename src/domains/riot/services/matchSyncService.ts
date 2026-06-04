@@ -138,6 +138,7 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   } else {
     try {
       const entries = await getRankedEntries(account.summonerId, account.region);
+      logger.info(`[sync] getRankedEntries returned ${entries.length} entries: ${JSON.stringify(entries.map(e => ({ q: e.queueType, tier: e.tier, rank: e.rank })))}`);
       for (const entry of entries) {
         const tier = RANK_TIERS[entry.tier];
         const division: RankDivision | undefined =
@@ -149,7 +150,11 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
               ? ("RANKED_FLEX_SR" as const)
               : null;
 
-        if (!tier || !division || !queueType) continue;
+        logger.info(`[sync] entry: tier=${entry.tier}→${tier}, rank=${entry.rank}→${division}, queue=${entry.queueType}→${queueType}`);
+        if (!tier || !division || !queueType) {
+          logger.warn(`[sync] Skipping entry — unmapped value: tier=${entry.tier}, rank=${entry.rank}, queue=${entry.queueType}`);
+          continue;
+        }
 
         const lastSnapshot = await getLastRankedSnapshot(account.id, queueType);
         if (
