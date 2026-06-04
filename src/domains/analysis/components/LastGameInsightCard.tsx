@@ -1,6 +1,7 @@
 "use client";
 
 import { deriveMatchInsights } from "@/domains/analysis/utils/matchInsights";
+import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import type { MatchPerformance } from "@/domains/analysis/types/analysis.types";
 
 interface LastGameInsightCardProps {
@@ -36,9 +37,12 @@ export function LastGameInsightCard({ match, isLoading }: LastGameInsightCardPro
   return (
     <div className="rounded-xl border border-border bg-surface p-4">
       <div className="mb-3 flex items-center justify-between">
-        <p className="text-xs font-medium uppercase tracking-widest text-text-muted">
-          Last Game — {match.champion} · {match.position}
-        </p>
+        <div className="flex items-center gap-2">
+          <ChampionIcon name={match.champion} size={28} />
+          <p className="text-xs font-medium uppercase tracking-widest text-text-muted">
+            {match.champion} · {match.position}
+          </p>
+        </div>
         <span className={`text-xs font-semibold ${resultColor}`}>{result}</span>
       </div>
 

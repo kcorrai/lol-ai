@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import type { MatchPerformance } from "@/domains/analysis/types/analysis.types";
 
 interface Props {
@@ -20,7 +21,8 @@ function MatchRow({ match }: { match: MatchPerformance }) {
       <div
         className={`h-full w-1 self-stretch rounded-full ${match.won ? "bg-success" : "bg-danger"}`}
       />
-      <div className="min-w-[90px]">
+      <ChampionIcon name={match.champion} size={36} className="shrink-0" />
+      <div className="min-w-[80px]">
         <p className="text-sm font-medium text-text">{match.champion}</p>
         <p className="text-xs text-text-muted">{match.position}</p>
       </div>

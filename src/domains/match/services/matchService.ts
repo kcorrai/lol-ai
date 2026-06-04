@@ -27,6 +27,7 @@ export type ParticipantDetail = {
   kda: number;
   damageShare: number;
   killParticipation: number;
+  itemIds: number[];
 };
 
 export type AiInsight = {
@@ -105,6 +106,7 @@ export async function getMatchDetail(
       kda: computeKDA(p.kills, p.deaths, p.assists),
       damageShare: computeDamageShare(p.damageDealt, team.damage),
       killParticipation: computeKillParticipation(p.kills, p.assists, team.kills),
+      itemIds: p.itemIds,
     };
   });
 

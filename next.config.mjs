@@ -10,8 +10,8 @@ const CSP = [
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   // Google Fonts files
   "font-src 'self' data: https://fonts.gstatic.com",
-  // Champion images via Data Dragon (proxied through /_next/image) + data URIs for placeholders
-  "img-src 'self' data: blob: https://ddragon.leagueoflegends.com",
+  // Champion/item images via Data Dragon + rank emblems via Community Dragon
+  "img-src 'self' data: blob: https://ddragon.leagueoflegends.com https://raw.communitydragon.org",
   // Same-origin API calls + Sentry error reporting (client-side DSN upload)
   "connect-src 'self' https://*.ingest.sentry.io https://*.sentry.io",
   "frame-ancestors 'none'",
@@ -26,6 +26,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "ddragon.leagueoflegends.com",
         pathname: "/cdn/**",
+      },
+      {
+        protocol: "https",
+        hostname: "raw.communitydragon.org",
+        pathname: "/latest/**",
       },
     ],
   },

@@ -1,9 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRankedData, type RankedQueue } from "@/hooks/useRankedData";
+import { rankEmblemUrl } from "@/lib/ddragon";
 import type { LpSnapshot } from "@/domains/riot";
 
 const TIER_COLOR: Record<string, string> = {
@@ -36,12 +38,28 @@ const TIER_BG: Record<string, string> = {
 const APEX_TIERS = new Set(["MASTER", "GRANDMASTER", "CHALLENGER"]);
 
 function TierEmblem({ tier }: { tier: string }) {
+  const [errored, setErrored] = useState(false);
   const color = TIER_COLOR[tier] ?? "text-text";
   const bg = TIER_BG[tier] ?? "bg-surface-2";
+
+  if (errored) {
+    return (
+      <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${bg}`}>
+        <span className={`text-lg font-bold ${color}`}>{tier[0]}</span>
+      </div>
+    );
+  }
+
   return (
-    <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${bg}`}>
-      <span className={`text-lg font-bold ${color}`}>{tier[0]}</span>
-    </div>
+    <Image
+      src={rankEmblemUrl(tier)}
+      alt={tier}
+      width={40}
+      height={40}
+      className="shrink-0"
+      onError={() => setErrored(true)}
+      unoptimized
+    />
   );
 }
 

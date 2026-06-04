@@ -1,6 +1,7 @@
 "use client";
 
 import { useCounterPicks } from "@/hooks/useCounterPicks";
+import { ChampionIcon } from "@/components/ui/ChampionIcon";
 
 interface CounterPickCardProps {
   riotAccountId: string;
@@ -34,7 +35,10 @@ export function CounterPickCard({ riotAccountId, championName }: CounterPickCard
           <div className="space-y-0.5">
             {data.nemeses.map((e) => (
               <div key={e.championName} className="flex items-center justify-between text-xs">
-                <span className="text-text-muted">{e.championName}</span>
+                <span className="flex items-center gap-1.5 text-text-muted">
+                  <ChampionIcon name={e.championName} size={20} />
+                  {e.championName}
+                </span>
                 <span className="text-text-muted">
                   <WinRatePip winRate={e.winRate} /> in {e.games}G
                 </span>
@@ -52,7 +56,10 @@ export function CounterPickCard({ riotAccountId, championName }: CounterPickCard
           <div className="space-y-0.5">
             {data.prey.map((e) => (
               <div key={e.championName} className="flex items-center justify-between text-xs">
-                <span className="text-text-muted">{e.championName}</span>
+                <span className="flex items-center gap-1.5 text-text-muted">
+                  <ChampionIcon name={e.championName} size={20} />
+                  {e.championName}
+                </span>
                 <span className="text-text-muted">
                   <WinRatePip winRate={e.winRate} /> in {e.games}G
                 </span>

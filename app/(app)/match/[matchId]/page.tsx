@@ -8,6 +8,8 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { ErrorState } from "@/components/ui/error-state";
 import { useMatchDetail } from "@/hooks/useMatchDetail";
+import { ChampionIcon } from "@/components/ui/ChampionIcon";
+import { ItemIcon } from "@/components/ui/ItemIcon";
 import type { ParticipantDetail, AiInsight, MatchDetail } from "@/domains/match";
 
 function fmt(n: number, decimals = 1): string {
@@ -41,6 +43,7 @@ function TeamTable({
               <th className="px-3 py-2 text-center">Gold</th>
               <th className="px-3 py-2 text-center">Damage</th>
               <th className="px-3 py-2 text-center">Vision</th>
+              <th className="px-3 py-2 text-left">Items</th>
             </tr>
           </thead>
           <tbody>
@@ -52,9 +55,12 @@ function TeamTable({
                   className={`border-b border-border last:border-0 ${isUser ? "bg-accent/10 font-semibold" : "bg-surface"}`}
                 >
                   <td className="px-3 py-2">
-                    <span className="text-text">{p.championName}</span>
-                    <span className="ml-1.5 text-text-muted">{p.position}</span>
-                    {isUser && <span className="ml-1.5 text-accent text-xs">(you)</span>}
+                    <div className="flex items-center gap-1.5">
+                      <ChampionIcon name={p.championName} size={24} className="shrink-0" />
+                      <span className="text-text">{p.championName}</span>
+                      <span className="text-text-muted">{p.position}</span>
+                      {isUser && <span className="text-accent text-xs">(you)</span>}
+                    </div>
                   </td>
                   <td className="px-3 py-2 text-center">
                     {p.kills}/<span className="text-danger">{p.deaths}</span>/{p.assists}
@@ -63,6 +69,13 @@ function TeamTable({
                   <td className="px-3 py-2 text-center">{fmt(p.goldEarned / 1000)}k</td>
                   <td className="px-3 py-2 text-center">{fmt(p.damageDealt / 1000)}k</td>
                   <td className="px-3 py-2 text-center">{p.visionScore}</td>
+                  <td className="px-3 py-2">
+                    <div className="flex gap-0.5">
+                      {(p.itemIds ?? []).slice(0, 6).map((id, idx) => (
+                        <ItemIcon key={idx} itemId={id} size={22} />
+                      ))}
+                    </div>
+                  </td>
                 </tr>
               );
             })}
