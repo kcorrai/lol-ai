@@ -112,29 +112,30 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   if (!account.summonerId) {
     try {
       const summoner = await getSummonerByPuuid(account.puuid, account.region);
-      await prisma.riotAccount.update({
-        where: { id: account.id },
-        data: {
-          summonerId: summoner.id,
-          accountId: summoner.accountId,
-          summonerLevel: summoner.summonerLevel,
-          profileIconId: summoner.profileIconId,
-        },
-      });
-      account = { ...account, summonerId: summoner.id };
-      logger.info(`[sync] Auto-repaired summonerId for ${account.gameName}#${account.tagLine}`);
+      if (summoner.id) {
+        await prisma.riotAccount.update({
+          where: { id: account.id },
+          data: {
+            summonerId: summoner.id,
+            accountId: summoner.accountId,
+            summonerLevel: summoner.summonerLevel,
+            profileIconId: summoner.profileIconId,
+          },
+        });
+        account = { ...account, summonerId: summoner.id };
+        logger.info(`[sync] Auto-repaired summonerId for ${account.gameName}#${account.tagLine}`);
+      } else {
+        logger.warn(`[sync] Riot API returned empty summonerId for ${account.gameName}#${account.tagLine} — account may use new PUUID-only system`);
+      }
     } catch (err) {
       const repairErr = err instanceof Error ? err.message : String(err);
       logger.warn(`[sync] Failed to auto-repair summonerId: ${repairErr}`);
-      errors.push(`summonerId repair failed: ${repairErr}`);
     }
   }
 
   let rankedSnapshotted = false;
   if (!account.summonerId) {
-    const msg = "Ranked data unavailable — summonerId missing. Reconnect your account.";
-    logger.warn(`[sync] ${msg} (${account.gameName}#${account.tagLine})`);
-    errors.push(msg);
+    logger.warn(`[sync] Skipping ranked — no summonerId for ${account.gameName}#${account.tagLine}`);
   } else {
     try {
       const entries = await getRankedEntries(account.summonerId, account.region);

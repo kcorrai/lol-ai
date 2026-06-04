@@ -160,7 +160,8 @@ export function RankedCard({ riotAccountId }: Props) {
       <CardContent className="space-y-3">
         {!rank ? (
           <p className="text-sm text-text-muted">
-            No {queue === "solo" ? "Solo/Duo" : "Flex"} ranked data — sync your account.
+            No {queue === "solo" ? "Solo/Duo" : "Flex"} ranked data found.
+            Sync your account or play a ranked game first.
           </p>
         ) : (
           <>
