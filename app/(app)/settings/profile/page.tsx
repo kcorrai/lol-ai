@@ -2,13 +2,10 @@
 
 import { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
-import type { Metadata } from "next";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-export const metadata: Metadata = { title: "Profile" };
 
 export default function ProfileSettingsPage() {
   const { data: session } = useSession();
