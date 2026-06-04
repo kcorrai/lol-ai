@@ -4,23 +4,23 @@ const STEPS = [
   {
     number: "01",
     icon: Link2,
-    title: "Connect",
+    title: "Connect Your Account",
     description:
-      "Link your Riot account in 30 seconds. Just enter your GameName#TAG and region — no API keys, no setup.",
+      "Enter your GameName#TAG and region. We sync your last 20 ranked matches automatically — no API keys, no setup.",
   },
   {
     number: "02",
     icon: BarChart3,
-    title: "Analyze",
+    title: "We Analyze Everything",
     description:
-      "We sync your last 20 ranked matches and run them through our AI pipeline. Every fight, every death, every CS difference.",
+      "Every fight, death, CS difference, objective, rune, and summoner spell. Full match detail with tracker.gg-style scoreboard.",
   },
   {
     number: "03",
     icon: TrendingUp,
-    title: "Improve",
+    title: "Get Your Coaching Report",
     description:
-      "Get a personalized coaching report with specific, actionable feedback. Not generic tips — your exact mistakes.",
+      "Generate a Session Review or Climb Roadmap with one click. Specific, actionable feedback — not generic advice for Bronze players.",
   },
 ] as const;
 
@@ -30,7 +30,7 @@ export function HowItWorksSection() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="mb-16 text-center">
           <h2 className="font-display text-3xl font-bold text-text md:text-4xl">How It Works</h2>
-          <p className="mt-3 text-text-muted">Three steps from account to coaching report.</p>
+          <p className="mt-3 text-text-muted">From account to coaching report in under a minute.</p>
         </div>
 
         <div className="relative grid gap-8 md:grid-cols-3">

@@ -1,33 +1,41 @@
-import { Brain, Swords, Trophy, Users } from "lucide-react";
+import { Brain, Swords, Trophy, Shield, MessageCircle, BarChart2 } from "lucide-react";
 
 const FEATURES = [
   {
     icon: Brain,
     title: "AI Coaching Reports",
     description:
-      "GPT-4 powered analysis of your gameplay. Specific feedback on positioning, decision-making, and itemization — not generic Bronze advice.",
-    badge: null,
+      "GPT-4 powered analysis of your last 5–10 games. Session Review breaks down specific mistakes. Climb Roadmap builds your path to the next rank.",
   },
   {
     icon: Swords,
     title: "Match Deep Dive",
     description:
-      "Full scoreboard breakdown for every game. 10-player stats, damage charts, vision scores, and KDA comparisons against your elo.",
-    badge: null,
+      "tracker.gg-style scoreboard for every game — 10-player stats, damage bars, vision, summoner spells, rune icons, and team objective breakdown.",
   },
   {
     icon: Trophy,
     title: "Ranked Progress",
     description:
-      "Track your LP journey over time. See your win rate trends, best champions, and where you're losing games you should be winning.",
-    badge: null,
+      "Track your LP history over time. See win rate trends, your best roles, and where you're dropping games you should be winning.",
   },
   {
-    icon: Users,
+    icon: BarChart2,
     title: "Champion Analytics",
     description:
-      "Understand your champion pool at a glance. Which champions are carrying you and which are holding you back.",
-    badge: "Coming Soon",
+      "Understand your champion pool at a glance. Deep-dive stats per champion — KDA, win rate, CS/min — so you know what to play and what to bench.",
+  },
+  {
+    icon: Shield,
+    title: "Mental & Tilt Detection",
+    description:
+      "Detects tilt patterns from your recent games. Warns you before a loss streak becomes a mental crisis. Session readiness score before you queue.",
+  },
+  {
+    icon: MessageCircle,
+    title: "AI Coach Chat",
+    description:
+      "Ask your coach anything — draft questions, matchup advice, build paths. Backed by your real match data, not generic wiki answers.",
   },
 ] as const;
 
@@ -44,17 +52,12 @@ export function FeaturesSection() {
           </p>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {FEATURES.map(({ icon: Icon, title, description, badge }) => (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {FEATURES.map(({ icon: Icon, title, description }) => (
             <div
               key={title}
-              className="relative rounded-xl border border-border bg-background p-6 transition-colors hover:border-accent/30"
+              className="rounded-xl border border-border bg-background p-6 transition-colors hover:border-accent/30"
             >
-              {badge && (
-                <span className="absolute right-3 top-3 rounded-full border border-accent/30 bg-accent/10 px-2 py-0.5 text-[10px] font-medium text-accent">
-                  {badge}
-                </span>
-              )}
               <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
                 <Icon className="h-5 w-5 text-accent" />
               </div>

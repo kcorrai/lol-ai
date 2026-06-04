@@ -8,51 +8,65 @@ function DashboardMockup() {
         <div className="h-2.5 w-2.5 rounded-full bg-danger/60" />
         <div className="h-2.5 w-2.5 rounded-full bg-warning/60" />
         <div className="h-2.5 w-2.5 rounded-full bg-success/60" />
-        <span className="ml-2 text-xs text-text-muted">lol-ai-coach · Dashboard</span>
+        <span className="ml-2 text-xs text-text-muted">LoL AI Coach · Dashboard</span>
       </div>
 
       <div className="space-y-3 p-4">
-        {/* Ranked card */}
-        <div className="rounded-lg border border-border bg-surface-2 p-3">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-xs text-text-muted">Ranked Solo/Duo</span>
-            <span className="text-xs font-bold text-rank-gold">GOLD II</span>
+        {/* Player header */}
+        <div className="flex items-center gap-3">
+          <div className="relative h-10 w-10 shrink-0">
+            <div className="h-10 w-10 rounded-full bg-accent/20 ring-2 ring-border" />
+            <span className="absolute -bottom-1 -right-1 rounded-full bg-surface px-1 text-[9px] font-bold text-text-muted ring-1 ring-border">
+              247
+            </span>
           </div>
-          <p className="mb-2 text-sm font-bold text-text">kaanproak0 #TR1</p>
-          <div className="h-1.5 overflow-hidden rounded-full bg-surface">
-            <div className="h-full w-[47%] rounded-full bg-rank-gold" />
+          <div>
+            <p className="text-sm font-bold text-text">
+              Faker<span className="text-text-muted">#KR1</span>
+            </p>
+            <p className="text-xs text-text-muted">KR · Challenger · 1,426 LP</p>
           </div>
-          <div className="mt-1 flex justify-between">
-            <span className="text-xs text-text-muted">47 LP</span>
-            <span className="text-xs text-text-muted">100 LP</span>
+          <div className="ml-auto rounded-full border border-accent/30 bg-accent/10 px-2 py-0.5 text-[10px] font-medium text-accent">
+            Pro
           </div>
         </div>
 
         {/* Stats row */}
         <div className="grid grid-cols-3 gap-2">
-          {(
-            [
-              ["KDA", "4.2"],
-              ["Win Rate", "58%"],
-              ["CS/min", "7.2"],
-            ] as [string, string][]
-          ).map(([label, value]) => (
-            <div
-              key={label}
-              className="rounded-lg border border-border bg-surface-2 p-2 text-center"
-            >
+          {([["KDA", "6.8"], ["Win Rate", "68%"], ["CS/min", "9.4"]] as [string, string][]).map(([label, value]) => (
+            <div key={label} className="rounded-lg border border-border bg-surface-2 p-2 text-center">
               <div className="text-sm font-bold text-accent">{value}</div>
-              <div className="text-xs text-text-muted">{label}</div>
+              <div className="text-[10px] text-text-muted">{label}</div>
             </div>
           ))}
         </div>
 
+        {/* Match row */}
+        <div className="flex items-center gap-2 rounded-lg border border-success/20 bg-success/5 px-3 py-2">
+          <div className="h-8 w-8 shrink-0 rounded-md bg-accent/20" />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold text-text">Orianna</p>
+            <p className="text-[10px] text-text-muted">9/1/14 · 4.8 KDA · Mid</p>
+          </div>
+          <div className="flex flex-col gap-0.5">
+            <div className="flex gap-0.5">
+              <div className="h-4 w-4 rounded-sm bg-surface-2 ring-1 ring-border" />
+              <div className="h-4 w-4 rounded-sm bg-surface-2 ring-1 ring-border" />
+            </div>
+            <div className="flex gap-0.5">
+              <div className="h-4 w-4 rounded-full bg-accent/20 ring-1 ring-accent/30" />
+              <div className="h-4 w-4 rounded-full bg-surface-2 ring-1 ring-border" />
+            </div>
+          </div>
+          <div className="text-[10px] font-medium text-success ml-1">Victory</div>
+        </div>
+
         {/* AI insight */}
         <div className="rounded-lg border border-accent/30 bg-accent/5 p-3">
-          <p className="mb-1.5 text-xs font-bold text-accent">🤖 AI Coach Insight</p>
+          <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-accent">AI Coach Insight</p>
           <p className="text-xs leading-relaxed text-text-muted">
-            &ldquo;Your vision score (18/game) is 34% below Gold average. Prioritize ward placement
-            in river and enemy jungle entrances during mid-game transitions.&rdquo;
+            &ldquo;Your mid-game roaming is 38% more impactful than last week. Keep prioritizing
+            vision before objectives — your ward coverage is Challenger-level.&rdquo;
           </p>
         </div>
       </div>
@@ -73,15 +87,16 @@ export function HeroSection() {
           {/* Copy */}
           <div className="space-y-6">
             <div className="inline-flex items-center rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
-              AI-Powered League of Legends Coaching
+              AI-Powered · Match Analysis · Climb Faster
             </div>
             <h1 className="font-display text-4xl font-bold leading-tight text-text md:text-5xl lg:text-6xl">
-              Your AI Coach is{" "}
-              <span className="text-accent">Watching Your Games</span>
+              Your Personal{" "}
+              <span className="text-accent">AI Coach</span>{" "}
+              for League
             </h1>
             <p className="text-lg leading-relaxed text-text-muted">
-              Connect your Riot account. Get specific, honest feedback on what&rsquo;s holding you
-              back. Stop being hardstuck.
+              Connect your Riot account. Get specific, honest feedback on every game — not generic
+              Bronze tips. Track your ranked progress and stop being hardstuck.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link
@@ -98,6 +113,20 @@ export function HeroSection() {
               </Link>
             </div>
             <p className="text-xs text-text-muted">No credit card required · Free tier available</p>
+
+            {/* Quick stats */}
+            <div className="flex gap-6 border-t border-border pt-6">
+              {([
+                ["Match Analysis", "Deep stats every game"],
+                ["AI Reports", "Session & Climb roadmap"],
+                ["Tilt Detection", "Mental game tracking"],
+              ] as [string, string][]).map(([title, sub]) => (
+                <div key={title}>
+                  <p className="text-xs font-semibold text-text">{title}</p>
+                  <p className="text-[11px] text-text-muted">{sub}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Mockup */}

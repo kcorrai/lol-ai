@@ -1,21 +1,66 @@
 import Link from "next/link";
+import { Share2, TrendingUp, Zap } from "lucide-react";
+
+const HIGHLIGHTS = [
+  {
+    icon: Zap,
+    label: "Instant Analysis",
+    description: "Sync your account once, get insights in seconds.",
+  },
+  {
+    icon: TrendingUp,
+    label: "Climb Faster",
+    description: "Know exactly what to fix before your next session.",
+  },
+  {
+    icon: Share2,
+    label: "Share Your Reports",
+    description: "Share coaching reports with your friends or coach.",
+  },
+];
 
 export function TestimonialsSection() {
   return (
     <section className="py-20">
-      <div className="mx-auto max-w-2xl px-6 text-center">
-        <h2 className="font-display text-3xl font-bold text-text md:text-4xl">
-          Be Among the First
-        </h2>
-        <p className="mt-4 text-text-muted">
-          We&apos;re in early beta. Join now and help shape the product — free while we build.
-        </p>
-        <Link
-          href="/register"
-          className="mt-8 inline-block rounded-md bg-accent px-8 py-3 text-sm font-semibold text-background transition-opacity hover:opacity-90"
-        >
-          Join the Beta — It&apos;s Free
-        </Link>
+      <div className="mx-auto max-w-5xl px-6">
+        <div className="mb-12 text-center">
+          <h2 className="font-display text-3xl font-bold text-text md:text-4xl">
+            Built for Players Who Want to Improve
+          </h2>
+          <p className="mt-4 text-text-muted">
+            Not vague advice. Not generic guides. Your data, your mistakes, your path up.
+          </p>
+        </div>
+
+        <div className="mb-12 grid gap-4 sm:grid-cols-3">
+          {HIGHLIGHTS.map(({ icon: Icon, label, description }) => (
+            <div key={label} className="rounded-xl border border-border bg-surface p-5 text-center">
+              <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
+                <Icon className="h-5 w-5 text-accent" />
+              </div>
+              <p className="font-semibold text-text">{label}</p>
+              <p className="mt-1 text-sm text-text-muted">{description}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center">
+          <p className="mb-2 text-xs font-medium uppercase tracking-widest text-text-muted">
+            Early Access
+          </p>
+          <h3 className="font-display text-2xl font-bold text-text">
+            Join Now — Free While We&apos;re in Beta
+          </h3>
+          <p className="mt-3 text-sm text-text-muted">
+            Help shape the product. Free tier always available.
+          </p>
+          <Link
+            href="/register"
+            className="mt-6 inline-block rounded-md bg-accent px-8 py-3 text-sm font-semibold text-background transition-opacity hover:opacity-90"
+          >
+            Get Started Free
+          </Link>
+        </div>
       </div>
     </section>
   );
