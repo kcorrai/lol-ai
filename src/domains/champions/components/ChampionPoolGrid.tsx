@@ -13,7 +13,15 @@ function winRateVariant(wr: number): "success" | "warning" | "destructive" {
   return "destructive";
 }
 
-function ChampionCard({ entry, riotAccountId }: { entry: ChampionPoolEntry; riotAccountId?: string }) {
+function ChampionCard({
+  entry,
+  riotAccountId,
+  onDeepDive,
+}: {
+  entry: ChampionPoolEntry;
+  riotAccountId?: string;
+  onDeepDive?: (name: string) => void;
+}) {
   return (
     <div
       className={`relative rounded-lg border bg-surface-2 p-4 transition-colors ${
@@ -66,7 +74,17 @@ function ChampionCard({ entry, riotAccountId }: { entry: ChampionPoolEntry; riot
       </div>
       {riotAccountId && (
         <>
-          <ChampionFocusButton riotAccountId={riotAccountId} championName={entry.championName} />
+          <div className="mt-3 flex items-center gap-2">
+            {onDeepDive && (
+              <button
+                onClick={() => onDeepDive(entry.championName)}
+                className="flex-1 rounded-md border border-border px-2 py-1 text-xs font-medium text-text-muted transition-colors hover:border-accent/50 hover:text-accent"
+              >
+                Deep Dive
+              </button>
+            )}
+            <ChampionFocusButton riotAccountId={riotAccountId} championName={entry.championName} />
+          </div>
           <CounterPickCard riotAccountId={riotAccountId} championName={entry.championName} />
         </>
       )}
@@ -92,9 +110,10 @@ interface Props {
   entries: ChampionPoolEntry[];
   isLoading: boolean;
   riotAccountId?: string;
+  onDeepDive?: (championName: string) => void;
 }
 
-export function ChampionPoolGrid({ entries, isLoading, riotAccountId }: Props) {
+export function ChampionPoolGrid({ entries, isLoading, riotAccountId, onDeepDive }: Props) {
   if (isLoading) {
     return (
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -119,7 +138,12 @@ export function ChampionPoolGrid({ entries, isLoading, riotAccountId }: Props) {
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {entries.map((entry) => (
-        <ChampionCard key={entry.championId} entry={entry} riotAccountId={riotAccountId} />
+        <ChampionCard
+          key={entry.championId}
+          entry={entry}
+          riotAccountId={riotAccountId}
+          onDeepDive={onDeepDive}
+        />
       ))}
     </div>
   );

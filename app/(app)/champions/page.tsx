@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Gamepad2, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { ChampionPoolGrid } from "@/domains/champions/components/ChampionPoolGrid";
+import { ChampionDeepDiveModal } from "@/domains/champions/components/ChampionDeepDiveModal";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { useChampionPool } from "@/hooks/useChampionPool";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -18,6 +20,7 @@ export default function ChampionsPage() {
   const { data: sub } = useSubscription();
   const primaryId = accounts?.[0]?.id ?? null;
   const { data: pool = [], isLoading: poolLoading } = useChampionPool(primaryId);
+  const [deepDiveChampion, setDeepDiveChampion] = useState<string | null>(null);
 
   const isPro = sub?.plan === "pro" || sub?.plan === "elite";
 
@@ -69,7 +72,20 @@ export default function ChampionsPage() {
         )}
       </p>
 
-      <ChampionPoolGrid entries={visiblePool} isLoading={poolLoading} riotAccountId={primaryId ?? undefined} />
+      {primaryId && deepDiveChampion && (
+        <ChampionDeepDiveModal
+          riotAccountId={primaryId}
+          championName={deepDiveChampion}
+          onClose={() => setDeepDiveChampion(null)}
+        />
+      )}
+
+      <ChampionPoolGrid
+        entries={visiblePool}
+        isLoading={poolLoading}
+        riotAccountId={primaryId ?? undefined}
+        onDeepDive={setDeepDiveChampion}
+      />
 
       {/* Viral CTA — share best champion (visible to all, Pro or Free) */}
       {best && !poolLoading && (

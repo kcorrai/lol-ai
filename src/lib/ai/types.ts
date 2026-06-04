@@ -12,10 +12,21 @@ export interface AiCompletionResult {
   latencyMs: number;
 }
 
+export interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
 export interface AiProvider {
   complete(
     systemPrompt: string,
     userMessage: string,
     options?: AiCompletionOptions
   ): Promise<AiCompletionResult>;
+
+  streamChat(
+    systemPrompt: string,
+    messages: ChatMessage[],
+    options?: Pick<AiCompletionOptions, "maxTokens" | "temperature">
+  ): AsyncGenerator<string, void, unknown>;
 }

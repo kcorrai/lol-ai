@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import type { AiProvider, AiCompletionOptions, AiCompletionResult } from "@/lib/ai/types";
+import type { AiProvider, AiCompletionOptions, AiCompletionResult, ChatMessage } from "@/lib/ai/types";
 
 // Default model — update here when upgrading; nowhere else needs to change.
 const DEFAULT_MODEL = "gpt-4o";
@@ -45,6 +45,28 @@ export function createOpenAiProvider(): AiProvider {
         totalTokens: usage?.total_tokens ?? 0,
         latencyMs,
       };
+    },
+
+    async *streamChat(
+      systemPrompt: string,
+      messages: ChatMessage[],
+      options: Pick<AiCompletionOptions, "maxTokens" | "temperature"> = {}
+    ): AsyncGenerator<string, void, unknown> {
+      const stream = await client.chat.completions.create({
+        model: DEFAULT_MODEL,
+        messages: [
+          { role: "system", content: systemPrompt },
+          ...messages,
+        ],
+        max_tokens: options.maxTokens ?? 600,
+        temperature: options.temperature ?? 0.7,
+        stream: true,
+      });
+
+      for await (const chunk of stream) {
+        const token = chunk.choices[0]?.delta?.content;
+        if (token) yield token;
+      }
     },
   };
 }
