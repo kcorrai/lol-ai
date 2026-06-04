@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
 import { Errors } from "@/lib/api/errors";
 import { isDataStale, invalidateAccountCache } from "@/lib/riot/lifecycle";
+import { inngest } from "@/inngest/client";
 import {
   getMatchIds,
   getMatch,
@@ -163,6 +164,13 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   refreshChampionStats(account.id).catch((err) =>
     logger.warn("[sync] Champion cache refresh failed", err)
   );
+
+  // Auto session review: fire event when 3+ new matches detected (non-blocking)
+  if (newCount >= 3) {
+    inngest
+      .send({ name: "match/session.synced", data: { riotAccountId: account.id } })
+      .catch((err) => logger.warn("[sync] Failed to fire session.synced event", err));
+  }
 
   logger.info(
     `[sync] Done: +${newCount} new, ${skipped} skipped, ${errors.length} errors, ranked=${rankedSnapshotted}`
