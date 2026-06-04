@@ -6,12 +6,17 @@
   "functions": {
     "app/api/coaching/generate/route.ts": { "maxDuration": 15 },
     "app/api/inngest/route.ts": { "maxDuration": 300 },
-    "app/api/cron/weekly-report/route.ts": { "maxDuration": 300 }
+    "app/api/cron/weekly-report/route.ts": { "maxDuration": 300 },
+    "app/api/cron/monthly-milestone/route.ts": { "maxDuration": 300 }
   },
   "crons": [
     {
       "path": "/api/cron/weekly-report",
       "schedule": "0 9 * * 1"
+    },
+    {
+      "path": "/api/cron/monthly-milestone",
+      "schedule": "0 9 1 * *"
     }
   ],
   "env": {
