@@ -169,12 +169,14 @@ export default function DashboardPage() {
               <ImprovementPlanWidget riotAccountId={primaryId} />
               <WinrateTrendWidget matches={profile?.recentMatches} isLoading={profileLoading} />
               <PerformanceTrendChart matches={profile?.recentMatches} isLoading={profileLoading} />
-              <div>
-                <SectionLabel>Recent Matches</SectionLabel>
-                <RecentMatchList matches={profile?.recentMatches} isLoading={profileLoading} />
-              </div>
             </div>
           </div>
+
+          {/* ── Recent Matches — full width ────────────────────────────── */}
+          <section>
+            <SectionLabel>Recent Matches</SectionLabel>
+            <RecentMatchList matches={profile?.recentMatches} isLoading={profileLoading} />
+          </section>
         </>
       )}
 
