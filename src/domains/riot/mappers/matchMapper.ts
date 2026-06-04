@@ -113,6 +113,17 @@ export function mapMatch(
   const gameStart = new Date(dto.info.gameCreation);
   const gameEnd = new Date(dto.info.gameCreation + durationSeconds * 1000);
 
+  const teamObjectives: Record<string, { towers: number; dragons: number; barons: number; inhibitors: number; heralds: number }> = {};
+  for (const t of dto.info.teams) {
+    teamObjectives[String(t.teamId)] = {
+      towers:    t.objectives?.tower?.kills     ?? 0,
+      dragons:   t.objectives?.dragon?.kills    ?? 0,
+      barons:    t.objectives?.baron?.kills     ?? 0,
+      inhibitors: t.objectives?.inhibitor?.kills ?? 0,
+      heralds:   t.objectives?.riftHerald?.kills ?? 0,
+    };
+  }
+
   const match: Prisma.MatchCreateInput = {
     id: matchDbId,
     matchId: dto.metadata.matchId,
@@ -125,6 +136,7 @@ export function mapMatch(
     gameEnd,
     gameVersion: dto.info.gameVersion,
     winningTeam,
+    teamObjectives,
     rawDataHash: rawHash,
   };
 

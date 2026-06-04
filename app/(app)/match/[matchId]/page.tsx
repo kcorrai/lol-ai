@@ -2,6 +2,8 @@
 
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -11,36 +13,73 @@ import { useMatchDetail } from "@/hooks/useMatchDetail";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { ItemIcon } from "@/components/ui/ItemIcon";
 import { SummonerSpellIcon } from "@/components/ui/SummonerSpellIcon";
-import type { ParticipantDetail, AiInsight, MatchDetail } from "@/domains/match";
+import { runePathIconUrl, keystoneIconUrl } from "@/lib/ddragon";
+import type { ParticipantDetail, AiInsight, MatchDetail, TeamObjectives } from "@/domains/match";
 
-function fmt(n: number, decimals = 1): string { return n.toFixed(decimals); }
-function fmtK(n: number): string { return n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n); }
+function fmt(n: number, d = 1) { return n.toFixed(d); }
+function fmtK(n: number) { return n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n); }
 
-function TeamHeader({ team, won }: { team: ParticipantDetail[]; won: boolean }) {
-  const totalKills  = team.reduce((s, p) => s + p.kills, 0);
-  const totalDmg    = team.reduce((s, p) => s + p.damageDealt, 0);
-  const totalGold   = team.reduce((s, p) => s + p.goldEarned, 0);
-  const totalCS     = team.reduce((s, p) => s + p.cs, 0);
+function RuneIcons({ keystone, secondaryPath }: { keystone: number | null; secondaryPath: number | null }) {
+  const [k1err, setK1err] = useState(false);
+  const [k2err, setK2err] = useState(false);
+  const kUrl = keystone ? keystoneIconUrl(keystone) : "";
+  const sUrl = secondaryPath ? runePathIconUrl(secondaryPath) : "";
+  return (
+    <div className="flex shrink-0 flex-col gap-0.5">
+      {kUrl && !k1err ? (
+        <Image src={kUrl} alt="keystone" width={16} height={16} className="rounded-sm" onError={() => setK1err(true)} unoptimized />
+      ) : <span className="h-4 w-4 rounded-sm bg-surface-2" />}
+      {sUrl && !k2err ? (
+        <Image src={sUrl} alt="secondary rune" width={16} height={16} className="rounded-sm opacity-70" onError={() => setK2err(true)} unoptimized />
+      ) : <span className="h-4 w-4 rounded-sm bg-surface-2" />}
+    </div>
+  );
+}
+
+function ObjectivePip({ icon, count, label }: { icon: string; count: number; label: string }) {
+  return (
+    <span title={label} className="flex items-center gap-1 text-xs">
+      <span>{icon}</span>
+      <span className="font-semibold text-text">{count}</span>
+    </span>
+  );
+}
+
+function TeamHeader({ team, won, objectives }: { team: ParticipantDetail[]; won: boolean; objectives: TeamObjectives | null }) {
+  const totalKills = team.reduce((s, p) => s + p.kills, 0);
+  const totalDmg   = team.reduce((s, p) => s + p.damageDealt, 0);
+  const totalGold  = team.reduce((s, p) => s + p.goldEarned, 0);
+  const totalCS    = team.reduce((s, p) => s + p.cs, 0);
 
   return (
-    <div className={`flex flex-wrap items-center justify-between gap-3 rounded-t-lg border-b border-border px-4 py-2 ${won ? "bg-success/10" : "bg-danger/10"}`}>
+    <div className={`flex flex-wrap items-center justify-between gap-3 rounded-t-lg border-b border-border px-4 py-2.5 ${won ? "bg-success/10" : "bg-danger/10"}`}>
       <span className={`text-xs font-bold uppercase tracking-widest ${won ? "text-success" : "text-danger"}`}>
         {won ? "Victory" : "Defeat"}
       </span>
-      <div className="flex gap-5 text-xs text-text-muted">
+      <div className="flex flex-wrap gap-4 text-xs text-text-muted">
         <span><span className="font-semibold text-text">{totalKills}</span> Kills</span>
-        <span><span className="font-semibold text-text">{fmtK(totalDmg)}</span> Damage</span>
+        <span><span className="font-semibold text-text">{fmtK(totalDmg)}</span> Dmg</span>
         <span><span className="font-semibold text-text">{fmtK(totalGold)}</span> Gold</span>
         <span><span className="font-semibold text-text">{totalCS}</span> CS</span>
+        {objectives && (
+          <>
+            <ObjectivePip icon="🏰" count={objectives.towers}    label="Towers" />
+            <ObjectivePip icon="🐉" count={objectives.dragons}   label="Dragons" />
+            <ObjectivePip icon="👁️" count={objectives.heralds}   label="Rift Heralds" />
+            <ObjectivePip icon="💀" count={objectives.barons}    label="Barons" />
+            <ObjectivePip icon="🔴" count={objectives.inhibitors} label="Inhibitors" />
+          </>
+        )}
       </div>
     </div>
   );
 }
 
-function TeamTable({ participants, teamId, userRiotAccountId }: {
+function TeamTable({ participants, teamId, userRiotAccountId, objectives }: {
   participants: ParticipantDetail[];
   teamId: number;
   userRiotAccountId: string | null;
+  objectives: TeamObjectives | null;
 }) {
   const team = participants.filter((p) => p.teamId === teamId);
   const won = team[0]?.won ?? false;
@@ -49,7 +88,7 @@ function TeamTable({ participants, teamId, userRiotAccountId }: {
 
   return (
     <div className="overflow-hidden rounded-lg border border-border">
-      <TeamHeader team={team} won={won} />
+      <TeamHeader team={team} won={won} objectives={objectives} />
       <div className="overflow-x-auto">
         <table className="w-full text-xs">
           <thead>
@@ -70,13 +109,13 @@ function TeamTable({ participants, teamId, userRiotAccountId }: {
               const kp = Math.round(p.killParticipation * 100);
               return (
                 <tr key={p.id} className={`border-b border-border last:border-0 ${isUser ? "bg-accent/10" : "bg-surface"}`}>
-                  {/* Champion */}
                   <td className="px-3 py-2.5">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <div className="flex shrink-0 flex-col gap-0.5">
                         <SummonerSpellIcon spellId={p.summonerSpell1} size={16} />
                         <SummonerSpellIcon spellId={p.summonerSpell2} size={16} />
                       </div>
+                      <RuneIcons keystone={p.runePrimaryKeystone} secondaryPath={p.runeSecondaryPath} />
                       <ChampionIcon name={p.championName} size={32} className="shrink-0" />
                       <div className="min-w-0">
                         <p className={`truncate font-medium ${isUser ? "text-accent" : "text-text"}`}>{p.championName}</p>
@@ -84,19 +123,14 @@ function TeamTable({ participants, teamId, userRiotAccountId }: {
                       </div>
                     </div>
                   </td>
-                  {/* KDA + KP */}
                   <td className="px-3 py-2.5 text-center">
-                    <p className="font-semibold text-text">
-                      {p.kills}/<span className="text-danger">{p.deaths}</span>/{p.assists}
-                    </p>
+                    <p className="font-semibold text-text">{p.kills}/<span className="text-danger">{p.deaths}</span>/{p.assists}</p>
                     <p className="text-[10px] text-text-muted">{kp}% KP</p>
                   </td>
-                  {/* CS + CS/min */}
                   <td className="px-3 py-2.5 text-center">
                     <p className="text-text">{p.cs}</p>
                     <p className="text-[10px] text-text-muted">{fmt(p.csPerMinute)}/m</p>
                   </td>
-                  {/* Damage Dealt */}
                   <td className="px-3 py-2.5">
                     <div className="flex flex-col items-end gap-0.5">
                       <span className="text-text">{fmtK(p.damageDealt)}</span>
@@ -105,7 +139,6 @@ function TeamTable({ participants, teamId, userRiotAccountId }: {
                       </div>
                     </div>
                   </td>
-                  {/* Damage Taken */}
                   <td className="px-3 py-2.5">
                     <div className="flex flex-col items-end gap-0.5">
                       <span className="text-text-muted">{fmtK(p.damageTaken)}</span>
@@ -114,11 +147,8 @@ function TeamTable({ participants, teamId, userRiotAccountId }: {
                       </div>
                     </div>
                   </td>
-                  {/* Gold */}
                   <td className="px-3 py-2.5 text-center text-text-muted">{fmtK(p.goldEarned)}</td>
-                  {/* Vision */}
                   <td className="px-3 py-2.5 text-center text-text">{p.visionScore}</td>
-                  {/* Items */}
                   <td className="px-3 py-2.5">
                     <div className="flex gap-0.5">
                       {(p.itemIds ?? []).slice(0, 6).map((id, i) => <ItemIcon key={i} itemId={id} size={28} />)}
@@ -226,8 +256,16 @@ export default function MatchDetailPage() {
       <PerformanceCards match={match} />
 
       <div className="space-y-4">
-        <TeamTable participants={match.participants} teamId={100} userRiotAccountId={match.userRiotAccountId} />
-        <TeamTable participants={match.participants} teamId={200} userRiotAccountId={match.userRiotAccountId} />
+        <TeamTable
+          participants={match.participants} teamId={100}
+          userRiotAccountId={match.userRiotAccountId}
+          objectives={match.teamObjectives?.["100"] ?? null}
+        />
+        <TeamTable
+          participants={match.participants} teamId={200}
+          userRiotAccountId={match.userRiotAccountId}
+          objectives={match.teamObjectives?.["200"] ?? null}
+        />
       </div>
 
       <AiInsightSection insight={match.aiInsight} />

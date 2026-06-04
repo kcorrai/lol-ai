@@ -30,6 +30,9 @@ export type ParticipantDetail = {
   itemIds: number[];
   summonerSpell1: number;
   summonerSpell2: number;
+  runePrimaryKeystone: number | null;
+  runePrimaryPath: number | null;
+  runeSecondaryPath: number | null;
 };
 
 export type AiInsight = {
@@ -39,6 +42,14 @@ export type AiInsight = {
   weaknesses: unknown;
 } | null;
 
+export type TeamObjectives = {
+  towers: number;
+  dragons: number;
+  barons: number;
+  inhibitors: number;
+  heralds: number;
+};
+
 export type MatchDetail = {
   id: string;
   matchId: string;
@@ -47,6 +58,7 @@ export type MatchDetail = {
   gameDuration: number;
   gameStart: string;
   winningTeam: number;
+  teamObjectives: Record<string, TeamObjectives> | null;
   participants: ParticipantDetail[];
   userRiotAccountId: string | null;
   aiInsight: AiInsight;
@@ -111,6 +123,9 @@ export async function getMatchDetail(
       itemIds: p.itemIds,
       summonerSpell1: p.summonerSpell1,
       summonerSpell2: p.summonerSpell2,
+      runePrimaryKeystone: p.runePrimaryKeystone,
+      runePrimaryPath: p.runePrimaryPath,
+      runeSecondaryPath: p.runeSecondaryPath,
     };
   });
 
@@ -140,6 +155,7 @@ export async function getMatchDetail(
     gameDuration: match.gameDuration,
     gameStart: match.gameStart.toISOString(),
     winningTeam: match.winningTeam,
+    teamObjectives: (match.teamObjectives as Record<string, TeamObjectives> | null) ?? null,
     participants,
     userRiotAccountId: riotAccount?.id ?? null,
     aiInsight,

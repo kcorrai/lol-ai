@@ -243,8 +243,9 @@ model Match {
   gameStart    DateTime
   gameEnd      DateTime
   gameVersion  String
-  winningTeam  Int
-  rawDataHash  String
+  winningTeam     Int
+  teamObjectives  Json?
+  rawDataHash     String
   createdAt    DateTime  @default(now())
 
   participants MatchParticipant[]
