@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { ItemIcon } from "@/components/ui/ItemIcon";
-import { roleIconUrl } from "@/lib/ddragon";
+import { roleIconUrl, summonerSpellUrl, keystoneIconUrl, runePathIconUrl } from "@/lib/ddragon";
 import type { MatchPerformance } from "@/domains/analysis/types/analysis.types";
 
 interface Props {
@@ -65,6 +65,16 @@ function MatchRow({ match }: { match: MatchPerformance }) {
     >
       <div className={`h-12 w-1 shrink-0 rounded-full ${match.won ? "bg-success" : "bg-danger"}`} />
       <ChampionIcon name={match.champion} size={48} className="shrink-0" />
+      <div className="hidden shrink-0 flex-col gap-0.5 sm:flex">
+        <div className="flex gap-0.5">
+          {summonerSpellUrl(match.summonerSpell1) && <Image src={summonerSpellUrl(match.summonerSpell1)} alt="spell1" width={20} height={20} unoptimized className="rounded-sm" />}
+          {summonerSpellUrl(match.summonerSpell2) && <Image src={summonerSpellUrl(match.summonerSpell2)} alt="spell2" width={20} height={20} unoptimized className="rounded-sm" />}
+        </div>
+        <div className="flex gap-0.5">
+          {match.runePrimaryKeystone && keystoneIconUrl(match.runePrimaryKeystone) && <Image src={keystoneIconUrl(match.runePrimaryKeystone)} alt="keystone" width={20} height={20} unoptimized className="rounded-full" />}
+          {match.runeSecondaryPath && runePathIconUrl(match.runeSecondaryPath) && <Image src={runePathIconUrl(match.runeSecondaryPath)} alt="rune-path" width={20} height={20} unoptimized className="rounded-full opacity-70" />}
+        </div>
+      </div>
       <div className="w-28 shrink-0">
         <p className="text-sm font-semibold text-text">{match.champion}</p>
         <p className="text-xs text-text-muted">{ROLE_SHORT[match.position] ?? match.position}</p>
@@ -81,6 +91,13 @@ function MatchRow({ match }: { match: MatchPerformance }) {
       <div className="hidden w-28 shrink-0 text-xs text-text-muted sm:block">
         <p>{match.csPerMinute.toFixed(1)} CS/min</p>
         <p>{match.visionScore} vision · {match.gameDurationMinutes}m</p>
+        {match.teamObjectives && (
+          <p className="text-text-muted/70">
+            <span className="text-blue-400">D</span>:{match.teamObjectives.dragons}{" "}
+            <span className="text-purple-400">B</span>:{match.teamObjectives.barons}{" "}
+            <span className="text-yellow-500">T</span>:{match.teamObjectives.towers}
+          </p>
+        )}
         <p className="mt-0.5 text-text-muted/70">{timeAgo(match.gameStart)}</p>
       </div>
       {match.itemIds?.length > 0 && (

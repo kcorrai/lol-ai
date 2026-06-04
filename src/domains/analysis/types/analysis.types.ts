@@ -35,6 +35,17 @@ export interface MatchPerformance {
   notableEvents: string[];
   itemIds: number[];
   gameStart: string;
+  summonerSpell1: number;
+  summonerSpell2: number;
+  runePrimaryKeystone: number | null;
+  runeSecondaryPath: number | null;
+  teamObjectives: {
+    towers: number;
+    dragons: number;
+    barons: number;
+    inhibitors: number;
+    heralds: number;
+  } | null;
 }
 
 export type RankUpLevel = "high" | "moderate" | "low";

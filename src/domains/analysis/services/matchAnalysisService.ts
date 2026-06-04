@@ -68,6 +68,15 @@ export async function getPlayerPerformanceProfile(
       ),
       itemIds: p.itemIds,
       gameStart: p.match.gameStart.toISOString(),
+      summonerSpell1: p.summonerSpell1,
+      summonerSpell2: p.summonerSpell2,
+      runePrimaryKeystone: p.runePrimaryKeystone,
+      runeSecondaryPath: p.runeSecondaryPath,
+      teamObjectives: (() => {
+        type ObjMap = Record<string, { towers: number; dragons: number; barons: number; inhibitors: number; heralds: number }>;
+        const raw = p.match.teamObjectives as ObjMap | null;
+        return raw?.[String(p.teamId)] ?? null;
+      })(),
     });
   }
 
