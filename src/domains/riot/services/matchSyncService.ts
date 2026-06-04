@@ -109,7 +109,9 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   // ── Ranked snapshot ────────────────────────────────────────────────────────
   let rankedSnapshotted = false;
   if (!account.summonerId) {
-    logger.warn(`[sync] Skipping ranked snapshot — summonerId missing for ${account.gameName}#${account.tagLine}`);
+    const msg = "Ranked data unavailable — summonerId missing. Reconnect your account.";
+    logger.warn(`[sync] ${msg} (${account.gameName}#${account.tagLine})`);
+    errors.push(msg);
   } else {
     try {
       const entries = await getRankedEntries(account.summonerId, account.region);
@@ -151,7 +153,6 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
           },
         });
 
-        // Fire rank change event when tier or division shifted (LP-only moves are skipped in the handler)
         if (lastSnapshot) {
           inngest
             .send({
@@ -171,7 +172,9 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
       }
       rankedSnapshotted = true;
     } catch (err) {
-      logger.warn("[sync] Ranked snapshot failed", err);
+      const msg = `Ranked sync failed: ${err instanceof Error ? err.message : String(err)}`;
+      logger.warn(`[sync] ${msg}`);
+      errors.push(msg);
     }
   }
 
