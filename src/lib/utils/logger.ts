@@ -11,12 +11,24 @@ interface LogEntry {
   timestamp: string;
 }
 
+function serializeData(data: unknown): unknown {
+  if (data instanceof Error) {
+    return {
+      name: data.name,
+      message: data.message,
+      stack: data.stack,
+      ...data,
+    };
+  }
+  return data;
+}
+
 function log(level: LogLevel, message: string, data?: unknown): void {
   const entry: LogEntry = {
     level,
     message,
     requestId: getRequestId(),
-    data,
+    data: serializeData(data),
     timestamp: new Date().toISOString(),
   };
 
