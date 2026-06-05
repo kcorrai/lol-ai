@@ -157,6 +157,33 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
     });
   }
 
+  // ── Backfill participant ranks for existing matches with missing rank data ──
+  // Runs after new match ingestion. Finds up to 15 ranked solo matches for this
+  // account that still have participants without rank data, and enriches them.
+  try {
+    const unrankedMatches = await prisma.match.findMany({
+      where: {
+        queueType: "RANKED_SOLO_5x5",
+        participants: {
+          some: { riotAccountId: account.id, rankTier: null },
+        },
+      },
+      select: { id: true, participants: { select: { puuid: true } } },
+      take: 15,
+    });
+
+    for (const m of unrankedMatches) {
+      const puuids = m.participants.map((p) => p.puuid);
+      await enrichParticipantRanks(m.id, puuids, account.region);
+    }
+
+    if (unrankedMatches.length > 0) {
+      logger.info(`[sync] Backfilled ranks for ${unrankedMatches.length} existing matches`);
+    }
+  } catch (err) {
+    logger.warn(`[sync] Rank backfill failed: ${err instanceof Error ? err.message : String(err)}`);
+  }
+
   // ── Ranked snapshot ────────────────────────────────────────────────────────
   // Auto-repair summonerId if it was missing (e.g. accounts connected before this field was added)
   if (!account.summonerId) {
