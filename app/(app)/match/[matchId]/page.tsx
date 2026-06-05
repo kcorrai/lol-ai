@@ -14,6 +14,8 @@ import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { ItemIcon } from "@/components/ui/ItemIcon";
 import { SummonerSpellIcon } from "@/components/ui/SummonerSpellIcon";
 import { runePathIconUrl, keystoneIconUrl } from "@/lib/ddragon";
+import { BuildExplanationPanel } from "@/domains/match/components/BuildExplanationPanel";
+import { useSubscription } from "@/hooks/useSubscription";
 import type { ParticipantDetail, AiInsight, MatchDetail, TeamObjectives } from "@/domains/match";
 
 function fmt(n: number, d = 1) { return n.toFixed(d); }
@@ -227,6 +229,8 @@ function AiInsightSection({ insight }: { insight: AiInsight }) {
 export default function MatchDetailPage() {
   const { matchId } = useParams<{ matchId: string }>();
   const { data: match, isLoading, error } = useMatchDetail(matchId);
+  const { data: subscription } = useSubscription();
+  const isPro = subscription?.plan === "pro" || subscription?.plan === "elite";
 
   if (isLoading) return <PageSkeleton />;
   if (error || !match) {
@@ -269,6 +273,20 @@ export default function MatchDetailPage() {
       </div>
 
       <AiInsightSection insight={match.aiInsight} />
+
+      {(() => {
+        const userP = match.participants.find(
+          (p) => p.riotAccountId === match.userRiotAccountId
+        );
+        if (!userP) return null;
+        return (
+          <BuildExplanationPanel
+            matchId={match.id}
+            puuid={userP.puuid}
+            isPro={isPro}
+          />
+        );
+      })()}
     </div>
   );
 }
