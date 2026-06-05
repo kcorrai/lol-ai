@@ -155,7 +155,7 @@ export default function DashboardPage() {
 
           {/* ── AI Coaching Actions ────────────────────────────────────── */}
           <div>
-            <SectionLabel>Generate AI Report</SectionLabel>
+            <p className="mb-3 text-sm font-semibold text-text">Generate AI Report</p>
             <CoachingActionsCard
               onSessionReview={handleGenerate}
               onClimbRoadmap={handleClimbRoadmap}

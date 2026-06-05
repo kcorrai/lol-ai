@@ -54,7 +54,7 @@ export function RecentMatchesSummaryCard({ profile, isLoading }: RecentMatchesSu
         Son {profile.gamesAnalyzed} Maç Performansı
       </p>
 
-      <div className="mb-4 flex flex-wrap gap-6">
+      <div className="mb-4 grid grid-cols-3 gap-4">
         <StatItem label="KDA" value={kda} />
         <StatItem label="CS/dk" value={cs} />
         <StatItem label="Win Rate" value={`${wr}%`} highlight={wr >= 50} />
@@ -87,9 +87,9 @@ export function RecentMatchesSummaryCard({ profile, isLoading }: RecentMatchesSu
 
 function StatItem({ label, value, highlight = false }: { label: string; value: string; highlight?: boolean }) {
   return (
-    <div>
-      <p className="text-xs text-text-muted">{label}</p>
-      <p className={cn("text-lg font-bold", highlight ? "text-green-400" : "text-text")}>{value}</p>
+    <div className="rounded-lg bg-surface-2 px-4 py-3">
+      <p className="mb-1 text-xs text-text-muted">{label}</p>
+      <p className={cn("text-2xl font-bold", highlight ? "text-green-400" : "text-text")}>{value}</p>
     </div>
   );
 }

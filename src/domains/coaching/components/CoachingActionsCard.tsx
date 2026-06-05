@@ -15,32 +15,32 @@ export function CoachingActionsCard({ onSessionReview, onClimbRoadmap, isPending
       <button
         onClick={onSessionReview}
         disabled={isPending || isDisabled}
-        className="group flex items-center gap-4 rounded-xl border border-accent/30 bg-accent/5 p-4 text-left transition-colors hover:border-accent/60 hover:bg-accent/10 disabled:cursor-not-allowed disabled:opacity-50"
+        className="group flex items-center gap-4 rounded-xl border-2 border-accent/50 bg-accent/8 p-5 text-left transition-colors hover:border-accent hover:bg-accent/15 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent/20 text-accent transition-colors group-hover:bg-accent/30">
-          <BarChart2 className="h-5 w-5" />
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent/25 text-accent transition-colors group-hover:bg-accent/40">
+          <BarChart2 className="h-6 w-6" />
         </div>
         <div>
-          <p className="font-semibold text-text">
+          <p className="text-base font-bold text-text">
             {isPending ? "Generating…" : "Session Review"}
           </p>
-          <p className="text-xs text-text-muted">Analyze your last 5 games with AI</p>
+          <p className="mt-0.5 text-sm text-text-muted">Son 5 maçını AI ile analiz et</p>
         </div>
       </button>
 
       <button
         onClick={onClimbRoadmap}
         disabled={isPending || isDisabled}
-        className="group flex items-center gap-4 rounded-xl border border-border bg-surface-2 p-4 text-left transition-colors hover:border-accent/40 hover:bg-surface-2/80 disabled:cursor-not-allowed disabled:opacity-50"
+        className="group flex items-center gap-4 rounded-xl border-2 border-border bg-surface-2 p-5 text-left transition-colors hover:border-accent/50 hover:bg-surface-2/80 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-surface text-text-muted transition-colors group-hover:text-accent">
-          <TrendingUp className="h-5 w-5" />
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-surface text-text-muted transition-colors group-hover:text-accent">
+          <TrendingUp className="h-6 w-6" />
         </div>
         <div>
-          <p className="font-semibold text-text">
+          <p className="text-base font-bold text-text">
             {isPending ? "Generating…" : "Climb Roadmap"}
           </p>
-          <p className="text-xs text-text-muted">Build your path to the next rank</p>
+          <p className="mt-0.5 text-sm text-text-muted">Bir üst ranka giden yolu oluştur</p>
         </div>
       </button>
     </div>
