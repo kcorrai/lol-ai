@@ -20,9 +20,28 @@ export interface CounterEntry {
   runeAdvice?: {
     keystone: string;
     primaryPath: string;
+    primaryRunes?: string[];
     secondaryPath: string;
+    secondaryRunes?: string[];
+    statShards?: [string, string, string];
   };
   keyItems?: string[];
+  buildPath?: {
+    startingItems: string[];
+    firstBack: string[];
+    coreItems: string[];
+    fullBuild: string[];
+    situational?: Record<string, string[]>;
+  };
+  skillOrder?: {
+    order: string[];
+    maxOrder: string[];
+  };
+  difficultyTiers?: {
+    beginner: "easy" | "medium" | "hard";
+    experienced: "easy" | "medium" | "hard";
+    otp: "easy" | "medium" | "hard";
+  };
 }
 
 export interface GeneralCounterResult {
@@ -36,9 +55,12 @@ export interface GeneralCounterResult {
   patchNote: string;
 }
 
+const lanePhaseEnum = z.enum(["Strong", "Even", "Weak"]);
+const diffEnum = z.enum(["easy", "medium", "hard"]);
+
 export const counterEntrySchema = z.object({
   champion: z.string(),
-  difficulty: z.enum(["easy", "medium", "hard"]),
+  difficulty: diffEnum,
   reasonWhy: z.string(),
   laneAdvantage: z.string(),
   watchOut: z.string(),
@@ -46,18 +68,37 @@ export const counterEntrySchema = z.object({
   tier: z.enum(["S", "A", "B", "C"]),
   winRate: z.number().optional(),
   lanePhases: z.object({
-    early: z.enum(["Strong", "Even", "Weak"]),
-    mid: z.enum(["Strong", "Even", "Weak"]),
-    late: z.enum(["Strong", "Even", "Weak"]),
+    early: lanePhaseEnum,
+    mid: lanePhaseEnum,
+    late: lanePhaseEnum,
   }).optional(),
   commonMistakes: z.array(z.string()).optional(),
   winConditions: z.array(z.string()).optional(),
   runeAdvice: z.object({
     keystone: z.string(),
     primaryPath: z.string(),
+    primaryRunes: z.array(z.string()).optional(),
     secondaryPath: z.string(),
+    secondaryRunes: z.array(z.string()).optional(),
+    statShards: z.tuple([z.string(), z.string(), z.string()]).optional(),
   }).optional(),
   keyItems: z.array(z.string()).optional(),
+  buildPath: z.object({
+    startingItems: z.array(z.string()),
+    firstBack: z.array(z.string()),
+    coreItems: z.array(z.string()),
+    fullBuild: z.array(z.string()),
+    situational: z.record(z.string(), z.array(z.string())).optional(),
+  }).optional(),
+  skillOrder: z.object({
+    order: z.array(z.string()),
+    maxOrder: z.array(z.string()),
+  }).optional(),
+  difficultyTiers: z.object({
+    beginner: diffEnum,
+    experienced: diffEnum,
+    otp: diffEnum,
+  }).optional(),
 });
 
 export const counterAiOutputSchema = z.object({

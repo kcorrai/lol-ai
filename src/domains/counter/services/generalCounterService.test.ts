@@ -10,6 +10,11 @@ vi.mock("@/lib/ai/aiCache", () => ({
   buildCacheKey: vi.fn().mockReturnValue("test-cache-key"),
 }));
 
+// Ensure the static-data path is bypassed so these tests target the AI generation path.
+vi.mock("../data/staticCounters", () => ({
+  getStaticCounterData: vi.fn().mockReturnValue(null),
+}));
+
 import { getGeneralCounters } from "./generalCounterService";
 import { getAiClient } from "@/lib/ai/client";
 import { getCached, setCached } from "@/lib/ai/aiCache";
@@ -81,7 +86,7 @@ describe("getGeneralCounters", () => {
       "test-cache-key",
       "counter-general",
       expect.objectContaining({ champion: "Yasuo", role: "MIDDLE" }),
-      14
+      90
     );
   });
 

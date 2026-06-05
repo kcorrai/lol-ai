@@ -28,27 +28,46 @@ Yanıtı şu JSON formatında ver:
   "easyCounters": [2 adet öğrenmesi kolay counter],
   "soloQueueCounters": [2 adet solo queue'da etkili counter],
   "tips": [3 adet genel ipucu],
-  "patchNote": "Bu analiz AI tarafından üretilmiştir. Güncel patch verilerini yansıtmayabilir."
+  "patchNote": "Bu analiz AI tarafından üretilmiştir."
 }
 
 Her counter için şu alanları doldur:
 {
-  "champion": "şampiyonun adı (İngilizce, tam olarak)",
-  "difficulty": "easy" veya "medium" veya "hard",
-  "tier": "S" veya "A" veya "B" veya "C",
-  "winRate": tahmini kazanma oranı sayı (örn: 54.2),
-  "reasonWhy": "neden güçlü counter olduğu (1-2 cümle)",
+  "champion": "İngilizce tam ad",
+  "difficulty": "easy|medium|hard",
+  "tier": "S|A|B|C",
+  "winRate": tahmini kazanma oranı (örn: 54.2),
+  "reasonWhy": "neden güçlü counter (1-2 cümle)",
   "laneAdvantage": "lane avantajı (1 cümle)",
   "watchOut": "${champion}'dan dikkat edilecek şey (1 cümle)",
   "buildHint": "temel item yolu (kısa)",
-  "keyItems": ["item1", "item2", "item3"],
   "lanePhases": { "early": "Strong|Even|Weak", "mid": "Strong|Even|Weak", "late": "Strong|Even|Weak" },
-  "runeAdvice": { "keystone": "Conqueror", "primaryPath": "Precision", "secondaryPath": "Sorcery" },
+  "runeAdvice": {
+    "keystone": "Conqueror",
+    "primaryPath": "Precision",
+    "primaryRunes": ["Triumph", "Legend: Alacrity", "Last Stand"],
+    "secondaryPath": "Resolve",
+    "secondaryRunes": ["Bone Plating", "Unflinching"],
+    "statShards": ["Adaptive Force", "Adaptive Force", "Scaling HP"]
+  },
+  "keyItems": ["item1", "item2", "item3"],
+  "buildPath": {
+    "startingItems": ["Doran's Blade", "Health Potion"],
+    "firstBack": ["Long Sword", "Health Potion"],
+    "coreItems": ["Trinity Force", "Sterak's Gage", "Death's Dance"],
+    "fullBuild": ["Trinity Force", "Sterak's Gage", "Death's Dance", "Ravenous Hydra", "Black Cleaver"],
+    "situational": { "vs AP": ["Maw of Malmortius"], "vs Healing": ["Mortal Reminder"] }
+  },
+  "skillOrder": {
+    "order": ["Q","E","W","Q","Q","R","Q","E","Q"],
+    "maxOrder": ["Q","E","W"]
+  },
   "commonMistakes": ["hata1", "hata2"],
-  "winConditions": ["koşul1", "koşul2"]
+  "winConditions": ["koşul1", "koşul2"],
+  "difficultyTiers": { "beginner": "hard", "experienced": "medium", "otp": "easy" }
 }
 
-Sadece JSON döndür, başka açıklama ekleme.`;
+Sadece JSON döndür.`;
 }
 
 export function buildEnrichmentSystemPrompt(): string {
@@ -73,10 +92,29 @@ Her counter için şu JSON formatını kullan:
     {
       "champion": "şampiyon adı (İngilizce, tam harf)",
       "lanePhases": { "early": "Strong|Even|Weak", "mid": "Strong|Even|Weak", "late": "Strong|Even|Weak" },
-      "runeAdvice": { "keystone": "Conqueror", "primaryPath": "Precision", "secondaryPath": "Sorcery" },
+      "runeAdvice": {
+        "keystone": "Conqueror",
+        "primaryPath": "Precision",
+        "primaryRunes": ["Triumph", "Legend: Alacrity", "Last Stand"],
+        "secondaryPath": "Resolve",
+        "secondaryRunes": ["Bone Plating", "Unflinching"],
+        "statShards": ["Adaptive Force", "Adaptive Force", "Scaling HP"]
+      },
       "keyItems": ["item1", "item2", "item3"],
+      "buildPath": {
+        "startingItems": ["Doran's Blade", "Health Potion"],
+        "firstBack": ["Long Sword"],
+        "coreItems": ["item1", "item2", "item3"],
+        "fullBuild": ["item1", "item2", "item3", "item4", "item5"],
+        "situational": { "vs AP": ["Maw of Malmortius"] }
+      },
+      "skillOrder": {
+        "order": ["Q","E","W","Q","Q","R","Q","E","Q"],
+        "maxOrder": ["Q","E","W"]
+      },
       "winConditions": ["koşul1 (kısa)", "koşul2 (kısa)"],
-      "commonMistakes": ["hata1 (kısa)", "hata2 (kısa)"]
+      "commonMistakes": ["hata1 (kısa)", "hata2 (kısa)"],
+      "difficultyTiers": { "beginner": "hard", "experienced": "medium", "otp": "easy" }
     }
   ]
 }

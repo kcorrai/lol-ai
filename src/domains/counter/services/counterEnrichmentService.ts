@@ -9,25 +9,42 @@ import type { CounterEntry } from "../types/counter.types";
 import type { StaticCounterData } from "../data/staticCounters";
 import type { Position } from "@/types/common.types";
 
+const diffEnum = z.enum(["easy", "medium", "hard"]);
+
 const enrichmentEntrySchema = z.object({
   champion: z.string(),
-  lanePhases: z
-    .object({
-      early: z.enum(["Strong", "Even", "Weak"]),
-      mid: z.enum(["Strong", "Even", "Weak"]),
-      late: z.enum(["Strong", "Even", "Weak"]),
-    })
-    .optional(),
-  runeAdvice: z
-    .object({
-      keystone: z.string(),
-      primaryPath: z.string(),
-      secondaryPath: z.string(),
-    })
-    .optional(),
+  lanePhases: z.object({
+    early: z.enum(["Strong", "Even", "Weak"]),
+    mid: z.enum(["Strong", "Even", "Weak"]),
+    late: z.enum(["Strong", "Even", "Weak"]),
+  }).optional(),
+  runeAdvice: z.object({
+    keystone: z.string(),
+    primaryPath: z.string(),
+    primaryRunes: z.array(z.string()).optional(),
+    secondaryPath: z.string(),
+    secondaryRunes: z.array(z.string()).optional(),
+    statShards: z.tuple([z.string(), z.string(), z.string()]).optional(),
+  }).optional(),
   keyItems: z.array(z.string()).optional(),
+  buildPath: z.object({
+    startingItems: z.array(z.string()),
+    firstBack: z.array(z.string()),
+    coreItems: z.array(z.string()),
+    fullBuild: z.array(z.string()),
+    situational: z.record(z.string(), z.array(z.string())).optional(),
+  }).optional(),
+  skillOrder: z.object({
+    order: z.array(z.string()),
+    maxOrder: z.array(z.string()),
+  }).optional(),
   winConditions: z.array(z.string()).optional(),
   commonMistakes: z.array(z.string()).optional(),
+  difficultyTiers: z.object({
+    beginner: diffEnum,
+    experienced: diffEnum,
+    otp: diffEnum,
+  }).optional(),
 });
 
 const enrichmentOutputSchema = z.object({
@@ -58,8 +75,11 @@ function applyEnrichment(
       ...(extra.lanePhases !== undefined && { lanePhases: extra.lanePhases }),
       ...(extra.runeAdvice !== undefined && { runeAdvice: extra.runeAdvice }),
       ...(extra.keyItems !== undefined && { keyItems: extra.keyItems }),
+      ...(extra.buildPath !== undefined && { buildPath: extra.buildPath }),
+      ...(extra.skillOrder !== undefined && { skillOrder: extra.skillOrder }),
       ...(extra.winConditions !== undefined && { winConditions: extra.winConditions }),
       ...(extra.commonMistakes !== undefined && { commonMistakes: extra.commonMistakes }),
+      ...(extra.difficultyTiers !== undefined && { difficultyTiers: extra.difficultyTiers }),
     };
   });
 }
@@ -85,7 +105,6 @@ export async function getEnrichedStaticCounters(
     ...staticData.soloQueueCounters,
   ];
 
-  // Deduplicate — same champ can appear in multiple lists
   const unique = allEntries.filter(
     (e, i, arr) => arr.findIndex((x) => x.champion === e.champion) === i
   );
@@ -94,7 +113,7 @@ export async function getEnrichedStaticCounters(
   const response = await aiClient.complete(
     buildEnrichmentSystemPrompt(),
     buildEnrichmentUserPrompt(champion, role, unique),
-    { maxTokens: 4000 }
+    { maxTokens: 6000 }
   );
 
   let rawParsed: unknown;
