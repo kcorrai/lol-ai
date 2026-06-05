@@ -136,7 +136,7 @@ export function ToolsShowcaseSection2() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="space-y-20">
           {TOOLS.map(({ title, description, mockup }, index) => {
-            const isEven = index % 2 === 0;
+            const isEven = index % 2 !== 0;
             return (
               <div
                 key={title}
