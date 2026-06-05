@@ -43,7 +43,7 @@ const validCachedResult = {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  vi.mocked(getAiClient).mockReturnValue({ complete: mockComplete } as ReturnType<typeof getAiClient>);
+  vi.mocked(getAiClient).mockReturnValue({ complete: mockComplete } as unknown as ReturnType<typeof getAiClient>);
   vi.mocked(setCached).mockResolvedValue(undefined);
 });
 

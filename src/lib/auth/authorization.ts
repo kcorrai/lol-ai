@@ -12,6 +12,7 @@ export const PLAN_LIMITS = {
     matchHistoryDepth: 10,
     championPoolLimit: 3,
     fullCoachingReport: false,
+    matchupAnalysisPerDay: 5,
   },
   pro: {
     maxRiotAccounts: 3,
@@ -20,6 +21,7 @@ export const PLAN_LIMITS = {
     matchHistoryDepth: 100,
     championPoolLimit: -1,
     fullCoachingReport: true,
+    matchupAnalysisPerDay: -1,
   },
   elite: {
     maxRiotAccounts: 5,
@@ -28,6 +30,7 @@ export const PLAN_LIMITS = {
     matchHistoryDepth: 200,
     championPoolLimit: -1,
     fullCoachingReport: true,
+    matchupAnalysisPerDay: -1,
   },
 } satisfies Record<SubscriptionPlan, PlanLimits>;
 
@@ -38,6 +41,7 @@ export type PlanLimits = {
   matchHistoryDepth: number;
   championPoolLimit: number;
   fullCoachingReport: boolean;
+  matchupAnalysisPerDay: number;
 };
 
 // Returns effective plan limits. Falls back to free when subscription is
