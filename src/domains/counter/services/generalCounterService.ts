@@ -39,9 +39,11 @@ export async function getGeneralCounters(
   }
 
   const aiClient = getAiClient();
+  // Counter prompt generates 11 rich entries; 2000 token default gets truncated.
   const response = await aiClient.complete(
     buildCounterSystemPrompt(),
-    buildCounterUserPrompt(champion, role)
+    buildCounterUserPrompt(champion, role),
+    { maxTokens: 4000 }
   );
 
   let rawParsed: unknown;
