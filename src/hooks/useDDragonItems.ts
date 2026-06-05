@@ -5,6 +5,11 @@ type DDragonItemsResponse = {
   data: Record<string, { name: string }>;
 };
 
+// Normalize Unicode curly apostrophes (AI output) to ASCII straight apostrophe (DDragon names)
+function normalizeName(name: string): string {
+  return name.toLowerCase().replace(/[‘’‛ʼ]/g, "'");
+}
+
 export function useDDragonItems(): { getItemIconUrl: (name: string) => string | null } {
   const { data: nameToId } = useQuery<Map<string, number>>({
     queryKey: ["ddragon-items"],
@@ -15,7 +20,7 @@ export function useDDragonItems(): { getItemIconUrl: (name: string) => string | 
       const json: DDragonItemsResponse = await res.json();
       const map = new Map<string, number>();
       for (const [id, item] of Object.entries(json.data)) {
-        map.set(item.name.toLowerCase(), Number(id));
+        map.set(normalizeName(item.name), Number(id));
       }
       return map;
     },
@@ -24,7 +29,7 @@ export function useDDragonItems(): { getItemIconUrl: (name: string) => string | 
 
   function getItemIconUrl(name: string): string | null {
     if (!nameToId) return null;
-    const id = nameToId.get(name.toLowerCase());
+    const id = nameToId.get(normalizeName(name));
     return id ? itemIconUrl(id) : null;
   }
 

@@ -5,6 +5,7 @@ const CHAMPION_KEY_OVERRIDES: Record<string, string> = {
   "Nunu & Willump": "Nunu",
   "Renata Glasc": "Renata",
   Fiddlesticks: "Fiddlesticks",
+  LeBlanc: "Leblanc",
 };
 
 export function normalizeChampionKey(name: string): string {

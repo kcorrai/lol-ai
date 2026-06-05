@@ -4,8 +4,8 @@ import Image from "next/image";
 import { useState } from "react";
 import { Trophy, ShieldAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { keystoneIconUrlByName, runePathIconUrlByName } from "@/lib/ddragon";
 import { useDDragonItems } from "@/hooks/useDDragonItems";
+import { useDDragonRunes } from "@/hooks/useDDragonRunes";
 import type { CounterEntry } from "../types/counter.types";
 
 const PHASE: Record<string, { pct: number; label: string; bar: string }> = {
@@ -43,6 +43,7 @@ function IB({ name, url }: { name: string; url?: string }) {
 
 export function CounterCardDetails({ entry }: { entry: CounterEntry }) {
   const { getItemIconUrl } = useDDragonItems();
+  const { getRuneIconUrl } = useDDragonRunes();
 
   return (
     <div className="border-t border-border space-y-4 px-4 py-3.5">
@@ -75,28 +76,28 @@ export function CounterCardDetails({ entry }: { entry: CounterEntry }) {
           <div className="flex gap-5">
             <div className="flex-1 space-y-1.5">
               <div className="flex items-center gap-1.5 pb-1 border-b border-border/40">
-                <RI url={runePathIconUrlByName(entry.runeAdvice.primaryPath)} label={entry.runeAdvice.primaryPath} size={14} />
+                <RI url={getRuneIconUrl(entry.runeAdvice.primaryPath) ?? ""} label={entry.runeAdvice.primaryPath} size={14} />
                 <span className="text-[11px] text-text-muted">{entry.runeAdvice.primaryPath}</span>
               </div>
               <div className="flex items-center gap-2">
-                <RI url={keystoneIconUrlByName(entry.runeAdvice.keystone)} label={entry.runeAdvice.keystone} size={26} />
+                <RI url={getRuneIconUrl(entry.runeAdvice.keystone) ?? ""} label={entry.runeAdvice.keystone} size={26} />
                 <span className="text-xs font-semibold text-text">{entry.runeAdvice.keystone}</span>
               </div>
               {entry.runeAdvice.primaryRunes?.map((r) => (
                 <div key={r} className="flex items-center gap-2 ml-1">
-                  <span className="h-3.5 w-3.5 rounded-full bg-surface-2 ring-1 ring-border shrink-0" />
+                  <RI url={getRuneIconUrl(r) ?? ""} label={r} size={16} />
                   <span className="text-[11px] text-text-muted">{r}</span>
                 </div>
               ))}
             </div>
             <div className="flex-1 space-y-1.5">
               <div className="flex items-center gap-1.5 pb-1 border-b border-border/40">
-                <RI url={runePathIconUrlByName(entry.runeAdvice.secondaryPath)} label={entry.runeAdvice.secondaryPath} size={14} />
+                <RI url={getRuneIconUrl(entry.runeAdvice.secondaryPath) ?? ""} label={entry.runeAdvice.secondaryPath} size={14} />
                 <span className="text-[11px] text-text-muted">{entry.runeAdvice.secondaryPath}</span>
               </div>
               {entry.runeAdvice.secondaryRunes?.map((r) => (
                 <div key={r} className="flex items-center gap-2 ml-1">
-                  <span className="h-3.5 w-3.5 rounded-full bg-surface-2 ring-1 ring-border shrink-0" />
+                  <RI url={getRuneIconUrl(r) ?? ""} label={r} size={16} />
                   <span className="text-[11px] text-text-muted">{r}</span>
                 </div>
               ))}
