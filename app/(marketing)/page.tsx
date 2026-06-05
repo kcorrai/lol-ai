@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { HeroSection } from "./components/HeroSection";
 import { HowItWorksSection } from "./components/HowItWorksSection";
+import { ToolsShowcaseSection } from "./components/ToolsShowcaseSection";
+import { ToolsShowcaseSection2 } from "./components/ToolsShowcaseSection2";
 import { FeaturesSection } from "./components/FeaturesSection";
 import { TestimonialsSection } from "./components/TestimonialsSection";
 import Link from "next/link";
@@ -22,6 +24,8 @@ export default function LandingPage() {
     <>
       <HeroSection />
       <HowItWorksSection />
+      <ToolsShowcaseSection />
+      <ToolsShowcaseSection2 />
       <FeaturesSection />
       <TestimonialsSection />
 

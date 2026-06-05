@@ -87,7 +87,7 @@ export function HeroSection() {
           {/* Copy */}
           <div className="space-y-6">
             <div className="inline-flex items-center rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
-              AI-Powered · Match Analysis · Climb Faster
+              7 AI Tools · Match Analysis · Climb Faster
             </div>
             <h1 className="font-display text-4xl font-bold leading-tight text-text md:text-5xl lg:text-6xl">
               Your Personal{" "}
@@ -117,9 +117,9 @@ export function HeroSection() {
             {/* Quick stats */}
             <div className="flex gap-6 border-t border-border pt-6">
               {([
-                ["Match Analysis", "Deep stats every game"],
+                ["5 AI Tools", "Counter, Matchup, OTP, Draft, Build"],
                 ["AI Reports", "Session & Climb roadmap"],
-                ["Tilt Detection", "Mental game tracking"],
+                ["Real Match Data", "Your games, not generic guides"],
               ] as [string, string][]).map(([title, sub]) => (
                 <div key={title}>
                   <p className="text-xs font-semibold text-text">{title}</p>
