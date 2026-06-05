@@ -702,7 +702,209 @@ Platform-level statistics. Admin role required.
 
 ---
 
-## 11. Error Codes Reference
+## 11. AI Tools Endpoints
+
+All AI tool endpoints return cached results (TTL varies per tool) and validate champion names against the database. Rate limits are IP-based unless noted otherwise.
+
+---
+
+### `GET /api/counter`
+
+Generate counter pick recommendations for a champion in a specific role.
+
+**Auth:** None (public)  
+**Rate limit:** 20 req/min per IP
+
+**Query params:**
+
+| Param | Type | Required | Notes |
+|---|---|---|---|
+| `champion` | string | ✓ | Case-insensitive champion name |
+| `role` | enum | ✓ | `TOP \| JUNGLE \| MIDDLE \| BOTTOM \| UTILITY` |
+
+**Response 200:**
+```json
+{
+  "data": {
+    "champion": "Yasuo",
+    "role": "MIDDLE",
+    "topCounters": [{ "champion": "Malphite", "tier": "S", "difficulty": "easy", "reasonWhy": "...", "laneAdvantage": "...", "watchOut": "...", "buildHint": "..." }],
+    "easyCounters": [...],
+    "soloQueueCounters": [...],
+    "tips": ["..."],
+    "patchNote": "AI-generated disclaimer",
+    "generatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  "meta": { "requestId": "uuid" }
+}
+```
+
+**Cache TTL:** 14 days
+
+---
+
+### `POST /api/matchup/analyze`
+
+Analyze a lane matchup between two champions.
+
+**Auth:** Optional (session enables daily limit tracking)  
+**Rate limit:** 15 req/min per IP; free users: 5 analyses/day
+
+**Request body:**
+```json
+{
+  "champion": "Yasuo",
+  "opponent": "Zed",
+  "role": "MIDDLE"
+}
+```
+
+**Response 200:**
+```json
+{
+  "data": {
+    "champion": "Yasuo",
+    "opponent": "Zed",
+    "role": "MIDDLE",
+    "laneAnalysis": { "overallAdvantage": "even", "earlyGame": "...", "midGame": "...", "lateGame": "...", "tradingPattern": "..." },
+    "tradeGuide": { "whenToTrade": "...", "whenToAvoidTrade": "...", "trades": [...] },
+    "buildAdvice": { "coreItems": [...], "situationalItems": [...], "avoidItems": [...], "reasoning": "..." },
+    "criticalMistakes": [...],
+    "patchNote": "...",
+    "generatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  "meta": { "requestId": "uuid" }
+}
+```
+
+**Errors:** `400` champion === opponent, `404` champion not found  
+**Cache TTL:** 7 days (directional: Yasuo vs Zed ≠ Zed vs Yasuo)
+
+---
+
+### `GET /api/otp`
+
+Generate an OTP (One-Trick Pony) analysis for a champion in a role.
+
+**Auth:** Optional (Pro users receive full `hiddenMechanics`; free users receive first 2)  
+**Rate limit:** 10 req/min per IP
+
+**Query params:**
+
+| Param | Type | Required |
+|---|---|---|
+| `champion` | string | ✓ |
+| `role` | enum | ✓ |
+
+**Response 200:**
+```json
+{
+  "data": {
+    "champion": "Yasuo",
+    "role": "MIDDLE",
+    "matchupTierList": {
+      "easy": [{ "opponent": "Garen", "difficulty": "easy", "summary": "...", "keyTip": "..." }],
+      "medium": [...],
+      "hard": [...]
+    },
+    "banPriority": [{ "champion": "Fiora", "priority": 1, "reason": "..." }],
+    "hiddenMechanics": ["..."],
+    "powerSpikes": [{ "trigger": "Level 6", "description": "..." }],
+    "laneStrategies": ["..."],
+    "metaRating": { "score": 7, "assessment": "Güçlü", "reasoning": "...", "patchContext": "..." },
+    "generatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  "meta": { "requestId": "uuid" }
+}
+```
+
+**Note:** Free/anonymous users receive `hiddenMechanics` truncated to 2 items.  
+**Cache TTL:** 14 days
+
+---
+
+### `POST /api/draft/analyze`
+
+Analyze a full 10-champion draft for both teams.
+
+**Auth:** Optional (session enables daily limit tracking)  
+**Rate limit:** 10 req/min per IP; free users: 3 analyses/day
+
+**Request body:**
+```json
+{
+  "blueTeam": { "TOP": "Garen", "JUNGLE": "LeeSin", "MIDDLE": "Yasuo", "BOTTOM": "Jinx", "UTILITY": "Thresh" },
+  "redTeam":  { "TOP": "Darius", "JUNGLE": "Vi",     "MIDDLE": "Zed",   "BOTTOM": "Caitlyn", "UTILITY": "Lulu" }
+}
+```
+
+**Response 200:**
+```json
+{
+  "data": {
+    "blueTeam": { "TOP": "Garen", ... },
+    "redTeam": { "TOP": "Darius", ... },
+    "blueTeamComposition": { "engagePower": 7, "disengagePower": 4, "teamfightPower": 8, "pickPotential": 5, "splitPushPower": 6, "summary": "..." },
+    "redTeamComposition": { ... },
+    "blueWinConditions": [{ "description": "...", "priority": "primary", "howToAchieve": "..." }],
+    "redWinConditions": [...],
+    "blueScaling": { "earlyGame": { "score": 6, "description": "..." }, "midGame": {...}, "lateGame": {...} },
+    "redScaling": { ... },
+    "keyMatchups": [{ "blue": "Yasuo", "red": "Zed", "advantage": "even", "note": "..." }],
+    "risks": [{ "team": "blue", "risk": "...", "severity": "high" }],
+    "verdict": "...",
+    "generatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  "meta": { "requestId": "uuid" }
+}
+```
+
+**Errors:** `400` duplicate champion, `404` champion not found  
+**Cache TTL:** 7 days
+
+---
+
+### `GET /api/match/[matchId]/build-explanation`
+
+AI analysis of a specific participant's build in a match.
+
+**Auth:** Required — user must own the participant (linked RiotAccount)  
+**Rate limit:** 10 req/hour per user
+
+**Query params:**
+
+| Param | Type | Required |
+|---|---|---|
+| `puuid` | string | ✓ | Participant's Riot PUUID |
+
+**Response 200:**
+```json
+{
+  "data": {
+    "summary": "Overall build assessment in 2-3 sentences",
+    "items": [
+      {
+        "itemName": "Trinity Force",
+        "wasGoodChoice": true,
+        "reasoning": "Provides the split push power needed...",
+        "betterAlternative": null,
+        "whenToChoose": "When ahead and building for side lane..."
+      }
+    ],
+    "buildPath": "Ideal build order for this game...",
+    "biggestMistake": "Buying Sterak's too early before dealing with poke.",
+    "generatedAt": "2026-06-05T00:00:00.000Z"
+  },
+  "meta": { "requestId": "uuid" }
+}
+```
+
+**Errors:** `403` participant not owned by requesting user  
+**Cache TTL:** 30 days (match data is immutable)
+
+---
+
+## 12. Error Codes Reference
 
 | Code | HTTP | Meaning |
 |---|---|---|
