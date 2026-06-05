@@ -506,3 +506,24 @@ model WebhookEvent {
   @@index([processedAt(sort: Desc)])
   @@map("webhook_events")
 }
+
+// ============================================================
+// AI CACHE
+// Stores AI-generated analysis results keyed by a content hash.
+// Shared by all general analysis features (matchup, counter, otp, draft).
+// TTL is enforced at read time; expired rows are not auto-deleted.
+// ============================================================
+
+model AiCache {
+  id        String   @id @default(cuid())
+  cacheKey  String   @unique
+  type      String   // matchup | counter | otp | draft | build-explanation
+  content   Json
+  hitCount  Int      @default(0)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([type])
+  @@index([expiresAt])
+  @@map("ai_cache")
+}
