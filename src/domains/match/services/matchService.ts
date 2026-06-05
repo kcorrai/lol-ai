@@ -33,6 +33,9 @@ export type ParticipantDetail = {
   runePrimaryKeystone: number | null;
   runePrimaryPath: number | null;
   runeSecondaryPath: number | null;
+  rankTier: string | null;
+  rankDivision: string | null;
+  rankLp: number | null;
 };
 
 export type AiInsight = {
@@ -126,6 +129,9 @@ export async function getMatchDetail(
       runePrimaryKeystone: p.runePrimaryKeystone,
       runePrimaryPath: p.runePrimaryPath,
       runeSecondaryPath: p.runeSecondaryPath,
+      rankTier: p.rankTier ?? null,
+      rankDivision: p.rankDivision ?? null,
+      rankLp: p.rankLp ?? null,
     };
   });
 

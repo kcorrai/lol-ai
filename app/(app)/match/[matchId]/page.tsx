@@ -21,6 +21,33 @@ import type { ParticipantDetail, AiInsight, MatchDetail, TeamObjectives } from "
 function fmt(n: number, d = 1) { return n.toFixed(d); }
 function fmtK(n: number) { return n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n); }
 
+const RANK_TIER_COLOR: Record<string, string> = {
+  IRON:        "text-gray-400",
+  BRONZE:      "text-amber-700",
+  SILVER:      "text-gray-300",
+  GOLD:        "text-yellow-400",
+  PLATINUM:    "text-teal-400",
+  EMERALD:     "text-emerald-400",
+  DIAMOND:     "text-blue-400",
+  MASTER:      "text-purple-400",
+  GRANDMASTER: "text-purple-400",
+  CHALLENGER:  "text-purple-400",
+};
+
+function RankBadge({ tier, division, lp }: { tier: string | null; division: string | null; lp: number | null }) {
+  if (!tier) {
+    return <span className="text-[10px] text-text-muted">Unranked</span>;
+  }
+  const color = RANK_TIER_COLOR[tier] ?? "text-text-muted";
+  const apexTiers = new Set(["MASTER", "GRANDMASTER", "CHALLENGER"]);
+  const divisionStr = apexTiers.has(tier) ? "" : ` ${division ?? ""}`;
+  return (
+    <span className={`text-[10px] font-medium ${color}`}>
+      {tier.charAt(0)}{tier.slice(1).toLowerCase()}{divisionStr}{lp !== null ? ` · ${lp} LP` : ""}
+    </span>
+  );
+}
+
 function RuneIcons({ keystone, secondaryPath }: { keystone: number | null; secondaryPath: number | null }) {
   const [k1err, setK1err] = useState(false);
   const [k2err, setK2err] = useState(false);
@@ -122,6 +149,7 @@ function TeamTable({ participants, teamId, userRiotAccountId, objectives }: {
                       <div className="min-w-0">
                         <p className={`truncate font-medium ${isUser ? "text-accent" : "text-text"}`}>{p.championName}</p>
                         <p className="text-[10px] text-text-muted">{p.position}{isUser ? " · you" : ""}</p>
+                        <RankBadge tier={p.rankTier} division={p.rankDivision} lp={p.rankLp} />
                       </div>
                     </div>
                   </td>

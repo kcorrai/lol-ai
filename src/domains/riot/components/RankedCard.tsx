@@ -172,7 +172,7 @@ export function RankedCard({ riotAccountId }: Props) {
                   <span className={`text-xl font-display font-bold ${tierColor}`}>
                     {rank.tier}{APEX_TIERS.has(rank.tier) ? "" : ` ${rank.division}`}
                   </span>
-                  <span className="text-sm text-text-muted">{rank.lp} LP</span>
+                  <span className="text-base font-semibold text-text">{rank.lp} LP</span>
                 </div>
                 <p className="text-xs text-text-muted">
                   {rank.wins}W {rank.losses}L &middot; {winRate}% WR ({total} games)

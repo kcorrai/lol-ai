@@ -7,6 +7,7 @@ import {
   getMatchIds,
   getMatch,
   getRankedEntries,
+  getRankedEntriesForPuuid,
   getSummonerByPuuid,
 } from "@/domains/riot/services/riotApiClient";
 import { mapMatch } from "@/domains/riot/mappers/matchMapper";
@@ -44,6 +45,47 @@ const RANK_DIVISIONS: Record<string, RankDivision> = {
 // Apex tiers (Master/GM/Challenger) have no division subdivision in Riot's API —
 // the rank field is returned as "" but logically maps to "I".
 const APEX_TIERS = new Set(["MASTER", "GRANDMASTER", "CHALLENGER"]);
+
+// Enrich participants of newly-synced ranked matches with each player's current rank.
+// Uses Promise.allSettled so a single player's lookup failure doesn't abort others.
+// Only runs for RANKED_SOLO_5x5 matches — no point enriching ARAMs/Normals.
+async function enrichParticipantRanks(
+  matchDbId: string,
+  participantPuuids: string[],
+  region: string
+): Promise<void> {
+  const results = await Promise.allSettled(
+    participantPuuids.map((puuid) => getRankedEntriesForPuuid(puuid, region))
+  );
+
+  for (let i = 0; i < participantPuuids.length; i++) {
+    const result = results[i];
+    if (!result || result.status === "rejected") {
+      logger.warn(`[sync] Rank lookup failed for participant ${participantPuuids[i]}`);
+      continue;
+    }
+
+    const soloEntry = result.value.find((e) => e.queueType === "RANKED_SOLO_5x5");
+    if (!soloEntry) continue;
+
+    const tier = RANK_TIERS[soloEntry.tier];
+    const division: RankDivision | undefined =
+      RANK_DIVISIONS[soloEntry.rank] ?? (APEX_TIERS.has(soloEntry.tier) ? "I" : undefined);
+
+    if (!tier || !division) continue;
+
+    try {
+      await prisma.matchParticipant.updateMany({
+        where: { matchId: matchDbId, puuid: participantPuuids[i] },
+        data: { rankTier: tier, rankDivision: division, rankLp: soloEntry.leaguePoints },
+      });
+    } catch (err) {
+      logger.warn(
+        `[sync] Failed to write rank for participant ${participantPuuids[i]}: ${err instanceof Error ? err.message : String(err)}`
+      );
+    }
+  }
+}
 
 export async function syncAccount(riotAccountId: string, force = false): Promise<SyncResult> {
   let account = await prisma.riotAccount.findUnique({
@@ -89,6 +131,14 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
         await tx.match.create({ data: mapped.match });
         await tx.matchParticipant.createMany({ data: mapped.participants });
       });
+
+      // Enrich ranked data for all participants in ranked solo matches (non-blocking)
+      if (mapped.match.queueType === "RANKED_SOLO_5x5") {
+        const puuids = mapped.participants.map((p) => p.puuid);
+        enrichParticipantRanks(matchDbId, puuids, account.region).catch((err) =>
+          logger.warn(`[sync] Rank enrichment failed for ${riotMatchId}: ${err instanceof Error ? err.message : String(err)}`)
+        );
+      }
 
       newCount++;
     } catch (err) {

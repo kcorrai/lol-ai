@@ -290,6 +290,9 @@ model MatchParticipant {
   runeSecondaryPath  Int?
   summonerSpell1     Int
   summonerSpell2     Int
+  rankTier           RankTier?
+  rankDivision       RankDivision?
+  rankLp             Int?
 
   match       Match        @relation(fields: [matchId], references: [id], onDelete: Cascade)
   riotAccount RiotAccount? @relation(fields: [riotAccountId], references: [id])
