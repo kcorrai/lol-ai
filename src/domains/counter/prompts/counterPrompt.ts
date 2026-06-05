@@ -1,4 +1,5 @@
 import type { Position } from "@/types/common.types";
+import type { CounterEntry } from "../types/counter.types";
 
 export function buildCounterSystemPrompt(): string {
   return `Sen bir League of Legends uzman koçusun. Görevin, verilen şampiyona karşı en etkili counter pick'leri analiz etmek ve oyuncuya pratik tavsiyeler vermektir.
@@ -48,4 +49,37 @@ Her counter için şu alanları doldur:
 }
 
 Sadece JSON döndür, başka açıklama ekleme.`;
+}
+
+export function buildEnrichmentSystemPrompt(): string {
+  return `Sen bir League of Legends uzman koçusun. Verilen counter pick listesine eksik taktik alanları ekliyorsun. Sadece istenen JSON formatını döndür, başka hiçbir şey ekleme.`;
+}
+
+export function buildEnrichmentUserPrompt(
+  champion: string,
+  role: Position,
+  entries: CounterEntry[]
+): string {
+  const roleLabel = ROLE_LABELS[role];
+  const entryList = entries.map((e) => `- ${e.champion}`).join("\n");
+
+  return `${champion} oynayan bir ${roleLabel} oyuncusuna karşı aşağıdaki counter pick'ler için eksik alanları doldur:
+
+${entryList}
+
+Her counter için şu JSON formatını kullan:
+{
+  "enriched": [
+    {
+      "champion": "şampiyon adı (İngilizce, tam harf)",
+      "lanePhases": { "early": "Strong|Even|Weak", "mid": "Strong|Even|Weak", "late": "Strong|Even|Weak" },
+      "runeAdvice": { "keystone": "Conqueror", "primaryPath": "Precision", "secondaryPath": "Sorcery" },
+      "keyItems": ["item1", "item2", "item3"],
+      "winConditions": ["koşul1 (kısa)", "koşul2 (kısa)"],
+      "commonMistakes": ["hata1 (kısa)", "hata2 (kısa)"]
+    }
+  ]
+}
+
+Sadece JSON döndür.`;
 }

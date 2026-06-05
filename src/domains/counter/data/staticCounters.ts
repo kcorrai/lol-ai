@@ -6,7 +6,7 @@ import { SUPPORT_COUNTERS } from "./counters/support";
 import type { Position } from "@/types/common.types";
 import type { GeneralCounterResult } from "../types/counter.types";
 
-type StaticCounterData = Omit<GeneralCounterResult, "champion" | "role" | "generatedAt">;
+export type StaticCounterData = Omit<GeneralCounterResult, "champion" | "role" | "generatedAt">;
 
 function buildLookup(
   maps: [Position, Record<string, StaticCounterData>][]

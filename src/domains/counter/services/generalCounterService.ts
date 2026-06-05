@@ -11,6 +11,7 @@ import {
 import type { GeneralCounterResult } from "../types/counter.types";
 import type { Position } from "@/types/common.types";
 import { getStaticCounterData } from "../data/staticCounters";
+import { getEnrichedStaticCounters } from "./counterEnrichmentService";
 
 const PATCH_NOTE =
   "Bu analiz AI tarafından üretilmiştir. Güncel patch verilerini yansıtmayabilir.";
@@ -30,7 +31,8 @@ export async function getGeneralCounters(
 ): Promise<GeneralCounterResult> {
   const staticData = getStaticCounterData(champion, role);
   if (staticData !== null) {
-    return { champion, role, generatedAt: new Date().toISOString(), ...staticData };
+    const enriched = await getEnrichedStaticCounters(champion, role, staticData);
+    return { champion, role, generatedAt: new Date().toISOString(), ...enriched };
   }
 
   const cacheKey = buildCacheKey("counter-general", {
