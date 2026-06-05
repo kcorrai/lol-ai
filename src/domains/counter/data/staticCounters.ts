@@ -1,5 +1,5 @@
 import type { Position } from "@/types/common.types";
-import type { CounterEntry, GeneralCounterResult } from "../types/counter.types";
+import type { GeneralCounterResult } from "../types/counter.types";
 
 type StaticCounterData = Omit<GeneralCounterResult, "champion" | "role" | "generatedAt">;
 
