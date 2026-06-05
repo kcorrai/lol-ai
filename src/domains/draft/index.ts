@@ -10,3 +10,4 @@ export type {
   DraftAnalysis,
 } from "./types/draft.types";
 export { draftAiOutputSchema, draftAnalysisSchema } from "./types/draft.types";
+export { analyzeDraft } from "./services/draftAnalysisService";

@@ -110,8 +110,16 @@ export const draftAiOutputSchema = z.object({
   verdict: z.string(),
 });
 
+const teamPicksSchema = z.object({
+  TOP: z.string(),
+  JUNGLE: z.string(),
+  MIDDLE: z.string(),
+  BOTTOM: z.string(),
+  UTILITY: z.string(),
+});
+
 export const draftAnalysisSchema = draftAiOutputSchema.extend({
-  blueTeam: z.record(z.string(), z.string()),
-  redTeam: z.record(z.string(), z.string()),
+  blueTeam: teamPicksSchema,
+  redTeam: teamPicksSchema,
   generatedAt: z.string(),
 });
