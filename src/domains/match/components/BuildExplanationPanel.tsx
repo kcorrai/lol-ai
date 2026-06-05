@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp, Check, X, Lock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { useBuildExplanation } from "@/hooks/useBuildExplanation";
 import type { ItemExplanation } from "../types/buildExplanation.types";
 

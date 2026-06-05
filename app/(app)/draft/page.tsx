@@ -36,11 +36,6 @@ export default function DraftPage() {
 
   const canAnalyze = isComplete(blue) && isComplete(red);
 
-  const allSelected = [
-    ...Object.values(blue).filter(Boolean),
-    ...Object.values(red).filter(Boolean),
-  ] as string[];
-
   function handleAnalyze() {
     if (!canAnalyze) return;
     reset();

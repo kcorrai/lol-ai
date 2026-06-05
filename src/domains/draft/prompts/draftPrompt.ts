@@ -8,7 +8,7 @@ const POSITION_LABELS: Record<string, string> = {
   UTILITY: "Support",
 };
 
-function formatTeam(team: TeamPicks, side: string): string {
+function formatTeam(team: TeamPicks, _side: string): string {
   return Object.entries(team)
     .map(([pos, champ]) => `  ${POSITION_LABELS[pos] ?? pos}: ${champ}`)
     .join("\n");
