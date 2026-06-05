@@ -12,8 +12,8 @@ const CSP = [
   "font-src 'self' data: https://fonts.gstatic.com",
   // Champion/item images via Data Dragon + rank emblems via Community Dragon
   "img-src 'self' data: blob: https://ddragon.leagueoflegends.com https://raw.communitydragon.org",
-  // Same-origin API calls + Sentry error reporting (client-side DSN upload)
-  "connect-src 'self' https://*.ingest.sentry.io https://*.sentry.io",
+  // Same-origin API calls + DDragon JSON data + Sentry error reporting
+  "connect-src 'self' https://ddragon.leagueoflegends.com https://*.ingest.sentry.io https://*.sentry.io",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
