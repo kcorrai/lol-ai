@@ -14,6 +14,7 @@ export const PLAN_LIMITS = {
     fullCoachingReport: false,
     matchupAnalysisPerDay: 5,
     otpAnalysisPerDay: 3,
+    draftAnalysisPerDay: 3,
   },
   pro: {
     maxRiotAccounts: 3,
@@ -24,6 +25,7 @@ export const PLAN_LIMITS = {
     fullCoachingReport: true,
     matchupAnalysisPerDay: -1,
     otpAnalysisPerDay: -1,
+    draftAnalysisPerDay: -1,
   },
   elite: {
     maxRiotAccounts: 5,
@@ -34,6 +36,7 @@ export const PLAN_LIMITS = {
     fullCoachingReport: true,
     matchupAnalysisPerDay: -1,
     otpAnalysisPerDay: -1,
+    draftAnalysisPerDay: -1,
   },
 } satisfies Record<SubscriptionPlan, PlanLimits>;
 
@@ -46,6 +49,7 @@ export type PlanLimits = {
   fullCoachingReport: boolean;
   matchupAnalysisPerDay: number;
   otpAnalysisPerDay: number;
+  draftAnalysisPerDay: number;
 };
 
 // Returns effective plan limits. Falls back to free when subscription is
