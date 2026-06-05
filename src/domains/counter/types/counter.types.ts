@@ -8,7 +8,21 @@ export interface CounterEntry {
   laneAdvantage: string;
   watchOut: string;
   buildHint: string;
-  tier: "S" | "A" | "B";
+  tier: "S" | "A" | "B" | "C";
+  winRate?: number;
+  lanePhases?: {
+    early: "Strong" | "Even" | "Weak";
+    mid: "Strong" | "Even" | "Weak";
+    late: "Strong" | "Even" | "Weak";
+  };
+  commonMistakes?: string[];
+  winConditions?: string[];
+  runeAdvice?: {
+    keystone: string;
+    primaryPath: string;
+    secondaryPath: string;
+  };
+  keyItems?: string[];
 }
 
 export interface GeneralCounterResult {
@@ -29,7 +43,21 @@ export const counterEntrySchema = z.object({
   laneAdvantage: z.string(),
   watchOut: z.string(),
   buildHint: z.string(),
-  tier: z.enum(["S", "A", "B"]),
+  tier: z.enum(["S", "A", "B", "C"]),
+  winRate: z.number().optional(),
+  lanePhases: z.object({
+    early: z.enum(["Strong", "Even", "Weak"]),
+    mid: z.enum(["Strong", "Even", "Weak"]),
+    late: z.enum(["Strong", "Even", "Weak"]),
+  }).optional(),
+  commonMistakes: z.array(z.string()).optional(),
+  winConditions: z.array(z.string()).optional(),
+  runeAdvice: z.object({
+    keystone: z.string(),
+    primaryPath: z.string(),
+    secondaryPath: z.string(),
+  }).optional(),
+  keyItems: z.array(z.string()).optional(),
 });
 
 export const counterAiOutputSchema = z.object({

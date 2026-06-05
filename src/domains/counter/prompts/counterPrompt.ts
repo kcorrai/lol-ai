@@ -23,22 +23,36 @@ export function buildCounterUserPrompt(champion: string, role: Position): string
 
 Yanıtı şu JSON formatında ver:
 {
-  "topCounters": [5 adet en güçlü counter şampiyonu],
+  "topCounters": [5 adet en güçlü counter],
   "easyCounters": [3 adet öğrenmesi kolay counter],
   "soloQueueCounters": [3 adet solo queue'da etkili counter],
-  "tips": [3-5 adet genel ipucu string dizisi],
+  "tips": [3-5 adet genel ipucu],
   "patchNote": "Bu analiz AI tarafından üretilmiştir. Güncel patch verilerini yansıtmayabilir."
 }
 
-Her counter şampiyonu için şu alanları doldur:
+Her counter için şu alanları doldur:
 {
-  "champion": "şampiyonun adı",
+  "champion": "şampiyonun adı (İngilizce, tam olarak)",
   "difficulty": "easy" veya "medium" veya "hard",
-  "reasonWhy": "neden iyi counter olduğunun kısa açıklaması",
-  "laneAdvantage": "lane'de nasıl avantaj sağladığı",
-  "watchOut": "dikkat edilmesi gereken durum veya yetenek",
-  "buildHint": "önerilen core item veya item yolu",
-  "tier": "S" veya "A" veya "B"
+  "tier": "S" veya "A" veya "B" veya "C",
+  "winRate": tahmini kazanma oranı sayı olarak (örn: 54.2),
+  "reasonWhy": "2-3 cümle: neden güçlü counter olduğu, temel mekanizması ve ${champion}'a karşı nasıl avantaj sağladığı",
+  "laneAdvantage": "lane'de nasıl avantaj sağladığı, hangi pozisyonlarda baskı kurduğu",
+  "watchOut": "${champion}'un hangi yeteneğinden veya durumundan kaçınılmalı",
+  "buildHint": "önerilen temel item yolu (kısa)",
+  "keyItems": ["item1", "item2", "item3"],
+  "lanePhases": {
+    "early": "Strong" veya "Even" veya "Weak",
+    "mid": "Strong" veya "Even" veya "Weak",
+    "late": "Strong" veya "Even" veya "Weak"
+  },
+  "runeAdvice": {
+    "keystone": "Conqueror",
+    "primaryPath": "Precision",
+    "secondaryPath": "Sorcery"
+  },
+  "commonMistakes": ["hata1", "hata2", "hata3"],
+  "winConditions": ["koşul1", "koşul2", "koşul3"]
 }
 
 Sadece JSON döndür, başka açıklama ekleme.`;
