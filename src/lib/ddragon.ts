@@ -96,3 +96,41 @@ export function summonerSpellUrl(spellId: number): string {
 export function profileIconUrl(iconId: number): string {
   return `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/img/profileicon/${iconId}.png`;
 }
+
+const KEYSTONE_ID_BY_NAME: Record<string, number> = {
+  "Press the Attack": 8005,
+  "Lethal Tempo": 8008,
+  "Fleet Footwork": 8021,
+  Conqueror: 8010,
+  Electrocute: 9101,
+  Predator: 9111,
+  "Dark Harvest": 8128,
+  "Hail of Blades": 9923,
+  "Summon Aery": 8214,
+  "Arcane Comet": 8229,
+  "Phase Rush": 8230,
+  "Glacial Augment": 8351,
+  "Unsealed Spellbook": 8360,
+  "First Strike": 8369,
+  "Grasp of the Undying": 8465,
+  Aftershock: 8439,
+  Guardian: 8242,
+};
+
+const RUNE_PATH_ID_BY_NAME: Record<string, number> = {
+  Precision: 8000,
+  Domination: 8100,
+  Sorcery: 8200,
+  Inspiration: 8300,
+  Resolve: 8400,
+};
+
+export function keystoneIconUrlByName(name: string): string {
+  const id = KEYSTONE_ID_BY_NAME[name];
+  return id ? keystoneIconUrl(id) : "";
+}
+
+export function runePathIconUrlByName(name: string): string {
+  const id = RUNE_PATH_ID_BY_NAME[name];
+  return id ? runePathIconUrl(id) : "";
+}

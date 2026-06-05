@@ -68,6 +68,7 @@ export async function getMatchupAnalysis(
     laneAnalysis: aiData.laneAnalysis,
     tradeGuide: aiData.tradeGuide,
     buildAdvice: aiData.buildAdvice,
+    runeAdvice: aiData.runeAdvice,
     criticalMistakes: aiData.criticalMistakes,
     patchNote: aiData.patchNote ?? PATCH_NOTE,
     generatedAt: new Date().toISOString(),

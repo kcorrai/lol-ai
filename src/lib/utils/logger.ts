@@ -14,10 +14,10 @@ interface LogEntry {
 function serializeData(data: unknown): unknown {
   if (data instanceof Error) {
     return {
+      ...data,
       name: data.name,
       message: data.message,
       stack: data.stack,
-      ...data,
     };
   }
   return data;

@@ -1,7 +1,11 @@
 "use client";
 
+import Image from "next/image";
+import { useState } from "react";
 import { CheckCircle2, XCircle, AlertTriangle, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { keystoneIconUrlByName, runePathIconUrlByName } from "@/lib/ddragon";
+import { useDDragonItems } from "@/hooks/useDDragonItems";
 import type { MatchupAnalysis, TradeScenario } from "../types/matchup.types";
 
 export type MatchupTab = "lane" | "trade" | "build" | "mistakes";
@@ -57,7 +61,44 @@ function MistakeCard({ title, items }: { title: string; items: string[] }) {
   );
 }
 
+function ItemWithIcon({ name, size = "sm", getIconUrl }: {
+  name: string;
+  size?: "sm" | "lg";
+  getIconUrl: (n: string) => string | null;
+}) {
+  const [errored, setErrored] = useState(false);
+  const url = getIconUrl(name);
+  const px = size === "lg" ? 20 : 16;
+  return (
+    <span className={cn(
+      "inline-flex items-center gap-1.5 rounded border border-border bg-surface-2 text-text",
+      size === "lg" ? "px-2.5 py-1.5 text-sm font-medium" : "px-2 py-1 text-xs"
+    )}>
+      {url && !errored && (
+        <Image src={url} alt={name} width={px} height={px} className="rounded" onError={() => setErrored(true)} unoptimized />
+      )}
+      {name}
+    </span>
+  );
+}
+
+function RuneIcon({ url, label, size = 24 }: { url: string; label: string; size?: number }) {
+  const [errored, setErrored] = useState(false);
+  return (
+    <div className="flex flex-col items-center gap-0.5">
+      {url && !errored ? (
+        <Image src={url} alt={label} width={size} height={size} className="rounded" onError={() => setErrored(true)} unoptimized />
+      ) : (
+        <span className="rounded bg-surface-2 ring-1 ring-border/40" style={{ width: size, height: size }} />
+      )}
+      <span className="text-[10px] text-text-muted">{label}</span>
+    </div>
+  );
+}
+
 export function MatchupSection({ tab, data }: MatchupSectionProps) {
+  const { getItemIconUrl } = useDDragonItems();
+
   if (tab === "lane") {
     const { laneAnalysis: la } = data;
     return (
@@ -76,13 +117,23 @@ export function MatchupSection({ tab, data }: MatchupSectionProps) {
           <div>
             <p className="mb-2 text-xs font-semibold text-text-muted">Güç Noktaları</p>
             <ul className="space-y-1.5">
-              {la.powerSpikes.map((spike, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-text">
-                  <Zap className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" />
-                  {spike.level ? <span className="font-medium text-accent">Lv{spike.level}</span> : spike.item && <span className="font-medium text-accent">{spike.item}</span>}
-                  <span>{spike.description}</span>
-                </li>
-              ))}
+              {la.powerSpikes.map((spike, i) => {
+                const spikeItemUrl = spike.item ? getItemIconUrl(spike.item) : null;
+                return (
+                  <li key={i} className="flex items-start gap-2 text-sm text-text">
+                    <Zap className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" />
+                    {spike.level ? (
+                      <span className="font-medium text-accent">Lv{spike.level}</span>
+                    ) : spike.item ? (
+                      <span className="inline-flex items-center gap-1 font-medium text-accent">
+                        {spikeItemUrl && <Image src={spikeItemUrl} alt={spike.item} width={14} height={14} className="rounded" unoptimized />}
+                        {spike.item}
+                      </span>
+                    ) : null}
+                    <span>{spike.description}</span>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         )}
@@ -118,16 +169,33 @@ export function MatchupSection({ tab, data }: MatchupSectionProps) {
 
   if (tab === "build") {
     const { buildAdvice: ba } = data;
-    const ItemBadge = ({ name, size = "sm" }: { name: string; size?: "sm" | "lg" }) => (
-      <span className={cn("inline-block rounded border border-border bg-surface-2 text-text", size === "lg" ? "px-3 py-1.5 text-sm font-medium" : "px-2 py-1 text-xs")}>
-        {name}
-      </span>
-    );
     return (
       <div className="space-y-4">
-        <div><p className="mb-2 text-xs font-semibold text-text-muted">Başlangıç Itemleri</p><div className="flex flex-wrap gap-1.5">{ba.startingItems.map((i) => <ItemBadge key={i} name={i} />)}</div></div>
-        <div><p className="mb-2 text-xs font-semibold text-text-muted">Core Itemler</p><div className="flex flex-wrap gap-2">{ba.coreItems.map((i) => <ItemBadge key={i} name={i} size="lg" />)}</div></div>
-        <div><p className="mb-2 text-xs font-semibold text-text-muted">Durumsal Itemler</p><div className="flex flex-wrap gap-1.5">{ba.situationalItems.map((i) => <ItemBadge key={i} name={i} />)}</div></div>
+        {data.runeAdvice && (
+          <div>
+            <p className="mb-2 text-xs font-semibold text-text-muted">Rün Tavsiyesi</p>
+            <div className="flex items-end gap-4">
+              <RuneIcon url={keystoneIconUrlByName(data.runeAdvice.keystone)} label={data.runeAdvice.keystone} size={32} />
+              <div className="flex items-end gap-2">
+                <RuneIcon url={runePathIconUrlByName(data.runeAdvice.primaryPath)} label={data.runeAdvice.primaryPath} size={22} />
+                <span className="mb-4 text-xs text-text-muted">+</span>
+                <RuneIcon url={runePathIconUrlByName(data.runeAdvice.secondaryPath)} label={data.runeAdvice.secondaryPath} size={22} />
+              </div>
+            </div>
+          </div>
+        )}
+        <div>
+          <p className="mb-2 text-xs font-semibold text-text-muted">Başlangıç Itemleri</p>
+          <div className="flex flex-wrap gap-1.5">{ba.startingItems.map((i) => <ItemWithIcon key={i} name={i} getIconUrl={getItemIconUrl} />)}</div>
+        </div>
+        <div>
+          <p className="mb-2 text-xs font-semibold text-text-muted">Core Itemler</p>
+          <div className="flex flex-wrap gap-2">{ba.coreItems.map((i) => <ItemWithIcon key={i} name={i} size="lg" getIconUrl={getItemIconUrl} />)}</div>
+        </div>
+        <div>
+          <p className="mb-2 text-xs font-semibold text-text-muted">Durumsal Itemler</p>
+          <div className="flex flex-wrap gap-1.5">{ba.situationalItems.map((i) => <ItemWithIcon key={i} name={i} getIconUrl={getItemIconUrl} />)}</div>
+        </div>
         <p className="text-sm italic text-text-muted">{ba.reasoning}</p>
       </div>
     );

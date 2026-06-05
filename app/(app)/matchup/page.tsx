@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ErrorState } from "@/components/ui/error-state";
 import { Button } from "@/components/ui/button";
+import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { ChampionSelector } from "@/components/shared/ChampionSelector";
 import { MatchupSection } from "@/domains/matchup/components/MatchupSection";
 import { MatchupSkeleton } from "@/domains/matchup/components/MatchupSkeleton";
@@ -112,6 +113,19 @@ export default function MatchupPage() {
 
       {data && !isLoading && (
         <div className="space-y-4">
+          {/* Champion comparison header */}
+          <div className="flex items-center justify-center gap-6 rounded-lg border border-border bg-surface px-6 py-4">
+            <div className="flex items-center gap-2.5">
+              <ChampionIcon name={data.champion} size={48} className="rounded-lg ring-2 ring-accent/30" />
+              <span className="text-base font-semibold text-text">{data.champion}</span>
+            </div>
+            <Swords className="h-5 w-5 shrink-0 text-text-muted/50" />
+            <div className="flex items-center gap-2.5">
+              <span className="text-base font-semibold text-text">{data.opponent}</span>
+              <ChampionIcon name={data.opponent} size={48} className="rounded-lg ring-2 ring-red-500/30" />
+            </div>
+          </div>
+
           {/* Tabs */}
           <div className="flex gap-1 border-b border-border">
             {TABS.map((t) => (

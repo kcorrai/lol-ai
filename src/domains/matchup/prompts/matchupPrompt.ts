@@ -57,6 +57,11 @@ Yanıtı şu JSON formatında ver:
     "situationalItems": ["durumsal eşya 1", "durumsal eşya 2"],
     "reasoning": "bu build'i neden seçmelisin"
   },
+  "runeAdvice": {
+    "keystone": "Conqueror",
+    "primaryPath": "Precision",
+    "secondaryPath": "Sorcery"
+  },
   "criticalMistakes": {
     "avoidTrades": ["kaçınılacak trade 1", "kaçınılacak trade 2"],
     "riskyTimings": ["riskli timing 1"],

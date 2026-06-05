@@ -36,6 +36,11 @@ export interface MatchupAnalysis {
     situationalItems: string[];
     reasoning: string;
   };
+  runeAdvice?: {
+    keystone: string;
+    primaryPath: string;
+    secondaryPath: string;
+  };
   criticalMistakes: {
     avoidTrades: string[];
     riskyTimings: string[];
@@ -77,6 +82,11 @@ export const matchupAiOutputSchema = z.object({
     situationalItems: z.array(z.string()),
     reasoning: z.string(),
   }),
+  runeAdvice: z.object({
+    keystone: z.string(),
+    primaryPath: z.string(),
+    secondaryPath: z.string(),
+  }).optional(),
   criticalMistakes: z.object({
     avoidTrades: z.array(z.string()),
     riskyTimings: z.array(z.string()),
