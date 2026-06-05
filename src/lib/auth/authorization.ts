@@ -13,6 +13,7 @@ export const PLAN_LIMITS = {
     championPoolLimit: 3,
     fullCoachingReport: false,
     matchupAnalysisPerDay: 5,
+    otpAnalysisPerDay: 3,
   },
   pro: {
     maxRiotAccounts: 3,
@@ -22,6 +23,7 @@ export const PLAN_LIMITS = {
     championPoolLimit: -1,
     fullCoachingReport: true,
     matchupAnalysisPerDay: -1,
+    otpAnalysisPerDay: -1,
   },
   elite: {
     maxRiotAccounts: 5,
@@ -31,6 +33,7 @@ export const PLAN_LIMITS = {
     championPoolLimit: -1,
     fullCoachingReport: true,
     matchupAnalysisPerDay: -1,
+    otpAnalysisPerDay: -1,
   },
 } satisfies Record<SubscriptionPlan, PlanLimits>;
 
@@ -42,6 +45,7 @@ export type PlanLimits = {
   championPoolLimit: number;
   fullCoachingReport: boolean;
   matchupAnalysisPerDay: number;
+  otpAnalysisPerDay: number;
 };
 
 // Returns effective plan limits. Falls back to free when subscription is
@@ -80,6 +84,18 @@ export async function assertCanAddRiotAccount(userId: string): Promise<void> {
   const limits = await getPlanLimits(userId);
   const currentCount = await prisma.riotAccount.count({ where: { userId } });
   if (currentCount >= limits.maxRiotAccounts) throw Errors.accountLimitReached();
+}
+
+// ── Plan helpers ─────────────────────────────────────────────────────────────
+
+export async function checkIsPro(userId: string): Promise<boolean> {
+  const subscription = await prisma.subscription.findUnique({
+    where: { userId },
+    select: { plan: true, status: true },
+  });
+  const isActive =
+    subscription?.status === "active" || subscription?.status === "trialing";
+  return isActive && (subscription?.plan === "pro" || subscription?.plan === "elite");
 }
 
 // ── Report limits ────────────────────────────────────────────────────────────
