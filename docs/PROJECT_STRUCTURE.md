@@ -61,6 +61,14 @@ app/
 │   │   └── [championId]/page.tsx
 │   ├── roadmap/
 │   │   └── page.tsx            → Climb roadmap
+│   ├── counter/
+│   │   └── page.tsx            → Counter Pick Generator
+│   ├── matchup/
+│   │   └── page.tsx            → Matchup AI Coach
+│   ├── otp/
+│   │   └── page.tsx            → OTP Assistant
+│   ├── draft/
+│   │   └── page.tsx            → Draft Analyzer
 │   └── settings/
 │       ├── page.tsx            → General settings
 │       ├── accounts/page.tsx   → Riot account management
@@ -146,12 +154,64 @@ src/domains/
 │   │   └── coaching.types.ts
 │   └── index.ts
 │
-└── champions/                  → Champion pool management
+├── champions/                  → Champion pool management
+│   ├── services/
+│   │   ├── championPoolService.ts
+│   │   └── counterPickService.ts
+│   ├── types/
+│   │   └── champion.types.ts
+│   └── index.ts
+│
+├── counter/                    → Counter Pick Generator (F3)
+│   ├── services/
+│   │   └── generalCounterService.ts
+│   ├── prompts/
+│   │   └── counterPrompt.ts
+│   ├── types/
+│   │   └── counter.types.ts
+│   ├── components/
+│   │   ├── CounterCard.tsx
+│   │   ├── CounterList.tsx
+│   │   └── CounterPageSkeleton.tsx
+│   └── index.ts
+│
+├── matchup/                    → Matchup AI Coach (F1)
+│   ├── services/
+│   │   └── matchupAnalysisService.ts
+│   ├── types/
+│   │   └── matchup.types.ts
+│   ├── components/
+│   │   ├── MatchupSection.tsx
+│   │   └── MatchupSkeleton.tsx
+│   └── index.ts
+│
+├── otp/                        → OTP Assistant (F7)
+│   ├── services/
+│   │   └── otpAssistantService.ts
+│   ├── prompts/
+│   │   └── otpPrompt.ts
+│   ├── types/
+│   │   └── otp.types.ts
+│   ├── components/
+│   │   ├── MetaRating.tsx
+│   │   ├── MatchupTierList.tsx
+│   │   ├── BanPriority.tsx
+│   │   ├── OtpTips.tsx
+│   │   └── OtpSkeleton.tsx
+│   └── index.ts
+│
+└── draft/                      → Draft Analyzer (F2)
     ├── services/
-    │   ├── championPoolService.ts
-    │   └── counterPickService.ts
+    │   └── draftAnalysisService.ts
+    ├── prompts/
+    │   └── draftPrompt.ts
     ├── types/
-    │   └── champion.types.ts
+    │   └── draft.types.ts
+    ├── components/
+    │   ├── TeamCompositionCard.tsx
+    │   ├── WinConditionsCard.tsx
+    │   ├── ScalingChart.tsx
+    │   └── DraftSkeleton.tsx
     └── index.ts
 ```
 

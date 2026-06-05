@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Shield, MessageCircle, Gamepad2 } from "lucide-react";
+import { LayoutDashboard, MessageCircle, Target, Swords, Gamepad2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/dashboard",         icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/champions",         icon: Shield,          label: "Champions" },
+  { href: "/counter",           icon: Target,          label: "Counter" },
+  { href: "/matchup",           icon: Swords,          label: "Matchup" },
   { href: "/coaching/chat",     icon: MessageCircle,   label: "Chat" },
   { href: "/settings/accounts", icon: Gamepad2,        label: "Accounts" },
 ] as const;

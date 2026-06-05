@@ -14,6 +14,10 @@ import {
   UserCircle,
   Shield,
   MessageCircle,
+  Target,
+  Swords,
+  Star,
+  Users,
 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
@@ -23,6 +27,13 @@ const NAV_MAIN = [
   { href: "/dashboard",     icon: LayoutDashboard, label: "Dashboard" },
   { href: "/champions",     icon: Shield,          label: "Champions" },
   { href: "/coaching/chat", icon: MessageCircle,   label: "Coach Chat" },
+] as const;
+
+const NAV_TOOLS = [
+  { href: "/counter", icon: Target, label: "Counter Pick" },
+  { href: "/matchup", icon: Swords, label: "Matchup Koçu" },
+  { href: "/otp",     icon: Star,   label: "OTP Asistanı" },
+  { href: "/draft",   icon: Users,  label: "Draft Analizci" },
 ] as const;
 
 const NAV_SETTINGS = [
@@ -108,6 +119,11 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       <nav className="flex-1 overflow-y-auto p-2">
         <SectionLabel label="Play" collapsed={collapsed} />
         {NAV_MAIN.map((item) => (
+          <NavItem key={item.href} {...item} collapsed={collapsed} />
+        ))}
+
+        <SectionLabel label="Araçlar" collapsed={collapsed} />
+        {NAV_TOOLS.map((item) => (
           <NavItem key={item.href} {...item} collapsed={collapsed} />
         ))}
 
