@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { PerformanceSummaryCards } from "@/domains/analysis/components/PerformanceSummaryCards";
+import { RecentMatchesSummaryCard } from "@/domains/analysis/components/RecentMatchesSummaryCard";
 import { PerformanceTrendChart } from "@/domains/analysis/components/PerformanceTrendChart";
 import { RecentMatchList } from "@/domains/analysis/components/RecentMatchList";
 import { ReportList } from "@/domains/coaching/components/ReportList";
@@ -150,6 +151,7 @@ export default function DashboardPage() {
         <>
           {/* ── Top summary ────────────────────────────────────────────── */}
           <PerformanceSummaryCards profile={profile} isLoading={profileLoading} />
+          <RecentMatchesSummaryCard profile={profile} isLoading={profileLoading} />
 
           {/* ── AI Coaching Actions ────────────────────────────────────── */}
           <div>
