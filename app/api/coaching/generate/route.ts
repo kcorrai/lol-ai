@@ -3,7 +3,7 @@ import { z } from "zod";
 import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
 import { Errors } from "@/lib/api/errors";
-import { assertOwnsRiotAccount, assertCanGenerateReport } from "@/lib/auth/authorization";
+import { assertOwnsRiotAccount, assertCanGenerateReport, getPlanLimits } from "@/lib/auth/authorization";
 import { buildCoachingInput } from "@/domains/coaching/pipeline/dataPreparator";
 import { createPendingReport } from "@/domains/coaching/services/reportService";
 import { checkRateLimit, rateLimitResponse } from "@/lib/api/rateLimit";
@@ -16,10 +16,15 @@ const generateSchema = z.object({
   focusArea: z.string().max(50).optional(),
 });
 
-const GENERATE_LIMIT = { limit: 10, windowMs: 3_600_000 };
+// Pro users have no plan-level report cap so a tighter hourly guard isn't needed.
+// Free users are already capped at 1/day by assertCanGenerateReport.
+const FREE_GENERATE_LIMIT = { limit: 5, windowMs: 3_600_000 };
+const PRO_GENERATE_LIMIT = { limit: 30, windowMs: 3_600_000 };
 
 export const POST = withAuth(async (req: NextRequest, { userId }) => {
-  const rateCheck = await checkRateLimit(`generate:${userId}`, GENERATE_LIMIT);
+  const { reportsPerDay } = await getPlanLimits(userId);
+  const rateConfig = reportsPerDay === -1 ? PRO_GENERATE_LIMIT : FREE_GENERATE_LIMIT;
+  const rateCheck = await checkRateLimit(`generate:${userId}`, rateConfig);
   if (!rateCheck.allowed) return rateLimitResponse(rateCheck.retryAfterMs, rateCheck.limit);
 
   let body: unknown;

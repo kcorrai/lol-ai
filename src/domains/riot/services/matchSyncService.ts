@@ -13,6 +13,7 @@ import {
 import { mapMatch } from "@/domains/riot/mappers/matchMapper";
 import { getLastRankedSnapshot } from "@/domains/riot/services/rankedService";
 import { refreshChampionStats } from "@/domains/champions/services/championCacheService";
+import { getPlanLimits } from "@/lib/auth/authorization";
 import type { RankTier, RankDivision } from "@prisma/client";
 
 export type SyncResult = {
@@ -100,7 +101,8 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   logger.info(`[sync] Starting sync for ${account.gameName}#${account.tagLine}`);
 
   // ── Match ingestion ────────────────────────────────────────────────────────
-  const matchIds = await getMatchIds(account.puuid, account.region, 20);
+  const { matchHistoryDepth } = await getPlanLimits(account.userId);
+  const matchIds = await getMatchIds(account.puuid, account.region, matchHistoryDepth);
 
   // Determine which matches are already in the DB
   const existing = await prisma.match.findMany({
