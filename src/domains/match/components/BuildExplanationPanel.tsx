@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Check, X, Lock, Loader2 } from "lucide-react";
+import { ChevronDown, ChevronUp, Lock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ItemIcon } from "@/components/ui/ItemIcon";
 import { useBuildExplanation } from "@/hooks/useBuildExplanation";
