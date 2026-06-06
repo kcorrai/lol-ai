@@ -13,8 +13,6 @@ import { PerformanceSummaryCards } from "@/domains/analysis/components/Performan
 import { RecentMatchesSummaryCard } from "@/domains/analysis/components/RecentMatchesSummaryCard";
 import { PerformanceTrendChart } from "@/domains/analysis/components/PerformanceTrendChart";
 import { RecentMatchList } from "@/domains/analysis/components/RecentMatchList";
-import { RankedCard } from "@/domains/riot/components/RankedCard";
-import { RankUpWidget } from "@/domains/riot/components/RankUpWidget";
 import { TiltWidget } from "@/domains/analysis/components/TiltWidget";
 import { TiltBreakModal } from "@/domains/analysis/components/TiltBreakModal";
 import { WarmupWidget } from "@/domains/analysis/components/WarmupWidget";
