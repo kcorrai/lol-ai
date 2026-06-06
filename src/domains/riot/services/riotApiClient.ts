@@ -1,6 +1,7 @@
 import { riotClient } from "@/lib/riot/client";
 import { dedup } from "@/lib/riot/dedup";
 import { CacheKeys } from "@/lib/riot/lifecycle";
+import { logger } from "@/lib/utils/logger";
 import type {
   RiotAccountDTO,
   SummonerDTO,
@@ -127,19 +128,32 @@ export async function getRankedEntriesForPuuid(
   }
 }
 
-// Direct PUUID-based rank lookup using the v4 by-puuid endpoint.
-// Preferred fallback for accounts that don't expose a summonerId.
+// Rank lookup by PUUID: tries the v4 by-puuid endpoint first; falls back to
+// resolving summonerId via PUUID then calling the by-summoner endpoint.
 export async function getRankedEntriesByPuuidDirect(
   puuid: string,
   region: string
 ): Promise<RankedEntryDTO[]> {
+  // Try the newer by-puuid endpoint first
   try {
     const url = `https://${region}.api.riotgames.com/lol/league/v4/entries/by-puuid/${puuid}`;
-    return await riotClient.get<RankedEntryDTO[]>(url, {
+    const entries = await riotClient.get<RankedEntryDTO[]>(url, {
       cacheTtl: 300,
       cacheKey: CacheKeys.rankedEntries(puuid, region),
     });
-  } catch {
+    logger.debug(`[RiotClient] by-puuid rank: ${puuid.slice(0, 8)}… → ${entries.length} entries`);
+    return entries;
+  } catch (err) {
+    logger.warn(`[RiotClient] by-puuid rank failed for ${puuid.slice(0, 8)}…: ${err instanceof Error ? err.message : String(err)} — trying summonerId fallback`);
+  }
+
+  // Fallback: resolve summonerId then call by-summoner endpoint
+  try {
+    const summoner = await getSummonerByPuuid(puuid, region);
+    if (!summoner.id) return [];
+    return await getRankedEntries(summoner.id, region);
+  } catch (err) {
+    logger.warn(`[RiotClient] summonerId fallback also failed for ${puuid.slice(0, 8)}…: ${err instanceof Error ? err.message : String(err)}`);
     return [];
   }
 }
