@@ -6,6 +6,7 @@ import type { ReportType } from "@prisma/client";
 export type ReportSummary = {
   reportId: string;
   reportType: ReportType;
+  focusArea: string | null;
   status: string;
   matchesAnalyzed: number;
   summary: string | null;
@@ -17,12 +18,14 @@ export type ReportSummary = {
 export async function createPendingReport(
   riotAccountId: string,
   matchIds: string[],
-  reportType: ReportType
+  reportType: ReportType,
+  focusArea?: string
 ): Promise<string> {
   const report = await prisma.coachingReport.create({
     data: {
       riotAccountId,
       reportType,
+      focusArea: focusArea ?? null,
       status: "pending",
       matchesAnalyzed: matchIds,
     },
@@ -70,6 +73,7 @@ export async function listReports(
     select: {
       id: true,
       reportType: true,
+      focusArea: true,
       status: true,
       matchesAnalyzed: true,
       summary: true,
@@ -86,6 +90,7 @@ export async function listReports(
     reports: page.map((r) => ({
       reportId: r.id,
       reportType: r.reportType,
+      focusArea: r.focusArea,
       status: r.status,
       matchesAnalyzed: r.matchesAnalyzed.length,
       summary: r.summary,

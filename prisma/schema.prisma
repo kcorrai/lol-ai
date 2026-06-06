@@ -408,6 +408,7 @@ model CoachingReport {
   id                     String       @id @default(uuid()) @db.Uuid
   riotAccountId          String       @db.Uuid
   reportType             ReportType
+  focusArea              String?
   status                 ReportStatus @default(pending)
   matchesAnalyzed        String[]
   summary                String?      @db.Text

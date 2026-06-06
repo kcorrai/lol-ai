@@ -40,7 +40,7 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   // Validate data is ready before creating the DB record
   await buildCoachingInput(riotAccountId, matchIds, focusArea);
 
-  const reportId = await createPendingReport(riotAccountId, matchIds, reportType);
+  const reportId = await createPendingReport(riotAccountId, matchIds, reportType, focusArea);
 
   await inngest.send({
     name: "coaching/report.requested",
