@@ -48,7 +48,7 @@ export async function explainBuild(
   matchId: string,
   participantPuuid: string
 ): Promise<BuildExplanation> {
-  const cacheKey = buildCacheKey("build-explanation", { matchId, participantPuuid });
+  const cacheKey = buildCacheKey("build-explanation-v2", { matchId, participantPuuid });
 
   const cached = await getCached(cacheKey);
   if (cached !== null) {

@@ -41,7 +41,8 @@ KURALLAR:
 - "items" dizisinde TAM OLARAK ${itemCount} eleman olmalı — ne fazla ne eksik.
 - Her eleman yukarıdaki listedeki sırayla birebir eşleşmeli (1. item → items[0], 2. item → items[1], …).
 - "itemName" alanına yukarıdaki listedeki adı aynen yaz, değiştirme.
-- Eğer bir item adı tanıdık gelmiyorsa veya eski sezondan kaldırılmış gibi görünüyorsa bile verilen adı kullan, uydurma.
+- Yukarıdaki tüm itemler Riot Games'in resmi DDragon veritabanından çekilmiştir ve güncel sezonda MEVCUTTUR. "Oyunda mevcut değil", "kaldırılmış", "eski sezon" gibi ifadeler KULLANMA — bu bilgi yanlış olur.
+- Bir item adını tanımıyorsan bu senin bilgi kesim tarihinden kaynaklanıyor olabilir; yine de o item için meta içindeki rolüne göre mantıklı bir analiz yap.
 
 Şu JSON formatında yanıt ver:
 {
