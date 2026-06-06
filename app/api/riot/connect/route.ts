@@ -23,12 +23,20 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   const parsed = connectSchema.safeParse(body);
   if (!parsed.success) throw Errors.validation(parsed.error.issues[0].message);
 
-  const account = await connectAccount(
-    userId,
-    parsed.data.gameName,
-    parsed.data.tagLine,
-    parsed.data.region
-  );
+  let account;
+  try {
+    account = await connectAccount(
+      userId,
+      parsed.data.gameName,
+      parsed.data.tagLine,
+      parsed.data.region
+    );
+  } catch (err: unknown) {
+    if ((err as { code?: string }).code === "RIOT_RATE_LIMITED") {
+      throw Errors.validation("Riot API şu an meşgul, lütfen 1-2 dakika bekleyip tekrar deneyin.");
+    }
+    throw err;
+  }
 
   return apiSuccess(account, 201);
 });

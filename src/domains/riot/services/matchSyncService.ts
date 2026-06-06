@@ -48,42 +48,31 @@ const RANK_DIVISIONS: Record<string, RankDivision> = {
 const APEX_TIERS = new Set(["MASTER", "GRANDMASTER", "CHALLENGER"]);
 
 // Enrich participants of newly-synced ranked matches with each player's current rank.
-// Uses Promise.allSettled so a single player's lookup failure doesn't abort others.
-// Only runs for RANKED_SOLO_5x5 matches — no point enriching ARAMs/Normals.
+// Runs sequentially to avoid bursting the Riot API rate limit (10 concurrent calls
+// per match × many matches = guaranteed 429s).
 async function enrichParticipantRanks(
   matchDbId: string,
   participantPuuids: string[],
   region: string
 ): Promise<void> {
-  const results = await Promise.allSettled(
-    participantPuuids.map((puuid) => getRankedEntriesByPuuidDirect(puuid, region))
-  );
-
-  for (let i = 0; i < participantPuuids.length; i++) {
-    const result = results[i];
-    if (!result || result.status === "rejected") {
-      logger.warn(`[sync] Rank lookup failed for participant ${participantPuuids[i]}`);
-      continue;
-    }
-
-    const soloEntry = result.value.find((e) => e.queueType === "RANKED_SOLO_5x5");
-    if (!soloEntry) continue;
-
-    const tier = RANK_TIERS[soloEntry.tier];
-    const division: RankDivision | undefined =
-      RANK_DIVISIONS[soloEntry.rank] ?? (APEX_TIERS.has(soloEntry.tier) ? "I" : undefined);
-
-    if (!tier || !division) continue;
-
+  for (const puuid of participantPuuids) {
     try {
+      const entries = await getRankedEntriesByPuuidDirect(puuid, region);
+      const soloEntry = entries.find((e) => e.queueType === "RANKED_SOLO_5x5");
+      if (!soloEntry) continue;
+
+      const tier = RANK_TIERS[soloEntry.tier];
+      const division: RankDivision | undefined =
+        RANK_DIVISIONS[soloEntry.rank] ?? (APEX_TIERS.has(soloEntry.tier) ? "I" : undefined);
+
+      if (!tier || !division) continue;
+
       await prisma.matchParticipant.updateMany({
-        where: { matchId: matchDbId, puuid: participantPuuids[i] },
+        where: { matchId: matchDbId, puuid },
         data: { rankTier: tier, rankDivision: division, rankLp: soloEntry.leaguePoints },
       });
     } catch (err) {
-      logger.warn(
-        `[sync] Failed to write rank for participant ${participantPuuids[i]}: ${err instanceof Error ? err.message : String(err)}`
-      );
+      logger.warn(`[sync] Rank lookup failed for ${puuid.slice(0, 8)}…: ${err instanceof Error ? err.message : String(err)}`);
     }
   }
 }
