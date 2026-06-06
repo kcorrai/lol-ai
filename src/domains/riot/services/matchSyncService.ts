@@ -57,7 +57,7 @@ async function enrichParticipantRanks(
   region: string
 ): Promise<void> {
   const results = await Promise.allSettled(
-    participantPuuids.map((puuid) => getRankedEntriesForPuuid(puuid, region))
+    participantPuuids.map((puuid) => getRankedEntriesByPuuidDirect(puuid, region))
   );
 
   for (let i = 0; i < participantPuuids.length; i++) {
@@ -185,11 +185,17 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   // Runs after new match ingestion. Finds up to 15 ranked solo matches for this
   // account that still have participants without rank data, and enriches them.
   try {
+    // Find matches where the user participated AND any participant is still missing rank
     const unrankedMatches = await prisma.match.findMany({
       where: {
         queueType: "RANKED_SOLO_5x5",
         participants: {
-          some: { riotAccountId: account.id, rankTier: null },
+          some: { riotAccountId: account.id },
+        },
+        AND: {
+          participants: {
+            some: { rankTier: null },
+          },
         },
       },
       select: { id: true, participants: { select: { puuid: true } } },

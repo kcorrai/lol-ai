@@ -13,7 +13,7 @@ import { useMatchDetail } from "@/hooks/useMatchDetail";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { ItemIcon } from "@/components/ui/ItemIcon";
 import { SummonerSpellIcon } from "@/components/ui/SummonerSpellIcon";
-import { runePathIconUrl, keystoneIconUrl } from "@/lib/ddragon";
+import { runePathIconUrl, keystoneIconUrl, rankEmblemUrl } from "@/lib/ddragon";
 import { BuildExplanationPanel } from "@/domains/match/components/BuildExplanationPanel";
 import { useSubscription } from "@/hooks/useSubscription";
 import type { ParticipantDetail, AiInsight, MatchDetail, TeamObjectives } from "@/domains/match";
@@ -40,15 +40,21 @@ const RANK_TIER_COLOR: Record<string, string> = {
 
 function RankBadge({ tier, division, lp }: { tier: string | null; division: string | null; lp: number | null }) {
   if (!tier) {
-    return <span className="text-[10px] text-text-muted">Unranked</span>;
+    return <span className="text-[10px] text-text-muted">—</span>;
   }
   const color = RANK_TIER_COLOR[tier] ?? "text-text-muted";
   const apexTiers = new Set(["MASTER", "GRANDMASTER", "CHALLENGER"]);
   const divisionStr = apexTiers.has(tier) ? "" : ` ${division ?? ""}`;
+  const emblemUrl = rankEmblemUrl(tier);
   return (
-    <span className={`text-[10px] font-medium ${color}`}>
-      {tier.charAt(0)}{tier.slice(1).toLowerCase()}{divisionStr}{lp !== null ? ` · ${lp} LP` : ""}
-    </span>
+    <div className="flex items-center gap-1">
+      {emblemUrl && (
+        <Image src={emblemUrl} alt={tier} width={20} height={20} unoptimized className="shrink-0" />
+      )}
+      <span className={`text-[10px] font-medium ${color}`}>
+        {tier.charAt(0)}{tier.slice(1).toLowerCase()}{divisionStr}{lp !== null ? ` · ${lp} LP` : ""}
+      </span>
+    </div>
   );
 }
 
