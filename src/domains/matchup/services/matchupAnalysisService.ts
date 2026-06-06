@@ -65,6 +65,7 @@ export async function getMatchupAnalysis(
     champion,
     opponent,
     role,
+    difficulty: aiData.difficulty,
     laneAnalysis: aiData.laneAnalysis,
     tradeGuide: aiData.tradeGuide,
     buildAdvice: aiData.buildAdvice,

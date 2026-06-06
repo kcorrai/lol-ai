@@ -7,6 +7,14 @@ function SkeletonBox({ className }: { className?: string }) {
 export function OtpSkeleton() {
   return (
     <div className="space-y-6">
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <span className="relative flex h-2.5 w-2.5 shrink-0">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75" />
+          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-yellow-500" />
+        </span>
+        AI OTP analizi hazırlanıyor...
+      </div>
+
       {/* Meta rating */}
       <div className="rounded-xl border border-border bg-surface p-4 space-y-3">
         <SkeletonBox className="h-4 w-32" />

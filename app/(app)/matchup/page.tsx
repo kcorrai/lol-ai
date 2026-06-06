@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Swords, Share2, AlertTriangle } from "lucide-react";
+import { Swords, Share2, Info } from "lucide-react";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ErrorState } from "@/components/ui/error-state";
@@ -114,15 +114,38 @@ export default function MatchupPage() {
       {data && !isLoading && (
         <div className="space-y-4">
           {/* Champion comparison header */}
-          <div className="flex items-center justify-center gap-6 rounded-lg border border-border bg-surface px-6 py-4">
-            <div className="flex items-center gap-2.5">
-              <ChampionIcon name={data.champion} size={48} className="rounded-lg ring-2 ring-accent/30" />
-              <span className="text-base font-semibold text-text">{data.champion}</span>
+          <div className="rounded-lg border border-border bg-surface px-6 py-4 space-y-3">
+            <div className="flex items-center justify-center gap-6">
+              <div className="flex items-center gap-2.5">
+                <ChampionIcon name={data.champion} size={48} className="rounded-lg ring-2 ring-accent/30" />
+                <span className="text-base font-semibold text-text">{data.champion}</span>
+              </div>
+              <Swords className="h-5 w-5 shrink-0 text-text-muted/50" />
+              <div className="flex items-center gap-2.5">
+                <span className="text-base font-semibold text-text">{data.opponent}</span>
+                <ChampionIcon name={data.opponent} size={48} className="rounded-lg ring-2 ring-red-500/30" />
+              </div>
             </div>
-            <Swords className="h-5 w-5 shrink-0 text-text-muted/50" />
-            <div className="flex items-center gap-2.5">
-              <span className="text-base font-semibold text-text">{data.opponent}</span>
-              <ChampionIcon name={data.opponent} size={48} className="rounded-lg ring-2 ring-red-500/30" />
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <span className={cn(
+                "rounded border px-2 py-0.5 text-xs font-semibold",
+                data.laneAnalysis.advantage === "favorable" && "bg-green-500/15 text-green-400 border-green-500/30",
+                data.laneAnalysis.advantage === "unfavorable" && "bg-red-500/15 text-red-400 border-red-500/30",
+                data.laneAnalysis.advantage === "even" && "bg-border/40 text-text-muted border-border",
+              )}>
+                {data.laneAnalysis.advantage === "favorable" ? "Avantajlı" : data.laneAnalysis.advantage === "unfavorable" ? "Dezavantajlı" : "Dengeli"}
+              </span>
+              <span className="text-xs text-text-muted border-l border-border pl-3">
+                {ROLES.find((r) => r.value === data.role)?.label ?? data.role}
+              </span>
+              {data.difficulty !== undefined && (
+                <span className="flex items-center gap-1 border-l border-border pl-3">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span key={i} className={cn("h-1.5 w-1.5 rounded-full", i < data.difficulty! ? "bg-accent" : "bg-border")} />
+                  ))}
+                  <span className="ml-1 text-xs text-text-muted">Zorluk</span>
+                </span>
+              )}
             </div>
           </div>
 
@@ -140,9 +163,9 @@ export default function MatchupPage() {
 
           <MatchupSection tab={activeTab} data={data} />
 
-          <div className="flex items-start gap-2 rounded-lg border border-border bg-surface px-4 py-3">
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-text-muted/60" />
-            <p className="text-xs text-text-muted">{data.patchNote}</p>
+          <div className="flex items-center gap-2 px-1">
+            <Info className="h-3.5 w-3.5 shrink-0 text-text-muted/40" />
+            <p className="text-xs text-text-muted/60">Bu analiz, güncel patch verilerini yansıtmayabilir ve AI tarafından üretilmiştir.</p>
           </div>
         </div>
       )}
