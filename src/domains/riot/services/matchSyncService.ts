@@ -7,7 +7,6 @@ import {
   getMatchIds,
   getMatch,
   getRankedEntries,
-  getRankedEntriesForPuuid,
   getRankedEntriesByPuuidDirect,
   getSummonerByPuuid,
 } from "@/domains/riot/services/riotApiClient";
