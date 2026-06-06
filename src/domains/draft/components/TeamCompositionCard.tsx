@@ -1,5 +1,6 @@
 "use client";
 
+import { CompositionRadarChart } from "./CompositionRadarChart";
 import type { TeamComposition } from "../types/draft.types";
 
 interface TeamCompositionCardProps {
@@ -21,18 +22,13 @@ function MetricBar({ label, blueScore, redScore }: { label: string; blueScore: n
 
   return (
     <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-      {/* Blue bar (right-aligned) */}
       <div className="flex items-center justify-end gap-1.5">
         <span className="text-xs font-semibold text-blue-400">{blueScore}</span>
         <div className="h-2 w-24 overflow-hidden rounded-full bg-surface-2">
-          <div
-            className="h-full rounded-full bg-blue-500 ml-auto"
-            style={{ width: `${bluePct}%` }}
-          />
+          <div className="h-full rounded-full bg-blue-500 ml-auto" style={{ width: `${bluePct}%` }} />
         </div>
       </div>
       <span className="w-20 text-center text-xs text-text-muted">{label}</span>
-      {/* Red bar (left-aligned) */}
       <div className="flex items-center gap-1.5">
         <div className="h-2 w-24 overflow-hidden rounded-full bg-surface-2">
           <div className="h-full rounded-full bg-red-500" style={{ width: `${redPct}%` }} />
@@ -51,11 +47,17 @@ export function TeamCompositionCard({ blue, red }: TeamCompositionCardProps) {
         <span className="text-xs text-text-muted">Takım Kompozisyonu</span>
         <h3 className="text-sm font-semibold text-red-400">Kırmızı Takım</h3>
       </div>
+
       <div className="space-y-3">
         {METRICS.map(({ key, label }) => (
           <MetricBar key={key} label={label} blueScore={blue[key]} redScore={red[key]} />
         ))}
       </div>
+
+      <div className="border-t border-border pt-3 flex justify-center">
+        <CompositionRadarChart blue={blue} red={red} />
+      </div>
+
       <div className="grid grid-cols-2 gap-3 border-t border-border pt-3">
         <p className="text-xs text-text-muted italic">{blue.summary}</p>
         <p className="text-xs text-text-muted italic text-right">{red.summary}</p>

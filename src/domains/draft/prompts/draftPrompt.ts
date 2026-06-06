@@ -41,9 +41,21 @@ ${formatTeam(redTeam, "red")}
   },
   "redTeamComposition": { ... aynı format ... },
   "blueWinConditions": [
-    { "description": "Win condition açıklaması", "priority": "primary", "howToAchieve": "Nasıl kazanılır" }
+    {
+      "description": "Win condition açıklaması",
+      "priority": "primary",
+      "howToAchieve": "Nasıl kazanılır",
+      "phase": "early"
+    }
   ],
-  "redWinConditions": [ ... ],
+  "redWinConditions": [
+    {
+      "description": "Win condition açıklaması",
+      "priority": "primary",
+      "howToAchieve": "Nasıl kazanılır",
+      "phase": "mid"
+    }
+  ],
   "blueScaling": {
     "earlyGame": { "score": 6, "description": "Erken oyun açıklaması" },
     "midGame": { "score": 8, "description": "..." },
@@ -51,13 +63,31 @@ ${formatTeam(redTeam, "red")}
   },
   "redScaling": { ... aynı format ... },
   "keyMatchups": [
-    { "blue": "Mavi şampiyon", "red": "Kırmızı şampiyon", "advantage": "blue", "note": "Eşleşme notu" }
+    {
+      "blue": "Mavi şampiyon",
+      "red": "Kırmızı şampiyon",
+      "advantage": "blue",
+      "note": "Eşleşme notu",
+      "microTip": "Bu eşleşmede kazanmak için tek cümlelik mikro taktik ipucu"
+    }
   ],
   "risks": [
     { "team": "blue", "risk": "Risk açıklaması", "severity": "high" }
   ],
+  "banRecommendations": [
+    {
+      "champion": "Yasaklanması önerilen şampiyon",
+      "targetTeam": "red",
+      "reason": "Bu şampiyonu yasaklamanın kısa ve net sebebi"
+    }
+  ],
   "verdict": "Tarafsız özet sonuç cümlesi"
 }
 
-Tüm sayısal değerler 1-10 arasında olmalı. keyMatchups maksimum 3 adet. Sadece JSON döndür.`;
+Kurallar:
+- Tüm sayısal değerler 1-10 arasında olmalı.
+- keyMatchups maksimum 3 adet, tam 3 adet döndür.
+- banRecommendations tam 3 adet döndür; yasaklama hangi takımı zayıflatacaksa targetTeam o takım olsun.
+- phase için "early" (0-15 dk), "mid" (15-25 dk), "late" (25+ dk) kullan.
+- Sadece JSON döndür.`;
 }

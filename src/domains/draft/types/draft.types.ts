@@ -16,6 +16,7 @@ export interface WinCondition {
   description: string;
   priority: "primary" | "secondary";
   howToAchieve: string;
+  phase?: "early" | "mid" | "late";
 }
 
 export interface ScalingProfile {
@@ -29,12 +30,19 @@ export interface KeyMatchup {
   red: string;
   advantage: "blue" | "red" | "even";
   note: string;
+  microTip?: string;
 }
 
 export interface DraftRisk {
   team: TeamSide;
   risk: string;
   severity: "high" | "medium" | "low";
+}
+
+export interface BanRecommendation {
+  champion: string;
+  targetTeam: "blue" | "red";
+  reason: string;
 }
 
 export type TeamPicks = Record<Position, string>;
@@ -55,6 +63,7 @@ export interface DraftAnalysis {
   redScaling: ScalingProfile;
   keyMatchups: KeyMatchup[];
   risks: DraftRisk[];
+  banRecommendations?: BanRecommendation[];
   verdict: string;
   generatedAt: string;
 }
@@ -72,6 +81,7 @@ const winConditionSchema = z.object({
   description: z.string(),
   priority: z.enum(["primary", "secondary"]),
   howToAchieve: z.string(),
+  phase: z.enum(["early", "mid", "late"]).optional(),
 });
 
 const scalingPhaseSchema = z.object({
@@ -90,6 +100,7 @@ const keyMatchupSchema = z.object({
   red: z.string(),
   advantage: z.enum(["blue", "red", "even"]),
   note: z.string(),
+  microTip: z.string().optional(),
 });
 
 const draftRiskSchema = z.object({
@@ -98,15 +109,22 @@ const draftRiskSchema = z.object({
   severity: z.enum(["high", "medium", "low"]),
 });
 
+const banRecommendationSchema = z.object({
+  champion: z.string(),
+  targetTeam: z.enum(["blue", "red"]),
+  reason: z.string(),
+});
+
 export const draftAiOutputSchema = z.object({
   blueTeamComposition: teamCompositionSchema,
   redTeamComposition: teamCompositionSchema,
-  blueWinConditions: z.array(winConditionSchema).min(1),
-  redWinConditions: z.array(winConditionSchema).min(1),
+  blueWinConditions: z.array(winConditionSchema),
+  redWinConditions: z.array(winConditionSchema),
   blueScaling: scalingProfileSchema,
   redScaling: scalingProfileSchema,
-  keyMatchups: z.array(keyMatchupSchema).min(1),
-  risks: z.array(draftRiskSchema).min(1),
+  keyMatchups: z.array(keyMatchupSchema),
+  risks: z.array(draftRiskSchema),
+  banRecommendations: z.array(banRecommendationSchema).optional(),
   verdict: z.string(),
 });
 
