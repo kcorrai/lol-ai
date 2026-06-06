@@ -13,7 +13,6 @@ import { PerformanceSummaryCards } from "@/domains/analysis/components/Performan
 import { RecentMatchesSummaryCard } from "@/domains/analysis/components/RecentMatchesSummaryCard";
 import { PerformanceTrendChart } from "@/domains/analysis/components/PerformanceTrendChart";
 import { RecentMatchList } from "@/domains/analysis/components/RecentMatchList";
-import { ReportList } from "@/domains/coaching/components/ReportList";
 import { CoachingActionsCard } from "@/domains/coaching/components/CoachingActionsCard";
 import { RankedCard } from "@/domains/riot/components/RankedCard";
 import { RankUpWidget } from "@/domains/riot/components/RankUpWidget";
@@ -29,7 +28,6 @@ import { TopChampionsWidget } from "@/domains/analysis/components/TopChampionsWi
 import { RoleDistributionWidget } from "@/domains/analysis/components/RoleDistributionWidget";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
-import { useCoachingReports } from "@/hooks/useCoachingReports";
 import { useGenerateReport } from "@/hooks/useGenerateReport";
 import { useSubscription } from "@/hooks/useSubscription";
 
@@ -49,7 +47,6 @@ export default function DashboardPage() {
   const primaryAccount = accounts?.find((a) => a.id === primaryId);
 
   const { data: profile, isLoading: profileLoading, error: profileError } = usePerformanceProfile(primaryId);
-  const { data: reports, isLoading: reportsLoading } = useCoachingReports(primaryId ?? undefined);
   const { data: sub } = useSubscription();
   const generateReport = useGenerateReport();
 
@@ -155,7 +152,12 @@ export default function DashboardPage() {
 
           {/* ── AI Coaching Actions ────────────────────────────────────── */}
           <div>
-            <p className="mb-3 text-sm font-semibold text-text">Generate AI Report</p>
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-sm font-semibold text-text">Generate AI Report</p>
+              <Link href="/coaching" className="text-xs text-accent hover:underline">
+                View all reports →
+              </Link>
+            </div>
             <CoachingActionsCard
               onSessionReview={handleGenerate}
               onClimbRoadmap={handleClimbRoadmap}
@@ -214,12 +216,6 @@ export default function DashboardPage() {
           </section>
         </>
       )}
-
-      {/* ── Coaching Reports ────────────────────────────────────────── */}
-      <section>
-        <SectionLabel>Coaching Reports</SectionLabel>
-        <ReportList reports={reports} isLoading={reportsLoading} />
-      </section>
     </div>
   );
 }

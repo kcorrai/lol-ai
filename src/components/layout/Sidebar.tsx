@@ -18,6 +18,7 @@ import {
   Swords,
   Star,
   Users,
+  ClipboardList,
 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
@@ -26,6 +27,7 @@ import { cn } from "@/lib/utils";
 const NAV_MAIN = [
   { href: "/dashboard",     icon: LayoutDashboard, label: "Dashboard" },
   { href: "/champions",     icon: Shield,          label: "Champions" },
+  { href: "/coaching",      icon: ClipboardList,   label: "Reports" },
   { href: "/coaching/chat", icon: MessageCircle,   label: "Coach Chat" },
 ] as const;
 

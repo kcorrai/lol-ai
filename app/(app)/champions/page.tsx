@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Gamepad2, Lock } from "lucide-react";
+import { Gamepad2, Lock, BarChart2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -12,6 +12,8 @@ import { ChampionDeepDiveModal } from "@/domains/champions/components/ChampionDe
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { useChampionPool } from "@/hooks/useChampionPool";
 import { useSubscription } from "@/hooks/useSubscription";
+import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
+import { useGenerateReport } from "@/hooks/useGenerateReport";
 
 const FREE_CHAMPION_LIMIT = 3;
 
@@ -20,6 +22,8 @@ export default function ChampionsPage() {
   const { data: sub } = useSubscription();
   const primaryId = accounts?.[0]?.id ?? null;
   const { data: pool = [], isLoading: poolLoading } = useChampionPool(primaryId);
+  const { data: profile } = usePerformanceProfile(primaryId);
+  const generateReport = useGenerateReport();
   const [deepDiveChampion, setDeepDiveChampion] = useState<string | null>(null);
 
   const isPro = sub?.plan === "pro" || sub?.plan === "elite";
@@ -55,11 +59,36 @@ export default function ChampionsPage() {
       />
 
       {best && !poolLoading && (
-        <div className="mb-5 mt-2 rounded-lg border border-accent/30 bg-accent/5 px-4 py-3 text-sm">
-          <span className="font-medium text-accent">Best pick to climb:</span>{" "}
-          <span className="text-text">
-            {best.championName} — {best.winRate}% win rate over {best.gamesPlayed} games
-          </span>
+        <div className="mb-5 mt-2 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-accent/30 bg-accent/5 px-4 py-3 text-sm">
+          <div>
+            <span className="font-medium text-accent">Best pick to climb:</span>{" "}
+            <span className="text-text">
+              {best.championName} — {best.winRate}% win rate over {best.gamesPlayed} games
+            </span>
+          </div>
+          <Button
+            size="sm"
+            variant="secondary"
+            disabled={!profile || generateReport.isPending}
+            onClick={() => {
+              if (!primaryId || !profile) return;
+              const matchIds = profile.recentMatches
+                .filter((m) => m.champion === best.championName)
+                .slice(0, 10)
+                .map((m) => m.matchDbId);
+              if (matchIds.length === 0) return;
+              generateReport.mutate({
+                riotAccountId: primaryId,
+                reportType: "champion_focus",
+                matchIds,
+                focusArea: best.championName,
+              });
+            }}
+            className="shrink-0 gap-1.5"
+          >
+            <BarChart2 className="h-3.5 w-3.5" />
+            {generateReport.isPending ? "Generating…" : `Analyze ${best.championName}`}
+          </Button>
         </div>
       )}
 
@@ -103,7 +132,7 @@ export default function ChampionsPage() {
               Share on X
             </a>
             <Link
-              href="/dashboard"
+              href="/coaching"
               className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-text-muted hover:border-accent/50 hover:text-text transition-colors"
             >
               Generate AI Report
