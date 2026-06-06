@@ -89,6 +89,27 @@ async function enrichParticipantRanks(
   }
 }
 
+// Fetches match DTO from Riot API and updates any participants missing gameName/tagLine.
+// Fire-and-forget safe — all errors are swallowed.
+export async function backfillMatchNicknames(
+  matchDbId: string,
+  riotMatchId: string,
+  region: string
+): Promise<void> {
+  try {
+    const dto = await getMatch(riotMatchId, region);
+    for (const p of dto.info.participants) {
+      if (!p.riotIdGameName) continue;
+      await prisma.matchParticipant.updateMany({
+        where: { matchId: matchDbId, puuid: p.puuid, gameName: null },
+        data: { gameName: p.riotIdGameName, tagLine: p.riotIdTagline ?? null },
+      });
+    }
+  } catch (err) {
+    logger.warn(`[sync] Nickname backfill failed for ${riotMatchId}: ${err instanceof Error ? err.message : String(err)}`);
+  }
+}
+
 export async function syncAccount(riotAccountId: string, force = false): Promise<SyncResult> {
   let account = await prisma.riotAccount.findUnique({
     where: { id: riotAccountId },

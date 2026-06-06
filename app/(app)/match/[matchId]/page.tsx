@@ -21,6 +21,10 @@ import type { ParticipantDetail, AiInsight, MatchDetail, TeamObjectives } from "
 function fmt(n: number, d = 1) { return n.toFixed(d); }
 function fmtK(n: number) { return n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n); }
 
+const POSITION_LABELS: Record<string, string> = {
+  TOP: "Top", JUNGLE: "Jungle", MIDDLE: "Mid", BOTTOM: "ADC", UTILITY: "Support",
+};
+
 const RANK_TIER_COLOR: Record<string, string> = {
   IRON:        "text-gray-400",
   BRONZE:      "text-amber-700",
@@ -123,6 +127,7 @@ function TeamTable({ participants, teamId, userRiotAccountId, objectives }: {
           <thead>
             <tr className="border-b border-border bg-surface-2 text-text-muted">
               <th className="px-3 py-2 text-left">Champion</th>
+              <th className="px-3 py-2 text-left">Rank</th>
               <th className="px-3 py-2 text-center">K / D / A</th>
               <th className="px-3 py-2 text-center">CS</th>
               <th className="px-3 py-2 text-center">Dealt</th>
@@ -151,11 +156,13 @@ function TeamTable({ participants, teamId, userRiotAccountId, objectives }: {
                         {p.gameName ? (
                           <p className="truncate text-[10px] text-text-muted">{p.gameName}<span className="text-text-muted/50">#{p.tagLine}</span></p>
                         ) : (
-                          <p className="text-[10px] text-text-muted">{p.position}{isUser ? " · you" : ""}</p>
+                          <p className="text-[10px] text-text-muted">{POSITION_LABELS[p.position] ?? p.position}{isUser ? " · you" : ""}</p>
                         )}
-                        <RankBadge tier={p.rankTier} division={p.rankDivision} lp={p.rankLp} />
                       </div>
                     </div>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <RankBadge tier={p.rankTier} division={p.rankDivision} lp={p.rankLp} />
                   </td>
                   <td className="px-3 py-2.5 text-center">
                     <p className="font-semibold text-text">{p.kills}/<span className="text-danger">{p.deaths}</span>/{p.assists}</p>

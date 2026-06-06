@@ -4,6 +4,7 @@ import {
   computeDamageShare,
   computeKillParticipation,
 } from "@/domains/analysis/calculators/performanceCalculator";
+import { backfillMatchNicknames } from "@/domains/riot";
 
 export type ParticipantDetail = {
   id: string;
@@ -99,7 +100,7 @@ export async function getMatchDetail(
   // Fetch user's latest rank to enrich their participant row (others don't have stored rank)
   const latestUserRank = userAccount
     ? await prisma.rankedHistory.findFirst({
-        where: { riotAccountId: userAccount.id, queueType: "RANKED_SOLO_5x5" },
+        where: { riotAccountId: userAccount.id },
         orderBy: { recordedAt: "desc" },
         select: { tier: true, division: true, lp: true },
       })
@@ -173,6 +174,11 @@ export async function getMatchDetail(
         weaknesses: aiInsightRow.weaknesses,
       }
     : null;
+
+  // Lazily backfill missing nicknames for pre-migration matches (fire-and-forget)
+  if (participants.some((p) => !p.gameName)) {
+    backfillMatchNicknames(match.id, match.matchId, match.region).catch(() => undefined);
+  }
 
   return {
     id: match.id,
