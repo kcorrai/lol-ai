@@ -7,6 +7,7 @@ import { assertOwnsRiotAccount, assertCanGenerateReport } from "@/lib/auth/autho
 import { buildCoachingInput } from "@/domains/coaching/pipeline/dataPreparator";
 import { createPendingReport } from "@/domains/coaching/services/reportService";
 import { checkRateLimit, rateLimitResponse } from "@/lib/api/rateLimit";
+import { inngest } from "@/inngest/client";
 
 const generateSchema = z.object({
   riotAccountId: z.string().uuid(),
@@ -41,28 +42,10 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
 
   const reportId = await createPendingReport(riotAccountId, matchIds, reportType);
 
-  // Kick off pipeline as a separate Vercel function invocation — caller does not wait.
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : "http://localhost:3000";
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${process.env.CRON_SECRET ?? ""}`,
-  };
-  // Vercel Deployment Protection intercepts all inbound requests — include bypass header for internal calls.
-  if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
-    headers["x-vercel-protection-bypass"] = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
-  }
-  try {
-    await fetch(`${baseUrl}/api/coaching/process`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({ reportId, riotAccountId, matchIds, reportType, focusArea }),
-      signal: AbortSignal.timeout(10_000),
-    });
-  } catch {
-    // Process endpoint unreachable — report stays pending, will not auto-resolve.
-  }
+  await inngest.send({
+    name: "coaching/report.requested",
+    data: { reportId, riotAccountId, matchIds, reportType, focusArea },
+  });
 
   return apiSuccess({ reportId, status: "pending" }, 202);
 });
