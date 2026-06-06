@@ -17,7 +17,6 @@ interface PricingCardProps {
   proFeatures?: Feature[];
   cta: string;
   ctaHref: string;
-  highlighted?: boolean;
 }
 
 export function PricingCard({
@@ -30,7 +29,6 @@ export function PricingCard({
   proFeatures,
   cta,
   ctaHref,
-  highlighted = false,
 }: PricingCardProps) {
   const isPro = plan === "pro";
 

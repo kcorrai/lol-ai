@@ -76,7 +76,6 @@ export default function PricingPage() {
             proFeatures={PRO_EXCLUSIVE_FEATURES}
             cta="Start Pro — $9.99/mo"
             ctaHref="/settings/billing"
-            highlighted
           />
         </div>
 
