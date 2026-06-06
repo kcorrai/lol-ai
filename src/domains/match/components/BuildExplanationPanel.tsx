@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp, Check, X, Lock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ItemIcon } from "@/components/ui/ItemIcon";
 import { useBuildExplanation } from "@/hooks/useBuildExplanation";
 import type { ItemExplanation } from "../types/buildExplanation.types";
 
@@ -10,29 +11,35 @@ interface BuildExplanationPanelProps {
   matchId: string;
   puuid: string;
   isPro: boolean;
+  itemIds?: number[];
 }
 
-function ItemRow({ item }: { item: ItemExplanation }) {
+function ItemRow({ item, itemId }: { item: ItemExplanation; itemId: number }) {
+  const good = item.wasGoodChoice;
   return (
-    <div className="rounded-lg border border-border p-3 space-y-1">
-      <div className="flex items-center gap-2">
-        {item.wasGoodChoice ? (
-          <Check className="h-4 w-4 shrink-0 text-green-400" />
-        ) : (
-          <X className="h-4 w-4 shrink-0 text-red-400" />
-        )}
-        <span className="text-sm font-medium text-text">{item.itemName}</span>
+    <div className={`rounded-lg border p-3 ${good ? "border-border bg-surface" : "border-danger/20 bg-danger/5"}`}>
+      <div className="flex items-start gap-3">
+        <div className="relative shrink-0">
+          <ItemIcon itemId={itemId} size={52} />
+          <span className={`absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold ${good ? "bg-success text-background" : "bg-danger text-background"}`}>
+            {good ? "✓" : "✗"}
+          </span>
+        </div>
+        <div className="flex-1 min-w-0 space-y-1">
+          <span className="text-sm font-semibold text-text">{item.itemName}</span>
+          <p className="text-xs leading-relaxed text-text-muted">{item.reasoning}</p>
+          {item.betterAlternative && (
+            <p className="text-xs font-medium text-yellow-400">→ Alternatif: {item.betterAlternative}</p>
+          )}
+          <p className="text-xs italic text-text-muted/60">{item.whenToChoose}</p>
+        </div>
       </div>
-      <p className="text-xs text-text-muted pl-6">{item.reasoning}</p>
-      {item.betterAlternative && (
-        <p className="text-xs text-yellow-400 pl-6">Alternatif: {item.betterAlternative}</p>
-      )}
-      <p className="text-xs text-text-muted/60 pl-6 italic">{item.whenToChoose}</p>
     </div>
   );
 }
 
-export function BuildExplanationPanel({ matchId, puuid, isPro }: BuildExplanationPanelProps) {
+export function BuildExplanationPanel({ matchId, puuid, isPro, itemIds = [] }: BuildExplanationPanelProps) {
+  const nonZeroItemIds = itemIds.filter((id) => id > 0);
   const [open, setOpen] = useState(false);
   const { data, isLoading, trigger } = useBuildExplanation(matchId, puuid);
 
@@ -82,7 +89,7 @@ export function BuildExplanationPanel({ matchId, puuid, isPro }: BuildExplanatio
               <p className="text-sm text-text">{data.summary}</p>
               <div className="space-y-2">
                 {data.items.map((item, i) => (
-                  <ItemRow key={i} item={item} />
+                  <ItemRow key={i} item={item} itemId={nonZeroItemIds[i] ?? 0} />
                 ))}
               </div>
               <p className="text-sm italic text-text-muted">{data.buildPath}</p>

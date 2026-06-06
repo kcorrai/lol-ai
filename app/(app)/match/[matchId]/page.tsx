@@ -312,6 +312,7 @@ export default function MatchDetailPage() {
             matchId={match.id}
             puuid={userP.puuid}
             isPro={isPro}
+            itemIds={userP.itemIds}
           />
         );
       })()}
