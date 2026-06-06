@@ -21,6 +21,7 @@ export interface ChampionSelectorProps {
   disabled?: boolean;
   size?: "sm" | "md" | "lg";
   excludeChampions?: string[];
+  filterByRoles?: string[];
   className?: string;
 }
 
@@ -48,6 +49,7 @@ export function ChampionSelector({
   disabled = false,
   size = "md",
   excludeChampions = [],
+  filterByRoles,
   className,
 }: ChampionSelectorProps) {
   const { data: allChampions = [] } = useAllChampions();
@@ -65,9 +67,10 @@ export function ChampionSelector({
     return allChampions.filter(
       (c) =>
         !excludeChampions.includes(c.name) &&
-        (q === "" || c.name.toLowerCase().includes(q))
+        (q === "" || c.name.toLowerCase().includes(q)) &&
+        (!filterByRoles || c.roles.some((r) => filterByRoles.includes(r)))
     );
-  }, [allChampions, query, excludeChampions]);
+  }, [allChampions, query, excludeChampions, filterByRoles]);
 
   const selectedChampion = allChampions.find((c) => c.name === value) ?? null;
 

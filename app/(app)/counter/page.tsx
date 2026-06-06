@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Swords, AlertTriangle, Shield } from "lucide-react";
+import { Swords, AlertTriangle, Shield, PlayCircle } from "lucide-react";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ErrorState } from "@/components/ui/error-state";
@@ -125,7 +125,18 @@ export default function CounterPage() {
 
           {data.tips.length > 0 && (
             <section>
-              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-text-muted">Genel İpuçları</h2>
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="text-sm font-semibold uppercase tracking-wide text-text-muted">Genel İpuçları</h2>
+                <a
+                  href={`https://www.youtube.com/results?search_query=${encodeURIComponent(`${data.champion} counter tips League of Legends`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs text-text-muted transition-colors hover:border-red-500/50 hover:text-red-400"
+                >
+                  <PlayCircle className="h-3.5 w-3.5" />
+                  Matchup videoları
+                </a>
+              </div>
               <ul className="space-y-1.5">
                 {data.tips.map((tip, i) => (
                   <li key={i} className="flex gap-2 text-sm text-text">

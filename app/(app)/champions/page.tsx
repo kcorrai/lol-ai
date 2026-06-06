@@ -116,30 +116,6 @@ export default function ChampionsPage() {
         onDeepDive={setDeepDiveChampion}
       />
 
-      {/* Viral CTA — share best champion (visible to all, Pro or Free) */}
-      {best && !poolLoading && (
-        <div className="mt-4 rounded-lg border border-border bg-surface-2 p-4">
-          <p className="mb-2 text-xs font-medium text-text-muted">
-            Challenge your friends
-          </p>
-          <div className="flex flex-wrap gap-2">
-            <a
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`My best champion is ${best.championName} with ${best.winRate}% win rate! Check your stats on LoL AI Coach 👇`)}&url=${encodeURIComponent(process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg")}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-text-muted hover:border-accent/50 hover:text-text transition-colors"
-            >
-              Share on X
-            </a>
-            <Link
-              href="/coaching"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-text-muted hover:border-accent/50 hover:text-text transition-colors"
-            >
-              Generate AI Report
-            </Link>
-          </div>
-        </div>
-      )}
 
       {/* Pro gate — shown when free user has more champions */}
       {!isPro && lockedCount > 0 && !poolLoading && (

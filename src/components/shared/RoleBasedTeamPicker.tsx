@@ -19,6 +19,16 @@ export interface RoleBasedTeamPickerProps {
   teamColor?: "blue" | "red";
 }
 
+// DDragon tag → typical game positions.
+// Values must match the `roles` strings stored in the Champion table.
+const POSITION_ROLES: Record<Position, string[]> = {
+  TOP:     ["Fighter", "Tank"],
+  JUNGLE:  ["Fighter", "Tank", "Assassin", "Mage"],
+  MIDDLE:  ["Mage", "Assassin", "Fighter"],
+  BOTTOM:  ["Marksman"],
+  UTILITY: ["Support", "Mage", "Tank"],
+};
+
 const POSITIONS: { key: Position; label: string }[] = [
   { key: "TOP", label: "Top" },
   { key: "JUNGLE", label: "Orman" },
@@ -60,9 +70,9 @@ export function RoleBasedTeamPicker({
               size="sm"
               excludeChampions={[
                 ...excludeChampions,
-                // Prevent picking same champ twice within this team
                 ...selectedInThisPicker.filter((c) => c !== value[key]),
               ]}
+              filterByRoles={POSITION_ROLES[key]}
               className="flex-1"
             />
           </div>

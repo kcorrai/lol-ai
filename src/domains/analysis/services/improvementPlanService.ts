@@ -189,6 +189,48 @@ export async function getActivePlan(
   return buildPlanWithProgress(plan, profile);
 }
 
+export interface PlanHistoryEntry {
+  id: string;
+  createdAt: string;
+  expiresAt: string;
+  status: string;
+  completedCount: number;
+  totalTargets: number;
+  weeklyScore: number;
+}
+
+export function computeWeeklyScore(progresses: PlanProgress[]): number {
+  if (progresses.length === 0) return 0;
+  const completed = progresses.filter((p) => p.achieved).length;
+  const partial = progresses.filter((p) => !p.achieved && p.progress > 0.5).length;
+  return Math.min(Math.round(completed * 33 + partial * 15), 100);
+}
+
+export async function getPlanHistory(riotAccountId: string): Promise<PlanHistoryEntry[]> {
+  const plans = await prisma.improvementPlan.findMany({
+    where: { riotAccountId },
+    orderBy: { createdAt: "desc" },
+    take: 10,
+  });
+
+  const profile = await getPlayerPerformanceProfile(riotAccountId, 30);
+
+  return plans.map((plan) => {
+    const targets = (plan.targets as unknown as ImprovementTarget[]) ?? [];
+    const progresses = targets.map((t) => toProgress(t, getCurrentValue(t.metric, profile)));
+    const score = computeWeeklyScore(progresses);
+    return {
+      id: plan.id,
+      createdAt: plan.createdAt.toISOString(),
+      expiresAt: plan.expiresAt.toISOString(),
+      status: plan.status,
+      completedCount: progresses.filter((p) => p.achieved).length,
+      totalTargets: targets.length,
+      weeklyScore: score,
+    };
+  });
+}
+
 export async function generatePlan(riotAccountId: string): Promise<PlanWithProgress> {
   const profile = await getPlayerPerformanceProfile(riotAccountId, 20);
   const targets = buildCandidates(profile);

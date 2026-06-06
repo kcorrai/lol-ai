@@ -27,3 +27,12 @@ export function useGeneratePlan(riotAccountId: string | null | undefined) {
     },
   });
 }
+
+export function usePlanHistory(riotAccountId: string | null | undefined) {
+  return useQuery({
+    queryKey: ["improvement-plan-history", riotAccountId],
+    queryFn: () => apiFetch(`/api/riot/${riotAccountId}/plan/history`),
+    enabled: !!riotAccountId,
+    staleTime: 10 * 60_000,
+  });
+}

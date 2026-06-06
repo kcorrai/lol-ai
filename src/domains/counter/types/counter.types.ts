@@ -119,3 +119,26 @@ export const generalCounterResultSchema = z.object({
   generatedAt: z.string(),
   patchNote: z.string(),
 });
+
+// ── Personal Matchup Intelligence types ──────────────────────────────────────
+
+export type MatchupTrend = "improving" | "declining" | "stable" | "insufficient_data";
+
+export interface MatchupEntry {
+  opponentChampionId: number;
+  opponentChampionName: string;
+  games: number;
+  wins: number;
+  winRate: number;
+  avgKda: number;
+  trend: MatchupTrend;
+}
+
+export interface PersonalMatchupReport {
+  championId: number;
+  championName: string;
+  best: MatchupEntry[];
+  worst: MatchupEntry[];
+  banSuggestion: MatchupEntry | null;
+  totalMatchupsAnalyzed: number;
+}

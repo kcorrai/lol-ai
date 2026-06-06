@@ -230,7 +230,7 @@ export function CoachingReportDetail({ report, isPro }: Props) {
           <CardHeader className="pb-1">
             <div className="flex items-center justify-between">
               <CardTitle className="text-xs uppercase tracking-widest text-accent">Coach Says</CardTitle>
-              <ListenButton reportId={report.id} />
+              <ListenButton reportId={report.id} text={report.coachPersonaResponse} />
             </div>
           </CardHeader>
           <CardContent>

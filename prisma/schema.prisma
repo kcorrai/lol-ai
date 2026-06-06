@@ -97,12 +97,13 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts      Account[]
-  sessions      Session[]
-  profile       Profile?
-  subscription  Subscription?
-  riotAccounts  RiotAccount[]
-  notifications Notification[]
+  accounts       Account[]
+  sessions       Session[]
+  profile        Profile?
+  subscription   Subscription?
+  riotAccounts   RiotAccount[]
+  notifications  Notification[]
+  shareableCards ShareableCard[]
 
   @@map("users")
 }
@@ -223,6 +224,7 @@ model RiotAccount {
   performanceSnapshots PerformanceSnapshot[]
   coachingReports      CoachingReport[]
   improvementPlans     ImprovementPlan[]
+  habits               PlayerHabit[]
 
   @@unique([userId, puuid])
   @@index([userId])
@@ -349,6 +351,9 @@ model ChampionStat {
   avgGoldPerMin  Decimal   @db.Decimal(7, 2)
   masteryLevel       Int?
   masteryPoints      BigInt?
+  masteryScore       Int?
+  masterySubScores   Json?
+  masteryScoreAt     DateTime?
   queueType          QueueType
   computedAt         DateTime
   coachingSummary    String?   @db.Text
@@ -500,6 +505,32 @@ model ImprovementPlan {
 }
 
 // ============================================================
+// HABIT DETECTION
+// Multi-week recurring weakness patterns detected from
+// PerformanceSnapshot history.
+// ============================================================
+
+model PlayerHabit {
+  id            String    @id @default(uuid()) @db.Uuid
+  riotAccountId String    @db.Uuid
+  habitType     String    // see habitDetectionService.ts for values
+  severity      String    // 'high' | 'medium' | 'low'
+  weekCount     Int
+  firstDetected DateTime
+  lastDetected  DateTime
+  isResolved    Boolean   @default(false)
+  resolvedAt    DateTime?
+  evidence      Json
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  riotAccount RiotAccount @relation(fields: [riotAccountId], references: [id], onDelete: Cascade)
+
+  @@index([riotAccountId, isResolved])
+  @@map("player_habits")
+}
+
+// ============================================================
 // WEBHOOK IDEMPOTENCY
 // Prevents duplicate processing when LemonSqueezy retries a delivery.
 // Key format: "{event_name}:{subscription_id}:{status}:{renews_at}"
@@ -533,4 +564,26 @@ model AiCache {
   @@index([type])
   @@index([expiresAt])
   @@map("ai_cache")
+}
+
+// ============================================================
+// SHAREABLE CARDS
+// Social media / Discord share cards with snapshot data.
+// ============================================================
+
+model ShareableCard {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  cardType  String   // 'weekly' | 'mastery'
+  token     String   @unique @default(cuid())
+  data      Json
+  viewCount Int      @default(0)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("shareable_cards")
 }

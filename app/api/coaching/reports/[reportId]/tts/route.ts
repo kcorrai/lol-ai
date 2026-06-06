@@ -15,7 +15,8 @@ export const GET = withAuth(async (req: NextRequest, { userId }) => {
 
   const buffer = await generateSpeech(report.coachPersonaResponse);
 
-  return new NextResponse(buffer.buffer as ArrayBuffer, {
+  const ab = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer;
+  return new NextResponse(ab, {
     headers: {
       "Content-Type": "audio/mpeg",
       "Content-Length": String(buffer.byteLength),
