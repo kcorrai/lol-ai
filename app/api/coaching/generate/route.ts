@@ -45,12 +45,17 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : "http://localhost:3000";
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${process.env.CRON_SECRET ?? ""}`,
+  };
+  // Vercel Deployment Protection intercepts all inbound requests — include bypass header for internal calls.
+  if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
+    headers["x-vercel-protection-bypass"] = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+  }
   void fetch(`${baseUrl}/api/coaching/process`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.CRON_SECRET ?? ""}`,
-    },
+    headers,
     body: JSON.stringify({ reportId, riotAccountId, matchIds, reportType, focusArea }),
   });
 
