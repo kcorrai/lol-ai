@@ -9,6 +9,7 @@ import { getPlayerPerformanceProfile } from "@/domains/analysis/services/matchAn
 import { getActivePlan } from "@/domains/analysis/services/improvementPlanService";
 import { prisma } from "@/lib/db/prisma";
 import type { ChatMessage } from "@/lib/ai/types";
+import type { CoachPersona } from "@/lib/ai/chatSystemPrompt";
 
 const DAILY_LIMIT_FREE = 5;
 const DAILY_LIMIT_PRO  = 50;
@@ -51,8 +52,11 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
 
   // Parse body
-  const body = await req.json().catch(() => ({})) as { messages?: ChatMessage[] };
+  const body = await req.json().catch(() => ({})) as { messages?: ChatMessage[]; persona?: CoachPersona };
   const messages = body.messages ?? [];
+  const persona: CoachPersona = ["direct", "analytical", "motivational"].includes(body.persona ?? "")
+    ? (body.persona as CoachPersona)
+    : "direct";
   if (!Array.isArray(messages) || messages.length === 0) {
     return errJson("messages array is required", 400);
   }
@@ -93,6 +97,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     profile,
     plan,
     focusAction,
+    persona,
   });
 
   // Stream

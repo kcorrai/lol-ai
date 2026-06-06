@@ -2,6 +2,12 @@ import { prisma } from "@/lib/db/prisma";
 import { Errors } from "@/lib/api/errors";
 import type { QueueType } from "@prisma/client";
 
+export interface MasterySubScores {
+  experience: number; // 0-100: log-scaled games played
+  performance: number; // 0-100: winRate + KDA combined
+  farm: number;       // 0-100: CS/min normalized
+}
+
 export type ChampionPoolEntry = {
   championId: number;
   championName: string;
@@ -12,7 +18,34 @@ export type ChampionPoolEntry = {
   avgKda: number;        // rounded to 1 decimal
   avgCsPerMinute: number; // rounded to 1 decimal
   isBest: boolean;
+  masteryScore: number;        // 0–100 composite
+  masterySubScores: MasterySubScores;
 };
+
+// Pure function — exported for tests.
+// experience: log₁₀ scale where 50 games → 100
+// performance: win rate (60%) + KDA capped at 5 (40%)
+// farm: CS/min capped at 8
+// composite: 30% exp, 50% perf, 20% farm
+export function computeMasteryScore(
+  gamesPlayed: number,
+  winRate: number,
+  avgKda: number,
+  avgCsPerMinute: number
+): { score: number; sub: MasterySubScores } {
+  const experience = Math.min(Math.log10(gamesPlayed + 1) / Math.log10(51), 1) * 100;
+  const performance = winRate * 0.6 + Math.min(avgKda / 5, 1) * 100 * 0.4;
+  const farm = Math.min(avgCsPerMinute / 8, 1) * 100;
+  const score = Math.round(0.3 * experience + 0.5 * performance + 0.2 * farm);
+  return {
+    score: Math.min(score, 100),
+    sub: {
+      experience: Math.round(experience),
+      performance: Math.round(performance),
+      farm: Math.round(farm),
+    },
+  };
+}
 
 interface AggregatedStat {
   name: string;
@@ -86,15 +119,21 @@ export async function getChampionPool(
 
   const entries = eligibleIds.map((cid): Omit<ChampionPoolEntry, "isBest"> => {
     const s = statMap.get(cid)!;
+    const winRate = Math.round((s.wins / s.games) * 100);
+    const avgKda = Math.round((s.kdaSum / s.games) * 10) / 10;
+    const avgCsPerMinute = Math.round((s.csSum / s.games) * 10) / 10;
+    const { score: masteryScore, sub: masterySubScores } = computeMasteryScore(s.games, winRate, avgKda, avgCsPerMinute);
     return {
       championId: cid,
       championName: s.name,
       imageUrl: imageMap.get(cid) ?? "",
       gamesPlayed: s.games,
       wins: s.wins,
-      winRate: Math.round((s.wins / s.games) * 100),
-      avgKda: Math.round((s.kdaSum / s.games) * 10) / 10,
-      avgCsPerMinute: Math.round((s.csSum / s.games) * 10) / 10,
+      winRate,
+      avgKda,
+      avgCsPerMinute,
+      masteryScore,
+      masterySubScores,
     };
   });
 

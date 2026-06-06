@@ -3,6 +3,8 @@
 import { useRef, useEffect, useState, type KeyboardEvent } from "react";
 import { useCoachingChat } from "@/hooks/useCoachingChat";
 import { ChatBubble } from "@/domains/coaching/components/ChatBubble";
+import type { CoachPersona } from "@/lib/ai/chatSystemPrompt";
+import { cn } from "@/lib/utils";
 
 const SUGGESTED = [
   "What's my biggest weakness right now?",
@@ -11,14 +13,21 @@ const SUGGESTED = [
   "What champion should I focus on this week?",
 ];
 
+const PERSONAS: { value: CoachPersona; label: string; description: string }[] = [
+  { value: "direct",       label: "Direct",       description: "No-nonsense, straight to the point" },
+  { value: "analytical",   label: "Analytical",   description: "Data-driven, number-focused" },
+  { value: "motivational", label: "Motivational", description: "Encouraging and positive" },
+];
+
 interface CoachingChatViewProps {
   riotAccountId: string;
   playerLabel: string;
 }
 
 export function CoachingChatView({ riotAccountId, playerLabel }: CoachingChatViewProps) {
+  const [persona, setPersona] = useState<CoachPersona>("direct");
   const { messages, isStreaming, remaining, dailyLimit, error, submit, clear } =
-    useCoachingChat(riotAccountId);
+    useCoachingChat(riotAccountId, persona);
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -47,26 +56,48 @@ export function CoachingChatView({ riotAccountId, playerLabel }: CoachingChatVie
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-border px-4 py-3">
-        <div>
-          <p className="text-sm font-semibold text-text">Your AI Coach</p>
-          <p className="text-xs text-text-muted">{playerLabel}</p>
+      <div className="border-b border-border px-4 py-3 space-y-2">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold text-text">Your AI Coach</p>
+            <p className="text-xs text-text-muted">{playerLabel}</p>
+          </div>
+          <div className="flex items-center gap-3">
+            {dailyLimit !== null && (
+              <span className="text-xs text-text-muted">
+                {remaining}/{dailyLimit} messages today
+              </span>
+            )}
+            {messages.length > 0 && (
+              <button
+                onClick={clear}
+                className="text-xs text-text-muted underline-offset-2 hover:text-text hover:underline"
+              >
+                New chat
+              </button>
+            )}
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          {dailyLimit !== null && (
-            <span className="text-xs text-text-muted">
-              {remaining}/{dailyLimit} messages today
-            </span>
-          )}
-          {messages.length > 0 && (
-            <button
-              onClick={clear}
-              className="text-xs text-text-muted underline-offset-2 hover:text-text hover:underline"
-            >
-              New chat
-            </button>
-          )}
-        </div>
+        {/* Persona selector — only shown before first message */}
+        {messages.length === 0 && (
+          <div className="flex gap-1.5">
+            {PERSONAS.map((p) => (
+              <button
+                key={p.value}
+                onClick={() => setPersona(p.value)}
+                title={p.description}
+                className={cn(
+                  "rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors",
+                  persona === p.value
+                    ? "border-accent bg-accent/10 text-accent"
+                    : "border-border text-text-muted hover:border-accent/40 hover:text-text"
+                )}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Messages */}

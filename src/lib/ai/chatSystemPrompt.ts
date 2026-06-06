@@ -1,6 +1,8 @@
 import type { PlayerPerformanceProfile } from "@/domains/analysis/types/analysis.types";
 import type { PlanWithProgress } from "@/domains/analysis/types/analysis.types";
 
+export type CoachPersona = "direct" | "analytical" | "motivational";
+
 export interface ChatContext {
   gameName: string;
   tagLine: string;
@@ -9,10 +11,20 @@ export interface ChatContext {
   profile: PlayerPerformanceProfile;
   plan: PlanWithProgress | null;
   focusAction: string | null;
+  persona?: CoachPersona;
 }
 
+const PERSONA_VOICE: Record<CoachPersona, string> = {
+  direct:
+    "COACHING VOICE: Direct and no-nonsense. Call out mistakes plainly, skip the preamble. If a player made a bad decision, name it and give the fix in one sentence.",
+  analytical:
+    "COACHING VOICE: Data-driven. Always reference specific numbers from the player's stats when giving feedback. Explain the 'why' with numbers before suggesting a change.",
+  motivational:
+    "COACHING VOICE: Encouraging first, then corrective. Acknowledge what the player is doing right before pointing out areas to improve. Keep energy high.",
+};
+
 export function buildChatSystemPrompt(ctx: ChatContext): string {
-  const { gameName, tagLine, region, rankDisplay, profile, plan, focusAction } = ctx;
+  const { gameName, tagLine, region, rankDisplay, profile, plan, focusAction, persona = "direct" } = ctx;
   const { avgMetrics, winRate, playstyle, strongestArea, weakestArea, mostPlayedChampions, recentMatches } = profile;
 
   const avgVision =
@@ -53,11 +65,12 @@ IMPROVEMENT PLAN:
 ${planSection}
 
 ${focusAction ? `ACTIVE FOCUS:\n  ${focusAction}\n` : ""}
+${PERSONA_VOICE[persona]}
+
 COACHING GUIDELINES:
 - Be specific — always reference their actual stats or match data, never give advice that ignores their numbers
 - Keep responses to 2-4 sentences unless the player explicitly asks for a detailed breakdown
 - When you identify a root cause, suggest one concrete habit or drill
-- Use an honest, encouraging coaching voice — you want them to improve, not feel bad
 - If they ask about something unrelated to LoL coaching, redirect briefly and return to their game
 - Never repeat the same advice twice in a session without adding new context`;
 }

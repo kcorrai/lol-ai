@@ -6,6 +6,39 @@ import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { ChampionFocusButton } from "@/domains/champions/components/ChampionFocusButton";
 import { CounterPickCard } from "@/domains/champions/components/CounterPickCard";
 import type { ChampionPoolEntry } from "@/domains/champions/services/championStatsService";
+import { cn } from "@/lib/utils";
+
+function masteryColor(score: number): string {
+  if (score >= 75) return "bg-accent";
+  if (score >= 50) return "bg-blue-400";
+  if (score >= 30) return "bg-yellow-400";
+  return "bg-text-muted/40";
+}
+
+function MasteryBar({ entry }: { entry: ChampionPoolEntry }) {
+  const { masteryScore, masterySubScores } = entry;
+  return (
+    <div className="mt-3 space-y-1.5">
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-text-muted/60">
+          Mastery
+        </span>
+        <span
+          className={cn("text-xs font-bold", masteryScore >= 75 ? "text-accent" : "text-text-muted")}
+          title={`Exp: ${masterySubScores.experience} · Perf: ${masterySubScores.performance} · Farm: ${masterySubScores.farm}`}
+        >
+          {masteryScore}/100
+        </span>
+      </div>
+      <div className="h-1.5 overflow-hidden rounded-full bg-surface">
+        <div
+          className={cn("h-full rounded-full transition-all", masteryColor(masteryScore))}
+          style={{ width: `${masteryScore}%` }}
+        />
+      </div>
+    </div>
+  );
+}
 
 function winRateVariant(wr: number): "success" | "warning" | "destructive" {
   if (wr >= 55) return "success";
@@ -58,6 +91,8 @@ function ChampionCard({
           </div>
         </div>
       </div>
+      <MasteryBar entry={entry} />
+
       {riotAccountId && (
         <>
           <div className="mt-3 flex items-center gap-2">

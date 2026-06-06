@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import type { ChatMessage } from "@/lib/ai/types";
+import type { CoachPersona } from "@/lib/ai/chatSystemPrompt";
 
 const STORAGE_KEY = (id: string) => `coaching-chat-${id}`;
 const MAX_STORED   = 40;
@@ -16,7 +17,10 @@ export interface ChatState {
   clear: () => void;
 }
 
-export function useCoachingChat(riotAccountId: string | null | undefined): ChatState {
+export function useCoachingChat(
+  riotAccountId: string | null | undefined,
+  persona: CoachPersona = "direct"
+): ChatState {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [remaining, setRemaining] = useState<number | null>(null);
@@ -58,7 +62,7 @@ export function useCoachingChat(riotAccountId: string | null | undefined): ChatS
         const res = await fetch(`/api/riot/${riotAccountId}/chat`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: next }),
+          body: JSON.stringify({ messages: next, persona }),
         });
 
         if (!res.ok) {
@@ -100,7 +104,7 @@ export function useCoachingChat(riotAccountId: string | null | undefined): ChatS
         setIsStreaming(false);
       }
     },
-    [riotAccountId, isStreaming, messages]
+    [riotAccountId, isStreaming, messages, persona]
   );
 
   const clear = useCallback(() => {

@@ -109,9 +109,12 @@ function MatchRow({ match }: { match: MatchPerformance }) {
   );
 }
 
+type ResultFilter = "all" | "win" | "loss";
+
 export function RecentMatchList({ matches, isLoading }: Props) {
   const [roleFilter, setRoleFilter] = useState<string | null>(null);
   const [champFilter, setChampFilter] = useState("");
+  const [resultFilter, setResultFilter] = useState<ResultFilter>("all");
 
   const champions = useMemo(() => {
     if (!matches) return [];
@@ -123,9 +126,11 @@ export function RecentMatchList({ matches, isLoading }: Props) {
     return matches.filter((m) => {
       if (roleFilter && m.position !== roleFilter) return false;
       if (champFilter && m.champion !== champFilter) return false;
+      if (resultFilter === "win" && !m.won) return false;
+      if (resultFilter === "loss" && m.won) return false;
       return true;
     });
-  }, [matches, roleFilter, champFilter]);
+  }, [matches, roleFilter, champFilter, resultFilter]);
 
   if (isLoading) {
     return (
@@ -172,8 +177,29 @@ export function RecentMatchList({ matches, isLoading }: Props) {
           {champions.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
 
+        {/* Win/Loss filter */}
+        <div className="flex items-center rounded-md border border-border bg-surface overflow-hidden text-xs">
+          {(["all", "win", "loss"] as ResultFilter[]).map((r) => (
+            <button
+              key={r}
+              onClick={() => setResultFilter(r)}
+              className={`px-2.5 py-1.5 font-medium capitalize transition-colors ${
+                resultFilter === r
+                  ? r === "win"
+                    ? "bg-success/20 text-success"
+                    : r === "loss"
+                    ? "bg-danger/20 text-danger"
+                    : "bg-accent/20 text-accent"
+                  : "text-text-muted hover:text-text"
+              }`}
+            >
+              {r === "all" ? "All" : r === "win" ? "W" : "L"}
+            </button>
+          ))}
+        </div>
+
         {/* Result count */}
-        {(roleFilter || champFilter) && (
+        {(roleFilter || champFilter || resultFilter !== "all") && (
           <span className="text-xs text-text-muted">{filtered.length} match{filtered.length !== 1 ? "es" : ""}</span>
         )}
       </div>
