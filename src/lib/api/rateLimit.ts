@@ -25,7 +25,7 @@ let _upstashWarned = false;
 
 function isUpstashConfigured(): boolean {
   return Boolean(
-    process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+    process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN
   );
 }
 
@@ -35,7 +35,7 @@ function warnUpstashNotConfigured(): void {
   logger.warn(
     "[rateLimit] Upstash Redis is not configured — falling back to per-instance in-memory " +
       "rate limiting. This is NOT effective in production serverless environments where each " +
-      "instance has independent memory. Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN."
+      "instance has independent memory. Set KV_REST_API_URL and KV_REST_API_TOKEN."
   );
 }
 
@@ -54,7 +54,10 @@ async function getUpstashLimiter(
 
   const windowSeconds = Math.ceil(config.windowMs / 1000);
   const limiter = new Ratelimit({
-    redis: Redis.fromEnv(),
+    redis: new Redis({
+      url: process.env.KV_REST_API_URL!,
+      token: process.env.KV_REST_API_TOKEN!,
+    }),
     limiter: Ratelimit.slidingWindow(config.limit, `${windowSeconds} s`),
     analytics: false,
   });
