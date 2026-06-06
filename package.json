@@ -23,6 +23,7 @@
     "test:e2e:report": "playwright show-report"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.101.0",
     "@hookform/resolvers": "^5.4.0",
     "@lemonsqueezy/lemonsqueezy.js": "^4.0.0",
     "@next-auth/prisma-adapter": "^1.0.7",
