@@ -25,6 +25,10 @@ const POSITION_LABELS: Record<string, string> = {
   TOP: "Top", JUNGLE: "Jungle", MIDDLE: "Mid", BOTTOM: "ADC", UTILITY: "Support",
 };
 
+const POSITION_ORDER: Record<string, number> = {
+  TOP: 0, JUNGLE: 1, MIDDLE: 2, BOTTOM: 3, UTILITY: 4,
+};
+
 const RANK_TIER_COLOR: Record<string, string> = {
   IRON:        "text-gray-400",
   BRONZE:      "text-amber-700",
@@ -120,7 +124,9 @@ function TeamTable({ participants, teamId, userRiotAccountId, objectives }: {
   userRiotAccountId: string | null;
   objectives: TeamObjectives | null;
 }) {
-  const team = participants.filter((p) => p.teamId === teamId);
+  const team = participants
+    .filter((p) => p.teamId === teamId)
+    .sort((a, b) => (POSITION_ORDER[a.position] ?? 5) - (POSITION_ORDER[b.position] ?? 5));
   const won = team[0]?.won ?? false;
   const maxDmgDealt = Math.max(...team.map((p) => p.damageDealt), 1);
   const maxDmgTaken = Math.max(...team.map((p) => p.damageTaken), 1);
@@ -159,11 +165,12 @@ function TeamTable({ participants, teamId, userRiotAccountId, objectives }: {
                       <ChampionIcon name={p.championName} size={32} className="shrink-0" />
                       <div className="min-w-0">
                         <p className={`truncate font-medium ${isUser ? "text-accent" : "text-text"}`}>{p.championName}</p>
-                        {p.gameName ? (
+                        {p.gameName && (
                           <p className="truncate text-[10px] text-text-muted">{p.gameName}<span className="text-text-muted/50">#{p.tagLine}</span></p>
-                        ) : (
-                          <p className="text-[10px] text-text-muted">{POSITION_LABELS[p.position] ?? p.position}{isUser ? " · you" : ""}</p>
                         )}
+                        <p className="text-[10px] text-text-muted/60">
+                          {POSITION_LABELS[p.position] ?? p.position}{isUser ? " · you" : ""}
+                        </p>
                       </div>
                     </div>
                   </td>
