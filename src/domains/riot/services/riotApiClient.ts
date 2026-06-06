@@ -126,3 +126,20 @@ export async function getRankedEntriesForPuuid(
     return [];
   }
 }
+
+// Direct PUUID-based rank lookup using the v4 by-puuid endpoint.
+// Preferred fallback for accounts that don't expose a summonerId.
+export async function getRankedEntriesByPuuidDirect(
+  puuid: string,
+  region: string
+): Promise<RankedEntryDTO[]> {
+  try {
+    const url = `https://${region}.api.riotgames.com/lol/league/v4/entries/by-puuid/${puuid}`;
+    return await riotClient.get<RankedEntryDTO[]>(url, {
+      cacheTtl: 300,
+      cacheKey: CacheKeys.rankedEntries(puuid, region),
+    });
+  } catch {
+    return [];
+  }
+}

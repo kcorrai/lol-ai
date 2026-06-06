@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { getCached, setCached, buildCacheKey } from "@/lib/ai/aiCache";
 import { getAiClient } from "@/lib/ai/client";
+import { DDRAGON_VERSION } from "@/lib/ddragon";
 import {
   buildBuildExplanationSystemPrompt,
   buildBuildExplanationUserPrompt,
@@ -10,6 +11,29 @@ import {
   buildExplanationSchema,
 } from "../types/buildExplanation.types";
 import type { BuildExplanation } from "../types/buildExplanation.types";
+
+let itemDataCache: Record<string, { name: string }> | null = null;
+
+async function fetchItemNames(itemIds: number[]): Promise<Record<number, string>> {
+  if (!itemDataCache) {
+    try {
+      const res = await fetch(
+        `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/data/en_US/item.json`,
+        { next: { revalidate: 3600 } }
+      );
+      const json = (await res.json()) as { data: Record<string, { name: string }> };
+      itemDataCache = json.data;
+    } catch {
+      return {};
+    }
+  }
+  const result: Record<number, string> = {};
+  for (const id of itemIds) {
+    const entry = itemDataCache[String(id)];
+    if (entry) result[id] = entry.name;
+  }
+  return result;
+}
 
 function extractJson(raw: string): string {
   const codeBlock = raw.match(/```(?:json)?\s*([\s\S]+?)\s*```/);
@@ -61,6 +85,9 @@ export async function explainBuild(
 
   const gameDurationMinutes = Math.round(participant.match.gameDuration / 60);
 
+  const nonZeroIds = participant.itemIds.filter((id) => id > 0);
+  const itemNames = await fetchItemNames(nonZeroIds);
+
   const aiClient = getAiClient();
   const response = await aiClient.complete(
     buildBuildExplanationSystemPrompt(),
@@ -74,7 +101,8 @@ export async function explainBuild(
         won: participant.won,
         gameDurationMinutes,
       },
-      enemyChampions
+      enemyChampions,
+      itemNames
     )
   );
 

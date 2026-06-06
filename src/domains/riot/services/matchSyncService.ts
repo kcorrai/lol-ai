@@ -8,6 +8,7 @@ import {
   getMatch,
   getRankedEntries,
   getRankedEntriesForPuuid,
+  getRankedEntriesByPuuidDirect,
   getSummonerByPuuid,
 } from "@/domains/riot/services/riotApiClient";
 import { mapMatch } from "@/domains/riot/mappers/matchMapper";
@@ -213,11 +214,11 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   }
 
   let rankedSnapshotted = false;
-  if (!account.summonerId) {
-    logger.warn(`[sync] Skipping ranked — no summonerId for ${account.gameName}#${account.tagLine}`);
-  } else {
+  {
     try {
-      const entries = await getRankedEntries(account.summonerId, account.region);
+      const entries = account.summonerId
+        ? await getRankedEntries(account.summonerId, account.region)
+        : await getRankedEntriesByPuuidDirect(account.puuid, account.region);
       logger.info(`[sync] getRankedEntries returned ${entries.length} entries: ${JSON.stringify(entries.map(e => ({ q: e.queueType, tier: e.tier, rank: e.rank })))}`);
       for (const entry of entries) {
         const tier = RANK_TIERS[entry.tier];

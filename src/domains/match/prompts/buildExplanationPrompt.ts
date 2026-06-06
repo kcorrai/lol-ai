@@ -16,13 +16,14 @@ Yanıtlarını her zaman geçerli JSON formatında ver. Sadece saf JSON objesi d
 
 export function buildBuildExplanationUserPrompt(
   participant: ParticipantContext,
-  enemyChampions: string[]
+  enemyChampions: string[],
+  itemNames: Record<number, string>
 ): string {
   const kda = `${participant.kills}/${participant.deaths}/${participant.assists}`;
   const outcome = participant.won ? "Kazandı" : "Kaybetti";
   const itemList = participant.itemIds
     .filter((id) => id > 0)
-    .map((id) => `Item ID: ${id}`)
+    .map((id) => `${itemNames[id] ?? `Item ID: ${id}`} (ID: ${id})`)
     .join(", ");
 
   return `Bu maçı analiz et:
@@ -39,7 +40,7 @@ Rakip Takım: ${enemyChampions.join(", ")}
   "summary": "Genel build analizi — 2-3 cümle",
   "items": [
     {
-      "itemName": "Item adı (Riot item ID'sini League adına çevir)",
+      "itemName": "Verilen item adını kullan, DEĞİŞTİRME",
       "wasGoodChoice": true,
       "reasoning": "Neden iyi/kötü seçimdi",
       "betterAlternative": "Daha iyi alternatif item (yoksa null)",
