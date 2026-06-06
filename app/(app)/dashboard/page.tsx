@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Gamepad2, MessageCircle } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { profileIconUrl } from "@/lib/ddragon";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -36,8 +37,15 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 export default function DashboardPage() {
+  const router = useRouter();
   const { data: accounts, isLoading: accountsLoading } = useRiotAccounts();
   const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!accountsLoading && accounts && accounts.length === 0) {
+      router.replace("/onboarding");
+    }
+  }, [accountsLoading, accounts, router]);
 
   const primaryId = selectedAccountId ?? accounts?.[0]?.id ?? null;
   const primaryAccount = accounts?.find((a) => a.id === primaryId);
@@ -45,20 +53,7 @@ export default function DashboardPage() {
   const { data: profile, isLoading: profileLoading, error: profileError } = usePerformanceProfile(primaryId);
   const { data: sub } = useSubscription();
 
-  if (accountsLoading) return <PageSkeleton />;
-
-  if (!accounts || accounts.length === 0) {
-    return (
-      <div className="mx-auto max-w-6xl p-6">
-        <EmptyState
-          icon={<Gamepad2 className="h-16 w-16" />}
-          title="Connect Your Riot Account"
-          description="Link your League of Legends account to get AI-powered coaching on your recent matches."
-          action={<Link href="/settings/accounts"><Button size="lg">Get Started →</Button></Link>}
-        />
-      </div>
-    );
-  }
+  if (accountsLoading || !accounts || accounts.length === 0) return <PageSkeleton />;
 
   const isPro = sub?.plan === "pro" || sub?.plan === "elite";
 

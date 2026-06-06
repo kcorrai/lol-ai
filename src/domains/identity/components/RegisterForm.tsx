@@ -57,7 +57,7 @@ export function RegisterForm() {
       return;
     }
 
-    router.push("/login?registered=1");
+    router.push("/login?registered=1&callbackUrl=%2Fonboarding");
   }
 
   return (
