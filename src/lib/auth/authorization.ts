@@ -90,6 +90,12 @@ export async function assertCanAddRiotAccount(userId: string): Promise<void> {
   if (currentCount >= limits.maxRiotAccounts) throw Errors.accountLimitReached();
 }
 
+export async function assertCanDisconnectRiotAccount(userId: string): Promise<void> {
+  const limits = await getPlanLimits(userId);
+  // Free plan: one account, permanently locked — prevents data-scraping via connect/disconnect cycling
+  if (limits.maxRiotAccounts === 1) throw Errors.cannotDisconnectOnFreePlan();
+}
+
 // ── Plan helpers ─────────────────────────────────────────────────────────────
 
 export async function checkIsPro(userId: string): Promise<boolean> {

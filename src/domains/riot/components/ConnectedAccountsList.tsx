@@ -9,6 +9,8 @@ import { profileIconUrl } from "@/lib/ddragon";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { useSyncAccount } from "@/hooks/useSyncAccount";
 import { useDisconnectAccount } from "@/hooks/useDisconnectAccount";
+import { useSetPrimaryAccount } from "@/hooks/useSetPrimaryAccount";
+import { useSubscription } from "@/hooks/useSubscription";
 
 function relativeTime(date: string | Date | null): string {
   if (!date) return "Never synced";
@@ -19,7 +21,7 @@ function relativeTime(date: string | Date | null): string {
   return `${Math.floor(secs / 86400)}d ago`;
 }
 
-function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, profileIconId, summonerLevel }: {
+function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, profileIconId, summonerLevel, canDisconnect }: {
   id: string;
   gameName: string;
   tagLine: string;
@@ -28,14 +30,17 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
   lastSyncedAt: Date | null;
   profileIconId: number;
   summonerLevel: number;
+  canDisconnect: boolean;
 }) {
   const [confirmDisconnect, setConfirmDisconnect] = useState(false);
   const sync = useSyncAccount();
   const disconnect = useDisconnectAccount();
+  const setPrimary = useSetPrimaryAccount();
 
   const syncId = sync.variables === id ? sync : null;
   const isSyncing = syncId?.isPending ?? false;
   const syncResult = syncId?.data;
+  const isSettingPrimary = setPrimary.isPending && setPrimary.variables === id;
 
   return (
     <div className="rounded-lg border border-border bg-surface-2 p-4 space-y-3">
@@ -87,7 +92,7 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
         <p className="text-xs text-danger">{sync.error.message}</p>
       )}
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         <Button
           size="sm"
           variant="secondary"
@@ -97,29 +102,42 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
           {isSyncing ? "Syncing…" : "Sync Now"}
         </Button>
 
-        {!confirmDisconnect ? (
+        {!isPrimary && (
           <Button
             size="sm"
-            variant="ghost"
-            className="text-danger hover:text-danger"
-            onClick={() => setConfirmDisconnect(true)}
+            variant="secondary"
+            onClick={() => setPrimary.mutate(id)}
+            disabled={isSettingPrimary}
           >
-            Disconnect
+            {isSettingPrimary ? "Setting…" : "Set as Primary"}
           </Button>
-        ) : (
-          <div className="flex gap-1.5">
+        )}
+
+        {canDisconnect && (
+          !confirmDisconnect ? (
             <Button
               size="sm"
-              variant="destructive"
-              onClick={() => disconnect.mutate(id)}
-              disabled={disconnect.isPending}
+              variant="ghost"
+              className="text-danger hover:text-danger"
+              onClick={() => setConfirmDisconnect(true)}
             >
-              {disconnect.isPending ? "Removing…" : "Confirm"}
+              Disconnect
             </Button>
-            <Button size="sm" variant="ghost" onClick={() => setConfirmDisconnect(false)}>
-              Cancel
-            </Button>
-          </div>
+          ) : (
+            <div className="flex gap-1.5">
+              <Button
+                size="sm"
+                variant="destructive"
+                onClick={() => disconnect.mutate(id)}
+                disabled={disconnect.isPending}
+              >
+                {disconnect.isPending ? "Removing…" : "Confirm"}
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => setConfirmDisconnect(false)}>
+                Cancel
+              </Button>
+            </div>
+          )
         )}
       </div>
     </div>
@@ -128,6 +146,9 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
 
 export function ConnectedAccountsList() {
   const { data: accounts, isLoading } = useRiotAccounts();
+  const { data: subscription } = useSubscription();
+
+  const canDisconnect = subscription?.plan !== "free";
 
   if (isLoading) {
     return (
@@ -147,7 +168,7 @@ export function ConnectedAccountsList() {
   return (
     <div className="space-y-3">
       {accounts.map((account) => (
-        <AccountCard key={account.id} {...account} />
+        <AccountCard key={account.id} {...account} canDisconnect={canDisconnect} />
       ))}
     </div>
   );

@@ -60,4 +60,11 @@ export const Errors = {
       "This Riot account does not belong to your profile",
       403
     ),
+
+  cannotDisconnectOnFreePlan: () =>
+    new ApiError(
+      "CANNOT_DISCONNECT_FREE_PLAN",
+      "Free plan accounts cannot be disconnected. Upgrade to Pro to manage your linked accounts.",
+      403
+    ),
 } as const;

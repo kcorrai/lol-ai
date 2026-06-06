@@ -203,7 +203,7 @@ model Subscription {
 model RiotAccount {
   id            String    @id @default(uuid()) @db.Uuid
   userId        String    @db.Uuid
-  puuid         String    @unique
+  puuid         String
   summonerId    String?
   accountId     String?
   gameName      String
@@ -224,6 +224,7 @@ model RiotAccount {
   coachingReports      CoachingReport[]
   improvementPlans     ImprovementPlan[]
 
+  @@unique([userId, puuid])
   @@index([userId])
   @@map("riot_accounts")
 }

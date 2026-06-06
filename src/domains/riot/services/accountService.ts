@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
 import { Errors } from "@/lib/api/errors";
-import { assertCanAddRiotAccount } from "@/lib/auth/authorization";
+import { assertCanAddRiotAccount, checkIsPro } from "@/lib/auth/authorization";
 import { backgroundRefresh } from "@/lib/riot/lifecycle";
 import {
   getAccountByRiotId,
@@ -52,17 +52,23 @@ export async function connectAccount(
     }
   );
 
-  const existing = await prisma.riotAccount.findUnique({
-    where: { puuid: riotAccountDto.puuid },
+  // Check if this user already has this account linked
+  const ownExisting = await prisma.riotAccount.findFirst({
+    where: { puuid: riotAccountDto.puuid, userId },
   });
-  if (existing) {
-    if (existing.userId === userId) {
-      throw new (class extends Error {
-        code = "CONFLICT";
-        statusCode = 409;
-      })("This Riot account is already connected to your profile.");
+  if (ownExisting) {
+    throw Errors.conflict("This Riot account is already connected to your profile.");
+  }
+
+  // Free plan users cannot link an account already claimed by another user
+  const isPro = await checkIsPro(userId);
+  if (!isPro) {
+    const otherExisting = await prisma.riotAccount.findFirst({
+      where: { puuid: riotAccountDto.puuid, userId: { not: userId } },
+    });
+    if (otherExisting) {
+      throw Errors.conflict("This Riot account is already connected to another user.");
     }
-    throw Errors.conflict("This Riot account is already connected to another user.");
   }
 
   // Fetch full summoner data
@@ -126,6 +132,28 @@ export async function disconnectAccount(
       });
     }
   }
+}
+
+export async function setPrimaryAccount(
+  userId: string,
+  riotAccountId: string
+): Promise<void> {
+  const account = await prisma.riotAccount.findFirst({
+    where: { id: riotAccountId, userId },
+    select: { id: true },
+  });
+  if (!account) throw Errors.notFound("Riot account");
+
+  await prisma.$transaction([
+    prisma.riotAccount.updateMany({
+      where: { userId, isPrimary: true },
+      data: { isPrimary: false },
+    }),
+    prisma.riotAccount.update({
+      where: { id: riotAccountId },
+      data: { isPrimary: true },
+    }),
+  ]);
 }
 
 export async function listAccounts(userId: string): Promise<ConnectedAccount[]> {

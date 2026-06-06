@@ -45,7 +45,7 @@ async function main() {
 
   // ── Riot Account ─────────────────────────────────────────────
   const riotAccount = await prisma.riotAccount.upsert({
-    where: { puuid: "mock-puuid-devplayer-euw1-0000000000000000000000000000" },
+    where: { userId_puuid: { userId: user.id, puuid: "mock-puuid-devplayer-euw1-0000000000000000000000000000" } },
     update: {},
     create: {
       userId: user.id,
