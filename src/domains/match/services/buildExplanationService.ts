@@ -117,8 +117,22 @@ export async function explainBuild(
 
   const aiData = buildExplanationAiOutputSchema.parse(rawParsed);
 
+  // Always use DDragon item names — override whatever the AI returned.
+  // Also clamp the items array to exactly the number of non-zero item IDs so
+  // the index-based icon ↔ name mapping in the panel never drifts.
+  const items = nonZeroIds.map((id, i) => ({
+    ...(aiData.items[i] ?? {
+      wasGoodChoice: true,
+      reasoning: "",
+      betterAlternative: null,
+      whenToChoose: "",
+    }),
+    itemName: itemNames[id] ?? aiData.items[i]?.itemName ?? `Item ${id}`,
+  }));
+
   const result: BuildExplanation = {
     ...aiData,
+    items,
     generatedAt: new Date().toISOString(),
   };
 

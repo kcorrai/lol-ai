@@ -21,29 +21,37 @@ export function buildBuildExplanationUserPrompt(
 ): string {
   const kda = `${participant.kills}/${participant.deaths}/${participant.assists}`;
   const outcome = participant.won ? "Kazandı" : "Kaybetti";
-  const itemList = participant.itemIds
+  const nonZeroItems = participant.itemIds
     .filter((id) => id > 0)
-    .map((id) => `${itemNames[id] ?? `Item ID: ${id}`} (ID: ${id})`)
-    .join(", ");
+    .map((id, i) => `${i + 1}. ${itemNames[id] ?? `Bilinmeyen Item (ID: ${id})`}`);
+
+  const itemCount = nonZeroItems.length;
 
   return `Bu maçı analiz et:
 
 Oyuncu: ${participant.championName}
 KDA: ${kda} — ${outcome}
 Oyun Süresi: ${participant.gameDurationMinutes} dakika
-Alınan Itemler: ${itemList || "Item yok"}
-
 Rakip Takım: ${enemyChampions.join(", ")}
+
+Oyuncunun envanterinde TAM OLARAK şu ${itemCount} item var (sırası önemli):
+${nonZeroItems.join("\n")}
+
+KURALLAR:
+- "items" dizisinde TAM OLARAK ${itemCount} eleman olmalı — ne fazla ne eksik.
+- Her eleman yukarıdaki listedeki sırayla birebir eşleşmeli (1. item → items[0], 2. item → items[1], …).
+- "itemName" alanına yukarıdaki listedeki adı aynen yaz, değiştirme.
+- Eğer bir item adı tanıdık gelmiyorsa veya eski sezondan kaldırılmış gibi görünüyorsa bile verilen adı kullan, uydurma.
 
 Şu JSON formatında yanıt ver:
 {
   "summary": "Genel build analizi — 2-3 cümle",
   "items": [
     {
-      "itemName": "Verilen item adını kullan, DEĞİŞTİRME",
+      "itemName": "Yukarıdaki listedeki adın aynısı",
       "wasGoodChoice": true,
       "reasoning": "Neden iyi/kötü seçimdi",
-      "betterAlternative": "Daha iyi alternatif item (yoksa null)",
+      "betterAlternative": "Daha iyi alternatif item adı (yoksa null)",
       "whenToChoose": "Bu item ne zaman alınmalı"
     }
   ],
