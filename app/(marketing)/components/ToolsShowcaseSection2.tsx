@@ -1,3 +1,11 @@
+const DDR_V2 = "15.14.1";
+const sq2 = (n: string) => `https://ddragon.leagueoflegends.com/cdn/${DDR_V2}/img/champion/${n}.png`;
+
+const DRAFT: Record<string, string[]> = {
+  "Blue Team": ["Malphite", "Hecarim", "Orianna", "Jinx", "Thresh"],
+  "Red Team": ["Darius", "Vi", "Yasuo", "Caitlyn", "Lulu"],
+};
+
 function WindowChrome({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="rounded-xl border border-border bg-surface shadow-2xl">
@@ -20,10 +28,10 @@ function DraftAnalyzerMockup() {
           {(["Blue Team", "Red Team"] as const).map((team) => (
             <div key={team} className="space-y-1">
               <p className={`text-[10px] font-bold ${team === "Blue Team" ? "text-blue-400" : "text-danger"}`}>{team}</p>
-              {(["Top", "Jungle", "Mid", "Bot", "Support"] as const).map((role) => (
-                <div key={role} className="flex items-center gap-1.5 rounded-md bg-surface-2 px-2 py-1">
-                  <div className="h-4 w-4 rounded-sm bg-surface" />
-                  <span className="text-[10px] text-text-muted">{role}</span>
+              {(DRAFT[team] ?? []).map((champ) => (
+                <div key={champ} className="flex items-center gap-1.5 rounded-md bg-surface-2 px-2 py-1">
+                  <img src={sq2(champ)} alt={champ} className="h-5 w-5 rounded object-cover" />
+                  <span className="text-[10px] text-text-muted">{champ}</span>
                 </div>
               ))}
             </div>
