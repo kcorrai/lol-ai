@@ -19,14 +19,15 @@ export interface RoleBasedTeamPickerProps {
   teamColor?: "blue" | "red";
 }
 
-// DDragon tag → typical game positions.
-// Values must match the `roles` strings stored in the Champion table.
-const POSITION_ROLES: Record<Position, string[]> = {
+// DDragon tags map cleanly to Top/Mid/ADC but not to Jungle/Support
+// (e.g. Graves = Marksman, Ivern = Support, Leona = Tank with no Support tag).
+// Jungle and Support show all champions; the remaining three are filtered by class.
+const POSITION_ROLES: Record<Position, string[] | undefined> = {
   TOP:     ["Fighter", "Tank"],
-  JUNGLE:  ["Fighter", "Tank", "Assassin", "Mage"],
+  JUNGLE:  undefined,
   MIDDLE:  ["Mage", "Assassin", "Fighter"],
   BOTTOM:  ["Marksman"],
-  UTILITY: ["Support", "Mage", "Tank"],
+  UTILITY: undefined,
 };
 
 const POSITIONS: { key: Position; label: string }[] = [
