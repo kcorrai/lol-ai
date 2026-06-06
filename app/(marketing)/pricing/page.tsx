@@ -14,22 +14,31 @@ export const metadata: Metadata = {
 };
 
 const FREE_FEATURES = [
-  "3 AI coaching reports per month",
-  "1 Riot account",
-  "10-game match history",
-  "Match deep dive",
-  "Ranked progress tracking",
+  { label: "3 AI coaching reports / month" },
+  { label: "1 Riot account" },
+  { label: "10-game match history" },
+  { label: "Match deep dive" },
+  { label: "Ranked progress tracking" },
+  { label: "Counter Pick (3 counters)" },
+  { label: "Draft Analyzer" },
 ];
 
-const PRO_FEATURES = [
-  "Unlimited AI coaching reports",
-  "3 Riot accounts",
-  "100-game match history",
-  "Match deep dive",
-  "Ranked progress tracking",
-  "Champion pool analytics",
-  "Weekly AI improvement emails",
-  "Priority AI processing",
+const PRO_BASE_FEATURES = [
+  { label: "Unlimited AI coaching reports" },
+  { label: "3 Riot accounts" },
+  { label: "100-game match history" },
+  { label: "Counter Pick (full list)" },
+  { label: "Priority AI processing" },
+];
+
+const PRO_EXCLUSIVE_FEATURES = [
+  { label: "Matchup Intelligence" },
+  { label: "Champion Mastery Score" },
+  { label: "Habit Detection Engine" },
+  { label: "Improvement Tracker & Plan History" },
+  { label: "Shareable AI Report Cards" },
+  { label: "Weekly AI Improvement Emails" },
+  { label: "Voice Coaching (TTS)" },
 ];
 
 export default function PricingPage() {
@@ -47,7 +56,7 @@ export default function PricingPage() {
         </div>
 
         {/* Cards */}
-        <div className="mx-auto mb-20 grid max-w-3xl gap-6 md:grid-cols-2">
+        <div className="mx-auto mb-20 grid max-w-3xl gap-8 md:grid-cols-2 md:items-start">
           <PricingCard
             plan="free"
             name="Free"
@@ -63,7 +72,8 @@ export default function PricingPage() {
             price="$9.99"
             period="/month"
             description="For players serious about climbing."
-            features={PRO_FEATURES}
+            features={PRO_BASE_FEATURES}
+            proFeatures={PRO_EXCLUSIVE_FEATURES}
             cta="Start Pro — $9.99/mo"
             ctaHref="/settings/billing"
             highlighted
@@ -78,7 +88,7 @@ export default function PricingPage() {
           <PricingComparisonTable />
         </div>
 
-        {/* FAQ note */}
+        {/* Footer note */}
         <p className="mt-10 text-center text-sm text-text-muted">
           All plans include unlimited match syncing and dashboard access.{" "}
           <span className="text-text">No hidden fees.</span>
