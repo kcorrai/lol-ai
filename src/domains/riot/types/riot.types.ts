@@ -71,6 +71,8 @@ export interface TeamDTO {
 
 export interface ParticipantDTO {
   puuid: string;
+  riotIdGameName?: string;
+  riotIdTagline?: string;
   championId: number;
   championName: string;
   teamId: number;

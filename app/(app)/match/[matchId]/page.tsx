@@ -148,7 +148,11 @@ function TeamTable({ participants, teamId, userRiotAccountId, objectives }: {
                       <ChampionIcon name={p.championName} size={32} className="shrink-0" />
                       <div className="min-w-0">
                         <p className={`truncate font-medium ${isUser ? "text-accent" : "text-text"}`}>{p.championName}</p>
-                        <p className="text-[10px] text-text-muted">{p.position}{isUser ? " · you" : ""}</p>
+                        {p.gameName ? (
+                          <p className="truncate text-[10px] text-text-muted">{p.gameName}<span className="text-text-muted/50">#{p.tagLine}</span></p>
+                        ) : (
+                          <p className="text-[10px] text-text-muted">{p.position}{isUser ? " · you" : ""}</p>
+                        )}
                         <RankBadge tier={p.rankTier} division={p.rankDivision} lp={p.rankLp} />
                       </div>
                     </div>

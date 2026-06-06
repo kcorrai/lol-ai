@@ -74,6 +74,8 @@ function mapParticipant(
     runeSecondaryPath: secondaryStyle?.style ?? null,
     summonerSpell1: p.summoner1Id,
     summonerSpell2: p.summoner2Id,
+    gameName: p.riotIdGameName ?? null,
+    tagLine: p.riotIdTagline ?? null,
   };
 }
 

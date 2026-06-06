@@ -9,6 +9,8 @@ export type ParticipantDetail = {
   id: string;
   riotAccountId: string | null;
   puuid: string;
+  gameName: string | null;
+  tagLine: string | null;
   championName: string;
   position: string;
   teamId: number;
@@ -74,7 +76,7 @@ export async function getMatchDetail(
   const [riotAccounts, match] = await Promise.all([
     prisma.riotAccount.findMany({
       where: { userId },
-      select: { id: true },
+      select: { id: true, gameName: true, tagLine: true },
     }),
     prisma.match.findUnique({
       where: { id: matchDbId },
@@ -92,7 +94,16 @@ export async function getMatchDetail(
   );
   if (!userParticipant) return null;
 
-  const riotAccount = riotAccounts.find((a) => a.id === userParticipant.riotAccountId) ?? riotAccounts[0] ?? null;
+  const userAccount = riotAccounts.find((a) => a.id === userParticipant.riotAccountId) ?? riotAccounts[0] ?? null;
+
+  // Fetch user's latest rank to enrich their participant row (others don't have stored rank)
+  const latestUserRank = userAccount
+    ? await prisma.rankedHistory.findFirst({
+        where: { riotAccountId: userAccount.id, queueType: "RANKED_SOLO_5x5" },
+        orderBy: { recordedAt: "desc" },
+        select: { tier: true, division: true, lp: true },
+      })
+    : null;
 
   // Aggregate team totals for share calculations
   const teamTotals = new Map<number, { damage: number; kills: number }>();
@@ -103,12 +114,18 @@ export async function getMatchDetail(
     teamTotals.set(p.teamId, t);
   }
 
+  const isUserParticipant = (p: { riotAccountId: string | null }) =>
+    p.riotAccountId !== null && accountIds.has(p.riotAccountId);
+
   const participants: ParticipantDetail[] = match.participants.map((p) => {
     const team = teamTotals.get(p.teamId) ?? { damage: 1, kills: 0 };
+    const isUser = isUserParticipant(p);
     return {
       id: p.id,
       riotAccountId: p.riotAccountId,
       puuid: p.puuid,
+      gameName: p.gameName ?? null,
+      tagLine: p.tagLine ?? null,
       championName: p.championName,
       position: p.position,
       teamId: p.teamId,
@@ -133,9 +150,9 @@ export async function getMatchDetail(
       runePrimaryKeystone: p.runePrimaryKeystone,
       runePrimaryPath: p.runePrimaryPath,
       runeSecondaryPath: p.runeSecondaryPath,
-      rankTier: p.rankTier ?? null,
-      rankDivision: p.rankDivision ?? null,
-      rankLp: p.rankLp ?? null,
+      rankTier: isUser ? (latestUserRank?.tier ?? p.rankTier ?? null) : (p.rankTier ?? null),
+      rankDivision: isUser ? (latestUserRank?.division ?? p.rankDivision ?? null) : (p.rankDivision ?? null),
+      rankLp: isUser ? (latestUserRank?.lp ?? p.rankLp ?? null) : (p.rankLp ?? null),
     };
   });
 
@@ -167,7 +184,7 @@ export async function getMatchDetail(
     winningTeam: match.winningTeam,
     teamObjectives: (match.teamObjectives as Record<string, TeamObjectives> | null) ?? null,
     participants,
-    userRiotAccountId: riotAccount?.id ?? null,
+    userRiotAccountId: userAccount?.id ?? null,
     aiInsight,
   };
 }
