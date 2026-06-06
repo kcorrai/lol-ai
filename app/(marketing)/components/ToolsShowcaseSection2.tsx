@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const DDR_V2 = "15.14.1";
 const sq2 = (n: string) => `https://ddragon.leagueoflegends.com/cdn/${DDR_V2}/img/champion/${n}.png`;
 
@@ -30,7 +32,7 @@ function DraftAnalyzerMockup() {
               <p className={`text-[10px] font-bold ${team === "Blue Team" ? "text-blue-400" : "text-danger"}`}>{team}</p>
               {(DRAFT[team] ?? []).map((champ) => (
                 <div key={champ} className="flex items-center gap-1.5 rounded-md bg-surface-2 px-2 py-1">
-                  <img src={sq2(champ)} alt={champ} className="h-5 w-5 rounded object-cover" />
+                  <Image src={sq2(champ)} alt={champ} width={20} height={20} className="rounded object-cover" />
                   <span className="text-[10px] text-text-muted">{champ}</span>
                 </div>
               ))}

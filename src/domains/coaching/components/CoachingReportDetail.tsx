@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { CheckCircle2, XCircle, Lock, Zap, Target, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -156,11 +157,12 @@ function ChampionRecs({ recs }: { recs: NonNullable<CoachingReportDetail["champi
       <CardContent className="space-y-3">
         {recs.map((rec, i) => (
           <div key={i} className="flex items-center gap-3">
-            <img
+            <Image
               src={championIconUrl(rec.championName)}
               alt={rec.championName}
-              className="h-10 w-10 rounded-lg object-cover ring-1 ring-border"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+              width={40}
+              height={40}
+              className="rounded-lg object-cover ring-1 ring-border"
             />
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">

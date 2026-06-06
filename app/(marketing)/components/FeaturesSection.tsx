@@ -1,3 +1,4 @@
+import Image from "next/image";
 import {
   CheckCircle2, XCircle, Zap, BarChart2,
   MessageCircle, Shield, TrendingUp, Trophy,
@@ -15,7 +16,7 @@ function ReportPreview() {
     <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl">
       {/* Hero with splash */}
       <div className="relative h-32">
-        <img src={splash("Yasuo")} alt="" className="h-full w-full object-cover object-top" />
+        <Image src={splash("Yasuo")} alt="" fill className="object-cover object-top" />
         <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/50 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 flex items-end gap-6 p-4">
           {[["8", "Matches"], ["Gold II", "Potential"], ["23s", "AI Time"]].map(([v, l]) => (
@@ -85,7 +86,7 @@ function CounterPreview() {
     <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-xl">
       <div className="border-b border-border bg-surface-2 px-4 py-2.5">
         <div className="flex items-center gap-2">
-          <img src={sq("Yasuo")} alt="Yasuo" className="h-6 w-6 rounded" />
+          <Image src={sq("Yasuo")} alt="Yasuo" width={24} height={24} className="rounded" />
           <p className="text-xs font-semibold text-text">Yasuo · Mid</p>
           <span className="ml-auto text-[10px] text-text-muted">Counters</span>
         </div>
@@ -93,7 +94,7 @@ function CounterPreview() {
       <div className="grid grid-cols-3 gap-2 p-4">
         {counters.map(({ name, key, tier, diff, cls }) => (
           <div key={name} className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-surface-2 p-2">
-            <img src={sq(key)} alt={name} className="h-10 w-10 rounded-lg object-cover ring-1 ring-border" />
+            <Image src={sq(key)} alt={name} width={40} height={40} className="rounded-lg object-cover ring-1 ring-border" />
             <p className="text-[10px] font-semibold text-text">{name}</p>
             <span className={`rounded-full border px-1.5 py-0.5 text-[8px] font-bold ${cls}`}>{tier} · {diff}</span>
           </div>
@@ -123,7 +124,7 @@ function ChampionPreview() {
       <div className="divide-y divide-border">
         {champs.map(({ key, name, wr, kda, color }) => (
           <div key={name} className="flex items-center gap-3 px-4 py-3">
-            <img src={sq(key)} alt={name} className="h-9 w-9 rounded-lg object-cover ring-1 ring-border" />
+            <Image src={sq(key)} alt={name} width={36} height={36} className="rounded-lg object-cover ring-1 ring-border" />
             <p className="flex-1 text-sm font-semibold text-text">{name}</p>
             <div className="text-right">
               <p className={`text-sm font-bold ${color}`}>{wr}</p>

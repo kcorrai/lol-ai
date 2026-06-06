@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 function WindowChrome({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="rounded-xl border border-border bg-surface shadow-2xl">
@@ -14,7 +16,6 @@ function WindowChrome({ title, children }: { title: string; children: React.Reac
 
 const DDR_V = "15.14.1";
 const sq = (n: string) => `https://ddragon.leagueoflegends.com/cdn/${DDR_V}/img/champion/${n}.png`;
-const sp = (n: string) => `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${n}_0.jpg`;
 
 function CounterPickMockup() {
   const counters: [string, string, string, string, string][] = [
@@ -26,7 +27,7 @@ function CounterPickMockup() {
     <WindowChrome title="LoL AI Coach · Counter Pick Generator">
       <div className="space-y-3">
         <div className="flex items-center gap-2 rounded-lg border border-border bg-surface-2 px-3 py-2">
-          <img src={sq("Yasuo")} alt="Yasuo" className="h-7 w-7 rounded-md object-cover" />
+          <Image src={sq("Yasuo")} alt="Yasuo" width={28} height={28} className="rounded-md object-cover" />
           <span className="text-sm font-semibold text-text">Yasuo</span>
           <span className="text-text-muted">·</span>
           <span className="text-sm text-text-muted">Mid</span>
@@ -35,7 +36,7 @@ function CounterPickMockup() {
         <div className="grid grid-cols-3 gap-2">
           {counters.map(([name, key, tier, diff, cls]) => (
             <div key={name} className="rounded-lg border border-border bg-surface-2 p-2 text-center">
-              <img src={sq(key)} alt={name} className="mx-auto mb-1.5 h-10 w-10 rounded-lg object-cover ring-1 ring-border" />
+              <Image src={sq(key)} alt={name} width={40} height={40} className="mx-auto mb-1.5 rounded-lg object-cover ring-1 ring-border" />
               <p className="text-xs font-semibold text-text">{name}</p>
               <div className={`mt-1 rounded-full border px-1.5 py-0.5 text-[9px] font-bold ${cls}`}>
                 {tier} {diff}
@@ -60,9 +61,9 @@ function MatchupCoachMockup() {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <img src={sq("Yasuo")} alt="Yasuo" className="h-8 w-8 rounded-lg object-cover ring-1 ring-border" />
+            <Image src={sq("Yasuo")} alt="Yasuo" width={32} height={32} className="rounded-lg object-cover ring-1 ring-border" />
             <span className="text-xs font-bold text-text-muted">vs</span>
-            <img src={sq("Zed")} alt="Zed" className="h-8 w-8 rounded-lg object-cover ring-1 ring-border" />
+            <Image src={sq("Zed")} alt="Zed" width={32} height={32} className="rounded-lg object-cover ring-1 ring-border" />
             <div>
               <p className="text-xs font-bold text-text">Yasuo vs Zed · Mid</p>
               <p className="text-[10px] text-text-muted">12,400 games</p>
@@ -108,7 +109,7 @@ function OtpAssistantMockup() {
     <WindowChrome title="LoL AI Coach · OTP Assistant">
       <div className="space-y-3">
         <div className="flex items-center gap-2">
-          <img src={sq("Yasuo")} alt="Yasuo" className="h-10 w-10 rounded-xl object-cover ring-2 ring-accent/40" />
+          <Image src={sq("Yasuo")} alt="Yasuo" width={40} height={40} className="rounded-xl object-cover ring-2 ring-accent/40" />
           <div>
             <p className="text-sm font-bold text-text">Yasuo OTP · Mid</p>
             <p className="text-[10px] text-text-muted">One-Trick Playbook</p>
