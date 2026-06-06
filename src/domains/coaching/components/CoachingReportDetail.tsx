@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { ListenButton } from "@/domains/coaching/components/ListenButton";
 import { CheckCircle2, XCircle, Lock, Zap, Target, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -227,7 +228,10 @@ export function CoachingReportDetail({ report, isPro }: Props) {
       {report.coachPersonaResponse && (
         <Card className="border-accent/30 bg-accent/5">
           <CardHeader className="pb-1">
-            <CardTitle className="text-xs uppercase tracking-widest text-accent">Coach Says</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-xs uppercase tracking-widest text-accent">Coach Says</CardTitle>
+              <ListenButton reportId={report.id} />
+            </div>
           </CardHeader>
           <CardContent>
             <p className="text-sm italic leading-relaxed text-text">{report.coachPersonaResponse}</p>
