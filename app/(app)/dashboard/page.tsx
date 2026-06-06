@@ -13,7 +13,6 @@ import { PerformanceSummaryCards } from "@/domains/analysis/components/Performan
 import { RecentMatchesSummaryCard } from "@/domains/analysis/components/RecentMatchesSummaryCard";
 import { PerformanceTrendChart } from "@/domains/analysis/components/PerformanceTrendChart";
 import { RecentMatchList } from "@/domains/analysis/components/RecentMatchList";
-import { CoachingActionsCard } from "@/domains/coaching/components/CoachingActionsCard";
 import { RankedCard } from "@/domains/riot/components/RankedCard";
 import { RankUpWidget } from "@/domains/riot/components/RankUpWidget";
 import { TiltWidget } from "@/domains/analysis/components/TiltWidget";
@@ -28,7 +27,6 @@ import { TopChampionsWidget } from "@/domains/analysis/components/TopChampionsWi
 import { RoleDistributionWidget } from "@/domains/analysis/components/RoleDistributionWidget";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
-import { useGenerateReport } from "@/hooks/useGenerateReport";
 import { useSubscription } from "@/hooks/useSubscription";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -48,19 +46,6 @@ export default function DashboardPage() {
 
   const { data: profile, isLoading: profileLoading, error: profileError } = usePerformanceProfile(primaryId);
   const { data: sub } = useSubscription();
-  const generateReport = useGenerateReport();
-
-  function handleGenerate() {
-    if (!primaryId || !profile) return;
-    const matchIds = profile.recentMatches.slice(0, 5).map((m) => m.matchDbId);
-    generateReport.mutate({ riotAccountId: primaryId, reportType: "session_review", matchIds });
-  }
-
-  function handleClimbRoadmap() {
-    if (!primaryId || !profile) return;
-    const matchIds = profile.recentMatches.slice(0, 10).map((m) => m.matchDbId);
-    generateReport.mutate({ riotAccountId: primaryId, reportType: "climb_roadmap", matchIds });
-  }
 
   if (accountsLoading) return <PageSkeleton />;
 
@@ -150,25 +135,6 @@ export default function DashboardPage() {
           <PerformanceSummaryCards profile={profile} isLoading={profileLoading} />
           <RecentMatchesSummaryCard profile={profile} isLoading={profileLoading} />
 
-          {/* ── AI Coaching Actions ────────────────────────────────────── */}
-          <div>
-            <div className="mb-3 flex items-center justify-between">
-              <p className="text-sm font-semibold text-text">Generate AI Report</p>
-              <Link href="/coaching" className="text-xs text-accent hover:underline">
-                View all reports →
-              </Link>
-            </div>
-            <CoachingActionsCard
-              onSessionReview={handleGenerate}
-              onClimbRoadmap={handleClimbRoadmap}
-              isPending={generateReport.isPending}
-              isDisabled={!profile || profileLoading}
-            />
-            {generateReport.isError && (
-              <p className="mt-2 text-xs text-danger">{generateReport.error.message}</p>
-            )}
-          </div>
-
           {/* ── Today's Brief ──────────────────────────────────────────── */}
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             <TodaysFocusCard riotAccountId={primaryId} />
@@ -178,13 +144,6 @@ export default function DashboardPage() {
           {/* ── Main 2-column layout ───────────────────────────────────── */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
             <div className="space-y-4 lg:col-span-2">
-              <div>
-                <SectionLabel>Ranked</SectionLabel>
-                <div className="space-y-3">
-                  <RankedCard riotAccountId={primaryId} />
-                  <RankUpWidget riotAccountId={primaryId} />
-                </div>
-              </div>
               <div>
                 <SectionLabel>Top Champions</SectionLabel>
                 <TopChampionsWidget matches={profile?.recentMatches} isLoading={profileLoading} />
