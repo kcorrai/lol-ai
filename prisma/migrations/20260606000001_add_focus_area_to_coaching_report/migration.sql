@@ -1,1 +1,1 @@
-ALTER TABLE "coaching_reports" ADD COLUMN "focus_area" TEXT;
+ALTER TABLE "coaching_reports" ADD COLUMN IF NOT EXISTS "focusArea" TEXT;

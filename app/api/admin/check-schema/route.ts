@@ -1,19 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 
-// Temporary diagnostic — DELETE after confirming DB state.
-export const GET = async (req: NextRequest): Promise<NextResponse> => {
+// Temporary fix — renames focus_area → focusArea and deletes itself after confirmation.
+export const POST = async (req: NextRequest): Promise<NextResponse> => {
   const secret = req.headers.get("x-admin-secret");
   if (!secret || secret !== process.env.CRON_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const cols = await prisma.$queryRaw<Array<{ column_name: string }>>`
-    SELECT column_name
-    FROM information_schema.columns
-    WHERE table_name = 'coaching_reports'
-    ORDER BY ordinal_position
-  `;
+  await prisma.$executeRaw`ALTER TABLE "coaching_reports" RENAME COLUMN "focus_area" TO "focusArea"`;
 
-  return NextResponse.json({ columns: cols.map((c) => c.column_name) });
+  return NextResponse.json({ ok: true, message: "Renamed focus_area → focusArea" });
 };
