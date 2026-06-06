@@ -6,7 +6,6 @@ import { Errors } from "@/lib/api/errors";
 import { assertOwnsRiotAccount, assertCanGenerateReport } from "@/lib/auth/authorization";
 import { buildCoachingInput } from "@/domains/coaching/pipeline/dataPreparator";
 import { createPendingReport } from "@/domains/coaching/services/reportService";
-import { inngest } from "@/inngest/client";
 import { checkRateLimit, rateLimitResponse } from "@/lib/api/rateLimit";
 
 const generateSchema = z.object({
@@ -42,12 +41,17 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
 
   const reportId = await createPendingReport(riotAccountId, matchIds, reportType);
 
-  // Enqueue via Inngest — durable, retryable, concurrency-capped (5 parallel max).
-  // Event ID is scoped to this report so retries are idempotent.
-  await inngest.send({
-    id: `coaching-${reportId}`,
-    name: "coaching/report.requested",
-    data: { reportId, riotAccountId, matchIds, reportType, focusArea },
+  // Kick off pipeline as a separate Vercel function invocation — caller does not wait.
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "http://localhost:3000";
+  void fetch(`${baseUrl}/api/coaching/process`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.CRON_SECRET ?? ""}`,
+    },
+    body: JSON.stringify({ reportId, riotAccountId, matchIds, reportType, focusArea }),
   });
 
   return apiSuccess({ reportId, status: "pending" }, 202);
