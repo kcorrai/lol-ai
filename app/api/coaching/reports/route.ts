@@ -5,6 +5,7 @@ import { listReports } from "@/domains/coaching/services/reportService";
 
 export const GET = withAuth(async (req: NextRequest, { userId }) => {
   const riotAccountId = req.nextUrl.searchParams.get("riotAccountId") ?? undefined;
-  const reports = await listReports(userId, riotAccountId);
-  return apiSuccess(reports);
+  const cursor = req.nextUrl.searchParams.get("cursor") ?? undefined;
+  const result = await listReports(userId, riotAccountId, cursor);
+  return apiSuccess(result);
 });

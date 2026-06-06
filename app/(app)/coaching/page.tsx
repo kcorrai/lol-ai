@@ -25,7 +25,13 @@ export default function CoachingPage() {
   const { data: accounts, isLoading: accountsLoading } = useRiotAccounts();
   const primaryId = accounts?.[0]?.id ?? null;
   const { data: profile, isLoading: profileLoading } = usePerformanceProfile(primaryId);
-  const { data: reports, isLoading: reportsLoading } = useCoachingReports(primaryId ?? undefined);
+  const {
+    data: reportsData,
+    isLoading: reportsLoading,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useCoachingReports(primaryId ?? undefined);
   const generateReport = useGenerateReport();
 
   function handleSessionReview() {
@@ -81,7 +87,13 @@ export default function CoachingPage() {
 
       <section>
         <SectionLabel>Your Reports</SectionLabel>
-        <ReportList reports={reports} isLoading={reportsLoading} />
+        <ReportList
+          reports={reportsData?.pages.flatMap((p) => p.reports)}
+          isLoading={reportsLoading}
+          hasNextPage={hasNextPage}
+          isFetchingNextPage={isFetchingNextPage}
+          onLoadMore={fetchNextPage}
+        />
       </section>
     </div>
   );

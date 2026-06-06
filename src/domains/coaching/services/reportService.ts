@@ -48,18 +48,25 @@ export async function getReportStatus(reportId: string, userId: string) {
   return report;
 }
 
+export type ReportPage = {
+  reports: ReportSummary[];
+  nextCursor: string | null;
+};
+
 export async function listReports(
   userId: string,
   riotAccountId?: string,
-  limit = 10
-): Promise<ReportSummary[]> {
-  const reports = await prisma.coachingReport.findMany({
+  cursor?: string,
+  limit = 20
+): Promise<ReportPage> {
+  const rows = await prisma.coachingReport.findMany({
     where: {
       riotAccount: { userId },
       ...(riotAccountId ? { riotAccountId } : {}),
     },
     orderBy: { createdAt: "desc" },
-    take: limit,
+    take: limit + 1,
+    ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
     select: {
       id: true,
       reportType: true,
@@ -72,16 +79,22 @@ export async function listReports(
     },
   });
 
-  return reports.map((r) => ({
-    reportId: r.id,
-    reportType: r.reportType,
-    status: r.status,
-    matchesAnalyzed: r.matchesAnalyzed.length,
-    summary: r.summary,
-    userRating: r.userRating,
-    createdAt: r.createdAt,
-    completedAt: r.completedAt,
-  }));
+  const hasMore = rows.length > limit;
+  const page = hasMore ? rows.slice(0, limit) : rows;
+
+  return {
+    reports: page.map((r) => ({
+      reportId: r.id,
+      reportType: r.reportType,
+      status: r.status,
+      matchesAnalyzed: r.matchesAnalyzed.length,
+      summary: r.summary,
+      userRating: r.userRating,
+      createdAt: r.createdAt,
+      completedAt: r.completedAt,
+    })),
+    nextCursor: hasMore ? page[page.length - 1].id : null,
+  };
 }
 
 // ── Share token ──────────────────────────────────────────────────────────────

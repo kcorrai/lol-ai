@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import type { ReportSummary } from "@/domains/coaching/services/reportService";
 
 const STATUS_BADGE: Record<string, "default" | "secondary" | "success" | "destructive" | "warning"> = {
@@ -51,9 +52,12 @@ function ReportRow({ report }: { report: ReportSummary }) {
 interface Props {
   reports: ReportSummary[] | undefined;
   isLoading: boolean;
+  hasNextPage?: boolean;
+  isFetchingNextPage?: boolean;
+  onLoadMore?: () => void;
 }
 
-export function ReportList({ reports, isLoading }: Props) {
+export function ReportList({ reports, isLoading, hasNextPage, isFetchingNextPage, onLoadMore }: Props) {
   if (isLoading) {
     return (
       <div className="space-y-2">
@@ -67,7 +71,7 @@ export function ReportList({ reports, isLoading }: Props) {
   if (!reports || reports.length === 0) {
     return (
       <p className="text-sm text-text-muted">
-        No reports yet. Generate your first coaching report below.
+        No reports yet. Generate your first coaching report above.
       </p>
     );
   }
@@ -77,6 +81,17 @@ export function ReportList({ reports, isLoading }: Props) {
       {reports.map((r) => (
         <ReportRow key={r.reportId} report={r} />
       ))}
+      {hasNextPage && (
+        <Button
+          variant="secondary"
+          size="sm"
+          className="mt-2 w-full"
+          onClick={onLoadMore}
+          disabled={isFetchingNextPage}
+        >
+          {isFetchingNextPage ? "Loading…" : "Load more"}
+        </Button>
+      )}
     </div>
   );
 }

@@ -24,5 +24,8 @@ export async function apiFetch<T>(url: string, options?: RequestInit): Promise<T
     throw new FetchError(message, res.status);
   }
 
+  if (json === null || typeof json !== "object" || !("data" in json)) {
+    throw new FetchError("Unexpected response format", res.status);
+  }
   return (json as { data: T }).data;
 }
