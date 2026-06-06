@@ -24,6 +24,7 @@ import { ImprovementPlanWidget } from "@/domains/analysis/components/Improvement
 import { WinrateTrendWidget } from "@/domains/analysis/components/WinrateTrendWidget";
 import { TopChampionsWidget } from "@/domains/analysis/components/TopChampionsWidget";
 import { RoleDistributionWidget } from "@/domains/analysis/components/RoleDistributionWidget";
+import { HabitDetectionCard } from "@/domains/analysis/components/HabitDetectionWidget";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -151,6 +152,10 @@ export default function DashboardPage() {
                   <TiltWidget riotAccountId={primaryId} />
                   <WarmupWidget riotAccountId={primaryId} />
                 </div>
+              </div>
+              <div>
+                <SectionLabel>Alışkanlıklar</SectionLabel>
+                <HabitDetectionCard riotAccountId={primaryId} />
               </div>
             </div>
             <div className="space-y-4 lg:col-span-3">

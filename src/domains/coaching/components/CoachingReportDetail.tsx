@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ListenButton } from "@/domains/coaching/components/ListenButton";
+import { DownloadPdfButton } from "@/domains/coaching/components/DownloadPdfButton";
 import { CheckCircle2, XCircle, Lock, Zap, Target, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -215,6 +216,9 @@ interface Props {
 export function CoachingReportDetail({ report, isPro }: Props) {
   return (
     <div className="space-y-4">
+      <div className="flex items-center justify-end">
+        <DownloadPdfButton report={report} isPro={isPro} />
+      </div>
       <ReportHero report={report} />
 
       {report.summary && (
