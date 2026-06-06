@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { runCoachingPipeline } from "@/domains/coaching/pipeline/coachingPipeline";
+import { logger } from "@/lib/utils/logger";
 import type { ReportType } from "@prisma/client";
 
 const processSchema = z.object({
@@ -35,7 +36,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   // Respond immediately so generate can return 202 to the client.
   // The pending pipeline promise keeps this Vercel function alive until AI completes.
   runCoachingPipeline(reportId, riotAccountId, matchIds, reportType as ReportType, focusArea).catch(
-    (err: unknown) => console.error("[process] pipeline error", err),
+    (err: unknown) => logger.error("[process] pipeline error", { err }),
   );
 
   return NextResponse.json({ ok: true }, { status: 202 });
