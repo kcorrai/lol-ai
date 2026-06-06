@@ -60,14 +60,14 @@ const otpPowerSpikeSchema = z.object({
 
 export const otpAiOutputSchema = z.object({
   matchupTierList: z.object({
-    easy: z.array(otpMatchupEntrySchema).min(3),
-    medium: z.array(otpMatchupEntrySchema).min(3),
-    hard: z.array(otpMatchupEntrySchema).min(3),
+    easy: z.array(otpMatchupEntrySchema),
+    medium: z.array(otpMatchupEntrySchema),
+    hard: z.array(otpMatchupEntrySchema),
   }),
-  banPriority: z.array(banEntrySchema).min(1).max(3),
-  hiddenMechanics: z.array(z.string()).min(2),
-  powerSpikes: z.array(otpPowerSpikeSchema).min(3),
-  laneStrategies: z.array(z.string()).min(2),
+  banPriority: z.array(banEntrySchema).max(3),
+  hiddenMechanics: z.array(z.string()),
+  powerSpikes: z.array(otpPowerSpikeSchema),
+  laneStrategies: z.array(z.string()),
   metaRating: z.object({
     score: z.number().min(1).max(10),
     assessment: z.string(),
