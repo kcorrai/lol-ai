@@ -53,11 +53,16 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
     headers["x-vercel-protection-bypass"] = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
   }
-  void fetch(`${baseUrl}/api/coaching/process`, {
-    method: "POST",
-    headers,
-    body: JSON.stringify({ reportId, riotAccountId, matchIds, reportType, focusArea }),
-  });
+  try {
+    await fetch(`${baseUrl}/api/coaching/process`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ reportId, riotAccountId, matchIds, reportType, focusArea }),
+      signal: AbortSignal.timeout(10_000),
+    });
+  } catch {
+    // Process endpoint unreachable — report stays pending, will not auto-resolve.
+  }
 
   return apiSuccess({ reportId, status: "pending" }, 202);
 });

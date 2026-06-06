@@ -32,7 +32,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   const { reportId, riotAccountId, matchIds, reportType, focusArea } = parsed.data;
 
-  await runCoachingPipeline(reportId, riotAccountId, matchIds, reportType as ReportType, focusArea);
+  // Respond immediately so generate can return 202 to the client.
+  // The pending pipeline promise keeps this Vercel function alive until AI completes.
+  runCoachingPipeline(reportId, riotAccountId, matchIds, reportType as ReportType, focusArea).catch(
+    (err: unknown) => console.error("[process] pipeline error", err),
+  );
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true }, { status: 202 });
 }
