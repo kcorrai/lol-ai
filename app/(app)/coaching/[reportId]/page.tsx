@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import { Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ErrorState } from "@/components/ui/error-state";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -82,16 +83,17 @@ export default function ReportDetailPage() {
       {report.status === "complete" && (
         <>
           <CoachingReportDetail report={report} isPro={isPro} />
-          <div className="mt-4 flex flex-wrap gap-3">
+          <div className="mt-4">
             <a
               href={`/api/coaching/reports/${report.id}/pdf`}
               download
-              className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-text-muted hover:border-accent/50 hover:text-text transition-colors"
+              className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface-2 px-4 py-2.5 text-sm font-medium text-text-muted transition-colors hover:border-accent/50 hover:bg-surface hover:text-text"
             >
-              ↓ Download PDF
+              <Download className="h-4 w-4" />
+              PDF İndir
             </a>
-            <ShareReportButton reportId={report.id} />
           </div>
+          <ShareReportButton reportId={report.id} />
           <ReportRating reportId={report.id} currentRating={report.userRating} />
         </>
       )}
