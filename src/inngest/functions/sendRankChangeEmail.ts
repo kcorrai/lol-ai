@@ -35,7 +35,7 @@ export const sendRankChangeEmail = inngest.createFunction(
   {
     id: "send-rank-change-email",
     triggers: [{ event: "rank/changed" }],
-    concurrency: { limit: 10 },
+    concurrency: { limit: 5 },
     retries: 2,
   },
   async ({ event }) => {
