@@ -71,8 +71,8 @@ export async function getMatchDetail(
   matchDbId: string,
   userId: string
 ): Promise<MatchDetail | null> {
-  const [riotAccount, match] = await Promise.all([
-    prisma.riotAccount.findFirst({
+  const [riotAccounts, match] = await Promise.all([
+    prisma.riotAccount.findMany({
       where: { userId },
       select: { id: true },
     }),
@@ -84,11 +84,15 @@ export async function getMatchDetail(
 
   if (!match) return null;
 
-  // Only expose matches the user participated in
+  const accountIds = new Set(riotAccounts.map((a) => a.id));
+
+  // Only expose matches the user participated in (any of their linked accounts)
   const userParticipant = match.participants.find(
-    (p) => p.riotAccountId === riotAccount?.id
+    (p) => p.riotAccountId !== null && accountIds.has(p.riotAccountId)
   );
   if (!userParticipant) return null;
+
+  const riotAccount = riotAccounts.find((a) => a.id === userParticipant.riotAccountId) ?? riotAccounts[0] ?? null;
 
   // Aggregate team totals for share calculations
   const teamTotals = new Map<number, { damage: number; kills: number }>();
