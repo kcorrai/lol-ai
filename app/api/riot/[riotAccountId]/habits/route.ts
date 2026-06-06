@@ -1,4 +1,3 @@
-import { type NextRequest } from "next/server";
 import { withAuth } from "@/lib/api/withAuth";
 import { assertOwnsRiotAccount } from "@/lib/auth/authorization";
 import { getActiveHabits, detectAndPersistHabits } from "@/domains/analysis/services/habitDetectionService";
