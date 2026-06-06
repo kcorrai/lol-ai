@@ -6,6 +6,7 @@ export interface CoachingReportDetail {
   id: string;
   riotAccountId: string;
   reportType: "session_review" | "champion_focus" | "climb_roadmap";
+  focusArea: string | null;
   status: "pending" | "processing" | "complete" | "failed";
   matchesAnalyzed: string[];
   summary: string | null;
