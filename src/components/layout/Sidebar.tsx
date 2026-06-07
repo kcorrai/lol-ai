@@ -22,6 +22,7 @@ import {
   TrendingUp,
   Trophy,
   Map,
+  Film,
 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
@@ -35,6 +36,7 @@ const NAV_MAIN = [
   { href: "/improvement",   icon: TrendingUp,      label: "Gelişim" },
   { href: "/achievements",  icon: Trophy,          label: "Rozetler" },
   { href: "/analysis",     icon: Map,             label: "Isı Haritası" },
+  { href: "/recap",         icon: Film,           label: "Sezon Recap" },
 ] as const;
 
 const NAV_TOOLS = [

@@ -1,0 +1,155 @@
+import { prisma } from "@/lib/db/prisma";
+import { getAiClient } from "@/lib/ai/client";
+import { getCached, setCached, buildCacheKey } from "@/lib/ai/aiCache";
+import { logger } from "@/lib/utils/logger";
+import type { SeasonRecap } from "@prisma/client";
+
+export interface RecapData {
+  seasonLabel: string;
+  totalMatches: number;
+  winRate: number;
+  lpDelta: number;
+  startRank: string;
+  endRank: string;
+  topChampion: { name: string; games: number; winRate: number; kda: number };
+  bestStreak: number;
+  worstDay: { date: string; losses: number } | null;
+  resolvedHabit: string | null;
+  aiSummary: string;
+  nextGoal: string | null;
+}
+
+function seasonStart(): Date {
+  const now = new Date();
+  const year = now.getFullYear();
+  return new Date(now.getMonth() < 6 ? `${year}-01-01` : `${year}-07-01`);
+}
+
+export function currentSeasonLabel(): string {
+  const now = new Date();
+  return `${now.getFullYear()}-${now.getMonth() < 6 ? "S1" : "S2"}`;
+}
+
+function rankStr(tier: string, division: string): string {
+  const apex = ["MASTER", "GRANDMASTER", "CHALLENGER"];
+  const t = tier.charAt(0) + tier.slice(1).toLowerCase();
+  return apex.includes(tier) ? t : `${t} ${division}`;
+}
+
+async function aiSummary(data: Omit<RecapData, "aiSummary">): Promise<string> {
+  const key = buildCacheKey("recap-summary", {
+    season: data.seasonLabel,
+    matches: String(data.totalMatches),
+    wr: String(data.winRate),
+    champ: data.topChampion.name,
+  });
+  const cached = await getCached(key);
+  if (cached) return (cached as { s: string }).s;
+
+  const prompt = `Oyuncu ${data.seasonLabel} sezonunda ${data.totalMatches} maç oynadı. Kazanma oranı %${data.winRate}. En iyi şampiyonu ${data.topChampion.name} (%${data.topChampion.winRate} WR). ${data.startRank}'tan ${data.endRank}'a yükseldi. LP değişimi: ${data.lpDelta > 0 ? "+" : ""}${data.lpDelta}. Türkçe, 3 cümle, motive edici sezon değerlendirmesi. Güçlü yön ve geliştirme alanı belirt.`;
+
+  try {
+    const result = await getAiClient().complete(
+      "Sen bir LoL koçusun. Sezon değerlendirmesi yazıyorsun.",
+      prompt,
+      { maxTokens: 200, temperature: 0.7 }
+    );
+    await setCached(key, "recap-summary", { s: result.content }, 7);
+    return result.content;
+  } catch (err) {
+    logger.warn(`[recap] AI summary failed: ${err instanceof Error ? err.message : String(err)}`);
+    return `${data.seasonLabel} sezonunda ${data.totalMatches} maç oynadın ve %${data.winRate} kazanma oranı elde ettin. ${data.topChampion.name} ile harika performans sergilendin.`;
+  }
+}
+
+export async function buildRecapData(userId: string, riotAccountId: string): Promise<RecapData> {
+  const label = currentSeasonLabel();
+  const start = seasonStart();
+
+  const matches = await prisma.matchParticipant.findMany({
+    where: { riotAccountId, match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: start } } },
+    select: { won: true, kills: true, deaths: true, assists: true, championName: true, match: { select: { gameStart: true } } },
+    orderBy: { match: { gameStart: "asc" } },
+  });
+
+  if (matches.length < 5) throw new Error("Not enough matches for recap");
+
+  const totalMatches = matches.length;
+  const wins = matches.filter((m) => m.won).length;
+  const winRate = Math.round((wins / totalMatches) * 100);
+
+  // Best streak
+  let bestStreak = 0;
+  let streak = 0;
+  for (const m of matches) { if (m.won) { streak++; bestStreak = Math.max(bestStreak, streak); } else streak = 0; }
+
+  // Worst day (most losses in a single day)
+  const byDay = new Map<string, number>();
+  for (const m of matches) {
+    if (!m.won) {
+      const day = m.match.gameStart.toISOString().slice(0, 10);
+      byDay.set(day, (byDay.get(day) ?? 0) + 1);
+    }
+  }
+  let worstDay: { date: string; losses: number } | null = null;
+  for (const [date, losses] of byDay) {
+    if (!worstDay || losses > worstDay.losses) worstDay = { date, losses };
+  }
+
+  // Top champion by games
+  const champGames = new Map<string, { w: number; g: number; kda: number }>();
+  for (const m of matches) {
+    const s = champGames.get(m.championName) ?? { w: 0, g: 0, kda: 0 };
+    s.g++; if (m.won) s.w++;
+    s.kda += (m.kills + m.assists) / Math.max(m.deaths, 1);
+    champGames.set(m.championName, s);
+  }
+  let topChamp = { name: "Unknown", games: 0, winRate: 0, kda: 0 };
+  for (const [name, s] of champGames) {
+    if (s.g > topChamp.games) topChamp = { name, games: s.g, winRate: Math.round((s.w / s.g) * 100), kda: Math.round((s.kda / s.g) * 100) / 100 };
+  }
+
+  // Rank journey from RankedHistory
+  const rankedHistory = await prisma.rankedHistory.findMany({
+    where: { riotAccountId, queueType: "RANKED_SOLO_5x5", recordedAt: { gte: start } },
+    orderBy: { recordedAt: "asc" },
+    select: { tier: true, division: true, lp: true },
+  });
+
+  const first = rankedHistory[0];
+  const last = rankedHistory[rankedHistory.length - 1];
+  const startRank = first ? rankStr(first.tier, first.division) : "Unranked";
+  const endRank = last ? rankStr(last.tier, last.division) : "Unranked";
+  const lpDelta = (last?.lp ?? 0) - (first?.lp ?? 0);
+
+  // Resolved habit
+  const habit = await prisma.playerHabit.findFirst({
+    where: { riotAccountId, isResolved: true },
+    select: { habitType: true },
+  });
+
+  // Next goal from improvement plan
+  const plan = await prisma.improvementPlan.findFirst({
+    where: { riotAccountId, status: "active" },
+    select: { targets: true },
+  });
+  let nextGoal: string | null = null;
+  if (plan && Array.isArray(plan.targets) && (plan.targets as Array<{ label?: string }>)[0]?.label) {
+    nextGoal = (plan.targets as Array<{ label: string }>)[0].label;
+  }
+
+  const base = { seasonLabel: label, totalMatches, winRate, lpDelta, startRank, endRank, topChampion: topChamp, bestStreak, worstDay, resolvedHabit: habit?.habitType ?? null, nextGoal };
+  const summary = await aiSummary(base);
+  return { ...base, aiSummary: summary };
+}
+
+export async function generateOrGetRecap(userId: string, riotAccountId: string): Promise<SeasonRecap> {
+  const label = currentSeasonLabel();
+  const existing = await prisma.seasonRecap.findUnique({
+    where: { userId_seasonLabel: { userId, seasonLabel: label } },
+  });
+  if (existing) return existing;
+
+  const data = await buildRecapData(userId, riotAccountId);
+  return prisma.seasonRecap.create({ data: { userId, seasonLabel: label, data: data as object } });
+}

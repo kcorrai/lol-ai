@@ -106,6 +106,7 @@ model User {
   shareableCards   ShareableCard[]
   tiltAlerts       TiltAlert[]
   userAchievements UserAchievement[]
+  seasonRecaps     SeasonRecap[]
 
   @@map("users")
 }
@@ -627,6 +628,28 @@ model UserAchievement {
   @@unique([userId, achievementId])
   @@index([userId, seen])
   @@map("user_achievements")
+}
+
+// ============================================================
+// SEASON RECAP
+// Snapshot of a player's performance for a season/split.
+// Data is a JSON blob so the schema is forward-compatible as we add more slides.
+// ============================================================
+
+model SeasonRecap {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @db.Uuid
+  seasonLabel String   // "2026-S1"
+  shareToken  String   @unique @default(cuid())
+  data        Json
+  generatedAt DateTime @default(now())
+  isPublic    Boolean  @default(true)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, seasonLabel])
+  @@index([userId, seasonLabel])
+  @@map("season_recaps")
 }
 
 // ============================================================
