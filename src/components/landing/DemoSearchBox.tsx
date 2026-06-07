@@ -106,7 +106,19 @@ export function DemoSearchBox() {
         </div>
       )}
 
-      {result && !loading && <PreviewResultCard data={result} />}
+      {result && !loading && (
+        <>
+          <PreviewResultCard data={result} />
+          <div className="mt-3 text-center">
+            <a
+              href={`/s/${region}/${encodeURIComponent(result.summoner.gameName)}/${encodeURIComponent(result.summoner.tagLine)}`}
+              className="text-xs text-accent hover:underline"
+            >
+              {result.summoner.gameName}#{result.summoner.tagLine} tam sayfasını gör →
+            </a>
+          </div>
+        </>
+      )}
     </div>
   );
 }
