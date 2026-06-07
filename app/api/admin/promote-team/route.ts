@@ -4,11 +4,16 @@ import { authOptions } from "@/lib/auth/config";
 import { prisma } from "@/lib/db/prisma";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  const session = await getServerSession(authOptions);
-  const adminEmail = process.env.ADMIN_EMAIL;
+  const cronSecret = process.env.CRON_SECRET;
+  const authHeader = req.headers.get("authorization");
+  const isCronAuth = cronSecret && authHeader === `Bearer ${cronSecret}`;
 
-  if (!session?.user?.email || !adminEmail || session.user.email !== adminEmail) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!isCronAuth) {
+    const session = await getServerSession(authOptions);
+    const adminEmail = process.env.ADMIN_EMAIL;
+    if (!session?.user?.email || !adminEmail || session.user.email !== adminEmail) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
   }
 
   const body = await req.json() as { email?: string };
