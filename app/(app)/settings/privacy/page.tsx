@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useProfileSettings, useUpdateProfileSettings } from "@/hooks/useProfileSettings";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, ExternalLink } from "lucide-react";
 
 interface ToggleRowProps {
   label: string;
@@ -93,9 +94,18 @@ export default function PrivacySettingsPage() {
         </p>
       </div>
 
-      {profileUrl && (
+      {profileUrl && data?.profileSlug && (
         <div className="flex items-center gap-2 rounded-xl border border-border bg-surface p-3">
           <span className="flex-1 truncate text-sm text-text-muted">{profileUrl}</span>
+          <Link
+            href={`/u/${data.profileSlug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 rounded-md bg-surface-2 px-3 py-1.5 text-xs font-semibold text-text transition-colors hover:bg-accent hover:text-background"
+          >
+            <ExternalLink className="h-3.5 w-3.5" />
+            Görüntüle
+          </Link>
           <button
             onClick={copyLink}
             className="flex items-center gap-1.5 rounded-md bg-surface-2 px-3 py-1.5 text-xs font-semibold text-text transition-colors hover:bg-accent hover:text-background"

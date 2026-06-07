@@ -166,7 +166,12 @@ function TeamTable({ participants, teamId, userRiotAccountId, objectives }: {
                       <div className="min-w-0">
                         <p className={`truncate font-medium ${isUser ? "text-accent" : "text-text"}`}>{p.championName}</p>
                         {p.gameName && (
-                          <p className="truncate text-[10px] text-text-muted">{p.gameName}<span className="text-text-muted/50">#{p.tagLine}</span></p>
+                          <Link
+                            href={`/u/${`${p.gameName}-${p.tagLine}`.replace(/[^a-zA-Z0-9\-_]/g, "-")}`}
+                            className="truncate text-[10px] text-text-muted hover:text-accent hover:underline"
+                          >
+                            {p.gameName}<span className="text-text-muted/50">#{p.tagLine}</span>
+                          </Link>
                         )}
                         <p className="text-[10px] text-text-muted/60">
                           {POSITION_LABELS[p.position] ?? p.position}{isUser ? " · you" : ""}
