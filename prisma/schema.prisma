@@ -100,6 +100,10 @@ model User {
   xp               Int @default(0)
   level            Int @default(1)
 
+  profileSlug      String?  @unique
+  profilePublic    Boolean  @default(true)
+  profileSettings  Json?
+
   accounts         Account[]
   sessions         Session[]
   profile          Profile?

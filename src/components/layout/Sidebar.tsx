@@ -23,6 +23,7 @@ import {
   Trophy,
   Map,
   Film,
+  Lock,
 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
@@ -50,6 +51,7 @@ const NAV_SETTINGS = [
   { href: "/settings/accounts", icon: Gamepad2,    label: "Accounts" },
   { href: "/settings/billing",  icon: CreditCard,  label: "Billing" },
   { href: "/settings/profile",  icon: UserCircle,  label: "Profile" },
+  { href: "/settings/privacy",  icon: Lock,        label: "Gizlilik" },
 ] as const;
 
 function NavItem({

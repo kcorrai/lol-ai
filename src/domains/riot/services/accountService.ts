@@ -92,6 +92,12 @@ export async function connectAccount(
     },
   });
 
+  // Set profile slug from first primary account (non-blocking)
+  if (isPrimary) {
+    const { ensureProfileSlug } = await import("@/domains/identity/services/profileService");
+    ensureProfileSlug(userId, account.gameName, account.tagLine).catch(() => undefined);
+  }
+
   // Kick off initial sync without blocking the response
   backgroundRefresh(() => syncAccount(account.id).then(() => undefined));
 
