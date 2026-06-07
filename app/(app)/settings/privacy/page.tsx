@@ -22,7 +22,7 @@ function ToggleRow({ label, description, checked, onChange, disabled }: ToggleRo
       <button
         disabled={disabled}
         onClick={() => onChange(!checked)}
-        className={`relative h-6 w-11 rounded-full transition-colors focus:outline-none ${
+        className={`relative h-6 w-11 overflow-hidden rounded-full transition-colors focus:outline-none ${
           checked ? "bg-accent" : "bg-surface-2"
         } ${disabled ? "opacity-50" : ""}`}
         aria-checked={checked}

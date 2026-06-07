@@ -61,11 +61,13 @@ export async function buildMatchupMatrix(
 
   const matchIds = [...new Set(userParticipants.map((p) => p.matchId))];
 
-  // Batch-fetch all other participants in those matches
+  // Batch-fetch all other participants in those matches.
+  // Prisma's NOT: { field: value } excludes NULLs in SQL, so we must use OR
+  // explicitly to include opponents who have riotAccountId = null.
   const allOthers = await prisma.matchParticipant.findMany({
     where: {
       matchId: { in: matchIds },
-      NOT: { riotAccountId },
+      OR: [{ riotAccountId: null }, { riotAccountId: { not: riotAccountId } }],
     },
     select: { matchId: true, teamId: true, position: true, championName: true },
   });

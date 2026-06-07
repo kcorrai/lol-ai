@@ -60,7 +60,7 @@ function useRecapSlides(data: RecapData, gameName: string, active: number) {
     </RecapSlide>,
 
     // Slide 2 — Top Champion
-    <div key={2} className={`h-full w-full transition-opacity duration-500 ${active === 2 ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+    <div key={2} className={`absolute inset-0 transition-opacity duration-500 ${active === 2 ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
       <RecapChampion
         championName={data.topChampion.name}
         games={data.topChampion.games}
@@ -227,11 +227,11 @@ export default function RecapPage() {
         </Button>
 
         {slide < TOTAL_SLIDES - 1 ? (
-          <Button size="sm" onClick={next}>
-            <ChevronRight className="h-4 w-4" />
+          <Button size="sm" onClick={next} className="gap-1 font-semibold ring-2 ring-accent/40">
+            Devam <ChevronRight className="h-4 w-4" />
           </Button>
         ) : (
-          <Button size="sm" onClick={() => setSlide(0)}>Başa Dön</Button>
+          <Button size="sm" onClick={() => setSlide(0)} className="ring-2 ring-accent/40">Başa Dön</Button>
         )}
       </div>
     </div>

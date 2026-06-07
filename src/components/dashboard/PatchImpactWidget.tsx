@@ -57,18 +57,17 @@ export function PatchImpactWidget({ riotAccountId }: Props) {
 
       <div className="space-y-2">
         {data.champions.map(c => (
-          <div key={c.championName} className="flex items-center gap-3 text-sm">
-            <span className="w-20 truncate font-medium text-text">{c.championName}</span>
-            <span className="text-xs text-text-muted">{c.beforeWr}%</span>
-            <span className="text-text-muted">→</span>
-            <span className="text-xs font-semibold text-text">{c.afterWr}%</span>
+          <div key={c.championName} className="grid grid-cols-[1fr_2.5rem_1rem_2.5rem_3rem] items-center gap-x-2 text-sm">
+            <span className="truncate font-medium text-text">{c.championName}</span>
+            <span className="text-right text-xs text-text-muted">{c.beforeWr}%</span>
+            <span className="text-center text-text-muted">→</span>
+            <span className="text-right text-xs font-semibold text-text">{c.afterWr}%</span>
             <span
-              className={`ml-auto text-xs font-bold ${
+              className={`text-right text-xs font-bold ${
                 c.wrDelta > 0 ? "text-success" : "text-danger"
               }`}
             >
-              {c.wrDelta > 0 ? "+" : ""}
-              {c.wrDelta}%
+              {c.wrDelta > 0 ? "+" : ""}{c.wrDelta}%
             </span>
           </div>
         ))}
