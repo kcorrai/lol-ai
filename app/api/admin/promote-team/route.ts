@@ -8,8 +8,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const authHeader = req.headers.get("authorization");
   const isCronAuth = cronSecret && authHeader === `Bearer ${cronSecret}`;
 
+  const session = isCronAuth ? null : await getServerSession(authOptions);
+
   if (!isCronAuth) {
-    const session = await getServerSession(authOptions);
     const adminEmail = process.env.ADMIN_EMAIL;
     if (!session?.user?.email || !adminEmail || session.user.email !== adminEmail) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -17,7 +18,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   const body = await req.json() as { email?: string };
-  const targetEmail = body.email ?? session.user.email;
+  const targetEmail = body.email ?? session?.user?.email;
+
+  if (!targetEmail) {
+    return NextResponse.json({ error: "email required" }, { status: 400 });
+  }
 
   const user = await prisma.user.findUnique({
     where: { email: targetEmail },
