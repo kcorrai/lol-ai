@@ -24,20 +24,25 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "email required" }, { status: 400 });
   }
 
-  const user = await prisma.user.findUnique({
-    where: { email: targetEmail },
-    select: { id: true },
-  });
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email: targetEmail },
+      select: { id: true },
+    });
 
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    await prisma.subscription.upsert({
+      where: { userId: user.id },
+      update: { plan: "team", status: "active" },
+      create: { userId: user.id, plan: "team", status: "active" },
+    });
+
+    return NextResponse.json({ ok: true, email: targetEmail, plan: "team" });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
-
-  await prisma.subscription.upsert({
-    where: { userId: user.id },
-    update: { plan: "team", status: "active" },
-    create: { userId: user.id, plan: "team", status: "active" },
-  });
-
-  return NextResponse.json({ ok: true, email: targetEmail, plan: "team" });
 }
