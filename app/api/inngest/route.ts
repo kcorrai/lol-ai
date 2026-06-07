@@ -10,8 +10,9 @@ import { achievementChecker } from "@/inngest/functions/achievementChecker";
 import { timelineFetcher } from "@/inngest/functions/timelineFetcher";
 import { dailyChallengeGenerator, weeklyChallengeGenerator } from "@/inngest/functions/challengeGenerator";
 import { challengeProgressChecker } from "@/inngest/functions/challengeProgressChecker";
+import { sendReengagementEmails } from "@/inngest/functions/sendReengagementEmails";
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
-  functions: [runCoachingJob, autoSessionReview, sendRankChangeEmail, sendWeeklyReportEmails, tiltStreakCheck, patchVersionPoller, achievementChecker, timelineFetcher, dailyChallengeGenerator, weeklyChallengeGenerator, challengeProgressChecker],
+  functions: [runCoachingJob, autoSessionReview, sendRankChangeEmail, sendWeeklyReportEmails, tiltStreakCheck, patchVersionPoller, achievementChecker, timelineFetcher, dailyChallengeGenerator, weeklyChallengeGenerator, challengeProgressChecker, sendReengagementEmails],
 });
