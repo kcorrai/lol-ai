@@ -26,20 +26,48 @@ export default function LandingPage() {
       <HeroSection />
 
       {/* Frictionless Demo */}
-      <section className="bg-surface-2 py-16">
-        <div className="mx-auto max-w-3xl px-6">
-          <div className="mb-8 text-center">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
+      <section className="relative overflow-hidden bg-background py-20">
+        {/* Background: subtle grid + centered glow */}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff06_1px,transparent_1px),linear-gradient(to_bottom,#ffffff06_1px,transparent_1px)] bg-[size:48px_48px]" />
+          <div className="absolute left-1/2 top-1/2 h-[480px] w-[720px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/10 blur-[120px]" />
+        </div>
+
+        <div className="relative mx-auto max-w-3xl px-6">
+          {/* Heading */}
+          <div className="mb-10 text-center">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-accent">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
               Hemen Dene — Kayıt Gerekmez
-            </p>
-            <h2 className="font-display text-2xl font-bold text-text md:text-3xl">
-              Kendi Hesabını Analiz Et
+            </div>
+            <h2 className="font-display text-3xl font-bold text-text md:text-4xl">
+              Kendi Hesabını{" "}
+              <span className="text-accent">Analiz Et</span>
             </h2>
-            <p className="mt-2 text-sm text-text-muted">
+            <p className="mt-3 text-sm text-text-muted md:text-base">
               Riot ID&apos;ni gir, AI koçunun neler söyleyeceğini gör.
             </p>
           </div>
-          <DemoSearchBox />
+
+          {/* Form card */}
+          <div className="rounded-2xl border border-white/10 bg-surface/80 p-6 shadow-2xl backdrop-blur-sm ring-1 ring-inset ring-white/5">
+            <DemoSearchBox />
+          </div>
+
+          {/* Trust signals */}
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-text-muted">
+            {[
+              "Tamamen ücretsiz",
+              "Kayıt gerekmez",
+              "30 saniyede sonuç",
+              "AI destekli analiz",
+            ].map((label) => (
+              <span key={label} className="flex items-center gap-1.5">
+                <span className="text-success">✓</span>
+                {label}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
