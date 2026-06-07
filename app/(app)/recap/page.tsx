@@ -97,7 +97,7 @@ function useRecapSlides(data: RecapData, gameName: string, active: number) {
             {new Date(data.worstDay.date).toLocaleDateString("tr-TR", { day: "numeric", month: "long" })}
           </p>
           <p className="mt-2 text-lg text-text-muted">{data.worstDay.losses} üst üste kayıp</p>
-          <p className="mt-6 text-sm text-text-muted italic">"Ama geri döndün."</p>
+          <p className="mt-6 text-sm text-text-muted italic">&ldquo;Ama geri döndün.&rdquo;</p>
         </>
       ) : (
         <p className="mt-6 text-lg text-text">Bu sezon çok sağlam oynadın!</p>
@@ -126,7 +126,7 @@ function useRecapSlides(data: RecapData, gameName: string, active: number) {
     <RecapSlide key={6} bgClass={slides[6].bg} active={active === 6}>
       <p className="text-xs font-semibold uppercase tracking-widest text-accent">AI Koç Yorumu</p>
       <div className="mt-6 max-w-sm rounded-xl border border-border bg-surface-2 p-5 text-left text-sm leading-relaxed text-text-muted">
-        <p className="italic">"{data.aiSummary}"</p>
+        <p className="italic">&ldquo;{data.aiSummary}&rdquo;</p>
       </div>
     </RecapSlide>,
 

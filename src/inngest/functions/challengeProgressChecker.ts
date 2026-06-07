@@ -1,5 +1,4 @@
 import { inngest } from "@/inngest/client";
-import { prisma } from "@/lib/db/prisma";
 import { checkAndUpdateChallengeProgress, getActiveChallengeStreak } from "@/domains/analysis/services/challengeService";
 import { logger } from "@/lib/utils/logger";
 

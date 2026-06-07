@@ -48,7 +48,7 @@ export default async function PublicRecapPage({ params }: Props) {
 
         {data.aiSummary && (
           <div className="rounded-xl border border-border bg-surface-2 p-4 text-sm italic leading-relaxed text-text-muted">
-            "{data.aiSummary}"
+            &ldquo;{data.aiSummary}&rdquo;
           </div>
         )}
 
