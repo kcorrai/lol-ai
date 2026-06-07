@@ -461,3 +461,47 @@ In-app notifications.
 - **ai_analyses** stores full raw responses. Archive rows older than 90 days to cold storage to keep table small.
 - **ranked_history** is append-only. Never update, only insert. Ideal for time-series partitioning.
 - Consider **read replicas** for analytics queries on champion_stats and performance_snapshots.
+
+---
+
+## 5. Teams Tables (B2B Pilot — TASK-106)
+
+### `teams`
+
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK, DEFAULT gen_random_uuid() |
+| `name` | `text` | NOT NULL |
+| `logo_url` | `text` | |
+| `owner_id` | `uuid` | FK → users.id |
+| `created_at` | `timestamptz` | NOT NULL |
+| `updated_at` | `timestamptz` | NOT NULL |
+
+### `team_members`
+
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `team_id` | `uuid` | FK → teams.id CASCADE |
+| `user_id` | `uuid` | FK → users.id CASCADE |
+| `role` | `TeamRole` | NOT NULL DEFAULT 'PLAYER' |
+| `joined_at` | `timestamptz` | NOT NULL |
+
+UNIQUE(team_id, user_id)
+
+### `team_invites`
+
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `team_id` | `uuid` | FK → teams.id CASCADE |
+| `email` | `text` | NOT NULL |
+| `token` | `text` | UNIQUE |
+| `role` | `TeamRole` | NOT NULL DEFAULT 'PLAYER' |
+| `expires_at` | `timestamptz` | NOT NULL |
+| `used_at` | `timestamptz` | |
+| `created_at` | `timestamptz` | NOT NULL |
+
+**TeamRole enum:** `OWNER`, `COACH`, `PLAYER`
+
+**SubscriptionPlan enum:** added `team` value (same limits as `elite` + team features)

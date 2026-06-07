@@ -14,8 +14,9 @@ import { challengeProgressChecker } from "@/inngest/functions/challengeProgressC
 import { sendReengagementEmails } from "@/inngest/functions/sendReengagementEmails";
 import { sendActivationEmail } from "@/inngest/functions/sendActivationEmail";
 import { sendReportReadyEmail } from "@/inngest/functions/sendReportReadyEmail";
+import { teamInviteEmail } from "@/inngest/functions/teamInviteEmail";
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
-  functions: [runCoachingJob, matchSyncWorker, autoSessionReview, sendRankChangeEmail, sendWeeklyReportEmails, tiltStreakCheck, patchVersionPoller, achievementChecker, timelineFetcher, dailyChallengeGenerator, weeklyChallengeGenerator, challengeProgressChecker, sendReengagementEmails, sendActivationEmail, sendReportReadyEmail],
+  functions: [runCoachingJob, matchSyncWorker, autoSessionReview, sendRankChangeEmail, sendWeeklyReportEmails, tiltStreakCheck, patchVersionPoller, achievementChecker, timelineFetcher, dailyChallengeGenerator, weeklyChallengeGenerator, challengeProgressChecker, sendReengagementEmails, sendActivationEmail, sendReportReadyEmail, teamInviteEmail],
 });

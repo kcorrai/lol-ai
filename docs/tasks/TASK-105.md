@@ -1,7 +1,7 @@
 # TASK-105 — i18n Expansion: Korean + Portuguese
 
 **Phase:** 4 — Scale & Expansion  
-**Status:** Pending  
+**Status:** Blocked  
 **Estimated Effort:** 3 gün  
 **Priority:** P3
 

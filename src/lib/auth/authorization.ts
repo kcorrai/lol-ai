@@ -38,6 +38,18 @@ export const PLAN_LIMITS = {
     otpAnalysisPerDay: -1,
     draftAnalysisPerDay: -1,
   },
+  // Team plan: same individual limits as elite; team features gated separately
+  team: {
+    maxRiotAccounts: 5,
+    reportsPerMonth: -1,
+    reportsPerDay: -1,
+    matchHistoryDepth: 200,
+    championPoolLimit: -1,
+    fullCoachingReport: true,
+    matchupAnalysisPerDay: -1,
+    otpAnalysisPerDay: -1,
+    draftAnalysisPerDay: -1,
+  },
 } satisfies Record<SubscriptionPlan, PlanLimits>;
 
 export type PlanLimits = {

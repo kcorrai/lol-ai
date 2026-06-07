@@ -920,3 +920,40 @@ AI analysis of a specific participant's build in a match.
 | `REPORT_IN_PROGRESS` | 409 | Report already generating for this account |
 | `AI_PROVIDER_ERROR` | 503 | AI provider unavailable |
 | `INSUFFICIENT_MATCH_DATA` | 422 | Not enough matches to analyze |
+
+---
+
+## 13. Teams (B2B Pilot — TASK-106)
+
+All endpoints require authentication. Team features require `team` subscription plan.
+
+### `GET /api/teams`
+Returns teams the authenticated user is a member of.
+
+### `POST /api/teams`
+Creates a new team. Body: `{ name: string, logoUrl?: string }`. Returns `201`.
+
+### `GET /api/teams/:teamId`
+Returns team details and member list. Requires team membership.
+
+### `DELETE /api/teams/:teamId`
+Deletes a team. Requires OWNER role.
+
+### `POST /api/teams/:teamId/members/invite`
+Sends an invite email to a new member. Body: `{ email: string, role: "COACH" | "PLAYER" }`.
+
+### `DELETE /api/teams/:teamId/members/:userId`
+Removes a member. Requires OWNER role.
+
+### `GET /api/teams/:teamId/dashboard`
+Returns team dashboard with member summaries (last match, rank, 7-day WR, last report). Requires COACH or OWNER role.
+
+### `POST /api/teams/invites/:token/accept`
+Accepts a team invite. The authenticated user joins the team with the role encoded in the invite.
+
+**Error codes added:**
+| Code | HTTP | Meaning |
+|---|---|---|
+| `TEAM_PLAN_REQUIRED` | 403 | Team plan subscription required |
+| `INVITE_EXPIRED` | 409 | Invite token has expired |
+| `INVITE_ALREADY_USED` | 409 | Invite token already consumed |
