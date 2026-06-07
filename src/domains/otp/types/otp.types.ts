@@ -60,9 +60,9 @@ const otpPowerSpikeSchema = z.object({
 
 export const otpAiOutputSchema = z.object({
   matchupTierList: z.object({
-    easy: z.array(otpMatchupEntrySchema),
-    medium: z.array(otpMatchupEntrySchema),
-    hard: z.array(otpMatchupEntrySchema),
+    easy: z.array(otpMatchupEntrySchema).min(3),
+    medium: z.array(otpMatchupEntrySchema).min(3),
+    hard: z.array(otpMatchupEntrySchema).min(3),
   }),
   banPriority: z.array(banEntrySchema).max(3),
   hiddenMechanics: z.array(z.string()),
