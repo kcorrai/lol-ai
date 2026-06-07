@@ -13,8 +13,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { OAuthButton } from "./OAuthButton";
 
 const loginSchema = z.object({
-  email: z.string().email("Enter a valid email address"),
-  password: z.string().min(1, "Password is required"),
+  email: z.string().email("Geçerli bir e-posta adresi gir"),
+  password: z.string().min(1, "Şifre gerekli"),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -45,7 +45,7 @@ export function LoginForm() {
     });
 
     if (result?.error) {
-      setServerError("Incorrect email or password. Please try again.");
+      setServerError("E-posta veya şifre hatalı. Lütfen tekrar dene.");
       return;
     }
 
@@ -56,18 +56,18 @@ export function LoginForm() {
   return (
     <Card>
       <CardHeader className="space-y-1">
-        <CardTitle>Sign in</CardTitle>
-        <CardDescription>Enter your email and password to continue</CardDescription>
+        <CardTitle>Giriş Yap</CardTitle>
+        <CardDescription>Devam etmek için e-posta ve şifreni gir</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {justRegistered && (
           <p className="rounded-md border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
-            Account created! Sign in to get started.
+            Hesap oluşturuldu! Başlamak için giriş yap.
           </p>
         )}
         {justReset && (
           <p className="rounded-md border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
-            Password updated successfully. Sign in with your new password.
+            Şifre başarıyla güncellendi. Yeni şifrele giriş yap.
           </p>
         )}
 
@@ -78,19 +78,19 @@ export function LoginForm() {
             <span className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-surface px-2 text-text-muted">Or continue with email</span>
+            <span className="bg-surface px-2 text-text-muted">Veya e-posta ile devam et</span>
           </div>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-1">
             <label htmlFor="email" className="text-sm text-text-muted">
-              Email
+              E-posta
             </label>
             <Input
               id="email"
               type="email"
-              placeholder="player@example.com"
+              placeholder="oyuncu@ornek.com"
               autoComplete="email"
               {...register("email")}
             />
@@ -102,13 +102,13 @@ export function LoginForm() {
           <div className="space-y-1">
             <div className="flex items-center justify-between">
               <label htmlFor="password" className="text-sm text-text-muted">
-                Password
+                Şifre
               </label>
               <Link
                 href="/forgot-password"
                 className="text-xs text-text-muted hover:text-accent hover:underline"
               >
-                Forgot password?
+                Şifreni mi unuttun?
               </Link>
             </div>
             <Input
@@ -130,14 +130,14 @@ export function LoginForm() {
           )}
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Signing in…" : "Sign in"}
+            {isSubmitting ? "Giriş yapılıyor…" : "Giriş Yap"}
           </Button>
         </form>
 
         <p className="text-center text-sm text-text-muted">
-          No account?{" "}
+          Hesabın yok mu?{" "}
           <Link href="/register" className="text-accent hover:underline">
-            Create one free
+            Ücretsiz oluştur
           </Link>
         </p>
       </CardContent>

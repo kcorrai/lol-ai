@@ -13,13 +13,13 @@ import { OAuthButton } from "./OAuthButton";
 
 const registerSchema = z
   .object({
-    name: z.string().min(2, "Name must be at least 2 characters").max(50),
-    email: z.string().email("Enter a valid email address"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
+    name: z.string().min(2, "İsim en az 2 karakter olmalı").max(50),
+    email: z.string().email("Geçerli bir e-posta adresi gir"),
+    password: z.string().min(8, "Şifre en az 8 karakter olmalı"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
+    message: "Şifreler eşleşmiyor",
     path: ["confirmPassword"],
   });
 
@@ -53,7 +53,7 @@ export function RegisterForm() {
     const data = (await res.json()) as { error?: { message: string } };
 
     if (!res.ok) {
-      setServerError(data.error?.message ?? "Registration failed. Please try again.");
+      setServerError(data.error?.message ?? "Kayıt başarısız. Lütfen tekrar dene.");
       return;
     }
 
@@ -63,8 +63,8 @@ export function RegisterForm() {
   return (
     <Card>
       <CardHeader className="space-y-1">
-        <CardTitle>Create an account</CardTitle>
-        <CardDescription>Free — no credit card required</CardDescription>
+        <CardTitle>Hesap Oluştur</CardTitle>
+        <CardDescription>Ücretsiz — kredi kartı gerekli değil</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <OAuthButton provider="google" />
@@ -74,19 +74,19 @@ export function RegisterForm() {
             <span className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-surface px-2 text-text-muted">Or register with email</span>
+            <span className="bg-surface px-2 text-text-muted">Veya e-posta ile kaydol</span>
           </div>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-1">
             <label htmlFor="name" className="text-sm text-text-muted">
-              Display name
+              Görünen Ad
             </label>
             <Input
               id="name"
               type="text"
-              placeholder="PlayerName"
+              placeholder="OyuncuAdı"
               autoComplete="name"
               {...register("name")}
             />
@@ -95,12 +95,12 @@ export function RegisterForm() {
 
           <div className="space-y-1">
             <label htmlFor="email" className="text-sm text-text-muted">
-              Email
+              E-posta
             </label>
             <Input
               id="email"
               type="email"
-              placeholder="player@example.com"
+              placeholder="oyuncu@ornek.com"
               autoComplete="email"
               {...register("email")}
             />
@@ -109,12 +109,12 @@ export function RegisterForm() {
 
           <div className="space-y-1">
             <label htmlFor="password" className="text-sm text-text-muted">
-              Password
+              Şifre
             </label>
             <Input
               id="password"
               type="password"
-              placeholder="Min. 8 characters"
+              placeholder="En az 8 karakter"
               autoComplete="new-password"
               {...register("password")}
             />
@@ -123,7 +123,7 @@ export function RegisterForm() {
 
           <div className="space-y-1">
             <label htmlFor="confirmPassword" className="text-sm text-text-muted">
-              Confirm password
+              Şifreyi Onayla
             </label>
             <Input
               id="confirmPassword"
@@ -144,14 +144,14 @@ export function RegisterForm() {
           )}
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Creating account…" : "Create account"}
+            {isSubmitting ? "Hesap oluşturuluyor…" : "Hesap Oluştur"}
           </Button>
         </form>
 
         <p className="text-center text-sm text-text-muted">
-          Already have an account?{" "}
+          Zaten hesabın var mı?{" "}
           <Link href="/login" className="text-accent hover:underline">
-            Sign in
+            Giriş Yap
           </Link>
         </p>
       </CardContent>
