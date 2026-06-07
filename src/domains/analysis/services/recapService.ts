@@ -12,7 +12,12 @@ export interface RecapData {
   startRank: string;
   endRank: string;
   topChampion: { name: string; games: number; winRate: number; kda: number };
+  topChampions: { name: string; games: number; winRate: number; kda: number }[];
   bestStreak: number;
+  totalKills: number;
+  totalDeaths: number;
+  totalAssists: number;
+  estimatedHours: number;
   worstDay: { date: string; losses: number } | null;
   resolvedHabit: string | null;
   aiSummary: string;
@@ -96,7 +101,16 @@ export async function buildRecapData(userId: string, riotAccountId: string): Pro
     if (!worstDay || losses > worstDay.losses) worstDay = { date, losses };
   }
 
-  // Top champion by games
+  // Total K/D/A
+  let totalKills = 0, totalDeaths = 0, totalAssists = 0;
+  for (const m of matches) {
+    totalKills += m.kills;
+    totalDeaths += m.deaths;
+    totalAssists += m.assists;
+  }
+  const estimatedHours = Math.round(totalMatches * 30 / 60);
+
+  // Top champions by games
   const champGames = new Map<string, { w: number; g: number; kda: number }>();
   for (const m of matches) {
     const s = champGames.get(m.championName) ?? { w: 0, g: 0, kda: 0 };
@@ -104,10 +118,11 @@ export async function buildRecapData(userId: string, riotAccountId: string): Pro
     s.kda += (m.kills + m.assists) / Math.max(m.deaths, 1);
     champGames.set(m.championName, s);
   }
-  let topChamp = { name: "Unknown", games: 0, winRate: 0, kda: 0 };
-  for (const [name, s] of champGames) {
-    if (s.g > topChamp.games) topChamp = { name, games: s.g, winRate: Math.round((s.w / s.g) * 100), kda: Math.round((s.kda / s.g) * 100) / 100 };
-  }
+  const topChampions = [...champGames.entries()]
+    .sort((a, b) => b[1].g - a[1].g)
+    .slice(0, 3)
+    .map(([name, s]) => ({ name, games: s.g, winRate: Math.round((s.w / s.g) * 100), kda: Math.round((s.kda / s.g) * 100) / 100 }));
+  const topChamp = topChampions[0] ?? { name: "Unknown", games: 0, winRate: 0, kda: 0 };
 
   // Rank journey from RankedHistory
   const rankedHistory = await prisma.rankedHistory.findMany({
@@ -138,7 +153,7 @@ export async function buildRecapData(userId: string, riotAccountId: string): Pro
     nextGoal = (plan.targets as Array<{ label: string }>)[0].label;
   }
 
-  const base = { seasonLabel: label, totalMatches, winRate, lpDelta, startRank, endRank, topChampion: topChamp, bestStreak, worstDay, resolvedHabit: habit?.habitType ?? null, nextGoal };
+  const base = { seasonLabel: label, totalMatches, winRate, lpDelta, startRank, endRank, topChampion: topChamp, topChampions, bestStreak, totalKills, totalDeaths, totalAssists, estimatedHours, worstDay, resolvedHabit: habit?.habitType ?? null, nextGoal };
   const summary = await aiSummary(base);
   return { ...base, aiSummary: summary };
 }
