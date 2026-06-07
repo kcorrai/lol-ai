@@ -24,3 +24,10 @@ export function getLsProVariantId(): string {
     throw new Error("LEMONSQUEEZY_PRO_VARIANT_ID environment variable is not set");
   return variantId;
 }
+
+export function getLsProYearlyVariantId(): string {
+  const variantId = process.env.LEMONSQUEEZY_PRO_YEARLY_VARIANT_ID;
+  if (!variantId)
+    throw new Error("LEMONSQUEEZY_PRO_YEARLY_VARIANT_ID environment variable is not set");
+  return variantId;
+}

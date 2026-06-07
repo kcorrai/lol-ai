@@ -9,6 +9,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useCreateCheckout } from "@/hooks/useCreateCheckout";
+import { useSearchParams } from "next/navigation";
 
 const FREE_FEATURES = [
   "Ayda 3 AI koçluk raporu",
@@ -31,7 +32,9 @@ const PRO_FEATURES = [
 
 export default function BillingPage() {
   const { data: sub, isLoading } = useSubscription();
-  const checkout = useCreateCheckout();
+  const searchParams = useSearchParams();
+  const period = searchParams.get("period") === "annual" ? "annual" : "monthly";
+  const checkout = useCreateCheckout(period);
 
   const isPro = sub?.plan === "pro" || sub?.plan === "elite";
 

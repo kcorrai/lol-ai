@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from "crypto";
 import { createCheckout } from "@lemonsqueezy/lemonsqueezy.js";
 import { prisma } from "@/lib/db/prisma";
-import { getLsClient, getLsStoreId, getLsProVariantId } from "@/lib/lemonsqueezy/client";
+import { getLsClient, getLsStoreId, getLsProVariantId, getLsProYearlyVariantId } from "@/lib/lemonsqueezy/client";
 import { logger } from "@/lib/utils/logger";
 import type {
   LsSubscriptionAttributes,
@@ -14,12 +14,16 @@ import type { SubscriptionPlan, SubscriptionStatus } from "@prisma/client";
 
 export async function createLsCheckoutUrl(
   userId: string,
-  userEmail: string | null
+  userEmail: string | null,
+  period: "monthly" | "annual" = "monthly"
 ): Promise<string> {
   getLsClient();
 
   const storeId = getLsStoreId();
-  const variantId = getLsProVariantId();
+  const variantId =
+    period === "annual"
+      ? getLsProYearlyVariantId()
+      : getLsProVariantId();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
 
   const { data, error } = await createCheckout(storeId, variantId, {
