@@ -532,6 +532,22 @@ model PlayerHabit {
 }
 
 // ============================================================
+// PATCH TRACKING
+// Stores detected DDragon patch versions with their detected date.
+// Used to compute before/after WR comparisons for user champion pools.
+// ============================================================
+
+model PatchVersion {
+  id          String   @id @default(uuid()) @db.Uuid
+  version     String   @unique  // e.g. "15.14.1"
+  detectedAt  DateTime @default(now())
+  patchNotesUrl String? // optional link shown in widget
+
+  @@index([detectedAt(sort: Desc)])
+  @@map("patch_versions")
+}
+
+// ============================================================
 // TILT ALERTS
 // Persisted notifications sent when a user hits a 3-loss streak.
 // AI-generated recovery message, acknowledged via dashboard banner.

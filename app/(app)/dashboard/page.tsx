@@ -25,6 +25,7 @@ import { WinrateTrendWidget } from "@/domains/analysis/components/WinrateTrendWi
 import { TopChampionsWidget } from "@/domains/analysis/components/TopChampionsWidget";
 import { RoleDistributionWidget } from "@/domains/analysis/components/RoleDistributionWidget";
 import { HabitDetectionCard } from "@/domains/analysis/components/HabitDetectionWidget";
+import { PatchImpactWidget } from "@/components/dashboard/PatchImpactWidget";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -156,6 +157,10 @@ export default function DashboardPage() {
               <div>
                 <SectionLabel>Alışkanlıklar</SectionLabel>
                 <HabitDetectionCard riotAccountId={primaryId} />
+              </div>
+              <div>
+                <SectionLabel>Yama Etkisi</SectionLabel>
+                <PatchImpactWidget riotAccountId={primaryId} />
               </div>
             </div>
             <div className="space-y-4 lg:col-span-3">
