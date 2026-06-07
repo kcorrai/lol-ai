@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +31,7 @@ const PRO_FEATURES = [
   "Öncelikli AI işleme",
 ];
 
-export default function BillingPage() {
+function BillingPageContent() {
   const { data: sub, isLoading } = useSubscription();
   const searchParams = useSearchParams();
   const period = searchParams.get("period") === "annual" ? "annual" : "monthly";
@@ -169,5 +170,13 @@ export default function BillingPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function BillingPage() {
+  return (
+    <Suspense>
+      <BillingPageContent />
+    </Suspense>
   );
 }
