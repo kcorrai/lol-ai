@@ -32,9 +32,23 @@ const PRO_EXCLUSIVE_FEATURES = [
   { label: "Sesli Koçluk (TTS)" },
 ];
 
+const TEAM_BASE_FEATURES = [
+  { label: "Tüm Pro özellikleri" },
+  { label: "5'e kadar takım oluşturma" },
+  { label: "50 üyeye kadar takım" },
+];
+
+const TEAM_EXCLUSIVE_FEATURES = [
+  { label: "Takım performans panosu" },
+  { label: "Coach / Oyuncu rolleri" },
+  { label: "E-posta ile üye daveti" },
+  { label: "Toplu üye analizi" },
+];
+
 const MONTHLY_PRICE = "$9.99";
 const ANNUAL_PRICE_PER_MONTH = "$8.33";
 const ANNUAL_TOTAL = "$99.90";
+const TEAM_PRICE = "$29.99";
 
 export function PricingContent() {
   const [isAnnual, setIsAnnual] = useState(false);
@@ -86,7 +100,7 @@ export function PricingContent() {
       </div>
 
       {/* Cards */}
-      <div className="mx-auto mb-20 grid max-w-3xl gap-8 md:grid-cols-2 md:items-start">
+      <div className="mx-auto mb-20 grid max-w-5xl gap-8 md:grid-cols-3 md:items-start">
         <PricingCard
           plan="free"
           name="Free"
@@ -106,6 +120,17 @@ export function PricingContent() {
           proFeatures={PRO_EXCLUSIVE_FEATURES}
           cta={proCtaLabel}
           ctaHref={proCtaHref}
+        />
+        <PricingCard
+          plan="team"
+          name="Team"
+          price={TEAM_PRICE}
+          period="/ay"
+          description="Takımlarını analiz et, koçluk yap."
+          features={TEAM_BASE_FEATURES}
+          proFeatures={TEAM_EXCLUSIVE_FEATURES}
+          cta={`Team Başlat — ${TEAM_PRICE}/ay`}
+          ctaHref="/settings/billing"
         />
       </div>
 
