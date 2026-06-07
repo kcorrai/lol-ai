@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db/prisma";
+import { prismaReadonly } from "@/lib/db/prismaReadonly";
 
 export interface AdminMetrics {
   dau: number;
@@ -39,21 +39,21 @@ export async function getAdminMetrics(rangeDays: number = 30): Promise<AdminMetr
     achievementsInRange,
     challengesInRange,
   ] = await Promise.all([
-    prisma.user.count(),
-    prisma.subscription.count({ where: { plan: { in: ["pro", "elite"] }, status: { in: ["active", "trialing"] } } }),
+    prismaReadonly.user.count(),
+    prismaReadonly.subscription.count({ where: { plan: { in: ["pro", "elite"] }, status: { in: ["active", "trialing"] } } }),
     // DAU proxy: Riot accounts synced in last 24h → users who were active
-    prisma.riotAccount.groupBy({ by: ["userId"], where: { updatedAt: { gte: dayAgo } } }),
+    prismaReadonly.riotAccount.groupBy({ by: ["userId"], where: { updatedAt: { gte: dayAgo } } }),
     // MAU proxy: Riot accounts synced in last 30 days
-    prisma.riotAccount.groupBy({ by: ["userId"], where: { updatedAt: { gte: monthAgo } } }),
-    prisma.user.count({ where: { riotAccounts: { some: {} } } }),
-    prisma.user.count({ where: { riotAccounts: { some: { coachingReports: { some: {} } } } } }),
-    prisma.user.count({ where: { createdAt: { gte: week7Ago } } }),
-    prisma.coachingReport.count({ where: { createdAt: { gte: rangeStart } } }),
-    prisma.aiAnalysis.count({ where: { createdAt: { gte: rangeStart } } }),
-    prisma.seasonRecap.count({ where: { generatedAt: { gte: rangeStart } } }),
-    prisma.matchParticipant.count({ where: { match: { gameStart: { gte: rangeStart } } } }),
-    prisma.userAchievement.count({ where: { earnedAt: { gte: rangeStart } } }),
-    prisma.userChallenge.count({ where: { completedAt: { gte: rangeStart }, completed: true } }),
+    prismaReadonly.riotAccount.groupBy({ by: ["userId"], where: { updatedAt: { gte: monthAgo } } }),
+    prismaReadonly.user.count({ where: { riotAccounts: { some: {} } } }),
+    prismaReadonly.user.count({ where: { riotAccounts: { some: { coachingReports: { some: {} } } } } }),
+    prismaReadonly.user.count({ where: { createdAt: { gte: week7Ago } } }),
+    prismaReadonly.coachingReport.count({ where: { createdAt: { gte: rangeStart } } }),
+    prismaReadonly.aiAnalysis.count({ where: { createdAt: { gte: rangeStart } } }),
+    prismaReadonly.seasonRecap.count({ where: { generatedAt: { gte: rangeStart } } }),
+    prismaReadonly.matchParticipant.count({ where: { match: { gameStart: { gte: rangeStart } } } }),
+    prismaReadonly.userAchievement.count({ where: { earnedAt: { gte: rangeStart } } }),
+    prismaReadonly.userChallenge.count({ where: { completedAt: { gte: rangeStart }, completed: true } }),
   ]);
 
   const conversionRate = totalUsers > 0 ? Math.round((proUserCount / totalUsers) * 1000) / 10 : 0;

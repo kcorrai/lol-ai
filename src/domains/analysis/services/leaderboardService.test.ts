@@ -1,13 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { getLeaderboard } from "./leaderboardService";
 
-vi.mock("@/lib/db/prisma", () => ({
-  prisma: {
+vi.mock("@/lib/db/prismaReadonly", () => ({
+  prismaReadonly: {
     rankedHistory: { findMany: vi.fn() },
   },
 }));
 
-import { prisma } from "@/lib/db/prisma";
+import { prismaReadonly as prisma } from "@/lib/db/prismaReadonly";
 
 function makeEntry(overrides: {
   riotAccountId: string;

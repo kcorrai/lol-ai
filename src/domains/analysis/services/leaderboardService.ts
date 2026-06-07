@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db/prisma";
+import { prismaReadonly } from "@/lib/db/prismaReadonly";
 
 const TIER_ORDER: Record<string, number> = {
   IRON: 0, BRONZE: 1, SILVER: 2, GOLD: 3, PLATINUM: 4,
@@ -30,7 +30,7 @@ export async function getLeaderboard(period: "week" | "month" = "week"): Promise
   const since = new Date();
   since.setDate(since.getDate() - (period === "week" ? 7 : 30));
 
-  const history = await prisma.rankedHistory.findMany({
+  const history = await prismaReadonly.rankedHistory.findMany({
     where: {
       recordedAt: { gte: since },
       queueType: "RANKED_SOLO_5x5",
