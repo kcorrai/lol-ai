@@ -23,26 +23,28 @@ async function fetchDiscordSettings(): Promise<DiscordSettings | null> {
   return json.data;
 }
 
+async function extractError(res: Response, fallback: string): Promise<never> {
+  const json = await res.json().catch(() => null) as { error?: { message?: string } } | null;
+  throw new Error(json?.error?.message ?? fallback);
+}
+
 async function saveDiscordSettings(payload: SavePayload): Promise<void> {
   const res = await fetch("/api/settings/discord", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error("Failed to save Discord settings");
+  if (!res.ok) await extractError(res, "Kayıt başarısız");
 }
 
 async function deleteDiscordIntegration(): Promise<void> {
   const res = await fetch("/api/settings/discord", { method: "DELETE" });
-  if (!res.ok) throw new Error("Failed to remove Discord integration");
+  if (!res.ok) await extractError(res, "Kaldırma başarısız");
 }
 
 async function sendTestMessage(): Promise<void> {
   const res = await fetch("/api/settings/discord/test", { method: "POST" });
-  if (!res.ok) {
-    const json = await res.json() as { message?: string };
-    throw new Error(json.message ?? "Test failed");
-  }
+  if (!res.ok) await extractError(res, "Test başarısız");
 }
 
 export function useDiscordSettings() {
