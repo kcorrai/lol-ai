@@ -30,6 +30,10 @@ export async function setCached(
   });
 }
 
+export async function deleteCached(cacheKey: string): Promise<void> {
+  await prisma.aiCache.deleteMany({ where: { cacheKey } }).catch(() => undefined);
+}
+
 export async function incrementHit(cacheKey: string): Promise<void> {
   await prisma.aiCache
     .update({ where: { cacheKey }, data: { hitCount: { increment: 1 } } })

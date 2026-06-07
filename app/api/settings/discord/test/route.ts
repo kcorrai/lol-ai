@@ -17,7 +17,14 @@ export const POST = withAuth(async (_req, { userId }) => {
 
   if (!integration) throw Errors.notFound("Discord integration");
 
-  const webhookUrl = decryptString(integration.webhookUrl);
+  let webhookUrl: string;
+  try {
+    webhookUrl = decryptString(integration.webhookUrl);
+  } catch {
+    throw Errors.validation(
+      "Discord entegrasyonu şu an devre dışı. DISCORD_ENCRYPTION_KEY environment variable'ı ayarlanmamış."
+    );
+  }
   await sendDiscordWebhook(webhookUrl, testEmbed());
 
   return apiSuccess({ ok: true });

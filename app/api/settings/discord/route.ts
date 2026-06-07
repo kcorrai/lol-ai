@@ -45,7 +45,14 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
     throw Errors.validation("webhookUrl must be a valid Discord webhook URL");
   }
 
-  const encrypted = encryptString(b.webhookUrl);
+  let encrypted: string;
+  try {
+    encrypted = encryptString(b.webhookUrl);
+  } catch {
+    throw Errors.validation(
+      "Discord entegrasyonu şu an devre dışı. Yönetici DISCORD_ENCRYPTION_KEY environment variable'ını ayarlamalı."
+    );
+  }
 
   await prisma.discordIntegration.upsert({
     where: { userId },

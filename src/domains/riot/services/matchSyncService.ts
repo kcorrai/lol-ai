@@ -3,6 +3,7 @@ import { logger } from "@/lib/utils/logger";
 import { Errors } from "@/lib/api/errors";
 import { isDataStale, invalidateAccountCache } from "@/lib/riot/lifecycle";
 import { inngest } from "@/inngest/client";
+import { deleteCached, buildCacheKey } from "@/lib/ai/aiCache";
 import {
   getMatchIds,
   getMatch,
@@ -352,6 +353,16 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
       data: { riotAccountId: account.id, userId: account.userId },
     })
     .catch((err) => logger.warn("[sync] Failed to fire challenge/check-progress event", err));
+
+  // Bust matchup-matrix cache for all position variants so stale empty results don't persist
+  if (newCount > 0) {
+    const positions = ["all", "TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"];
+    await Promise.all(
+      positions.map((pos) =>
+        deleteCached(buildCacheKey("matchup-matrix", { riotAccountId: account.id, position: pos }))
+      )
+    ).catch((err) => logger.warn("[sync] Cache bust failed", err));
+  }
 
   logger.info(
     `[sync] Done: +${newCount} new, ${skipped} skipped, ${errors.length} errors, ranked=${rankedSnapshotted}`

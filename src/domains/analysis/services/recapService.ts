@@ -20,9 +20,9 @@ export interface RecapData {
 }
 
 function seasonStart(): Date {
-  const now = new Date();
-  const year = now.getFullYear();
-  return new Date(now.getMonth() < 6 ? `${year}-01-01` : `${year}-07-01`);
+  const d = new Date();
+  d.setDate(d.getDate() - 180);
+  return d;
 }
 
 export function currentSeasonLabel(): string {

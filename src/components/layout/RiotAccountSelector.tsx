@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { ChevronDown, Gamepad2 } from "lucide-react";
+import { ChevronDown, Gamepad2, RefreshCw } from "lucide-react";
 import { profileIconUrl } from "@/lib/ddragon";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
+import { useSyncAccount } from "@/hooks/useSyncAccount";
 import { useUIStore } from "@/lib/stores/uiStore";
 import { cn } from "@/lib/utils";
 
@@ -26,11 +26,12 @@ function SummonerAvatar({ iconId, size = 20 }: { iconId: number; size?: number }
 }
 
 export function RiotAccountSelector() {
-  const pathname = usePathname();
   const { data: accounts = [] } = useRiotAccounts();
   const activeId = useUIStore((s) => s.activeRiotAccountId);
   const setActiveId = useUIStore((s) => s.setActiveRiotAccountId);
+  const { mutate: syncAccount, isPending: isSyncing } = useSyncAccount();
   const [open, setOpen] = useState(false);
+  const [syncMsg, setSyncMsg] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -50,7 +51,20 @@ export function RiotAccountSelector() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  if (pathname !== "/dashboard" || accounts.length === 0) return null;
+  if (accounts.length === 0) return null;
+
+  function handleSync() {
+    const id = activeId ?? accounts[0]?.id;
+    if (!id) return;
+    setSyncMsg(null);
+    syncAccount(id, {
+      onSuccess: (r) => {
+        setSyncMsg(`+${r.newMatches ?? 0} maç`);
+        setTimeout(() => setSyncMsg(null), 3000);
+      },
+      onError: () => setSyncMsg("Hata"),
+    });
+  }
 
   const active = accounts.find((a) => a.id === activeId) ?? accounts[0];
 
@@ -97,6 +111,17 @@ export function RiotAccountSelector() {
                 )}
               </button>
             ))}
+          </div>
+          <div className="border-t border-border p-1">
+            <button
+              onClick={() => { handleSync(); setOpen(false); }}
+              disabled={isSyncing}
+              className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-sm text-text-muted transition-colors hover:bg-surface-2 hover:text-text disabled:opacity-50"
+            >
+              <RefreshCw className={cn("h-3.5 w-3.5", isSyncing && "animate-spin")} />
+              {isSyncing ? "Yenileniyor…" : "Veriyi Yenile"}
+              {syncMsg && <span className="ml-auto text-xs text-accent">{syncMsg}</span>}
+            </button>
           </div>
         </div>
       )}

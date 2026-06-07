@@ -25,7 +25,7 @@ function ProgressBar({ current, total }: { current: number; total: number }) {
   );
 }
 
-function useRecapSlides(data: RecapData, gameName: string, active: number) {
+function buildRecapSlides(data: RecapData, gameName: string, active: number) {
   const slides = [
     { label: "Karşılama", bg: "bg-background" },
     { label: "Büyük Sayılar", bg: "bg-surface" },
@@ -182,7 +182,7 @@ export default function RecapPage() {
 
   const gameName = primaryAccount ? `${primaryAccount.gameName}#${primaryAccount.tagLine}` : "Summoner";
 
-  const { contents } = recap ? useRecapSlides(recap.data, gameName, slide) : { contents: [] }; // eslint-disable-line react-hooks/rules-of-hooks
+  const { contents } = recap ? buildRecapSlides(recap.data, gameName, slide) : { contents: [] };
 
   if (isPending || (!recap && !error)) {
     return (

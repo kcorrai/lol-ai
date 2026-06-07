@@ -19,6 +19,11 @@ export function useSyncAccount() {
     onSuccess: (_, riotAccountId) => {
       queryClient.invalidateQueries({ queryKey: ["riot-accounts"] });
       queryClient.invalidateQueries({ queryKey: ["performance-profile", riotAccountId] });
+      queryClient.invalidateQueries({ queryKey: ["match-history", riotAccountId] });
+      queryClient.invalidateQueries({ queryKey: ["champion-pool", riotAccountId] });
+      queryClient.invalidateQueries({ queryKey: ["matchup-matrix", riotAccountId] });
+      queryClient.invalidateQueries({ queryKey: ["ranked-history", riotAccountId] });
+      queryClient.invalidateQueries({ queryKey: ["patch-impact", riotAccountId] });
     },
   });
 }
