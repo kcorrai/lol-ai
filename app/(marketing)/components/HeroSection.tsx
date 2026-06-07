@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 function DashboardMockup() {
   return (
@@ -88,13 +89,13 @@ export function HeroSection() {
         {/* Gold center glow */}
         <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/6 blur-[100px]" />
         {/* Right champion splash art — Ahri, very faint */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ahri_0.jpg"
-          alt="" aria-hidden
-          className="absolute right-0 top-0 h-full w-1/2 object-cover object-left opacity-[0.06]"
-          style={{ filter: "blur(1px) saturate(0.3)", maskImage: "linear-gradient(to left, transparent 0%, rgba(0,0,0,0.6) 40%, transparent 100%)" }}
-        />
+        <div className="absolute right-0 top-0 h-full w-1/2">
+          <Image fill alt="" aria-hidden
+            src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ahri_0.jpg"
+            className="object-cover object-left opacity-[0.06]"
+            style={{ filter: "blur(1px) saturate(0.3)", maskImage: "linear-gradient(to left, transparent 0%, rgba(0,0,0,0.6) 40%, transparent 100%)" }}
+          />
+        </div>
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6">

@@ -109,7 +109,7 @@ describe("getLeaderboard", () => {
 
     const result = await getLeaderboard("week");
 
-    expect(result[0].riotAccountId ?? result[0].displayName).toBeTruthy();
+    expect(result[0].displayName).toBeTruthy();
     expect(result[0].lpGained).toBeGreaterThan(result[1].lpGained);
   });
 

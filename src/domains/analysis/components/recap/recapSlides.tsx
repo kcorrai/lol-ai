@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { BarChart2, Trophy, TrendingUp, Zap, MessageCircle } from "lucide-react";
 import { RecapSlide } from "./RecapSlide";
 import { RecapStats } from "./RecapStats";
@@ -29,9 +30,8 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
   return [
     // 0 — Welcome
     <div key={0} className={`absolute inset-0 overflow-hidden transition-opacity duration-500 ${active === 0 ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={splashUrl(data.topChampion.name)} alt="" aria-hidden
-        className="absolute inset-0 h-full w-full object-cover object-top"
+      <Image fill alt="" aria-hidden src={splashUrl(data.topChampion.name)}
+        className="object-cover object-top"
         style={{ opacity: 0.35, filter: "saturate(0.7)" }} />
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/20" />
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -128,8 +128,7 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
               boxShadow: i === 0 ? "0 0 28px rgba(200,155,60,0.15), inset 0 1px 0 rgba(255,255,255,0.06)" : undefined,
             }}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={championIconUrl(c.name)} alt={c.name} width={56} height={56}
+            <Image src={championIconUrl(c.name)} alt={c.name} width={56} height={56}
               className="rounded-xl ring-1 ring-border" style={{ imageRendering: "auto" }} />
             <p className="text-xs font-bold text-text">{c.name}</p>
             <p className={`text-[11px] font-semibold ${c.winRate >= 50 ? "text-success" : "text-danger"}`}>
@@ -224,9 +223,8 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
 
     // 8 — Next Season
     <div key={8} className={`absolute inset-0 overflow-hidden transition-opacity duration-500 ${active === 8 ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={loadingUrl(data.topChampion.name)} alt="" aria-hidden
-        className="absolute inset-0 h-full w-full object-cover object-top"
+      <Image fill alt="" aria-hidden src={loadingUrl(data.topChampion.name)}
+        className="object-cover object-top"
         style={{ opacity: 0.2, filter: "saturate(0.5) blur(1px)" }} />
       <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/75 to-surface/30" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-surface to-transparent" />

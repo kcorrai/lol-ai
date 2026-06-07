@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Trophy, Lock, Share2 } from "lucide-react";
 import { useAchievements } from "@/hooks/useAchievements";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
@@ -101,9 +102,8 @@ export default function AchievementsPage() {
     <div className="mx-auto max-w-4xl space-y-8 p-6">
       {/* Header — cinematic banner */}
       <div className="relative overflow-hidden rounded-2xl border border-border">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={championSplashUrl("Jinx")} alt="" aria-hidden
-          className="absolute inset-0 h-full w-full object-cover object-[40%_20%] opacity-[0.2]"
+        <Image fill alt="" aria-hidden src={championSplashUrl("Jinx")}
+          className="object-cover object-[40%_20%] opacity-[0.2]"
           style={{ filter: "blur(2px) saturate(0.5)" }} />
         <div className="absolute inset-0 bg-gradient-to-r from-surface/95 via-surface/80 to-transparent" />
         <div className="relative flex items-center gap-4 p-5">

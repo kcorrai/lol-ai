@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { profileIconUrl, championSplashUrl } from "@/lib/ddragon";
 import { Button } from "@/components/ui/button";
@@ -73,9 +73,8 @@ export default function DashboardPage() {
           <div className="relative overflow-hidden rounded-2xl border border-border">
             {featuredChamp && (
               <>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={championSplashUrl(featuredChamp)} alt="" aria-hidden
-                  className="absolute inset-0 h-full w-full object-cover object-[60%_15%] opacity-[0.18]"
+                <Image fill alt="" aria-hidden src={championSplashUrl(featuredChamp)}
+                  className="object-cover object-[60%_15%] opacity-[0.18]"
                   style={{ filter: "blur(2px) saturate(0.55)" }} />
                 <div className="absolute inset-0 bg-gradient-to-r from-surface/95 via-surface/75 to-transparent" />
               </>

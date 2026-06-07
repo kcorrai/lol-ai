@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import type { DeathPoint } from "@/domains/analysis/services/heatmapService";
 import { DDRAGON_VERSION } from "@/lib/ddragon";
 
@@ -39,8 +40,7 @@ export function DeathHeatMap({ deaths, isLoading, summary }: Props) {
         style={{ width: DISPLAY_SIZE, height: DISPLAY_SIZE }}
       >
         {/* Map background */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={MAP_IMG}
           alt="Summoner's Rift"
           width={DISPLAY_SIZE}

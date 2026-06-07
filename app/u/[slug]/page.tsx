@@ -66,12 +66,9 @@ export default async function PublicProfilePage({ params }: Props) {
           {/* Champion splash bg */}
           {splashUrl && (
             <>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image fill alt="" aria-hidden
                 src={splashUrl}
-                alt=""
-                aria-hidden
-                className="absolute inset-0 h-full w-full object-cover object-[60%_15%] opacity-[0.15]"
+                className="object-cover object-[60%_15%] opacity-[0.15]"
                 style={{ filter: "blur(2px) saturate(0.5)" }}
               />
               <div className="absolute inset-0 bg-gradient-to-b from-surface/60 via-surface/80 to-surface/98" />
@@ -144,8 +141,7 @@ export default async function PublicProfilePage({ params }: Props) {
                   {profile.topChampions.map((c, i) => (
                     <div key={c.name} className="flex items-center gap-3">
                       <span className="w-4 shrink-0 text-xs text-text-muted/40 font-medium">{i + 1}</span>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
+                      <Image
                         src={`https://ddragon.leagueoflegends.com/cdn/14.24.1/img/champion/${c.name}.png`}
                         alt={c.name}
                         width={32}

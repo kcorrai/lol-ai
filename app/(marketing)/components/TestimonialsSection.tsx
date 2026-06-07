@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Share2, TrendingUp, Zap } from "lucide-react";
 
 const HIGHLIGHTS = [
@@ -54,11 +55,9 @@ export function TestimonialsSection() {
 
         {/* CTA panel with champion splash atmosphere */}
         <div className="relative overflow-hidden rounded-2xl text-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image fill alt="" aria-hidden
             src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Lux_0.jpg"
-            alt="" aria-hidden
-            className="absolute inset-0 h-full w-full object-cover object-[50%_20%] opacity-[0.08]"
+            className="object-cover object-[50%_20%] opacity-[0.08]"
             style={{ filter: "blur(2px) saturate(0.4)" }}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-surface/80 via-surface/90 to-surface/95" />
