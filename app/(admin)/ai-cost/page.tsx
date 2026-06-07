@@ -25,51 +25,51 @@ export default async function AiCostPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-bold text-text">AI Cost Dashboard</h1>
+        <h1 className="font-display text-2xl font-bold text-text">AI Maliyet Paneli</h1>
         <p className="mt-1 text-sm text-text-muted">
-          Aggregated from <code className="text-xs">ai_analyses</code> table
+          <code className="text-xs">ai_analyses</code> tablosundan toplanan veriler
         </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          label="Today"
+          label="Bugün"
           value={`$${data.todayCostUsd.toFixed(4)}`}
-          sub={`${data.todayTokens.toLocaleString()} tokens`}
+          sub={`${data.todayTokens.toLocaleString()} token`}
         />
         <StatCard
-          label="This Month"
+          label="Bu Ay"
           value={`$${data.monthCostUsd.toFixed(4)}`}
         />
         <StatCard
-          label="Cache Hit Rate"
+          label="Önbellek İsabet Oranı"
           value={`${data.todayCacheHitRate}%`}
-          sub="Today"
+          sub="Bugün"
         />
         <StatCard
-          label="Avg Latency"
+          label="Ort. Gecikme"
           value={`${data.avgLatencyMs}ms`}
-          sub={`${data.totalCalls} total calls`}
+          sub={`${data.totalCalls} toplam istek`}
         />
       </div>
 
       <div>
-        <h2 className="mb-3 text-sm font-semibold text-text">Usage by Model</h2>
+        <h2 className="mb-3 text-sm font-semibold text-text">Modele Göre Kullanım</h2>
         <div className="overflow-hidden rounded-lg border border-border">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-surface-2">
                 <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Model</th>
-                <th className="px-4 py-2 text-right text-xs font-medium text-text-muted">Calls</th>
-                <th className="px-4 py-2 text-right text-xs font-medium text-text-muted">Tokens</th>
-                <th className="px-4 py-2 text-right text-xs font-medium text-text-muted">Cost</th>
+                <th className="px-4 py-2 text-right text-xs font-medium text-text-muted">İstek</th>
+                <th className="px-4 py-2 text-right text-xs font-medium text-text-muted">Token</th>
+                <th className="px-4 py-2 text-right text-xs font-medium text-text-muted">Maliyet</th>
               </tr>
             </thead>
             <tbody>
               {data.byModel.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="px-4 py-6 text-center text-xs text-text-muted">
-                    No data yet
+                    Henüz veri yok
                   </td>
                 </tr>
               ) : (
@@ -92,22 +92,22 @@ export default async function AiCostPage() {
       </div>
 
       <div>
-        <h2 className="mb-3 text-sm font-semibold text-text">Most Expensive Calls</h2>
+        <h2 className="mb-3 text-sm font-semibold text-text">En Pahalı İstekler</h2>
         <div className="overflow-hidden rounded-lg border border-border">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-surface-2">
-                <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Report</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Rapor</th>
                 <th className="px-4 py-2 text-left text-xs font-medium text-text-muted">Model</th>
-                <th className="px-4 py-2 text-right text-xs font-medium text-text-muted">Cost</th>
-                <th className="px-4 py-2 text-right text-xs font-medium text-text-muted">Date</th>
+                <th className="px-4 py-2 text-right text-xs font-medium text-text-muted">Maliyet</th>
+                <th className="px-4 py-2 text-right text-xs font-medium text-text-muted">Tarih</th>
               </tr>
             </thead>
             <tbody>
               {data.topReports.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="px-4 py-6 text-center text-xs text-text-muted">
-                    No data yet
+                    Henüz veri yok
                   </td>
                 </tr>
               ) : (
