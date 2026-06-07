@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getAiCostSummary } from "@/domains/admin/services/aiCostService";
 
 function StatCard({
@@ -129,6 +130,11 @@ export default async function AiCostPage() {
           </table>
         </div>
       </div>
+
+      <p className="text-xs text-text-muted">
+        Büyüme metriklerine bak:{" "}
+        <Link href="/analytics" className="text-accent hover:underline">Büyüme Analitiği →</Link>
+      </p>
     </div>
   );
 }
