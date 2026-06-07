@@ -87,7 +87,7 @@ export default function ImprovementPage() {
   const historyEntries = Array.isArray(history) ? (history as PlanHistoryEntry[]) : [];
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto max-w-2xl space-y-10 px-4 py-8">
       <PageHeader
         title="Gelişim Takibi"
         subtitle="AI koçunun verdiği hedefleri gerçekleştiriyor musun?"
@@ -95,7 +95,7 @@ export default function ImprovementPage() {
       />
 
       {/* Active plan */}
-      <section className="space-y-3">
+      <section className="space-y-4">
         <SectionHeader
           icon={<span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" /><span className="relative inline-flex h-2 w-2 rounded-full bg-accent" /></span>}
           label="Aktif Plan"
@@ -104,7 +104,7 @@ export default function ImprovementPage() {
       </section>
 
       {/* History */}
-      <section className="space-y-3">
+      <section className="space-y-4">
         <SectionHeader
           icon={<History className="h-3.5 w-3.5" />}
           label="Geçmiş Planlar"
@@ -114,19 +114,19 @@ export default function ImprovementPage() {
         />
 
         {historyLoading ? (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {[0, 1, 2].map((i) => (
               <div key={i} className="h-20 animate-pulse rounded-xl border border-border bg-surface" />
             ))}
           </div>
         ) : historyEntries.length === 0 ? (
-          <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-border bg-surface/50 py-10 text-center">
+          <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border bg-surface/50 py-12 text-center">
             <History className="h-8 w-8 text-text-muted/40" />
             <p className="text-sm font-medium text-text-muted">Henüz tamamlanmış plan yok</p>
             <p className="text-xs text-text-muted/60">Aktif planını tamamladıktan sonra burada görünecek.</p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {historyEntries.map((entry) => (
               <PlanHistoryCard key={entry.id} entry={entry} />
             ))}
@@ -134,7 +134,7 @@ export default function ImprovementPage() {
         )}
 
         {!isPro && historyEntries.length > 0 && (
-          <p className="pt-1 text-center text-xs text-text-muted">
+          <p className="pt-2 text-center text-xs text-text-muted">
             Sınırsız plan geçmişi için{" "}
             <Link href="/settings/subscription" className="text-accent hover:underline">Pro&apos;ya geç</Link>
           </p>
