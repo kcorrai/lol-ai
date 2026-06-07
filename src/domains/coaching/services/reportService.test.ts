@@ -12,7 +12,7 @@ vi.mock("@/lib/db/prisma", () => ({
 }));
 
 import { prisma } from "@/lib/db/prisma";
-import { generateShareToken, getPublicReport } from "./reportService";
+import { generateShareToken, getPublicReport, getReportStatus } from "./reportService";
 
 const mockPrisma = prisma as unknown as {
   coachingReport: {
@@ -80,6 +80,35 @@ describe("generateShareToken", () => {
 
     await expect(generateShareToken("report-pending", "user-1")).rejects.toMatchObject({
       code: "RESOURCE_NOT_FOUND",
+    });
+  });
+});
+
+// ── getReportStatus ───────────────────────────────────────────────────────────
+
+describe("getReportStatus", () => {
+  it("rapor pending durumundayken status döndürüyor", async () => {
+    mockPrisma.coachingReport.findFirst.mockResolvedValue({ id: "report-1", status: "pending" });
+
+    const result = await getReportStatus("report-1", "user-1");
+
+    expect(result.status).toBe("pending");
+  });
+
+  it("rapor complete durumundayken status döndürüyor", async () => {
+    mockPrisma.coachingReport.findFirst.mockResolvedValue({ id: "report-1", status: "complete" });
+
+    const result = await getReportStatus("report-1", "user-1");
+
+    expect(result.status).toBe("complete");
+  });
+
+  it("rapor bulunamadığında 404 fırlatıyor", async () => {
+    mockPrisma.coachingReport.findFirst.mockResolvedValue(null);
+
+    await expect(getReportStatus("report-999", "user-1")).rejects.toMatchObject({
+      code: "RESOURCE_NOT_FOUND",
+      statusCode: 404,
     });
   });
 });
