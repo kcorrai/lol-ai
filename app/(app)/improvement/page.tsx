@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, History } from "lucide-react";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -13,63 +13,46 @@ import type { PlanHistoryEntry } from "@/domains/analysis/services/improvementPl
 import { cn } from "@/lib/utils";
 
 function PlanHistoryCard({ entry }: { entry: PlanHistoryEntry }) {
-  const date = new Date(entry.createdAt).toLocaleDateString("tr-TR", {
-    day: "numeric",
-    month: "short",
-  });
-  const exDate = new Date(entry.expiresAt).toLocaleDateString("tr-TR", {
-    day: "numeric",
-    month: "short",
-  });
-  const scoreColor =
-    entry.weeklyScore >= 66
-      ? "text-green-400"
-      : entry.weeklyScore >= 33
-      ? "text-yellow-400"
-      : "text-red-400";
+  const date = new Date(entry.createdAt).toLocaleDateString("tr-TR", { day: "numeric", month: "short" });
+  const exDate = new Date(entry.expiresAt).toLocaleDateString("tr-TR", { day: "numeric", month: "short" });
+  const score = entry.weeklyScore;
+  const scoreColor = score >= 66 ? "text-success" : score >= 33 ? "text-warning" : "text-danger";
+  const barColor = score >= 66 ? "bg-success" : score >= 33 ? "bg-warning" : "bg-danger/60";
   const isActive = entry.status === "active";
 
   return (
-    <div
-      className={cn(
-        "rounded-xl border bg-surface p-4",
-        isActive ? "border-indigo-500/40" : "border-border"
-      )}
-    >
-      <div className="flex items-center justify-between mb-3">
+    <div className={cn("rounded-xl border bg-surface p-4", isActive ? "border-accent/30" : "border-border")}>
+      <div className="mb-3 flex items-center justify-between">
         <div>
-          <p className="text-sm font-semibold text-text">
-            {date} — {exDate}
-          </p>
-          <p className="text-xs text-text-muted mt-0.5">
+          <p className="text-sm font-semibold text-text">{date} — {exDate}</p>
+          <p className="mt-0.5 text-xs text-text-muted">
             {entry.completedCount}/{entry.totalTargets} hedef tamamlandı
           </p>
         </div>
         <div className="flex items-center gap-2">
           {isActive && (
-            <span className="text-xs font-medium text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full">
+            <span className="rounded-full border border-accent/30 bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent">
               Aktif
             </span>
           )}
-          <span className={cn("text-lg font-bold", scoreColor)}>
-            {entry.weeklyScore}/100
-          </span>
+          <span className={cn("text-xl font-bold tabular-nums", scoreColor)}>{score}</span>
         </div>
       </div>
-
-      <div className="h-1.5 rounded-full bg-border overflow-hidden">
-        <div
-          className={cn(
-            "h-full rounded-full transition-all",
-            entry.weeklyScore >= 66
-              ? "bg-green-500"
-              : entry.weeklyScore >= 33
-              ? "bg-yellow-500"
-              : "bg-red-500/60"
-          )}
-          style={{ width: `${entry.weeklyScore}%` }}
-        />
+      <div className="h-1.5 overflow-hidden rounded-full bg-surface-2">
+        <div className={cn("h-full rounded-full transition-all", barColor)} style={{ width: `${score}%` }} />
       </div>
+    </div>
+  );
+}
+
+function SectionHeader({ icon, label, badge }: { icon: React.ReactNode; label: string; badge?: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-2.5">
+      <div className="flex h-6 w-6 items-center justify-center rounded-md bg-surface-2 text-text-muted">
+        {icon}
+      </div>
+      <h2 className="text-xs font-semibold uppercase tracking-widest text-text-muted">{label}</h2>
+      {badge}
     </div>
   );
 }
@@ -77,11 +60,9 @@ function PlanHistoryCard({ entry }: { entry: PlanHistoryEntry }) {
 export default function ImprovementPage() {
   const { data: accounts, isLoading: accountsLoading } = useRiotAccounts();
   const { data: subscription } = useSubscription();
-
   const primaryAccount = accounts?.find((a) => a.isPrimary) ?? accounts?.[0];
   const riotAccountId = primaryAccount?.id ?? null;
   const isPro = subscription?.plan === "pro" || subscription?.plan === "elite";
-
   const { data: history, isLoading: historyLoading } = usePlanHistory(riotAccountId);
 
   if (accountsLoading) return <PageSkeleton />;
@@ -94,10 +75,7 @@ export default function ImprovementPage() {
           title="Riot hesabı bağlı değil"
           description="Gelişim planı oluşturmak için önce Riot hesabını bağla."
           action={
-            <Link
-              href="/settings/accounts"
-              className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90"
-            >
+            <Link href="/settings/accounts" className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90">
               Hesap Bağla
             </Link>
           }
@@ -109,38 +87,44 @@ export default function ImprovementPage() {
   const historyEntries = Array.isArray(history) ? (history as PlanHistoryEntry[]) : [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <PageHeader
         title="Gelişim Takibi"
         subtitle="AI koçunun verdiği hedefleri gerçekleştiriyor musun?"
-        action={
-          <TrendingUp className="h-5 w-5 text-text-muted" aria-hidden />
-        }
+        action={<TrendingUp className="h-5 w-5 text-text-muted" aria-hidden />}
       />
 
-      <section className="space-y-2">
-        <h2 className="text-xs font-semibold uppercase tracking-widest text-text-muted">
-          Aktif Plan
-        </h2>
+      {/* Active plan */}
+      <section className="space-y-3">
+        <SectionHeader
+          icon={<span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" /><span className="relative inline-flex h-2 w-2 rounded-full bg-accent" /></span>}
+          label="Aktif Plan"
+        />
         <ImprovementPlanWidget riotAccountId={riotAccountId} />
       </section>
 
+      {/* History */}
       <section className="space-y-3">
-        <h2 className="text-xs font-semibold uppercase tracking-widest text-text-muted">
-          Geçmiş Planlar
-        </h2>
+        <SectionHeader
+          icon={<History className="h-3.5 w-3.5" />}
+          label="Geçmiş Planlar"
+          badge={historyEntries.length > 0 ? (
+            <span className="rounded-full bg-surface-2 px-2 py-0.5 text-xs text-text-muted">{historyEntries.length}</span>
+          ) : undefined}
+        />
 
         {historyLoading ? (
           <div className="space-y-3">
             {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className="h-20 rounded-xl border border-border bg-surface animate-pulse"
-              />
+              <div key={i} className="h-20 animate-pulse rounded-xl border border-border bg-surface" />
             ))}
           </div>
         ) : historyEntries.length === 0 ? (
-          <p className="text-sm text-text-muted">Henüz tamamlanmış plan yok.</p>
+          <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-border bg-surface/50 py-10 text-center">
+            <History className="h-8 w-8 text-text-muted/40" />
+            <p className="text-sm font-medium text-text-muted">Henüz tamamlanmış plan yok</p>
+            <p className="text-xs text-text-muted/60">Aktif planını tamamladıktan sonra burada görünecek.</p>
+          </div>
         ) : (
           <div className="space-y-3">
             {historyEntries.map((entry) => (
@@ -150,11 +134,9 @@ export default function ImprovementPage() {
         )}
 
         {!isPro && historyEntries.length > 0 && (
-          <p className="text-xs text-text-muted text-center pt-2">
+          <p className="pt-1 text-center text-xs text-text-muted">
             Sınırsız plan geçmişi için{" "}
-            <Link href="/settings/subscription" className="text-indigo-400 hover:underline">
-              Pro&apos;ya geç
-            </Link>
+            <Link href="/settings/subscription" className="text-accent hover:underline">Pro&apos;ya geç</Link>
           </p>
         )}
       </section>
