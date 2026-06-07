@@ -39,11 +39,11 @@ export default function ChampionsPage() {
       <div className="mx-auto max-w-6xl p-6">
         <EmptyState
           icon={<Gamepad2 className="h-16 w-16" />}
-          title="No Riot Account Connected"
-          description="Connect your League of Legends account to see your champion stats."
+          title="Riot Hesabı Bağlı Değil"
+          description="Şampiyon istatistiklerini görmek için League of Legends hesabını bağla."
           action={
             <Link href="/settings/accounts">
-              <Button size="lg">Connect Account</Button>
+              <Button size="lg">Hesap Bağla</Button>
             </Link>
           }
         />
@@ -90,9 +90,9 @@ export default function ChampionsPage() {
       {activeTab === "pool" && best && !poolLoading && (
         <div className="mb-5 mt-2 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-accent/30 bg-accent/5 px-4 py-3 text-sm">
           <div>
-            <span className="font-medium text-accent">Best pick to climb:</span>{" "}
+            <span className="font-medium text-accent">Tırmanmak için en iyi seçim:</span>{" "}
             <span className="text-text">
-              {best.championName} — {best.winRate}% win rate over {best.gamesPlayed} games
+              {best.championName} — {best.gamesPlayed} maçta %{best.winRate} kazanma oranı
             </span>
           </div>
           <Button
@@ -116,16 +116,16 @@ export default function ChampionsPage() {
             className="shrink-0 gap-1.5"
           >
             <BarChart2 className="h-3.5 w-3.5" />
-            {generateReport.isPending ? "Generating…" : `Analyze ${best.championName}`}
+            {generateReport.isPending ? "Oluşturuluyor…" : `${best.championName} Analiz Et`}
           </Button>
         </div>
       )}
 
       {activeTab === "pool" && <p className="mb-4 text-xs text-text-muted">
-        Champions with 3+ Solo/Duo ranked games · Sorted by win rate
+        3+ Solo/Duo ranked maçı olan şampiyonlar · Kazanma oranına göre sıralanmış
         {!isPro && pool.length > FREE_CHAMPION_LIMIT && (
           <span className="ml-2 text-accent">
-            · Showing top {FREE_CHAMPION_LIMIT} of {pool.length}
+            · {pool.length} şampiyondan ilk {FREE_CHAMPION_LIMIT} gösteriliyor
           </span>
         )}
       </p>}
@@ -161,13 +161,13 @@ export default function ChampionsPage() {
               <Lock className="h-5 w-5 text-accent" />
             </div>
             <p className="mt-3 font-display text-base font-semibold text-text">
-              {lockedCount} more champion{lockedCount !== 1 ? "s" : ""} locked
+              {lockedCount} şampiyon kilitli
             </p>
             <p className="mt-1 text-xs text-text-muted">
-              Upgrade to Pro to see your full champion pool
+              Tüm şampiyon havuzunu görmek için Pro&apos;ya geç
             </p>
             <Link href="/settings/billing" className="mt-4">
-              <Button size="sm">Upgrade to Pro</Button>
+              <Button size="sm">Pro&apos;ya Geç</Button>
             </Link>
           </div>
         </div>
