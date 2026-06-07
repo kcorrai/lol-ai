@@ -75,7 +75,7 @@ export const sendRankChangeEmail = inngest.createFunction(
       return { skipped: "resend_not_configured" };
     }
 
-    const appUrl = process.env.NEXTAUTH_URL ?? "https://lol-ai-three.vercel.app";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTAUTH_URL ?? "https://lolaicoach.gg";
 
     const { subject, html } = buildRankChangeEmail({
       gameName: account.gameName,

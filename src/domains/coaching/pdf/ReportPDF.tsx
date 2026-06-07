@@ -292,7 +292,7 @@ export function ReportPDF({ data }: { data: ReportPDFData }) {
 
         {/* Footer */}
         <View style={styles.footer} fixed>
-          <Text style={styles.footerText}>LoL AI Coach — lol-ai-three.vercel.app</Text>
+          <Text style={styles.footerText}>LoL AI Coach — lolaicoach.gg</Text>
           <Text style={styles.footerText}>
             Generated {new Date(data.createdAt).toLocaleString()}
           </Text>

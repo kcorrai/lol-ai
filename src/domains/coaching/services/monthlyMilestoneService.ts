@@ -119,7 +119,7 @@ export async function sendMonthlyMilestoneReports(): Promise<{
         (user.subscription?.plan === "pro" || user.subscription?.plan === "elite") &&
         (user.subscription?.status === "active" || user.subscription?.status === "trialing");
 
-      const appUrl = process.env.NEXTAUTH_URL ?? "https://lol-ai-three.vercel.app";
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTAUTH_URL ?? "https://lolaicoach.gg";
 
       const { subject, html } = buildMonthlyMilestoneEmail({
         gameName: account.gameName,
@@ -138,6 +138,7 @@ export async function sendMonthlyMilestoneReports(): Promise<{
       });
 
       await emailClient.emails.send({ from: EMAIL_FROM, to: user.email, subject, html });
+      // Swallow unique-constraint errors from rare concurrent Inngest retries — email already sent.
       await prisma.webhookEvent.create({ data: { eventKey: idempotencyKey } }).catch(() => {});
 
       sent++;
