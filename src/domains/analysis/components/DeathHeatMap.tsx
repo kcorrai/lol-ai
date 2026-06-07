@@ -1,11 +1,12 @@
 "use client";
 
 import type { DeathPoint } from "@/domains/analysis/services/heatmapService";
+import { DDRAGON_VERSION } from "@/lib/ddragon";
 
 const LOL_MAP_W = 14820;
 const LOL_MAP_H = 14881;
 const DISPLAY_SIZE = 480;
-const MAP_IMG = "https://ddragon.leagueoflegends.com/cdn/img/map/map11.png";
+const MAP_IMG = `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/img/map/map11.png`;
 
 function toSvgX(x: number): number {
   return (x / LOL_MAP_W) * DISPLAY_SIZE;

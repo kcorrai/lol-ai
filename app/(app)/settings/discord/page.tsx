@@ -14,13 +14,13 @@ function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange: (
     <button
       disabled={disabled}
       onClick={() => onChange(!checked)}
-      className={`relative h-6 w-11 overflow-hidden rounded-full transition-colors focus:outline-none ${
+      className={`relative h-6 w-11 rounded-full transition-colors focus:outline-none ${
         checked ? "bg-accent" : "bg-surface-2"
       } ${disabled ? "opacity-50" : ""}`}
       role="switch"
       aria-checked={checked}
     >
-      <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? "translate-x-5" : "translate-x-0.5"}`} />
+      <span className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? "translate-x-5" : "translate-x-0"}`} />
     </button>
   );
 }
@@ -36,6 +36,7 @@ export default function DiscordSettingsPage() {
   const [notifyBadge, setNotifyBadge] = useState(false);
   const [notifyWeekly, setNotifyWeekly] = useState(true);
   const [testMsg, setTestMsg] = useState<string | null>(null);
+  const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
   useEffect(() => {
     if (data) {
@@ -46,8 +47,14 @@ export default function DiscordSettingsPage() {
   }, [data]);
 
   function handleSave() {
-    save.mutate({ webhookUrl, notifyRankUp, notifyBadge, notifyWeekly });
-    setWebhookUrl("");
+    setSaveMsg(null);
+    save.mutate(
+      { webhookUrl, notifyRankUp, notifyBadge, notifyWeekly },
+      {
+        onSuccess: () => { setWebhookUrl(""); setSaveMsg("✅ Webhook kaydedildi!"); },
+        onError: (e) => setSaveMsg(`❌ ${e instanceof Error ? e.message : "Kayıt başarısız"}`),
+      }
+    );
   }
 
   async function handleTest() {
@@ -92,6 +99,7 @@ export default function DiscordSettingsPage() {
         >
           {save.isPending ? "Kaydediliyor..." : "Kaydet"}
         </button>
+        {saveMsg && <p className="text-sm">{saveMsg}</p>}
       </div>
 
       {/* Notification preferences */}

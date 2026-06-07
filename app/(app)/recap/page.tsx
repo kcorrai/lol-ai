@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { ChevronLeft, ChevronRight, Copy, Check, Loader2 } from "lucide-react";
+import { ChevronRight, Copy, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RecapSlide } from "@/domains/analysis/components/recap/RecapSlide";
 import { RecapStats } from "@/domains/analysis/components/recap/RecapStats";
@@ -216,23 +216,27 @@ export default function RecapPage() {
       </div>
 
       {/* Navigation */}
-      <div className="shrink-0 flex items-center justify-between px-6 pb-6 pt-3">
-        <Button variant="secondary" size="sm" onClick={prev} disabled={slide === 0}>
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-
-        <Button variant="secondary" size="sm" onClick={copyLink}>
-          {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-          <span className="ml-1.5">{copied ? "Kopyalandı!" : "Paylaş"}</span>
-        </Button>
-
-        {slide < TOTAL_SLIDES - 1 ? (
-          <Button size="sm" onClick={next} className="gap-1 font-semibold ring-2 ring-accent/40">
-            Devam <ChevronRight className="h-4 w-4" />
+      <div className="shrink-0 flex flex-col items-center gap-3 pb-8 pt-5">
+        <div className="flex items-center gap-3">
+          <Button variant="secondary" size="sm" onClick={copyLink}>
+            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+            <span className="ml-1">{copied ? "Kopyalandı!" : "Paylaş"}</span>
           </Button>
-        ) : (
-          <Button size="sm" onClick={() => setSlide(0)} className="ring-2 ring-accent/40">Başa Dön</Button>
-        )}
+          {slide < TOTAL_SLIDES - 1 ? (
+            <Button size="sm" onClick={next} className="gap-1 font-semibold">
+              Devam <ChevronRight className="h-4 w-4" />
+            </Button>
+          ) : (
+            <Button size="sm" onClick={() => setSlide(0)}>Başa Dön</Button>
+          )}
+        </div>
+        <button
+          onClick={prev}
+          disabled={slide === 0}
+          className="text-xs text-text-muted disabled:opacity-30 hover:text-text"
+        >
+          ← Geri
+        </button>
       </div>
     </div>
   );
