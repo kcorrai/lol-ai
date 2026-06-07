@@ -149,12 +149,21 @@ const SIDE_FEATURES = [
 
 export function FeaturesSection() {
   return (
-    <section className="bg-surface py-24">
-      <div className="mx-auto max-w-7xl px-6">
+    <section className="relative overflow-hidden bg-surface py-24">
+      {/* Atmospheric glows */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-0 top-0 h-[500px] w-[500px] rounded-full bg-[#5846B4]/6 blur-[120px]" />
+        <div className="absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-accent/5 blur-[100px]" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-6">
         {/* Heading */}
         <div className="mb-16 text-center">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.15em] text-accent/70">Full Arsenal</p>
           <h2 className="font-display text-3xl font-bold text-text md:text-4xl">
-            Everything You Need to Climb
+            Everything You Need to{" "}
+            <span className="text-accent" style={{ textShadow: "0 0 30px rgba(200,155,60,0.3)" }}>Climb</span>
           </h2>
           <p className="mt-3 text-text-muted">From pre-game draft to post-game analysis — every phase covered.</p>
         </div>
@@ -196,7 +205,7 @@ export function FeaturesSection() {
             </div>
             <div className="grid grid-cols-1 gap-2">
               {SIDE_FEATURES.slice(0, 3).map(({ icon: Icon, title, desc, color, bg }) => (
-                <div key={title} className="flex items-start gap-3 rounded-xl border border-border bg-background p-3">
+                <div key={title} className="gaming-card flex items-start gap-3 rounded-xl p-3 transition-all duration-200 hover:border-accent/20">
                   <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${bg}`}>
                     <Icon className={`h-4 w-4 ${color}`} />
                   </div>
@@ -213,7 +222,7 @@ export function FeaturesSection() {
         {/* Bottom 2 feature cards */}
         <div className="grid gap-4 sm:grid-cols-2">
           {SIDE_FEATURES.slice(3).map(({ icon: Icon, title, desc, color, bg }) => (
-            <div key={title} className="flex items-start gap-4 rounded-xl border border-border bg-background p-4">
+            <div key={title} className="gaming-card flex items-start gap-4 rounded-xl p-4 transition-all duration-200 hover:border-accent/20">
               <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${bg}`}>
                 <Icon className={`h-5 w-5 ${color}`} />
               </div>

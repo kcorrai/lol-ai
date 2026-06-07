@@ -24,6 +24,7 @@ export function TestimonialsSection() {
     <section className="py-20">
       <div className="mx-auto max-w-5xl px-6">
         <div className="mb-12 text-center">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.15em] text-accent/70">Why It Works</p>
           <h2 className="font-display text-3xl font-bold text-text md:text-4xl">
             Built for Players Who Want to Improve
           </h2>
@@ -34,8 +35,15 @@ export function TestimonialsSection() {
 
         <div className="mb-12 grid gap-4 sm:grid-cols-3">
           {HIGHLIGHTS.map(({ icon: Icon, label, description }) => (
-            <div key={label} className="rounded-xl border border-border bg-surface p-5 text-center">
-              <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
+            <div
+              key={label}
+              className="gaming-card rounded-xl p-5 text-center transition-all duration-200 hover:border-accent/25"
+              style={{ boxShadow: "0 0 24px rgba(200,155,60,0.05), inset 0 1px 0 rgba(255,255,255,0.04)" }}
+            >
+              <div
+                className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10"
+                style={{ boxShadow: "0 0 20px rgba(200,155,60,0.15)" }}
+              >
                 <Icon className="h-5 w-5 text-accent" />
               </div>
               <p className="font-semibold text-text">{label}</p>
@@ -44,22 +52,38 @@ export function TestimonialsSection() {
           ))}
         </div>
 
-        <div className="text-center">
-          <p className="mb-2 text-xs font-medium uppercase tracking-widest text-text-muted">
-            Early Access
-          </p>
-          <h3 className="font-display text-2xl font-bold text-text">
-            Join Now — Free While We&apos;re in Beta
-          </h3>
-          <p className="mt-3 text-sm text-text-muted">
-            Help shape the product. Free tier always available.
-          </p>
-          <Link
-            href="/register"
-            className="mt-6 inline-block rounded-md bg-accent px-8 py-3 text-sm font-semibold text-background transition-opacity hover:opacity-90"
-          >
-            Get Started Free
-          </Link>
+        {/* CTA panel with champion splash atmosphere */}
+        <div className="relative overflow-hidden rounded-2xl text-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Lux_0.jpg"
+            alt="" aria-hidden
+            className="absolute inset-0 h-full w-full object-cover object-[50%_20%] opacity-[0.08]"
+            style={{ filter: "blur(2px) saturate(0.4)" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-surface/80 via-surface/90 to-surface/95" />
+          <div className="pointer-events-none absolute inset-0">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
+            <div className="absolute left-1/2 top-0 h-32 w-64 -translate-x-1/2 rounded-full bg-accent/10 blur-3xl" />
+          </div>
+          <div className="relative px-8 py-12">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.15em] text-accent/70">
+              Early Access
+            </p>
+            <h3 className="font-display text-2xl font-bold text-text md:text-3xl">
+              Join Now — Free While We&apos;re in Beta
+            </h3>
+            <p className="mx-auto mt-3 max-w-sm text-sm text-text-muted">
+              Help shape the product. Free tier always available.
+            </p>
+            <Link
+              href="/register"
+              className="mt-6 inline-block rounded-md bg-accent px-8 py-3 text-sm font-semibold text-background btn-glow transition-all duration-200"
+            >
+              Get Started Free
+            </Link>
+            <p className="mt-3 text-xs text-text-muted">No credit card required</p>
+          </div>
         </div>
       </div>
     </section>

@@ -5,7 +5,8 @@ const sq2 = (n: string) => `https://ddragon.leagueoflegends.com/cdn/${DDR_V2}/im
 
 function WindowChrome({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-border bg-surface shadow-2xl">
+    <div className="rounded-xl border border-border bg-surface"
+      style={{ boxShadow: "0 0 48px rgba(88,70,180,0.1), 0 20px 48px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04)" }}>
       <div className="flex h-8 items-center gap-1.5 rounded-t-xl border-b border-border bg-surface-2 px-3">
         <div className="h-2.5 w-2.5 rounded-full bg-danger/60" />
         <div className="h-2.5 w-2.5 rounded-full bg-warning/60" />

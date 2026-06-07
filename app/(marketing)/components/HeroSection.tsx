@@ -2,7 +2,8 @@ import Link from "next/link";
 
 function DashboardMockup() {
   return (
-    <div className="relative rounded-xl border border-border bg-surface shadow-2xl">
+    <div className="relative rounded-xl border border-border bg-surface shadow-2xl"
+      style={{ boxShadow: "0 0 60px rgba(88,70,180,0.12), 0 25px 60px rgba(0,0,0,0.5)" }}>
       {/* Window chrome */}
       <div className="flex h-8 items-center gap-1.5 rounded-t-xl border-b border-border bg-surface-2 px-3">
         <div className="h-2.5 w-2.5 rounded-full bg-danger/60" />
@@ -77,21 +78,39 @@ function DashboardMockup() {
 export function HeroSection() {
   return (
     <section className="relative overflow-hidden py-24 md:py-32">
-      {/* Background glow */}
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-        <div className="h-[600px] w-[600px] rounded-full bg-accent/5 blur-3xl" />
+      {/* Multi-layer background atmosphere */}
+      <div className="pointer-events-none absolute inset-0">
+        {/* Grid texture */}
+        <div className="absolute inset-0 opacity-[0.025]"
+          style={{ backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)", backgroundSize: "48px 48px" }} />
+        {/* Purple top-left glow */}
+        <div className="absolute -left-40 -top-40 h-[700px] w-[700px] rounded-full bg-[#5846B4]/8 blur-[120px]" />
+        {/* Gold center glow */}
+        <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/6 blur-[100px]" />
+        {/* Right champion splash art — Ahri, very faint */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ahri_0.jpg"
+          alt="" aria-hidden
+          className="absolute right-0 top-0 h-full w-1/2 object-cover object-left opacity-[0.06]"
+          style={{ filter: "blur(1px) saturate(0.3)", maskImage: "linear-gradient(to left, transparent 0%, rgba(0,0,0,0.6) 40%, transparent 100%)" }}
+        />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="grid items-center gap-12 md:grid-cols-2">
           {/* Copy */}
           <div className="space-y-6">
-            <div className="inline-flex items-center rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
+            <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
+              </span>
               7 AI Tools · Match Analysis · Climb Faster
             </div>
             <h1 className="font-display text-4xl font-bold leading-tight text-text md:text-5xl lg:text-6xl">
               Your Personal{" "}
-              <span className="text-accent">AI Coach</span>{" "}
+              <span className="text-accent" style={{ textShadow: "0 0 40px rgba(200,155,60,0.35)" }}>AI Coach</span>{" "}
               for League
             </h1>
             <p className="text-lg leading-relaxed text-text-muted">
@@ -101,7 +120,7 @@ export function HeroSection() {
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/register"
-                className="rounded-md bg-accent px-6 py-3 text-center text-sm font-semibold text-background transition-opacity hover:opacity-90"
+                className="rounded-md bg-accent px-6 py-3 text-center text-sm font-semibold text-background btn-glow transition-all duration-200"
               >
                 Get Started Free
               </Link>
@@ -115,9 +134,9 @@ export function HeroSection() {
             <p className="text-xs text-text-muted">No credit card required · Free tier available</p>
 
             {/* Quick stats */}
-            <div className="flex gap-6 border-t border-border pt-6">
+            <div className="flex gap-6 border-t border-border/60 pt-6">
               {([
-                ["5 AI Tools", "Counter, Matchup, OTP, Draft, Build"],
+                ["7 AI Tools", "Counter, Matchup, OTP, Draft, Build"],
                 ["AI Reports", "Session & Climb roadmap"],
                 ["Real Match Data", "Your games, not generic guides"],
               ] as [string, string][]).map(([title, sub]) => (
@@ -129,8 +148,9 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* Mockup */}
-          <div className="mx-auto w-full max-w-sm md:max-w-none">
+          {/* Mockup — with floating glow ring */}
+          <div className="relative mx-auto w-full max-w-sm md:max-w-none">
+            <div className="pointer-events-none absolute -inset-4 rounded-2xl bg-accent/5 blur-2xl" />
             <DashboardMockup />
           </div>
         </div>

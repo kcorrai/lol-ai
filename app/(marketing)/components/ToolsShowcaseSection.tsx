@@ -2,7 +2,8 @@ import Image from "next/image";
 
 function WindowChrome({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-border bg-surface shadow-2xl">
+    <div className="rounded-xl border border-border bg-surface"
+      style={{ boxShadow: "0 0 48px rgba(88,70,180,0.1), 0 20px 48px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04)" }}>
       <div className="flex h-8 items-center gap-1.5 rounded-t-xl border-b border-border bg-surface-2 px-3">
         <div className="h-2.5 w-2.5 rounded-full bg-danger/60" />
         <div className="h-2.5 w-2.5 rounded-full bg-warning/60" />
@@ -282,11 +283,16 @@ const TOOLS: Tool[] = [
 
 export function ToolsShowcaseSection() {
   return (
-    <section className="py-20">
-      <div className="mx-auto max-w-7xl px-6">
+    <section className="relative overflow-hidden py-20">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute right-0 top-1/3 h-[400px] w-[400px] rounded-full bg-[#5846B4]/6 blur-[120px]" />
+      </div>
+      <div className="relative mx-auto max-w-7xl px-6">
         <div className="mb-16 text-center">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.15em] text-accent/70">AI Tools</p>
           <h2 className="font-display text-3xl font-bold text-text md:text-4xl">
-            5 AI-Powered Tools. One Platform.
+            5 AI-Powered Tools.{" "}
+            <span className="text-accent" style={{ textShadow: "0 0 30px rgba(200,155,60,0.3)" }}>One Platform.</span>
           </h2>
           <p className="mt-3 text-text-muted">
             From pre-game draft to post-game build review — every phase of your League game covered.
