@@ -39,7 +39,7 @@ function RoleFilterBtn({
     <button
       onClick={onClick}
       title={ROLE_SHORT[role]}
-      className={`flex h-8 w-8 items-center justify-center rounded-md transition-colors ${
+      className={`flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md transition-colors ${
         active ? "bg-accent/20 ring-1 ring-accent" : "bg-surface-2 hover:bg-surface-2/80"
       }`}
     >
