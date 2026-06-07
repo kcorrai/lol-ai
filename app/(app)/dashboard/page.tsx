@@ -116,7 +116,7 @@ export default function DashboardPage() {
                 </div>
               </div>
               <Link href="/coaching/chat">
-                <Button size="sm" className="gap-1.5"><MessageCircle className="h-4 w-4" />Ask Your Coach</Button>
+                <Button size="sm" className="gap-1.5"><MessageCircle className="h-4 w-4" />Koçuna Sor</Button>
               </Link>
             </div>
           </div>
@@ -125,9 +125,9 @@ export default function DashboardPage() {
 
       {profileError ? (
         <EmptyState
-          title="No match data yet"
-          description="Sync your Riot account to load your match history and get coaching insights."
-          action={<Link href="/settings/accounts"><Button variant="secondary" size="sm">Sync Account</Button></Link>}
+          title="Henüz maç verisi yok"
+          description="Riot hesabını senkronize ederek maç geçmişini yükle ve koçluk önerileri al."
+          action={<Link href="/settings/accounts"><Button variant="secondary" size="sm">Hesabı Senkronize Et</Button></Link>}
         />
       ) : (
         <>
@@ -145,15 +145,15 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
             <div className="space-y-4 lg:col-span-2">
               <div>
-                <SectionLabel>Top Champions</SectionLabel>
+                <SectionLabel>En İyi Şampiyonlar</SectionLabel>
                 <TopChampionsWidget matches={profile?.recentMatches} isLoading={profileLoading} />
               </div>
               <div>
-                <SectionLabel>Roles</SectionLabel>
+                <SectionLabel>Roller</SectionLabel>
                 <RoleDistributionWidget matches={profile?.recentMatches} isLoading={profileLoading} />
               </div>
               <div>
-                <SectionLabel>Mental State</SectionLabel>
+                <SectionLabel>Mental Durum</SectionLabel>
                 <div className="space-y-3">
                   <TiltWidget riotAccountId={primaryId} />
                   <WarmupWidget riotAccountId={primaryId} />
@@ -185,7 +185,7 @@ export default function DashboardPage() {
 
           {/* ── Recent Matches ─────────────────────────────────────────── */}
           <section>
-            <SectionLabel>Recent Matches</SectionLabel>
+            <SectionLabel>Son Maçlar</SectionLabel>
             <RecentMatchList matches={profile?.recentMatches} isLoading={profileLoading} />
           </section>
         </>

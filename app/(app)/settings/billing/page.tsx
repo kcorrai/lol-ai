@@ -11,22 +11,22 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { useCreateCheckout } from "@/hooks/useCreateCheckout";
 
 const FREE_FEATURES = [
-  "3 AI coaching reports / month",
-  "1 Riot account",
-  "Last 10 matches",
-  "Match deep dive",
-  "Ranked progress tracking",
+  "Ayda 3 AI koçluk raporu",
+  "1 Riot hesabı",
+  "Son 10 maç",
+  "Maç detay analizi",
+  "Ranked ilerleme takibi",
 ];
 
 const PRO_FEATURES = [
-  "Unlimited AI coaching reports",
-  "Up to 3 Riot accounts",
-  "Last 100 matches",
-  "Match deep dive",
-  "Ranked progress tracking",
-  "Champion pool analytics",
-  "Weekly improvement emails",
-  "Priority AI processing",
+  "Sınırsız AI koçluk raporu",
+  "3'e kadar Riot hesabı",
+  "Son 100 maç",
+  "Maç detay analizi",
+  "Ranked ilerleme takibi",
+  "Şampiyon havuzu analizi",
+  "Haftalık gelişim e-postaları",
+  "Öncelikli AI işleme",
 ];
 
 export default function BillingPage() {
@@ -38,7 +38,7 @@ export default function BillingPage() {
   if (isLoading) {
     return (
       <div className="mx-auto max-w-lg p-8">
-        <PageHeader title="Billing" subtitle="Manage your subscription and plan." />
+        <PageHeader title="Fatura" subtitle="Aboneliğini ve planını yönet." />
         <Card>
           <CardHeader>
             <Skeleton className="h-4 w-24" />
@@ -55,14 +55,14 @@ export default function BillingPage() {
 
   return (
     <div className="mx-auto max-w-lg p-8">
-      <PageHeader title="Billing" subtitle="Manage your subscription and plan." />
+      <PageHeader title="Fatura" subtitle="Aboneliğini ve planını yönet." />
 
       <div className="space-y-4">
         {/* Current plan card */}
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium uppercase tracking-widest text-text-muted">
-              Current Plan
+              Mevcut Plan
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -72,13 +72,13 @@ export default function BillingPage() {
               </span>
               <Badge variant={isPro ? "success" : "secondary"}>
                 {sub?.status === "trialing"
-                  ? "Trial"
+                  ? "Deneme"
                   : isPro
-                    ? "Active"
-                    : "Free tier"}
+                    ? "Aktif"
+                    : "Ücretsiz"}
               </Badge>
               {sub?.cancelAtPeriodEnd && (
-                <Badge variant="warning">Cancels at period end</Badge>
+                <Badge variant="warning">Dönem sonunda iptal</Badge>
               )}
             </div>
 
@@ -93,8 +93,8 @@ export default function BillingPage() {
 
             {sub?.currentPeriodEnd && isPro && (
               <p className="text-xs text-text-muted">
-                {sub.cancelAtPeriodEnd ? "Access until" : "Renews"}{" "}
-                {new Date(sub.currentPeriodEnd).toLocaleDateString()}
+                {sub.cancelAtPeriodEnd ? "Erişim sona eriyor:" : "Yenileniyor:"}{" "}
+                {new Date(sub.currentPeriodEnd).toLocaleDateString("tr-TR")}
               </p>
             )}
           </CardContent>
@@ -106,7 +106,7 @@ export default function BillingPage() {
             <CardHeader className="pb-2">
               <div className="flex items-baseline gap-2">
                 <CardTitle className="text-xs font-medium uppercase tracking-widest text-accent">
-                  Upgrade to Pro
+                  Pro&apos;ya Yükselt
                 </CardTitle>
                 <span className="font-display text-2xl font-bold text-text">$9.99</span>
                 <span className="text-xs text-text-muted">/ month</span>
@@ -127,7 +127,7 @@ export default function BillingPage() {
                 disabled={checkout.isPending}
                 className="w-full"
               >
-                {checkout.isPending ? "Redirecting to checkout…" : "Upgrade to Pro — $9.99/mo"}
+                {checkout.isPending ? "Ödeme sayfasına yönlendiriliyor…" : "Pro&apos;ya Yükselt — $9.99/ay"}
               </Button>
 
               {checkout.isError && (
@@ -135,7 +135,7 @@ export default function BillingPage() {
               )}
 
               <p className="text-center text-xs text-text-muted">
-                Secure checkout via LemonSqueezy · Cancel anytime
+                LemonSqueezy ile güvenli ödeme · İstediğin zaman iptal et
               </p>
             </CardContent>
           </Card>
@@ -145,7 +145,7 @@ export default function BillingPage() {
         {isPro && (
           <div className="rounded-lg border border-border bg-surface-2 p-4 text-center">
             <p className="text-sm text-text-muted">
-              To manage or cancel your subscription, visit your billing portal.
+              Aboneliğini yönetmek veya iptal etmek için faturalandırma portalını ziyaret et.
             </p>
             <Link
               href="https://app.lemonsqueezy.com/my-orders"
@@ -153,15 +153,15 @@ export default function BillingPage() {
               rel="noopener noreferrer"
               className="mt-2 inline-block text-sm text-accent underline underline-offset-2 hover:opacity-80"
             >
-              Manage subscription →
+              Aboneliği Yönet →
             </Link>
           </div>
         )}
 
         <p className="text-center text-xs text-text-muted">
-          Questions?{" "}
+          Soruların mı var?{" "}
           <a href="mailto:support@lolaicoach.gg" className="underline hover:text-text">
-            Contact support
+            Destek ile iletişime geç
           </a>
         </p>
       </div>

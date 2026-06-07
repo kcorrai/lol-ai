@@ -15,9 +15,9 @@ import { cn } from "@/lib/utils";
 
 const NAV_MAIN = [
   { href: "/dashboard",     icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/champions",     icon: Shield,          label: "Champions" },
-  { href: "/coaching",      icon: ClipboardList,   label: "Reports" },
-  { href: "/coaching/chat", icon: MessageCircle,   label: "Coach Chat" },
+  { href: "/champions",     icon: Shield,          label: "Şampiyonlar" },
+  { href: "/coaching",      icon: ClipboardList,   label: "Raporlar" },
+  { href: "/coaching/chat", icon: MessageCircle,   label: "Koç Chat" },
   { href: "/improvement",   icon: TrendingUp,      label: "Gelişim" },
   { href: "/achievements",  icon: Trophy,          label: "Rozetler" },
   { href: "/analysis",      icon: Map,             label: "Isı Haritası" },
@@ -32,9 +32,9 @@ const NAV_TOOLS = [
 ] as const;
 
 const NAV_SETTINGS = [
-  { href: "/settings/accounts", icon: Gamepad2,   label: "Accounts" },
-  { href: "/settings/billing",  icon: CreditCard, label: "Billing" },
-  { href: "/settings/profile",  icon: UserCircle, label: "Profile" },
+  { href: "/settings/accounts", icon: Gamepad2,   label: "Hesaplar" },
+  { href: "/settings/billing",  icon: CreditCard, label: "Fatura" },
+  { href: "/settings/profile",  icon: UserCircle, label: "Profil" },
   { href: "/settings/privacy",  icon: Lock,       label: "Gizlilik" },
   { href: "/settings/discord",  icon: Bot,        label: "Discord" },
 ] as const;
@@ -115,11 +115,11 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto p-2">
-        <SectionLabel label="Play" collapsed={collapsed} />
+        <SectionLabel label="Oyna" collapsed={collapsed} />
         {NAV_MAIN.map((item) => <NavItem key={item.href} {...item} collapsed={collapsed} />)}
         <SectionLabel label="Araçlar" collapsed={collapsed} />
         {NAV_TOOLS.map((item) => <NavItem key={item.href} {...item} collapsed={collapsed} />)}
-        <SectionLabel label="Settings" collapsed={collapsed} />
+        <SectionLabel label="Ayarlar" collapsed={collapsed} />
         {NAV_SETTINGS.map((item) => <NavItem key={item.href} {...item} collapsed={collapsed} />)}
       </nav>
 
@@ -128,7 +128,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         <div className="mx-2 mb-2 rounded-xl border border-accent/25 p-3" style={{ background: "linear-gradient(135deg, rgba(200,155,60,0.12) 0%, rgba(200,155,60,0.04) 100%)" }}>
           <div className="mb-1 flex items-center gap-1.5">
             <Sparkles className="h-3.5 w-3.5 text-accent" />
-            <p className="text-xs font-bold text-accent">Upgrade to Pro</p>
+            <p className="text-xs font-bold text-accent">Pro&apos;ya Yükselt</p>
           </div>
           <p className="mb-2 text-[11px] leading-relaxed text-text-muted">Sınırsız rapor, tüm araçlar ve öncelikli destek.</p>
           <Link

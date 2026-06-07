@@ -3,27 +3,27 @@ import { AccountConnectionForm } from "@/domains/riot/components/AccountConnecti
 import { ConnectedAccountsList } from "@/domains/riot/components/ConnectedAccountsList";
 import { PageHeader } from "@/components/layout/PageHeader";
 
-export const metadata: Metadata = { title: "Connected Accounts" };
+export const metadata: Metadata = { title: "Bağlı Hesaplar" };
 
 export default function AccountsSettingsPage() {
   return (
     <div className="mx-auto max-w-lg p-8">
       <PageHeader
-        title="Connected Accounts"
-        subtitle="Manage your Riot accounts and sync match data."
+        title="Bağlı Hesaplar"
+        subtitle="Riot hesaplarını yönet ve maç verilerini senkronize et."
       />
 
       <div className="space-y-8">
         <section className="space-y-3">
           <p className="text-xs font-medium uppercase tracking-widest text-text-muted">
-            Your Accounts
+            Hesaplarım
           </p>
           <ConnectedAccountsList />
         </section>
 
         <section className="space-y-3">
           <p className="text-xs font-medium uppercase tracking-widest text-text-muted">
-            Add Account
+            Hesap Ekle
           </p>
           <AccountConnectionForm />
         </section>

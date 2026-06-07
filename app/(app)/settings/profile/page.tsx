@@ -37,8 +37,8 @@ export default function ProfileSettingsPage() {
   return (
     <div className="mx-auto max-w-lg p-8">
       <PageHeader
-        title="Profile"
-        subtitle="Manage your account settings."
+        title="Profil"
+        subtitle="Hesap ayarlarını yönet."
       />
 
       <div className="space-y-8">
@@ -46,7 +46,7 @@ export default function ProfileSettingsPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium uppercase tracking-widest text-text-muted">
-              Account
+              Hesap
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -56,17 +56,16 @@ export default function ProfileSettingsPage() {
 
         {/* Danger zone */}
         <div className="rounded-xl border border-danger/40 bg-danger/5 p-6">
-          <p className="mb-1 text-sm font-semibold text-danger">Delete Account</p>
+          <p className="mb-1 text-sm font-semibold text-danger">Hesabı Sil</p>
           <p className="mb-4 text-xs leading-relaxed text-text-muted">
-            This is permanent and cannot be undone. All your Riot accounts, match data, coaching
-            reports, and subscription history will be deleted. To confirm, type your email address
-            below.
+            Bu kalıcıdır ve geri alınamaz. Tüm Riot hesapların, maç verisi, koçluk raporları ve
+            abonelik geçmişi silinecek. Onaylamak için aşağıya e-posta adresini yaz.
           </p>
 
           <div className="space-y-3">
             <Input
               type="email"
-              placeholder={userEmail || "your@email.com"}
+              placeholder={userEmail || "email@adresin.com"}
               value={confirmEmail}
               onChange={(e) => setConfirmEmail(e.target.value)}
               disabled={isDeleting}
@@ -83,7 +82,7 @@ export default function ProfileSettingsPage() {
               disabled={!canDelete || isDeleting}
               className="w-full"
             >
-              {isDeleting ? "Deleting account…" : "Permanently delete my account"}
+              {isDeleting ? "Hesap siliniyor…" : "Hesabımı kalıcı olarak sil"}
             </Button>
           </div>
         </div>

@@ -13,12 +13,12 @@ import { useSetPrimaryAccount } from "@/hooks/useSetPrimaryAccount";
 import { useSubscription } from "@/hooks/useSubscription";
 
 function relativeTime(date: string | Date | null): string {
-  if (!date) return "Never synced";
+  if (!date) return "Hiç senkronize edilmedi";
   const secs = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
-  if (secs < 60) return "Just now";
-  if (secs < 3600) return `${Math.floor(secs / 60)}m ago`;
-  if (secs < 86400) return `${Math.floor(secs / 3600)}h ago`;
-  return `${Math.floor(secs / 86400)}d ago`;
+  if (secs < 60) return "Az önce";
+  if (secs < 3600) return `${Math.floor(secs / 60)} dk önce`;
+  if (secs < 86400) return `${Math.floor(secs / 3600)} s önce`;
+  return `${Math.floor(secs / 86400)} g önce`;
 }
 
 function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, profileIconId, summonerLevel, canDisconnect }: {
@@ -70,7 +70,7 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
           </div>
         </div>
         <div className="flex gap-1.5 shrink-0">
-          {isPrimary && <Badge variant="secondary" className="text-xs">Primary</Badge>}
+          {isPrimary && <Badge variant="secondary" className="text-xs">Birincil</Badge>}
         </div>
       </div>
 
@@ -78,12 +78,12 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
         <>
           <p className="text-xs text-success">
             {syncResult.status === "fresh"
-              ? "Data is up to date"
-              : `Synced — ${syncResult.newMatches ?? 0} new, ${syncResult.skipped ?? 0} skipped`}
+              ? "Veriler güncel"
+              : `Senkronize edildi — ${syncResult.newMatches ?? 0} yeni, ${syncResult.skipped ?? 0} atlandı`}
           </p>
           {syncResult.errors && syncResult.errors.length > 0 && (
             <p className="text-xs text-danger break-all">
-              Error: {syncResult.errors[0]}
+              Hata: {syncResult.errors[0]}
             </p>
           )}
         </>
@@ -99,7 +99,7 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
           onClick={() => sync.mutate(id)}
           disabled={isSyncing || disconnect.isPending}
         >
-          {isSyncing ? "Syncing…" : "Sync Now"}
+          {isSyncing ? "Senkronize ediliyor…" : "Şimdi Senkronize Et"}
         </Button>
 
         {!isPrimary && (
@@ -109,7 +109,7 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
             onClick={() => setPrimary.mutate(id)}
             disabled={isSettingPrimary}
           >
-            {isSettingPrimary ? "Setting…" : "Set as Primary"}
+            {isSettingPrimary ? "Ayarlanıyor…" : "Birincil Yap"}
           </Button>
         )}
 
@@ -121,7 +121,7 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
               className="text-danger hover:text-danger"
               onClick={() => setConfirmDisconnect(true)}
             >
-              Disconnect
+              Bağlantıyı Kes
             </Button>
           ) : (
             <div className="flex gap-1.5">
@@ -131,10 +131,10 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
                 onClick={() => disconnect.mutate(id)}
                 disabled={disconnect.isPending}
               >
-                {disconnect.isPending ? "Removing…" : "Confirm"}
+                {disconnect.isPending ? "Kaldırılıyor…" : "Onayla"}
               </Button>
               <Button size="sm" variant="ghost" onClick={() => setConfirmDisconnect(false)}>
-                Cancel
+                İptal
               </Button>
             </div>
           )
@@ -161,7 +161,7 @@ export function ConnectedAccountsList() {
 
   if (!accounts || accounts.length === 0) {
     return (
-      <p className="text-sm text-text-muted">No accounts connected yet. Add one below.</p>
+      <p className="text-sm text-text-muted">Henüz bağlı hesap yok. Aşağıda bir tane ekle.</p>
     );
   }
 
