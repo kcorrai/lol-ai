@@ -23,6 +23,7 @@ const config: Config = {
         surface: {
           DEFAULT: "#0F1629",
           2: "#1A2138",
+          dark: "#07090F",
         },
         border: "#2A3550",
         text: {
@@ -98,11 +99,16 @@ const config: Config = {
         shimmer: {
           "100%": { transform: "translateX(100%)" },
         },
+        "glow-pulse": {
+          "0%, 100%": { boxShadow: "0 0 6px rgba(200,155,60,0.25)" },
+          "50%": { boxShadow: "0 0 18px rgba(200,155,60,0.55)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         shimmer: "shimmer 2s infinite",
+        "glow-pulse": "glow-pulse 2.5s ease-in-out infinite",
       },
     },
   },
