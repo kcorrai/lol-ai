@@ -47,6 +47,7 @@ export const sendReengagementEmails = inngest.createFunction(
       select: {
         id: true,
         email: true,
+        emailOptOut: true,
         profile: { select: { emailWeeklyReport: true } },
         riotAccounts: {
           where: { isPrimary: true },
@@ -60,7 +61,7 @@ export const sendReengagementEmails = inngest.createFunction(
     let sent = 0, skipped = 0, errors = 0;
 
     for (const user of users) {
-      if (!user.email) { skipped++; continue; }
+      if (!user.email || user.emailOptOut) { skipped++; continue; }
       const account = user.riotAccounts[0];
       if (!account) { skipped++; continue; }
 

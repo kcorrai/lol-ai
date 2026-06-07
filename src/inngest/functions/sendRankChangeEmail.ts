@@ -61,6 +61,7 @@ export const sendRankChangeEmail = inngest.createFunction(
         user: {
           select: {
             email: true,
+            emailOptOut: true,
             discordIntegration: { select: { webhookUrl: true, notifyRankUp: true } },
           },
         },
@@ -68,6 +69,7 @@ export const sendRankChangeEmail = inngest.createFunction(
     });
 
     if (!account?.user.email) return { skipped: "no_email" };
+    if (account.user.emailOptOut) return { skipped: "opted_out" };
 
     const resend = getEmailClient();
     if (!resend) {

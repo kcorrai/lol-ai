@@ -20,9 +20,10 @@ export const sendActivationEmail = inngest.createFunction(
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { email: true, emailVerified: true },
+      select: { email: true, emailVerified: true, emailOptOut: true },
     });
     if (!user?.email) return { skipped: "no_email" };
+    if (user.emailOptOut) return { skipped: "opted_out" };
 
     const emailClient = getEmailClient();
     if (!emailClient) return { skipped: "no_email_client" };

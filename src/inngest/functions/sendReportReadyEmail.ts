@@ -23,10 +23,11 @@ export const sendReportReadyEmail = inngest.createFunction(
       where: { id: riotAccountId },
       select: {
         gameName: true,
-        user: { select: { email: true } },
+        user: { select: { email: true, emailOptOut: true } },
       },
     });
     if (!account?.user?.email) return { skipped: "no_email" };
+    if (account.user.emailOptOut) return { skipped: "opted_out" };
 
     const emailClient = getEmailClient();
     if (!emailClient) return { skipped: "no_email_client" };

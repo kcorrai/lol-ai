@@ -105,6 +105,7 @@ model User {
   profileSettings  Json?
 
   proTrialEndsAt   DateTime?
+  emailOptOut      Boolean   @default(false)
 
   accounts         Account[]
   sessions         Session[]
