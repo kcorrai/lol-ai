@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { ChampionFocusButton } from "@/domains/champions/components/ChampionFocusButton";
 import { CounterPickCard } from "@/domains/champions/components/CounterPickCard";
+import { championLoadingUrl } from "@/lib/ddragon";
 import type { ChampionPoolEntry } from "@/domains/champions/services/championStatsService";
 import { cn } from "@/lib/utils";
 
@@ -21,11 +22,11 @@ function MasteryBar({ entry }: { entry: ChampionPoolEntry }) {
     <div className="mt-3 space-y-1.5">
       <div className="flex items-center justify-between">
         <span className="text-[10px] font-semibold uppercase tracking-widest text-text-muted/60">
-          Mastery
+          Ustalık
         </span>
         <span
           className={cn("text-xs font-bold", masteryScore >= 75 ? "text-accent" : "text-text-muted")}
-          title={`Exp: ${masterySubScores.experience} · Perf: ${masterySubScores.performance} · Farm: ${masterySubScores.farm}`}
+          title={`Deneyim: ${masterySubScores.experience} · Performans: ${masterySubScores.performance} · CS: ${masterySubScores.farm}`}
         >
           {masteryScore}/100
         </span>
@@ -55,21 +56,43 @@ function ChampionCard({
   riotAccountId?: string;
   onDeepDive?: (name: string) => void;
 }) {
+  const splashUrl = championLoadingUrl(entry.championName);
+  const glowColor = entry.isBest ? "rgba(200,155,60,0.18)" : "rgba(88,70,180,0.10)";
+
   return (
     <div
-      className={`relative rounded-lg border bg-surface-2 p-4 transition-colors ${
+      className={`group relative overflow-hidden rounded-xl border bg-surface-2 p-4 transition-all duration-200 ${
         entry.isBest
           ? "border-accent/50 ring-1 ring-accent/20"
-          : "border-border hover:border-border/80"
+          : "border-border hover:border-accent/25"
       }`}
+      style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)" }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).style.boxShadow = `0 0 24px ${glowColor}, inset 0 1px 0 rgba(255,255,255,0.04)`;
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.03)";
+      }}
     >
+      {/* Champion art bg */}
+      <div
+        className="pointer-events-none absolute right-0 top-0 h-full w-36 opacity-[0.07] transition-opacity duration-300 group-hover:opacity-[0.12]"
+        style={{
+          backgroundImage: `url(${splashUrl})`,
+          backgroundSize: "cover",
+          backgroundPosition: "top center",
+          maskImage: "linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,0.8) 0%, transparent 100%)",
+        }}
+      />
+
       {entry.isBest && (
         <span className="absolute -top-2.5 left-3 rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-background">
-          Best Pick
+          En İyi Seçim
         </span>
       )}
 
-      <div className="flex items-center gap-3">
+      <div className="relative flex items-center gap-3">
         <ChampionIcon name={entry.championName} size={48} className="shrink-0" />
 
         <div className="min-w-0 flex-1">
@@ -78,30 +101,31 @@ function ChampionCard({
               {entry.championName}
             </p>
             <Badge variant={winRateVariant(entry.winRate)}>
-              {entry.winRate}% WR
+              {entry.winRate}% KO
             </Badge>
           </div>
           <div className="mt-1 flex gap-3 text-xs text-text-muted">
-            <span>{entry.gamesPlayed}G</span>
+            <span>{entry.gamesPlayed} maç</span>
             <span>KDA {entry.avgKda}</span>
-            <span>{entry.avgCsPerMinute} CS/m</span>
+            <span>{entry.avgCsPerMinute} CS/dk</span>
           </div>
           <div className="mt-1 text-xs text-text-muted">
-            {entry.wins}W {entry.gamesPlayed - entry.wins}L
+            {entry.wins}G {entry.gamesPlayed - entry.wins}M
           </div>
         </div>
       </div>
+
       <MasteryBar entry={entry} />
 
       {riotAccountId && (
         <>
-          <div className="mt-3 flex items-center gap-2">
+          <div className="relative mt-3 flex items-center gap-2">
             {onDeepDive && (
               <button
                 onClick={() => onDeepDive(entry.championName)}
                 className="flex-1 rounded-md border border-border px-2 py-1 text-xs font-medium text-text-muted transition-colors hover:border-accent/50 hover:text-accent"
               >
-                Deep Dive
+                Detaylı İncele
               </button>
             )}
             <ChampionFocusButton riotAccountId={riotAccountId} championName={entry.championName} />
@@ -115,7 +139,7 @@ function ChampionCard({
 
 function SkeletonCard() {
   return (
-    <div className="rounded-lg border border-border bg-surface-2 p-4">
+    <div className="rounded-xl border border-border bg-surface-2 p-4">
       <div className="flex items-center gap-3">
         <Skeleton className="h-12 w-12 rounded-lg" />
         <div className="flex-1 space-y-2">
@@ -147,10 +171,10 @@ export function ChampionPoolGrid({ entries, isLoading, riotAccountId, onDeepDive
 
   if (entries.length === 0) {
     return (
-      <div className="rounded-lg border border-border bg-surface-2 py-14 text-center">
-        <p className="text-sm font-medium text-text">Not enough data yet</p>
+      <div className="rounded-xl border border-dashed border-border bg-surface-2/50 py-14 text-center">
+        <p className="text-sm font-medium text-text">Henüz yeterli veri yok</p>
         <p className="mt-1 text-xs text-text-muted">
-          Play at least 3 ranked games on a champion for it to appear here.
+          Bir şampiyonla en az 3 ranked maç oyna — burada görünsün.
         </p>
       </div>
     );

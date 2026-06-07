@@ -36,7 +36,7 @@ export function ChampionFocusButton({ riotAccountId, championName }: ChampionFoc
         onClick={() => router.push("/dashboard")}
         className="mt-2 w-full rounded-md bg-success/10 px-2 py-1.5 text-xs font-medium text-success hover:bg-success/20 transition-colors"
       >
-        Report queued — view on dashboard →
+        Rapor kuyruğa alındı — dashboard&apos;da görüntüle →
       </button>
     );
   }
@@ -50,7 +50,7 @@ export function ChampionFocusButton({ riotAccountId, championName }: ChampionFoc
       disabled={generateReport.isPending}
     >
       <Sparkles className="mr-1.5 h-3 w-3" />
-      {generateReport.isPending ? "Generating…" : "AI Analysis"}
+      {generateReport.isPending ? "Oluşturuluyor…" : "AI Analiz"}
     </Button>
   );
 }
