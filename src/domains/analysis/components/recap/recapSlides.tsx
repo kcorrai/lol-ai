@@ -19,6 +19,12 @@ function loadingUrl(name: string) {
 
 export function buildRecapSlides(data: RecapData, gameName: string, active: number): React.ReactNode[] {
   const displayName = gameName.split("#")[0];
+  // Defensive fallbacks for backwards-compatible cached data
+  const topChampions = data.topChampions?.length ? data.topChampions : [data.topChampion];
+  const totalKills = data.totalKills ?? 0;
+  const totalDeaths = data.totalDeaths ?? 0;
+  const totalAssists = data.totalAssists ?? 0;
+  const estimatedHours = data.estimatedHours ?? Math.round(data.totalMatches * 30 / 60);
 
   return [
     // 0 — Welcome
@@ -71,24 +77,24 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
         <p className="mb-7 text-xs font-semibold uppercase tracking-[0.15em] text-text-muted">Bu Sezon Sahada</p>
         <div className="flex items-center justify-center gap-5">
           <div className="flex flex-col items-center gap-1.5">
-            <span className="font-display text-5xl font-black text-success">{data.totalKills}</span>
+            <span className="font-display text-5xl font-black text-success">{totalKills}</span>
             <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Öldürme</span>
           </div>
           <span className="mb-5 text-3xl font-light text-border">/</span>
           <div className="flex flex-col items-center gap-1.5">
-            <span className="font-display text-5xl font-black text-danger">{data.totalDeaths}</span>
+            <span className="font-display text-5xl font-black text-danger">{totalDeaths}</span>
             <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Ölüm</span>
           </div>
           <span className="mb-5 text-3xl font-light text-border">/</span>
           <div className="flex flex-col items-center gap-1.5">
-            <span className="font-display text-5xl font-black text-warning">{data.totalAssists}</span>
+            <span className="font-display text-5xl font-black text-warning">{totalAssists}</span>
             <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Asist</span>
           </div>
         </div>
         <div className="mt-8 rounded-2xl border border-border/50 bg-white/[0.03] px-5 py-3">
           <p className="text-sm text-text-muted">
             Tahminen{" "}
-            <span className="font-bold text-text">{data.estimatedHours} saat</span>{" "}
+            <span className="font-bold text-text">{estimatedHours} saat</span>{" "}
             Summoner&apos;s Rift&apos;te geçirdin.
           </p>
         </div>
@@ -112,7 +118,7 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
       </div>
       <p className="mb-7 text-xs font-semibold uppercase tracking-[0.15em] text-accent">En Çok Oynadıkların</p>
       <div className="flex items-end justify-center gap-3">
-        {data.topChampions.map((c, i) => (
+        {topChampions.map((c, i) => (
           <div
             key={c.name}
             className="gaming-card flex flex-col items-center gap-2 rounded-2xl p-4 transition-transform"

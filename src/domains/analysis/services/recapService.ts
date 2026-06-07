@@ -163,7 +163,12 @@ export async function generateOrGetRecap(userId: string, riotAccountId: string):
   const existing = await prisma.seasonRecap.findUnique({
     where: { userId_seasonLabel: { userId, seasonLabel: label } },
   });
-  if (existing) return existing;
+  if (existing) {
+    const d = existing.data as Record<string, unknown>;
+    // Invalidate cache if missing new fields added in schema update
+    if (d.topChampions !== undefined) return existing;
+    await prisma.seasonRecap.delete({ where: { userId_seasonLabel: { userId, seasonLabel: label } } });
+  }
 
   const data = await buildRecapData(userId, riotAccountId);
   return prisma.seasonRecap.create({ data: { userId, seasonLabel: label, data: data as object } });
