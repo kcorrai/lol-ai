@@ -330,6 +330,14 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
     })
     .catch((err) => logger.warn("[sync] Failed to fire tilt/check-streak event", err));
 
+  // Achievement check: fire after every sync so new badges are awarded promptly
+  inngest
+    .send({
+      name: "achievement/check",
+      data: { riotAccountId: account.id, userId: account.userId },
+    })
+    .catch((err) => logger.warn("[sync] Failed to fire achievement/check event", err));
+
   logger.info(
     `[sync] Done: +${newCount} new, ${skipped} skipped, ${errors.length} errors, ranked=${rankedSnapshotted}`
   );

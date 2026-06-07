@@ -97,14 +97,15 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts       Account[]
-  sessions       Session[]
-  profile        Profile?
-  subscription   Subscription?
-  riotAccounts   RiotAccount[]
-  notifications  Notification[]
-  shareableCards ShareableCard[]
-  tiltAlerts     TiltAlert[]
+  accounts         Account[]
+  sessions         Session[]
+  profile          Profile?
+  subscription     Subscription?
+  riotAccounts     RiotAccount[]
+  notifications    Notification[]
+  shareableCards   ShareableCard[]
+  tiltAlerts       TiltAlert[]
+  userAchievements UserAchievement[]
 
   @@map("users")
 }
@@ -566,6 +567,40 @@ model TiltAlert {
 
   @@index([userId, acknowledged])
   @@map("tilt_alerts")
+}
+
+// ============================================================
+// ACHIEVEMENTS
+// Gamification system: static catalog of achievements + per-user earned records.
+// Achievement.id is a slug (e.g. "cs_machine") — not a UUID.
+// ============================================================
+
+model Achievement {
+  id          String  @id                    // slug e.g. "cs_machine"
+  name        String
+  description String
+  iconSlug    String                         // emoji or asset key shown in UI
+  tier        String                         // 'bronze' | 'silver' | 'gold' | 'platinum'
+  isSecret    Boolean @default(false)
+
+  userAchievements UserAchievement[]
+
+  @@map("achievements")
+}
+
+model UserAchievement {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String   @db.Uuid
+  achievementId String
+  earnedAt      DateTime @default(now())
+  seen          Boolean  @default(false)     // toast shown to user?
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id])
+
+  @@unique([userId, achievementId])
+  @@index([userId, seen])
+  @@map("user_achievements")
 }
 
 // ============================================================

@@ -7,6 +7,7 @@ import {
   ReportStatus,
 } from "@prisma/client";
 import { syncChampions } from "../scripts/syncChampions";
+import { ACHIEVEMENT_CATALOG } from "../src/types/achievement";
 
 const prisma = new PrismaClient();
 
@@ -229,6 +230,16 @@ async function main() {
     },
   });
   console.log("  ✓ Champion stats computed");
+
+  // ── Achievement Catalog ───────────────────────────────────────
+  for (const achievement of ACHIEVEMENT_CATALOG) {
+    await prisma.achievement.upsert({
+      where: { id: achievement.id },
+      update: { name: achievement.name, description: achievement.description, iconSlug: achievement.iconSlug, tier: achievement.tier, isSecret: achievement.isSecret },
+      create: { id: achievement.id, name: achievement.name, description: achievement.description, iconSlug: achievement.iconSlug, tier: achievement.tier, isSecret: achievement.isSecret },
+    });
+  }
+  console.log(`  ✓ ${ACHIEVEMENT_CATALOG.length} achievements seeded`);
 
   console.log("\n✅ Seed complete.");
   console.log("   User:    dev@lolai.test");

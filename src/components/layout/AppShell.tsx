@@ -5,6 +5,7 @@ import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 import { BottomNav } from "./BottomNav";
 import { TiltAlertBanner } from "./TiltAlertBanner";
+import { AchievementToast } from "@/components/achievements/AchievementToast";
 import { useUIStore } from "@/lib/stores/uiStore";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -26,6 +27,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <TiltAlertBanner />
         <main className="flex-1 overflow-y-auto pb-16 md:pb-0">{children}</main>
       </div>
+      <AchievementToast />
       <BottomNav />
     </div>
   );
