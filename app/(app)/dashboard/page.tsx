@@ -28,6 +28,7 @@ import { HabitDetectionCard } from "@/domains/analysis/components/HabitDetection
 import { PatchImpactWidget } from "@/components/dashboard/PatchImpactWidget";
 import { DailyChallengeWidget } from "@/components/dashboard/DailyChallengeWidget";
 import { XpLevelWidget } from "@/components/dashboard/XpLevelWidget";
+import { WeekSummaryWidget } from "@/components/dashboard/WeekSummaryWidget";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -134,6 +135,9 @@ export default function DashboardPage() {
           {/* ── Top summary ────────────────────────────────────────────── */}
           <PerformanceSummaryCards profile={profile} isLoading={profileLoading} />
           <RecentMatchesSummaryCard profile={profile} isLoading={profileLoading} />
+
+          {/* ── Bu Hafta Özeti ─────────────────────────────────────────── */}
+          <WeekSummaryWidget matches={profile?.recentMatches} isLoading={profileLoading} />
 
           {/* ── Today's Brief ──────────────────────────────────────────── */}
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
