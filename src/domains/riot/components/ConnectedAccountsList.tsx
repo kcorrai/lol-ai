@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { profileIconUrl } from "@/lib/ddragon";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { useSyncAccount } from "@/hooks/useSyncAccount";
+import { useSyncStatus, isSyncActive } from "@/hooks/useSyncStatus";
 import { useDisconnectAccount } from "@/hooks/useDisconnectAccount";
 import { useSetPrimaryAccount } from "@/hooks/useSetPrimaryAccount";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -34,12 +35,11 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
 }) {
   const [confirmDisconnect, setConfirmDisconnect] = useState(false);
   const sync = useSyncAccount();
+  const { data: syncStatus } = useSyncStatus(id);
   const disconnect = useDisconnectAccount();
   const setPrimary = useSetPrimaryAccount();
 
-  const syncId = sync.variables === id ? sync : null;
-  const isSyncing = syncId?.isPending ?? false;
-  const syncResult = syncId?.data;
+  const isSyncing = (sync.variables === id && sync.isPending) || isSyncActive(syncStatus?.status);
   const isSettingPrimary = setPrimary.isPending && setPrimary.variables === id;
 
   return (
@@ -74,20 +74,15 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
         </div>
       </div>
 
-      {syncResult && (
-        <>
-          <p className="text-xs text-success">
-            {syncResult.status === "fresh"
-              ? "Veriler güncel"
-              : `Senkronize edildi — ${syncResult.newMatches ?? 0} yeni, ${syncResult.skipped ?? 0} atlandı`}
-          </p>
-          {syncResult.errors && syncResult.errors.length > 0 && (
-            <p className="text-xs text-danger break-all">
-              Hata: {syncResult.errors[0]}
-            </p>
-          )}
-        </>
-      )}
+      {syncStatus?.status === "RUNNING" || syncStatus?.status === "PENDING" ? (
+        <p className="text-xs text-accent animate-pulse">Senkronize ediliyor…</p>
+      ) : syncStatus?.status === "COMPLETED" ? (
+        <p className="text-xs text-success">Senkronize edildi</p>
+      ) : syncStatus?.status === "FAILED" ? (
+        <p className="text-xs text-danger break-all">
+          Hata: {syncStatus.lastSyncError ?? "Bilinmeyen hata"}
+        </p>
+      ) : null}
       {sync.isError && sync.variables === id && (
         <p className="text-xs text-danger">{sync.error.message}</p>
       )}

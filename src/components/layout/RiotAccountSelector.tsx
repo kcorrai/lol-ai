@@ -58,9 +58,9 @@ export function RiotAccountSelector() {
     if (!id) return;
     setSyncMsg(null);
     syncAccount(id, {
-      onSuccess: (r) => {
-        setSyncMsg(`+${r.newMatches ?? 0} maç`);
-        setTimeout(() => setSyncMsg(null), 3000);
+      onSuccess: () => {
+        setSyncMsg("Senkronize ediliyor…");
+        setTimeout(() => setSyncMsg(null), 4000);
       },
       onError: () => setSyncMsg("Hata"),
     });

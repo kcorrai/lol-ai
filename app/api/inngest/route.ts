@@ -1,6 +1,7 @@
 import { serve } from "inngest/next";
 import { inngest } from "@/inngest/client";
 import { runCoachingJob } from "@/inngest/functions/runCoachingJob";
+import { matchSyncWorker } from "@/inngest/functions/matchSync";
 import { autoSessionReview } from "@/inngest/functions/autoSessionReview";
 import { sendRankChangeEmail } from "@/inngest/functions/sendRankChangeEmail";
 import { sendWeeklyReportEmails } from "@/inngest/functions/sendWeeklyReportEmails";
@@ -16,5 +17,5 @@ import { sendReportReadyEmail } from "@/inngest/functions/sendReportReadyEmail";
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
-  functions: [runCoachingJob, autoSessionReview, sendRankChangeEmail, sendWeeklyReportEmails, tiltStreakCheck, patchVersionPoller, achievementChecker, timelineFetcher, dailyChallengeGenerator, weeklyChallengeGenerator, challengeProgressChecker, sendReengagementEmails, sendActivationEmail, sendReportReadyEmail],
+  functions: [runCoachingJob, matchSyncWorker, autoSessionReview, sendRankChangeEmail, sendWeeklyReportEmails, tiltStreakCheck, patchVersionPoller, achievementChecker, timelineFetcher, dailyChallengeGenerator, weeklyChallengeGenerator, challengeProgressChecker, sendReengagementEmails, sendActivationEmail, sendReportReadyEmail],
 });

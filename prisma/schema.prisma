@@ -81,6 +81,14 @@ enum ReportStatus {
   failed
 }
 
+enum SyncStatus {
+  IDLE
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
 // ============================================================
 // IDENTITY & AUTH
 // NextAuth v4 Prisma Adapter — field names are exact contract.
@@ -230,8 +238,12 @@ model RiotAccount {
   summonerLevel Int
   profileIconId Int
   region        String
-  isPrimary     Boolean   @default(false)
+  isPrimary     Boolean    @default(false)
   lastSyncedAt  DateTime?
+  syncStatus      SyncStatus @default(IDLE)
+  syncStartedAt   DateTime?
+  syncCompletedAt DateTime?
+  lastSyncError   String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
