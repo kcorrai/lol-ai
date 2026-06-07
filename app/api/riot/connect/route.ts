@@ -7,6 +7,7 @@ import { connectAccount } from "@/domains/riot/services/accountService";
 import { VALID_REGIONS } from "@/domains/riot/services/riotApiClient";
 import { completeReferral } from "@/domains/identity/services/referralService";
 import { inngest } from "@/inngest/client";
+import { audit } from "@/lib/audit/auditService";
 
 const connectSchema = z.object({
   gameName: z.string().min(1).max(16),
@@ -50,6 +51,13 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
       data: { userId, gameName: account.gameName },
     }).catch(() => { /* non-critical */ });
   }
+
+  await audit({
+    userId,
+    action: "riot.account.connected",
+    resourceId: account.id,
+    ipAddress: req.headers.get("x-forwarded-for") ?? undefined,
+  }).catch(() => { /* non-critical */ });
 
   return apiSuccess(account, 201);
 });

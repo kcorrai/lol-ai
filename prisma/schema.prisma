@@ -139,6 +139,7 @@ model User {
   referralReceived    Referral?  @relation("ReferralsReceived")
   ownedTeams          Team[]     @relation("TeamOwner")
   teamMemberships     TeamMember[]
+  auditLogs           AuditLog[]
 
   @@map("users")
 }
@@ -821,6 +822,31 @@ model Referral {
   referee     User?     @relation("ReferralsReceived", fields: [refereeId], references: [id], onDelete: SetNull)
 
   @@map("referrals")
+}
+
+// ============================================================
+// AUDIT LOGS (SOC2 Prep — TASK-107)
+// Append-only immutable event log. Never updated or soft-deleted.
+// userId is nulled on GDPR erasure; actorId is preserved for admin audit trail.
+// ============================================================
+
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String?  @db.Uuid
+  actorId    String?  @db.Uuid
+  action     String
+  resource   String
+  resourceId String?
+  metadata   Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([action, createdAt(sort: Desc)])
+  @@map("audit_logs")
 }
 
 // ============================================================

@@ -8,6 +8,7 @@ import { buildCoachingInput } from "@/domains/coaching/pipeline/dataPreparator";
 import { createPendingReport } from "@/domains/coaching/services/reportService";
 import { checkRateLimit, rateLimitResponse } from "@/lib/api/rateLimit";
 import { inngest } from "@/inngest/client";
+import { audit } from "@/lib/audit/auditService";
 
 const generateSchema = z.object({
   riotAccountId: z.string().uuid(),
@@ -51,6 +52,14 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
     name: "coaching/report.requested",
     data: { reportId, riotAccountId, matchIds, reportType, focusArea },
   });
+
+  await audit({
+    userId,
+    action: "report.generated",
+    resourceId: reportId,
+    metadata: { reportType, riotAccountId },
+    ipAddress: req.headers.get("x-forwarded-for") ?? undefined,
+  }).catch(() => { /* non-critical */ });
 
   return apiSuccess({ reportId, status: "pending" }, 202);
 });

@@ -505,3 +505,30 @@ UNIQUE(team_id, user_id)
 **TeamRole enum:** `OWNER`, `COACH`, `PLAYER`
 
 **SubscriptionPlan enum:** added `team` value (same limits as `elite` + team features)
+
+---
+
+## 6. Audit Logs (SOC2 Prep — TASK-107)
+
+### `audit_logs`
+
+Append-only immutable event log. See ADR-004.
+
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `user_id` | `uuid` | FK → users.id SET NULL |
+| `actor_id` | `uuid` | nullable, FK not enforced |
+| `action` | `text` | NOT NULL (e.g. "riot.account.connected") |
+| `resource` | `text` | NOT NULL (derived from action prefix) |
+| `resource_id` | `text` | |
+| `metadata` | `jsonb` | |
+| `ip_address` | `text` | |
+| `user_agent` | `text` | |
+| `created_at` | `timestamptz` | NOT NULL |
+
+**Indexes:**
+- `INDEX (user_id, created_at DESC)`
+- `INDEX (action, created_at DESC)`
+
+**Retention:** 2 years minimum. Archive to cold storage after 2 years.
