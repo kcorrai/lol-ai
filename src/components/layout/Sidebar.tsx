@@ -48,7 +48,11 @@ function NavItem({
   collapsed: boolean;
 }) {
   const pathname = usePathname();
-  const active = pathname === href || pathname.startsWith(`${href}/`);
+  const allHrefs = [...NAV_MAIN, ...NAV_TOOLS, ...NAV_SETTINGS].map((n) => n.href);
+  const active =
+    pathname === href ||
+    (pathname.startsWith(`${href}/`) &&
+      !allHrefs.some((h) => h !== href && h.startsWith(`${href}/`) && pathname.startsWith(h)));
 
   return (
     <Link
