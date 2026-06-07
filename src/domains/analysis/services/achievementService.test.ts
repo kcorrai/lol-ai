@@ -18,10 +18,6 @@ vi.mock("@/lib/utils/logger", () => ({
 const userId = "user-1";
 const riotAccountId = "account-1";
 
-function mockFindMany(model: keyof typeof prisma, value: unknown) {
-  vi.mocked((prisma[model] as { findMany: ReturnType<typeof vi.fn> }).findMany).mockResolvedValue(value as never);
-}
-
 describe("checkAndAwardAchievements", () => {
   beforeEach(() => {
     vi.clearAllMocks();
