@@ -129,6 +129,29 @@ export default function DashboardPage() {
           description="Riot hesabını senkronize ederek maç geçmişini yükle ve koçluk önerileri al."
           action={<Link href="/settings/accounts"><Button variant="secondary" size="sm">Hesabı Senkronize Et</Button></Link>}
         />
+      ) : !profileLoading && (!profile?.recentMatches || profile.recentMatches.length === 0) ? (
+        <div className="rounded-2xl border border-border bg-surface p-10 text-center space-y-5">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 mx-auto">
+            <span className="text-2xl">⚡</span>
+          </div>
+          <div>
+            <h2 className="font-display text-xl font-bold text-text">Maç verilerin senkronize ediliyor</h2>
+            <p className="mt-2 text-sm text-text-muted max-w-sm mx-auto">
+              Riot hesabın bağlandı. Maç geçmişin arka planda hazırlanıyor — bu birkaç dakika sürebilir.
+              Beklemene gerek yok, şimdi ilk AI raporunu alabilirsin.
+            </p>
+          </div>
+          <div className="flex flex-col items-center gap-3">
+            <Link href="/coaching">
+              <Button size="lg" className="gap-2">
+                İlk Raporumu Al →
+              </Button>
+            </Link>
+            <Link href="/settings/accounts" className="text-xs text-text-muted hover:text-text transition-colors">
+              Manuel senkronizasyon
+            </Link>
+          </div>
+        </div>
       ) : (
         <>
           {/* ── Top summary ────────────────────────────────────────────── */}

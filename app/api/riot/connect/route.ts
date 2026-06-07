@@ -6,6 +6,7 @@ import { Errors } from "@/lib/api/errors";
 import { connectAccount } from "@/domains/riot/services/accountService";
 import { VALID_REGIONS } from "@/domains/riot/services/riotApiClient";
 import { completeReferral } from "@/domains/identity/services/referralService";
+import { inngest } from "@/inngest/client";
 
 const connectSchema = z.object({
   gameName: z.string().min(1).max(16),
@@ -41,6 +42,14 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
 
   // Award referral trial if this user was referred and this is their first account
   await completeReferral(userId).catch(() => { /* non-critical */ });
+
+  // Fire activation email — non-blocking, first account only
+  if (account.isPrimary) {
+    await inngest.send({
+      name: "riot/account.connected",
+      data: { userId, gameName: account.gameName },
+    }).catch(() => { /* non-critical */ });
+  }
 
   return apiSuccess(account, 201);
 });
