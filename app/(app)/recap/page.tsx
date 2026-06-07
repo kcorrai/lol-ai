@@ -210,33 +210,36 @@ export default function RecapPage() {
         <ProgressBar current={slide} total={TOTAL_SLIDES} />
       </div>
 
-      {/* Slide area */}
-      <div className="relative min-h-0 flex-1">
-        {contents}
-      </div>
-
-      {/* Navigation */}
-      <div className="shrink-0 flex flex-col items-center gap-3 pb-8 pt-5">
-        <div className="flex items-center gap-3">
-          <Button variant="secondary" size="sm" onClick={copyLink}>
-            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-            <span className="ml-1">{copied ? "Kopyalandı!" : "Paylaş"}</span>
-          </Button>
-          {slide < TOTAL_SLIDES - 1 ? (
-            <Button size="sm" onClick={next} className="gap-1 font-semibold">
-              Devam <ChevronRight className="h-4 w-4" />
-            </Button>
-          ) : (
-            <Button size="sm" onClick={() => setSlide(0)}>Başa Dön</Button>
-          )}
+      {/* Slide + nav centered together */}
+      <div className="flex flex-1 flex-col items-center justify-center gap-8 px-4 py-6">
+        {/* Fixed-height slide area */}
+        <div className="relative h-[400px] w-full max-w-lg">
+          {contents}
         </div>
-        <button
-          onClick={prev}
-          disabled={slide === 0}
-          className="text-xs text-text-muted disabled:opacity-30 hover:text-text"
-        >
-          ← Geri
-        </button>
+
+        {/* Navigation — directly below content */}
+        <div className="flex flex-col items-center gap-3">
+          <div className="flex items-center gap-3">
+            <Button variant="secondary" size="sm" onClick={copyLink}>
+              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              <span className="ml-1">{copied ? "Kopyalandı!" : "Paylaş"}</span>
+            </Button>
+            {slide < TOTAL_SLIDES - 1 ? (
+              <Button size="sm" onClick={next} className="gap-1 font-semibold">
+                Devam <ChevronRight className="h-4 w-4" />
+              </Button>
+            ) : (
+              <Button size="sm" onClick={() => setSlide(0)}>Başa Dön</Button>
+            )}
+          </div>
+          <button
+            onClick={prev}
+            disabled={slide === 0}
+            className="text-xs text-text-muted disabled:opacity-30 hover:text-text"
+          >
+            ← Geri
+          </button>
+        </div>
       </div>
     </div>
   );
