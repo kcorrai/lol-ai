@@ -197,7 +197,7 @@ function ProInsightsGate() {
         </div>
         <p className="mt-3 font-display text-base font-semibold text-text">Tüm içgörüler Pro gerektirir</p>
         <p className="mt-1 max-w-xs text-center text-xs text-text-muted">
-          Zayıf yönler, tüm aksiyon maddeleri ve şampiyon önerileri için Pro'ya yükselt.
+          Zayıf yönler, tüm aksiyon maddeleri ve şampiyon önerileri için Pro&apos;ya yükselt.
         </p>
         <Link href="/settings/billing" className="mt-4">
           <Button size="sm">Pro&apos;ya Yükselt</Button>

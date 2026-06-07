@@ -20,14 +20,17 @@ async function checkDatabase(): Promise<ServiceStatus> {
 }
 
 async function checkRedis(): Promise<ServiceStatus> {
-  if (!process.env.UPSTASH_REDIS_REST_URL) {
+  if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
     return { ok: true, latencyMs: 0 };  // not configured — not a failure
   }
 
   const start = Date.now();
   try {
     const { Redis } = await import("@upstash/redis");
-    const redis = Redis.fromEnv();
+    const redis = new Redis({
+      url: process.env.KV_REST_API_URL,
+      token: process.env.KV_REST_API_TOKEN,
+    });
     await redis.ping();
     return { ok: true, latencyMs: Date.now() - start };
   } catch (err) {

@@ -4,6 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db/prisma";
+import { recordFailedAttempt, clearFailedAttempts } from "@/lib/security/bruteForce";
 import "@/types/auth.types";
 
 export const authOptions: NextAuthOptions = {
@@ -41,6 +42,14 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
+        const identifier = credentials.email.toLowerCase();
+
+        try {
+          await recordFailedAttempt(identifier);
+        } catch {
+          return null;
+        }
+
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
@@ -59,6 +68,7 @@ export const authOptions: NextAuthOptions = {
         );
         if (!passwordValid) return null;
 
+        await clearFailedAttempts(identifier);
         return user;
       },
     }),

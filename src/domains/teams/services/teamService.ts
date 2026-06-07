@@ -11,7 +11,6 @@ import type {
 } from "@/domains/teams/types/teams.types";
 
 const MAX_TEAMS_PER_USER = 5;
-const MAX_MEMBERS_PER_TEAM = 20;
 
 export async function assertTeamAccess(
   teamId: string,

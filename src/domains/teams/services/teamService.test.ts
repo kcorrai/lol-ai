@@ -5,7 +5,6 @@ import { ApiError } from "@/lib/api/errors";
 import {
   createTeam,
   assertCoachAccess,
-  assertOwnerAccess,
   removeMember,
 } from "@/domains/teams/services/teamService";
 
