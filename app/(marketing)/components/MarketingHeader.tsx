@@ -12,10 +12,16 @@ export function MarketingHeader() {
 
         <nav className="hidden items-center gap-8 md:flex">
           <Link
+            href="/champions"
+            className="text-sm text-text-muted transition-colors hover:text-text"
+          >
+            Şampiyonlar
+          </Link>
+          <Link
             href="/pricing"
             className="text-sm text-text-muted transition-colors hover:text-text"
           >
-            Pricing
+            Fiyatlar
           </Link>
         </nav>
 
