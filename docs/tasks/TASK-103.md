@@ -1,7 +1,7 @@
 # TASK-103 — Multi-Region Riot API Support
 
 **Phase:** 4 — Scale & Expansion  
-**Status:** Pending  
+**Status:** Done  
 **Estimated Effort:** 3 gün  
 **Priority:** P2
 

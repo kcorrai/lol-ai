@@ -8,15 +8,13 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-
-const VALID_REGIONS = [
-  "na1", "euw1", "eun1", "kr", "jp1", "br1", "la1", "la2", "oc1", "tr1", "ru",
-] as const;
+import { RIOT_REGION_OPTIONS } from "@/domains/riot/config/regions";
+import type { RiotRegion } from "@/domains/riot/config/regions";
 
 const schema = z.object({
   gameName: z.string().min(1, "Riot oyun adını gir").max(16),
   tagLine: z.string().min(2, "Etiket gir (örn. EUW)").max(5),
-  region: z.enum(VALID_REGIONS),
+  region: z.string().min(1),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -27,7 +25,7 @@ export function AccountConnectionForm() {
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { region: "euw1" },
+    defaultValues: { region: "euw1" as RiotRegion },
   });
 
   async function onSubmit(values: FormValues) {
@@ -68,13 +66,13 @@ export function AccountConnectionForm() {
           </div>
 
           <div className="space-y-1">
-            <label className="text-sm text-text-muted">Bölge</label>
+            <label className="text-sm text-text-muted">Sunucu / Bölge</label>
             <select
               className="flex h-10 w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text"
               {...register("region")}
             >
-              {VALID_REGIONS.map((r) => (
-                <option key={r} value={r}>{r.toUpperCase()}</option>
+              {RIOT_REGION_OPTIONS.map(({ value, label }) => (
+                <option key={value} value={value}>{label}</option>
               ))}
             </select>
             {errors.region && <p className="text-xs text-danger">{errors.region.message}</p>}
