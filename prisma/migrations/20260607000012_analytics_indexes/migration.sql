@@ -4,7 +4,7 @@
 
 -- Leaderboard: ranked history by account + time range (getLeaderboard query)
 CREATE INDEX IF NOT EXISTS idx_ranked_history_account_recorded
-  ON ranked_histories ("riotAccountId", "recordedAt" DESC);
+  ON ranked_history ("riotAccountId", "recordedAt" DESC);
 
 -- Admin DAU/MAU proxy: riot accounts by updatedAt (getAdminMetrics)
 CREATE INDEX IF NOT EXISTS idx_riot_accounts_updated_at
