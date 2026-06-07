@@ -345,6 +345,14 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
       .catch((err) => logger.warn("[sync] Failed to fire timeline/fetch-for-account event", err));
   }
 
+  // Challenge progress: fire after every sync to keep challenge progress up to date
+  inngest
+    .send({
+      name: "challenge/check-progress",
+      data: { riotAccountId: account.id, userId: account.userId },
+    })
+    .catch((err) => logger.warn("[sync] Failed to fire challenge/check-progress event", err));
+
   logger.info(
     `[sync] Done: +${newCount} new, ${skipped} skipped, ${errors.length} errors, ranked=${rankedSnapshotted}`
   );

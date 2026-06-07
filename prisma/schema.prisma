@@ -97,6 +97,9 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
+  xp               Int @default(0)
+  level            Int @default(1)
+
   accounts         Account[]
   sessions         Session[]
   profile          Profile?
@@ -107,6 +110,8 @@ model User {
   tiltAlerts       TiltAlert[]
   userAchievements UserAchievement[]
   seasonRecaps     SeasonRecap[]
+  challenges       Challenge[]
+  userChallenges   UserChallenge[]
 
   @@map("users")
 }
@@ -708,4 +713,44 @@ model ShareableCard {
   @@index([token])
   @@index([userId, createdAt(sort: Desc)])
   @@map("shareable_cards")
+}
+
+// ============================================================
+// CHALLENGES
+// Daily / weekly performance goals, AI-generated per user.
+// ============================================================
+
+model Challenge {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @db.Uuid
+  type         String   // 'daily' | 'weekly'
+  metric       String   // 'cs_per_min' | 'deaths' | 'vision_score' | 'win_streak' | 'kda'
+  targetValue  Float
+  description  String
+  xpReward     Int
+  validFrom    DateTime
+  validUntil   DateTime
+  createdAt    DateTime @default(now())
+
+  userChallenges UserChallenge[]
+  user           User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type, validFrom])
+  @@map("challenges")
+}
+
+model UserChallenge {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @db.Uuid
+  challengeId String    @db.Uuid
+  progress    Float     @default(0)
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, challengeId])
+  @@map("user_challenges")
 }

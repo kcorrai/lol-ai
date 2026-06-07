@@ -26,6 +26,8 @@ import { TopChampionsWidget } from "@/domains/analysis/components/TopChampionsWi
 import { RoleDistributionWidget } from "@/domains/analysis/components/RoleDistributionWidget";
 import { HabitDetectionCard } from "@/domains/analysis/components/HabitDetectionWidget";
 import { PatchImpactWidget } from "@/components/dashboard/PatchImpactWidget";
+import { DailyChallengeWidget } from "@/components/dashboard/DailyChallengeWidget";
+import { XpLevelWidget } from "@/components/dashboard/XpLevelWidget";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -161,6 +163,13 @@ export default function DashboardPage() {
               <div>
                 <SectionLabel>Yama Etkisi</SectionLabel>
                 <PatchImpactWidget riotAccountId={primaryId} />
+              </div>
+              <div>
+                <SectionLabel>Günlük Görevler</SectionLabel>
+                <div className="space-y-3">
+                  <XpLevelWidget />
+                  <DailyChallengeWidget />
+                </div>
               </div>
             </div>
             <div className="space-y-4 lg:col-span-3">
