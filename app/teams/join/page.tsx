@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 type State = "idle" | "loading" | "success" | "error" | "no-token";
 
-export default function TeamJoinPage() {
+function TeamJoinContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get("token");
@@ -86,5 +86,13 @@ export default function TeamJoinPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function TeamJoinPage() {
+  return (
+    <Suspense>
+      <TeamJoinContent />
+    </Suspense>
   );
 }
