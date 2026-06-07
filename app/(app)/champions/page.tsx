@@ -58,8 +58,8 @@ export default function ChampionsPage() {
   return (
     <div className="mx-auto max-w-5xl p-6">
       <PageHeader
-        title="Champion Pool"
-        subtitle="Your ranked performance by champion — sorted by win rate."
+        title="Şampiyon Havuzu"
+        subtitle="Ranked maçlarındaki şampiyon performansın — kazanma oranına göre sıralanmış."
       />
 
       {/* Tabs */}

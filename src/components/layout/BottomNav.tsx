@@ -6,11 +6,11 @@ import { LayoutDashboard, MessageCircle, Target, TrendingUp, Gamepad2 } from "lu
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { href: "/dashboard",         icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/dashboard",         icon: LayoutDashboard, label: "Ana Sayfa" },
   { href: "/counter",           icon: Target,          label: "Counter" },
   { href: "/improvement",       icon: TrendingUp,      label: "Gelişim" },
-  { href: "/coaching/chat",     icon: MessageCircle,   label: "Chat" },
-  { href: "/settings/accounts", icon: Gamepad2,        label: "Accounts" },
+  { href: "/coaching/chat",     icon: MessageCircle,   label: "Koç Chat" },
+  { href: "/settings/accounts", icon: Gamepad2,        label: "Hesaplar" },
 ] as const;
 
 export function BottomNav() {

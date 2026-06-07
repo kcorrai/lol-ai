@@ -13,9 +13,16 @@ import { useCoachingReport } from "@/hooks/useCoachingReport";
 import { useSubscription } from "@/hooks/useSubscription";
 
 const REPORT_TYPE_LABEL: Record<string, string> = {
-  session_review: "Session Review",
-  champion_focus: "Champion Focus",
-  climb_roadmap: "Climb Roadmap",
+  session_review: "Seans Değerlendirmesi",
+  champion_focus: "Şampiyon Odağı",
+  climb_roadmap: "Çıkış Planı",
+};
+
+const STATUS_LABEL: Record<string, string> = {
+  pending: "Bekliyor",
+  processing: "İşleniyor",
+  complete: "Tamamlandı",
+  failed: "Başarısız",
 };
 
 const STATUS_VARIANT = {
@@ -38,9 +45,9 @@ export default function ReportDetailPage() {
     return (
       <div className="mx-auto max-w-3xl p-6">
         <ErrorState
-          title="Report not found"
+          title="Rapor bulunamadı"
           message={
-            error?.message ?? "This report does not exist or you don't have access to it."
+            error?.message ?? "Bu rapor mevcut değil veya erişim iznin yok."
           }
           onRetry={() => refetch()}
         />
@@ -54,12 +61,12 @@ export default function ReportDetailPage() {
     <div className="mx-auto max-w-3xl p-6">
       <PageHeader
         title={REPORT_TYPE_LABEL[report.reportType] ?? report.reportType}
-        subtitle={`${new Date(report.createdAt).toLocaleString()} · ${report.matchesAnalyzed.length} matches${report.aiModelUsed ? ` · ${report.aiModelUsed}` : ""}`}
-        backHref="/dashboard"
-        backLabel="Dashboard"
+        subtitle={`${new Date(report.createdAt).toLocaleString("tr-TR")} · ${report.matchesAnalyzed.length} maç`}
+        backHref="/coaching"
+        backLabel="Raporlar"
         action={
           <Badge variant={STATUS_VARIANT[report.status] ?? "default"}>
-            {report.status}
+            {STATUS_LABEL[report.status] ?? report.status}
           </Badge>
         }
       />
@@ -68,15 +75,15 @@ export default function ReportDetailPage() {
         <div className="flex flex-col items-center justify-center rounded-lg bg-surface-2 py-12 text-center">
           <div className="mb-3 h-6 w-6 animate-spin rounded-full border-2 border-accent border-t-transparent" />
           <p className="text-sm text-text-muted">
-            AI is analyzing your matches — this takes about 15–30 seconds.
+            AI maçlarını analiz ediyor — bu işlem yaklaşık 15–30 saniye sürer.
           </p>
         </div>
       )}
 
       {report.status === "failed" && (
         <ErrorState
-          title="Report generation failed"
-          message="The AI could not complete this report. Please generate a new one."
+          title="Rapor oluşturulamadı"
+          message="AI bu raporu tamamlayamadı. Lütfen yeni bir rapor oluştur."
         />
       )}
 
