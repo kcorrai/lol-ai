@@ -28,7 +28,6 @@ import {
 } from "./referralService";
 
 const mockReferral = prisma.referral as ReturnType<typeof vi.mocked<typeof prisma.referral>>;
-const mockUser = prisma.user as ReturnType<typeof vi.mocked<typeof prisma.user>>;
 
 beforeEach(() => {
   vi.clearAllMocks();

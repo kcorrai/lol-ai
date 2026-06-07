@@ -55,7 +55,7 @@ describe("buildActivationEmail", () => {
 describe("sendActivationEmail handler", () => {
   async function runHandler(payload: { userId: string; gameName: string }) {
     const mockHandler = vi.fn(async ({ event }: { event: { data: typeof payload } }) => {
-      const { userId, gameName } = event.data;
+      const { userId } = event.data;
       const user = await prisma.user.findUnique({
         where: { id: userId },
         select: { email: true, emailVerified: true },
