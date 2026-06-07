@@ -1,26 +1,26 @@
-# TASK-054 — [F7-2] otpAssistantService + otpPrompt
+﻿# TASK-054 â€” [F7-2] otpAssistantService + otpPrompt
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 1 day
 
 ---
 
 ## Objective
 
-OTP Assistant'ın iş mantığını yaz. Bir champion ve rol için kapsamlı OTP rehberi üret: matchup tier list, ban öncelikleri, gizli mekanikler, power spike'lar, meta değerlendirmesi.
+OTP Assistant'Ä±n iÅŸ mantÄ±ÄŸÄ±nÄ± yaz. Bir champion ve rol iÃ§in kapsamlÄ± OTP rehberi Ã¼ret: matchup tier list, ban Ã¶ncelikleri, gizli mekanikler, power spike'lar, meta deÄŸerlendirmesi.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `src/domains/otp/services/otpAssistantService.ts` yazıldı
-- [ ] Cache hit durumunda AI çağrılmıyor
-- [ ] AI çıktısı Zod ile validate ediliyor
-- [ ] `matchupTierList` her kategoride en az 3 entry içermeli (Zod ile enforce et)
-- [ ] `src/domains/otp/prompts/otpPrompt.ts` yazıldı
-- [ ] Prompt "OTP koçu" perspektifinden yazılmış (diğer promptlardan farklı tone)
-- [ ] `otpAssistantService.ts` 250 satırı geçmiyor
+- [ ] `src/domains/otp/services/otpAssistantService.ts` yazÄ±ldÄ±
+- [ ] Cache hit durumunda AI Ã§aÄŸrÄ±lmÄ±yor
+- [ ] AI Ã§Ä±ktÄ±sÄ± Zod ile validate ediliyor
+- [ ] `matchupTierList` her kategoride en az 3 entry iÃ§ermeli (Zod ile enforce et)
+- [ ] `src/domains/otp/prompts/otpPrompt.ts` yazÄ±ldÄ±
+- [ ] Prompt "OTP koÃ§u" perspektifinden yazÄ±lmÄ±ÅŸ (diÄŸer promptlardan farklÄ± tone)
+- [ ] `otpAssistantService.ts` 250 satÄ±rÄ± geÃ§miyor
 - [ ] TypeScript strict
 
 ---
@@ -37,22 +37,22 @@ export async function getOtpAnalysis(
 ```
 
 Cache key: `buildCacheKey('otp', { champion: champion.toLowerCase(), role })`
-TTL: 14 gün.
+TTL: 14 gÃ¼n.
 
 ### Prompt (`otpPrompt.ts`)
 
 `buildOtpSystemPrompt()`:
-- "Sen {champion} konusunda uzmanlaşmış bir OTP koçusun. Bu şampiyonu yüzlerce saat oynadın."
-- Casual overview değil, derinlemesine OTP-specific bilgi ver.
+- "Sen {champion} konusunda uzmanlaÅŸmÄ±ÅŸ bir OTP koÃ§usun. Bu ÅŸampiyonu yÃ¼zlerce saat oynadÄ±n."
+- Casual overview deÄŸil, derinlemesine OTP-specific bilgi ver.
 
 `buildOtpUserPrompt(champion, role)`:
-- `matchupTierList`: easy (kolay), medium (eşit), hard (zor) — her kategoride en az 5 opponent
-- `banPriority`: en öncelikli 3 ban + neden
-- `hiddenMechanics`: 3-5 gizli mekanik veya interact (casual oyuncuların bilmediği)
-- `powerSpikes`: level, item veya objective bazlı 4-6 spike
+- `matchupTierList`: easy (kolay), medium (eÅŸit), hard (zor) â€” her kategoride en az 5 opponent
+- `banPriority`: en Ã¶ncelikli 3 ban + neden
+- `hiddenMechanics`: 3-5 gizli mekanik veya interact (casual oyuncularÄ±n bilmediÄŸi)
+- `powerSpikes`: level, item veya objective bazlÄ± 4-6 spike
 - `laneStrategies`: 3-5 lane strateji ipucu
-- `metaRating`: 1-10 puan, değerlendirme, patch context
-- JSON formatı talimatı
+- `metaRating`: 1-10 puan, deÄŸerlendirme, patch context
+- JSON formatÄ± talimatÄ±
 
 ### Zod Schema
 
@@ -79,7 +79,8 @@ export const otpAnalysisSchema = z.object({
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
 - TASK-037 (AiCache)
 - TASK-053 (OTP domain tipleri)
+

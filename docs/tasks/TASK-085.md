@@ -1,7 +1,7 @@
-# TASK-085 — Discord Entegrasyonu (Bot + Webhook)
+﻿# TASK-085 â€” Discord Entegrasyonu (Bot + Webhook)
 
-**Phase:** 3 — Growth & Conversion  
-**Status:** Pending  
+**Phase:** 3 â€” Growth & Conversion  
+**Status:** Done  
 **Estimated Effort:** 2 days  
 **Priority:** P2
 
@@ -9,31 +9,31 @@
 
 ## Objective
 
-İki yönlü Discord entegrasyonu: kullanıcı Discord hesabını bağlayabilsin
-ve seçtiği sunucuya/kanala otomatik bildirimler gönderilsin (rank atlama,
-rozet kazanma, haftalık özet). Opsiyonel olarak basit bir Discord bot
-komutu ekle: `/lolcoach stats` ile kullanıcının özetini döndürsün.
+Ä°ki yÃ¶nlÃ¼ Discord entegrasyonu: kullanÄ±cÄ± Discord hesabÄ±nÄ± baÄŸlayabilsin
+ve seÃ§tiÄŸi sunucuya/kanala otomatik bildirimler gÃ¶nderilsin (rank atlama,
+rozet kazanma, haftalÄ±k Ã¶zet). Opsiyonel olarak basit bir Discord bot
+komutu ekle: `/lolcoach stats` ile kullanÄ±cÄ±nÄ±n Ã¶zetini dÃ¶ndÃ¼rsÃ¼n.
 
 ---
 
 ## User Story
 
-> "Discord sunucumda arkadaşlarım var. Rank atladığımda otomatik olarak
-> oraya bir mesaj gitse çok iyi olurdu. Ayrıca /stats yazınca özetimi
-> görmek istiyorum."
+> "Discord sunucumda arkadaÅŸlarÄ±m var. Rank atladÄ±ÄŸÄ±mda otomatik olarak
+> oraya bir mesaj gitse Ã§ok iyi olurdu. AyrÄ±ca /stats yazÄ±nca Ã¶zetimi
+> gÃ¶rmek istiyorum."
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] Kullanıcı Discord OAuth2 ile hesabını bağlayabiliyor
-- [ ] Webhook URL girişi: kullanıcı kendi Discord kanalının webhook URL'ini giriyor
-- [ ] Rank atlama olayında webhook'a mesaj gönderiliyor (embed formatında)
-- [ ] Rozet kazanma olayında webhook mesajı (opsiyonel, kullanıcı seçiyor)
-- [ ] Haftalık özet bildirimi (Pazartesi sabahı)
-- [ ] Bağlantı test butonu: "Test Gönder"
-- [ ] Discord hesabı güvenli saklanıyor (webhook URL encrypted veya hashed)
-- [ ] TypeScript strict — no `any`
+- [ ] KullanÄ±cÄ± Discord OAuth2 ile hesabÄ±nÄ± baÄŸlayabiliyor
+- [ ] Webhook URL giriÅŸi: kullanÄ±cÄ± kendi Discord kanalÄ±nÄ±n webhook URL'ini giriyor
+- [ ] Rank atlama olayÄ±nda webhook'a mesaj gÃ¶nderiliyor (embed formatÄ±nda)
+- [ ] Rozet kazanma olayÄ±nda webhook mesajÄ± (opsiyonel, kullanÄ±cÄ± seÃ§iyor)
+- [ ] HaftalÄ±k Ã¶zet bildirimi (Pazartesi sabahÄ±)
+- [ ] BaÄŸlantÄ± test butonu: "Test GÃ¶nder"
+- [ ] Discord hesabÄ± gÃ¼venli saklanÄ±yor (webhook URL encrypted veya hashed)
+- [ ] TypeScript strict â€” no `any`
 
 ---
 
@@ -45,7 +45,7 @@ komutu ekle: `/lolcoach stats` ile kullanıcının özetini döndürsün.
 model DiscordIntegration {
   id               String   @id @default(uuid()) @db.Uuid
   userId           String   @unique @db.Uuid
-  discordUserId    String?  // OAuth2 ile bağlıysa
+  discordUserId    String?  // OAuth2 ile baÄŸlÄ±ysa
   discordUsername  String?
   webhookUrl       String   // encrypted
   notifyRankUp     Boolean  @default(true)
@@ -60,9 +60,9 @@ model DiscordIntegration {
 }
 ```
 
-Webhook URL şifreleme: `crypto.createCipheriv` ile AES-256, anahtar env var'dan.
+Webhook URL ÅŸifreleme: `crypto.createCipheriv` ile AES-256, anahtar env var'dan.
 
-### Webhook Gönderim Servisi
+### Webhook GÃ¶nderim Servisi
 
 ```typescript
 // src/lib/discord/webhookService.ts
@@ -82,69 +82,69 @@ interface DiscordEmbed {
 }
 ```
 
-### Rank Atlama Mesajı
+### Rank Atlama MesajÄ±
 
 ```typescript
-// Rank change event tespit edilince (rankHistory'de tier değişimi):
+// Rank change event tespit edilince (rankHistory'de tier deÄŸiÅŸimi):
 const embed = {
-  title: '🏆 Rank Atladı!',
-  description: `**${gameName}#${tagLine}** yeni ranka ulaştı!`,
-  color: 0xFFD700, // altın
+  title: 'ğŸ† Rank AtladÄ±!',
+  description: `**${gameName}#${tagLine}** yeni ranka ulaÅŸtÄ±!`,
+  color: 0xFFD700, // altÄ±n
   fields: [
-    { name: 'Önceki Rank', value: 'Gold II', inline: true },
+    { name: 'Ã–nceki Rank', value: 'Gold II', inline: true },
     { name: 'Yeni Rank', value: 'Platinum IV', inline: true },
   ],
-  footer: { text: 'lolaicoach.com · AI destekli LoL koçluğu' }
+  footer: { text: 'lolaicoach.com Â· AI destekli LoL koÃ§luÄŸu' }
 };
 ```
 
-### Rozet Kazanma Mesajı
+### Rozet Kazanma MesajÄ±
 
 ```typescript
 const embed = {
-  title: `🎖️ Yeni Rozet: ${achievement.name}`,
+  title: `ğŸ–ï¸ Yeni Rozet: ${achievement.name}`,
   description: achievement.description,
-  color: TIER_COLORS[achievement.tier], // bronz/gümüş/altın/platin
+  color: TIER_COLORS[achievement.tier], // bronz/gÃ¼mÃ¼ÅŸ/altÄ±n/platin
   thumbnail: { url: `https://lolaicoach.com/achievements/${achievement.iconSlug}` }
 };
 ```
 
-### Haftalık Özet Mesajı
+### HaftalÄ±k Ã–zet MesajÄ±
 
-Pazartesi Inngest cron'u (mevcut haftalık email ile aynı anda):
+Pazartesi Inngest cron'u (mevcut haftalÄ±k email ile aynÄ± anda):
 ```typescript
-// Mevcut weeklyEmailSender.ts ile aynı veriyi kullan
-// Email yerine Discord embed olarak gönder
+// Mevcut weeklyEmailSender.ts ile aynÄ± veriyi kullan
+// Email yerine Discord embed olarak gÃ¶nder
 ```
 
-### Ayarlar Sayfası
+### Ayarlar SayfasÄ±
 
 ```typescript
 // app/(app)/settings/discord/page.tsx
 
-Bölümler:
-1. Webhook URL girişi + "Test Gönder" butonu
-2. Bildirim tercihleri (checkbox × 3)
-3. Bağlantıyı Kaldır butonu
+BÃ¶lÃ¼mler:
+1. Webhook URL giriÅŸi + "Test GÃ¶nder" butonu
+2. Bildirim tercihleri (checkbox Ã— 3)
+3. BaÄŸlantÄ±yÄ± KaldÄ±r butonu
 ```
 
 ### API
 
 ```
-GET  /api/settings/discord          ← mevcut bağlantı durumu
-POST /api/settings/discord          ← webhook URL kaydet + tercihler
-POST /api/settings/discord/test     ← test mesajı gönder
-DELETE /api/settings/discord        ← bağlantıyı kaldır
+GET  /api/settings/discord          â† mevcut baÄŸlantÄ± durumu
+POST /api/settings/discord          â† webhook URL kaydet + tercihler
+POST /api/settings/discord/test     â† test mesajÄ± gÃ¶nder
+DELETE /api/settings/discord        â† baÄŸlantÄ±yÄ± kaldÄ±r
 ```
 
 ---
 
 ## Inngest Entegrasyonu
 
-Mevcut event'lere Discord webhook gönderimi ekle:
+Mevcut event'lere Discord webhook gÃ¶nderimi ekle:
 
 ```typescript
-// rankChange event handler'ına:
+// rankChange event handler'Ä±na:
 if (discordIntegration?.notifyRankUp) {
   await sendDiscordWebhook(decrypt(discordIntegration.webhookUrl), rankUpEmbed);
 }
@@ -160,25 +160,25 @@ if (discordIntegration?.notifyBadge) {
 ## Files
 
 ```
-prisma/schema.prisma                                    ← DiscordIntegration model
-prisma/migrations/YYYYMMDD_add_discord_integration/     ← YENİ
-src/lib/discord/webhookService.ts                       ← YENİ
-src/lib/discord/embeds.ts                               ← YENİ (embed builder'lar)
-src/lib/crypto/encrypt.ts                               ← YENİ (webhook URL şifreleme)
-app/(app)/settings/discord/page.tsx                     ← YENİ
-app/api/settings/discord/route.ts                       ← GET, POST, DELETE
-app/api/settings/discord/test/route.ts                  ← POST test mesaj
-src/hooks/useDiscordSettings.ts                         ← YENİ TanStack Query
-src/inngest/functions/achievementChecker.ts             ← Discord entegre et
-src/inngest/functions/weeklyEmailSender.ts              ← Discord webhook de gönder
+prisma/schema.prisma                                    â† DiscordIntegration model
+prisma/migrations/YYYYMMDD_add_discord_integration/     â† YENÄ°
+src/lib/discord/webhookService.ts                       â† YENÄ°
+src/lib/discord/embeds.ts                               â† YENÄ° (embed builder'lar)
+src/lib/crypto/encrypt.ts                               â† YENÄ° (webhook URL ÅŸifreleme)
+app/(app)/settings/discord/page.tsx                     â† YENÄ°
+app/api/settings/discord/route.ts                       â† GET, POST, DELETE
+app/api/settings/discord/test/route.ts                  â† POST test mesaj
+src/hooks/useDiscordSettings.ts                         â† YENÄ° TanStack Query
+src/inngest/functions/achievementChecker.ts             â† Discord entegre et
+src/inngest/functions/weeklyEmailSender.ts              â† Discord webhook de gÃ¶nder
 ```
 
 ---
 
-## Güvenlik Notu
+## GÃ¼venlik Notu
 
-- Webhook URL'ler DB'de plaintext tutulmamalı.
-- `DISCORD_ENCRYPTION_KEY` env var'ı: 32-byte random hex.
+- Webhook URL'ler DB'de plaintext tutulmamalÄ±.
+- `DISCORD_ENCRYPTION_KEY` env var'Ä±: 32-byte random hex.
 - AES-256-CBC ile encrypt/decrypt.
 - `.env.example`'a ekle.
 
@@ -186,8 +186,8 @@ src/inngest/functions/weeklyEmailSender.ts              ← Discord webhook de g
 
 ## Tier Gating
 
-- **Free:** Sadece rank atlama bildirimi, günde max 3 webhook
-- **Pro:** Tüm bildirimler, sınırsız
+- **Free:** Sadece rank atlama bildirimi, gÃ¼nde max 3 webhook
+- **Pro:** TÃ¼m bildirimler, sÄ±nÄ±rsÄ±z
 
 ---
 
@@ -195,9 +195,9 @@ src/inngest/functions/weeklyEmailSender.ts              ← Discord webhook de g
 
 ```typescript
 describe('webhookService', () => {
-  it('geçerli webhook URL → 204 response bekleniyor (mock HTTP)')
-  it('geçersiz URL → hata fırlatıyor, kullanıcıya gösteriliyor')
-  it('şifreleme/şifre çözme round-trip çalışıyor')
+  it('geÃ§erli webhook URL â†’ 204 response bekleniyor (mock HTTP)')
+  it('geÃ§ersiz URL â†’ hata fÄ±rlatÄ±yor, kullanÄ±cÄ±ya gÃ¶steriliyor')
+  it('ÅŸifreleme/ÅŸifre Ã§Ã¶zme round-trip Ã§alÄ±ÅŸÄ±yor')
 })
 ```
 
@@ -205,17 +205,18 @@ describe('webhookService', () => {
 
 ## Dependencies
 
-- Inngest ✅
+- Inngest âœ…
 - `crypto` (Node.js built-in)
-- Discord Webhook API (dış servis — test ortamında mock et)
+- Discord Webhook API (dÄ±ÅŸ servis â€” test ortamÄ±nda mock et)
 
 ---
 
 ## Definition of Done
 
-- Webhook URL kaydediliyor ve şifreleniyor
-- Test butonu Discord kanalına mesaj gönderiyor
-- Rank atlama otomatik bildirim çalışıyor
-- Ayarlar sayfası responsive
-- `docs/DATABASE_SCHEMA.md` güncellendi
-- `.env.example` güncellendi
+- Webhook URL kaydediliyor ve ÅŸifreleniyor
+- Test butonu Discord kanalÄ±na mesaj gÃ¶nderiyor
+- Rank atlama otomatik bildirim Ã§alÄ±ÅŸÄ±yor
+- Ayarlar sayfasÄ± responsive
+- `docs/DATABASE_SCHEMA.md` gÃ¼ncellendi
+- `.env.example` gÃ¼ncellendi
+

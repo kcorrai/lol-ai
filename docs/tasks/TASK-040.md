@@ -1,28 +1,28 @@
-# TASK-040 — [F3-2] generalCounterService + counterPrompt
+﻿# TASK-040 â€” [F3-2] generalCounterService + counterPrompt
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 1 day
 
 ---
 
 ## Objective
 
-Counter Pick feature'ının iş mantığını yaz. AI çağrısı yap, sonucu AiCache'e kaydet, aynı sorgu için cache'den dön. Prompt kalitesi bu feature'ın kullanıcı değerini doğrudan belirler.
+Counter Pick feature'Ä±nÄ±n iÅŸ mantÄ±ÄŸÄ±nÄ± yaz. AI Ã§aÄŸrÄ±sÄ± yap, sonucu AiCache'e kaydet, aynÄ± sorgu iÃ§in cache'den dÃ¶n. Prompt kalitesi bu feature'Ä±n kullanÄ±cÄ± deÄŸerini doÄŸrudan belirler.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `src/domains/counter/services/generalCounterService.ts` yazıldı
-- [ ] `getGeneralCounters(champion, role)` cache hit durumunda AI çağırmıyor
-- [ ] `getGeneralCounters(champion, role)` cache miss durumunda AI çağırıyor ve sonucu cache'e yazıyor
-- [ ] AI çıktısı Zod schema ile validate ediliyor; hatalı JSON düzgün handle ediliyor
-- [ ] `src/domains/counter/prompts/counterPrompt.ts` yazıldı
+- [ ] `src/domains/counter/services/generalCounterService.ts` yazÄ±ldÄ±
+- [ ] `getGeneralCounters(champion, role)` cache hit durumunda AI Ã§aÄŸÄ±rmÄ±yor
+- [ ] `getGeneralCounters(champion, role)` cache miss durumunda AI Ã§aÄŸÄ±rÄ±yor ve sonucu cache'e yazÄ±yor
+- [ ] AI Ã§Ä±ktÄ±sÄ± Zod schema ile validate ediliyor; hatalÄ± JSON dÃ¼zgÃ¼n handle ediliyor
+- [ ] `src/domains/counter/prompts/counterPrompt.ts` yazÄ±ldÄ±
 - [ ] Prompt, structured JSON output talep ediyor
-- [ ] Prompt'ta "Bu analiz AI tahminidir, gerçek win rate verisi değildir" açıklaması var
-- [ ] `generalCounterService.ts` 250 satırı geçmiyor (CLAUDE.md kuralı)
-- [ ] TypeScript strict — `any` yok
+- [ ] Prompt'ta "Bu analiz AI tahminidir, gerÃ§ek win rate verisi deÄŸildir" aÃ§Ä±klamasÄ± var
+- [ ] `generalCounterService.ts` 250 satÄ±rÄ± geÃ§miyor (CLAUDE.md kuralÄ±)
+- [ ] TypeScript strict â€” `any` yok
 
 ---
 
@@ -60,18 +60,18 @@ export async function getGeneralCounters(
 
 ### Prompt (`counterPrompt.ts`)
 
-`buildCounterSystemPrompt()`: "Sen bir League of Legends uzman koçusun..." framing.
+`buildCounterSystemPrompt()`: "Sen bir League of Legends uzman koÃ§usun..." framing.
 
 `buildCounterUserPrompt(champion, role)`:
 - `topCounters` (5 adet), `easyCounters` (3 adet), `soloQueueCounters` (3 adet) iste
-- Her counter için: `champion`, `difficulty`, `reasonWhy`, `laneAdvantage`, `watchOut`, `buildHint`, `tier`
+- Her counter iÃ§in: `champion`, `difficulty`, `reasonWhy`, `laneAdvantage`, `watchOut`, `buildHint`, `tier`
 - `tips`: genel 3-5 ipucu listesi
-- `patchNote`: sabit string "Bu analiz AI tarafından üretilmiştir. Güncel patch verilerini yansıtmayabilir."
-- JSON formatında yanıt ver talimatı
+- `patchNote`: sabit string "Bu analiz AI tarafÄ±ndan Ã¼retilmiÅŸtir. GÃ¼ncel patch verilerini yansÄ±tmayabilir."
+- JSON formatÄ±nda yanÄ±t ver talimatÄ±
 
 ### Zod Schema
 
-`counter.types.ts` dosyasına Zod import ederek schema ekle:
+`counter.types.ts` dosyasÄ±na Zod import ederek schema ekle:
 
 ```typescript
 import { z } from 'zod';
@@ -82,15 +82,16 @@ export const generalCounterResultSchema = z.object({ ... });
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
-- TASK-037 (AiCache) tamamlanmış olmalı
-- TASK-039 (Counter domain tipleri) tamamlanmış olmalı
+- TASK-037 (AiCache) tamamlanmÄ±ÅŸ olmalÄ±
+- TASK-039 (Counter domain tipleri) tamamlanmÄ±ÅŸ olmalÄ±
 
 ---
 
 ## Notlar
 
-- `aiClient.complete()` mevcut `src/lib/ai/client.ts` provider'ını kullanıyor. Yeni AI bağlantısı açma.
-- JSON parse hatası durumunda `src/lib/ai/responseParser.ts`'deki mevcut helper'ı incele — benzer pattern kullan.
-- Cache TTL 14 gün: bir League patch'i yaklaşık 14 gündür.
+- `aiClient.complete()` mevcut `src/lib/ai/client.ts` provider'Ä±nÄ± kullanÄ±yor. Yeni AI baÄŸlantÄ±sÄ± aÃ§ma.
+- JSON parse hatasÄ± durumunda `src/lib/ai/responseParser.ts`'deki mevcut helper'Ä± incele â€” benzer pattern kullan.
+- Cache TTL 14 gÃ¼n: bir League patch'i yaklaÅŸÄ±k 14 gÃ¼ndÃ¼r.
+

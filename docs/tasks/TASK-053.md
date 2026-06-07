@@ -1,49 +1,49 @@
-# TASK-053 — [F7-1] OTP Domain Kurulumu + TypeScript Tipleri
+﻿# TASK-053 â€” [F7-1] OTP Domain Kurulumu + TypeScript Tipleri
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 0.5 day
 
 ---
 
 ## Objective
 
-OTP Assistant feature'ı için domain iskeletini ve TypeScript tip tanımlarını oluştur.
+OTP Assistant feature'Ä± iÃ§in domain iskeletini ve TypeScript tip tanÄ±mlarÄ±nÄ± oluÅŸtur.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `src/domains/otp/` klasör yapısı oluşturuldu
-- [ ] `src/domains/otp/types/otp.types.ts` yazıldı
-- [ ] Tüm tipler TypeScript strict modda geçiyor
-- [ ] `src/domains/otp/index.ts` oluşturuldu
-- [ ] Component placeholder dosyaları oluşturuldu
+- [ ] `src/domains/otp/` klasÃ¶r yapÄ±sÄ± oluÅŸturuldu
+- [ ] `src/domains/otp/types/otp.types.ts` yazÄ±ldÄ±
+- [ ] TÃ¼m tipler TypeScript strict modda geÃ§iyor
+- [ ] `src/domains/otp/index.ts` oluÅŸturuldu
+- [ ] Component placeholder dosyalarÄ± oluÅŸturuldu
 
 ---
 
 ## Teknik Gereksinimler
 
-### Klasör Yapısı
+### KlasÃ¶r YapÄ±sÄ±
 
 ```
 src/domains/otp/
-├── services/
-│   └── otpAssistantService.ts
-├── prompts/
-│   └── otpPrompt.ts
-├── types/
-│   └── otp.types.ts
-├── components/
-│   ├── MatchupTierList.tsx
-│   ├── BanPriority.tsx
-│   ├── OtpTips.tsx
-│   ├── MetaRating.tsx
-│   └── OtpSkeleton.tsx
-└── index.ts
+â”œâ”€â”€ services/
+â”‚   â””â”€â”€ otpAssistantService.ts
+â”œâ”€â”€ prompts/
+â”‚   â””â”€â”€ otpPrompt.ts
+â”œâ”€â”€ types/
+â”‚   â””â”€â”€ otp.types.ts
+â”œâ”€â”€ components/
+â”‚   â”œâ”€â”€ MatchupTierList.tsx
+â”‚   â”œâ”€â”€ BanPriority.tsx
+â”‚   â”œâ”€â”€ OtpTips.tsx
+â”‚   â”œâ”€â”€ MetaRating.tsx
+â”‚   â””â”€â”€ OtpSkeleton.tsx
+â””â”€â”€ index.ts
 ```
 
-### Tip Tanımları (`otp.types.ts`)
+### Tip TanÄ±mlarÄ± (`otp.types.ts`)
 
 ```typescript
 import type { Position } from '@/types/common.types';
@@ -90,6 +90,7 @@ export interface OtpAnalysis {
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
-- Bağımsız — paralel başlanabilir.
+- BaÄŸÄ±msÄ±z â€” paralel baÅŸlanabilir.
+

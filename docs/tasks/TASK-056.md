@@ -1,22 +1,22 @@
-# TASK-056 — [F7-4] useOtpAssistant React Hook
+﻿# TASK-056 â€” [F7-4] useOtpAssistant React Hook
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 0.5 day
 
 ---
 
 ## Objective
 
-OTP sayfasının kullanacağı TanStack Query hook'unu yaz.
+OTP sayfasÄ±nÄ±n kullanacaÄŸÄ± TanStack Query hook'unu yaz.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `src/hooks/useOtpAssistant.ts` oluşturuldu
-- [ ] `champion` veya `role` null iken API çağrısı yapılmıyor
-- [ ] 7 gün stale time ile cache çalışıyor
+- [ ] `src/hooks/useOtpAssistant.ts` oluÅŸturuldu
+- [ ] `champion` veya `role` null iken API Ã§aÄŸrÄ±sÄ± yapÄ±lmÄ±yor
+- [ ] 7 gÃ¼n stale time ile cache Ã§alÄ±ÅŸÄ±yor
 - [ ] TypeScript strict
 
 ---
@@ -49,6 +49,7 @@ export function useOtpAssistant(
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
-- TASK-055 (OTP API endpoint) tamamlanmış olmalı
+- TASK-055 (OTP API endpoint) tamamlanmÄ±ÅŸ olmalÄ±
+

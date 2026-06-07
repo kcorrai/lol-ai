@@ -1,7 +1,7 @@
-# TASK-070 — Matchup Intelligence: Kişisel Matchup İstatistikleri
+﻿# TASK-070 â€” Matchup Intelligence: KiÅŸisel Matchup Ä°statistikleri
 
-**Phase:** 2 — AI Depth & Retention  
-**Status:** Pending  
+**Phase:** 2 â€” AI Depth & Retention  
+**Status:** Done  
 **Estimated Effort:** 2 days  
 **Priority:** P0
 
@@ -9,30 +9,30 @@
 
 ## Objective
 
-`personalCounterService.ts` şu an boş (`export {}`). Oyuncunun kendi maç geçmişine
-dayanarak şampiyona özel matchup win rate'leri, ban önerileri ve trend analizi
-döndüren servisi ve API endpoint'i yaz.
+`personalCounterService.ts` ÅŸu an boÅŸ (`export {}`). Oyuncunun kendi maÃ§ geÃ§miÅŸine
+dayanarak ÅŸampiyona Ã¶zel matchup win rate'leri, ban Ã¶nerileri ve trend analizi
+dÃ¶ndÃ¼ren servisi ve API endpoint'i yaz.
 
 ---
 
 ## User Story
 
-> "Ahri oynarken Yasuo'ya karşı %61 WR'ım var ama Malzahar'a karşı sadece %22.
-> Ban kararımı bu veriye göre vermek istiyorum."
+> "Ahri oynarken Yasuo'ya karÅŸÄ± %61 WR'Ä±m var ama Malzahar'a karÅŸÄ± sadece %22.
+> Ban kararÄ±mÄ± bu veriye gÃ¶re vermek istiyorum."
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `personalCounterService.ts` en az 3 maç oynanan her matchup için win rate hesaplıyor
-- [ ] Aynı lane'deki rakip şampiyon doğru tespit ediliyor (position eşleştirme)
-- [ ] `GET /api/champions/[championId]/matchups` endpoint'i çalışıyor
-- [ ] Yanıt: `best[]`, `worst[]`, `banSuggestion`, `totalMatchups` içeriyor
-- [ ] Minimum 3 maç filtresi uygulanıyor (istatistiksel güvenilirlik)
+- [ ] `personalCounterService.ts` en az 3 maÃ§ oynanan her matchup iÃ§in win rate hesaplÄ±yor
+- [ ] AynÄ± lane'deki rakip ÅŸampiyon doÄŸru tespit ediliyor (position eÅŸleÅŸtirme)
+- [ ] `GET /api/champions/[championId]/matchups` endpoint'i Ã§alÄ±ÅŸÄ±yor
+- [ ] YanÄ±t: `best[]`, `worst[]`, `banSuggestion`, `totalMatchups` iÃ§eriyor
+- [ ] Minimum 3 maÃ§ filtresi uygulanÄ±yor (istatistiksel gÃ¼venilirlik)
 - [ ] Redis cache: 1 saat TTL
-- [ ] Boş durum: yetersiz maç varsa açıklayıcı mesaj
-- [ ] TypeScript strict — no `any`
-- [ ] Unit test: hesaplama mantığı
+- [ ] BoÅŸ durum: yetersiz maÃ§ varsa aÃ§Ä±klayÄ±cÄ± mesaj
+- [ ] TypeScript strict â€” no `any`
+- [ ] Unit test: hesaplama mantÄ±ÄŸÄ±
 
 ---
 
@@ -56,7 +56,7 @@ export interface PersonalMatchupReport {
   championName: string;
   best: MatchupEntry[];    // top 5, WR desc
   worst: MatchupEntry[];   // bottom 5, WR asc
-  banSuggestion: MatchupEntry | null;  // worst WR ile en çok oynanan
+  banSuggestion: MatchupEntry | null;  // worst WR ile en Ã§ok oynanan
   totalMatchupsAnalyzed: number;
 }
 
@@ -67,10 +67,10 @@ export async function getPersonalMatchups(
 ): Promise<PersonalMatchupReport>
 ```
 
-### Sorgu Mantığı
+### Sorgu MantÄ±ÄŸÄ±
 
 ```sql
--- Oyuncunun bu şampiyonla oynadığı maçlarda karşı lane'deki rakibi bul
+-- Oyuncunun bu ÅŸampiyonla oynadÄ±ÄŸÄ± maÃ§larda karÅŸÄ± lane'deki rakibi bul
 SELECT
   opp.champion_id         AS opponent_champion_id,
   opp.champion_name       AS opponent_champion_name,
@@ -89,16 +89,16 @@ HAVING COUNT(*) >= $minGames
 ORDER BY wins::float / COUNT(*) DESC
 ```
 
-> Prisma `$queryRaw` ile yaz. CLAUDE.md: raw query gerekçesi = Prisma fluent API
+> Prisma `$queryRaw` ile yaz. CLAUDE.md: raw query gerekÃ§esi = Prisma fluent API
 > self-join + same-position filtresini tek sorguda ifade edemiyor.
 
-### Trend Hesabı
+### Trend HesabÄ±
 
-Son 5 maç WR vs önceki 5 maç WR karşılaştır:
-- `>= +15%` → `improving`
-- `<= -15%` → `declining`
-- Diğer → `stable`
-- `< 5 maç` → `insufficient_data`
+Son 5 maÃ§ WR vs Ã¶nceki 5 maÃ§ WR karÅŸÄ±laÅŸtÄ±r:
+- `>= +15%` â†’ `improving`
+- `<= -15%` â†’ `declining`
+- DiÄŸer â†’ `stable`
+- `< 5 maÃ§` â†’ `insufficient_data`
 
 ### Endpoint: `app/api/champions/[championId]/matchups/route.ts`
 
@@ -125,7 +125,7 @@ Response 422: Not enough data (< 3 games on this champion)
 ```typescript
 const cacheKey = `matchups:${riotAccountId}:${championId}`;
 // TTL: 3600s (1 saat)
-// Invalidate: yeni maç sync olduğunda
+// Invalidate: yeni maÃ§ sync olduÄŸunda
 ```
 
 ---
@@ -133,20 +133,20 @@ const cacheKey = `matchups:${riotAccountId}:${championId}`;
 ## Files
 
 ```
-src/domains/counter/services/personalCounterService.ts   ← YAZ (stub var)
-src/domains/counter/types/counter.types.ts               ← MatchupEntry, PersonalMatchupReport ekle
-src/domains/counter/index.ts                             ← export ekle
-app/api/champions/[championId]/matchups/route.ts         ← YENİ
-src/hooks/usePersonalMatchups.ts                         ← YENİ (TanStack Query)
+src/domains/counter/services/personalCounterService.ts   â† YAZ (stub var)
+src/domains/counter/types/counter.types.ts               â† MatchupEntry, PersonalMatchupReport ekle
+src/domains/counter/index.ts                             â† export ekle
+app/api/champions/[championId]/matchups/route.ts         â† YENÄ°
+src/hooks/usePersonalMatchups.ts                         â† YENÄ° (TanStack Query)
 ```
 
 ---
 
 ## Tier Gating
 
-- **Free:** En iyi ve en kötü 3 matchup (top/bottom 3)
-- **Pro:** Tüm matchuplar + ban önerisi + trend
-- **Elite:** AI açıklaması (mini model, optional prompt)
+- **Free:** En iyi ve en kÃ¶tÃ¼ 3 matchup (top/bottom 3)
+- **Pro:** TÃ¼m matchuplar + ban Ã¶nerisi + trend
+- **Elite:** AI aÃ§Ä±klamasÄ± (mini model, optional prompt)
 
 ---
 
@@ -155,11 +155,11 @@ src/hooks/usePersonalMatchups.ts                         ← YENİ (TanStack Que
 ```typescript
 // personalCounterService.test.ts
 describe('getPersonalMatchups', () => {
-  it('minimum 3 maç filtresini uygular')
-  it('win rate doğru hesaplanır')
-  it('trend: improving tespit edilir (son 5 > önceki 5)')
-  it('banSuggestion: en kötü WR ile en çok oynanan döner')
-  it('boş dizi: şampiyon üzerinde hiç maç yoksa 422 döner')
+  it('minimum 3 maÃ§ filtresini uygular')
+  it('win rate doÄŸru hesaplanÄ±r')
+  it('trend: improving tespit edilir (son 5 > Ã¶nceki 5)')
+  it('banSuggestion: en kÃ¶tÃ¼ WR ile en Ã§ok oynanan dÃ¶ner')
+  it('boÅŸ dizi: ÅŸampiyon Ã¼zerinde hiÃ§ maÃ§ yoksa 422 dÃ¶ner')
 })
 ```
 
@@ -167,15 +167,16 @@ describe('getPersonalMatchups', () => {
 
 ## Dependencies
 
-- TASK-004 (match sync) ✅ — match_participants populated
-- TASK-069 (counter UI) ✅ — counter domain yapısı hazır
+- TASK-004 (match sync) âœ… â€” match_participants populated
+- TASK-069 (counter UI) âœ… â€” counter domain yapÄ±sÄ± hazÄ±r
 
 ---
 
 ## Definition of Done
 
-- Servis tüm acceptance criteria'yı geçiyor
+- Servis tÃ¼m acceptance criteria'yÄ± geÃ§iyor
 - Endpoint Postman'da test edildi
-- Unit test coverage ≥ 80%
-- TypeScript: no `any`, strict geçiyor
-- `docs/API_DESIGN.md` güncellendi
+- Unit test coverage â‰¥ 80%
+- TypeScript: no `any`, strict geÃ§iyor
+- `docs/API_DESIGN.md` gÃ¼ncellendi
+

@@ -1,27 +1,27 @@
-# TASK-062 — [F2-2] draftAnalysisService + draftPrompt
+﻿# TASK-062 â€” [F2-2] draftAnalysisService + draftPrompt
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 1 day
 
 ---
 
 ## Objective
 
-Draft Analyzer'ın iş mantığını yaz. 10 champion'lı iki takım girişi alarak takım kompozisyon güçleri, win conditions, scaling ve risk analizi üret.
+Draft Analyzer'Ä±n iÅŸ mantÄ±ÄŸÄ±nÄ± yaz. 10 champion'lÄ± iki takÄ±m giriÅŸi alarak takÄ±m kompozisyon gÃ¼Ã§leri, win conditions, scaling ve risk analizi Ã¼ret.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `src/domains/draft/services/draftAnalysisService.ts` yazıldı
-- [ ] `analyzeDraft(input)` tüm 10 pozisyonun dolu olduğunu validate ediyor
-- [ ] Duplicate champion kontrolü yapılıyor
-- [ ] Cache hit durumunda AI çağrılmıyor (TTL: 7 gün)
-- [ ] AI çıktısı Zod ile validate ediliyor
-- [ ] `src/domains/draft/prompts/draftPrompt.ts` yazıldı
-- [ ] Prompt takım kompozisyon skorlarını 1-10 sayısal olarak talep ediyor
-- [ ] `draftAnalysisService.ts` 250 satırı geçmiyor
+- [ ] `src/domains/draft/services/draftAnalysisService.ts` yazÄ±ldÄ±
+- [ ] `analyzeDraft(input)` tÃ¼m 10 pozisyonun dolu olduÄŸunu validate ediyor
+- [ ] Duplicate champion kontrolÃ¼ yapÄ±lÄ±yor
+- [ ] Cache hit durumunda AI Ã§aÄŸrÄ±lmÄ±yor (TTL: 7 gÃ¼n)
+- [ ] AI Ã§Ä±ktÄ±sÄ± Zod ile validate ediliyor
+- [ ] `src/domains/draft/prompts/draftPrompt.ts` yazÄ±ldÄ±
+- [ ] Prompt takÄ±m kompozisyon skorlarÄ±nÄ± 1-10 sayÄ±sal olarak talep ediyor
+- [ ] `draftAnalysisService.ts` 250 satÄ±rÄ± geÃ§miyor
 - [ ] TypeScript strict
 
 ---
@@ -37,8 +37,8 @@ export async function analyzeDraft(input: DraftInput): Promise<DraftAnalysis>
 Validation:
 ```typescript
 const positions: Position[] = ['TOP', 'JUNGLE', 'MIDDLE', 'BOTTOM', 'UTILITY'];
-// Her iki takımda tüm pozisyonlar dolu olmalı
-// Tüm 10 champion unique olmalı (set check)
+// Her iki takÄ±mda tÃ¼m pozisyonlar dolu olmalÄ±
+// TÃ¼m 10 champion unique olmalÄ± (set check)
 ```
 
 Cache key:
@@ -50,27 +50,28 @@ const allChampions = [
 buildCacheKey('draft', { champions: allChampions.join(',') })
 ```
 
-TTL: 7 gün (draft meta daha hızlı değişir).
+TTL: 7 gÃ¼n (draft meta daha hÄ±zlÄ± deÄŸiÅŸir).
 
 ### Prompt (`draftPrompt.ts`)
 
 `buildDraftUserPrompt(blueTeam, redTeam)`:
 
-Pozisyon bazlı iki takımı listele, ardından şunları iste:
-- `blueTeamComposition` ve `redTeamComposition`: 5 metrik 1-10 arası + summary
-- `blueWinConditions[]` ve `redWinConditions[]`: primary + secondary, nasıl elde edilir
-- `blueScaling` ve `redScaling`: early/mid/late skor + açıklama
-- `keyMatchups[]`: kritik 1v1 veya lane eşleşmeleri (maks 3)
-- `risks[]`: her iki takım için zayıflıklar
-- `verdict`: tarafsız sonuç cümlesi
+Pozisyon bazlÄ± iki takÄ±mÄ± listele, ardÄ±ndan ÅŸunlarÄ± iste:
+- `blueTeamComposition` ve `redTeamComposition`: 5 metrik 1-10 arasÄ± + summary
+- `blueWinConditions[]` ve `redWinConditions[]`: primary + secondary, nasÄ±l elde edilir
+- `blueScaling` ve `redScaling`: early/mid/late skor + aÃ§Ä±klama
+- `keyMatchups[]`: kritik 1v1 veya lane eÅŸleÅŸmeleri (maks 3)
+- `risks[]`: her iki takÄ±m iÃ§in zayÄ±flÄ±klar
+- `verdict`: tarafsÄ±z sonuÃ§ cÃ¼mlesi
 
 ### Zod Schema
 
-`draftAnalysisSchema` — `draft.types.ts` içine ekle. `TeamComposition` için 5 metriğin 1-10 arası olduğunu enforce et.
+`draftAnalysisSchema` â€” `draft.types.ts` iÃ§ine ekle. `TeamComposition` iÃ§in 5 metriÄŸin 1-10 arasÄ± olduÄŸunu enforce et.
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
 - TASK-037 (AiCache)
 - TASK-061 (Draft domain tipleri)
+

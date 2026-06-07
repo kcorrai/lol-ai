@@ -1,25 +1,25 @@
-# TASK-042 — [F3-4] useGeneralCounterPick React Hook
+﻿# TASK-042 â€” [F3-4] useGeneralCounterPick React Hook
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 0.5 day
 
 ---
 
 ## Objective
 
-Counter Pick sayfasının kullanacağı TanStack Query hook'unu yaz. Champion ve rol seçildikten sonra otomatik tetiklenmeli, sonuç uzun süre cache'de kalmalı.
+Counter Pick sayfasÄ±nÄ±n kullanacaÄŸÄ± TanStack Query hook'unu yaz. Champion ve rol seÃ§ildikten sonra otomatik tetiklenmeli, sonuÃ§ uzun sÃ¼re cache'de kalmalÄ±.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `src/hooks/useGeneralCounterPick.ts` oluşturuldu
-- [ ] `champion` veya `role` null iken API çağrısı yapılmıyor
-- [ ] Her ikisi de dolu olduğunda otomatik fetch başlıyor
-- [ ] Aynı (champion, role) kombinasyonu için 7 gün içinde tekrar API çağrısı yapılmıyor
-- [ ] `isLoading`, `isError`, `error`, `data` state'leri doğru döndürülüyor
-- [ ] Mevcut hook pattern'leri ile tutarlı (diğer `src/hooks/` dosyalarına bak)
+- [ ] `src/hooks/useGeneralCounterPick.ts` oluÅŸturuldu
+- [ ] `champion` veya `role` null iken API Ã§aÄŸrÄ±sÄ± yapÄ±lmÄ±yor
+- [ ] Her ikisi de dolu olduÄŸunda otomatik fetch baÅŸlÄ±yor
+- [ ] AynÄ± (champion, role) kombinasyonu iÃ§in 7 gÃ¼n iÃ§inde tekrar API Ã§aÄŸrÄ±sÄ± yapÄ±lmÄ±yor
+- [ ] `isLoading`, `isError`, `error`, `data` state'leri doÄŸru dÃ¶ndÃ¼rÃ¼lÃ¼yor
+- [ ] Mevcut hook pattern'leri ile tutarlÄ± (diÄŸer `src/hooks/` dosyalarÄ±na bak)
 - [ ] TypeScript strict
 
 ---
@@ -43,8 +43,8 @@ export function useGeneralCounterPick(
         .then(res => res.json())
         .then(data => data.data),
     enabled: !!champion && !!role,
-    staleTime: 1000 * 60 * 60 * 24 * 7,   // 7 gün
-    gcTime: 1000 * 60 * 60 * 24 * 14,     // 14 gün
+    staleTime: 1000 * 60 * 60 * 24 * 7,   // 7 gÃ¼n
+    gcTime: 1000 * 60 * 60 * 24 * 14,     // 14 gÃ¼n
     retry: 1,
   });
 }
@@ -52,13 +52,14 @@ export function useGeneralCounterPick(
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
-- TASK-041 (Counter API endpoint) tamamlanmış olmalı
+- TASK-041 (Counter API endpoint) tamamlanmÄ±ÅŸ olmalÄ±
 
 ---
 
 ## Notlar
 
-- `data.data` — mevcut `apiSuccess` envelope `{ data: ... }` formatında döndürüyor.
-- Hook dosyası 50 satırı geçmemeli; karmaşık logic servis katmanında.
+- `data.data` â€” mevcut `apiSuccess` envelope `{ data: ... }` formatÄ±nda dÃ¶ndÃ¼rÃ¼yor.
+- Hook dosyasÄ± 50 satÄ±rÄ± geÃ§memeli; karmaÅŸÄ±k logic servis katmanÄ±nda.
+

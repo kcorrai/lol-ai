@@ -1,23 +1,23 @@
-# TASK-048 — [F1-4] useMatchupAnalysis React Hook
+﻿# TASK-048 â€” [F1-4] useMatchupAnalysis React Hook
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 0.5 day
 
 ---
 
 ## Objective
 
-Matchup sayfasının kullanacağı TanStack Query mutation hook'unu yaz. Kullanıcı "Analiz Et" butonuna basınca tetiklenir, sonuç query cache'e yazılır.
+Matchup sayfasÄ±nÄ±n kullanacaÄŸÄ± TanStack Query mutation hook'unu yaz. KullanÄ±cÄ± "Analiz Et" butonuna basÄ±nca tetiklenir, sonuÃ§ query cache'e yazÄ±lÄ±r.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `src/hooks/useMatchupAnalysis.ts` oluşturuldu
-- [ ] `analyze(champion, opponent, role)` çağrısı POST isteği gönderiyor
-- [ ] Mutation sonucu `queryClient.setQueryData` ile cache'e yazılıyor
-- [ ] Aynı kombinasyon için cache'den hızlı dönüş yapılıyor
+- [ ] `src/hooks/useMatchupAnalysis.ts` oluÅŸturuldu
+- [ ] `analyze(champion, opponent, role)` Ã§aÄŸrÄ±sÄ± POST isteÄŸi gÃ¶nderiyor
+- [ ] Mutation sonucu `queryClient.setQueryData` ile cache'e yazÄ±lÄ±yor
+- [ ] AynÄ± kombinasyon iÃ§in cache'den hÄ±zlÄ± dÃ¶nÃ¼ÅŸ yapÄ±lÄ±yor
 - [ ] `reset()` fonksiyonu data ve error state'ini temizliyor
 - [ ] TypeScript strict
 
@@ -70,6 +70,7 @@ export function useMatchupAnalysis() {
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
-- TASK-047 (Matchup API endpoint) tamamlanmış olmalı
+- TASK-047 (Matchup API endpoint) tamamlanmÄ±ÅŸ olmalÄ±
+

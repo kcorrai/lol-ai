@@ -1,7 +1,7 @@
-# TASK-079 — Görsel Matchup Matrisi (Champion Pool)
+﻿# TASK-079 â€” GÃ¶rsel Matchup Matrisi (Champion Pool)
 
-**Phase:** 3 — Growth & Conversion  
-**Status:** Pending  
+**Phase:** 3 â€” Growth & Conversion  
+**Status:** Done  
 **Estimated Effort:** 2 days  
 **Priority:** P1
 
@@ -9,46 +9,46 @@
 
 ## Objective
 
-Champion pool sayfasına kullanıcının hangi şampiyonla kime karşı iyi/kötü oynadığını
-gösteren interaktif bir ısı haritası matrisi ekle. Her hücre: o matchup'taki win rate.
-Hücreye tıklanınca AI matchup rehberi açılır. "Global ortalama vs senin oranın" toggle'ı.
+Champion pool sayfasÄ±na kullanÄ±cÄ±nÄ±n hangi ÅŸampiyonla kime karÅŸÄ± iyi/kÃ¶tÃ¼ oynadÄ±ÄŸÄ±nÄ±
+gÃ¶steren interaktif bir Ä±sÄ± haritasÄ± matrisi ekle. Her hÃ¼cre: o matchup'taki win rate.
+HÃ¼creye tÄ±klanÄ±nca AI matchup rehberi aÃ§Ä±lÄ±r. "Global ortalama vs senin oranÄ±n" toggle'Ä±.
 
 ---
 
 ## User Story
 
-> "Ahri oynuyorum ama Zed karşısında sürekli kaybediyorum. Hangi matchup'larda
-> güçlüyüm hangilerinde zayıfım tek bakışta görmek istiyorum."
+> "Ahri oynuyorum ama Zed karÅŸÄ±sÄ±nda sÃ¼rekli kaybediyorum. Hangi matchup'larda
+> gÃ¼Ã§lÃ¼yÃ¼m hangilerinde zayÄ±fÄ±m tek bakÄ±ÅŸta gÃ¶rmek istiyorum."
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] Champion pool sayfasında "Matchup Matrisi" sekmesi var
-- [ ] Satır: kullanıcının oynadığı şampiyonlar (min 3 maç)
-- [ ] Sütun: karşılaşılan düşman şampiyonlar (mid lane için lane karşısındaki)
-- [ ] Hücreler: WR yüzdesi, renk kodlu (kırmızı < %45, sarı %45-55, yeşil > %55)
-- [ ] Min sample size: hücre başına 3 maç — altındaysa gri "?" göster
-- [ ] Hover: maç sayısı ve KDA tooltip
-- [ ] Tıklama: AI matchup rehberi side panel/modal açılır
-- [ ] "Global Ortalama vs Benim" toggle — global DDragon/op.gg verisi yoksa sadece kişisel
-- [ ] Filtre: lane seçimi (Mid, Top, Jungle, ADC, Support)
-- [ ] Mobile: yatay scroll ile görünür
-- [ ] TypeScript strict — no `any`
+- [ ] Champion pool sayfasÄ±nda "Matchup Matrisi" sekmesi var
+- [ ] SatÄ±r: kullanÄ±cÄ±nÄ±n oynadÄ±ÄŸÄ± ÅŸampiyonlar (min 3 maÃ§)
+- [ ] SÃ¼tun: karÅŸÄ±laÅŸÄ±lan dÃ¼ÅŸman ÅŸampiyonlar (mid lane iÃ§in lane karÅŸÄ±sÄ±ndaki)
+- [ ] HÃ¼creler: WR yÃ¼zdesi, renk kodlu (kÄ±rmÄ±zÄ± < %45, sarÄ± %45-55, yeÅŸil > %55)
+- [ ] Min sample size: hÃ¼cre baÅŸÄ±na 3 maÃ§ â€” altÄ±ndaysa gri "?" gÃ¶ster
+- [ ] Hover: maÃ§ sayÄ±sÄ± ve KDA tooltip
+- [ ] TÄ±klama: AI matchup rehberi side panel/modal aÃ§Ä±lÄ±r
+- [ ] "Global Ortalama vs Benim" toggle â€” global DDragon/op.gg verisi yoksa sadece kiÅŸisel
+- [ ] Filtre: lane seÃ§imi (Mid, Top, Jungle, ADC, Support)
+- [ ] Mobile: yatay scroll ile gÃ¶rÃ¼nÃ¼r
+- [ ] TypeScript strict â€” no `any`
 
 ---
 
 ## Technical Approach
 
-### Veri Kaynağı
+### Veri KaynaÄŸÄ±
 
-`match_participants` tablosundan türetilecek. Mevcut match verisi:
-- `championName` — kullanıcının şampiyonu
-- `matchId` — aynı maçtaki rakip şampiyon için join lazım
+`match_participants` tablosundan tÃ¼retilecek. Mevcut match verisi:
+- `championName` â€” kullanÄ±cÄ±nÄ±n ÅŸampiyonu
+- `matchId` â€” aynÄ± maÃ§taki rakip ÅŸampiyon iÃ§in join lazÄ±m
 
-Rakip şampiyonu bulmak için aynı maçtaki karşı lane oyuncusunu bul:
+Rakip ÅŸampiyonu bulmak iÃ§in aynÄ± maÃ§taki karÅŸÄ± lane oyuncusunu bul:
 ```typescript
-// Basit yaklaşım: aynı maç, farklı team, aynı individualPosition
+// Basit yaklaÅŸÄ±m: aynÄ± maÃ§, farklÄ± team, aynÄ± individualPosition
 const opponents = await prisma.matchParticipant.findMany({
   where: {
     matchId: { in: userMatchIds },
@@ -74,8 +74,8 @@ export interface MatchupCell {
 }
 
 export interface MatchupMatrix {
-  playerChampions: string[];  // satırlar
-  opponentChampions: string[]; // sütunlar
+  playerChampions: string[];  // satÄ±rlar
+  opponentChampions: string[]; // sÃ¼tunlar
   cells: MatchupCell[];
   generatedAt: string;
 }
@@ -91,22 +91,22 @@ Sonucu 6 saat cache'le (Redis):
 
 ### AI Matchup Rehberi
 
-Hücreye tıklanınca:
+HÃ¼creye tÄ±klanÄ±nca:
 ```typescript
 // app/api/analysis/matchup-guide/route.ts
 // POST { playerChampion, opponentChampion, userStats: MatchupCell }
-// AI: Türkçe, 3-4 bullet point matchup rehberi
-// Cache: 7 gün (aynı matchup için)
+// AI: TÃ¼rkÃ§e, 3-4 bullet point matchup rehberi
+// Cache: 7 gÃ¼n (aynÄ± matchup iÃ§in)
 ```
 
 AI Prompt:
 ```
-Oyuncu {playerChampion} ile {opponentChampion} karşısında {wins}W/{losses}L oynuyor.
-KDA ortalaması {kda}. Türkçe, 4 bullet point matchup rehberi yaz:
+Oyuncu {playerChampion} ile {opponentChampion} karÅŸÄ±sÄ±nda {wins}W/{losses}L oynuyor.
+KDA ortalamasÄ± {kda}. TÃ¼rkÃ§e, 4 bullet point matchup rehberi yaz:
 - En iyi level 1-3 stratejisi
-- Kaçınılması gereken 1 hata
-- En iyi gank zamanı (eğer varsa)
-- Geç oyun önceliği
+- KaÃ§Ä±nÄ±lmasÄ± gereken 1 hata
+- En iyi gank zamanÄ± (eÄŸer varsa)
+- GeÃ§ oyun Ã¶nceliÄŸi
 ```
 
 ### Frontend: Matchup Matrix Component
@@ -114,7 +114,7 @@ KDA ortalaması {kda}. Türkçe, 4 bullet point matchup rehberi yaz:
 ```typescript
 // src/domains/champions/components/MatchupMatrix.tsx
 
-// Virtualized grid — çok fazla şampiyon olabilir
+// Virtualized grid â€” Ã§ok fazla ÅŸampiyon olabilir
 // react-table veya custom CSS grid
 // Renk: tailwind bg-red-500/bg-yellow-500/bg-green-500 opacity ile
 ```
@@ -126,21 +126,21 @@ Ahri | 58%  |  44% |   61%  |  52%   | 38%  |
 Vic  | 71%  |  55% |   48%  |   -    | 67%  |
 ```
 
-Renk skalası:
-- ≥ 60%: `bg-green-500/70`
+Renk skalasÄ±:
+- â‰¥ 60%: `bg-green-500/70`
 - 50-59%: `bg-green-300/50`
 - 45-49%: `bg-yellow-400/50`
 - 40-44%: `bg-red-400/50`
 - < 40%: `bg-red-600/70`
-- < 3 maç: `bg-gray-700` + "?"
+- < 3 maÃ§: `bg-gray-700` + "?"
 
 ### Matchup Guide Side Panel
 
 ```typescript
 // src/domains/champions/components/MatchupGuidePanel.tsx
-// Sheet component (shadcn/ui) — sağdan kayar
-// Yüklenirken skeleton
-// İçerik: bullet list + "Bu rehberi kaydet" butonu (pro feature)
+// Sheet component (shadcn/ui) â€” saÄŸdan kayar
+// YÃ¼klenirken skeleton
+// Ä°Ã§erik: bullet list + "Bu rehberi kaydet" butonu (pro feature)
 ```
 
 ---
@@ -148,24 +148,24 @@ Renk skalası:
 ## Files
 
 ```
-src/domains/analysis/services/matchupService.ts              ← YENİ
-app/api/analysis/matchup-matrix/route.ts                     ← GET matrix
-app/api/analysis/matchup-guide/route.ts                      ← POST AI guide
-src/domains/champions/components/MatchupMatrix.tsx            ← YENİ (max 200 satır)
-src/domains/champions/components/MatchupMatrixCell.tsx        ← YENİ
-src/domains/champions/components/MatchupGuidePanel.tsx        ← YENİ
-src/hooks/useMatchupMatrix.ts                                 ← YENİ TanStack Query
-src/hooks/useMatchupGuide.ts                                  ← YENİ TanStack Query
-app/(app)/champions/page.tsx                                  ← "Matchup Matrisi" sekmesi
+src/domains/analysis/services/matchupService.ts              â† YENÄ°
+app/api/analysis/matchup-matrix/route.ts                     â† GET matrix
+app/api/analysis/matchup-guide/route.ts                      â† POST AI guide
+src/domains/champions/components/MatchupMatrix.tsx            â† YENÄ° (max 200 satÄ±r)
+src/domains/champions/components/MatchupMatrixCell.tsx        â† YENÄ°
+src/domains/champions/components/MatchupGuidePanel.tsx        â† YENÄ°
+src/hooks/useMatchupMatrix.ts                                 â† YENÄ° TanStack Query
+src/hooks/useMatchupGuide.ts                                  â† YENÄ° TanStack Query
+app/(app)/champions/page.tsx                                  â† "Matchup Matrisi" sekmesi
 ```
 
 ---
 
 ## Tier Gating
 
-- **Free:** Sadece en çok oynanan 3 şampiyon, AI guide kilitli
-- **Pro:** Tüm matris + AI matchup rehberleri
-- **Elite:** Global ortalama karşılaştırması (ileride)
+- **Free:** Sadece en Ã§ok oynanan 3 ÅŸampiyon, AI guide kilitli
+- **Pro:** TÃ¼m matris + AI matchup rehberleri
+- **Elite:** Global ortalama karÅŸÄ±laÅŸtÄ±rmasÄ± (ileride)
 
 ---
 
@@ -173,10 +173,10 @@ app/(app)/champions/page.tsx                                  ← "Matchup Matri
 
 ```typescript
 describe('matchupService', () => {
-  it('buildMatchupMatrix: 3+ maç olan hücreler doğru WR hesaplıyor')
-  it('3 maçtan az → gamesPlayed < 3 flagleniyor')
-  it('farklı position için filtre çalışıyor')
-  it('aynı riotAccountId → Redis cache hit ikinci çağrıda')
+  it('buildMatchupMatrix: 3+ maÃ§ olan hÃ¼creler doÄŸru WR hesaplÄ±yor')
+  it('3 maÃ§tan az â†’ gamesPlayed < 3 flagleniyor')
+  it('farklÄ± position iÃ§in filtre Ã§alÄ±ÅŸÄ±yor')
+  it('aynÄ± riotAccountId â†’ Redis cache hit ikinci Ã§aÄŸrÄ±da')
 })
 ```
 
@@ -184,17 +184,18 @@ describe('matchupService', () => {
 
 ## Dependencies
 
-- `match_participants` tablosu ✅
-- Redis (Upstash) ✅
-- `src/lib/ai/` ✅
+- `match_participants` tablosu âœ…
+- Redis (Upstash) âœ…
+- `src/lib/ai/` âœ…
 
 ---
 
 ## Definition of Done
 
-- Matris champion pool sayfasında görünüyor
-- Renk kodlama doğru çalışıyor
-- AI matchup guide panel açılıyor
-- Mobile yatay scroll çalışıyor
-- Unit test coverage ≥ 80%
-- `docs/API_DESIGN.md` güncellendi
+- Matris champion pool sayfasÄ±nda gÃ¶rÃ¼nÃ¼yor
+- Renk kodlama doÄŸru Ã§alÄ±ÅŸÄ±yor
+- AI matchup guide panel aÃ§Ä±lÄ±yor
+- Mobile yatay scroll Ã§alÄ±ÅŸÄ±yor
+- Unit test coverage â‰¥ 80%
+- `docs/API_DESIGN.md` gÃ¼ncellendi
+

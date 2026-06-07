@@ -1,27 +1,27 @@
-# TASK-059 — [F4-1] buildExplanationService (Match-Specific Pivot)
+﻿# TASK-059 â€” [F4-1] buildExplanationService (Match-Specific Pivot)
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 1 day
 
 ---
 
 ## Objective
 
-Kullanıcının kendi maçındaki gerçek buildi AI ile analiz et. Hangi itemler iyi, hangisi kötüydü ve neden? Güncel meta bilgisi gerektirmez — elimizdeki gerçek maç datasını kullan.
+KullanÄ±cÄ±nÄ±n kendi maÃ§Ä±ndaki gerÃ§ek buildi AI ile analiz et. Hangi itemler iyi, hangisi kÃ¶tÃ¼ydÃ¼ ve neden? GÃ¼ncel meta bilgisi gerektirmez â€” elimizdeki gerÃ§ek maÃ§ datasÄ±nÄ± kullan.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `src/domains/match/services/buildExplanationService.ts` yazıldı
-- [ ] `explainBuild(matchId, participantPuuid)` Prisma'dan gerçek match datasını çekiyor
-- [ ] Rakip takım kompozisyonu analize dahil ediliyor
-- [ ] Cache hit durumunda AI çağrılmıyor (TTL: 30 gün — maç verisi değişmez)
-- [ ] AI çıktısı Zod ile validate ediliyor
-- [ ] `src/domains/match/prompts/buildExplanationPrompt.ts` yazıldı
-- [ ] `BuildExplanation` tipi `src/domains/match/types/` klasörüne eklendi
-- [ ] Servis 250 satırı geçmiyor
+- [ ] `src/domains/match/services/buildExplanationService.ts` yazÄ±ldÄ±
+- [ ] `explainBuild(matchId, participantPuuid)` Prisma'dan gerÃ§ek match datasÄ±nÄ± Ã§ekiyor
+- [ ] Rakip takÄ±m kompozisyonu analize dahil ediliyor
+- [ ] Cache hit durumunda AI Ã§aÄŸrÄ±lmÄ±yor (TTL: 30 gÃ¼n â€” maÃ§ verisi deÄŸiÅŸmez)
+- [ ] AI Ã§Ä±ktÄ±sÄ± Zod ile validate ediliyor
+- [ ] `src/domains/match/prompts/buildExplanationPrompt.ts` yazÄ±ldÄ±
+- [ ] `BuildExplanation` tipi `src/domains/match/types/` klasÃ¶rÃ¼ne eklendi
+- [ ] Servis 250 satÄ±rÄ± geÃ§miyor
 - [ ] TypeScript strict
 
 ---
@@ -60,8 +60,8 @@ export async function explainBuild(
 Veri toplama:
 ```typescript
 // MatchParticipant'tan item1-item6 + champion
-// Match'ten rakip takım pozisyon + champion listesi
-// Oyun süresi, kazanan takım
+// Match'ten rakip takÄ±m pozisyon + champion listesi
+// Oyun sÃ¼resi, kazanan takÄ±m
 const participant = await prisma.matchParticipant.findFirst({
   where: { matchId, /* puuid veya riotAccountId ile */ },
   include: { match: { include: { participants: true } } },
@@ -69,21 +69,22 @@ const participant = await prisma.matchParticipant.findFirst({
 ```
 
 Cache key: `buildCacheKey('build-explanation', { matchId, participantPuuid })`
-TTL: 30 gün (maç datası değişmez).
+TTL: 30 gÃ¼n (maÃ§ datasÄ± deÄŸiÅŸmez).
 
 ### Prompt (`buildExplanationPrompt.ts`)
 
 `buildBuildExplanationPrompt(participant, enemyTeam)`:
-- Oyuncunun champion'ını ve aldığı 6 itemi listele
-- Rakip takım champion'larını liste olarak ver
-- Oyun süresini ve kazananı ver
-- "Her item için: iyi seçim miydi, neden, alternatif neydi?" sorusu
-- `buildPath`: "Bu oyun için ideal build sırası ne olurdu?" sorusu
-- `biggestMistake`: "Bu builddeki en büyük hata neydi?" sorusu
+- Oyuncunun champion'Ä±nÄ± ve aldÄ±ÄŸÄ± 6 itemi listele
+- Rakip takÄ±m champion'larÄ±nÄ± liste olarak ver
+- Oyun sÃ¼resini ve kazananÄ± ver
+- "Her item iÃ§in: iyi seÃ§im miydi, neden, alternatif neydi?" sorusu
+- `buildPath`: "Bu oyun iÃ§in ideal build sÄ±rasÄ± ne olurdu?" sorusu
+- `biggestMistake`: "Bu builddeki en bÃ¼yÃ¼k hata neydi?" sorusu
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
 - TASK-037 (AiCache)
-- Mevcut `src/domains/match/` domain'i — yeni dosyalar eklenecek, var olanlar değişmeyecek.
+- Mevcut `src/domains/match/` domain'i â€” yeni dosyalar eklenecek, var olanlar deÄŸiÅŸmeyecek.
+

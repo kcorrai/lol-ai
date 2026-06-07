@@ -1,51 +1,52 @@
-# TASK-050 — [F1-6] Matchup Coach Unit Testleri
+﻿# TASK-050 â€” [F1-6] Matchup Coach Unit Testleri
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 0.5 day
 
 ---
 
 ## Objective
 
-`matchupAnalysisService` ve `matchupPrompt` için unit testleri yaz.
+`matchupAnalysisService` ve `matchupPrompt` iÃ§in unit testleri yaz.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `src/domains/matchup/services/matchupAnalysisService.test.ts` yazıldı ve geçiyor
-- [ ] `src/domains/matchup/prompts/matchupPrompt.test.ts` yazıldı ve geçiyor
-- [ ] Gerçek AI veya DB çağrısı yok (mock)
-- [ ] Coverage: servis için minimum %80
+- [ ] `src/domains/matchup/services/matchupAnalysisService.test.ts` yazÄ±ldÄ± ve geÃ§iyor
+- [ ] `src/domains/matchup/prompts/matchupPrompt.test.ts` yazÄ±ldÄ± ve geÃ§iyor
+- [ ] GerÃ§ek AI veya DB Ã§aÄŸrÄ±sÄ± yok (mock)
+- [ ] Coverage: servis iÃ§in minimum %80
 
 ---
 
-## Test Senaryoları
+## Test SenaryolarÄ±
 
 ### `matchupAnalysisService.test.ts`
 
 ```
-✓ Yasuo vs Zed Mid → MatchupAnalysis döner (tüm alanlar dolu)
-✓ cache hit → aiClient.complete() çağrılmaz
-✓ cache miss → aiClient.complete() çağrılır, setCached çalışır
-✓ yasuo vs yasuo → Error('İki farklı şampiyon seçilmelidir') fırlatır
-✓ AI malformed JSON → ZodError fırlatır
-✓ AI hata → propagate edilir
+âœ“ Yasuo vs Zed Mid â†’ MatchupAnalysis dÃ¶ner (tÃ¼m alanlar dolu)
+âœ“ cache hit â†’ aiClient.complete() Ã§aÄŸrÄ±lmaz
+âœ“ cache miss â†’ aiClient.complete() Ã§aÄŸrÄ±lÄ±r, setCached Ã§alÄ±ÅŸÄ±r
+âœ“ yasuo vs yasuo â†’ Error('Ä°ki farklÄ± ÅŸampiyon seÃ§ilmelidir') fÄ±rlatÄ±r
+âœ“ AI malformed JSON â†’ ZodError fÄ±rlatÄ±r
+âœ“ AI hata â†’ propagate edilir
 ```
 
 ### `matchupPrompt.test.ts`
 
 ```
-✓ champion adı prompt'ta geçiyor
-✓ opponent adı prompt'ta geçiyor
-✓ role string olarak prompt'ta geçiyor
-✓ 'laneAnalysis', 'tradeGuide', 'buildAdvice', 'criticalMistakes' kelimeleri var
-✓ JSON format talimatı var
+âœ“ champion adÄ± prompt'ta geÃ§iyor
+âœ“ opponent adÄ± prompt'ta geÃ§iyor
+âœ“ role string olarak prompt'ta geÃ§iyor
+âœ“ 'laneAnalysis', 'tradeGuide', 'buildAdvice', 'criticalMistakes' kelimeleri var
+âœ“ JSON format talimatÄ± var
 ```
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
-- TASK-046 (matchupAnalysisService + prompt) tamamlanmış olmalı
+- TASK-046 (matchupAnalysisService + prompt) tamamlanmÄ±ÅŸ olmalÄ±
+

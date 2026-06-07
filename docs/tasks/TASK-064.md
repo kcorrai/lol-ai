@@ -1,21 +1,21 @@
-# TASK-064 — [F2-4] useDraftAnalysis React Hook
+﻿# TASK-064 â€” [F2-4] useDraftAnalysis React Hook
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 0.5 day
 
 ---
 
 ## Objective
 
-Draft Analyzer sayfasının kullanacağı TanStack Query mutation hook'unu yaz.
+Draft Analyzer sayfasÄ±nÄ±n kullanacaÄŸÄ± TanStack Query mutation hook'unu yaz.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `src/hooks/useDraftAnalysis.ts` oluşturuldu
-- [ ] `analyze(input)` POST isteği gönderiyor
+- [ ] `src/hooks/useDraftAnalysis.ts` oluÅŸturuldu
+- [ ] `analyze(input)` POST isteÄŸi gÃ¶nderiyor
 - [ ] `reset()` sonucu temizliyor
 - [ ] TypeScript strict
 
@@ -55,6 +55,7 @@ export function useDraftAnalysis() {
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
-- TASK-063 (Draft API endpoint) tamamlanmış olmalı
+- TASK-063 (Draft API endpoint) tamamlanmÄ±ÅŸ olmalÄ±
+

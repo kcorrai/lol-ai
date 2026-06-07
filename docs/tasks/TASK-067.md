@@ -1,35 +1,35 @@
-# TASK-067 — [NAV] Sidebar Navigasyon Güncellemesi
+﻿# TASK-067 â€” [NAV] Sidebar Navigasyon GÃ¼ncellemesi
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 0.5 day
 
 ---
 
 ## Objective
 
-Tüm yeni sayfalar tamamlandıktan sonra sidebar ve mobil navigasyonu güncelle. `docs/PROJECT_STRUCTURE.md` dokümanını yeni sayfalarla güncelle.
+TÃ¼m yeni sayfalar tamamlandÄ±ktan sonra sidebar ve mobil navigasyonu gÃ¼ncelle. `docs/PROJECT_STRUCTURE.md` dokÃ¼manÄ±nÄ± yeni sayfalarla gÃ¼ncelle.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] Sidebar'a 4 yeni nav öğesi eklendi
-- [ ] Her nav öğesi doğru path'e yönlendiriyor
-- [ ] İkonlar tutarlı (Lucide React kullanılıyor)
-- [ ] Mobile `BottomNav`'a en önemli 2 yeni sayfa eklendi
-- [ ] Aktif route highlight çalışıyor (mevcut pattern korundu)
-- [ ] `docs/PROJECT_STRUCTURE.md` yeni sayfalarla güncellendi
+- [ ] Sidebar'a 4 yeni nav Ã¶ÄŸesi eklendi
+- [ ] Her nav Ã¶ÄŸesi doÄŸru path'e yÃ¶nlendiriyor
+- [ ] Ä°konlar tutarlÄ± (Lucide React kullanÄ±lÄ±yor)
+- [ ] Mobile `BottomNav`'a en Ã¶nemli 2 yeni sayfa eklendi
+- [ ] Aktif route highlight Ã§alÄ±ÅŸÄ±yor (mevcut pattern korundu)
+- [ ] `docs/PROJECT_STRUCTURE.md` yeni sayfalarla gÃ¼ncellendi
 - [ ] Sidebar collapse/expand state korunuyor
-- [ ] Dark mode çalışıyor
+- [ ] Dark mode Ã§alÄ±ÅŸÄ±yor
 
 ---
 
 ## Teknik Gereksinimler
 
-### Sidebar Güncellemesi
+### Sidebar GÃ¼ncellemesi
 
-Mevcut sidebar component'ini bul ve "Araçlar" section'ı ekle (veya mevcut section'a dahil et):
+Mevcut sidebar component'ini bul ve "AraÃ§lar" section'Ä± ekle (veya mevcut section'a dahil et):
 
 ```typescript
 const toolsNavItems = [
@@ -39,7 +39,7 @@ const toolsNavItems = [
     icon: Shield,          // lucide-react
   },
   {
-    label: 'Matchup Koçu',
+    label: 'Matchup KoÃ§u',
     href: '/matchup',
     icon: Swords,          // lucide-react
   },
@@ -49,7 +49,7 @@ const toolsNavItems = [
     icon: Users,           // lucide-react
   },
   {
-    label: 'OTP Asistanı',
+    label: 'OTP AsistanÄ±',
     href: '/otp',
     icon: Star,            // lucide-react
   },
@@ -58,40 +58,41 @@ const toolsNavItems = [
 
 ### Mobile BottomNav
 
-Mevcut `BottomNav` bileşenine en çok kullanılacak 2 sayfa ekle:
-- Counter Pick (yüksek kullanım sıklığı)
-- Matchup Koçu (yüksek kullanım sıklığı)
+Mevcut `BottomNav` bileÅŸenine en Ã§ok kullanÄ±lacak 2 sayfa ekle:
+- Counter Pick (yÃ¼ksek kullanÄ±m sÄ±klÄ±ÄŸÄ±)
+- Matchup KoÃ§u (yÃ¼ksek kullanÄ±m sÄ±klÄ±ÄŸÄ±)
 
-Mobil nav'da alan sınırlı — mevcut öğeleri kaldırmadan boş slot varsa ekle; yoksa en az kullanılan ile değiştir.
+Mobil nav'da alan sÄ±nÄ±rlÄ± â€” mevcut Ã¶ÄŸeleri kaldÄ±rmadan boÅŸ slot varsa ekle; yoksa en az kullanÄ±lan ile deÄŸiÅŸtir.
 
-### PROJECT_STRUCTURE.md Güncellemesi
+### PROJECT_STRUCTURE.md GÃ¼ncellemesi
 
-`docs/PROJECT_STRUCTURE.md` dosyasında `app/(app)/` bölümüne yeni sayfaları ekle:
+`docs/PROJECT_STRUCTURE.md` dosyasÄ±nda `app/(app)/` bÃ¶lÃ¼mÃ¼ne yeni sayfalarÄ± ekle:
 ```
 app/(app)/
-├── counter/page.tsx    → Counter Pick Generator
-├── matchup/page.tsx    → Matchup AI Coach
-├── draft/page.tsx      → Draft Analyzer
-└── otp/page.tsx        → OTP Assistant
+â”œâ”€â”€ counter/page.tsx    â†’ Counter Pick Generator
+â”œâ”€â”€ matchup/page.tsx    â†’ Matchup AI Coach
+â”œâ”€â”€ draft/page.tsx      â†’ Draft Analyzer
+â””â”€â”€ otp/page.tsx        â†’ OTP Assistant
 ```
 
-`src/domains/` bölümüne yeni domain'leri ekle.
+`src/domains/` bÃ¶lÃ¼mÃ¼ne yeni domain'leri ekle.
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
-- TASK-043 (Counter Pick sayfası)
-- TASK-049 (Matchup sayfası)
-- TASK-057 (OTP sayfası)
-- TASK-065 (Draft sayfası)
+- TASK-043 (Counter Pick sayfasÄ±)
+- TASK-049 (Matchup sayfasÄ±)
+- TASK-057 (OTP sayfasÄ±)
+- TASK-065 (Draft sayfasÄ±)
 
-Bu task tüm sayfa task'larından sonra yapılmalı.
+Bu task tÃ¼m sayfa task'larÄ±ndan sonra yapÄ±lmalÄ±.
 
 ---
 
 ## Notlar
 
-- Nav öğe sırası: sık kullanılandan az kullanılana (Counter → Matchup → OTP → Draft).
-- Sidebar'da section başlığı "Araçlar" veya mevcut yapıya uyan bir etiket.
-- `Swords` ikonu Lucide'da olmayabilir — alternatif: `Crosshair` veya `Target`.
+- Nav Ã¶ÄŸe sÄ±rasÄ±: sÄ±k kullanÄ±landan az kullanÄ±lana (Counter â†’ Matchup â†’ OTP â†’ Draft).
+- Sidebar'da section baÅŸlÄ±ÄŸÄ± "AraÃ§lar" veya mevcut yapÄ±ya uyan bir etiket.
+- `Swords` ikonu Lucide'da olmayabilir â€” alternatif: `Crosshair` veya `Target`.
+

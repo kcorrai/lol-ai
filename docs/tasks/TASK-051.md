@@ -1,76 +1,77 @@
-# TASK-051 — [F56-1] Dashboard "Son 10 Maç" Özet Kartı
+﻿# TASK-051 â€” [F56-1] Dashboard "Son 10 MaÃ§" Ã–zet KartÄ±
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 1 day
 
 ---
 
 ## Objective
 
-Mevcut `matchAnalysisService` ve `usePerformanceProfile` hook'u zaten 20 maç analizi yapıyor. Bu veriyi dashboard'da kullanıcıya görünür kıl. Yeni servis veya API endpoint yazmadan mevcut datayı öne çıkar.
+Mevcut `matchAnalysisService` ve `usePerformanceProfile` hook'u zaten 20 maÃ§ analizi yapÄ±yor. Bu veriyi dashboard'da kullanÄ±cÄ±ya gÃ¶rÃ¼nÃ¼r kÄ±l. Yeni servis veya API endpoint yazmadan mevcut datayÄ± Ã¶ne Ã§Ä±kar.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `src/domains/analysis/components/RecentMatchesSummaryCard.tsx` oluşturuldu
-- [ ] `usePerformanceProfile` hook'u kullanılıyor (yeni API call yok)
-- [ ] Ortalama KDA gösteriliyor
-- [ ] Ortalama CS/dk gösteriliyor
-- [ ] Win rate (son 10 maç) gösteriliyor
-- [ ] En çok oynanan champion ikon + isim ile gösteriliyor
-- [ ] Playstyle badge gösteriliyor (Aggressive / Farming / Supportive / Balanced)
-- [ ] "Güçlü Yönler" 2 madde yeşil gösteriliyor
-- [ ] "Gelişim Alanları" 2 madde sarı gösteriliyor
-- [ ] Dashboard sayfasına (`app/(app)/dashboard/page.tsx`) eklendi
+- [ ] `src/domains/analysis/components/RecentMatchesSummaryCard.tsx` oluÅŸturuldu
+- [ ] `usePerformanceProfile` hook'u kullanÄ±lÄ±yor (yeni API call yok)
+- [ ] Ortalama KDA gÃ¶steriliyor
+- [ ] Ortalama CS/dk gÃ¶steriliyor
+- [ ] Win rate (son 10 maÃ§) gÃ¶steriliyor
+- [ ] En Ã§ok oynanan champion ikon + isim ile gÃ¶steriliyor
+- [ ] Playstyle badge gÃ¶steriliyor (Aggressive / Farming / Supportive / Balanced)
+- [ ] "GÃ¼Ã§lÃ¼ YÃ¶nler" 2 madde yeÅŸil gÃ¶steriliyor
+- [ ] "GeliÅŸim AlanlarÄ±" 2 madde sarÄ± gÃ¶steriliyor
+- [ ] Dashboard sayfasÄ±na (`app/(app)/dashboard/page.tsx`) eklendi
 - [ ] Loading skeleton var
-- [ ] Boş veri durumu handle ediliyor
-- [ ] Component 200 satırı geçmiyor
-- [ ] Dark mode çalışıyor
+- [ ] BoÅŸ veri durumu handle ediliyor
+- [ ] Component 200 satÄ±rÄ± geÃ§miyor
+- [ ] Dark mode Ã§alÄ±ÅŸÄ±yor
 
 ---
 
 ## Teknik Gereksinimler
 
-### Kart Yapısı
+### Kart YapÄ±sÄ±
 
 ```
-┌─────────────────────────────────────────┐
-│  Son 10 Maç Performansı                 │
-│  KDA: 3.2  |  CS/dk: 6.1  |  WR: 60%  │
-├─────────────────────────────────────────┤
-│  [ChampIcon] Yasuo  •  Aggressive       │
-├─────────────────────────────────────────┤
-│  ✓ Güçlü: Yüksek damage katkısı        │
-│  ✓ Güçlü: Erken baskı                  │
-│  ⚡ Gelişim: Vision skoru              │
-│  ⚡ Gelişim: Geç oyun CS               │
-└─────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  Son 10 MaÃ§ PerformansÄ±                 â”‚
+â”‚  KDA: 3.2  |  CS/dk: 6.1  |  WR: 60%  â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  [ChampIcon] Yasuo  â€¢  Aggressive       â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  âœ“ GÃ¼Ã§lÃ¼: YÃ¼ksek damage katkÄ±sÄ±        â”‚
+â”‚  âœ“ GÃ¼Ã§lÃ¼: Erken baskÄ±                  â”‚
+â”‚  âš¡ GeliÅŸim: Vision skoru              â”‚
+â”‚  âš¡ GeliÅŸim: GeÃ§ oyun CS               â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
-### Veri Kaynağı
+### Veri KaynaÄŸÄ±
 
-`usePerformanceProfile(riotAccountId)` hook'u `PlayerPerformanceProfile` tipinde data döndürüyor. Bu tipten şu alanları kullan:
+`usePerformanceProfile(riotAccountId)` hook'u `PlayerPerformanceProfile` tipinde data dÃ¶ndÃ¼rÃ¼yor. Bu tipten ÅŸu alanlarÄ± kullan:
 - `averageKda`, `averageCsPerMinute`, `winRate` (hesapla: wins/total)
-- `topChampion` (en çok oynanan)
+- `topChampion` (en Ã§ok oynanan)
 - `playstyle`
 - `strongestAreas[]` (ilk 2)
 - `weakestAreas[]` (ilk 2)
 
 ### Dashboard Entegrasyonu
 
-`app/(app)/dashboard/page.tsx` dosyasını incele. Mevcut layout'u bozmadan, büyük ihtimalle action card'larının altına veya performance section'ına ekle.
+`app/(app)/dashboard/page.tsx` dosyasÄ±nÄ± incele. Mevcut layout'u bozmadan, bÃ¼yÃ¼k ihtimalle action card'larÄ±nÄ±n altÄ±na veya performance section'Ä±na ekle.
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
-- Bağımsız — mevcut kod üzerinde enhancement.
+- BaÄŸÄ±msÄ±z â€” mevcut kod Ã¼zerinde enhancement.
 
 ---
 
 ## Notlar
 
-- Yeni servis veya API endpoint yazmaya gerek yok — veri zaten çekiliyor.
+- Yeni servis veya API endpoint yazmaya gerek yok â€” veri zaten Ã§ekiliyor.
 - `riotAccountId` dashboard'daki mevcut active account state'inden al (`uiStore`).
+

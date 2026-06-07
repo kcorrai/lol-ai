@@ -1,48 +1,48 @@
-# TASK-039 — [F3-1] Counter Pick Domain Kurulumu + TypeScript Tipleri
+﻿# TASK-039 â€” [F3-1] Counter Pick Domain Kurulumu + TypeScript Tipleri
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 0.5 day
 
 ---
 
 ## Objective
 
-F3 Counter Pick Generator feature'ı için domain iskeletini ve TypeScript tip tanımlarını oluştur. Bu task sonraki F3 task'larının (servis, API, hook, UI) temelini kurar.
+F3 Counter Pick Generator feature'Ä± iÃ§in domain iskeletini ve TypeScript tip tanÄ±mlarÄ±nÄ± oluÅŸtur. Bu task sonraki F3 task'larÄ±nÄ±n (servis, API, hook, UI) temelini kurar.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `src/domains/counter/` klasör yapısı oluşturuldu
-- [ ] `src/domains/counter/types/counter.types.ts` dosyası yazıldı
-- [ ] Tüm tipler TypeScript strict modda geçiyor (`any` yok)
-- [ ] `src/domains/counter/index.ts` public API export dosyası oluşturuldu
-- [ ] Component placeholder dosyaları oluşturuldu (boş export, içi dolu olmak zorunda değil)
+- [ ] `src/domains/counter/` klasÃ¶r yapÄ±sÄ± oluÅŸturuldu
+- [ ] `src/domains/counter/types/counter.types.ts` dosyasÄ± yazÄ±ldÄ±
+- [ ] TÃ¼m tipler TypeScript strict modda geÃ§iyor (`any` yok)
+- [ ] `src/domains/counter/index.ts` public API export dosyasÄ± oluÅŸturuldu
+- [ ] Component placeholder dosyalarÄ± oluÅŸturuldu (boÅŸ export, iÃ§i dolu olmak zorunda deÄŸil)
 
 ---
 
 ## Teknik Gereksinimler
 
-### Klasör Yapısı
+### KlasÃ¶r YapÄ±sÄ±
 
 ```
 src/domains/counter/
-├── services/
-│   ├── generalCounterService.ts
-│   └── personalCounterService.ts
-├── prompts/
-│   └── counterPrompt.ts
-├── types/
-│   └── counter.types.ts
-├── components/
-│   ├── CounterList.tsx
-│   ├── CounterCard.tsx
-│   └── CounterPageSkeleton.tsx
-└── index.ts
+â”œâ”€â”€ services/
+â”‚   â”œâ”€â”€ generalCounterService.ts
+â”‚   â””â”€â”€ personalCounterService.ts
+â”œâ”€â”€ prompts/
+â”‚   â””â”€â”€ counterPrompt.ts
+â”œâ”€â”€ types/
+â”‚   â””â”€â”€ counter.types.ts
+â”œâ”€â”€ components/
+â”‚   â”œâ”€â”€ CounterList.tsx
+â”‚   â”œâ”€â”€ CounterCard.tsx
+â”‚   â””â”€â”€ CounterPageSkeleton.tsx
+â””â”€â”€ index.ts
 ```
 
-### Tip Tanımları (`counter.types.ts`)
+### Tip TanÄ±mlarÄ± (`counter.types.ts`)
 
 ```typescript
 import type { Position } from '@/types/common.types';
@@ -71,14 +71,15 @@ export interface GeneralCounterResult {
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
-- TASK-037 (AiCache) — servis yazılırken gerekecek, tip tanımları için değil.
-- Bu task bağımsız olarak başlanabilir.
+- TASK-037 (AiCache) â€” servis yazÄ±lÄ±rken gerekecek, tip tanÄ±mlarÄ± iÃ§in deÄŸil.
+- Bu task baÄŸÄ±msÄ±z olarak baÅŸlanabilir.
 
 ---
 
 ## Notlar
 
-- `index.ts`'de şimdilik sadece tipleri export et. Servis ve component'ler ilgili task'larda eklenecek.
-- Component dosyaları şimdilik `export {}` ile boş bırakılabilir — sadece klasör yapısı kurulsun.
+- `index.ts`'de ÅŸimdilik sadece tipleri export et. Servis ve component'ler ilgili task'larda eklenecek.
+- Component dosyalarÄ± ÅŸimdilik `export {}` ile boÅŸ bÄ±rakÄ±labilir â€” sadece klasÃ¶r yapÄ±sÄ± kurulsun.
+

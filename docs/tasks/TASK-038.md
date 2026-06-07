@@ -1,31 +1,31 @@
-# TASK-038 — [INFRA-2] ChampionSelector Shared Component
+﻿# TASK-038 â€” [INFRA-2] ChampionSelector Shared Component
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 1 day
 
 ---
 
 ## Objective
 
-F1 (Matchup), F2 (Draft), F3 (Counter), F7 (OTP) feature'larının tamamı champion seçimi gerektiriyor. Tekrar yazmak yerine tek bir reusable component oluştur. Ayrıca F2 Draft Analyzer için her role özel 5+5 picker varyantını hazırla.
+F1 (Matchup), F2 (Draft), F3 (Counter), F7 (OTP) feature'larÄ±nÄ±n tamamÄ± champion seÃ§imi gerektiriyor. Tekrar yazmak yerine tek bir reusable component oluÅŸtur. AyrÄ±ca F2 Draft Analyzer iÃ§in her role Ã¶zel 5+5 picker varyantÄ±nÄ± hazÄ±rla.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `src/components/shared/ChampionSelector.tsx` oluşturuldu
-- [ ] Arama alanında 300ms debounce çalışıyor
-- [ ] Seçili champion ikon + isim olarak gösteriliyor (mevcut `ChampionIcon` kullanılıyor)
-- [ ] Keyboard navigation çalışıyor (arrow keys + enter + escape)
-- [ ] `/api/champions` endpoint'inden champion listesi çekiliyor
-- [ ] `filterRole` prop ile pozisyona göre filtreleme yapılabiliyor
+- [ ] `src/components/shared/ChampionSelector.tsx` oluÅŸturuldu
+- [ ] Arama alanÄ±nda 300ms debounce Ã§alÄ±ÅŸÄ±yor
+- [ ] SeÃ§ili champion ikon + isim olarak gÃ¶steriliyor (mevcut `ChampionIcon` kullanÄ±lÄ±yor)
+- [ ] Keyboard navigation Ã§alÄ±ÅŸÄ±yor (arrow keys + enter + escape)
+- [ ] `/api/champions` endpoint'inden champion listesi Ã§ekiliyor
+- [ ] `filterRole` prop ile pozisyona gÃ¶re filtreleme yapÄ±labiliyor
 - [ ] Desktop: dropdown. Mobile: full-width drawer.
-- [ ] Dark mode destekli, mevcut Tailwind tasarım sistemine uygun
-- [ ] `src/components/shared/RoleBasedTeamPicker.tsx` oluşturuldu (F2 için)
-- [ ] `RoleBasedTeamPicker` 5 pozisyon için 5 ayrı `ChampionSelector` render ediyor
-- [ ] Seçili champion başka bir `ChampionSelector`'da gösterilemiyor (duplicate prevention)
-- [ ] TypeScript strict — tam prop tipleri, `any` yok
+- [ ] Dark mode destekli, mevcut Tailwind tasarÄ±m sistemine uygun
+- [ ] `src/components/shared/RoleBasedTeamPicker.tsx` oluÅŸturuldu (F2 iÃ§in)
+- [ ] `RoleBasedTeamPicker` 5 pozisyon iÃ§in 5 ayrÄ± `ChampionSelector` render ediyor
+- [ ] SeÃ§ili champion baÅŸka bir `ChampionSelector`'da gÃ¶sterilemiyor (duplicate prevention)
+- [ ] TypeScript strict â€” tam prop tipleri, `any` yok
 - [ ] Component'ler `src/components/shared/index.ts`'den export ediliyor
 
 ---
@@ -42,7 +42,7 @@ interface ChampionSelectorProps {
   disabled?: boolean;
   size?: 'sm' | 'md' | 'lg';
   filterRole?: Position;
-  excludeChampions?: string[];  // bu listede olanları gösterme (duplicate prevention)
+  excludeChampions?: string[];  // bu listede olanlarÄ± gÃ¶sterme (duplicate prevention)
   className?: string;
 }
 ```
@@ -62,30 +62,31 @@ interface RoleBasedTeamPickerProps {
   value: TeamSelection;
   onChange: (team: TeamSelection) => void;
   label?: string;           // "Blue Team" / "Red Team"
-  excludeChampions?: string[]; // diğer takımın seçimleri
+  excludeChampions?: string[]; // diÄŸer takÄ±mÄ±n seÃ§imleri
 }
 ```
 
-### Veri Çekme
+### Veri Ã‡ekme
 
-`/api/champions` endpoint'i zaten var. `useQuery` ile champions listesi çek:
+`/api/champions` endpoint'i zaten var. `useQuery` ile champions listesi Ã§ek:
 ```typescript
 queryKey: ['champions']
-staleTime: Infinity  // champion listesi değişmez
+staleTime: Infinity  // champion listesi deÄŸiÅŸmez
 ```
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
-- TASK-037 değil — bağımsız, paralel geliştirilebilir.
-- Mevcut `ChampionIcon` component'i kullanıyor (zaten var).
-- Mevcut `/api/champions` endpoint'i kullanıyor (zaten var).
+- TASK-037 deÄŸil â€” baÄŸÄ±msÄ±z, paralel geliÅŸtirilebilir.
+- Mevcut `ChampionIcon` component'i kullanÄ±yor (zaten var).
+- Mevcut `/api/champions` endpoint'i kullanÄ±yor (zaten var).
 
 ---
 
 ## Notlar
 
-- Bu component F1, F2, F3, F7 task'larından önce tamamlanmalı — tüm sayfalar buna bağımlı.
+- Bu component F1, F2, F3, F7 task'larÄ±ndan Ã¶nce tamamlanmalÄ± â€” tÃ¼m sayfalar buna baÄŸÄ±mlÄ±.
 - `size` prop: `sm` = 32px icon, `md` = 40px icon, `lg` = 48px icon.
-- Seçim temizleme: `value` doluyken "×" butonu göster, tıklayınca `onChange(null)` çağır.
+- SeÃ§im temizleme: `value` doluyken "Ã—" butonu gÃ¶ster, tÄ±klayÄ±nca `onChange(null)` Ã§aÄŸÄ±r.
+

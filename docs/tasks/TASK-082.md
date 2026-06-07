@@ -1,7 +1,7 @@
-# TASK-082 — Daily & Weekly Challenge Sistemi
+﻿# TASK-082 â€” Daily & Weekly Challenge Sistemi
 
-**Phase:** 3 — Growth & Conversion  
-**Status:** Pending  
+**Phase:** 3 â€” Growth & Conversion  
+**Status:** Done  
 **Estimated Effort:** 1.5 days  
 **Priority:** P1
 
@@ -9,31 +9,31 @@
 
 ## Objective
 
-Oyuncuların her gün veya her hafta tamamlayabileceği küçük, AI üretilmiş
-performans hedefleri oluştur. "Bugün 3 maçta 7.0+ CS/dk yap" gibi görevler
-platforma günlük dönme alışkanlığı yaratır. Tamamlama → XP + rozet tetikleme.
+OyuncularÄ±n her gÃ¼n veya her hafta tamamlayabileceÄŸi kÃ¼Ã§Ã¼k, AI Ã¼retilmiÅŸ
+performans hedefleri oluÅŸtur. "BugÃ¼n 3 maÃ§ta 7.0+ CS/dk yap" gibi gÃ¶revler
+platforma gÃ¼nlÃ¼k dÃ¶nme alÄ±ÅŸkanlÄ±ÄŸÄ± yaratÄ±r. Tamamlama â†’ XP + rozet tetikleme.
 
 ---
 
 ## User Story
 
-> "Nereye odaklanacağımı bilmiyorum. Birisi bana 'bugün sadece şunu yap'
-> dese ve tamamlayınca bir şey kazansam platforma her gün gelirdim."
+> "Nereye odaklanacaÄŸÄ±mÄ± bilmiyorum. Birisi bana 'bugÃ¼n sadece ÅŸunu yap'
+> dese ve tamamlayÄ±nca bir ÅŸey kazansam platforma her gÃ¼n gelirdim."
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `Challenge` ve `UserChallenge` DB tabloları mevcut
-- [ ] Günlük challenge: her sabah 08:00'de Inngest cron ile 1 challenge üretiliyor
-- [ ] Haftalık challenge: her Pazartesi 08:00'de 1 challenge üretiliyor
-- [ ] Challenge içeriği AI üretilmiş, kullanıcının zayıf noktasına göre kişiselleştirilmiş
-- [ ] Dashboard'da "Bugünkü Görevin" widget'ı
-- [ ] Maç sync sonrası challenge tamamlanıp tamamlanmadığı kontrol ediliyor
-- [ ] Tamamlama → XP puanı + achievementChecker tetiklenmesi
-- [ ] Tamamlanan challenge'lar geçmişte görünüyor
-- [ ] Streak sistemi: 7 günlük tamamlama serisi → bonus rozet
-- [ ] TypeScript strict — no `any`
+- [ ] `Challenge` ve `UserChallenge` DB tablolarÄ± mevcut
+- [ ] GÃ¼nlÃ¼k challenge: her sabah 08:00'de Inngest cron ile 1 challenge Ã¼retiliyor
+- [ ] HaftalÄ±k challenge: her Pazartesi 08:00'de 1 challenge Ã¼retiliyor
+- [ ] Challenge iÃ§eriÄŸi AI Ã¼retilmiÅŸ, kullanÄ±cÄ±nÄ±n zayÄ±f noktasÄ±na gÃ¶re kiÅŸiselleÅŸtirilmiÅŸ
+- [ ] Dashboard'da "BugÃ¼nkÃ¼ GÃ¶revin" widget'Ä±
+- [ ] MaÃ§ sync sonrasÄ± challenge tamamlanÄ±p tamamlanmadÄ±ÄŸÄ± kontrol ediliyor
+- [ ] Tamamlama â†’ XP puanÄ± + achievementChecker tetiklenmesi
+- [ ] Tamamlanan challenge'lar geÃ§miÅŸte gÃ¶rÃ¼nÃ¼yor
+- [ ] Streak sistemi: 7 gÃ¼nlÃ¼k tamamlama serisi â†’ bonus rozet
+- [ ] TypeScript strict â€” no `any`
 
 ---
 
@@ -48,7 +48,7 @@ model Challenge {
   type         String   // 'daily' | 'weekly'
   metric       String   // 'cs_per_min' | 'deaths' | 'vision_score' | 'win_streak' | 'kda'
   targetValue  Float
-  description  String   // "3 maçta 7.0+ CS/dk yap"
+  description  String   // "3 maÃ§ta 7.0+ CS/dk yap"
   xpReward     Int
   validFrom    DateTime
   validUntil   DateTime
@@ -86,9 +86,9 @@ xp        Int @default(0)
 level     Int @default(1)   // her 500 XP = 1 level
 ```
 
-Level hesabı: `Math.floor(xp / 500) + 1`
+Level hesabÄ±: `Math.floor(xp / 500) + 1`
 
-### Challenge Üretim Servisi
+### Challenge Ãœretim Servisi
 
 ```typescript
 // src/domains/analysis/services/challengeService.ts
@@ -97,19 +97,19 @@ export async function generateDailyChallenge(userId: string, riotAccountId: stri
 export async function generateWeeklyChallenge(userId: string, riotAccountId: string): Promise<Challenge>
 ```
 
-Üretim mantığı:
-1. Kullanıcının son 14 günlük en zayıf metriğini bul (habit detection'dan veya hesapla)
-2. O metriğe göre challenge şablonu seç
-3. Target değeri kullanıcının mevcut ortalamasının %10-15 üstüne koy
-4. AI ile Türkçe, motive edici açıklama yaz
+Ãœretim mantÄ±ÄŸÄ±:
+1. KullanÄ±cÄ±nÄ±n son 14 gÃ¼nlÃ¼k en zayÄ±f metriÄŸini bul (habit detection'dan veya hesapla)
+2. O metriÄŸe gÃ¶re challenge ÅŸablonu seÃ§
+3. Target deÄŸeri kullanÄ±cÄ±nÄ±n mevcut ortalamasÄ±nÄ±n %10-15 Ã¼stÃ¼ne koy
+4. AI ile TÃ¼rkÃ§e, motive edici aÃ§Ä±klama yaz
 
 ```typescript
 const CHALLENGE_TEMPLATES = {
-  cs_per_min:    { description: '{N} maçta {V}+ CS/dk yap', xp: 50 },
-  deaths:        { description: '{N} maçta {V} veya daha az ölüm', xp: 60 },
-  vision_score:  { description: '{N} maçta {V}+ vision score', xp: 40 },
-  win_streak:    { description: 'Üst üste {N} maç kazan', xp: 80 },
-  kda:           { description: '{N} maçta {V}+ KDA yap', xp: 50 },
+  cs_per_min:    { description: '{N} maÃ§ta {V}+ CS/dk yap', xp: 50 },
+  deaths:        { description: '{N} maÃ§ta {V} veya daha az Ã¶lÃ¼m', xp: 60 },
+  vision_score:  { description: '{N} maÃ§ta {V}+ vision score', xp: 40 },
+  win_streak:    { description: 'Ãœst Ã¼ste {N} maÃ§ kazan', xp: 80 },
+  kda:           { description: '{N} maÃ§ta {V}+ KDA yap', xp: 50 },
 };
 ```
 
@@ -119,16 +119,16 @@ const CHALLENGE_TEMPLATES = {
 // src/inngest/functions/challengeGenerator.ts
 export const dailyChallengeGenerator = inngest.createFunction(
   { id: 'daily-challenge-generator' },
-  { cron: '0 8 * * *' }, // her gün 08:00 UTC
+  { cron: '0 8 * * *' }, // her gÃ¼n 08:00 UTC
   async ({ step }) => {
-    // Aktif tüm kullanıcılara challenge üret
+    // Aktif tÃ¼m kullanÄ±cÄ±lara challenge Ã¼ret
     const users = await step.run('fetch-active-users', () =>
       prisma.user.findMany({
         where: { lastLoginAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } },
         include: { riotAccounts: { take: 1 } }
       })
     );
-    // Fan-out: her kullanıcı için ayrı event
+    // Fan-out: her kullanÄ±cÄ± iÃ§in ayrÄ± event
     await step.sendEvent('challenge/generate-for-users',
       users.map(u => ({ name: 'challenge/generate', data: { userId: u.id } }))
     );
@@ -138,38 +138,38 @@ export const dailyChallengeGenerator = inngest.createFunction(
 
 ### Progress Tracking
 
-Maç sync sonrası:
+MaÃ§ sync sonrasÄ±:
 ```typescript
-// Aktif challenge'ları kontrol et
-// Metriği güncelle
-// Tamamlandıysa: completed = true, xp ekle, achievement tetikle
+// Aktif challenge'larÄ± kontrol et
+// MetriÄŸi gÃ¼ncelle
+// TamamlandÄ±ysa: completed = true, xp ekle, achievement tetikle
 ```
 
 ### Dashboard Widget
 
 ```
-┌──────────────────────────────────────────┐
-│  Bugünkü Görev ⚡                        │
-├──────────────────────────────────────────┤
-│  3 maçta 6.5+ CS/dk yap                 │
-│  [████░░░░░░] 1/3 tamamlandı            │
-│  Ödül: +50 XP                           │
-│                                          │
-│  Sona eriyor: 11 saat 32 dakika         │
-│                                          │
-│  Bu haftanın görevi:                     │
-│  5 galibiyet serisine ulaş [0/5]        │
-└──────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  BugÃ¼nkÃ¼ GÃ¶rev âš¡                        â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  3 maÃ§ta 6.5+ CS/dk yap                 â”‚
+â”‚  [â–ˆâ–ˆâ–ˆâ–ˆâ–‘â–‘â–‘â–‘â–‘â–‘] 1/3 tamamlandÄ±            â”‚
+â”‚  Ã–dÃ¼l: +50 XP                           â”‚
+â”‚                                          â”‚
+â”‚  Sona eriyor: 11 saat 32 dakika         â”‚
+â”‚                                          â”‚
+â”‚  Bu haftanÄ±n gÃ¶revi:                     â”‚
+â”‚  5 galibiyet serisine ulaÅŸ [0/5]        â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ### XP & Level Widget
 
 ```
-┌──────────────────────┐
-│  Seviye 7           │
-│  [███████░░░] 420XP │
-│  80 XP → Seviye 8   │
-└──────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  Seviye 7           â”‚
+â”‚  [â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–‘â–‘â–‘] 420XP â”‚
+â”‚  80 XP â†’ Seviye 8   â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ---
@@ -177,28 +177,28 @@ Maç sync sonrası:
 ## Files
 
 ```
-prisma/schema.prisma                                         ← Challenge, UserChallenge, User.xp/level
-prisma/migrations/YYYYMMDD_add_challenges/                   ← YENİ
-src/domains/analysis/services/challengeService.ts            ← YENİ
-src/inngest/functions/challengeGenerator.ts                  ← YENİ cron
-src/inngest/functions/challengeProgressChecker.ts            ← YENİ (sync sonrası)
-src/inngest/index.ts                                         ← function kaydet
-src/components/dashboard/DailyChallengeWidget.tsx            ← YENİ
-src/components/dashboard/XpLevelWidget.tsx                   ← YENİ
-app/api/challenges/route.ts                                  ← GET aktif challengelar
-app/api/challenges/[id]/progress/route.ts                    ← GET ilerleme
-src/hooks/useChallenges.ts                                   ← YENİ TanStack Query
-src/domains/riot/services/matchSyncService.ts                ← challenge progress check
-app/(app)/dashboard/page.tsx                                 ← widgetlar ekle
+prisma/schema.prisma                                         â† Challenge, UserChallenge, User.xp/level
+prisma/migrations/YYYYMMDD_add_challenges/                   â† YENÄ°
+src/domains/analysis/services/challengeService.ts            â† YENÄ°
+src/inngest/functions/challengeGenerator.ts                  â† YENÄ° cron
+src/inngest/functions/challengeProgressChecker.ts            â† YENÄ° (sync sonrasÄ±)
+src/inngest/index.ts                                         â† function kaydet
+src/components/dashboard/DailyChallengeWidget.tsx            â† YENÄ°
+src/components/dashboard/XpLevelWidget.tsx                   â† YENÄ°
+app/api/challenges/route.ts                                  â† GET aktif challengelar
+app/api/challenges/[id]/progress/route.ts                    â† GET ilerleme
+src/hooks/useChallenges.ts                                   â† YENÄ° TanStack Query
+src/domains/riot/services/matchSyncService.ts                â† challenge progress check
+app/(app)/dashboard/page.tsx                                 â† widgetlar ekle
 ```
 
 ---
 
 ## Tier Gating
 
-- **Free:** Günlük 1 challenge
-- **Pro:** Günlük + haftalık challenge + XP geçmişi
-- **Elite:** Özel challenge oluştur (AI ile)
+- **Free:** GÃ¼nlÃ¼k 1 challenge
+- **Pro:** GÃ¼nlÃ¼k + haftalÄ±k challenge + XP geÃ§miÅŸi
+- **Elite:** Ã–zel challenge oluÅŸtur (AI ile)
 
 ---
 
@@ -206,11 +206,11 @@ app/(app)/dashboard/page.tsx                                 ← widgetlar ekle
 
 ```typescript
 describe('challengeService', () => {
-  it('generateDailyChallenge: kullanıcının zayıf metriğine göre seçim yapılıyor')
-  it('target: mevcut ortalamanın %10-15 üstünde')
-  it('tamamlama: xp kullanıcıya ekleniyor')
-  it('aynı gün iki kez generate → duplicate oluşmuyor')
-  it('challenge süresi dolunca expired olarak işaretleniyor')
+  it('generateDailyChallenge: kullanÄ±cÄ±nÄ±n zayÄ±f metriÄŸine gÃ¶re seÃ§im yapÄ±lÄ±yor')
+  it('target: mevcut ortalamanÄ±n %10-15 Ã¼stÃ¼nde')
+  it('tamamlama: xp kullanÄ±cÄ±ya ekleniyor')
+  it('aynÄ± gÃ¼n iki kez generate â†’ duplicate oluÅŸmuyor')
+  it('challenge sÃ¼resi dolunca expired olarak iÅŸaretleniyor')
 })
 ```
 
@@ -218,17 +218,18 @@ describe('challengeService', () => {
 
 ## Dependencies
 
-- Inngest ✅
-- `challengeService` → `habitDetectionService` verisini kullanır
-- `achievementService` (TASK-078) → challenge tamamlama achievement'ı tetikler
+- Inngest âœ…
+- `challengeService` â†’ `habitDetectionService` verisini kullanÄ±r
+- `achievementService` (TASK-078) â†’ challenge tamamlama achievement'Ä± tetikler
 
 ---
 
 ## Definition of Done
 
-- Her gün yeni challenge üretiliyor
-- Progress maç sync ile güncelleniyor
-- Dashboard widget çalışıyor
-- XP sistemi işletiyor
-- 7 günlük streak rozeti verilebiliyor
-- Unit test coverage ≥ 80%
+- Her gÃ¼n yeni challenge Ã¼retiliyor
+- Progress maÃ§ sync ile gÃ¼ncelleniyor
+- Dashboard widget Ã§alÄ±ÅŸÄ±yor
+- XP sistemi iÅŸletiyor
+- 7 gÃ¼nlÃ¼k streak rozeti verilebiliyor
+- Unit test coverage â‰¥ 80%
+

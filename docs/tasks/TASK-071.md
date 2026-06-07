@@ -1,7 +1,7 @@
-# TASK-071 — Champion Mastery Score: Hesaplama Motoru + DB Migration
+﻿# TASK-071 â€” Champion Mastery Score: Hesaplama Motoru + DB Migration
 
-**Phase:** 2 — AI Depth & Retention  
-**Status:** Pending  
+**Phase:** 2 â€” AI Depth & Retention  
+**Status:** Done  
 **Estimated Effort:** 2.5 days  
 **Priority:** P0
 
@@ -9,30 +9,30 @@
 
 ## Objective
 
-Riot'un kuru mastery sistemi yerine gerçek oyun performansına dayalı, 6 boyutlu
+Riot'un kuru mastery sistemi yerine gerÃ§ek oyun performansÄ±na dayalÄ±, 6 boyutlu
 bir "Mastery Score" (0-100) sistemi yaz. Skor `champion_stats` ve
-`match_participants` verisinden hesaplanır. Riot mastery puanı hiç kullanılmaz.
+`match_participants` verisinden hesaplanÄ±r. Riot mastery puanÄ± hiÃ§ kullanÄ±lmaz.
 
 ---
 
 ## User Story
 
-> "Ahri'de 200.000 mastery puanım var ama hala Silver'dayım. Bu puan benim iyi
-> olduğumu söylemiyor. Gerçekten bu şampiyonda ne kadar iyiyim?"
+> "Ahri'de 200.000 mastery puanÄ±m var ama hala Silver'dayÄ±m. Bu puan benim iyi
+> olduÄŸumu sÃ¶ylemiyor. GerÃ§ekten bu ÅŸampiyonda ne kadar iyiyim?"
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] 6 boyut hesaplanıyor: Laning, Vision, Teamfight, Objective Control, Consistency, Carry Potential
-- [ ] Her boyut 0-100 arası normalize ediliyor
-- [ ] Toplam skor ağırlıklı ortalama (aşağıda ağırlıklar)
-- [ ] `champion_stats` tablosuna `masteryScore` ve `masterySubScores` alanları eklendi
-- [ ] Skor, `championStatsService` ile birlikte hesaplanıp DB'ye yazılıyor
-- [ ] `GET /api/champions/[championId]/mastery` endpoint'i çalışıyor
-- [ ] Geçmiş trend: son 4 haftalık snapshot (haftalık yeniden hesapla)
-- [ ] Minimum 5 maç şartı (istatistiksel güvenilirlik)
-- [ ] TypeScript strict — no `any`
+- [ ] 6 boyut hesaplanÄ±yor: Laning, Vision, Teamfight, Objective Control, Consistency, Carry Potential
+- [ ] Her boyut 0-100 arasÄ± normalize ediliyor
+- [ ] Toplam skor aÄŸÄ±rlÄ±klÄ± ortalama (aÅŸaÄŸÄ±da aÄŸÄ±rlÄ±klar)
+- [ ] `champion_stats` tablosuna `masteryScore` ve `masterySubScores` alanlarÄ± eklendi
+- [ ] Skor, `championStatsService` ile birlikte hesaplanÄ±p DB'ye yazÄ±lÄ±yor
+- [ ] `GET /api/champions/[championId]/mastery` endpoint'i Ã§alÄ±ÅŸÄ±yor
+- [ ] GeÃ§miÅŸ trend: son 4 haftalÄ±k snapshot (haftalÄ±k yeniden hesapla)
+- [ ] Minimum 5 maÃ§ ÅŸartÄ± (istatistiksel gÃ¼venilirlik)
+- [ ] TypeScript strict â€” no `any`
 
 ---
 
@@ -41,16 +41,16 @@ bir "Mastery Score" (0-100) sistemi yaz. Skor `champion_stats` ve
 ### DB Migration
 
 ```prisma
-// prisma/schema.prisma — ChampionStat modeline ekle
+// prisma/schema.prisma â€” ChampionStat modeline ekle
 model ChampionStat {
   // ... mevcut alanlar ...
   masteryScore      Int?      // 0-100 composite score
-  masteryScoreAt    DateTime? // son hesaplanma zamanı
+  masteryScoreAt    DateTime? // son hesaplanma zamanÄ±
   masterySubScores  Json?     // { laning, vision, teamfight, objectiveCtrl, consistency, carry }
 }
 ```
 
-Migration dosyası: `prisma/migrations/YYYYMMDD_add_mastery_score/migration.sql`
+Migration dosyasÄ±: `prisma/migrations/YYYYMMDD_add_mastery_score/migration.sql`
 
 ### Skor Hesaplama Servisi
 
@@ -58,12 +58,12 @@ Migration dosyası: `prisma/migrations/YYYYMMDD_add_mastery_score/migration.sql`
 
 ```typescript
 export interface MasterySubScores {
-  laning: number;          // CS/min normalize (ağırlık: 0.20)
-  vision: number;          // vision score normalize (ağırlık: 0.15)
-  teamfight: number;       // damage share + CC (ağırlık: 0.20)
-  objectiveCtrl: number;   // objective participation (ağırlık: 0.15)
-  consistency: number;     // KDA variance (ağırlık: 0.15)
-  carry: number;           // KDA + damage share (ağırlık: 0.15)
+  laning: number;          // CS/min normalize (aÄŸÄ±rlÄ±k: 0.20)
+  vision: number;          // vision score normalize (aÄŸÄ±rlÄ±k: 0.15)
+  teamfight: number;       // damage share + CC (aÄŸÄ±rlÄ±k: 0.20)
+  objectiveCtrl: number;   // objective participation (aÄŸÄ±rlÄ±k: 0.15)
+  consistency: number;     // KDA variance (aÄŸÄ±rlÄ±k: 0.15)
+  carry: number;           // KDA + damage share (aÄŸÄ±rlÄ±k: 0.15)
 }
 
 export interface ChampionMasteryScore {
@@ -74,7 +74,7 @@ export interface ChampionMasteryScore {
   tier: MasteryTier;       // Apprentice | Adept | Expert | Master | Legend
   gamesAnalyzed: number;
   computedAt: string;
-  trend: number[];         // son 4 haftalık skor (haftalık hesaplanmış)
+  trend: number[];         // son 4 haftalÄ±k skor (haftalÄ±k hesaplanmÄ±ÅŸ)
 }
 
 type MasteryTier = 'Apprentice' | 'Adept' | 'Expert' | 'Master' | 'Legend';
@@ -83,57 +83,57 @@ type MasteryTier = 'Apprentice' | 'Adept' | 'Expert' | 'Master' | 'Legend';
 ### Normalize Fonksiyonu
 
 ```typescript
-// Değeri [min, max] aralığından [0, 100]'e normalize et, sınırla
+// DeÄŸeri [min, max] aralÄ±ÄŸÄ±ndan [0, 100]'e normalize et, sÄ±nÄ±rla
 function normalize(value: number, min: number, max: number): number {
   return Math.round(Math.min(Math.max((value - min) / (max - min), 0), 1) * 100);
 }
 ```
 
-### Boyut Referans Değerleri (rank bazlı değil — genel LoL ortalamalarına göre)
+### Boyut Referans DeÄŸerleri (rank bazlÄ± deÄŸil â€” genel LoL ortalamalarÄ±na gÃ¶re)
 
 | Boyut | Min | Max | Kaynak |
 |---|---|---|---|
 | Laning (CS/min) | 3.0 | 9.0 | `avgCsPerMinute` |
 | Vision | 8 | 45 | `avgVisionScore` |
-| Teamfight | hesaplanmış | — | damage share + CC/min |
-| Objective Ctrl | hesaplanmış | — | turrets + objectives stolen |
-| Consistency | hesaplanmış | — | KDA std deviation (inverse) |
+| Teamfight | hesaplanmÄ±ÅŸ | â€” | damage share + CC/min |
+| Objective Ctrl | hesaplanmÄ±ÅŸ | â€” | turrets + objectives stolen |
+| Consistency | hesaplanmÄ±ÅŸ | â€” | KDA std deviation (inverse) |
 | Carry | 1.0 | 6.0 | `avgKda` |
 
 ### Teamfight Skoru
 
 ```typescript
-// Son N maçta damage_dealt / takım toplam damage
+// Son N maÃ§ta damage_dealt / takÄ±m toplam damage
 // CC contribution: totalTimeCCDealt / gameDuration (normalize)
 function computeTeamfightScore(matches: MatchParticipant[]): number {
-  // match_participants'tan son 20 ranked maç çek
-  // damage share ortalaması (0-30% range → normalize)
-  // CC/min ortalaması ekle
+  // match_participants'tan son 20 ranked maÃ§ Ã§ek
+  // damage share ortalamasÄ± (0-30% range â†’ normalize)
+  // CC/min ortalamasÄ± ekle
 }
 ```
 
 ### Consistency Skoru
 
 ```typescript
-// KDA standart sapması (düşük = daha tutarlı = daha yüksek skor)
+// KDA standart sapmasÄ± (dÃ¼ÅŸÃ¼k = daha tutarlÄ± = daha yÃ¼ksek skor)
 function computeConsistency(kdaValues: number[]): number {
   const mean = kdaValues.reduce((a, b) => a + b) / kdaValues.length;
   const variance = kdaValues.reduce((s, v) => s + (v - mean) ** 2, 0) / kdaValues.length;
   const stdDev = Math.sqrt(variance);
-  // stdDev 0-3 aralığı → reverse normalize → 0-100
+  // stdDev 0-3 aralÄ±ÄŸÄ± â†’ reverse normalize â†’ 0-100
   return normalize(3 - stdDev, 0, 3);
 }
 ```
 
-### Mastery Tier Eşiği
+### Mastery Tier EÅŸiÄŸi
 
 | Skor | Tier |
 |---|---|
-| 0–39 | Apprentice |
-| 40–54 | Adept |
-| 55–69 | Expert |
-| 70–84 | Master |
-| 85–100 | Legend |
+| 0â€“39 | Apprentice |
+| 40â€“54 | Adept |
+| 55â€“69 | Expert |
+| 70â€“84 | Master |
+| 85â€“100 | Legend |
 
 ### Endpoint
 
@@ -144,33 +144,33 @@ Response 200: ChampionMasteryScore
 Response 422: { error: "insufficient_data", minGames: 5, currentGames: N }
 ```
 
-### Haftalık Yeniden Hesaplama
+### HaftalÄ±k Yeniden Hesaplama
 
-`championStatsService.ts`'teki mevcut compute fonksiyonuna mastery hesabı ekle.
-Match sync tamamlandığında otomatik çağrılır.
+`championStatsService.ts`'teki mevcut compute fonksiyonuna mastery hesabÄ± ekle.
+Match sync tamamlandÄ±ÄŸÄ±nda otomatik Ã§aÄŸrÄ±lÄ±r.
 
 ---
 
 ## Files
 
 ```
-prisma/schema.prisma                                           ← masteryScore, masterySubScores ekle
-prisma/migrations/YYYYMMDD_add_mastery_score/migration.sql    ← YENİ
-src/domains/champions/services/masteryScoreService.ts         ← YENİ
-src/domains/champions/services/championStatsService.ts        ← compute çağrısına mastery ekle
-src/domains/champions/types/champion.types.ts                 ← MasteryScore tipler
-src/domains/champions/index.ts                                ← export ekle
-app/api/champions/[championId]/mastery/route.ts               ← YENİ
-src/hooks/useChampionMastery.ts                               ← YENİ (TanStack Query)
+prisma/schema.prisma                                           â† masteryScore, masterySubScores ekle
+prisma/migrations/YYYYMMDD_add_mastery_score/migration.sql    â† YENÄ°
+src/domains/champions/services/masteryScoreService.ts         â† YENÄ°
+src/domains/champions/services/championStatsService.ts        â† compute Ã§aÄŸrÄ±sÄ±na mastery ekle
+src/domains/champions/types/champion.types.ts                 â† MasteryScore tipler
+src/domains/champions/index.ts                                â† export ekle
+app/api/champions/[championId]/mastery/route.ts               â† YENÄ°
+src/hooks/useChampionMastery.ts                               â† YENÄ° (TanStack Query)
 ```
 
 ---
 
 ## Tier Gating
 
-- **Free:** Toplam mastery skoru (0-100) görür, tier rozeti görür
-- **Pro:** 6 boyut alt skorları + trend grafiği
-- **Elite:** AI tavsiyesi "En çok hangi boyuta odaklanmalısın"
+- **Free:** Toplam mastery skoru (0-100) gÃ¶rÃ¼r, tier rozeti gÃ¶rÃ¼r
+- **Pro:** 6 boyut alt skorlarÄ± + trend grafiÄŸi
+- **Elite:** AI tavsiyesi "En Ã§ok hangi boyuta odaklanmalÄ±sÄ±n"
 
 ---
 
@@ -178,13 +178,13 @@ src/hooks/useChampionMastery.ts                               ← YENİ (TanStac
 
 ```typescript
 describe('masteryScoreService', () => {
-  it('normalize: sınır değerler 0 ve 100 döner')
-  it('normalize: orta değer ~50 döner')
-  it('consistency: düşük std dev = yüksek skor')
-  it('tier: 74 → Expert')
-  it('tier: 85 → Legend')
-  it('5 maç altında hata fırlatır')
-  it('toplam skor ağırlıklı ortalama ile eşleşiyor')
+  it('normalize: sÄ±nÄ±r deÄŸerler 0 ve 100 dÃ¶ner')
+  it('normalize: orta deÄŸer ~50 dÃ¶ner')
+  it('consistency: dÃ¼ÅŸÃ¼k std dev = yÃ¼ksek skor')
+  it('tier: 74 â†’ Expert')
+  it('tier: 85 â†’ Legend')
+  it('5 maÃ§ altÄ±nda hata fÄ±rlatÄ±r')
+  it('toplam skor aÄŸÄ±rlÄ±klÄ± ortalama ile eÅŸleÅŸiyor')
 })
 ```
 
@@ -192,15 +192,16 @@ describe('masteryScoreService', () => {
 
 ## Dependencies
 
-- TASK-004 (match sync) ✅
-- Prisma migration çalıştırılmalı: `npx prisma migrate dev`
+- TASK-004 (match sync) âœ…
+- Prisma migration Ã§alÄ±ÅŸtÄ±rÄ±lmalÄ±: `npx prisma migrate dev`
 
 ---
 
 ## Definition of Done
 
-- Migration production'da çalışıyor
-- Skor formülü dokümante edildi (bu dosya yeterli)
+- Migration production'da Ã§alÄ±ÅŸÄ±yor
+- Skor formÃ¼lÃ¼ dokÃ¼mante edildi (bu dosya yeterli)
 - Endpoint Postman'da test edildi
-- Unit test coverage ≥ 85%
-- `docs/DATABASE_SCHEMA.md` güncellendi
+- Unit test coverage â‰¥ 85%
+- `docs/DATABASE_SCHEMA.md` gÃ¼ncellendi
+

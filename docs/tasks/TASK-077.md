@@ -1,7 +1,7 @@
-# TASK-077 — Patch Impact Notifier
+﻿# TASK-077 â€” Patch Impact Notifier
 
-**Phase:** 3 — Growth & Conversion  
-**Status:** Pending  
+**Phase:** 3 â€” Growth & Conversion  
+**Status:** Done  
 **Estimated Effort:** 1.5 days  
 **Priority:** P0
 
@@ -9,30 +9,30 @@
 
 ## Objective
 
-Riot her iki haftada bir yama yayınlıyor. Kullanıcının champion pool'undaki şampiyonlar
-buff/nerf aldığında ve kullanıcının kendi metriklerinde yama öncesi/sonrası istatistiksel
-bir değişim tespit edildiğinde otomatik bildirim gönder. "14.21 yamasından sonra Ahri
-win rate'in %3 düştü" gibi kişiselleştirilmiş patch analizi.
+Riot her iki haftada bir yama yayÄ±nlÄ±yor. KullanÄ±cÄ±nÄ±n champion pool'undaki ÅŸampiyonlar
+buff/nerf aldÄ±ÄŸÄ±nda ve kullanÄ±cÄ±nÄ±n kendi metriklerinde yama Ã¶ncesi/sonrasÄ± istatistiksel
+bir deÄŸiÅŸim tespit edildiÄŸinde otomatik bildirim gÃ¶nder. "14.21 yamasÄ±ndan sonra Ahri
+win rate'in %3 dÃ¼ÅŸtÃ¼" gibi kiÅŸiselleÅŸtirilmiÅŸ patch analizi.
 
 ---
 
 ## User Story
 
-> "Yama çıktı, değişiklikler neydi bilmiyorum. Sadece son zamanlarda kötü
-> oynadığımı hissediyorum ama nedenini anlamıyorum."
+> "Yama Ã§Ä±ktÄ±, deÄŸiÅŸiklikler neydi bilmiyorum. Sadece son zamanlarda kÃ¶tÃ¼
+> oynadÄ±ÄŸÄ±mÄ± hissediyorum ama nedenini anlamÄ±yorum."
 
 ---
 
 ## Acceptance Criteria
 
 - [ ] `PatchVersion` tablosu: yama tarihleri ve versiyonlar tutuluyor
-- [ ] Her yama çıkışında (haftalık cron veya DDragon API polling) yeni yama kaydediliyor
-- [ ] Kullanıcının champion pool'undaki şampiyonlar için buff/nerf DB'ye yazılıyor
-- [ ] Yama sonrası 15+ maç oynandıysa otomatik analiz tetikleniyor
+- [ ] Her yama Ã§Ä±kÄ±ÅŸÄ±nda (haftalÄ±k cron veya DDragon API polling) yeni yama kaydediliyor
+- [ ] KullanÄ±cÄ±nÄ±n champion pool'undaki ÅŸampiyonlar iÃ§in buff/nerf DB'ye yazÄ±lÄ±yor
+- [ ] Yama sonrasÄ± 15+ maÃ§ oynandÄ±ysa otomatik analiz tetikleniyor
 - [ ] "Yama etkisi" bildirimi: in-app notification + email (opsiyonel)
-- [ ] Dashboard'da "Son Yama Etkisi" widget'ı
-- [ ] Patch notes URL'i (DDragon veya community API) bildirimde yer alıyor
-- [ ] TypeScript strict — no `any`
+- [ ] Dashboard'da "Son Yama Etkisi" widget'Ä±
+- [ ] Patch notes URL'i (DDragon veya community API) bildirimde yer alÄ±yor
+- [ ] TypeScript strict â€” no `any`
 
 ---
 
@@ -44,7 +44,7 @@ DDragon API'den versiyon listesi:
 ```
 https://ddragon.leagueoflegends.com/api/versions.json
 ```
-En son versiyon değiştiyse yeni `PatchVersion` kaydı oluştur.
+En son versiyon deÄŸiÅŸtiyse yeni `PatchVersion` kaydÄ± oluÅŸtur.
 
 ```prisma
 model PatchVersion {
@@ -65,7 +65,7 @@ model PatchChampionChange {
   championId     Int
   championName   String
   changeType     String       // 'buff' | 'nerf' | 'adjusted' | 'rework'
-  summary        String       // "Q cooldown azaltıldı, W hasarı düşürüldü"
+  summary        String       // "Q cooldown azaltÄ±ldÄ±, W hasarÄ± dÃ¼ÅŸÃ¼rÃ¼ldÃ¼"
   createdAt      DateTime     @default(now())
 
   patchVersion PatchVersion @relation(fields: [patchVersionId], references: [id])
@@ -79,7 +79,7 @@ model PatchChampionChange {
 
 ```typescript
 // src/inngest/functions/patchVersionPoller.ts
-// Her gün 08:00 UTC çalışır
+// Her gÃ¼n 08:00 UTC Ã§alÄ±ÅŸÄ±r
 export const patchVersionPoller = inngest.createFunction(
   { id: 'patch-version-poller' },
   { cron: '0 8 * * *' },
@@ -96,7 +96,7 @@ export const patchVersionPoller = inngest.createFunction(
       })
     );
 
-    // Tüm kullanıcılara patch impact analizi tetikle
+    // TÃ¼m kullanÄ±cÄ±lara patch impact analizi tetikle
     await step.sendEvent('patch/new-version-detected', {
       data: { version: latestVersion }
     });
@@ -110,75 +110,75 @@ export const patchVersionPoller = inngest.createFunction(
 
 ```typescript
 // src/inngest/functions/patchImpactAnalyzer.ts
-// Yeni yama sonrası kullanıcı başına tetiklenir
-// 15+ maç oynandıktan sonra analiz yapar
+// Yeni yama sonrasÄ± kullanÄ±cÄ± baÅŸÄ±na tetiklenir
+// 15+ maÃ§ oynandÄ±ktan sonra analiz yapar
 
 async function analyzePatchImpact(userId: string, riotAccountId: string, patchVersion: string) {
-  // Yama öncesi son 20 maç WR (yama tarihinden önceki)
-  // Yama sonrası maçlar (yama tarihinden sonraki)
-  // Her şampiyon için karşılaştır
-  // Delta > %5 → bildirim oluştur
+  // Yama Ã¶ncesi son 20 maÃ§ WR (yama tarihinden Ã¶nceki)
+  // Yama sonrasÄ± maÃ§lar (yama tarihinden sonraki)
+  // Her ÅŸampiyon iÃ§in karÅŸÄ±laÅŸtÄ±r
+  // Delta > %5 â†’ bildirim oluÅŸtur
 }
 ```
 
 ### Frontend: Patch Impact Widget
 
 ```
-┌─────────────────────────────────────────────────┐
-│  Yama 14.21 Etkisi (2 gün önce)                │
-├─────────────────────────────────────────────────┤
-│  Ahri     ▼ -4.2% WR   (yama öncesi: %58)     │
-│  Viktor   ▲ +2.1% WR   (yama öncesi: %61)     │
-│  Syndra   ≈ Değişmedi                          │
-├─────────────────────────────────────────────────┤
-│  [Patch Notlarını Gör →]                        │
-└─────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  Yama 14.21 Etkisi (2 gÃ¼n Ã¶nce)                â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  Ahri     â–¼ -4.2% WR   (yama Ã¶ncesi: %58)     â”‚
+â”‚  Viktor   â–² +2.1% WR   (yama Ã¶ncesi: %61)     â”‚
+â”‚  Syndra   â‰ˆ DeÄŸiÅŸmedi                          â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  [Patch NotlarÄ±nÄ± GÃ¶r â†’]                        â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ### In-App Notification
 
 ```typescript
-// app/api/notifications/route.ts — mevcut notification sistemi varsa kullan
-// yoksa basit: kullanıcı dashboard'a girince göster
+// app/api/notifications/route.ts â€” mevcut notification sistemi varsa kullan
+// yoksa basit: kullanÄ±cÄ± dashboard'a girince gÃ¶ster
 interface PatchNotification {
   type: 'patch_impact';
   patchVersion: string;
   affectedChampions: { name: string; changeType: string; wrDelta: number }[];
-  message: string; // AI üretilmiş özet
+  message: string; // AI Ã¼retilmiÅŸ Ã¶zet
 }
 ```
 
 ---
 
-## Patch Notes Kaynağı
+## Patch Notes KaynaÄŸÄ±
 
 Resmi Riot patch notes URL pattern'i:
 ```
 https://www.leagueoflegends.com/tr-tr/news/game-updates/patch-{major}-{minor}-notes/
 ```
-Bunu link olarak widget'ta göster, içeriği parse etmeye çalışma (ToS riski).
+Bunu link olarak widget'ta gÃ¶ster, iÃ§eriÄŸi parse etmeye Ã§alÄ±ÅŸma (ToS riski).
 
-Şampiyon değişikliklerini community API'den al:
+Åampiyon deÄŸiÅŸikliklerini community API'den al:
 ```
 https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champions/
 ```
-veya manuel olarak DDragon'dan champion stat karşılaştırması yap (önceki versiyon vs yeni).
+veya manuel olarak DDragon'dan champion stat karÅŸÄ±laÅŸtÄ±rmasÄ± yap (Ã¶nceki versiyon vs yeni).
 
 ---
 
 ## Files
 
 ```
-prisma/schema.prisma                                    ← PatchVersion, PatchChampionChange
-prisma/migrations/YYYYMMDD_add_patch_tracking/          ← YENİ
-src/inngest/functions/patchVersionPoller.ts             ← YENİ cron
-src/inngest/functions/patchImpactAnalyzer.ts            ← YENİ function
-src/inngest/index.ts                                    ← functionları kaydet
-src/domains/analysis/services/patchService.ts           ← YENİ servis
-app/api/patch/impact/route.ts                           ← GET kullanıcının patch impact verisi
-src/components/dashboard/PatchImpactWidget.tsx          ← YENİ
-src/hooks/usePatchImpact.ts                             ← YENİ TanStack Query
-app/(app)/dashboard/page.tsx                            ← widget ekle
+prisma/schema.prisma                                    â† PatchVersion, PatchChampionChange
+prisma/migrations/YYYYMMDD_add_patch_tracking/          â† YENÄ°
+src/inngest/functions/patchVersionPoller.ts             â† YENÄ° cron
+src/inngest/functions/patchImpactAnalyzer.ts            â† YENÄ° function
+src/inngest/index.ts                                    â† functionlarÄ± kaydet
+src/domains/analysis/services/patchService.ts           â† YENÄ° servis
+app/api/patch/impact/route.ts                           â† GET kullanÄ±cÄ±nÄ±n patch impact verisi
+src/components/dashboard/PatchImpactWidget.tsx          â† YENÄ°
+src/hooks/usePatchImpact.ts                             â† YENÄ° TanStack Query
+app/(app)/dashboard/page.tsx                            â† widget ekle
 ```
 
 ---
@@ -187,14 +187,14 @@ app/(app)/dashboard/page.tsx                            ← widget ekle
 
 ```typescript
 describe('patchVersionPoller', () => {
-  it('yeni versiyon tespit edilince DB kaydı oluşturulur')
-  it('aynı versiyon tekrar gelince duplicate oluşturulmaz')
+  it('yeni versiyon tespit edilince DB kaydÄ± oluÅŸturulur')
+  it('aynÄ± versiyon tekrar gelince duplicate oluÅŸturulmaz')
 })
 
 describe('patchImpactAnalyzer', () => {
-  it('yama öncesi/sonrası WR delta doğru hesaplanıyor')
-  it('delta < %2 → bildirim tetiklenmiyor')
-  it('15 maçtan az → analiz bekleniyor')
+  it('yama Ã¶ncesi/sonrasÄ± WR delta doÄŸru hesaplanÄ±yor')
+  it('delta < %2 â†’ bildirim tetiklenmiyor')
+  it('15 maÃ§tan az â†’ analiz bekleniyor')
 })
 ```
 
@@ -202,16 +202,17 @@ describe('patchImpactAnalyzer', () => {
 
 ## Dependencies
 
-- Inngest ✅
-- DDragon API ✅ (mevcut kullanımda)
-- `matchSyncService.ts` ✅
+- Inngest âœ…
+- DDragon API âœ… (mevcut kullanÄ±mda)
+- `matchSyncService.ts` âœ…
 
 ---
 
 ## Definition of Done
 
 - Yeni yama cron ile tespit ediliyor
-- Dashboard widget WR değişimini gösteriyor
-- Patch notes linki görünüyor
-- Unit test coverage ≥ 80%
-- `docs/DATABASE_SCHEMA.md` güncellendi
+- Dashboard widget WR deÄŸiÅŸimini gÃ¶steriyor
+- Patch notes linki gÃ¶rÃ¼nÃ¼yor
+- Unit test coverage â‰¥ 80%
+- `docs/DATABASE_SCHEMA.md` gÃ¼ncellendi
+

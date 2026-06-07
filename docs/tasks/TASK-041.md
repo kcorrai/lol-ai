@@ -1,29 +1,29 @@
-# TASK-041 — [F3-3] Counter Pick API Endpoint
+﻿# TASK-041 â€” [F3-3] Counter Pick API Endpoint
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 0.5 day
 
 ---
 
 ## Objective
 
-Counter Pick servisini HTTP API olarak expose et. Auth gerektirmeyen public endpoint — acquisition funnel için kritik. Rate limiting ile kötüye kullanımı engelle.
+Counter Pick servisini HTTP API olarak expose et. Auth gerektirmeyen public endpoint â€” acquisition funnel iÃ§in kritik. Rate limiting ile kÃ¶tÃ¼ye kullanÄ±mÄ± engelle.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `app/api/counter/route.ts` oluşturuldu
-- [ ] `GET /api/counter?champion=Yasuo&role=MIDDLE` çalışıyor
+- [ ] `app/api/counter/route.ts` oluÅŸturuldu
+- [ ] `GET /api/counter?champion=Yasuo&role=MIDDLE` Ã§alÄ±ÅŸÄ±yor
 - [ ] Auth gerektirmiyor (public endpoint)
-- [ ] IP başına 20 req/dakika rate limit uygulanıyor
-- [ ] Champion DB'de bulunamazsa 404 dönüyor
-- [ ] Geçersiz rol parametresi için 400 dönüyor
-- [ ] Eksik parametre için 400 dönüyor
-- [ ] Başarılı response `apiSuccess(result)` envelope ile dönüyor
-- [ ] Hata response'ları mevcut `Errors` class formatında
-- [ ] TypeScript strict — `any` yok
+- [ ] IP baÅŸÄ±na 20 req/dakika rate limit uygulanÄ±yor
+- [ ] Champion DB'de bulunamazsa 404 dÃ¶nÃ¼yor
+- [ ] GeÃ§ersiz rol parametresi iÃ§in 400 dÃ¶nÃ¼yor
+- [ ] Eksik parametre iÃ§in 400 dÃ¶nÃ¼yor
+- [ ] BaÅŸarÄ±lÄ± response `apiSuccess(result)` envelope ile dÃ¶nÃ¼yor
+- [ ] Hata response'larÄ± mevcut `Errors` class formatÄ±nda
+- [ ] TypeScript strict â€” `any` yok
 
 ---
 
@@ -47,18 +47,18 @@ const querySchema = z.object({
 });
 
 export async function GET(request: NextRequest) {
-  // 1. Rate limit (IP bazlı, 20/dakika)
+  // 1. Rate limit (IP bazlÄ±, 20/dakika)
   // 2. Query param parse + Zod validation
-  // 3. Champion normalize (trim, lowercase için DB lookup)
-  // 4. DB'de champion varlığı kontrolü
-  // 5. getGeneralCounters(champion, role) çağır
-  // 6. apiSuccess(result) döndür
+  // 3. Champion normalize (trim, lowercase iÃ§in DB lookup)
+  // 4. DB'de champion varlÄ±ÄŸÄ± kontrolÃ¼
+  // 5. getGeneralCounters(champion, role) Ã§aÄŸÄ±r
+  // 6. apiSuccess(result) dÃ¶ndÃ¼r
 }
 ```
 
 ### Rate Limiting
 
-Mevcut `rateLimit` helper'ını kullan. Config:
+Mevcut `rateLimit` helper'Ä±nÄ± kullan. Config:
 ```typescript
 { requests: 20, window: '1m', prefix: 'counter-api' }
 ```
@@ -66,18 +66,19 @@ Mevcut `rateLimit` helper'ını kullan. Config:
 ### Champion Validation
 
 `prisma.champion.findFirst({ where: { name: { equals: champion, mode: 'insensitive' } } })`
-Bulunamazsa: `Errors.notFound('Şampiyon bulunamadı')`
+Bulunamazsa: `Errors.notFound('Åampiyon bulunamadÄ±')`
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
-- TASK-040 (generalCounterService) tamamlanmış olmalı
+- TASK-040 (generalCounterService) tamamlanmÄ±ÅŸ olmalÄ±
 
 ---
 
 ## Notlar
 
-- Route handler 80 satırı geçmemeli (CLAUDE.md kuralı). İş mantığı servise delegat et.
-- Rol parametresi URL'den geldiği için string olarak gelir — `z.nativeEnum(Position)` ile validate et.
-- Champion adını normalize ederken DB'deki canonical ismi kullan (ör. "leesin" → "Lee Sin").
+- Route handler 80 satÄ±rÄ± geÃ§memeli (CLAUDE.md kuralÄ±). Ä°ÅŸ mantÄ±ÄŸÄ± servise delegat et.
+- Rol parametresi URL'den geldiÄŸi iÃ§in string olarak gelir â€” `z.nativeEnum(Position)` ile validate et.
+- Champion adÄ±nÄ± normalize ederken DB'deki canonical ismi kullan (Ã¶r. "leesin" â†’ "Lee Sin").
+

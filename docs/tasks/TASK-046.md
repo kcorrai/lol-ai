@@ -1,26 +1,26 @@
-# TASK-046 — [F1-2] matchupAnalysisService + matchupPrompt
+﻿# TASK-046 â€” [F1-2] matchupAnalysisService + matchupPrompt
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 1 day
 
 ---
 
 ## Objective
 
-Matchup Coach'un iş mantığını yaz. İki champion + rol girişi alarak kapsamlı lane analizi, trade rehberi, build tavsiyesi ve kritik hata uyarıları üret.
+Matchup Coach'un iÅŸ mantÄ±ÄŸÄ±nÄ± yaz. Ä°ki champion + rol giriÅŸi alarak kapsamlÄ± lane analizi, trade rehberi, build tavsiyesi ve kritik hata uyarÄ±larÄ± Ã¼ret.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `src/domains/matchup/services/matchupAnalysisService.ts` yazıldı
-- [ ] `getMatchupAnalysis(champion, opponent, role)` cache hit durumunda AI çağırmıyor
-- [ ] Aynı champion iki kez girilirse hata fırlatıyor
-- [ ] AI çıktısı Zod schema ile validate ediliyor
-- [ ] `src/domains/matchup/prompts/matchupPrompt.ts` yazıldı
-- [ ] Prompt dört ana bölümü açıkça istiyor: lane analizi, trade rehberi, build, hatalar
-- [ ] `matchupAnalysisService.ts` 250 satırı geçmiyor
+- [ ] `src/domains/matchup/services/matchupAnalysisService.ts` yazÄ±ldÄ±
+- [ ] `getMatchupAnalysis(champion, opponent, role)` cache hit durumunda AI Ã§aÄŸÄ±rmÄ±yor
+- [ ] AynÄ± champion iki kez girilirse hata fÄ±rlatÄ±yor
+- [ ] AI Ã§Ä±ktÄ±sÄ± Zod schema ile validate ediliyor
+- [ ] `src/domains/matchup/prompts/matchupPrompt.ts` yazÄ±ldÄ±
+- [ ] Prompt dÃ¶rt ana bÃ¶lÃ¼mÃ¼ aÃ§Ä±kÃ§a istiyor: lane analizi, trade rehberi, build, hatalar
+- [ ] `matchupAnalysisService.ts` 250 satÄ±rÄ± geÃ§miyor
 - [ ] TypeScript strict
 
 ---
@@ -39,7 +39,7 @@ export async function getMatchupAnalysis(
 
 Cache key:
 ```typescript
-// "yasuo vs zed mid" ile "zed vs yasuo mid" farklı — her iki yön ayrı analiz
+// "yasuo vs zed mid" ile "zed vs yasuo mid" farklÄ± â€” her iki yÃ¶n ayrÄ± analiz
 buildCacheKey('matchup', {
   champion: champion.toLowerCase(),
   opponent: opponent.toLowerCase(),
@@ -47,12 +47,12 @@ buildCacheKey('matchup', {
 })
 ```
 
-TTL: 14 gün.
+TTL: 14 gÃ¼n.
 
-Aynı champion guard:
+AynÄ± champion guard:
 ```typescript
 if (champion.toLowerCase() === opponent.toLowerCase()) {
-  throw new Error('İki farklı şampiyon seçilmelidir');
+  throw new Error('Ä°ki farklÄ± ÅŸampiyon seÃ§ilmelidir');
 }
 ```
 
@@ -60,7 +60,7 @@ if (champion.toLowerCase() === opponent.toLowerCase()) {
 
 `buildMatchupUserPrompt(champion, opponent, role)`:
 
-Dört bölüm için explicit JSON anahtarları iste:
+DÃ¶rt bÃ¶lÃ¼m iÃ§in explicit JSON anahtarlarÄ± iste:
 - `laneAnalysis`: `advantage`, `summary`, `levels1to3`, `level6Plan`, `powerSpikes[]`
 - `tradeGuide`: `shortTrade`, `longTrade`, `winConditions[]`, `loseConditions[]`
 - `buildAdvice`: `startingItems[]`, `coreItems[]`, `situationalItems[]`, `reasoning`
@@ -68,7 +68,7 @@ Dört bölüm için explicit JSON anahtarları iste:
 
 ### Zod Schema
 
-`matchup.types.ts` dosyasına ekle:
+`matchup.types.ts` dosyasÄ±na ekle:
 
 ```typescript
 export const matchupAnalysisSchema = z.object({
@@ -86,7 +86,8 @@ export const matchupAnalysisSchema = z.object({
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
 - TASK-037 (AiCache)
 - TASK-045 (Matchup domain tipleri)
+

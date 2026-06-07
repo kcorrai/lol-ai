@@ -1,28 +1,28 @@
-# TASK-037 — [INFRA-1] AiCache Prisma Modeli + Migration
+﻿# TASK-037 â€” [INFRA-1] AiCache Prisma Modeli + Migration
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 0.5 day
 
 ---
 
 ## Objective
 
-F3 (Counter Pick), F1 (Matchup Coach), F7 (OTP Assistant) ve F2 (Draft Analyzer) feature'larının tamamı için ortak bir AI sonuç cache mekanizması kur. Aynı sorgu için AI tekrar çağrılmasın; hem maliyet hem latency azalsın.
+F3 (Counter Pick), F1 (Matchup Coach), F7 (OTP Assistant) ve F2 (Draft Analyzer) feature'larÄ±nÄ±n tamamÄ± iÃ§in ortak bir AI sonuÃ§ cache mekanizmasÄ± kur. AynÄ± sorgu iÃ§in AI tekrar Ã§aÄŸrÄ±lmasÄ±n; hem maliyet hem latency azalsÄ±n.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `prisma/schema.prisma` dosyasına `AiCache` modeli eklendi
-- [ ] `npx prisma migrate dev --name add_ai_cache` başarıyla çalıştı
-- [ ] `src/lib/ai/aiCache.ts` helper dosyası oluşturuldu
-- [ ] `getCached`, `setCached`, `incrementHit`, `buildCacheKey` fonksiyonları export ediliyor
-- [ ] `buildCacheKey` dış dependency olmadan Node.js `crypto` modülü ile sha256 üretiyor
-- [ ] Cache expire kontrolü (`expiresAt < now()`) `getCached` içinde yapılıyor
-- [ ] Süresi dolmuş entry'ler `getCached` tarafından `null` döndürüyor (silmiyor)
-- [ ] TypeScript strict — `any` yok, tam tip dönüşleri var
-- [ ] `src/lib/ai/aiCache.test.ts` unit testleri geçiyor
+- [ ] `prisma/schema.prisma` dosyasÄ±na `AiCache` modeli eklendi
+- [ ] `npx prisma migrate dev --name add_ai_cache` baÅŸarÄ±yla Ã§alÄ±ÅŸtÄ±
+- [ ] `src/lib/ai/aiCache.ts` helper dosyasÄ± oluÅŸturuldu
+- [ ] `getCached`, `setCached`, `incrementHit`, `buildCacheKey` fonksiyonlarÄ± export ediliyor
+- [ ] `buildCacheKey` dÄ±ÅŸ dependency olmadan Node.js `crypto` modÃ¼lÃ¼ ile sha256 Ã¼retiyor
+- [ ] Cache expire kontrolÃ¼ (`expiresAt < now()`) `getCached` iÃ§inde yapÄ±lÄ±yor
+- [ ] SÃ¼resi dolmuÅŸ entry'ler `getCached` tarafÄ±ndan `null` dÃ¶ndÃ¼rÃ¼yor (silmiyor)
+- [ ] TypeScript strict â€” `any` yok, tam tip dÃ¶nÃ¼ÅŸleri var
+- [ ] `src/lib/ai/aiCache.test.ts` unit testleri geÃ§iyor
 
 ---
 
@@ -49,7 +49,7 @@ model AiCache {
 
 ```typescript
 export async function getCached(cacheKey: string): Promise<unknown | null>
-// expiresAt kontrolü yap; süresi dolmuşsa null döndür; hit ise incrementHit çağır
+// expiresAt kontrolÃ¼ yap; sÃ¼resi dolmuÅŸsa null dÃ¶ndÃ¼r; hit ise incrementHit Ã§aÄŸÄ±r
 
 export async function setCached(
   cacheKey: string,
@@ -65,28 +65,29 @@ export function buildCacheKey(
   inputs: Record<string, string>
 ): string
 // sha256(type + ":" + JSON.stringify(sortedInputs))
-// inputs sıralı olmalı — key order farklılığı aynı hash üretmeli
+// inputs sÄ±ralÄ± olmalÄ± â€” key order farklÄ±lÄ±ÄŸÄ± aynÄ± hash Ã¼retmeli
 ```
 
 ### Unit Testler (`src/lib/ai/aiCache.test.ts`)
 
-- `getCached`: hit varsa ve süresi dolmamışsa doğru content döner
-- `getCached`: süresi dolmuş entry için `null` döner
-- `getCached`: mevcut değilse `null` döner
-- `setCached`: doğru `expiresAt` ile yazar
-- `buildCacheKey`: aynı inputs (farklı key order) → aynı hash
-- `buildCacheKey`: farklı inputs → farklı hash
+- `getCached`: hit varsa ve sÃ¼resi dolmamÄ±ÅŸsa doÄŸru content dÃ¶ner
+- `getCached`: sÃ¼resi dolmuÅŸ entry iÃ§in `null` dÃ¶ner
+- `getCached`: mevcut deÄŸilse `null` dÃ¶ner
+- `setCached`: doÄŸru `expiresAt` ile yazar
+- `buildCacheKey`: aynÄ± inputs (farklÄ± key order) â†’ aynÄ± hash
+- `buildCacheKey`: farklÄ± inputs â†’ farklÄ± hash
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
-Yok — bu task diğer tüm feature task'larının ön koşuludur.
+Yok â€” bu task diÄŸer tÃ¼m feature task'larÄ±nÄ±n Ã¶n koÅŸuludur.
 
 ---
 
 ## Notlar
 
-- `crypto` modülü Node.js built-in — yeni npm paketi ekleme.
-- Süresi dolmuş kayıtları silmek için ayrı bir cron job gerekmez; `expiresAt` index yeterli. İleride toplu temizlik için `DELETE WHERE expiresAt < NOW()` eklenebilir.
-- Default TTL: 14 gün (≈ 1 patch cycle). Her servis kendi TTL'ini belirler.
+- `crypto` modÃ¼lÃ¼ Node.js built-in â€” yeni npm paketi ekleme.
+- SÃ¼resi dolmuÅŸ kayÄ±tlarÄ± silmek iÃ§in ayrÄ± bir cron job gerekmez; `expiresAt` index yeterli. Ä°leride toplu temizlik iÃ§in `DELETE WHERE expiresAt < NOW()` eklenebilir.
+- Default TTL: 14 gÃ¼n (â‰ˆ 1 patch cycle). Her servis kendi TTL'ini belirler.
+

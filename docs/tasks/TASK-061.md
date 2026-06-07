@@ -1,49 +1,49 @@
-# TASK-061 — [F2-1] Draft Domain Kurulumu + TypeScript Tipleri
+﻿# TASK-061 â€” [F2-1] Draft Domain Kurulumu + TypeScript Tipleri
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 0.5 day
 
 ---
 
 ## Objective
 
-Draft Analyzer feature'ı için domain iskeletini ve TypeScript tip tanımlarını oluştur.
+Draft Analyzer feature'Ä± iÃ§in domain iskeletini ve TypeScript tip tanÄ±mlarÄ±nÄ± oluÅŸtur.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `src/domains/draft/` klasör yapısı oluşturuldu
-- [ ] `src/domains/draft/types/draft.types.ts` yazıldı
-- [ ] Tüm tipler TypeScript strict modda geçiyor
-- [ ] `src/domains/draft/index.ts` oluşturuldu
-- [ ] Component placeholder dosyaları oluşturuldu
+- [ ] `src/domains/draft/` klasÃ¶r yapÄ±sÄ± oluÅŸturuldu
+- [ ] `src/domains/draft/types/draft.types.ts` yazÄ±ldÄ±
+- [ ] TÃ¼m tipler TypeScript strict modda geÃ§iyor
+- [ ] `src/domains/draft/index.ts` oluÅŸturuldu
+- [ ] Component placeholder dosyalarÄ± oluÅŸturuldu
 
 ---
 
 ## Teknik Gereksinimler
 
-### Klasör Yapısı
+### KlasÃ¶r YapÄ±sÄ±
 
 ```
 src/domains/draft/
-├── services/
-│   └── draftAnalysisService.ts
-├── prompts/
-│   └── draftPrompt.ts
-├── types/
-│   └── draft.types.ts
-├── components/
-│   ├── DraftInput.tsx
-│   ├── TeamCompositionCard.tsx
-│   ├── WinConditionsCard.tsx
-│   ├── ScalingChart.tsx
-│   └── DraftSkeleton.tsx
-└── index.ts
+â”œâ”€â”€ services/
+â”‚   â””â”€â”€ draftAnalysisService.ts
+â”œâ”€â”€ prompts/
+â”‚   â””â”€â”€ draftPrompt.ts
+â”œâ”€â”€ types/
+â”‚   â””â”€â”€ draft.types.ts
+â”œâ”€â”€ components/
+â”‚   â”œâ”€â”€ DraftInput.tsx
+â”‚   â”œâ”€â”€ TeamCompositionCard.tsx
+â”‚   â”œâ”€â”€ WinConditionsCard.tsx
+â”‚   â”œâ”€â”€ ScalingChart.tsx
+â”‚   â””â”€â”€ DraftSkeleton.tsx
+â””â”€â”€ index.ts
 ```
 
-### Tip Tanımları (`draft.types.ts`)
+### Tip TanÄ±mlarÄ± (`draft.types.ts`)
 
 ```typescript
 import type { Position } from '@/types/common.types';
@@ -109,6 +109,7 @@ export interface DraftAnalysis {
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
-- Bağımsız — paralel başlanabilir.
+- BaÄŸÄ±msÄ±z â€” paralel baÅŸlanabilir.
+

@@ -1,67 +1,67 @@
-# TASK-043 — [F3-5] Counter Pick Sayfası UI
+﻿# TASK-043 â€” [F3-5] Counter Pick SayfasÄ± UI
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 1.5 days
 
 ---
 
 ## Objective
 
-Counter Pick Generator'ın kullanıcı arayüzünü yaz. Kullanıcı rakip champion ve rol seçsin, AI counter listesini görsel olarak sunsun. Sayfa auth gerektirmeden çalışmalı.
+Counter Pick Generator'Ä±n kullanÄ±cÄ± arayÃ¼zÃ¼nÃ¼ yaz. KullanÄ±cÄ± rakip champion ve rol seÃ§sin, AI counter listesini gÃ¶rsel olarak sunsun. Sayfa auth gerektirmeden Ã§alÄ±ÅŸmalÄ±.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `app/(app)/counter/page.tsx` oluşturuldu
-- [ ] `ChampionSelector` (TASK-038) ve rol seçici kullanılıyor
-- [ ] Seçim yapılmadan sayfa boş state gösteriyor
-- [ ] Analiz yüklenirken skeleton gösteriliyor
-- [ ] Hata durumunda retry butonlu hata mesajı gösteriliyor
-- [ ] `CounterCard` bileşeni: champion ikon, tier badge, detay alanları
-- [ ] Üç liste ayrı section'da gösteriliyor: En Güçlü / Kolay / Solo Queue
-- [ ] Sayfanın altında AI disclaimer metni var
-- [ ] Dark mode çalışıyor
+- [ ] `app/(app)/counter/page.tsx` oluÅŸturuldu
+- [ ] `ChampionSelector` (TASK-038) ve rol seÃ§ici kullanÄ±lÄ±yor
+- [ ] SeÃ§im yapÄ±lmadan sayfa boÅŸ state gÃ¶steriyor
+- [ ] Analiz yÃ¼klenirken skeleton gÃ¶steriliyor
+- [ ] Hata durumunda retry butonlu hata mesajÄ± gÃ¶steriliyor
+- [ ] `CounterCard` bileÅŸeni: champion ikon, tier badge, detay alanlarÄ±
+- [ ] ÃœÃ§ liste ayrÄ± section'da gÃ¶steriliyor: En GÃ¼Ã§lÃ¼ / Kolay / Solo Queue
+- [ ] SayfanÄ±n altÄ±nda AI disclaimer metni var
+- [ ] Dark mode Ã§alÄ±ÅŸÄ±yor
 - [ ] Mobil responsive
-- [ ] `CounterCard.tsx`, `CounterList.tsx`, `CounterPageSkeleton.tsx` yazıldı
-- [ ] `useGeneralCounterPick` (TASK-042) hook kullanılıyor
+- [ ] `CounterCard.tsx`, `CounterList.tsx`, `CounterPageSkeleton.tsx` yazÄ±ldÄ±
+- [ ] `useGeneralCounterPick` (TASK-042) hook kullanÄ±lÄ±yor
 
 ---
 
 ## Teknik Gereksinimler
 
-### Sayfa Yapısı (`page.tsx`)
+### Sayfa YapÄ±sÄ± (`page.tsx`)
 
 ```
-┌─────────────────────────────────────┐
-│  Rakip Şampiyonu Kim?               │
-│  [ChampionSelector]  [Rol ▼]       │
-├─────────────────────────────────────┤
-│  En Güçlü Counterlar (topCounters) │
-│  [CounterCard S] [CounterCard S]   │
-├─────────────────────────────────────┤
-│  Kolay Oynanabilir (easyCounters)  │
-│  [CounterCard A] [CounterCard B]   │
-├─────────────────────────────────────┤
-│  Solo Queue Önerileri              │
-│  [CounterCard] [CounterCard]       │
-├─────────────────────────────────────┤
-│  Genel İpuçları                    │
-│  • ipucu 1                         │
-│  • ipucu 2                         │
-├─────────────────────────────────────┤
-│  ⚠ Bu analizler AI tarafından...   │
-└─────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  Rakip Åampiyonu Kim?               â”‚
+â”‚  [ChampionSelector]  [Rol â–¼]       â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  En GÃ¼Ã§lÃ¼ Counterlar (topCounters) â”‚
+â”‚  [CounterCard S] [CounterCard S]   â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  Kolay Oynanabilir (easyCounters)  â”‚
+â”‚  [CounterCard A] [CounterCard B]   â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  Solo Queue Ã–nerileri              â”‚
+â”‚  [CounterCard] [CounterCard]       â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  Genel Ä°puÃ§larÄ±                    â”‚
+â”‚  â€¢ ipucu 1                         â”‚
+â”‚  â€¢ ipucu 2                         â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  âš  Bu analizler AI tarafÄ±ndan...   â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
-### CounterCard Bileşeni
+### CounterCard BileÅŸeni
 
 - Champion ikon (`ChampionIcon`) + isim
-- Tier badge: S=mavi, A=yeşil, B=sarı
-- Difficulty badge: easy=yeşil, medium=sarı, hard=kırmızı
-- "Neden güçlü" metni (collapsed default, expand on click)
-- "Lane avantajı", "Dikkat et", "Build ipucu" — expand olduğunda görünür
+- Tier badge: S=mavi, A=yeÅŸil, B=sarÄ±
+- Difficulty badge: easy=yeÅŸil, medium=sarÄ±, hard=kÄ±rmÄ±zÄ±
+- "Neden gÃ¼Ã§lÃ¼" metni (collapsed default, expand on click)
+- "Lane avantajÄ±", "Dikkat et", "Build ipucu" â€” expand olduÄŸunda gÃ¶rÃ¼nÃ¼r
 
 ### Loading State
 
@@ -69,11 +69,11 @@ Counter Pick Generator'ın kullanıcı arayüzünü yaz. Kullanıcı rakip champ
 
 ### Empty State
 
-Şampiyon ve rol seçilmemişken: "Karşı oynadığın şampiyonu seç ve counter'larını keşfet" metni + ikon.
+Åampiyon ve rol seÃ§ilmemiÅŸken: "KarÅŸÄ± oynadÄ±ÄŸÄ±n ÅŸampiyonu seÃ§ ve counter'larÄ±nÄ± keÅŸfet" metni + ikon.
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
 - TASK-038 (ChampionSelector)
 - TASK-042 (useGeneralCounterPick hook)
@@ -82,6 +82,7 @@ Counter Pick Generator'ın kullanıcı arayüzünü yaz. Kullanıcı rakip champ
 
 ## Notlar
 
-- Sayfa `app/(app)/` altında — layout'u otomatik alacak (Sidebar, TopBar vs.).
-- Component dosyaları 200 satırı geçmemeli (CLAUDE.md kuralı). CounterCard karmaşıklaşırsa alt component'lere böl.
-- `CounterCard` expand/collapse için Radix UI `Collapsible` veya basit `useState` ile yönet.
+- Sayfa `app/(app)/` altÄ±nda â€” layout'u otomatik alacak (Sidebar, TopBar vs.).
+- Component dosyalarÄ± 200 satÄ±rÄ± geÃ§memeli (CLAUDE.md kuralÄ±). CounterCard karmaÅŸÄ±klaÅŸÄ±rsa alt component'lere bÃ¶l.
+- `CounterCard` expand/collapse iÃ§in Radix UI `Collapsible` veya basit `useState` ile yÃ¶net.
+

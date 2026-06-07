@@ -1,7 +1,7 @@
-# TASK-080 — Ölüm Isı Haritası (Death Heat Map)
+﻿# TASK-080 â€” Ã–lÃ¼m IsÄ± HaritasÄ± (Death Heat Map)
 
-**Phase:** 3 — Growth & Conversion  
-**Status:** Pending  
+**Phase:** 3 â€” Growth & Conversion  
+**Status:** Done  
 **Estimated Effort:** 2.5 days  
 **Priority:** P1
 
@@ -9,29 +9,29 @@
 
 ## Objective
 
-Kullanıcının son 20-50 maçındaki ölüm koordinatlarını LoL haritası üzerinde ısı
-haritası olarak görselleştir. Kullanıcı hangi bölgede, hangi zamanlarda öldüğünü
-görsel olarak anlasın. Riot Match Timeline API'si koordinat verisi sağlıyor.
+KullanÄ±cÄ±nÄ±n son 20-50 maÃ§Ä±ndaki Ã¶lÃ¼m koordinatlarÄ±nÄ± LoL haritasÄ± Ã¼zerinde Ä±sÄ±
+haritasÄ± olarak gÃ¶rselleÅŸtir. KullanÄ±cÄ± hangi bÃ¶lgede, hangi zamanlarda Ã¶ldÃ¼ÄŸÃ¼nÃ¼
+gÃ¶rsel olarak anlasÄ±n. Riot Match Timeline API'si koordinat verisi saÄŸlÄ±yor.
 
 ---
 
 ## User Story
 
-> "Her raporumda 'tünel görüşü var, tehlikeli pozisyon alıyorsun' yazıyor ama
-> bunu somut olarak görmüyorum. Nerede öldüğümü haritada görmek istiyorum."
+> "Her raporumda 'tÃ¼nel gÃ¶rÃ¼ÅŸÃ¼ var, tehlikeli pozisyon alÄ±yorsun' yazÄ±yor ama
+> bunu somut olarak gÃ¶rmÃ¼yorum. Nerede Ã¶ldÃ¼ÄŸÃ¼mÃ¼ haritada gÃ¶rmek istiyorum."
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] Match Timeline API'den ölüm event'leri çekiliyor (koordinatlarıyla)
-- [ ] Son 20 maçın ölüm koordinatları DB'ye kaydediliyor
-- [ ] LoL haritası üzerine ısı haritası overlay (SVG veya Canvas)
-- [ ] Filtreler: şampiyon, maç sayısı (10/20/50), erken/geç oyun (0-15dk / 15-30dk / 30+dk)
-- [ ] Hover: o konumdaki maç sayısı tooltip
-- [ ] "En tehlikeli bölge" AI özeti: "Ölümlerinin %40'ı düşman jungle'da gerçekleşiyor"
-- [ ] Ward haritası toggle (ward yerleştirme vs ölüm — karşılaştırma)
-- [ ] TypeScript strict — no `any`
+- [ ] Match Timeline API'den Ã¶lÃ¼m event'leri Ã§ekiliyor (koordinatlarÄ±yla)
+- [ ] Son 20 maÃ§Ä±n Ã¶lÃ¼m koordinatlarÄ± DB'ye kaydediliyor
+- [ ] LoL haritasÄ± Ã¼zerine Ä±sÄ± haritasÄ± overlay (SVG veya Canvas)
+- [ ] Filtreler: ÅŸampiyon, maÃ§ sayÄ±sÄ± (10/20/50), erken/geÃ§ oyun (0-15dk / 15-30dk / 30+dk)
+- [ ] Hover: o konumdaki maÃ§ sayÄ±sÄ± tooltip
+- [ ] "En tehlikeli bÃ¶lge" AI Ã¶zeti: "Ã–lÃ¼mlerinin %40'Ä± dÃ¼ÅŸman jungle'da gerÃ§ekleÅŸiyor"
+- [ ] Ward haritasÄ± toggle (ward yerleÅŸtirme vs Ã¶lÃ¼m â€” karÅŸÄ±laÅŸtÄ±rma)
+- [ ] TypeScript strict â€” no `any`
 
 ---
 
@@ -54,7 +54,7 @@ Event tipi `CHAMPION_KILL`:
 }
 ```
 
-Koordinat sistemi: 0-14820 (x), 0-14881 (y) — standart LoL harita koordinatları.
+Koordinat sistemi: 0-14820 (x), 0-14881 (y) â€” standart LoL harita koordinatlarÄ±.
 
 ### DB Schema
 
@@ -65,7 +65,7 @@ model MatchDeathEvent {
   riotAccountId String @db.Uuid
   positionX     Int
   positionY     Int
-  gameTimeMs    Int    // ölüm zamanı (ms)
+  gameTimeMs    Int    // Ã¶lÃ¼m zamanÄ± (ms)
   championName  String
   createdAt     DateTime @default(now())
 
@@ -87,15 +87,15 @@ export async function fetchAndPersistDeathEvents(
   riotMatchId: string,
   riotAccountId: string,
   participantId: number
-): Promise<number> // kaydedilen event sayısı
+): Promise<number> // kaydedilen event sayÄ±sÄ±
 ```
 
-Match sync sırasında veya lazy (ilk heat map isteğinde) çalışabilir.
-Timeline API rate limit'e dikkat: background job olarak Inngest ile çalıştır.
+Match sync sÄ±rasÄ±nda veya lazy (ilk heat map isteÄŸinde) Ã§alÄ±ÅŸabilir.
+Timeline API rate limit'e dikkat: background job olarak Inngest ile Ã§alÄ±ÅŸtÄ±r.
 
-### Koordinat → Piksel Dönüşümü
+### Koordinat â†’ Piksel DÃ¶nÃ¼ÅŸÃ¼mÃ¼
 
-LoL haritası 14820×14881 birim. Harita görseli genellikle 512×512 piksel.
+LoL haritasÄ± 14820Ã—14881 birim. Harita gÃ¶rseli genellikle 512Ã—512 piksel.
 
 ```typescript
 function toPixel(coord: number, mapSize: number, displaySize: number): number {
@@ -103,27 +103,27 @@ function toPixel(coord: number, mapSize: number, displaySize: number): number {
 }
 ```
 
-### Isı Haritası Render (Canvas)
+### IsÄ± HaritasÄ± Render (Canvas)
 
 ```typescript
 // src/domains/analysis/components/DeathHeatMap.tsx
-// <canvas> + konuşlandırılan blur circle'lar
-// Kütüphane: heatmap.js (lightweight, MIT lisansı)
-// Harita görseli: /public/images/lol-map.png (static asset)
+// <canvas> + konuÅŸlandÄ±rÄ±lan blur circle'lar
+// KÃ¼tÃ¼phane: heatmap.js (lightweight, MIT lisansÄ±)
+// Harita gÃ¶rseli: /public/images/lol-map.png (static asset)
 ```
 
 Alternatif: SVG overlay (daha hafif, daha az animasyon).
 
-### AI Özet
+### AI Ã–zet
 
 ```typescript
-// Koordinatları bölgelere dönüştür:
+// KoordinatlarÄ± bÃ¶lgelere dÃ¶nÃ¼ÅŸtÃ¼r:
 // x < 4000: kendi base/jungle
-// 4000-10000: orta bölge / lane
-// x > 10000: düşman bölgesi
+// 4000-10000: orta bÃ¶lge / lane
+// x > 10000: dÃ¼ÅŸman bÃ¶lgesi
 
 async function generateDeathSummary(deathEvents: MatchDeathEvent[]): Promise<string>
-// "Ölümlerinin %47'si düşman jungleda, genellikle 20-30. dakikada."
+// "Ã–lÃ¼mlerinin %47'si dÃ¼ÅŸman jungleda, genellikle 20-30. dakikada."
 ```
 
 ### API
@@ -135,39 +135,39 @@ Response: { deaths: { x, y, gameTimeMs }[], summary: string, totalDeaths: number
 
 ---
 
-## Ward Haritası (İkinci Aşama)
+## Ward HaritasÄ± (Ä°kinci AÅŸama)
 
-Aynı altyapıyla ward event'leri de eklenebilir:
+AynÄ± altyapÄ±yla ward event'leri de eklenebilir:
 ```json
 { "type": "WARD_PLACED", "position": { "x": ..., "y": ... } }
 ```
-Toggle ile ölüm haritası ↔ ward haritası geçişi.
+Toggle ile Ã¶lÃ¼m haritasÄ± â†” ward haritasÄ± geÃ§iÅŸi.
 
 ---
 
 ## Files
 
 ```
-prisma/schema.prisma                                        ← MatchDeathEvent model
-prisma/migrations/YYYYMMDD_add_death_events/                ← YENİ
-src/domains/riot/services/timelineService.ts                ← YENİ
-src/inngest/functions/timelineFetcher.ts                    ← YENİ (background job)
-src/domains/analysis/services/heatmapService.ts             ← koordinat → bölge, AI özet
-src/domains/analysis/components/DeathHeatMap.tsx            ← YENİ (Canvas/SVG)
-src/domains/analysis/components/HeatMapControls.tsx         ← YENİ (filtreler)
-app/api/analysis/heatmap/route.ts                           ← YENİ
-src/hooks/useDeathHeatmap.ts                                ← YENİ TanStack Query
-app/(app)/analysis/page.tsx                                 ← YENİ sayfa veya mevcut
-public/images/lol-map.png                                   ← statik harita görseli
+prisma/schema.prisma                                        â† MatchDeathEvent model
+prisma/migrations/YYYYMMDD_add_death_events/                â† YENÄ°
+src/domains/riot/services/timelineService.ts                â† YENÄ°
+src/inngest/functions/timelineFetcher.ts                    â† YENÄ° (background job)
+src/domains/analysis/services/heatmapService.ts             â† koordinat â†’ bÃ¶lge, AI Ã¶zet
+src/domains/analysis/components/DeathHeatMap.tsx            â† YENÄ° (Canvas/SVG)
+src/domains/analysis/components/HeatMapControls.tsx         â† YENÄ° (filtreler)
+app/api/analysis/heatmap/route.ts                           â† YENÄ°
+src/hooks/useDeathHeatmap.ts                                â† YENÄ° TanStack Query
+app/(app)/analysis/page.tsx                                 â† YENÄ° sayfa veya mevcut
+public/images/lol-map.png                                   â† statik harita gÃ¶rseli
 ```
 
 ---
 
 ## Tier Gating
 
-- **Free:** Son 10 maç, filtre yok
-- **Pro:** Son 50 maç, tüm filtreler, AI özet
-- **Elite:** Ward haritası overlay
+- **Free:** Son 10 maÃ§, filtre yok
+- **Pro:** Son 50 maÃ§, tÃ¼m filtreler, AI Ã¶zet
+- **Elite:** Ward haritasÄ± overlay
 
 ---
 
@@ -175,14 +175,14 @@ public/images/lol-map.png                                   ← statik harita g�
 
 ```typescript
 describe('timelineService', () => {
-  it('CHAMPION_KILL event → MatchDeathEvent kaydı oluşturulur')
-  it('katil olmak ölüm olarak sayılmaz (victimId kontrolü)')
-  it('duplicate event → upsert ile çift kayıt olmaz')
+  it('CHAMPION_KILL event â†’ MatchDeathEvent kaydÄ± oluÅŸturulur')
+  it('katil olmak Ã¶lÃ¼m olarak sayÄ±lmaz (victimId kontrolÃ¼)')
+  it('duplicate event â†’ upsert ile Ã§ift kayÄ±t olmaz')
 })
 
 describe('heatmapService', () => {
-  it('x > 10000 → düşman bölgesi doğru etiketleniyor')
-  it('gameTimeMs < 900000 → erken oyun (0-15dk) doğru gruplanıyor')
+  it('x > 10000 â†’ dÃ¼ÅŸman bÃ¶lgesi doÄŸru etiketleniyor')
+  it('gameTimeMs < 900000 â†’ erken oyun (0-15dk) doÄŸru gruplanÄ±yor')
 })
 ```
 
@@ -190,25 +190,26 @@ describe('heatmapService', () => {
 
 ## Performance Notu
 
-Timeline API response'ları büyük olabilir (1-2MB). Sadece `CHAMPION_KILL`
-ve `WARD_PLACED` event'lerini parse et, geri kalanını discard et.
+Timeline API response'larÄ± bÃ¼yÃ¼k olabilir (1-2MB). Sadece `CHAMPION_KILL`
+ve `WARD_PLACED` event'lerini parse et, geri kalanÄ±nÄ± discard et.
 
 ---
 
 ## Dependencies
 
-- Riot Match Timeline API (v5) ✅ (kota var, background queue kullan)
-- Inngest ✅
-- heatmap.js (yeni dependency — `docs/DEPENDENCIES.md` güncelle)
+- Riot Match Timeline API (v5) âœ… (kota var, background queue kullan)
+- Inngest âœ…
+- heatmap.js (yeni dependency â€” `docs/DEPENDENCIES.md` gÃ¼ncelle)
 
 ---
 
 ## Definition of Done
 
 - Koordinatlar DB'ye kaydediliyor
-- Harita üzerinde ısı haritası görünüyor
-- Filtreler çalışıyor
-- AI özet doğru bölge analizi yapıyor
-- Mobile'da harita kabul edilebilir boyutta görünüyor
-- `docs/DATABASE_SCHEMA.md` güncellendi
-- `docs/DEPENDENCIES.md` güncellendi
+- Harita Ã¼zerinde Ä±sÄ± haritasÄ± gÃ¶rÃ¼nÃ¼yor
+- Filtreler Ã§alÄ±ÅŸÄ±yor
+- AI Ã¶zet doÄŸru bÃ¶lge analizi yapÄ±yor
+- Mobile'da harita kabul edilebilir boyutta gÃ¶rÃ¼nÃ¼yor
+- `docs/DATABASE_SCHEMA.md` gÃ¼ncellendi
+- `docs/DEPENDENCIES.md` gÃ¼ncellendi
+

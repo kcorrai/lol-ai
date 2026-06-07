@@ -1,85 +1,85 @@
-# TASK-049 — [F1-5] Matchup Coach Sayfası UI
+﻿# TASK-049 â€” [F1-5] Matchup Coach SayfasÄ± UI
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 2 days
 
 ---
 
 ## Objective
 
-Matchup Coach'un tam kullanıcı arayüzünü yaz. İki champion seçimi, analiz tetikleme ve dört sekmeli sonuç gösterimi (Lane / Trade / Build / Hatalar).
+Matchup Coach'un tam kullanÄ±cÄ± arayÃ¼zÃ¼nÃ¼ yaz. Ä°ki champion seÃ§imi, analiz tetikleme ve dÃ¶rt sekmeli sonuÃ§ gÃ¶sterimi (Lane / Trade / Build / Hatalar).
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `app/(app)/matchup/page.tsx` oluşturuldu
-- [ ] İki `ChampionSelector` (TASK-038) yan yana çalışıyor
-- [ ] Rol seçici (5 buton) çalışıyor
-- [ ] "Analiz Et" butonu üç alan da doluyken aktif
-- [ ] Loading skeleton gösteriliyor
-- [ ] Dört sekme çalışıyor: Lane Analizi, Trade Rehberi, Build, Kritik Hatalar
-- [ ] Her sekmenin içeriği ilgili `MatchupAnalysis` alanını doğru render ediyor
-- [ ] Power spike'lar liste veya timeline olarak gösteriliyor
-- [ ] Trade kartları (Short / Long) görsel olarak ayrışıyor
-- [ ] Build itemler grid formatında, reasoning altında
-- [ ] Kritik hatalar kırmızı uyarı kutucukları olarak gösteriliyor
-- [ ] Share butonu URL'yi panoya kopyalıyor
-- [ ] Dark mode çalışıyor, mobil responsive
-- [ ] `MatchupSkeleton.tsx` yazıldı
-- [ ] `MatchupSection.tsx` yazıldı (tab içeriklerini render eden component)
+- [ ] `app/(app)/matchup/page.tsx` oluÅŸturuldu
+- [ ] Ä°ki `ChampionSelector` (TASK-038) yan yana Ã§alÄ±ÅŸÄ±yor
+- [ ] Rol seÃ§ici (5 buton) Ã§alÄ±ÅŸÄ±yor
+- [ ] "Analiz Et" butonu Ã¼Ã§ alan da doluyken aktif
+- [ ] Loading skeleton gÃ¶steriliyor
+- [ ] DÃ¶rt sekme Ã§alÄ±ÅŸÄ±yor: Lane Analizi, Trade Rehberi, Build, Kritik Hatalar
+- [ ] Her sekmenin iÃ§eriÄŸi ilgili `MatchupAnalysis` alanÄ±nÄ± doÄŸru render ediyor
+- [ ] Power spike'lar liste veya timeline olarak gÃ¶steriliyor
+- [ ] Trade kartlarÄ± (Short / Long) gÃ¶rsel olarak ayrÄ±ÅŸÄ±yor
+- [ ] Build itemler grid formatÄ±nda, reasoning altÄ±nda
+- [ ] Kritik hatalar kÄ±rmÄ±zÄ± uyarÄ± kutucuklarÄ± olarak gÃ¶steriliyor
+- [ ] Share butonu URL'yi panoya kopyalÄ±yor
+- [ ] Dark mode Ã§alÄ±ÅŸÄ±yor, mobil responsive
+- [ ] `MatchupSkeleton.tsx` yazÄ±ldÄ±
+- [ ] `MatchupSection.tsx` yazÄ±ldÄ± (tab iÃ§eriklerini render eden component)
 
 ---
 
 ## Teknik Gereksinimler
 
-### Sayfa Yapısı
+### Sayfa YapÄ±sÄ±
 
 ```
-┌─────────────────────────────────────────────┐
-│  Matchup Koçu                               │
-│  ┌──────────────┐  vs  ┌──────────────┐    │
-│  │[ChampSelector]│     │[ChampSelector]│    │
-│  └──────────────┘      └──────────────┘    │
-│  [Top][JGL][MID][ADC][SUP]                 │
-│  [Analiz Et →]  (disabled until all set)   │
-├─────────────────────────────────────────────┤
-│  [Lane Analizi][Trade][Build][Hatalar]      │
-├─────────────────────────────────────────────┤
-│  <Tab içeriği — MatchupSection>             │
-└─────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  Matchup KoÃ§u                               â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  vs  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚
+â”‚  â”‚[ChampSelector]â”‚     â”‚[ChampSelector]â”‚    â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜      â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚
+â”‚  [Top][JGL][MID][ADC][SUP]                 â”‚
+â”‚  [Analiz Et â†’]  (disabled until all set)   â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  [Lane Analizi][Trade][Build][Hatalar]      â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  <Tab iÃ§eriÄŸi â€” MatchupSection>             â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ### Lane Analizi Sekmesi
 
-- Avantaj/dezavantaj badge: favorable=yeşil, unfavorable=kırmızı, even=gri
+- Avantaj/dezavantaj badge: favorable=yeÅŸil, unfavorable=kÄ±rmÄ±zÄ±, even=gri
 - Summary metni
-- "Level 1-3 Planı" ve "Level 6 Planı" açıklama kutuları
+- "Level 1-3 PlanÄ±" ve "Level 6 PlanÄ±" aÃ§Ä±klama kutularÄ±
 - Power spike'lar: level veya item tetikleyicili liste
 
 ### Trade Rehberi Sekmesi
 
-- Short Trade kartı: scenario + advantage badge + tip
-- Long Trade kartı: aynı format
-- Kazanma Koşulları: yeşil checkmark listesi
-- Kaybetme Koşulları: kırmızı X listesi
+- Short Trade kartÄ±: scenario + advantage badge + tip
+- Long Trade kartÄ±: aynÄ± format
+- Kazanma KoÅŸullarÄ±: yeÅŸil checkmark listesi
+- Kaybetme KoÅŸullarÄ±: kÄ±rmÄ±zÄ± X listesi
 
 ### Build Sekmesi
 
-- "Başlangıç Itemleri": küçük kutucuklar (ikon yoksa item adı)
-- "Core Itemler": büyük kutucuklar
-- "Durumsal Itemler": kenarlıklı kutucuklar + açıklama
+- "BaÅŸlangÄ±Ã§ Itemleri": kÃ¼Ã§Ã¼k kutucuklar (ikon yoksa item adÄ±)
+- "Core Itemler": bÃ¼yÃ¼k kutucuklar
+- "Durumsal Itemler": kenarlÄ±klÄ± kutucuklar + aÃ§Ä±klama
 - Reasoning metni italik olarak
 
 ### Kritik Hatalar Sekmesi
 
-- Üç bölüm kırmızı arka planlı kart: Avoid Trades / Risky Timings / Key Mistakes
-- Her madde önünde ⚠ ikonu
+- ÃœÃ§ bÃ¶lÃ¼m kÄ±rmÄ±zÄ± arka planlÄ± kart: Avoid Trades / Risky Timings / Key Mistakes
+- Her madde Ã¶nÃ¼nde âš  ikonu
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
 - TASK-038 (ChampionSelector)
 - TASK-048 (useMatchupAnalysis hook)
@@ -88,6 +88,7 @@ Matchup Coach'un tam kullanıcı arayüzünü yaz. İki champion seçimi, analiz
 
 ## Notlar
 
-- Sekme yönetimi için `useState<'lane' | 'trade' | 'build' | 'mistakes'>` yeterli — Radix Tabs da kullanılabilir.
-- Page component 200 satırı geçerse `MatchupSection.tsx`'e daha fazla mantık taşı.
+- Sekme yÃ¶netimi iÃ§in `useState<'lane' | 'trade' | 'build' | 'mistakes'>` yeterli â€” Radix Tabs da kullanÄ±labilir.
+- Page component 200 satÄ±rÄ± geÃ§erse `MatchupSection.tsx`'e daha fazla mantÄ±k taÅŸÄ±.
 - Share: `navigator.clipboard.writeText(window.location.href)` + toast bildirimi.
+

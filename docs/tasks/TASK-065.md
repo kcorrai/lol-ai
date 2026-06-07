@@ -1,89 +1,90 @@
-# TASK-065 — [F2-5] Draft Analyzer Sayfası UI
+﻿# TASK-065 â€” [F2-5] Draft Analyzer SayfasÄ± UI
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 2.5 days
 
 ---
 
 ## Objective
 
-Draft Analyzer'ın tam kullanıcı arayüzünü yaz. 10 champion picker, takım kompozisyon karşılaştırması, win conditions, scaling chart ve risk analizi.
+Draft Analyzer'Ä±n tam kullanÄ±cÄ± arayÃ¼zÃ¼nÃ¼ yaz. 10 champion picker, takÄ±m kompozisyon karÅŸÄ±laÅŸtÄ±rmasÄ±, win conditions, scaling chart ve risk analizi.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `app/(app)/draft/page.tsx` oluşturuldu
-- [ ] `RoleBasedTeamPicker` (TASK-038) iki takım için çalışıyor
-- [ ] Seçilen champion diğer takımın picker'larında gösterilemiyor (duplicate prevention)
-- [ ] "Analiz Et" butonu tüm 10 pozisyon doluyken aktif
-- [ ] `TeamCompositionCard` 5 metriği bar chart ile gösteriyor
-- [ ] `ScalingChart` Early/Mid/Late game güç çizgisini görselleştiriyor
-- [ ] Win conditions her takım için ayrı gösteriliyor
+- [ ] `app/(app)/draft/page.tsx` oluÅŸturuldu
+- [ ] `RoleBasedTeamPicker` (TASK-038) iki takÄ±m iÃ§in Ã§alÄ±ÅŸÄ±yor
+- [ ] SeÃ§ilen champion diÄŸer takÄ±mÄ±n picker'larÄ±nda gÃ¶sterilemiyor (duplicate prevention)
+- [ ] "Analiz Et" butonu tÃ¼m 10 pozisyon doluyken aktif
+- [ ] `TeamCompositionCard` 5 metriÄŸi bar chart ile gÃ¶steriyor
+- [ ] `ScalingChart` Early/Mid/Late game gÃ¼Ã§ Ã§izgisini gÃ¶rselleÅŸtiriyor
+- [ ] Win conditions her takÄ±m iÃ§in ayrÄ± gÃ¶steriliyor
 - [ ] Key matchups listesi var
-- [ ] Risk kartları severity'e göre renk kodlu
-- [ ] Verdict sonuç metni öne çıkıyor
+- [ ] Risk kartlarÄ± severity'e gÃ¶re renk kodlu
+- [ ] Verdict sonuÃ§ metni Ã¶ne Ã§Ä±kÄ±yor
 - [ ] Loading skeleton var
-- [ ] Share butonu URL kopyalıyor
+- [ ] Share butonu URL kopyalÄ±yor
 - [ ] Dark mode, mobil responsive
-- [ ] Component'lerin hiçbiri 200 satırı geçmiyor
+- [ ] Component'lerin hiÃ§biri 200 satÄ±rÄ± geÃ§miyor
 
 ---
 
 ## Teknik Gereksinimler
 
-### Sayfa Yapısı
+### Sayfa YapÄ±sÄ±
 
 ```
-┌──────────────────────────────────────────────────────┐
-│  Draft Analizci                                      │
-│  ┌─── Blue Team ────┐    ┌─── Red Team ─────┐       │
-│  │ Top:    [Sel]   │    │ Top:    [Sel]    │       │
-│  │ Jungle: [Sel]   │    │ Jungle: [Sel]    │       │
-│  │ Mid:    [Sel]   │    │ Mid:    [Sel]    │       │
-│  │ ADC:    [Sel]   │    │ ADC:    [Sel]    │       │
-│  │ Supp:   [Sel]   │    │ Supp:   [Sel]    │       │
-│  └─────────────────┘    └──────────────────┘       │
-│  [Analiz Et →]  [Sıfırla]                           │
-├──────────────────────────────────────────────────────┤
-│  Takım Kompozisyon Karşılaştırması                  │
-│  Blue ████░░ vs Red ██████  (5 metrik bar)          │
-├──────────────────────────────────────────────────────┤
-│  Kazanma Koşulları                                  │
-│  Blue: [1][2]  |  Red: [1][2]                       │
-├──────────────────────────────────────────────────────┤
-│  Scaling: [Early][Mid][Late] power line             │
-├──────────────────────────────────────────────────────┤
-│  Kritik Eşleşmeler & Riskler                        │
-├──────────────────────────────────────────────────────┤
-│  Sonuç: [verdict metni — öne çıkan card]            │
-└──────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  Draft Analizci                                      â”‚
+â”‚  â”Œâ”€â”€â”€ Blue Team â”€â”€â”€â”€â”    â”Œâ”€â”€â”€ Red Team â”€â”€â”€â”€â”€â”       â”‚
+â”‚  â”‚ Top:    [Sel]   â”‚    â”‚ Top:    [Sel]    â”‚       â”‚
+â”‚  â”‚ Jungle: [Sel]   â”‚    â”‚ Jungle: [Sel]    â”‚       â”‚
+â”‚  â”‚ Mid:    [Sel]   â”‚    â”‚ Mid:    [Sel]    â”‚       â”‚
+â”‚  â”‚ ADC:    [Sel]   â”‚    â”‚ ADC:    [Sel]    â”‚       â”‚
+â”‚  â”‚ Supp:   [Sel]   â”‚    â”‚ Supp:   [Sel]    â”‚       â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜       â”‚
+â”‚  [Analiz Et â†’]  [SÄ±fÄ±rla]                           â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  TakÄ±m Kompozisyon KarÅŸÄ±laÅŸtÄ±rmasÄ±                  â”‚
+â”‚  Blue â–ˆâ–ˆâ–ˆâ–ˆâ–‘â–‘ vs Red â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ  (5 metrik bar)          â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  Kazanma KoÅŸullarÄ±                                  â”‚
+â”‚  Blue: [1][2]  |  Red: [1][2]                       â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  Scaling: [Early][Mid][Late] power line             â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  Kritik EÅŸleÅŸmeler & Riskler                        â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  SonuÃ§: [verdict metni â€” Ã¶ne Ã§Ä±kan card]            â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
-### TeamCompositionCard Bileşeni
+### TeamCompositionCard BileÅŸeni
 
-5 metrik için bar chart (CSS ile, external chart kütüphanesi gerekmez):
-- Her metrik: etiket + iki taraflı bar (blue vs red)
-- Blue = sol taraf mavi, Red = sağ taraf kırmızı
-- Sayısal değer (1-10) göster
+5 metrik iÃ§in bar chart (CSS ile, external chart kÃ¼tÃ¼phanesi gerekmez):
+- Her metrik: etiket + iki taraflÄ± bar (blue vs red)
+- Blue = sol taraf mavi, Red = saÄŸ taraf kÄ±rmÄ±zÄ±
+- SayÄ±sal deÄŸer (1-10) gÃ¶ster
 
-### ScalingChart Bileşeni
+### ScalingChart BileÅŸeni
 
-Early/Mid/Late game için basit progress gösterge:
-- Her aşama için iki renk dot (blue/red) + skor
-- Açıklama metnini hover/click'te göster
+Early/Mid/Late game iÃ§in basit progress gÃ¶sterge:
+- Her aÅŸama iÃ§in iki renk dot (blue/red) + skor
+- AÃ§Ä±klama metnini hover/click'te gÃ¶ster
 
-### Risk Kartları
+### Risk KartlarÄ±
 
-- High severity = kırmızı kenarlık
-- Medium = sarı kenarlık
-- Low = gri kenarlık
-- Takım badge: Blue/Red etiket
+- High severity = kÄ±rmÄ±zÄ± kenarlÄ±k
+- Medium = sarÄ± kenarlÄ±k
+- Low = gri kenarlÄ±k
+- TakÄ±m badge: Blue/Red etiket
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
 - TASK-038 (RoleBasedTeamPicker)
 - TASK-064 (useDraftAnalysis hook)
+

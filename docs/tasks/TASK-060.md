@@ -1,30 +1,30 @@
-# TASK-060 — [F4-2] Build Explanation API + Hook + UI Entegrasyonu
+﻿# TASK-060 â€” [F4-2] Build Explanation API + Hook + UI Entegrasyonu
 
-**Phase:** 4 — AI Analysis Tools
-**Status:** Pending
+**Phase:** 4 â€” AI Analysis Tools
+**Status:** Done
 **Estimated Effort:** 1 day
 
 ---
 
 ## Objective
 
-Build Explanation servisini API, hook ve UI katmanlarına bağla. Mevcut maç detay sayfasına lazy-load eden bir "Bu Buildi Analiz Et" butonu ekle.
+Build Explanation servisini API, hook ve UI katmanlarÄ±na baÄŸla. Mevcut maÃ§ detay sayfasÄ±na lazy-load eden bir "Bu Buildi Analiz Et" butonu ekle.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `app/api/match/[matchId]/build-explanation/route.ts` oluşturuldu
-- [ ] Auth gerekiyor — sadece kendi maçını analiz edebilir
-- [ ] Kullanıcının bu maçta oynadığı doğrulanıyor
-- [ ] `src/hooks/useBuildExplanation.ts` oluşturuldu
-- [ ] Hook lazy-load — "Analiz Et" butonuna basılınca tetikleniyor
-- [ ] Mevcut `app/(app)/match/[matchId]/page.tsx` sayfasına entegre edildi
-- [ ] Kullanıcının kendi participant kartına "Bu Buildi AI ile Analiz Et" butonu eklendi
-- [ ] Butona basılınca `BuildExplanationPanel` accordion açılıyor
-- [ ] Her item için ✓/✗ badge + reasoning + alternatif gösteriliyor
-- [ ] Pro-only gate: free kullanıcılar için overlay CTA
-- [ ] Route handler 80 satırı geçmiyor
+- [ ] `app/api/match/[matchId]/build-explanation/route.ts` oluÅŸturuldu
+- [ ] Auth gerekiyor â€” sadece kendi maÃ§Ä±nÄ± analiz edebilir
+- [ ] KullanÄ±cÄ±nÄ±n bu maÃ§ta oynadÄ±ÄŸÄ± doÄŸrulanÄ±yor
+- [ ] `src/hooks/useBuildExplanation.ts` oluÅŸturuldu
+- [ ] Hook lazy-load â€” "Analiz Et" butonuna basÄ±lÄ±nca tetikleniyor
+- [ ] Mevcut `app/(app)/match/[matchId]/page.tsx` sayfasÄ±na entegre edildi
+- [ ] KullanÄ±cÄ±nÄ±n kendi participant kartÄ±na "Bu Buildi AI ile Analiz Et" butonu eklendi
+- [ ] Butona basÄ±lÄ±nca `BuildExplanationPanel` accordion aÃ§Ä±lÄ±yor
+- [ ] Her item iÃ§in âœ“/âœ— badge + reasoning + alternatif gÃ¶steriliyor
+- [ ] Pro-only gate: free kullanÄ±cÄ±lar iÃ§in overlay CTA
+- [ ] Route handler 80 satÄ±rÄ± geÃ§miyor
 - [ ] TypeScript strict
 
 ---
@@ -38,10 +38,10 @@ Build Explanation servisini API, hook ve UI katmanlarına bağla. Mevcut maç de
 GET /api/match/[matchId]/build-explanation?puuid={participantPuuid}
 ```
 
-Auth kontrolü:
+Auth kontrolÃ¼:
 ```typescript
-// session.user.id → RiotAccount.userId → MatchParticipant.riotAccountId bağlantısını doğrula
-// Kendi maçı değilse: 403 Forbidden
+// session.user.id â†’ RiotAccount.userId â†’ MatchParticipant.riotAccountId baÄŸlantÄ±sÄ±nÄ± doÄŸrula
+// Kendi maÃ§Ä± deÄŸilse: 403 Forbidden
 ```
 
 Rate limit: 10 req/saat per user.
@@ -71,19 +71,20 @@ export function useBuildExplanation(matchId: string, puuid: string | null) {
 `src/domains/match/components/BuildExplanationPanel.tsx`:
 - Accordion (closed default)
 - Trigger: "Bu Buildi AI ile Analiz Et" butonu (spinner loading durumunda)
-- İçerik: summary metni + item listesi
-- Her item: item adı + ✓(yeşil)/✗(kırmızı) badge + reasoning + alternatif (varsa)
+- Ä°Ã§erik: summary metni + item listesi
+- Her item: item adÄ± + âœ“(yeÅŸil)/âœ—(kÄ±rmÄ±zÄ±) badge + reasoning + alternatif (varsa)
 - `buildPath` metni italik olarak
-- `biggestMistake` kırmızı uyarı kutusu (varsa)
+- `biggestMistake` kÄ±rmÄ±zÄ± uyarÄ± kutusu (varsa)
 
 ### Pro Gate
 
-`useSubscription` hook ile plan kontrol et. Free kullanıcı için:
-- Panel'in üzerinde blur overlay
-- "Build analizi Pro özelliğidir. Upgrade yapın →" CTA
+`useSubscription` hook ile plan kontrol et. Free kullanÄ±cÄ± iÃ§in:
+- Panel'in Ã¼zerinde blur overlay
+- "Build analizi Pro Ã¶zelliÄŸidir. Upgrade yapÄ±n â†’" CTA
 
 ---
 
-## Bağımlılıklar
+## BaÄŸÄ±mlÄ±lÄ±klar
 
-- TASK-059 (buildExplanationService) tamamlanmış olmalı
+- TASK-059 (buildExplanationService) tamamlanmÄ±ÅŸ olmalÄ±
+

@@ -1,7 +1,7 @@
-# TASK-074 — Improvement Tracker UI: Mevcut Servisi Öne Çıkar
+﻿# TASK-074 â€” Improvement Tracker UI: Mevcut Servisi Ã–ne Ã‡Ä±kar
 
-**Phase:** 2 — AI Depth & Retention  
-**Status:** Pending  
+**Phase:** 2 â€” AI Depth & Retention  
+**Status:** Done  
 **Estimated Effort:** 1.5 days  
 **Priority:** P1
 
@@ -9,50 +9,50 @@
 
 ## Objective
 
-`improvementPlanService.ts` tam çalışıyor ama hiçbir yerde gösterilmiyor.
-Dashboard'a plan widget'ı, geçmiş planlar görünümü ve haftalık skor ekle.
-Bu özellik retention'ın en güçlü silahı: "geri dönme sebebi" yaratır.
+`improvementPlanService.ts` tam Ã§alÄ±ÅŸÄ±yor ama hiÃ§bir yerde gÃ¶sterilmiyor.
+Dashboard'a plan widget'Ä±, geÃ§miÅŸ planlar gÃ¶rÃ¼nÃ¼mÃ¼ ve haftalÄ±k skor ekle.
+Bu Ã¶zellik retention'Ä±n en gÃ¼Ã§lÃ¼ silahÄ±: "geri dÃ¶nme sebebi" yaratÄ±r.
 
 ---
 
 ## User Story
 
-> "AI bana CS hedefi verdi ama bu hedefe ulaşıp ulaşmadığımı takip eden
-> bir yer yok. Haftayı tamamladım mı bilmiyorum."
+> "AI bana CS hedefi verdi ama bu hedefe ulaÅŸÄ±p ulaÅŸmadÄ±ÄŸÄ±mÄ± takip eden
+> bir yer yok. HaftayÄ± tamamladÄ±m mÄ± bilmiyorum."
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] Dashboard'da "Bu Haftaki Hedefler" widget'ı görünüyor
-- [ ] Her hedef: metrik adı, baseline, hedef, progress bar, mevcut değer
-- [ ] Hedef tamamlandıysa yeşil ✅, devam ediyorsa mavi ⏳, geride kalındıysa kırmızı ❌
-- [ ] "Plan Geçmişi" sayfası: önceki planlar, tamamlanma oranı, skor
-- [ ] "Yeni Plan Oluştur" butonu (Pro kullanıcısına)
-- [ ] Free kullanıcı: planı görür ama yeni oluşturamaz (paywall modal)
-- [ ] Haftalık gelişim skoru hesaplanıyor: tamamlanan hedef sayısı × 33
-- [ ] Plan yoksa Empty State: "Henüz planın yok — oluştur" CTA
+- [ ] Dashboard'da "Bu Haftaki Hedefler" widget'Ä± gÃ¶rÃ¼nÃ¼yor
+- [ ] Her hedef: metrik adÄ±, baseline, hedef, progress bar, mevcut deÄŸer
+- [ ] Hedef tamamlandÄ±ysa yeÅŸil âœ…, devam ediyorsa mavi â³, geride kalÄ±ndÄ±ysa kÄ±rmÄ±zÄ± âŒ
+- [ ] "Plan GeÃ§miÅŸi" sayfasÄ±: Ã¶nceki planlar, tamamlanma oranÄ±, skor
+- [ ] "Yeni Plan OluÅŸtur" butonu (Pro kullanÄ±cÄ±sÄ±na)
+- [ ] Free kullanÄ±cÄ±: planÄ± gÃ¶rÃ¼r ama yeni oluÅŸturamaz (paywall modal)
+- [ ] HaftalÄ±k geliÅŸim skoru hesaplanÄ±yor: tamamlanan hedef sayÄ±sÄ± Ã— 33
+- [ ] Plan yoksa Empty State: "HenÃ¼z planÄ±n yok â€” oluÅŸtur" CTA
 - [ ] Mobile responsive
 - [ ] Loading skeleton
 
 ---
 
-## Mevcut Altyapı (Kullan)
+## Mevcut AltyapÄ± (Kullan)
 
-- `improvementPlanService.ts` — `getActivePlan()`, `generatePlan()` ✅
-- `ImprovementPlan` Prisma model ✅
-- `PlanWithProgress`, `PlanProgress`, `ImprovementTarget` tipleri ✅
-- API route varlığını kontrol et: `app/api/improvement/` — yoksa oluştur
+- `improvementPlanService.ts` â€” `getActivePlan()`, `generatePlan()` âœ…
+- `ImprovementPlan` Prisma model âœ…
+- `PlanWithProgress`, `PlanProgress`, `ImprovementTarget` tipleri âœ…
+- API route varlÄ±ÄŸÄ±nÄ± kontrol et: `app/api/improvement/` â€” yoksa oluÅŸtur
 
 ---
 
 ## Yeni Gereksinimler
 
-### Plan Geçmişi Endpoint'i
+### Plan GeÃ§miÅŸi Endpoint'i
 
 ```typescript
 // app/api/improvement/history/route.ts
-// GET — kullanıcının geçmiş tüm planlarını döndür
+// GET â€” kullanÄ±cÄ±nÄ±n geÃ§miÅŸ tÃ¼m planlarÄ±nÄ± dÃ¶ndÃ¼r
 // Response: { plans: PlanHistoryEntry[], totalCompleted: number, avgScore: number }
 
 interface PlanHistoryEntry {
@@ -66,7 +66,7 @@ interface PlanHistoryEntry {
 }
 ```
 
-### Haftalık Skor Hesabı
+### HaftalÄ±k Skor HesabÄ±
 
 `improvementPlanService.ts`'e `computeWeeklyScore()` fonksiyonu ekle:
 ```typescript
@@ -80,57 +80,57 @@ function computeWeeklyScore(progresses: PlanProgress[]): number {
 
 ---
 
-## Component Yapısı
+## Component YapÄ±sÄ±
 
 ```
 src/domains/analysis/components/
-  ImprovementPlanWidget.tsx      ← Dashboard widget (compact, max 200 satır)
-  ImprovementGoalRow.tsx         ← Tek hedef satırı (progress bar + durum ikonu)
-  PlanHistoryCard.tsx            ← Geçmiş plan kartı
-  PlanEmptyState.tsx             ← Plan yok durumu
+  ImprovementPlanWidget.tsx      â† Dashboard widget (compact, max 200 satÄ±r)
+  ImprovementGoalRow.tsx         â† Tek hedef satÄ±rÄ± (progress bar + durum ikonu)
+  PlanHistoryCard.tsx            â† GeÃ§miÅŸ plan kartÄ±
+  PlanEmptyState.tsx             â† Plan yok durumu
 
 app/(app)/improvement/
-  page.tsx                       ← Tam sayfa: aktif plan + geçmiş
+  page.tsx                       â† Tam sayfa: aktif plan + geÃ§miÅŸ
 ```
 
 ### ImprovementPlanWidget (Dashboard)
 
 ```
-┌──────────────────────────────────────────────────────┐
-│  Gelişim Planı — Hafta 1/2            [Detaylar →]  │
-├──────────────────────────────────────────────────────┤
-│  ✅ CS/Dakika   5.8 → 6.5   [████████░░] %85  6.4  │
-│  ⏳ Vision      18 → 25     [███░░░░░░░] %30  20   │
-│  ❌ Ölüm/Oyun  6.2 → 4.5   [░░░░░░░░░░] %0   6.8  │
-├──────────────────────────────────────────────────────┤
-│  Haftalık Puan: 48/100   [Yeni Plan →] (Pro)        │
-└──────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  GeliÅŸim PlanÄ± â€” Hafta 1/2            [Detaylar â†’]  â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  âœ… CS/Dakika   5.8 â†’ 6.5   [â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–‘â–‘] %85  6.4  â”‚
+â”‚  â³ Vision      18 â†’ 25     [â–ˆâ–ˆâ–ˆâ–‘â–‘â–‘â–‘â–‘â–‘â–‘] %30  20   â”‚
+â”‚  âŒ Ã–lÃ¼m/Oyun  6.2 â†’ 4.5   [â–‘â–‘â–‘â–‘â–‘â–‘â–‘â–‘â–‘â–‘] %0   6.8  â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  HaftalÄ±k Puan: 48/100   [Yeni Plan â†’] (Pro)        â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
-### Improvement Sayfası (`/improvement`)
+### Improvement SayfasÄ± (`/improvement`)
 
 ```
-┌────────────────────────────────────────────────────────┐
-│  Gelişim Takibi                                        │
-├──────────────────────────── Aktif Plan ────────────────┤
-│  [ImprovementGoalRow × 3]                              │
-│  [Yeni Plan Oluştur] (Pro badge ile)                  │
-├──────────────────────── Geçmiş Planlar ────────────────┤
-│  Hafta: 28 Mayıs — 4 Haz   Puan: 66/100   2/3 Tamamlandı │
-│  Hafta: 21 — 27 Mayıs       Puan: 33/100   1/3 Tamamlandı │
-│  ...                                                    │
-└────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  GeliÅŸim Takibi                                        â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ Aktif Plan â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  [ImprovementGoalRow Ã— 3]                              â”‚
+â”‚  [Yeni Plan OluÅŸtur] (Pro badge ile)                  â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ GeÃ§miÅŸ Planlar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  Hafta: 28 MayÄ±s â€” 4 Haz   Puan: 66/100   2/3 TamamlandÄ± â”‚
+â”‚  Hafta: 21 â€” 27 MayÄ±s       Puan: 33/100   1/3 TamamlandÄ± â”‚
+â”‚  ...                                                    â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ---
 
 ## API Routes
 
-Mevcut route'ları kontrol et, eksik olanları oluştur:
+Mevcut route'larÄ± kontrol et, eksik olanlarÄ± oluÅŸtur:
 
 ```
-app/api/improvement/plan/route.ts     ← GET (active plan), POST (generate)
-app/api/improvement/history/route.ts  ← GET (plan history) — YENİ
+app/api/improvement/plan/route.ts     â† GET (active plan), POST (generate)
+app/api/improvement/history/route.ts  â† GET (plan history) â€” YENÄ°
 ```
 
 ---
@@ -138,32 +138,32 @@ app/api/improvement/history/route.ts  ← GET (plan history) — YENİ
 ## Files
 
 ```
-src/domains/analysis/services/improvementPlanService.ts      ← computeWeeklyScore ekle
-src/domains/analysis/components/ImprovementPlanWidget.tsx    ← YENİ
-src/domains/analysis/components/ImprovementGoalRow.tsx       ← YENİ
-src/domains/analysis/components/PlanHistoryCard.tsx          ← YENİ
-src/domains/analysis/components/PlanEmptyState.tsx           ← YENİ
-app/(app)/improvement/page.tsx                               ← YENİ sayfa
-app/(app)/dashboard/page.tsx                                 ← widget ekle
-app/api/improvement/plan/route.ts                            ← kontrol et / yaz
-app/api/improvement/history/route.ts                         ← YENİ
-src/hooks/useImprovementPlan.ts                              ← kontrol et / yaz
+src/domains/analysis/services/improvementPlanService.ts      â† computeWeeklyScore ekle
+src/domains/analysis/components/ImprovementPlanWidget.tsx    â† YENÄ°
+src/domains/analysis/components/ImprovementGoalRow.tsx       â† YENÄ°
+src/domains/analysis/components/PlanHistoryCard.tsx          â† YENÄ°
+src/domains/analysis/components/PlanEmptyState.tsx           â† YENÄ°
+app/(app)/improvement/page.tsx                               â† YENÄ° sayfa
+app/(app)/dashboard/page.tsx                                 â† widget ekle
+app/api/improvement/plan/route.ts                            â† kontrol et / yaz
+app/api/improvement/history/route.ts                         â† YENÄ°
+src/hooks/useImprovementPlan.ts                              â† kontrol et / yaz
 ```
 
 ---
 
 ## Sidebar Navigasyonu
 
-`src/components/layout/Sidebar.tsx`'e "Gelişim" linki ekle:
-- `/improvement` — progress ikon ile
+`src/components/layout/Sidebar.tsx`'e "GeliÅŸim" linki ekle:
+- `/improvement` â€” progress ikon ile
 
 ---
 
 ## Tier Gating
 
-- **Free:** Aktif planı görür ama yeni oluşturamaz; "Pro'ya geç" modal
-- **Pro:** Sınırsız plan oluşturma + geçmiş
-- **Elite:** Geçmişe göre AI trend yorumu (opsiyonel, mini model)
+- **Free:** Aktif planÄ± gÃ¶rÃ¼r ama yeni oluÅŸturamaz; "Pro'ya geÃ§" modal
+- **Pro:** SÄ±nÄ±rsÄ±z plan oluÅŸturma + geÃ§miÅŸ
+- **Elite:** GeÃ§miÅŸe gÃ¶re AI trend yorumu (opsiyonel, mini model)
 
 ---
 
@@ -171,16 +171,16 @@ src/hooks/useImprovementPlan.ts                              ← kontrol et / ya
 
 ```typescript
 describe('ImprovementPlanWidget', () => {
-  it('plan varsa hedefleri gösteriyor')
-  it('plan yoksa empty state gösteriyor')
-  it('tamamlanan hedef yeşil ✅ ikonu alıyor')
-  it('geride kalan hedef kırmızı ❌ alıyor')
+  it('plan varsa hedefleri gÃ¶steriyor')
+  it('plan yoksa empty state gÃ¶steriyor')
+  it('tamamlanan hedef yeÅŸil âœ… ikonu alÄ±yor')
+  it('geride kalan hedef kÄ±rmÄ±zÄ± âŒ alÄ±yor')
 })
 
 describe('computeWeeklyScore', () => {
-  it('3 tamamlanan → 99 puan')
-  it('1 tamamlanan + 1 partial → 48 puan')
-  it('hiç tamamlanmayan → 0 puan')
+  it('3 tamamlanan â†’ 99 puan')
+  it('1 tamamlanan + 1 partial â†’ 48 puan')
+  it('hiÃ§ tamamlanmayan â†’ 0 puan')
 })
 ```
 
@@ -188,16 +188,17 @@ describe('computeWeeklyScore', () => {
 
 ## Dependencies
 
-- `improvementPlanService.ts` ✅ (servis var)
-- `ImprovementPlan` Prisma model ✅
+- `improvementPlanService.ts` âœ… (servis var)
+- `ImprovementPlan` Prisma model âœ…
 
 ---
 
 ## Definition of Done
 
-- Widget dashboard'da görünüyor
-- `/improvement` sayfası çalışıyor
-- Plan geçmişi endpoint'i test edildi
-- Free/Pro gating çalışıyor
-- Mobile'da görünüm bozulmuyor
-- Component'lerin hiçbiri 200 satırı geçmiyor
+- Widget dashboard'da gÃ¶rÃ¼nÃ¼yor
+- `/improvement` sayfasÄ± Ã§alÄ±ÅŸÄ±yor
+- Plan geÃ§miÅŸi endpoint'i test edildi
+- Free/Pro gating Ã§alÄ±ÅŸÄ±yor
+- Mobile'da gÃ¶rÃ¼nÃ¼m bozulmuyor
+- Component'lerin hiÃ§biri 200 satÄ±rÄ± geÃ§miyor
+

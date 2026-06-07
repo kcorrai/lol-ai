@@ -1,7 +1,7 @@
-# TASK-084 — Draft Simülatörü & Win Condition Analyzer
+﻿# TASK-084 â€” Draft SimÃ¼latÃ¶rÃ¼ & Win Condition Analyzer
 
-**Phase:** 3 — Growth & Conversion  
-**Status:** Pending  
+**Phase:** 3 â€” Growth & Conversion  
+**Status:** Done  
 **Estimated Effort:** 2.5 days  
 **Priority:** P2
 
@@ -9,39 +9,39 @@
 
 ## Objective
 
-Kullanıcı iki takımın şampiyonlarını manuel seçerek draft simüle edebilsin.
+KullanÄ±cÄ± iki takÄ±mÄ±n ÅŸampiyonlarÄ±nÄ± manuel seÃ§erek draft simÃ¼le edebilsin.
 AI, kompo arketipini (engage/poke/split/teamfight) tespit etsin ve
-"senin takımın hangi win condition'da kazanır" yorumunu yapsın.
-Maç öncesi araç olarak da kullanılabilir.
+"senin takÄ±mÄ±n hangi win condition'da kazanÄ±r" yorumunu yapsÄ±n.
+MaÃ§ Ã¶ncesi araÃ§ olarak da kullanÄ±labilir.
 
 ---
 
 ## User Story
 
-> "Takım arkadaşlarım seçimlerini yapıyor, ben ne seçsem bilmiyorum.
-> Bir yere girip 'onlar Zed + Leona aldı, sen ne almalısın' sormak istiyorum."
+> "TakÄ±m arkadaÅŸlarÄ±m seÃ§imlerini yapÄ±yor, ben ne seÃ§sem bilmiyorum.
+> Bir yere girip 'onlar Zed + Leona aldÄ±, sen ne almalÄ±sÄ±n' sormak istiyorum."
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `/draft` sayfasında iki taraf için şampiyon seçimi (5v5)
-- [ ] Tüm şampiyonlar DDragon'dan yükleniyor, arama + filtre var
-- [ ] AI kompo analizi: arketip tespiti + win condition (Türkçe, 4-5 bullet)
-- [ ] "Senin için en iyi pick" önerisi (kendi champion pool'una göre, opsiyonel)
-- [ ] "Draft'ı kaydet" → URL olarak paylaşılabilir (state query string'de)
-- [ ] Mobile uyumlu (sütun bazlı layout)
-- [ ] TypeScript strict — no `any`
+- [ ] `/draft` sayfasÄ±nda iki taraf iÃ§in ÅŸampiyon seÃ§imi (5v5)
+- [ ] TÃ¼m ÅŸampiyonlar DDragon'dan yÃ¼kleniyor, arama + filtre var
+- [ ] AI kompo analizi: arketip tespiti + win condition (TÃ¼rkÃ§e, 4-5 bullet)
+- [ ] "Senin iÃ§in en iyi pick" Ã¶nerisi (kendi champion pool'una gÃ¶re, opsiyonel)
+- [ ] "Draft'Ä± kaydet" â†’ URL olarak paylaÅŸÄ±labilir (state query string'de)
+- [ ] Mobile uyumlu (sÃ¼tun bazlÄ± layout)
+- [ ] TypeScript strict â€” no `any`
 
 ---
 
 ## Technical Approach
 
-### Şampiyon Listesi
+### Åampiyon Listesi
 
 DDragon'dan mevcut `championCacheService` kullan:
 ```typescript
-// Tüm şampiyonları client'a ver
+// TÃ¼m ÅŸampiyonlarÄ± client'a ver
 GET /api/public/champions
 Response: { champions: { id: number; name: string; roles: string[]; iconUrl: string }[] }
 ```
@@ -50,11 +50,11 @@ Response: { champions: { id: number; name: string; roles: string[]; iconUrl: str
 
 ```typescript
 // /draft?blue=Ahri,Viktor,Leona&red=Zed,Thresh,Jinx&pos=mid
-// URL state management — sayfa yenilenince kaybolmaz, paylaşılabilir
+// URL state management â€” sayfa yenilenince kaybolmaz, paylaÅŸÄ±labilir
 ```
 
-React state → URL query string senkronizasyonu.
-DB'ye kaydetme yok — tamamen client-side state.
+React state â†’ URL query string senkronizasyonu.
+DB'ye kaydetme yok â€” tamamen client-side state.
 
 ### AI Draft Analizi
 
@@ -70,9 +70,9 @@ interface DraftAnalysis {
     earlyGame: 'strong' | 'average' | 'weak';
     lateGame: 'strong' | 'average' | 'weak';
   };
-  redComp: { ... };         // aynı yapı
-  overallAssessment: string; // "Mavi takım geç oyun kazanır, Kırmızı takım early baskı yapmalı"
-  recommendation: string;    // "Mavi takım olarak 20. dakikaya kadar savunmacı oyna, baron etrafında teamfight ara"
+  redComp: { ... };         // aynÄ± yapÄ±
+  overallAssessment: string; // "Mavi takÄ±m geÃ§ oyun kazanÄ±r, KÄ±rmÄ±zÄ± takÄ±m early baskÄ± yapmalÄ±"
+  recommendation: string;    // "Mavi takÄ±m olarak 20. dakikaya kadar savunmacÄ± oyna, baron etrafÄ±nda teamfight ara"
 }
 ```
 
@@ -88,12 +88,12 @@ Analyze both compositions in Turkish:
 Keep it tactical and actionable.
 ```
 
-Cache: aynı draft kombinasyonu için 24 saat Redis cache.
+Cache: aynÄ± draft kombinasyonu iÃ§in 24 saat Redis cache.
 Key: `draft:{sorted_blue_champions}:{sorted_red_champions}`
 
-### Şampiyon Rol Arketipleri (Local Data)
+### Åampiyon Rol Arketipleri (Local Data)
 
-AI çağrısını beslemek için temel rol verileri:
+AI Ã§aÄŸrÄ±sÄ±nÄ± beslemek iÃ§in temel rol verileri:
 ```typescript
 const CHAMPION_ARCHETYPES: Record<string, string> = {
   Ahri: 'assassin-mage',
@@ -105,7 +105,7 @@ const CHAMPION_ARCHETYPES: Record<string, string> = {
   // ...
 };
 ```
-DDragon'dan çekilebilir veya static JSON olarak tutulabilir.
+DDragon'dan Ã§ekilebilir veya static JSON olarak tutulabilir.
 
 ### Frontend: Draft Board
 
@@ -113,50 +113,50 @@ DDragon'dan çekilebilir veya static JSON olarak tutulabilir.
 app/(app)/draft/page.tsx
 
 Layout:
-┌─────────────┬──────────────────┬─────────────┐
-│  MAVİ TAKIM │   [Analiz Et]    │  KIRMIZI    │
-│             │                  │  TAKIM      │
-│  [+Pick]    │                  │  [+Pick]    │
-│  [+Pick]    │                  │  [+Pick]    │
-│  [+Pick]    │                  │  [+Pick]    │
-│  [+Pick]    │                  │  [+Pick]    │
-│  [+Pick]    │                  │  [+Pick]    │
-├─────────────┴──────────────────┴─────────────┤
-│  [AI Analiz sonuçları — bullet list]         │
-└──────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  MAVÄ° TAKIM â”‚   [Analiz Et]    â”‚  KIRMIZI    â”‚
+â”‚             â”‚                  â”‚  TAKIM      â”‚
+â”‚  [+Pick]    â”‚                  â”‚  [+Pick]    â”‚
+â”‚  [+Pick]    â”‚                  â”‚  [+Pick]    â”‚
+â”‚  [+Pick]    â”‚                  â”‚  [+Pick]    â”‚
+â”‚  [+Pick]    â”‚                  â”‚  [+Pick]    â”‚
+â”‚  [+Pick]    â”‚                  â”‚  [+Pick]    â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  [AI Analiz sonuÃ§larÄ± â€” bullet list]         â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
-Şampiyon seçim modalı: arama kutusu + rol filtresi + ikon grid.
+Åampiyon seÃ§im modalÄ±: arama kutusu + rol filtresi + ikon grid.
 
-### "Benim İçin Öneri" Modu
+### "Benim Ä°Ã§in Ã–neri" Modu
 
-Eğer kullanıcı giriş yapmışsa:
-- Kendi champion pool'u öne çıkarılır
-- "Bu kompo için Ahri iyi bir seçim, Viktor daha güçlü olurdu" yorumu
+EÄŸer kullanÄ±cÄ± giriÅŸ yapmÄ±ÅŸsa:
+- Kendi champion pool'u Ã¶ne Ã§Ä±karÄ±lÄ±r
+- "Bu kompo iÃ§in Ahri iyi bir seÃ§im, Viktor daha gÃ¼Ã§lÃ¼ olurdu" yorumu
 
 ---
 
 ## Files
 
 ```
-app/(app)/draft/page.tsx                                ← YENİ
-src/domains/coaching/components/DraftBoard.tsx          ← YENİ (max 200 satır)
-src/domains/coaching/components/ChampionPickModal.tsx   ← YENİ
-src/domains/coaching/components/DraftAnalysisPanel.tsx  ← YENİ
-src/domains/coaching/services/draftAnalysisService.ts   ← YENİ
-app/api/draft/analyze/route.ts                          ← YENİ
-app/api/public/champions/route.ts                       ← GET tüm şampiyonlar
-src/hooks/useDraftAnalysis.ts                           ← YENİ TanStack Query
-src/components/layout/Sidebar.tsx                       ← "Draft" linki ekle
+app/(app)/draft/page.tsx                                â† YENÄ°
+src/domains/coaching/components/DraftBoard.tsx          â† YENÄ° (max 200 satÄ±r)
+src/domains/coaching/components/ChampionPickModal.tsx   â† YENÄ°
+src/domains/coaching/components/DraftAnalysisPanel.tsx  â† YENÄ°
+src/domains/coaching/services/draftAnalysisService.ts   â† YENÄ°
+app/api/draft/analyze/route.ts                          â† YENÄ°
+app/api/public/champions/route.ts                       â† GET tÃ¼m ÅŸampiyonlar
+src/hooks/useDraftAnalysis.ts                           â† YENÄ° TanStack Query
+src/components/layout/Sidebar.tsx                       â† "Draft" linki ekle
 ```
 
 ---
 
 ## Tier Gating
 
-- **Free:** 3 analiz/gün
-- **Pro:** Sınırsız analiz + "Benim için öneri" özelliği
-- **Elite:** Rakip profil analizi (summoner adı gir, son pick pattern'i)
+- **Free:** 3 analiz/gÃ¼n
+- **Pro:** SÄ±nÄ±rsÄ±z analiz + "Benim iÃ§in Ã¶neri" Ã¶zelliÄŸi
+- **Elite:** Rakip profil analizi (summoner adÄ± gir, son pick pattern'i)
 
 ---
 
@@ -164,8 +164,8 @@ src/components/layout/Sidebar.tsx                       ← "Draft" linki ekle
 
 ```typescript
 describe('draftAnalysisService', () => {
-  it('buildDraftPrompt: 5v5 şampiyon listesi prompt'a doğru ekleniyor')
-  it('analyzeDraft: cache hit ikinci çağrıda AI çağrısı yapmıyor')
+  it('buildDraftPrompt: 5v5 ÅŸampiyon listesi prompt'a doÄŸru ekleniyor')
+  it('analyzeDraft: cache hit ikinci Ã§aÄŸrÄ±da AI Ã§aÄŸrÄ±sÄ± yapmÄ±yor')
 })
 ```
 
@@ -173,16 +173,17 @@ describe('draftAnalysisService', () => {
 
 ## Dependencies
 
-- `championCacheService` ✅
-- `src/lib/ai/` ✅
-- Redis ✅
+- `championCacheService` âœ…
+- `src/lib/ai/` âœ…
+- Redis âœ…
 
 ---
 
 ## Definition of Done
 
-- Draft board'da 5v5 seçim yapılabiliyor
-- AI analizi Türkçe, bullet point formatında dönüyor
-- URL paylaşımı çalışıyor (aynı link aynı draft'ı gösteriyor)
-- Analiz sonuçları cache'leniyor
+- Draft board'da 5v5 seÃ§im yapÄ±labiliyor
+- AI analizi TÃ¼rkÃ§e, bullet point formatÄ±nda dÃ¶nÃ¼yor
+- URL paylaÅŸÄ±mÄ± Ã§alÄ±ÅŸÄ±yor (aynÄ± link aynÄ± draft'Ä± gÃ¶steriyor)
+- Analiz sonuÃ§larÄ± cache'leniyor
 - Sidebar'da "Draft" linki var
+
