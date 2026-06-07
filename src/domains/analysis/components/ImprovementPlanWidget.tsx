@@ -2,6 +2,7 @@
 
 import { TrendingUp, Sparkles, Clock, CheckCircle2 } from "lucide-react";
 import { useImprovementPlan, useGeneratePlan } from "@/hooks/useImprovementPlan";
+import { championSplashUrl } from "@/lib/ddragon";
 import { cn } from "@/lib/utils";
 import type { PlanProgress } from "@/domains/analysis/types/analysis.types";
 
@@ -61,6 +62,12 @@ export function ImprovementPlanWidget({ riotAccountId }: ImprovementPlanWidgetPr
   if (!plan) {
     return (
       <div className="relative overflow-hidden rounded-2xl border border-border bg-surface p-6 text-center">
+        {/* Ryze splash — scholar/learning theme */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={championSplashUrl("Ryze")} alt="" aria-hidden
+          className="absolute inset-0 h-full w-full object-cover object-[70%_20%] opacity-[0.13]"
+          style={{ filter: "blur(3px) saturate(0.4)" }} />
+        <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/85 to-surface/60" />
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <div className="h-48 w-64 rounded-full bg-accent/10 blur-3xl" />
         </div>

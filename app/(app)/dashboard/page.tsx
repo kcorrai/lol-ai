@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { MessageCircle } from "lucide-react";
-import { profileIconUrl } from "@/lib/ddragon";
+import { profileIconUrl, championSplashUrl } from "@/lib/ddragon";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -65,60 +65,63 @@ export default function DashboardPage() {
     <div className="mx-auto max-w-6xl space-y-6 p-6">
       <TiltBreakModal riotAccountId={primaryId} />
 
-      {/* ── Player Header ──────────────────────────────────────────────── */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          {primaryAccount && (
-            <div className="relative shrink-0">
-              <Image
-                src={profileIconUrl(primaryAccount.profileIconId)}
-                alt={primaryAccount.gameName}
-                width={72}
-                height={72}
-                unoptimized
-                className="rounded-full border-2 border-border"
-              />
-              <span className="absolute -bottom-1 -right-1 rounded-full bg-surface px-1.5 py-0.5 text-[10px] font-bold text-text-muted ring-1 ring-border">
-                {primaryAccount.summonerLevel}
-              </span>
-            </div>
-          )}
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="font-display text-2xl font-bold text-text">
-                {primaryAccount
-                  ? <>{primaryAccount.gameName}<span className="text-text-muted">#{primaryAccount.tagLine}</span></>
-                  : "Dashboard"}
-              </h1>
-              <Badge variant={isPro ? "success" : "secondary"} className="text-xs">
-                {isPro ? "Pro" : "Free"}
-              </Badge>
-            </div>
-            {primaryAccount && (
-              <p className="text-sm text-text-muted">
-                {primaryAccount.region.toUpperCase()}
-                {accounts.length > 1 && (
-                  <select
-                    className="ml-2 rounded border border-border bg-surface px-1.5 py-0.5 text-xs text-text"
-                    value={primaryId ?? ""}
-                    onChange={(e) => setSelectedAccountId(e.target.value)}
-                  >
-                    {accounts.map((a) => (
-                      <option key={a.id} value={a.id}>{a.gameName}#{a.tagLine}</option>
-                    ))}
-                  </select>
-                )}
-              </p>
+      {/* ── Player Header — cinematic banner ──────────────────────────── */}
+      {(() => {
+        const featuredChamp = profile?.recentMatches?.[0]?.champion ?? null;
+        return (
+          <div className="relative overflow-hidden rounded-2xl border border-border">
+            {featuredChamp && (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={championSplashUrl(featuredChamp)} alt="" aria-hidden
+                  className="absolute inset-0 h-full w-full object-cover object-[60%_15%] opacity-[0.18]"
+                  style={{ filter: "blur(2px) saturate(0.55)" }} />
+                <div className="absolute inset-0 bg-gradient-to-r from-surface/95 via-surface/75 to-transparent" />
+              </>
             )}
+            <div className="relative flex flex-wrap items-center justify-between gap-4 p-5">
+              <div className="flex items-center gap-4">
+                {primaryAccount && (
+                  <div className="relative shrink-0">
+                    <Image src={profileIconUrl(primaryAccount.profileIconId)} alt={primaryAccount.gameName}
+                      width={72} height={72} unoptimized
+                      className="rounded-full border-2 border-accent/30 shadow-[0_0_16px_rgba(200,155,60,0.25)]" />
+                    <span className="absolute -bottom-1 -right-1 rounded-full bg-surface px-1.5 py-0.5 text-[10px] font-bold text-text-muted ring-1 ring-border">
+                      {primaryAccount.summonerLevel}
+                    </span>
+                  </div>
+                )}
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h1 className="font-display text-2xl font-bold text-text">
+                      {primaryAccount
+                        ? <>{primaryAccount.gameName}<span className="text-text-muted/70">#{primaryAccount.tagLine}</span></>
+                        : "Dashboard"}
+                    </h1>
+                    <Badge variant={isPro ? "success" : "secondary"} className="text-xs">{isPro ? "Pro" : "Free"}</Badge>
+                  </div>
+                  {primaryAccount && (
+                    <p className="text-sm text-text-muted">
+                      {primaryAccount.region.toUpperCase()}
+                      {accounts.length > 1 && (
+                        <select className="ml-2 rounded border border-border bg-surface px-1.5 py-0.5 text-xs text-text"
+                          value={primaryId ?? ""} onChange={(e) => setSelectedAccountId(e.target.value)}>
+                          {accounts.map((a) => (
+                            <option key={a.id} value={a.id}>{a.gameName}#{a.tagLine}</option>
+                          ))}
+                        </select>
+                      )}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <Link href="/coaching/chat">
+                <Button size="sm" className="gap-1.5"><MessageCircle className="h-4 w-4" />Ask Your Coach</Button>
+              </Link>
+            </div>
           </div>
-        </div>
-        <Link href="/coaching/chat">
-          <Button size="sm" className="gap-1.5">
-            <MessageCircle className="h-4 w-4" />
-            Ask Your Coach
-          </Button>
-        </Link>
-      </div>
+        );
+      })()}
 
       {profileError ? (
         <EmptyState

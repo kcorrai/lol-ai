@@ -23,6 +23,11 @@ export function championSplashUrl(championName: string): string {
   return `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${key}_0.jpg`;
 }
 
+export function championLoadingUrl(championName: string): string {
+  const key = normalizeChampionKey(championName);
+  return `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${key}_0.jpg`;
+}
+
 export function itemIconUrl(itemId: number): string {
   return `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/img/item/${itemId}.png`;
 }
