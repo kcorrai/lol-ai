@@ -41,7 +41,7 @@ function LpChange({ lp }: { lp: number }) {
   return <span className="text-sm text-text-muted">±0</span>;
 }
 
-function PlayerRow({ entry, index }: { entry: LeaderboardEntry; index: number }) {
+function PlayerRow({ entry, index: _index }: { entry: LeaderboardEntry; index: number }) {
   const iconUrl = entry.profileIconId ? profileIconUrl(entry.profileIconId) : null;
   const emblemUrl = rankEmblemUrl(entry.currentTier);
   const tierColor = TIER_COLORS[entry.currentTier] ?? "text-text-muted";
