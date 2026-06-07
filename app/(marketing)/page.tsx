@@ -5,6 +5,7 @@ import { ToolsShowcaseSection } from "./components/ToolsShowcaseSection";
 import { ToolsShowcaseSection2 } from "./components/ToolsShowcaseSection2";
 import { FeaturesSection } from "./components/FeaturesSection";
 import { TestimonialsSection } from "./components/TestimonialsSection";
+import { DemoSearchBox } from "@/components/landing/DemoSearchBox";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -23,6 +24,25 @@ export default function LandingPage() {
   return (
     <>
       <HeroSection />
+
+      {/* Frictionless Demo */}
+      <section className="bg-surface-2 py-16">
+        <div className="mx-auto max-w-3xl px-6">
+          <div className="mb-8 text-center">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
+              Hemen Dene — Kayıt Gerekmez
+            </p>
+            <h2 className="font-display text-2xl font-bold text-text md:text-3xl">
+              Kendi Hesabını Analiz Et
+            </h2>
+            <p className="mt-2 text-sm text-text-muted">
+              Riot ID&apos;ni gir, AI koçunun neler söyleyeceğini gör.
+            </p>
+          </div>
+          <DemoSearchBox />
+        </div>
+      </section>
+
       <HowItWorksSection />
       <ToolsShowcaseSection />
       <ToolsShowcaseSection2 />
