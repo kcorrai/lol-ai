@@ -67,10 +67,11 @@ export function DemoSearchBox() {
             autoComplete="off"
             spellCheck={false}
           />
+          <div className="my-2.5 w-px bg-border" />
           <select
             value={region}
             onChange={e => setRegion(e.target.value)}
-            className="border-l border-border bg-surface-2 px-3 py-3 text-xs text-text-muted outline-none"
+            className="bg-transparent px-3 py-3 text-xs text-text-muted outline-none"
           >
             {REGIONS.map(r => (
               <option key={r.value} value={r.value}>
