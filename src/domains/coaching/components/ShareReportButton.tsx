@@ -31,8 +31,8 @@ export function ShareReportButton({ reportId }: Props) {
         const msg = err.message?.toLowerCase() ?? "";
         setErrorMsg(
           msg.includes("limit") || msg.includes("429")
-            ? "Share limit reached. Please try again later."
-            : "Failed to generate share link. Please try again."
+            ? "Paylaşım limiti doldu. Lütfen daha sonra tekrar dene."
+            : "Paylaşım linki oluşturulamadı. Tekrar dene."
         );
         setTimeout(() => setErrorMsg(null), 5000);
       },
@@ -49,7 +49,7 @@ export function ShareReportButton({ reportId }: Props) {
   return (
     <div className="mt-6 rounded-lg border border-border bg-surface-2 p-4">
       <p className="mb-3 text-xs font-medium text-text-muted">
-        Share your report and challenge your friends
+        Raporunu paylaş, arkadaşlarına meydan oku
       </p>
       <div className="flex flex-wrap gap-2">
         <Button
@@ -62,7 +62,7 @@ export function ShareReportButton({ reportId }: Props) {
           {copied ? (
             <>
               <Check className="h-3.5 w-3.5 text-success" />
-              Copied!
+              Kopyalandı!
             </>
           ) : (
             <>
@@ -71,20 +71,20 @@ export function ShareReportButton({ reportId }: Props) {
               ) : (
                 <Copy className="h-3.5 w-3.5" />
               )}
-              Copy share link
+              Paylaşım linkini kopyala
             </>
           )}
         </Button>
 
         {shareUrl && (
           <a
-            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("Just got my AI coaching report on LoL AI Coach! Check it out 👇")}&url=${encodeURIComponent(shareUrl)}`}
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("LoL AI Coach'tan AI koçluk raporum hazır! Bir bak 👇")}&url=${encodeURIComponent(shareUrl)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-3 py-1.5 text-xs font-medium text-text-muted transition-colors hover:border-accent/50 hover:text-text"
           >
             <Share2 className="h-3.5 w-3.5" />
-            Share on X
+            X&apos;te Paylaş
           </a>
         )}
       </div>
