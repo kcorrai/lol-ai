@@ -137,23 +137,7 @@ describe("getPatchImpact", () => {
   });
 
   it("filters out champions with delta below threshold (3%)", async () => {
-    // 10 before: 5/10 = 50%, 10 after: 6/10 = 60%, delta = 10% → should include
-    // But let's make a champion with exactly 2% delta which should be excluded
-    const participants = [
-      // Ahri: 10 before (50% WR), 10 after (52% WR) — delta 2% → excluded
-      ...Array.from({ length: 10 }, (_, i) => ({
-        championName: "Ahri",
-        won: i < 5,
-        match: { gameStart: new Date("2024-10-01") },
-      })),
-      ...Array.from({ length: 10 }, (_, i) => ({
-        championName: "Ahri",
-        won: i < 6, // 60% → but floor rounding gives 50% and 60% = delta 10% hmm
-        // Let's use a 2% delta: 50 before, 52 after
-        match: { gameStart: new Date("2024-11-01") },
-      })),
-    ];
-    // Override: 5/10 = 50%, 5/10 = 50% → delta 0% → excluded
+    // Viktor: 10 before (50% WR), 10 after (50% WR) → delta 0% → excluded
     const zeroDeltas = Array.from({ length: 20 }, (_, i) => ({
       championName: "Viktor",
       won: i % 2 === 0,
