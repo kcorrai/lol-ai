@@ -7,6 +7,7 @@ import {
   handleLsSubscriptionCreated,
   handleLsSubscriptionUpdated,
   handleLsSubscriptionCancelled,
+  handleLsPaymentFailed,
 } from "@/lib/lemonsqueezy/subscriptionService";
 import type { LsWebhookPayload } from "@/lib/lemonsqueezy/types";
 
@@ -67,6 +68,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       case "subscription_expired":
       case "subscription_paused":
         await handleLsSubscriptionUpdated(payload);
+        break;
+      case "subscription_payment_failed":
+        await handleLsPaymentFailed(payload);
         break;
       default:
         logger.info("[ls/webhook] Unhandled event type (acknowledged)", { event: eventName });

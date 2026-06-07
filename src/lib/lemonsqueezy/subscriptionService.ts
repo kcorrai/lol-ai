@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from "crypto";
 import { createCheckout } from "@lemonsqueezy/lemonsqueezy.js";
 import { prisma } from "@/lib/db/prisma";
-import { getLsClient, getLsStoreId, getLsProVariantId, getLsProYearlyVariantId } from "@/lib/lemonsqueezy/client";
+import { getLsClient, getLsStoreId, getLsProVariantId, getLsProYearlyVariantId, getLsTeamVariantId } from "@/lib/lemonsqueezy/client";
 import { logger } from "@/lib/utils/logger";
 import type {
   LsSubscriptionAttributes,
@@ -83,6 +83,17 @@ export async function checkAndRecordEvent(eventKey: string): Promise<boolean> {
   }
 }
 
+// ── Plan mapping ─────────────────────────────────────────────────────────────
+
+// Determines the internal plan based on LS variant ID and active status.
+// Falls back to "pro" when variant_id is absent or doesn't match team variant.
+function variantToPlan(variantId: number | undefined, isActive: boolean): SubscriptionPlan {
+  if (!isActive) return "free";
+  const teamVariantId = process.env.LEMONSQUEEZY_TEAM_VARIANT_ID;
+  if (teamVariantId && variantId !== undefined && String(variantId) === teamVariantId) return "team";
+  return "pro";
+}
+
 // ── Status mapping ───────────────────────────────────────────────────────────
 
 function lsStatusToSubscriptionStatus(status: LsSubscriptionStatus): SubscriptionStatus {
@@ -153,6 +164,55 @@ export async function handleLsSubscriptionCancelled(
   });
 }
 
+// ── Payment failed handler ───────────────────────────────────────────────────
+
+export async function handleLsPaymentFailed(
+  payload: LsWebhookPayload
+): Promise<void> {
+  const subscriptionId = payload.data.id;
+
+  await prisma.subscription.updateMany({
+    where: { lsSubscriptionId: subscriptionId },
+    data: { status: "past_due" },
+  });
+
+  logger.warn("[lemonsqueezy] payment failed — subscription set to past_due", {
+    subscriptionId,
+  });
+}
+
+// ── Team checkout ─────────────────────────────────────────────────────────────
+
+export async function createLsTeamCheckoutUrl(
+  userId: string,
+  userEmail: string | null
+): Promise<string> {
+  getLsClient();
+  const storeId = getLsStoreId();
+  const variantId = getLsTeamVariantId();
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
+
+  const { data, error } = await createCheckout(storeId, variantId, {
+    checkoutOptions: { embed: false, media: false, logo: true },
+    checkoutData: {
+      email: userEmail ?? undefined,
+      custom: { userId },
+    },
+    productOptions: {
+      redirectUrl: `${appUrl}/teams?upgraded=true`,
+      receiptButtonText: "Takıma Git",
+      receiptThankYouNote: "Team Plan'a hoş geldiniz! Takımınızı oluşturabilirsiniz.",
+    },
+  });
+
+  if (error || !data?.data?.attributes?.url) {
+    logger.error("[lemonsqueezy] createTeamCheckout failed", { error });
+    throw new Error("Failed to create LemonSqueezy team checkout session");
+  }
+
+  return data.data.attributes.url;
+}
+
 // ── Shared upsert ────────────────────────────────────────────────────────────
 
 async function upsertSubscription(
@@ -160,7 +220,8 @@ async function upsertSubscription(
   lsSubscriptionId: string,
   attrs: LsSubscriptionAttributes
 ): Promise<void> {
-  const plan: SubscriptionPlan = isActiveLsStatus(attrs.status) ? "pro" : "free";
+  const active = isActiveLsStatus(attrs.status);
+  const plan: SubscriptionPlan = variantToPlan(attrs.variant_id, active);
   const status = lsStatusToSubscriptionStatus(attrs.status);
   const periodEnd = attrs.renews_at ?? attrs.ends_at;
 

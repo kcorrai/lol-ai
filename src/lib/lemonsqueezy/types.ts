@@ -19,6 +19,7 @@ export interface LsWebhookMeta {
 
 export interface LsSubscriptionAttributes {
   customer_id: number;
+  variant_id?: number;
   status: LsSubscriptionStatus;
   renews_at: string | null;
   ends_at: string | null;
