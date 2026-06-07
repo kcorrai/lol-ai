@@ -6,7 +6,7 @@ import { signOut } from "next-auth/react";
 import {
   LayoutDashboard, Gamepad2, LogOut, Zap, CreditCard, ChevronLeft, ChevronRight,
   UserCircle, Shield, MessageCircle, Target, Swords, Star, Users, ClipboardList,
-  TrendingUp, Trophy, Map, Film, Lock, Bot, Sparkles,
+  TrendingUp, Trophy, Map, Film, Lock, Bot, Sparkles, Medal,
 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
@@ -20,6 +20,7 @@ const NAV_MAIN = [
   { href: "/coaching/chat", icon: MessageCircle,   label: "Koç Chat" },
   { href: "/improvement",   icon: TrendingUp,      label: "Gelişim" },
   { href: "/achievements",  icon: Trophy,          label: "Rozetler" },
+  { href: "/leaderboard",  icon: Medal,           label: "Lider Tablosu" },
   { href: "/analysis",      icon: Map,             label: "Isı Haritası" },
   { href: "/recap",         icon: Film,            label: "Sezon Recap" },
 ] as const;
