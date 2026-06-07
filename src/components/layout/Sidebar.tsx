@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 
 const NAV_MAIN = [
   { href: "/dashboard",     icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/champions",     icon: Shield,          label: "Şampiyonlar" },
+  { href: "/champion-pool", icon: Shield,          label: "Şampiyonlar" },
   { href: "/coaching",      icon: ClipboardList,   label: "Raporlar" },
   { href: "/coaching/chat", icon: MessageCircle,   label: "Koç Chat" },
   { href: "/improvement",   icon: TrendingUp,      label: "Gelişim" },
