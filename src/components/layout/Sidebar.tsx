@@ -24,6 +24,7 @@ import {
   Map,
   Film,
   Lock,
+  Bot,
 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
@@ -52,6 +53,7 @@ const NAV_SETTINGS = [
   { href: "/settings/billing",  icon: CreditCard,  label: "Billing" },
   { href: "/settings/profile",  icon: UserCircle,  label: "Profile" },
   { href: "/settings/privacy",  icon: Lock,        label: "Gizlilik" },
+  { href: "/settings/discord", icon: Bot,         label: "Discord" },
 ] as const;
 
 function NavItem({

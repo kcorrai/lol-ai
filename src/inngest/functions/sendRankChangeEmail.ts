@@ -3,6 +3,9 @@ import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
 import { getEmailClient, EMAIL_FROM } from "@/lib/email/client";
 import { buildRankChangeEmail } from "@/lib/email/templates/rankChange";
+import { sendDiscordWebhook } from "@/lib/discord/webhookService";
+import { rankUpEmbed } from "@/lib/discord/embeds";
+import { decryptString } from "@/lib/crypto/encrypt";
 
 const TIER_ORDER: Record<string, number> = {
   IRON: 0, BRONZE: 1, SILVER: 2, GOLD: 3, PLATINUM: 4,
@@ -49,10 +52,19 @@ export const sendRankChangeEmail = inngest.createFunction(
 
     const type: "promotion" | "demotion" = newScore > prevScore ? "promotion" : "demotion";
 
-    // Look up user email
+    // Look up user email + discord integration
     const account = await prisma.riotAccount.findUnique({
       where: { id: payload.riotAccountId },
-      select: { gameName: true, user: { select: { email: true } } },
+      select: {
+        gameName: true,
+        tagLine: true,
+        user: {
+          select: {
+            email: true,
+            discordIntegration: { select: { webhookUrl: true, notifyRankUp: true } },
+          },
+        },
+      },
     });
 
     if (!account?.user.email) return { skipped: "no_email" };
@@ -86,6 +98,28 @@ export const sendRankChangeEmail = inngest.createFunction(
       from: formatRank(payload.previousTier, payload.previousDivision, payload.previousLp),
       to: formatRank(payload.newTier, payload.newDivision, payload.newLp),
     });
+
+    // Discord webhook for rank changes (promotion only)
+    const discord = account?.user?.discordIntegration;
+    if (type === "promotion" && discord?.notifyRankUp && discord.webhookUrl) {
+      try {
+        await sendDiscordWebhook(
+          decryptString(discord.webhookUrl),
+          rankUpEmbed({
+            gameName: account!.gameName,
+            tagLine: account!.tagLine ?? "",
+            prevTier: payload.previousTier,
+            prevDivision: payload.previousDivision,
+            prevLp: payload.previousLp,
+            newTier: payload.newTier,
+            newDivision: payload.newDivision,
+            newLp: payload.newLp,
+          })
+        );
+      } catch (err) {
+        logger.warn(`[rankChangeEmail] Discord webhook failed: ${err instanceof Error ? err.message : String(err)}`);
+      }
+    }
 
     return { sent: true, type };
   }

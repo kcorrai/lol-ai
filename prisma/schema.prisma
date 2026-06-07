@@ -114,8 +114,9 @@ model User {
   tiltAlerts       TiltAlert[]
   userAchievements UserAchievement[]
   seasonRecaps     SeasonRecap[]
-  challenges       Challenge[]
-  userChallenges   UserChallenge[]
+  challenges          Challenge[]
+  userChallenges      UserChallenge[]
+  discordIntegration  DiscordIntegration?
 
   @@map("users")
 }
@@ -757,4 +758,26 @@ model UserChallenge {
 
   @@unique([userId, challengeId])
   @@map("user_challenges")
+}
+
+// ============================================================
+// DISCORD INTEGRATION
+// Webhook URL stored encrypted. User controls notification types.
+// ============================================================
+
+model DiscordIntegration {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @unique @db.Uuid
+  discordUserId    String?
+  discordUsername  String?
+  webhookUrl       String
+  notifyRankUp     Boolean  @default(true)
+  notifyBadge      Boolean  @default(false)
+  notifyWeekly     Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("discord_integrations")
 }
