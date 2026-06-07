@@ -4,8 +4,9 @@ import { runCoachingJob } from "@/inngest/functions/runCoachingJob";
 import { autoSessionReview } from "@/inngest/functions/autoSessionReview";
 import { sendRankChangeEmail } from "@/inngest/functions/sendRankChangeEmail";
 import { sendWeeklyReportEmails } from "@/inngest/functions/sendWeeklyReportEmails";
+import { tiltStreakCheck } from "@/inngest/functions/tiltStreakCheck";
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
-  functions: [runCoachingJob, autoSessionReview, sendRankChangeEmail, sendWeeklyReportEmails],
+  functions: [runCoachingJob, autoSessionReview, sendRankChangeEmail, sendWeeklyReportEmails, tiltStreakCheck],
 });

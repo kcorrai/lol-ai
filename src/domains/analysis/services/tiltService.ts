@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { getAiClient } from "@/lib/ai/client";
 
 export type TiltLevel = "focused" | "caution" | "tilting";
 
@@ -84,4 +85,34 @@ export async function computeTiltStatus(riotAccountId: string): Promise<TiltStat
     message: MESSAGES[level],
     gamesAnalyzed: matches.length,
   };
+}
+
+export interface RecentMatchSnippet {
+  championName: string;
+  won: boolean;
+  kills: number;
+  deaths: number;
+  assists: number;
+}
+
+export async function generateTiltRecoveryMessage(
+  recentMatches: RecentMatchSnippet[]
+): Promise<string> {
+  const streak = recentMatches.filter(m => !m.won).length;
+  const avgDeaths = recentMatches.length > 0
+    ? (recentMatches.reduce((s, m) => s + m.deaths, 0) / recentMatches.length).toFixed(1)
+    : "?";
+  const champs = recentMatches.map(m => m.championName).join(", ");
+
+  const ai = getAiClient();
+  const result = await ai.complete(
+    "Sen empatik ama doğrudan konuşan bir League of Legends koçusun.",
+    `Oyuncu ${streak} maç üst üste kaybetti. Şampiyonlar: ${champs}. Ortalama ölüm: ${avgDeaths}.\n` +
+      "Türkçe, 2 cümlelik mola önerisi yaz. " +
+      "İstatistiksel gerçeği söyle (örn. 'Üst üste kayıplarda win rate %15 daha düşük'), " +
+      "sonra aksiyonel öneri ver. Sadece düz metin, JSON değil.",
+    { maxTokens: 120 }
+  );
+
+  return result.content.trim().replace(/^"|"$/g, "");
 }

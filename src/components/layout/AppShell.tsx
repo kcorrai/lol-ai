@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 import { BottomNav } from "./BottomNav";
+import { TiltAlertBanner } from "./TiltAlertBanner";
 import { useUIStore } from "@/lib/stores/uiStore";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -22,6 +23,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       />
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar />
+        <TiltAlertBanner />
         <main className="flex-1 overflow-y-auto pb-16 md:pb-0">{children}</main>
       </div>
       <BottomNav />

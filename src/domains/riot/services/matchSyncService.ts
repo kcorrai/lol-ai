@@ -322,6 +322,14 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
       .catch((err) => logger.warn("[sync] Failed to fire session.synced event", err));
   }
 
+  // Tilt streak check: fire after every sync so the streak detector can evaluate
+  inngest
+    .send({
+      name: "tilt/check-streak",
+      data: { riotAccountId: account.id, userId: account.userId },
+    })
+    .catch((err) => logger.warn("[sync] Failed to fire tilt/check-streak event", err));
+
   logger.info(
     `[sync] Done: +${newCount} new, ${skipped} skipped, ${errors.length} errors, ranked=${rankedSnapshotted}`
   );
