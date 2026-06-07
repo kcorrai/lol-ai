@@ -25,9 +25,10 @@ const POSITION_LABELS: Record<string, string> = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { region, gameName, tagLine } = params;
   const name = `${decodeURIComponent(gameName)}#${decodeURIComponent(tagLine)}`;
+  const server = region.toUpperCase();
   return {
-    title: `${name} — LoL Stats & AI Koç`,
-    description: `${name} League of Legends istatistikleri. Rank, kazanma oranı, şampiyon performansı ve AI koç analizi.`,
+    title: `${name} ${server} — LoL Stats & AI Koç`,
+    description: `${name} League of Legends istatistikleri (${server}). Rank, kazanma oranı, şampiyon performansı ve AI koç analizi.`,
   };
 }
 
