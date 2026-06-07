@@ -22,7 +22,7 @@ function fmt(n: number, d = 1) { return n.toFixed(d); }
 function fmtK(n: number) { return n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n); }
 
 const POSITION_LABELS: Record<string, string> = {
-  TOP: "Top", JUNGLE: "Jungle", MIDDLE: "Mid", BOTTOM: "ADC", UTILITY: "Support",
+  TOP: "Top", JUNGLE: "Orman", MIDDLE: "Mid", BOTTOM: "ADC", UTILITY: "Destek",
 };
 
 const POSITION_ORDER: Record<string, number> = {
@@ -97,20 +97,20 @@ function TeamHeader({ team, won, objectives }: { team: ParticipantDetail[]; won:
   return (
     <div className={`flex flex-wrap items-center justify-between gap-3 rounded-t-lg border-b border-border px-4 py-2.5 ${won ? "bg-success/10" : "bg-danger/10"}`}>
       <span className={`text-xs font-bold uppercase tracking-widest ${won ? "text-success" : "text-danger"}`}>
-        {won ? "Victory" : "Defeat"}
+        {won ? "Zafer" : "Yenilgi"}
       </span>
       <div className="flex flex-wrap gap-4 text-xs text-text-muted">
-        <span><span className="font-semibold text-text">{totalKills}</span> Kills</span>
-        <span><span className="font-semibold text-text">{fmtK(totalDmg)}</span> Dmg</span>
-        <span><span className="font-semibold text-text">{fmtK(totalGold)}</span> Gold</span>
+        <span><span className="font-semibold text-text">{totalKills}</span> Kil</span>
+        <span><span className="font-semibold text-text">{fmtK(totalDmg)}</span> Hasar</span>
+        <span><span className="font-semibold text-text">{fmtK(totalGold)}</span> Altın</span>
         <span><span className="font-semibold text-text">{totalCS}</span> CS</span>
         {objectives && (
           <>
-            <ObjectivePip icon="🏰" count={objectives.towers}    label="Towers" />
-            <ObjectivePip icon="🐉" count={objectives.dragons}   label="Dragons" />
+            <ObjectivePip icon="🏰" count={objectives.towers}    label="Kuleler" />
+            <ObjectivePip icon="🐉" count={objectives.dragons}   label="Ejderler" />
             <ObjectivePip icon="👁️" count={objectives.heralds}   label="Rift Heralds" />
-            <ObjectivePip icon="💀" count={objectives.barons}    label="Barons" />
-            <ObjectivePip icon="🔴" count={objectives.inhibitors} label="Inhibitors" />
+            <ObjectivePip icon="💀" count={objectives.barons}    label="Baron" />
+            <ObjectivePip icon="🔴" count={objectives.inhibitors} label="İnhibitörler" />
           </>
         )}
       </div>
@@ -138,15 +138,15 @@ function TeamTable({ participants, teamId, userRiotAccountId, objectives }: {
         <table className="w-full text-xs">
           <thead>
             <tr className="border-b border-border bg-surface-2 text-text-muted">
-              <th className="px-3 py-2 text-left">Champion</th>
+              <th className="px-3 py-2 text-left">Şampiyon</th>
               <th className="px-3 py-2 text-left">Rank</th>
               <th className="px-3 py-2 text-center">K / D / A</th>
               <th className="px-3 py-2 text-center">CS</th>
-              <th className="px-3 py-2 text-center">Dealt</th>
-              <th className="px-3 py-2 text-center">Taken</th>
-              <th className="px-3 py-2 text-center">Gold</th>
-              <th className="px-3 py-2 text-center">Vision</th>
-              <th className="px-3 py-2 text-left">Items</th>
+              <th className="px-3 py-2 text-center">Verilen</th>
+              <th className="px-3 py-2 text-center">Alınan</th>
+              <th className="px-3 py-2 text-center">Altın</th>
+              <th className="px-3 py-2 text-center">Görüş</th>
+              <th className="px-3 py-2 text-left">Eşyalar</th>
             </tr>
           </thead>
           <tbody>
@@ -174,7 +174,7 @@ function TeamTable({ participants, teamId, userRiotAccountId, objectives }: {
                           </Link>
                         )}
                         <p className="text-[10px] text-text-muted/60">
-                          {POSITION_LABELS[p.position] ?? p.position}{isUser ? " · you" : ""}
+                          {POSITION_LABELS[p.position] ?? p.position}{isUser ? " · sen" : ""}
                         </p>
                       </div>
                     </div>
@@ -228,11 +228,11 @@ function PerformanceCards({ match }: { match: MatchDetail }) {
   if (!user) return null;
   const cards = [
     { label: "KDA",        value: fmt(user.kda, 2) },
-    { label: "Kill Part.", value: `${fmt(user.killParticipation * 100)}%` },
-    { label: "CS / min",   value: fmt(user.csPerMinute) },
-    { label: "Dmg Share",  value: `${fmt(user.damageShare * 100)}%` },
-    { label: "Vision",     value: String(user.visionScore) },
-    { label: "Gold / min", value: fmt(user.goldPerMinute) },
+    { label: "Kil Kat.",   value: `${fmt(user.killParticipation * 100)}%` },
+    { label: "CS / dk",    value: fmt(user.csPerMinute) },
+    { label: "Hasar Payı", value: `${fmt(user.damageShare * 100)}%` },
+    { label: "Görüş",      value: String(user.visionScore) },
+    { label: "Altın / dk", value: fmt(user.goldPerMinute) },
   ];
   return (
     <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
@@ -258,8 +258,8 @@ function AiInsightSection({ insight }: { insight: AiInsight }) {
     <Card className="border-accent/30 bg-accent/5">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-sm text-accent uppercase tracking-widest">AI Insight</CardTitle>
-          <Link href={`/coaching/${insight.reportId}`} className="text-xs text-text-muted hover:text-accent">Full report →</Link>
+          <CardTitle className="text-sm text-accent uppercase tracking-widest">AI İçgörüsü</CardTitle>
+          <Link href={`/coaching/${insight.reportId}`} className="text-xs text-text-muted hover:text-accent">Tam Rapor →</Link>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -267,13 +267,13 @@ function AiInsightSection({ insight }: { insight: AiInsight }) {
         <div className="grid gap-3 sm:grid-cols-2">
           {strengths.length > 0 && (
             <div>
-              <p className="mb-1 text-xs font-semibold text-success">Strengths</p>
+              <p className="mb-1 text-xs font-semibold text-success">Güçlü Yönler</p>
               {strengths.slice(0, 2).map((s, i) => <p key={i} className="text-xs text-text-muted">· {s.area}: {s.description}</p>)}
             </div>
           )}
           {weaknesses.length > 0 && (
             <div>
-              <p className="mb-1 text-xs font-semibold text-danger">Weaknesses</p>
+              <p className="mb-1 text-xs font-semibold text-danger">Zayıf Yönler</p>
               {weaknesses.slice(0, 2).map((w, i) => <p key={i} className="text-xs text-text-muted">· {w.area}: {w.description}</p>)}
             </div>
           )}
@@ -293,7 +293,7 @@ export default function MatchDetailPage() {
   if (error || !match) {
     return (
       <div className="mx-auto max-w-6xl p-6">
-        <ErrorState title="Match not found" message="This match doesn't exist or you didn't participate in it." />
+        <ErrorState title="Maç bulunamadı" message="Bu maç mevcut değil veya bunda yer almadın." />
       </div>
     );
   }
@@ -306,11 +306,11 @@ export default function MatchDetailPage() {
     <div className="mx-auto max-w-6xl space-y-5 p-6">
       <PageHeader
         title={match.gameMode}
-        subtitle={`${new Date(match.gameStart).toLocaleString()} · ${durationMin}:${String(durationSec).padStart(2, "0")}`}
+        subtitle={`${new Date(match.gameStart).toLocaleString("tr-TR")} · ${durationMin}:${String(durationSec).padStart(2, "0")}`}
         backHref="/dashboard"
         backLabel="Dashboard"
         action={userWon !== undefined ? (
-          <Badge variant={userWon ? "success" : "destructive"}>{userWon ? "Victory" : "Defeat"}</Badge>
+          <Badge variant={userWon ? "success" : "destructive"}>{userWon ? "Zafer" : "Yenilgi"}</Badge>
         ) : undefined}
       />
 
