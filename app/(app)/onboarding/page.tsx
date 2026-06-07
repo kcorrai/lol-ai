@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -173,46 +173,81 @@ function ConnectStep({ onSuccess }: { onSuccess: (gameName: string) => void }) {
   );
 }
 
-function DoneStep({ gameName, onFinish }: { gameName: string; onFinish: () => void }) {
+function DoneStep({ gameName }: { gameName: string }) {
+  const router = useRouter();
+  const [seconds, setSeconds] = useState(4);
+
+  useEffect(() => {
+    if (seconds <= 0) {
+      router.push("/coaching");
+      return;
+    }
+    const t = setTimeout(() => setSeconds((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [seconds, router]);
+
   return (
-    <div className="space-y-6">
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-green-500/15">
-        <CheckCircle2 className="h-7 w-7 text-green-400" />
-      </div>
-      <div>
-        <h2 className="font-display text-2xl font-bold text-text">
-          Hazırsın, {gameName}!
-        </h2>
-        <p className="mt-2 text-sm text-text-muted">
-          Maç verilerini çekiyoruz. Dashboard&apos;da her şeyi görebilirsin.
-        </p>
+    <div className="space-y-8">
+      <div className="flex flex-col items-center text-center gap-4">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-green-500/15">
+          <CheckCircle2 className="h-8 w-8 text-green-400" />
+        </div>
+        <div>
+          <h2 className="font-display text-2xl font-bold text-text">
+            Hazırsın, {gameName}!
+          </h2>
+          <p className="mt-2 text-sm text-text-muted">
+            Maç verilerin hazırlanıyor. İlk AI raporunu almaya hazır mısın?
+          </p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="rounded-xl border border-border bg-surface-2 p-4 space-y-3">
         {[
-          { label: "İlk Raporu Al", href: "/coaching", accent: true },
-          { label: "Dashboard", href: "/dashboard", accent: false },
-          { label: "Champion Pool", href: "/champions", accent: false },
-          { label: "Counter Pick", href: "/counter", accent: false },
-        ].map(({ label, href, accent }) => (
-          <a
-            key={href}
-            href={href}
-            className={cn(
-              "flex items-center justify-center gap-1.5 rounded-xl border px-3 py-3 text-sm font-medium transition-colors",
-              accent
-                ? "border-accent bg-accent/10 text-accent hover:bg-accent/20"
-                : "border-border text-text-muted hover:border-accent/40 hover:text-text"
-            )}
-          >
-            {label}
-          </a>
+          { label: "Riot hesabı bağlandı", done: true },
+          { label: "Maç geçmişi senkronize ediliyor", done: false, loading: true },
+          { label: "AI koçun seni bekliyor", done: false, loading: false },
+        ].map(({ label, done, loading }, i) => (
+          <div key={i} className="flex items-center gap-3">
+            <div className={cn(
+              "flex h-5 w-5 shrink-0 items-center justify-center rounded-full",
+              done ? "bg-green-500/20" : loading ? "bg-accent/15" : "bg-border/50"
+            )}>
+              {done && <CheckCircle2 className="h-3 w-3 text-green-400" />}
+              {!done && loading && <Loader2 className="h-3 w-3 animate-spin text-accent" />}
+              {!done && !loading && <div className="h-1.5 w-1.5 rounded-full bg-text-muted/40" />}
+            </div>
+            <p className={cn(
+              "text-sm",
+              done ? "text-text" : loading ? "text-accent font-medium" : "text-text-muted/60"
+            )}>
+              {label}
+            </p>
+          </div>
         ))}
       </div>
 
-      <Button className="w-full" size="lg" onClick={onFinish}>
-        Dashboard&apos;a Git
-      </Button>
+      <div className="space-y-3">
+        <a
+          href="/coaching"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-accent py-4 text-base font-bold text-background transition-opacity hover:opacity-90"
+        >
+          İlk Raporumu Al <ChevronRight className="h-5 w-5" />
+        </a>
+        <p className="text-center text-xs text-text-muted">
+          {seconds > 0
+            ? `${seconds} saniye içinde otomatik yönlendiriliyorsun…`
+            : "Yönlendiriliyor…"}
+        </p>
+        <p className="text-center">
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="text-xs text-text-muted/50 underline-offset-2 hover:text-text-muted transition-colors hover:underline"
+          >
+            Şimdilik dashboard&apos;a git
+          </button>
+        </p>
+      </div>
     </div>
   );
 }
@@ -220,17 +255,12 @@ function DoneStep({ gameName, onFinish }: { gameName: string; onFinish: () => vo
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export default function OnboardingPage() {
-  const router = useRouter();
   const [step, setStep] = useState<Step>("welcome");
   const [connectedName, setConnectedName] = useState("");
 
   function handleConnected(gameName: string) {
     setConnectedName(gameName);
     setStep("done");
-  }
-
-  function handleFinish() {
-    router.push("/dashboard");
   }
 
   return (
@@ -247,7 +277,7 @@ export default function OnboardingPage() {
         <div className="rounded-2xl border border-border bg-surface p-8">
           {step === "welcome" && <WelcomeStep onNext={() => setStep("connect")} />}
           {step === "connect" && <ConnectStep onSuccess={handleConnected} />}
-          {step === "done"    && <DoneStep gameName={connectedName} onFinish={handleFinish} />}
+          {step === "done"    && <DoneStep gameName={connectedName} />}
         </div>
       </div>
     </div>
