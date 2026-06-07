@@ -16,7 +16,7 @@ export default function GlobalError({ error, reset }: Props) {
   }, [error]);
 
   return (
-    <html lang="en" className="dark">
+    <html lang="tr" className="dark">
       <body style={{ background: "#0A0E1A", color: "#E8F0FF", fontFamily: "system-ui, sans-serif" }}>
         <div
           style={{
@@ -31,10 +31,10 @@ export default function GlobalError({ error, reset }: Props) {
         >
           <p style={{ fontSize: "4rem", fontWeight: "bold", color: "#C89B3C" }}>!</p>
           <h1 style={{ fontSize: "1.5rem", fontWeight: "bold", marginTop: "1rem" }}>
-            Something went wrong
+            Bir şeyler ters gitti
           </h1>
           <p style={{ color: "#8899BB", marginTop: "0.75rem", maxWidth: "24rem" }}>
-            An unexpected error occurred. Please try again.
+            Beklenmedik bir hata oluştu. Lütfen tekrar dene.
           </p>
           <button
             onClick={reset}
@@ -49,11 +49,11 @@ export default function GlobalError({ error, reset }: Props) {
               cursor: "pointer",
             }}
           >
-            Try again
+            Tekrar Dene
           </button>
           {error.digest && (
             <p style={{ marginTop: "1.5rem", fontSize: "0.75rem", color: "#8899BB" }}>
-              Error ID: {error.digest}
+              Hata ID: {error.digest}
             </p>
           )}
         </div>

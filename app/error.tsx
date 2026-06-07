@@ -20,28 +20,28 @@ export default function GlobalError({ error, reset }: Props) {
         <span className="text-2xl font-bold text-danger">!</span>
       </div>
       <h1 className="mt-5 font-display text-2xl font-bold text-text md:text-3xl">
-        Something went wrong
+        Bir şeyler ters gitti
       </h1>
       <p className="mt-3 max-w-sm text-sm text-text-muted">
-        An unexpected error occurred. Our team has been notified. You can try again or go back to
-        the dashboard.
+        Beklenmedik bir hata oluştu. Ekibimiz bilgilendirildi. Tekrar deneyebilir veya
+        dashboard&apos;a dönebilirsin.
       </p>
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <button
           onClick={reset}
           className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
         >
-          Try again
+          Tekrar Dene
         </button>
         <Link
           href="/dashboard"
           className="rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-text transition-colors hover:bg-surface"
         >
-          Go to Dashboard
+          Dashboard&apos;a Git
         </Link>
       </div>
       {error.digest && (
-        <p className="mt-6 text-xs text-text-muted">Error ID: {error.digest}</p>
+        <p className="mt-6 text-xs text-text-muted">Hata ID: {error.digest}</p>
       )}
     </div>
   );
