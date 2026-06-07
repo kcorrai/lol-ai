@@ -227,6 +227,7 @@ model RiotAccount {
   coachingReports      CoachingReport[]
   improvementPlans     ImprovementPlan[]
   habits               PlayerHabit[]
+  deathEvents          MatchDeathEvent[]
 
   @@unique([userId, puuid])
   @@index([userId])
@@ -254,6 +255,7 @@ model Match {
   createdAt    DateTime  @default(now())
 
   participants MatchParticipant[]
+  deathEvents  MatchDeathEvent[]
 
   @@index([gameStart])
   @@index([queueType, gameStart])
@@ -567,6 +569,30 @@ model TiltAlert {
 
   @@index([userId, acknowledged])
   @@map("tilt_alerts")
+}
+
+// ============================================================
+// DEATH HEAT MAP
+// CHAMPION_KILL events from the Riot Match Timeline API, stored per participant.
+// Populated by the timelineFetcher Inngest function after match sync.
+// ============================================================
+
+model MatchDeathEvent {
+  id            String   @id @default(uuid()) @db.Uuid
+  matchId       String   @db.Uuid
+  riotAccountId String   @db.Uuid
+  positionX     Int
+  positionY     Int
+  gameTimeMs    Int
+  championName  String
+
+  match       Match       @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  riotAccount RiotAccount @relation(fields: [riotAccountId], references: [id], onDelete: Cascade)
+
+  @@index([riotAccountId, championName])
+  @@index([riotAccountId, gameTimeMs])
+  @@index([matchId, riotAccountId])      // fast dedup check: "has this match been processed?"
+  @@map("match_death_events")
 }
 
 // ============================================================

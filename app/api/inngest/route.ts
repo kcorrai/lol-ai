@@ -7,8 +7,9 @@ import { sendWeeklyReportEmails } from "@/inngest/functions/sendWeeklyReportEmai
 import { tiltStreakCheck } from "@/inngest/functions/tiltStreakCheck";
 import { patchVersionPoller } from "@/inngest/functions/patchVersionPoller";
 import { achievementChecker } from "@/inngest/functions/achievementChecker";
+import { timelineFetcher } from "@/inngest/functions/timelineFetcher";
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
-  functions: [runCoachingJob, autoSessionReview, sendRankChangeEmail, sendWeeklyReportEmails, tiltStreakCheck, patchVersionPoller, achievementChecker],
+  functions: [runCoachingJob, autoSessionReview, sendRankChangeEmail, sendWeeklyReportEmails, tiltStreakCheck, patchVersionPoller, achievementChecker, timelineFetcher],
 });

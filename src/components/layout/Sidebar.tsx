@@ -21,6 +21,7 @@ import {
   ClipboardList,
   TrendingUp,
   Trophy,
+  Map,
 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
@@ -33,6 +34,7 @@ const NAV_MAIN = [
   { href: "/coaching/chat", icon: MessageCircle,   label: "Coach Chat" },
   { href: "/improvement",   icon: TrendingUp,      label: "Gelişim" },
   { href: "/achievements",  icon: Trophy,          label: "Rozetler" },
+  { href: "/analysis",     icon: Map,             label: "Isı Haritası" },
 ] as const;
 
 const NAV_TOOLS = [

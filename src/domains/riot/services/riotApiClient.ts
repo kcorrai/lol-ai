@@ -7,6 +7,7 @@ import type {
   SummonerDTO,
   RankedEntryDTO,
   MatchDTO,
+  MatchTimelineDTO,
 } from "@/domains/riot/types/riot.types";
 
 // Region → routing cluster (for Account and Match v5 APIs)
@@ -29,6 +30,15 @@ export function getRouting(region: string): string {
 }
 
 export const VALID_REGIONS = Object.keys(ROUTING) as string[];
+
+export async function getMatchTimeline(
+  matchId: string,
+  region: string
+): Promise<MatchTimelineDTO> {
+  const routing = getRouting(region);
+  const url = `https://${routing}.api.riotgames.com/lol/match/v5/matches/${matchId}/timeline`;
+  return riotClient.get<MatchTimelineDTO>(url, { cacheTtl: 0 });
+}
 
 export async function getAccountByRiotId(
   gameName: string,

@@ -338,6 +338,13 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
     })
     .catch((err) => logger.warn("[sync] Failed to fire achievement/check event", err));
 
+  // Timeline fetch: fire when new matches arrived so death heat map data stays fresh
+  if (newCount > 0) {
+    inngest
+      .send({ name: "timeline/fetch-for-account", data: { riotAccountId: account.id } })
+      .catch((err) => logger.warn("[sync] Failed to fire timeline/fetch-for-account event", err));
+  }
+
   logger.info(
     `[sync] Done: +${newCount} new, ${skipped} skipped, ${errors.length} errors, ranked=${rankedSnapshotted}`
   );
