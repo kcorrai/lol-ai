@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/db/prisma";
 import { checkRateLimit, getIp, rateLimitResponse } from "@/lib/api/rateLimit";
+import { applyReferralCode } from "@/domains/identity/services/referralService";
 
 const REGISTER_LIMIT = { limit: 5, windowMs: 3_600_000 };
 
@@ -10,6 +11,7 @@ const registerSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   name: z.string().min(2, "Name must be at least 2 characters").max(50).optional(),
+  refCode: z.string().min(1).max(16).toUpperCase().optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -32,7 +34,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { email, password, name } = parsed.data;
+  const { email, password, name, refCode } = parsed.data;
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
@@ -66,6 +68,10 @@ export async function POST(req: NextRequest) {
   // Auto-create Profile and Subscription for credentials users
   await prisma.profile.create({ data: { userId: user.id } });
   await prisma.subscription.create({ data: { userId: user.id } });
+
+  if (refCode) {
+    await applyReferralCode(refCode, user.id).catch(() => { /* ignore invalid codes */ });
+  }
 
   return NextResponse.json({ data: { userId: user.id } }, { status: 201 });
 }

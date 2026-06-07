@@ -104,6 +104,8 @@ model User {
   profilePublic    Boolean  @default(true)
   profileSettings  Json?
 
+  proTrialEndsAt   DateTime?
+
   accounts         Account[]
   sessions         Session[]
   profile          Profile?
@@ -117,6 +119,8 @@ model User {
   challenges          Challenge[]
   userChallenges      UserChallenge[]
   discordIntegration  DiscordIntegration?
+  referralsGiven      Referral[] @relation("ReferralsGiven")
+  referralReceived    Referral?  @relation("ReferralsReceived")
 
   @@map("users")
 }
@@ -780,4 +784,19 @@ model DiscordIntegration {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("discord_integrations")
+}
+
+model Referral {
+  id          String    @id @default(cuid())
+  referrerId  String    @db.Uuid
+  refereeId   String?   @unique @db.Uuid
+  code        String    @unique
+  status      String    @default("pending") // pending | completed | rewarded
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  referrer    User      @relation("ReferralsGiven", fields: [referrerId], references: [id], onDelete: Cascade)
+  referee     User?     @relation("ReferralsReceived", fields: [refereeId], references: [id], onDelete: SetNull)
+
+  @@map("referrals")
 }

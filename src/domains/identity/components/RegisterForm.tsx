@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +27,8 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const refCode = searchParams.get("ref")?.toUpperCase() ?? null;
   const [serverError, setServerError] = useState<string | null>(null);
 
   const {
@@ -47,6 +49,7 @@ export function RegisterForm() {
         name: values.name,
         email: values.email,
         password: values.password,
+        refCode,
       }),
     });
 
@@ -64,7 +67,11 @@ export function RegisterForm() {
     <Card>
       <CardHeader className="space-y-1">
         <CardTitle>Hesap Oluştur</CardTitle>
-        <CardDescription>Ücretsiz — kredi kartı gerekli değil</CardDescription>
+        <CardDescription>
+          {refCode
+            ? `Davet kodu aktif: ${refCode} — Kayıt olunca ikiniz de 7 gün Pro kazanırsınız!`
+            : "Ücretsiz — kredi kartı gerekli değil"}
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <OAuthButton provider="google" />

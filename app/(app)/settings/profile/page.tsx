@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ReferralWidget } from "@/domains/identity/components/ReferralWidget";
 
 export default function ProfileSettingsPage() {
   const { data: session } = useSession();
@@ -42,6 +43,9 @@ export default function ProfileSettingsPage() {
       />
 
       <div className="space-y-8">
+        {/* Referral */}
+        <ReferralWidget />
+
         {/* Account info */}
         <Card>
           <CardHeader className="pb-2">
