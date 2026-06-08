@@ -30,7 +30,7 @@ export default function ChampionsPage() {
   const [deepDiveChampion, setDeepDiveChampion] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>("pool");
 
-  const isPro = sub?.plan === "pro" || sub?.plan === "elite";
+  const isPro = sub?.plan === "pro" || sub?.plan === "elite" || sub?.plan === "team";
 
   if (accountsLoading) return <PageSkeleton />;
 

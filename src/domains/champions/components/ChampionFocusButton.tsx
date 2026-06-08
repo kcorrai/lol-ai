@@ -16,18 +16,30 @@ export function ChampionFocusButton({ riotAccountId, championName }: ChampionFoc
   const router = useRouter();
   const generateReport = useGenerateReport();
   const [done, setDone] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleClick() {
-    const { matchIds } = await apiFetch<{ matchIds: string[] }>(
-      `/api/riot/${riotAccountId}/champion-matches?champion=${encodeURIComponent(championName)}`
-    );
+    setError(null);
+    try {
+      const { matchIds } = await apiFetch<{ matchIds: string[] }>(
+        `/api/riot/${riotAccountId}/champion-matches?champion=${encodeURIComponent(championName)}`
+      );
 
-    if (matchIds.length === 0) return;
+      if (matchIds.length === 0) {
+        setError("Bu şampiyonla henüz yeterli ranked maç yok.");
+        return;
+      }
 
-    generateReport.mutate(
-      { riotAccountId, reportType: "champion_focus", matchIds, focusArea: championName },
-      { onSuccess: () => setDone(true) }
-    );
+      generateReport.mutate(
+        { riotAccountId, reportType: "champion_focus", matchIds, focusArea: championName },
+        {
+          onSuccess: () => setDone(true),
+          onError: () => setError("Rapor oluşturulamadı, tekrar dene."),
+        }
+      );
+    } catch {
+      setError("Bir hata oluştu, tekrar dene.");
+    }
   }
 
   if (done) {
@@ -42,15 +54,20 @@ export function ChampionFocusButton({ riotAccountId, championName }: ChampionFoc
   }
 
   return (
-    <Button
-      size="sm"
-      variant="secondary"
-      className="mt-2 w-full text-xs"
-      onClick={handleClick}
-      disabled={generateReport.isPending}
-    >
-      <Sparkles className="mr-1.5 h-3 w-3" />
-      {generateReport.isPending ? "Oluşturuluyor…" : "AI Analiz"}
-    </Button>
+    <div className="mt-2">
+      <Button
+        size="sm"
+        variant="secondary"
+        className="w-full text-xs"
+        onClick={handleClick}
+        disabled={generateReport.isPending}
+      >
+        <Sparkles className="mr-1.5 h-3 w-3" />
+        {generateReport.isPending ? "Oluşturuluyor…" : "AI Analiz"}
+      </Button>
+      {error && (
+        <p className="mt-1 text-center text-[11px] text-danger">{error}</p>
+      )}
+    </div>
   );
 }
