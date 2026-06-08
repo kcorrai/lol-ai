@@ -9,11 +9,50 @@ import { buildPrompt } from "@/domains/coaching/pipeline/promptBuilder";
 import { capture } from "@/lib/analytics/posthog";
 import type { ReportType } from "@prisma/client";
 
+const STRICT_JSON_SUFFIX =
+  "\n\nIMPORTANT: Your previous response could not be parsed as valid JSON. " +
+  "Reply ONLY with a valid JSON object matching the exact schema — no markdown, no code fences, no explanation.";
+
 function hashPrompt(systemPrompt: string, userMessage: string): string {
   return createHash("sha256")
     .update(systemPrompt + userMessage)
     .digest("hex")
     .slice(0, 32);
+}
+
+async function callAiAndPersist(
+  reportId: string,
+  reportType: ReportType,
+  systemPrompt: string,
+  userMessage: string,
+  analysisTypeSuffix: string = ""
+): Promise<{ rawContent: string; model: string; promptTokens: number; completionTokens: number; totalTokens: number; latencyMs: number }> {
+  const result = await getAiClient().complete(systemPrompt, userMessage);
+  const { content: rawContent, model, promptTokens, completionTokens, totalTokens, latencyMs } = result;
+
+  const inputHash = hashPrompt(systemPrompt, userMessage);
+  await prisma.aiAnalysis.upsert({
+    where: { inputHash },
+    create: {
+      coachingReportId: reportId,
+      analysisType: `${reportType}${analysisTypeSuffix}`,
+      inputHash,
+      provider: process.env.AI_PROVIDER ?? "openai",
+      model,
+      promptTokens,
+      completionTokens,
+      totalTokens,
+      responseRaw: rawContent,
+      latencyMs,
+      cacheHit: false,
+    },
+    update: {
+      responseRaw: rawContent,
+      latencyMs,
+    },
+  });
+
+  return { rawContent, model, promptTokens, completionTokens, totalTokens, latencyMs };
 }
 
 export async function runCoachingPipeline(
@@ -53,33 +92,36 @@ export async function runCoachingPipeline(
       latencyMs = 0;
       cacheHit = true;
     } else {
-      const result = await getAiClient().complete(systemPrompt, userMessage);
-      rawContent = result.content;
-      model = result.model;
-      promptTokens = result.promptTokens;
-      completionTokens = result.completionTokens;
-      totalTokens = result.totalTokens;
-      latencyMs = result.latencyMs;
+      const r = await callAiAndPersist(reportId, reportType, systemPrompt, userMessage);
+      rawContent = r.rawContent;
+      model = r.model;
+      promptTokens = r.promptTokens;
+      completionTokens = r.completionTokens;
+      totalTokens = r.totalTokens;
+      latencyMs = r.latencyMs;
       cacheHit = false;
-
-      await prisma.aiAnalysis.create({
-        data: {
-          coachingReportId: reportId,
-          analysisType: reportType,
-          inputHash,
-          provider: process.env.AI_PROVIDER ?? "openai",
-          model,
-          promptTokens,
-          completionTokens,
-          totalTokens,
-          responseRaw: rawContent,
-          latencyMs,
-          cacheHit: false,
-        },
-      });
     }
 
-    const parsed = parseCoachingResponse(rawContent);
+    // Parse with one retry on malformed JSON or schema mismatch
+    let parsed: ReturnType<typeof parseCoachingResponse>;
+    try {
+      parsed = parseCoachingResponse(rawContent);
+    } catch (parseErr) {
+      logger.warn("Coaching parse failed — retrying with stricter prompt", { reportId, parseErr });
+      Sentry.captureMessage("Coaching parse failed — retrying", {
+        level: "warning",
+        extra: { reportId, error: String(parseErr) },
+      });
+
+      const retryMessage = userMessage + STRICT_JSON_SUFFIX;
+      const retryResult = await callAiAndPersist(reportId, reportType, systemPrompt, retryMessage, "-retry");
+      rawContent = retryResult.rawContent;
+      model = retryResult.model;
+      totalTokens += retryResult.totalTokens;
+      latencyMs += retryResult.latencyMs;
+
+      parsed = parseCoachingResponse(rawContent); // throws → caught below → status: failed
+    }
 
     await prisma.coachingReport.update({
       where: { id: reportId },
