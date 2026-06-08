@@ -135,25 +135,36 @@ function BillingPageContent() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex items-center gap-3">
-                <Users className="h-5 w-5 text-warning" />
-                <span className="text-2xl font-bold text-text">
-                  {seats.totalMembers}
-                  <span className="text-base font-normal text-text-muted">/{seats.maxMembers}</span>
-                </span>
-                {seats.maxMembers > 0 && seats.totalMembers >= seats.maxMembers && (
-                  <Badge variant="warning">Takım dolu</Badge>
-                )}
-              </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-surface-3">
-                <div
-                  className="h-full rounded-full bg-warning transition-all"
-                  style={{ width: `${seats.maxMembers > 0 ? Math.min((seats.totalMembers / seats.maxMembers) * 100, 100) : 0}%` }}
-                />
-              </div>
-              <p className="text-xs text-text-muted">
-                {seats.maxMembers - seats.totalMembers} boş slot · {seats.teamsCount} takım
-              </p>
+              {seats.teamsCount === 0 ? (
+                <p className="text-sm text-text-muted">
+                  Henüz takım oluşturmadın.{" "}
+                  <Link href="/teams/create" className="text-accent underline underline-offset-2 hover:opacity-80">
+                    Takım oluştur →
+                  </Link>
+                </p>
+              ) : (
+                <>
+                  <div className="flex items-center gap-3">
+                    <Users className="h-5 w-5 text-warning" />
+                    <span className="text-2xl font-bold text-text">
+                      {seats.totalMembers}
+                      <span className="text-base font-normal text-text-muted">/{seats.maxMembers}</span>
+                    </span>
+                    {seats.maxMembers > 0 && seats.totalMembers >= seats.maxMembers && (
+                      <Badge variant="warning">Takım dolu</Badge>
+                    )}
+                  </div>
+                  <div className="h-2 w-full overflow-hidden rounded-full bg-surface-3">
+                    <div
+                      className="h-full rounded-full bg-warning transition-all"
+                      style={{ width: `${seats.maxMembers > 0 ? Math.min((seats.totalMembers / seats.maxMembers) * 100, 100) : 0}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-text-muted">
+                    {seats.maxMembers - seats.totalMembers} boş slot · {seats.teamsCount} takım
+                  </p>
+                </>
+              )}
             </CardContent>
           </Card>
         )}
