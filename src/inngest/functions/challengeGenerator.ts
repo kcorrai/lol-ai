@@ -3,9 +3,9 @@ import { prisma } from "@/lib/db/prisma";
 import { generateDailyChallenge, generateWeeklyChallenge } from "@/domains/analysis/services/challengeService";
 import { logger } from "@/lib/utils/logger";
 
-// Fires every day at 08:00 UTC — generates a daily challenge for each active user.
+// Fires every day at 00:00 UTC — generates a daily challenge for each active user.
 export const dailyChallengeGenerator = inngest.createFunction(
-  { id: "daily-challenge-generator", triggers: [{ cron: "0 8 * * *" }], retries: 1 },
+  { id: "daily-challenge-generator", triggers: [{ cron: "0 0 * * *" }], retries: 1 },
   async () => {
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const users = await prisma.user.findMany({
@@ -30,9 +30,9 @@ export const dailyChallengeGenerator = inngest.createFunction(
   }
 );
 
-// Fires every Monday at 08:00 UTC — generates a weekly challenge for Pro/Elite users.
+// Fires every Monday at 00:00 UTC — generates a weekly challenge for Pro/Elite users.
 export const weeklyChallengeGenerator = inngest.createFunction(
-  { id: "weekly-challenge-generator", triggers: [{ cron: "0 8 * * 1" }], retries: 1 },
+  { id: "weekly-challenge-generator", triggers: [{ cron: "0 0 * * 1" }], retries: 1 },
   async () => {
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const users = await prisma.user.findMany({
