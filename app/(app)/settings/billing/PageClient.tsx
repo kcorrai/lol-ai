@@ -148,7 +148,7 @@ function BillingPageContent() {
               <div className="h-2 w-full overflow-hidden rounded-full bg-surface-3">
                 <div
                   className="h-full rounded-full bg-warning transition-all"
-                  style={{ width: `${Math.min((seats.totalMembers / seats.maxMembers) * 100, 100)}%` }}
+                  style={{ width: `${seats.maxMembers > 0 ? Math.min((seats.totalMembers / seats.maxMembers) * 100, 100) : 0}%` }}
                 />
               </div>
               <p className="text-xs text-text-muted">
