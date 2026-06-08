@@ -24,6 +24,7 @@ export default async function AdminLayout({
             <Link href="/admin/analytics" className="hover:text-text">Analytics</Link>
             <Link href="/admin/ai-cost" className="hover:text-text">AI Cost</Link>
             <Link href="/admin/audit-logs" className="hover:text-text">Audit Logs</Link>
+            <Link href="/admin/feature-flags" className="hover:text-text">Feature Flags</Link>
           </nav>
         </div>
       </header>
