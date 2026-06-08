@@ -89,7 +89,9 @@ export async function getMatchIds(
   count = 20
 ): Promise<string[]> {
   const routing = getRouting(region);
-  const url = `https://${routing}.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?count=${count}`;
+  // Riot API enforces a hard cap of 100 on the count parameter.
+  const safeCount = Math.min(count, 100);
+  const url = `https://${routing}.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?count=${safeCount}`;
   return riotClient.get<string[]>(url, {
     cacheTtl: 60,
     cacheKey: CacheKeys.matchIds(puuid, region),
