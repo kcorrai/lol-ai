@@ -5,12 +5,13 @@ import { authOptions } from "@/lib/auth/config";
 import { apiSuccess, apiError } from "@/lib/api/response";
 import { ApiError, Errors } from "@/lib/api/errors";
 import { checkRateLimit, rateLimitResponse, getIp } from "@/lib/api/rateLimit";
-import { checkIsPro } from "@/lib/auth/authorization";
+import { checkIsPro, getPlanLimits } from "@/lib/auth/authorization";
 import { prisma } from "@/lib/db/prisma";
 import { getOtpAnalysis } from "@/domains/otp";
 import { logger } from "@/lib/utils/logger";
 
 const OTP_LIMIT = { limit: 10, windowMs: 60_000 };
+const DAILY_WINDOW_MS = 24 * 60 * 60 * 1000;
 
 const querySchema = z.object({
   champion: z.string().min(1),
@@ -45,7 +46,22 @@ export async function GET(request: NextRequest) {
     let result = await getOtpAnalysis(dbChampion.name, role);
 
     const session = await getServerSession(authOptions);
-    const isPro = session?.user?.id ? await checkIsPro(session.user.id) : false;
+    const userId = session?.user?.id;
+
+    if (userId) {
+      const limits = await getPlanLimits(userId);
+      if (limits.otpAnalysisPerDay !== -1) {
+        const dailyCheck = await checkRateLimit(
+          `otp-daily:${userId}`,
+          { limit: limits.otpAnalysisPerDay, windowMs: DAILY_WINDOW_MS }
+        );
+        if (!dailyCheck.allowed) {
+          return rateLimitResponse(dailyCheck.retryAfterMs, dailyCheck.limit);
+        }
+      }
+    }
+
+    const isPro = userId ? await checkIsPro(userId) : false;
 
     if (!isPro) {
       result = { ...result, hiddenMechanics: result.hiddenMechanics.slice(0, 2) };
