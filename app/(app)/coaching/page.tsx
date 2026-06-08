@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Gamepad2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { UpgradeModal } from "@/components/ui/UpgradeModal";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { CoachingActionsCard } from "@/domains/coaching/components/CoachingActionsCard";
@@ -12,6 +14,7 @@ import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 import { useCoachingReports } from "@/hooks/useCoachingReports";
 import { useGenerateReport } from "@/hooks/useGenerateReport";
+import { FetchError } from "@/lib/api/fetcher";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -21,7 +24,14 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
+const UPGRADE_ERROR_CODES = new Set([
+  "REPORT_LIMIT_REACHED",
+  "DAILY_REPORT_LIMIT_REACHED",
+  "PRO_REQUIRED",
+]);
+
 export default function CoachingPage() {
+  const [upgradeReason, setUpgradeReason] = useState<string | null>(null);
   const { data: accounts, isLoading: accountsLoading } = useRiotAccounts();
   const primaryId = accounts?.[0]?.id ?? null;
   const { data: profile, isLoading: profileLoading } = usePerformanceProfile(primaryId);
@@ -32,7 +42,13 @@ export default function CoachingPage() {
     isFetchingNextPage,
     fetchNextPage,
   } = useCoachingReports(primaryId ?? undefined);
-  const generateReport = useGenerateReport();
+  const generateReport = useGenerateReport({
+    onError: (err) => {
+      if (err instanceof FetchError && UPGRADE_ERROR_CODES.has(err.errorCode ?? "")) {
+        setUpgradeReason(err.errorCode ?? "PRO_REQUIRED");
+      }
+    },
+  });
 
   function handleSessionReview() {
     if (!primaryId || !profile) return;
@@ -65,8 +81,18 @@ export default function CoachingPage() {
     );
   }
 
+  const showGenericError =
+    generateReport.isError &&
+    !(generateReport.error instanceof FetchError && UPGRADE_ERROR_CODES.has(generateReport.error.errorCode ?? ""));
+
   return (
     <div className="mx-auto max-w-4xl space-y-8 p-6">
+      <UpgradeModal
+        open={upgradeReason !== null}
+        onClose={() => setUpgradeReason(null)}
+        reason={upgradeReason ?? undefined}
+      />
+
       <PageHeader
         title="AI Koç Raporları"
         subtitle="Son maçlarını analiz et, kişisel gelişim önerileri al."
@@ -80,7 +106,7 @@ export default function CoachingPage() {
           isPending={generateReport.isPending}
           isDisabled={!profile || profileLoading}
         />
-        {generateReport.isError && (
+        {showGenericError && (
           <p className="mt-2 text-xs text-danger">{generateReport.error.message}</p>
         )}
       </section>

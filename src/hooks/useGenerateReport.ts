@@ -15,7 +15,11 @@ interface GenerateReportResult {
   status: string;
 }
 
-export function useGenerateReport() {
+interface UseGenerateReportOptions {
+  onError?: (err: Error) => void;
+}
+
+export function useGenerateReport(options?: UseGenerateReportOptions) {
   const queryClient = useQueryClient();
 
   return useMutation<GenerateReportResult, Error, GenerateReportParams>({
@@ -29,5 +33,6 @@ export function useGenerateReport() {
         queryKey: ["coaching-reports", variables.riotAccountId],
       });
     },
+    onError: options?.onError,
   });
 }
