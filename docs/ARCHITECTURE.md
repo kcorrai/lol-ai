@@ -47,7 +47,7 @@ The system is designed around three core principles:
                           │
 ┌─────────────────────────▼───────────────────────────────────────┐
 │                   EXTERNAL INTEGRATIONS                         │
-│       Riot Games API │ OpenAI API │ Anthropic API │ Stripe       │
+│   Riot Games API │ OpenAI API │ Anthropic API │ LemonSqueezy  │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -113,7 +113,7 @@ Services contain all business logic. They are plain TypeScript classes/functions
 | `CoachingService` | Orchestrates AI pipeline, generates coaching reports |
 | `ChampionService` | Champion pool management, role analysis |
 | `UserService` | User profile, preferences, account management |
-| `SubscriptionService` | Stripe integration, plan management, access gating |
+| `SubscriptionService` | LemonSqueezy integration, plan management, access gating |
 | `NotificationService` | In-app and email notifications |
 
 ### 4.3 Data Access Layer (Prisma)

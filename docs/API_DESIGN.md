@@ -635,27 +635,29 @@ Get current user's subscription status.
 
 ### `POST /api/subscription/checkout`
 
-Create Stripe Checkout session.
+Create LemonSqueezy Checkout session.
 
 **Request:** `{ "plan": "pro", "interval": "monthly" }`
 
-**Response 200:** `{ "data": { "checkoutUrl": "https://checkout.stripe.com/..." } }`
+**Response 200:** `{ "data": { "checkoutUrl": "https://checkout.lemonsqueezy.com/..." } }`
 
 ---
 
 ### `POST /api/subscription/portal`
 
-Create Stripe Customer Portal session (manage billing).
+Redirect to LemonSqueezy customer portal (manage billing, cancel).
 
-**Response 200:** `{ "data": { "portalUrl": "https://billing.stripe.com/..." } }`
+**Response 200:** `{ "data": { "portalUrl": "https://app.lemonsqueezy.com/my-orders/..." } }`
 
 ---
 
-### `POST /api/webhooks/stripe`
+### `POST /api/webhooks/lemonsqueezy`
 
-Stripe webhook handler. Receives subscription lifecycle events.
+LemonSqueezy webhook handler. Receives subscription lifecycle events.
 
-**Note:** Validates `stripe-signature` header. Not authenticated by session.
+**Note:** Validates `X-Signature` header with HMAC-SHA256. Not authenticated by session.
+Events handled: `subscription_created`, `subscription_updated`, `subscription_cancelled`,
+`subscription_expired`, `subscription_resumed`, `subscription_payment_failed`.
 
 ---
 

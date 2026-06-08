@@ -110,10 +110,12 @@ Payment and plan state.
 |---|---|---|---|
 | `id` | `uuid` | PK | |
 | `user_id` | `uuid` | FK → users.id, UNIQUE, NOT NULL | |
-| `stripe_customer_id` | `text` | UNIQUE, NULLABLE | |
-| `stripe_subscription_id` | `text` | UNIQUE, NULLABLE | |
-| `plan` | `varchar(20)` | NOT NULL, DEFAULT `'free'` | `free`, `pro`, `elite` |
-| `status` | `varchar(20)` | NOT NULL, DEFAULT `'active'` | `active`, `canceled`, `past_due`, `trialing` |
+| `ls_customer_id` | `text` | UNIQUE, NULLABLE | LemonSqueezy customer ID |
+| `ls_subscription_id` | `text` | UNIQUE, NULLABLE | LemonSqueezy subscription ID |
+| `stripe_customer_id` | `text` | UNIQUE, NULLABLE | Retained for historical rows only |
+| `stripe_subscription_id` | `text` | UNIQUE, NULLABLE | Retained for historical rows only |
+| `plan` | `varchar(20)` | NOT NULL, DEFAULT `'free'` | `free`, `pro`, `team` |
+| `status` | `varchar(20)` | NOT NULL, DEFAULT `'active'` | `active`, `canceled`, `past_due`, `trialing`, `expired` |
 | `current_period_start` | `timestamptz` | NULLABLE | |
 | `current_period_end` | `timestamptz` | NULLABLE | |
 | `cancel_at_period_end` | `boolean` | DEFAULT false | |
@@ -122,7 +124,7 @@ Payment and plan state.
 
 **Indexes:**
 - `INDEX (user_id)`
-- `INDEX (stripe_customer_id)`
+- `INDEX (ls_customer_id)`
 
 ---
 

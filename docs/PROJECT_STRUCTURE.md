@@ -91,7 +91,7 @@ app/
     ├── analysis/
     │   └── route.ts
     └── webhooks/
-        └── stripe/route.ts
+        └── lemonsqueezy/route.ts
 ```
 
 ---
@@ -294,8 +294,8 @@ src/lib/
 ├── riot/
 │   └── rateLimit.ts            → Riot API rate limiter
 │
-├── stripe/
-│   └── client.ts               → Stripe client
+├── lemonsqueezy/
+│   └── client.ts               → LemonSqueezy client (active payment provider)
 │
 └── utils/
     ├── formatters.ts           → Date, number, rank formatters
