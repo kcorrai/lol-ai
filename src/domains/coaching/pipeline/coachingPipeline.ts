@@ -6,6 +6,7 @@ import { getAiClient } from "@/lib/ai/client";
 import { parseCoachingResponse } from "@/lib/ai/responseParser";
 import { buildCoachingInput } from "@/domains/coaching/pipeline/dataPreparator";
 import { buildPrompt } from "@/domains/coaching/pipeline/promptBuilder";
+import { capture } from "@/lib/analytics/posthog";
 import type { ReportType } from "@prisma/client";
 
 function hashPrompt(systemPrompt: string, userMessage: string): string {
@@ -98,6 +99,21 @@ export async function runCoachingPipeline(
     });
 
     logger.info("Coaching pipeline complete", { reportId, cacheHit, totalTokens, latencyMs });
+
+    const reportRow = await prisma.coachingReport.findUnique({
+      where: { id: reportId },
+      select: { riotAccount: { select: { userId: true } } },
+    });
+    if (reportRow?.riotAccount.userId) {
+      capture(reportRow.riotAccount.userId, "report_generated", {
+        reportId,
+        reportType,
+        cacheHit,
+        totalTokens,
+        latencyMs,
+        model,
+      }).catch(() => undefined);
+    }
   } catch (error) {
     logger.error("Coaching pipeline failed", { reportId, error });
     Sentry.captureException(error, { extra: { reportId } });

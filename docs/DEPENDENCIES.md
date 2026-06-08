@@ -6,6 +6,20 @@ This document records every production and development dependency added after th
 
 ## Production Dependencies
 
+### `posthog-js` + `posthog-node` (v1.x / v5.x)
+
+**Added in:** TASK-114
+**Purpose:** Product analytics — custom event tracking (report_generated, upgrade_clicked, Riot connect), user identification, and funnel analysis. `posthog-js` powers the client-side React provider; `posthog-node` enables server-side event capture from Inngest workers and API routes.
+**Why this, not alternatives:**
+- Vercel Analytics (`@vercel/analytics`): already present but only captures page views — no custom events, no user identification, no funnels.
+- Mixpanel: higher price point; no self-host option for EU data-residency compliance.
+- Amplitude: complex SDK, event schema management overhead.
+- Segment: adds a routing layer with no benefit at this stage.
+
+**Scope:** `src/lib/analytics/` — `posthog.ts` (server client singleton) and `PostHogProvider.tsx` (client React provider). Both are opt-in: missing `NEXT_PUBLIC_POSTHOG_KEY` disables all capture silently.
+
+---
+
 ### `@react-pdf/renderer` (v4.x)
 
 **Added in:** TASK-028

@@ -44,6 +44,8 @@
     "next": "14.2.35",
     "next-auth": "^4.24.14",
     "openai": "^6.39.1",
+    "posthog-js": "^1.382.0",
+    "posthog-node": "^5.36.4",
     "prisma": "^5.22.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

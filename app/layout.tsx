@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Rajdhani } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { AuthProvider } from "@/lib/auth/provider";
+import { PostHogProvider } from "@/lib/analytics/PostHogProvider";
 import "@/styles/globals.css";
 
 const inter = Inter({
@@ -36,7 +37,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className={`${inter.variable} ${rajdhani.variable} font-sans`}>
+          <PostHogProvider>
           <AuthProvider>{children}</AuthProvider>
+        </PostHogProvider>
         <Analytics />
         </body>
     </html>
