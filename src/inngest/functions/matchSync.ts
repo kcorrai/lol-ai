@@ -2,6 +2,7 @@ import { inngest } from "@/inngest/client";
 import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
 import { syncAccount } from "@/domains/riot/services/matchSyncService";
+import { ensureProfileSlug } from "@/domains/identity/services/profileService";
 
 export interface MatchSyncPayload {
   riotAccountId: string;
@@ -18,7 +19,7 @@ export const matchSyncWorker = inngest.createFunction(
     retries: 2,
   },
   async ({ event }) => {
-    const { riotAccountId } = event.data as MatchSyncPayload;
+    const { riotAccountId, userId } = event.data as MatchSyncPayload;
 
     await prisma.riotAccount.update({
       where: { id: riotAccountId },
@@ -32,13 +33,18 @@ export const matchSyncWorker = inngest.createFunction(
     try {
       const result = await syncAccount(riotAccountId, true);
 
-      await prisma.riotAccount.update({
+      const account = await prisma.riotAccount.update({
         where: { id: riotAccountId },
         data: {
           syncStatus: "COMPLETED",
           syncCompletedAt: new Date(),
         },
+        select: { isPrimary: true, gameName: true, tagLine: true },
       });
+
+      if (account.isPrimary) {
+        ensureProfileSlug(userId, account.gameName, account.tagLine).catch(() => undefined);
+      }
 
       logger.info(`[matchSync] Sync completed for ${riotAccountId}: +${result.newMatches} matches`);
       return { status: "completed", ...result };
