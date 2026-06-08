@@ -2,6 +2,7 @@ import { createHmac, timingSafeEqual } from "crypto";
 import { createCheckout } from "@lemonsqueezy/lemonsqueezy.js";
 import { prisma } from "@/lib/db/prisma";
 import { getLsClient, getLsStoreId, getLsProVariantId, getLsProYearlyVariantId, getLsTeamVariantId } from "@/lib/lemonsqueezy/client";
+import { inngest } from "@/inngest/client";
 import { logger } from "@/lib/utils/logger";
 import type {
   LsSubscriptionAttributes,
@@ -134,7 +135,7 @@ export async function handleLsSubscriptionUpdated(
 
   const existing = await prisma.subscription.findFirst({
     where: { lsSubscriptionId: subscriptionId },
-    select: { userId: true },
+    select: { userId: true, plan: true },
   });
 
   if (!existing) {
@@ -150,18 +151,43 @@ export async function handleLsSubscriptionUpdated(
   }
 
   await upsertSubscription(existing.userId, subscriptionId, attrs);
+
+  // When a team plan subscription expires, notify the owner
+  if (existing.plan === "team" && attrs.status === "expired") {
+    await inngest.send({
+      name: "team/subscription.expired",
+      data: { userId: existing.userId },
+    }).catch(() => { /* non-critical */ });
+  }
 }
 
 export async function handleLsSubscriptionCancelled(
   payload: LsWebhookPayload
 ): Promise<void> {
   const subscriptionId = payload.data.id;
+  const attrs = payload.data.attributes;
+
+  const existing = await prisma.subscription.findFirst({
+    where: { lsSubscriptionId: subscriptionId },
+    select: { userId: true, plan: true },
+  });
 
   // Mark as pending cancellation — stays active until period end
   await prisma.subscription.updateMany({
     where: { lsSubscriptionId: subscriptionId },
     data: { cancelAtPeriodEnd: true, status: "active" },
   });
+
+  // Notify team plan owners so they can warn their members
+  if (existing?.plan === "team") {
+    await inngest.send({
+      name: "team/subscription.cancelled",
+      data: {
+        userId: existing.userId,
+        periodEndDate: attrs.renews_at ?? attrs.ends_at ?? undefined,
+      },
+    }).catch(() => { /* non-critical */ });
+  }
 }
 
 // ── Payment failed handler ───────────────────────────────────────────────────
