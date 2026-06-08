@@ -24,11 +24,59 @@ const POSITION_LABELS: Record<string, string> = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { region, gameName, tagLine } = params;
-  const name = `${decodeURIComponent(gameName)}#${decodeURIComponent(tagLine)}`;
+  const decodedName = decodeURIComponent(gameName);
+  const decodedTag = decodeURIComponent(tagLine);
+  const name = `${decodedName}#${decodedTag}`;
   const server = region.toUpperCase();
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
+  const pageUrl = `${appUrl}/s/${region}/${gameName}/${tagLine}`;
+
+  // Fetch data for rich OG tags (best-effort)
+  const result = await fetchPublicSummonerData(decodedName, decodedTag, region.toLowerCase());
+  const data = result.ok ? result.data : null;
+  const rank = data?.rank;
+  const topChamp = data?.topChampions[0];
+  const totalGames = rank ? rank.wins + rank.losses : 0;
+  const wr = totalGames > 0 ? Math.round((rank!.wins / totalGames) * 100) : null;
+
+  const rankStr = rank
+    ? `${rank.tier.charAt(0)}${rank.tier.slice(1).toLowerCase()} ${rank.division} · ${rank.lp} LP`
+    : "Unranked";
+  const description = `${name} League of Legends istatistikleri (${server}). ${rankStr}${wr !== null ? ` · %${wr} WR` : ""}${topChamp ? ` · En çok: ${topChamp.championName}` : ""}. AI koç analizi al.`;
+
+  const ogParams = new URLSearchParams({
+    name,
+    region: server,
+    rank: rankStr,
+    ...(wr !== null ? { wr: String(wr) } : {}),
+    ...(topChamp ? { champ: topChamp.championName } : {}),
+    ...(rank ? { tier: rank.tier } : {}),
+  });
+  const ogImageUrl = `${appUrl}/api/og/summoner?${ogParams.toString()}`;
+
   return {
-    title: `${name} ${server} — LoL Stats & AI Koç`,
-    description: `${name} League of Legends istatistikleri (${server}). Rank, kazanma oranı, şampiyon performansı ve AI koç analizi.`,
+    title: `${name} ${server} — LoL İstatistikleri & AI Koç`,
+    description,
+    keywords: [
+      name, decodedName, server, "League of Legends", "LoL stats",
+      "LoL istatistik", "rank", "AI koç", "coaching",
+      ...(topChamp ? [topChamp.championName] : []),
+    ],
+    alternates: { canonical: pageUrl },
+    openGraph: {
+      type: "profile",
+      url: pageUrl,
+      title: `${name} — ${rankStr} · LoL AI Coach`,
+      description,
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: `${name} LoL istatistikleri` }],
+      siteName: "LoL AI Coach",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${name} — ${rankStr}`,
+      description,
+      images: [ogImageUrl],
+    },
   };
 }
 
@@ -62,8 +110,27 @@ export default async function SummonerPage({ params }: Props) {
     ? `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${normalizeChampionKey(featuredChamp)}_0.jpg`
     : null;
 
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    name: `${summoner.gameName}#${summoner.tagLine} — LoL Stats`,
+    url: `${appUrl}/s/${region}/${params.gameName}/${params.tagLine}`,
+    mainEntity: {
+      "@type": "Person",
+      name: `${summoner.gameName}#${summoner.tagLine}`,
+      description: rank
+        ? `League of Legends oyuncusu. ${rank.tier} ${rank.division} · ${rank.lp} LP`
+        : "League of Legends oyuncusu.",
+    },
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Brand bar */}
       <div className="border-b border-white/5 px-6 py-3">
         <Link href="/" className="font-display text-base font-bold text-accent hover:opacity-80">
