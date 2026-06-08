@@ -1,7 +1,7 @@
 ﻿# TASK-132 — GDPR Data Export Kalitesi
 
 **Phase:** 4
-**Status:** Done
+**Status:** Done (implemented)
 **Priority:** P2
 **Puan:** 66/100
 

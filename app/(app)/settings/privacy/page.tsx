@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useProfileSettings, useUpdateProfileSettings } from "@/hooks/useProfileSettings";
-import { Copy, Check, ExternalLink } from "lucide-react";
+import { Copy, Check, ExternalLink, Download, Trash2 } from "lucide-react";
 
 interface ToggleRowProps {
   label: string;
@@ -43,6 +43,9 @@ export default function PrivacySettingsPage() {
   const { data, isLoading } = useProfileSettings();
   const { mutate, isPending } = useUpdateProfileSettings();
   const [copied, setCopied] = useState(false);
+  const [exportState, setExportState] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [deleteStep, setDeleteStep] = useState<"idle" | "confirm">("idle");
+  const [deleteState, setDeleteState] = useState<"idle" | "loading" | "done" | "error">("idle");
 
   const [local, setLocal] = useState({
     profilePublic: true,
@@ -77,6 +80,29 @@ export default function PrivacySettingsPage() {
     await navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  }
+
+  async function requestExport() {
+    setExportState("loading");
+    try {
+      const res = await fetch("/api/account/export", { method: "POST" });
+      if (!res.ok) throw new Error("export_failed");
+      setExportState("done");
+    } catch {
+      setExportState("error");
+    }
+  }
+
+  async function requestDeletion() {
+    setDeleteState("loading");
+    try {
+      const res = await fetch("/api/account", { method: "DELETE" });
+      if (!res.ok) throw new Error("deletion_failed");
+      setDeleteState("done");
+      setDeleteStep("idle");
+    } catch {
+      setDeleteState("error");
+    }
   }
 
   if (isLoading) return <div className="animate-pulse p-6" />;
@@ -152,6 +178,85 @@ export default function PrivacySettingsPage() {
           onChange={() => toggle("showChampions")}
           disabled={!local.profilePublic || isPending}
         />
+      </div>
+
+      <div className="rounded-xl border border-border bg-surface p-5 space-y-3">
+        <div>
+          <h2 className="text-sm font-semibold text-text">Verilerimi İndir</h2>
+          <p className="mt-1 text-xs text-text-muted">
+            GDPR kapsamında tüm verilerinin bir kopyasını talep edebilirsin. Veriler ZIP dosyası olarak
+            e-posta adresine birkaç dakika içinde gönderilir.
+          </p>
+        </div>
+
+        {exportState === "done" ? (
+          <p className="rounded-lg bg-green-500/10 px-4 py-2.5 text-sm text-green-400">
+            Talep alındı — verilerini içeren ZIP e-posta adresine gönderilecek.
+          </p>
+        ) : exportState === "error" ? (
+          <p className="rounded-lg bg-red-500/10 px-4 py-2.5 text-sm text-red-400">
+            Bir hata oluştu. Lütfen tekrar dene.
+          </p>
+        ) : (
+          <button
+            onClick={requestExport}
+            disabled={exportState === "loading"}
+            className="flex items-center gap-2 rounded-lg bg-surface-2 px-4 py-2.5 text-sm font-semibold text-text transition-colors hover:bg-accent hover:text-background disabled:opacity-50"
+          >
+            <Download className="h-4 w-4" />
+            {exportState === "loading" ? "İşleniyor…" : "Verilerimi İndir"}
+          </button>
+        )}
+      </div>
+
+      <div className="rounded-xl border border-red-500/20 bg-surface p-5 space-y-3">
+        <div>
+          <h2 className="text-sm font-semibold text-red-400">Hesabımı Sil</h2>
+          <p className="mt-1 text-xs text-text-muted">
+            Hesabını silmek istersen, tüm verilerinin kalıcı olarak silineceğini unutma.
+            Silme işlemi 30 gün sonra gerçekleşir — bu süre içinde vazgeçebilirsin.
+          </p>
+        </div>
+
+        {deleteState === "done" ? (
+          <p className="rounded-lg bg-red-500/10 px-4 py-2.5 text-sm text-red-400">
+            Silme talebin alındı. Hesabın 30 gün içinde silinecek.
+          </p>
+        ) : deleteState === "error" ? (
+          <p className="rounded-lg bg-red-500/10 px-4 py-2.5 text-sm text-red-400">
+            Bir hata oluştu. Lütfen tekrar dene.
+          </p>
+        ) : deleteStep === "confirm" ? (
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-red-400">
+              Emin misin? Bu işlem geri alınamaz.
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={requestDeletion}
+                disabled={deleteState === "loading"}
+                className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700 disabled:opacity-50"
+              >
+                <Trash2 className="h-4 w-4" />
+                {deleteState === "loading" ? "İşleniyor…" : "Evet, hesabımı sil"}
+              </button>
+              <button
+                onClick={() => setDeleteStep("idle")}
+                className="rounded-lg bg-surface-2 px-4 py-2.5 text-sm font-semibold text-text transition-colors hover:bg-accent hover:text-background"
+              >
+                Vazgeç
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => setDeleteStep("confirm")}
+            className="flex items-center gap-2 rounded-lg border border-red-500/30 px-4 py-2.5 text-sm font-semibold text-red-400 transition-colors hover:bg-red-500/10"
+          >
+            <Trash2 className="h-4 w-4" />
+            Hesabımı Sil
+          </button>
+        )}
       </div>
     </div>
   );

@@ -72,6 +72,20 @@ This document records every production and development dependency added after th
 
 ---
 
+### `fflate` (transitive, v0.8.x)
+
+**Added in:** TASK-132
+**Purpose:** ZIP archive creation for GDPR data export. The `gdprExport` Inngest function uses `zipSync` and `strToU8` to bundle multiple JSON files (profile, matches, reports, achievements, plans, audit log) into a single ZIP buffer attached to an email.
+**Why this, not alternatives:**
+- `jszip`: would require a new direct dependency install; fflate is already present as a transitive dependency of other packages.
+- `archiver`/`adm-zip`: server-only packages that require a new direct install.
+- Raw ZIP construction: building the ZIP binary format by hand is error-prone and not worth the lines.
+- JSON tar: the task spec requires ZIP format.
+
+**Scope:** Used exclusively in `src/inngest/functions/gdprExport.ts`. Import path: `fflate`.
+
+---
+
 ## Development Dependencies
 
 ### `vitest` (v4.x)
