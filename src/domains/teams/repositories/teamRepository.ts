@@ -92,3 +92,17 @@ export async function markInviteUsed(inviteId: string) {
     data: { usedAt: new Date() },
   });
 }
+
+export async function findPendingInvites(teamId: string) {
+  return prisma.teamInvite.findMany({
+    where: { teamId, usedAt: null, expiresAt: { gt: new Date() } },
+    orderBy: { createdAt: "desc" },
+    select: { id: true, email: true, role: true, expiresAt: true, createdAt: true },
+  });
+}
+
+export async function deleteInvite(inviteId: string, teamId: string) {
+  return prisma.teamInvite.deleteMany({
+    where: { id: inviteId, teamId },
+  });
+}

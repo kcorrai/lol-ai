@@ -4,8 +4,8 @@ import { prisma } from "@/lib/db/prisma";
 import { Errors } from "@/lib/api/errors";
 import { logger } from "@/lib/utils/logger";
 import * as repo from "@/domains/teams/repositories/teamRepository";
-import { assertCoachAccess, assertTeamPlan } from "@/domains/teams/services/teamService";
-import type { InviteMemberInput } from "@/domains/teams/types/teams.types";
+import { assertCoachAccess, assertOwnerAccess, assertTeamPlan } from "@/domains/teams/services/teamService";
+import type { InviteMemberInput, PendingInvite } from "@/domains/teams/types/teams.types";
 
 const INVITE_TTL_HOURS = 48;
 const MAX_MEMBERS = 5;
@@ -91,4 +91,30 @@ export async function acceptInvite(
   });
 
   return { teamId: invite.teamId, teamName: invite.team.name };
+}
+
+export async function getPendingInvites(
+  teamId: string,
+  userId: string
+): Promise<PendingInvite[]> {
+  await assertCoachAccess(teamId, userId);
+  const invites = await repo.findPendingInvites(teamId);
+  return invites.map((i) => ({
+    id: i.id,
+    email: i.email,
+    role: i.role,
+    expiresAt: i.expiresAt.toISOString(),
+    createdAt: i.createdAt.toISOString(),
+  }));
+}
+
+export async function cancelInvite(
+  teamId: string,
+  inviteId: string,
+  userId: string
+): Promise<void> {
+  await assertOwnerAccess(teamId, userId);
+  const { count } = await repo.deleteInvite(inviteId, teamId);
+  if (count === 0) throw Errors.notFound("Invite");
+  logger.info("[teamInviteService] invite cancelled", { teamId, inviteId, userId });
 }
