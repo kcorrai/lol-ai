@@ -29,6 +29,8 @@ interface UseGenerateReportOptions {
 interface UseGenerateReportReturn {
   mutate: (params: GenerateReportParams) => void;
   isPending: boolean;
+  isError: boolean;
+  error: Error | null;
   rateLimit: RateLimitInfo | null;
   retryAfterSeconds: number | null;
 }
@@ -83,6 +85,8 @@ export function useGenerateReport(options?: UseGenerateReportOptions): UseGenera
   return {
     mutate: mutation.mutate,
     isPending: mutation.isPending,
+    isError: mutation.isError,
+    error: mutation.error,
     rateLimit,
     retryAfterSeconds,
   };
