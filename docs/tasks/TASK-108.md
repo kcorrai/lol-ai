@@ -1,20 +1,16 @@
-# TASK-108: Team Dashboard Geliştirme
+﻿# TASK-108 — Middleware Güvenlik Açığı: Korumasız Sayfalar
 
-## Status: TODO
+**Phase:** 4
+**Status:** Done
+**Priority:** P0
+**Puan:** 98/100
 
-## Amaç
-Team dashboard'u gerçek anlamda kullanışlı hale getir. Şu an sadece üye listesi + temel rank var.
+## Objective
 
-## Yapılacaklar
-- [ ] Her üyenin en çok oynadığı şampiyonun ikonunu göster
-- [ ] Takım genel KO ortalamasını hero'da göster
-- [ ] Her üye kartında rol badge (OWNER/COACH/PLAYER)
-- [ ] 7-günlük W/L trend göstergesi (↑↓)
-- [ ] Boş durum tasarımı (henüz üye yok)
-- [ ] getTeamDashboard'a topChampion verisi ekle
+middleware.ts yalnızca bir kısım path'i koruyor. (app) route grubundaki /improvement, /milestone, /leaderboard, /teams, /achievements, /recap, /otp, /draft, /matchup, /counter, /analysis, /onboarding, /champion-pool sayfaları korumasız kalıyor. Oturumsuz kullanıcılar bu sayfalara girdiğinde server component null session ile hata fırlatır.
 
-## Etkilenen Dosyalar
-- `app/(app)/teams/[teamId]/page.tsx`
-- `src/domains/teams/components/TeamDashboard.tsx`
-- `src/domains/teams/services/teamService.ts`
-- `app/api/teams/[teamId]/dashboard/route.ts`
+## Acceptance Criteria
+
+- Tüm (app) sayfaları middleware matcher'da tanımlı
+- Oturumsuz kullanıcı eksik sayfalara gittiginde /login?callbackUrl=... yönlendirmesi alır
+- Mevcut korumalı sayfalar bozulmaz
