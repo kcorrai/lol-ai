@@ -72,6 +72,20 @@ This document records every production and development dependency added after th
 
 ---
 
+### `otplib` (v12.x) + `qrcode` + `@types/qrcode`
+
+**Added in:** TASK-136
+**Purpose:** TOTP 2FA implementation. `otplib` generates TOTP secrets, verifies time-based tokens, and generates `otpauth://` URIs. `qrcode` converts the URI to a PNG data URL for display in the browser. `bcryptjs` (already present) hashes the 8 backup codes.
+**Why this, not alternatives:**
+- `speakeasy`: unmaintained, last released 2017, known security issues.
+- `@otplib/preset-default`: older API — `otplib` v12 uses direct exports (`generateSecret`, `verifySync`).
+- Manual HMAC-SHA1: correct but adds ~100 lines of crypto code when a maintained library is available.
+- Google Authenticator API: requires an external call; TOTP is a local operation.
+
+**Scope:** `src/lib/auth/totpService.ts`, `app/api/auth/2fa/` routes.
+
+---
+
 ### `web-push` + `@types/web-push` (v3.x)
 
 **Added in:** TASK-135

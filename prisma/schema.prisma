@@ -122,6 +122,10 @@ model User {
   proTrialEndsAt   DateTime?
   emailOptOut      Boolean   @default(false)
 
+  totpEnabled      Boolean   @default(false)
+  totpSecret       String?   // AES-encrypted TOTP secret
+  totpBackupCodes  String[]  // bcrypt-hashed backup codes
+
   accounts         Account[]
   sessions         Session[]
   profile          Profile?
