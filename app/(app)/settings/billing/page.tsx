@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,7 @@ import { useCreateTeamCheckout } from "@/hooks/useCreateTeamCheckout";
 import { useTeamSeats } from "@/hooks/useTeamSeats";
 import { useSearchParams } from "next/navigation";
 import { Users } from "lucide-react";
+import { CancelRetentionModal } from "@/domains/billing/components/CancelRetentionModal";
 
 const FREE_FEATURES = [
   "Ayda 3 AI koçluk raporu",
@@ -44,12 +45,15 @@ const TEAM_FEATURES = [
   "Toplu üye analizi",
 ];
 
+const LS_PORTAL_URL = "https://app.lemonsqueezy.com/my-orders";
+
 function BillingPageContent() {
   const { data: sub, isLoading } = useSubscription();
   const searchParams = useSearchParams();
   const period = searchParams.get("period") === "annual" ? "annual" : "monthly";
   const checkout = useCreateCheckout(period);
   const teamCheckout = useCreateTeamCheckout();
+  const [showRetentionModal, setShowRetentionModal] = useState(false);
 
   const isPro = sub?.plan === "pro" || sub?.plan === "elite" || sub?.plan === "team";
   const isTeam = sub?.plan === "team";
@@ -241,17 +245,37 @@ function BillingPageContent() {
         {isUpgraded && (
           <div className="rounded-lg border border-border bg-surface-2 p-4 text-center">
             <p className="text-sm text-text-muted">
-              Aboneliğini yönetmek veya iptal etmek için faturalandırma portalını ziyaret et.
+              Aboneliğini yönetmek için faturalandırma portalını ziyaret et.
             </p>
-            <Link
-              href="https://app.lemonsqueezy.com/my-orders"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-2 inline-block text-sm text-accent underline underline-offset-2 hover:opacity-80"
-            >
-              Aboneliği Yönet →
-            </Link>
+            <div className="mt-2 flex flex-col items-center gap-1">
+              <Link
+                href={LS_PORTAL_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-accent underline underline-offset-2 hover:opacity-80"
+              >
+                Fatura Geçmişi & Yönetim →
+              </Link>
+              {!sub?.cancelAtPeriodEnd && (
+                <button
+                  onClick={() => setShowRetentionModal(true)}
+                  className="text-xs text-text-muted hover:text-danger transition-colors"
+                >
+                  Aboneliği iptal et
+                </button>
+              )}
+            </div>
           </div>
+        )}
+
+        {showRetentionModal && (
+          <CancelRetentionModal
+            onClose={() => setShowRetentionModal(false)}
+            onCancelAnyway={() => {
+              setShowRetentionModal(false);
+              window.open(LS_PORTAL_URL, "_blank", "noopener,noreferrer");
+            }}
+          />
         )}
 
         <p className="text-center text-xs text-text-muted">
