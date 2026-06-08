@@ -121,7 +121,7 @@ export default function CoachingPage() {
           isDisabled={!profile || profileLoading}
         />
         {showGenericError && (
-          <p className="mt-2 text-xs text-danger">{generateReport.error.message}</p>
+          <p className="mt-2 text-xs text-danger">{generateReport.error?.message}</p>
         )}
       </section>
 
