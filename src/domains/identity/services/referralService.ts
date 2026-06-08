@@ -1,7 +1,9 @@
 import { prisma } from "@/lib/db/prisma";
+import { inngest } from "@/inngest/client";
 import { logger } from "@/lib/utils/logger";
 
 const TRIAL_DAYS = 7;
+const MAX_REFERRAL_REWARDS = 8; // hard cap: 8 weeks free Pro per referrer (abuse prevention)
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const CODE_LENGTH = 8;
 
@@ -17,6 +19,8 @@ export interface ReferralStats {
   code: string;
   totalInvited: number;
   totalCompleted: number;
+  weeksEarned: number;
+  maxWeeks: number;
 }
 
 export async function getOrCreateReferralCode(userId: string): Promise<string> {
@@ -59,6 +63,8 @@ export async function applyReferralCode(code: string, newUserId: string): Promis
 
 // Called when a referred user connects their first Riot account.
 // Awards 7-day Pro trial to both parties if not already rewarded.
+// Fires referral.converted Inngest event so the reward worker can
+// additionally extend the referrer's trial and notify them.
 export async function completeReferral(refereeId: string): Promise<void> {
   const referral = await prisma.referral.findUnique({
     where: { refereeId },
@@ -67,6 +73,12 @@ export async function completeReferral(refereeId: string): Promise<void> {
 
   if (!referral || referral.status !== "pending") return;
 
+  // Enforce max reward cap for referrer
+  const rewardedCount = await prisma.referral.count({
+    where: { referrerId: referral.referrerId, status: "rewarded" },
+  });
+  const referrerCapped = rewardedCount >= MAX_REFERRAL_REWARDS;
+
   const trialEndsAt = new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000);
 
   await prisma.$transaction([
@@ -74,17 +86,35 @@ export async function completeReferral(refereeId: string): Promise<void> {
       where: { id: referral.id },
       data: { status: "rewarded", completedAt: new Date() },
     }),
-    prisma.user.update({
-      where: { id: referral.referrerId },
-      data: { proTrialEndsAt: trialEndsAt },
-    }),
+    // Referee always gets trial
     prisma.user.update({
       where: { id: refereeId },
       data: { proTrialEndsAt: trialEndsAt },
     }),
+    // Referrer only gets trial if below cap
+    ...(referrerCapped
+      ? []
+      : [
+          prisma.user.update({
+            where: { id: referral.referrerId },
+            data: { proTrialEndsAt: trialEndsAt },
+          }),
+        ]),
   ]);
 
-  logger.info("[referral] completed", { refereeId, referrerId: referral.referrerId, trialEndsAt });
+  if (!referrerCapped) {
+    await inngest.send({
+      name: "referral/converted",
+      data: { referrerId: referral.referrerId, refereeId, referralId: referral.id },
+    });
+  }
+
+  logger.info("[referral] completed", {
+    refereeId,
+    referrerId: referral.referrerId,
+    trialEndsAt,
+    referrerCapped,
+  });
 }
 
 export async function getReferralStats(userId: string): Promise<ReferralStats> {
@@ -96,6 +126,7 @@ export async function getReferralStats(userId: string): Promise<ReferralStats> {
   const code = referrals[0]?.code ?? await getOrCreateReferralCode(userId);
   const totalInvited = referrals.filter((r) => r.refereeId !== null).length;
   const totalCompleted = referrals.filter((r) => r.status === "rewarded").length;
+  const weeksEarned = Math.min(totalCompleted, MAX_REFERRAL_REWARDS);
 
-  return { code, totalInvited, totalCompleted };
+  return { code, totalInvited, totalCompleted, weeksEarned, maxWeeks: MAX_REFERRAL_REWARDS };
 }

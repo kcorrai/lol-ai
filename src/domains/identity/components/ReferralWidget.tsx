@@ -58,16 +58,32 @@ export function ReferralWidget() {
         )}
 
         {data && (
-          <div className="flex gap-6 text-sm">
-            <div>
-              <p className="font-semibold text-text">{data.totalInvited}</p>
-              <p className="text-xs text-text-muted">Davet edildi</p>
+          <>
+            <div className="flex gap-6 text-sm">
+              <div>
+                <p className="font-semibold text-text">{data.totalInvited}</p>
+                <p className="text-xs text-text-muted">Davet edildi</p>
+              </div>
+              <div>
+                <p className="font-semibold text-success">{data.weeksEarned}</p>
+                <p className="text-xs text-text-muted">Hafta kazanıldı</p>
+              </div>
             </div>
-            <div>
-              <p className="font-semibold text-success">{data.totalCompleted}</p>
-              <p className="text-xs text-text-muted">Ödül kazanıldı</p>
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between text-xs text-text-muted">
+                <span>{data.weeksEarned} / {data.maxWeeks} hafta</span>
+                {data.weeksEarned >= data.maxWeeks && (
+                  <span className="text-accent font-medium">Maksimum ödüle ulaştınız</span>
+                )}
+              </div>
+              <div className="h-1.5 w-full rounded-full bg-surface-2">
+                <div
+                  className="h-1.5 rounded-full bg-accent transition-all"
+                  style={{ width: `${Math.min((data.weeksEarned / data.maxWeeks) * 100, 100)}%` }}
+                />
+              </div>
             </div>
-          </div>
+          </>
         )}
       </CardContent>
     </Card>
