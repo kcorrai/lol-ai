@@ -1,0 +1,108 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - img [ref=e6]
+        - generic [ref=e8]: LoL AI Coach
+      - navigation [ref=e9]:
+        - paragraph [ref=e10]: Oyna
+        - link "Dashboard" [ref=e11] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e12]
+          - generic [ref=e17]: Dashboard
+        - link "Şampiyonlar" [ref=e18] [cursor=pointer]:
+          - /url: /champion-pool
+          - img [ref=e19]
+          - generic [ref=e21]: Şampiyonlar
+        - link "Raporlar" [ref=e22] [cursor=pointer]:
+          - /url: /coaching
+          - img [ref=e23]
+          - generic [ref=e26]: Raporlar
+        - link "Koç Chat" [ref=e27] [cursor=pointer]:
+          - /url: /coaching/chat
+          - img [ref=e28]
+          - generic [ref=e30]: Koç Chat
+        - link "Gelişim" [ref=e31] [cursor=pointer]:
+          - /url: /improvement
+          - img [ref=e32]
+          - generic [ref=e35]: Gelişim
+        - link "Rozetler" [ref=e36] [cursor=pointer]:
+          - /url: /achievements
+          - img [ref=e37]
+          - generic [ref=e43]: Rozetler
+        - link "Lider Tablosu" [ref=e44] [cursor=pointer]:
+          - /url: /leaderboard
+          - img [ref=e45]
+          - generic [ref=e51]: Lider Tablosu
+        - link "Milestone" [ref=e52] [cursor=pointer]:
+          - /url: /milestone
+          - img [ref=e53]
+          - generic [ref=e55]: Milestone
+        - link "Isı Haritası" [ref=e56] [cursor=pointer]:
+          - /url: /analysis
+          - img [ref=e57]
+          - generic [ref=e59]: Isı Haritası
+        - link "Sezon Recap" [ref=e60] [cursor=pointer]:
+          - /url: /recap
+          - img [ref=e61]
+          - generic [ref=e63]: Sezon Recap
+        - paragraph [ref=e64]: Araçlar
+        - link "Counter Pick" [ref=e65] [cursor=pointer]:
+          - /url: /counter
+          - img [ref=e66]
+          - generic [ref=e70]: Counter Pick
+        - link "Matchup Koçu" [ref=e71] [cursor=pointer]:
+          - /url: /matchup
+          - img [ref=e72]
+          - generic [ref=e81]: Matchup Koçu
+        - link "OTP Asistanı" [ref=e82] [cursor=pointer]:
+          - /url: /otp
+          - img [ref=e83]
+          - generic [ref=e85]: OTP Asistanı
+        - link "Draft Analizci" [ref=e86] [cursor=pointer]:
+          - /url: /draft
+          - img [ref=e87]
+          - generic [ref=e92]: Draft Analizci
+        - paragraph [ref=e93]: Ayarlar
+        - link "Hesaplar" [ref=e94] [cursor=pointer]:
+          - /url: /settings/accounts
+          - img [ref=e95]
+          - generic [ref=e97]: Hesaplar
+        - link "Fatura" [ref=e98] [cursor=pointer]:
+          - /url: /settings/billing
+          - img [ref=e99]
+          - generic [ref=e101]: Fatura
+        - link "Profil" [ref=e102] [cursor=pointer]:
+          - /url: /settings/profile
+          - img [ref=e103]
+          - generic [ref=e107]: Profil
+        - link "Gizlilik" [ref=e108] [cursor=pointer]:
+          - /url: /settings/privacy
+          - img [ref=e110]
+          - generic [ref=e113]: Gizlilik
+        - link "Discord" [ref=e114] [cursor=pointer]:
+          - /url: /settings/discord
+          - img [ref=e115]
+          - generic [ref=e118]: Discord
+      - generic [ref=e119]:
+        - generic [ref=e120]:
+          - img [ref=e121]
+          - paragraph [ref=e124]: Pro'ya Yükselt
+        - paragraph [ref=e125]: Sınırsız rapor, tüm araçlar ve öncelikli destek.
+        - link "Pro'ya Geç →" [ref=e126] [cursor=pointer]:
+          - /url: /settings/billing
+      - button "Collapse sidebar" [ref=e128] [cursor=pointer]:
+        - img [ref=e129]
+      - generic [ref=e132]:
+        - generic [ref=e133]: P
+        - paragraph [ref=e135]: Player
+        - button "Log out" [ref=e136] [cursor=pointer]:
+          - img [ref=e137]
+    - generic [ref=e140]:
+      - banner [ref=e141]:
+        - button "Notifications" [ref=e142] [cursor=pointer]:
+          - img [ref=e143]
+        - button "P" [ref=e147] [cursor=pointer]:
+          - generic [ref=e148]: P
+      - main [ref=e149]
+  - alert [ref=e151]

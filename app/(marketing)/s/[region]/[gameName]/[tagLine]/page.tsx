@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -88,15 +87,42 @@ export default async function SummonerPage({ params }: Props) {
   const result = await fetchPublicSummonerData(gameName, tagLine, region);
 
   if (!result.ok) {
-    if (result.error.code === "NOT_FOUND") notFound();
+    const displayName = `${gameName}#${tagLine}`;
+    const displayRegion = region.toUpperCase();
+
     if (result.error.code === "RATE_LIMIT") {
       return (
-        <div className="flex min-h-[40vh] items-center justify-center p-8 text-center">
-          <p className="text-text-muted">Riot API şu an meşgul. Birkaç saniye sonra tekrar dene.</p>
+        <div className="min-h-screen bg-background">
+          <div className="border-b border-white/5 px-6 py-3">
+            <Link href="/" className="font-display text-base font-bold text-accent hover:opacity-80">LoL AI Coach</Link>
+          </div>
+          <div className="flex min-h-[70vh] flex-col items-center justify-center px-6 text-center">
+            <p className="mb-2 text-5xl font-bold text-text-muted/20">⏳</p>
+            <h1 className="mb-2 text-xl font-bold text-text">Riot API şu an meşgul</h1>
+            <p className="mb-6 text-sm text-text-muted">Birkaç saniye sonra tekrar dene.</p>
+            <Link href="/" className="rounded-md bg-accent px-5 py-2 text-sm font-semibold text-background hover:opacity-90">Ana Sayfaya Dön</Link>
+          </div>
         </div>
       );
     }
-    notFound();
+
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="border-b border-white/5 px-6 py-3">
+          <Link href="/" className="font-display text-base font-bold text-accent hover:opacity-80">LoL AI Coach</Link>
+        </div>
+        <div className="flex min-h-[70vh] flex-col items-center justify-center px-6 text-center">
+          <p className="mb-3 text-5xl font-bold text-text-muted/20">🔍</p>
+          <h1 className="mb-2 text-xl font-bold text-text">{displayName} bulunamadı</h1>
+          <p className="mb-6 max-w-sm text-sm text-text-muted">
+            Bu oyuncu {displayRegion} sunucusunda mevcut değil ya da kullanıcı adı değişmiş olabilir.
+          </p>
+          <Link href="/" className="rounded-md bg-accent px-5 py-2 text-sm font-semibold text-background hover:opacity-90">
+            Ana Sayfaya Dön
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   const { summoner, rank, recentMatches, topChampions } = result.data;

@@ -79,8 +79,8 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
       ) : syncStatus?.status === "COMPLETED" ? (
         <p className="text-xs text-success">Senkronize edildi</p>
       ) : syncStatus?.status === "FAILED" ? (
-        <p className="text-xs text-danger break-all">
-          Hata: {syncStatus.lastSyncError ?? "Bilinmeyen hata"}
+        <p className="text-xs text-danger">
+          Senkronizasyon başarısız — &quot;Şimdi Senkronize Et&quot; ile tekrar dene.
         </p>
       ) : null}
       {sync.isError && sync.variables === id && (

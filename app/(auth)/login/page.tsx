@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { LoginForm } from "@/domains/identity/components/LoginForm";
 
 export const metadata: Metadata = {
-  title: "Sign in",
+  title: "Giriş Yap | LoL AI Coach",
 };
 
 export default function LoginPage() {

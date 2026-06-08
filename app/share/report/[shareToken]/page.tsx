@@ -42,9 +42,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const REPORT_TYPE_LABEL: Record<string, string> = {
-  session_review: "Session Review",
-  champion_focus: "Champion Focus",
-  climb_roadmap: "Climb Roadmap",
+  session_review: "Seans Değerlendirmesi",
+  champion_focus: "Şampiyon Odağı",
+  climb_roadmap: "Çıkış Planı",
 };
 
 export default async function ShareReportPage({ params }: Props) {
@@ -56,15 +56,15 @@ export default async function ShareReportPage({ params }: Props) {
   } catch {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6 text-center">
-        <p className="font-display text-2xl font-bold text-text">Report not found</p>
+        <p className="font-display text-2xl font-bold text-text">Rapor bulunamadı</p>
         <p className="mt-2 text-sm text-text-muted">
-          This link may have expired or been revoked.
+          Bu bağlantının süresi dolmuş ya da iptal edilmiş olabilir.
         </p>
         <Link
           href="/"
           className="mt-6 rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-background"
         >
-          Get Your Own AI Report
+          Kendi AI Raporunu Al
         </Link>
       </div>
     );
@@ -104,7 +104,7 @@ export default async function ShareReportPage({ params }: Props) {
             )}
             {report.completedAt && (
               <span className="text-xs text-text-muted">
-                Report generated {new Date(report.completedAt).toLocaleDateString()}
+                {new Date(report.completedAt).toLocaleDateString("tr-TR")} tarihinde oluşturuldu
               </span>
             )}
           </div>
@@ -121,7 +121,7 @@ export default async function ShareReportPage({ params }: Props) {
         {report.coachPersonaResponse && (
           <div className="mb-4 rounded-xl border border-accent/30 bg-accent/5 p-6">
             <p className="mb-2 text-xs font-bold uppercase tracking-widest text-accent">
-              Coach Says
+              Koç Diyor
             </p>
             <p className="text-sm italic leading-relaxed text-text">
               &ldquo;{report.coachPersonaResponse}&rdquo;
@@ -133,11 +133,11 @@ export default async function ShareReportPage({ params }: Props) {
         {report.firstActionItem && (
           <div className="mb-6 rounded-xl border border-border bg-surface p-6">
             <p className="mb-2 text-xs font-bold uppercase tracking-widest text-text-muted">
-              Top Recommendation
+              En Önemli Öneri
             </p>
             <p className="font-medium text-text">{report.firstActionItem.action}</p>
             <p className="mt-1 text-xs text-success">
-              Expected impact: {report.firstActionItem.expectedImpact}
+              Beklenen etki: {report.firstActionItem.expectedImpact}
             </p>
           </div>
         )}
@@ -145,11 +145,10 @@ export default async function ShareReportPage({ params }: Props) {
         {/* Pro gate teaser */}
         <div className="mb-8 rounded-xl border border-border bg-surface-2 p-5 text-center">
           <p className="text-sm text-text-muted">
-            Full weaknesses analysis, all action items, and champion recommendations visible in the
-            app.
+            Tam zayıflık analizi, tüm aksiyon maddeleri ve şampiyon önerileri uygulamada görünür.
           </p>
           <p className="mt-1 text-xs text-text-muted/60">
-            Free users get 3 reports/month · Pro gets unlimited
+            Ücretsiz: ayda 3 rapor · Pro: sınırsız
           </p>
         </div>
 
@@ -159,20 +158,20 @@ export default async function ShareReportPage({ params }: Props) {
             href="/register"
             className="flex-1 rounded-lg bg-accent py-3 text-center text-sm font-bold text-background transition-opacity hover:opacity-90"
           >
-            Get Your Own AI Coaching Report
+            Kendi AI Koçluk Raporunu Al
           </Link>
           <Link
             href="/"
             className="flex-1 rounded-lg border border-border py-3 text-center text-sm font-semibold text-text hover:bg-surface"
           >
-            Learn More
+            Daha Fazla Bilgi
           </Link>
         </div>
 
         {/* Share link display */}
         <div className="mt-6 text-center">
           <p className="text-xs text-text-muted">
-            Share link:{" "}
+            Paylaşım bağlantısı:{" "}
             <span className="font-mono text-text-muted/70">
               {appUrl}/share/report/{params.shareToken}
             </span>
