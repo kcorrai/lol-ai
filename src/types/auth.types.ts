@@ -1,11 +1,19 @@
 import { DefaultSession } from "next-auth";
 
-// Augment NextAuth session to expose user.id in session.user
+// Augment NextAuth session to expose user.id and emailVerified in session.user
 declare module "next-auth" {
   interface Session {
     user: {
       id: string;
+      emailVerified: Date | null;
     } & DefaultSession["user"];
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string;
+    emailVerified: Date | null;
   }
 }
 

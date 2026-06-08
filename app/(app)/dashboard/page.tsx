@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -32,6 +32,7 @@ import { WeekSummaryWidget } from "@/components/dashboard/WeekSummaryWidget";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 import { useSubscription } from "@/hooks/useSubscription";
+import { EmailVerificationBanner } from "@/components/ui/EmailVerificationBanner";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -64,6 +65,9 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6">
+      <Suspense fallback={null}>
+        <EmailVerificationBanner />
+      </Suspense>
       <TiltBreakModal riotAccountId={primaryId} />
 
       {/* ── Player Header — cinematic banner ──────────────────────────── */}

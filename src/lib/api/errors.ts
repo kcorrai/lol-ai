@@ -67,4 +67,11 @@ export const Errors = {
       "Free plan accounts cannot be disconnected. Upgrade to Pro to manage your linked accounts.",
       403
     ),
+
+  emailNotVerified: () =>
+    new ApiError(
+      "EMAIL_NOT_VERIFIED",
+      "Please verify your email address before generating AI reports.",
+      403
+    ),
 } as const;

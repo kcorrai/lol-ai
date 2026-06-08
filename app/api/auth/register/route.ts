@@ -1,11 +1,34 @@
+import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/db/prisma";
 import { checkRateLimit, getIp, rateLimitResponse } from "@/lib/api/rateLimit";
 import { applyReferralCode } from "@/domains/identity/services/referralService";
+import { getEmailClient, EMAIL_FROM } from "@/lib/email/client";
+import { buildEmailVerificationEmail } from "@/lib/email/templates/emailVerification";
+import { logger } from "@/lib/utils/logger";
 
 const REGISTER_LIMIT = { limit: 5, windowMs: 3_600_000 };
+const TOKEN_TTL_MS = 24 * 60 * 60 * 1000;
+
+async function sendVerificationEmail(email: string, userId: string): Promise<void> {
+  const token = randomBytes(32).toString("hex");
+  const expires = new Date(Date.now() + TOKEN_TTL_MS);
+
+  await prisma.verificationToken.deleteMany({ where: { identifier: email } });
+  await prisma.verificationToken.create({ data: { identifier: email, token, expires } });
+
+  const emailClient = getEmailClient();
+  if (!emailClient) return;
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
+  const verifyUrl = `${appUrl}/api/auth/verify-email?token=${token}`;
+  const { subject, html } = buildEmailVerificationEmail(verifyUrl);
+
+  const { error } = await emailClient.emails.send({ from: EMAIL_FROM, to: email, subject, html });
+  if (error) logger.error("[register] Resend error", { userId, error });
+}
 
 const registerSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -72,6 +95,11 @@ export async function POST(req: NextRequest) {
   if (refCode) {
     await applyReferralCode(refCode, user.id).catch(() => { /* ignore invalid codes */ });
   }
+
+  // Send email verification — non-blocking, failure does not abort registration
+  await sendVerificationEmail(email, user.id).catch((err) => {
+    logger.error("[register] Failed to send verification email", { userId: user.id, err });
+  });
 
   return NextResponse.json({ data: { userId: user.id } }, { status: 201 });
 }

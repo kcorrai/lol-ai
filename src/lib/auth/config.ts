@@ -75,9 +75,23 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    // Persist user.id into the JWT so session can expose it
-    async jwt({ token, user }) {
-      if (user) token.id = user.id;
+    async jwt({ token, user, trigger }) {
+      if (user) {
+        token.id = user.id;
+        const dbUser = await prisma.user.findUnique({
+          where: { id: user.id },
+          select: { emailVerified: true },
+        });
+        token.emailVerified = dbUser?.emailVerified ?? null;
+      }
+      // Re-fetch after explicit session update (e.g., post email verification)
+      if (trigger === "update" && token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id },
+          select: { emailVerified: true },
+        });
+        token.emailVerified = dbUser?.emailVerified ?? null;
+      }
       return token;
     },
     session({ session, token }) {
@@ -85,7 +99,8 @@ export const authOptions: NextAuthOptions = {
         ...session,
         user: {
           ...session.user,
-          id: token.id as string,
+          id: token.id,
+          emailVerified: token.emailVerified,
         },
       };
     },

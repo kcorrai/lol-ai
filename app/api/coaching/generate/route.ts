@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
+import { prisma } from "@/lib/db/prisma";
 import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
 import { Errors } from "@/lib/api/errors";
@@ -23,6 +24,12 @@ const FREE_GENERATE_LIMIT = { limit: 5, windowMs: 3_600_000 };
 const PRO_GENERATE_LIMIT = { limit: 30, windowMs: 3_600_000 };
 
 export const POST = withAuth(async (req: NextRequest, { userId }) => {
+  const emailCheck = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { emailVerified: true },
+  });
+  if (!emailCheck?.emailVerified) throw Errors.emailNotVerified();
+
   const { reportsPerDay } = await getPlanLimits(userId);
   const rateConfig = reportsPerDay === -1 ? PRO_GENERATE_LIMIT : FREE_GENERATE_LIMIT;
   const rateCheck = await checkRateLimit(`generate:${userId}`, rateConfig);
