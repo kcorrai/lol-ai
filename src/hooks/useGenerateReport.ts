@@ -26,8 +26,13 @@ interface UseGenerateReportOptions {
   onError?: (err: Error) => void;
 }
 
+interface MutateOptions {
+  onSuccess?: (data: GenerateReportResult) => void;
+  onError?: (err: Error) => void;
+}
+
 interface UseGenerateReportReturn {
-  mutate: (params: GenerateReportParams) => void;
+  mutate: (params: GenerateReportParams, options?: MutateOptions) => void;
   isPending: boolean;
   isError: boolean;
   error: Error | null;
