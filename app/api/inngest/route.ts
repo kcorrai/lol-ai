@@ -21,8 +21,9 @@ import { gdprExport } from "@/inngest/functions/gdprExport";
 import { performanceSnapshotWorker } from "@/inngest/functions/performanceSnapshotWorker";
 import { planExpiryChecker, planRenewalWorker } from "@/inngest/functions/planRenewal";
 import { referralReward } from "@/inngest/functions/referralReward";
+import { teamWeeklyReport } from "@/inngest/functions/teamWeeklyReport";
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
-  functions: [runCoachingJob, matchSyncWorker, autoSessionReview, sendRankChangeEmail, sendWeeklyReportEmails, tiltStreakCheck, patchVersionPoller, achievementChecker, timelineFetcher, dailyChallengeGenerator, weeklyChallengeGenerator, challengeProgressChecker, sendReengagementEmails, sendActivationEmail, sendReportReadyEmail, teamInviteEmail, teamSubscriptionCancelledNotification, teamSubscriptionExpiredNotification, gdprErasure, gdprExport, performanceSnapshotWorker, planExpiryChecker, planRenewalWorker, referralReward],
+  functions: [runCoachingJob, matchSyncWorker, autoSessionReview, sendRankChangeEmail, sendWeeklyReportEmails, tiltStreakCheck, patchVersionPoller, achievementChecker, timelineFetcher, dailyChallengeGenerator, weeklyChallengeGenerator, challengeProgressChecker, sendReengagementEmails, sendActivationEmail, sendReportReadyEmail, teamInviteEmail, teamSubscriptionCancelledNotification, teamSubscriptionExpiredNotification, gdprErasure, gdprExport, performanceSnapshotWorker, planExpiryChecker, planRenewalWorker, referralReward, teamWeeklyReport],
 });

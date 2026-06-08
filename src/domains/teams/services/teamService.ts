@@ -204,6 +204,9 @@ export async function getTeamDashboard(
           lastReportId: null,
           lastReportScore: null,
           winRate7d: null,
+          avgKDA7d: null,
+          avgCSPerMinute7d: null,
+          avgVisionScore7d: null,
         };
       }
 
@@ -227,6 +230,28 @@ export async function getTeamDashboard(
           ? Math.round((recentMatches.filter((m) => m.won).length / recentMatches.length) * 100)
           : null;
 
+      // 7-day comparison stats (KDA, CS/min, vision) for the comparison table
+      const recentStats = await prismaReadonly.matchParticipant.findMany({
+        where: {
+          riotAccountId: riotAccount.id,
+          match: { gameStart: { gte: since7d } },
+        },
+        select: { kills: true, deaths: true, assists: true, csPerMinute: true, visionScore: true },
+      });
+
+      let avgKDA7d: number | null = null;
+      let avgCSPerMinute7d: number | null = null;
+      let avgVisionScore7d: number | null = null;
+      if (recentStats.length > 0) {
+        const n = recentStats.length;
+        const sumKDA = recentStats.reduce((s, m) => s + (m.kills + m.assists) / Math.max(m.deaths, 1), 0);
+        const sumCS = recentStats.reduce((s, m) => s + Number(m.csPerMinute), 0);
+        const sumVision = recentStats.reduce((s, m) => s + m.visionScore, 0);
+        avgKDA7d = parseFloat((sumKDA / n).toFixed(2));
+        avgCSPerMinute7d = parseFloat((sumCS / n).toFixed(2));
+        avgVisionScore7d = parseFloat((sumVision / n).toFixed(1));
+      }
+
       return {
         userId: memberId,
         memberId: teamMember.id,
@@ -240,6 +265,9 @@ export async function getTeamDashboard(
         lastReportId: lastReport?.id ?? null,
         lastReportScore: null,
         winRate7d,
+        avgKDA7d,
+        avgCSPerMinute7d,
+        avgVisionScore7d,
       };
     })
   );

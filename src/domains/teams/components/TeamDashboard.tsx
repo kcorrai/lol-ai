@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Users, TrendingUp, UserPlus, TrendingDown, Minus } from "lucide-react";
+import { Users, TrendingUp, UserPlus, TrendingDown, Minus, BarChart2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TeamMemberCard } from "@/domains/teams/components/TeamMemberCard";
@@ -40,6 +40,8 @@ export function TeamDashboard({ teamId, isCoach }: Props) {
   const queryClient = useQueryClient();
   const [showInvite, setShowInvite] = useState(false);
   const invalidate = () => { void queryClient.invalidateQueries({ queryKey: ["team-dashboard", teamId] }); };
+
+  const [activeTab, setActiveTab] = useState<"overview" | "comparison">("overview");
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["team-dashboard", teamId],
@@ -126,30 +128,92 @@ export function TeamDashboard({ teamId, isCoach }: Props) {
         </div>
       </div>
 
+      {/* Tabs */}
+      <div className="flex gap-1 rounded-lg border border-border bg-surface-2 p-1 text-sm">
+        <button
+          onClick={() => setActiveTab("overview")}
+          className={`flex-1 rounded-md py-1.5 text-xs font-medium transition-colors ${activeTab === "overview" ? "bg-surface text-text shadow-sm" : "text-text-muted hover:text-text"}`}
+        >
+          <Users className="inline mr-1.5 h-3.5 w-3.5" />
+          Üyeler
+        </button>
+        <button
+          onClick={() => setActiveTab("comparison")}
+          className={`flex-1 rounded-md py-1.5 text-xs font-medium transition-colors ${activeTab === "comparison" ? "bg-surface text-text shadow-sm" : "text-text-muted hover:text-text"}`}
+        >
+          <BarChart2 className="inline mr-1.5 h-3.5 w-3.5" />
+          Karşılaştırma
+        </button>
+      </div>
+
       {/* Member list */}
-      {members.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border py-14 text-center">
-          <Users className="mx-auto mb-3 h-8 w-8 text-text-muted/30" />
-          <p className="text-sm font-medium text-text-muted">Henüz üye yok</p>
-          <p className="mt-1 text-xs text-text-muted/60">Takımına oyuncu davet et</p>
-          {isCoach && (
-            <Button onClick={() => setShowInvite(true)} size="sm" className="mt-4 gap-1.5">
-              <UserPlus className="h-3.5 w-3.5" />
-              İlk Üyeyi Davet Et
-            </Button>
-          )}
-        </div>
-      ) : (
-        <div className="space-y-2">
-          {members.map((member) => (
-            <TeamMemberCard
-              key={member.userId}
-              member={member}
-              canManage={isCoach}
-              onRemove={(uid) => removeM.mutate(uid)}
-              onRoleChange={isCoach ? (uid, role) => roleM.mutate({ userId: uid, role }) : undefined}
-            />
-          ))}
+      {activeTab === "overview" && (
+        members.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-border py-14 text-center">
+            <Users className="mx-auto mb-3 h-8 w-8 text-text-muted/30" />
+            <p className="text-sm font-medium text-text-muted">Henüz üye yok</p>
+            <p className="mt-1 text-xs text-text-muted/60">Takımına oyuncu davet et</p>
+            {isCoach && (
+              <Button onClick={() => setShowInvite(true)} size="sm" className="mt-4 gap-1.5">
+                <UserPlus className="h-3.5 w-3.5" />
+                İlk Üyeyi Davet Et
+              </Button>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {members.map((member) => (
+              <TeamMemberCard
+                key={member.userId}
+                member={member}
+                canManage={isCoach}
+                onRemove={(uid) => removeM.mutate(uid)}
+                onRoleChange={isCoach ? (uid, role) => roleM.mutate({ userId: uid, role }) : undefined}
+              />
+            ))}
+          </div>
+        )
+      )}
+
+      {activeTab === "comparison" && (
+        <div className="rounded-xl border border-border bg-surface overflow-hidden">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b border-border text-[11px] text-text-muted">
+                <th className="px-4 py-3 text-left">Oyuncu</th>
+                <th className="px-4 py-3 text-center">Rank</th>
+                <th className="px-4 py-3 text-center">7g WR</th>
+                <th className="px-4 py-3 text-center">KDA</th>
+                <th className="px-4 py-3 text-center">CS/dk</th>
+                <th className="px-4 py-3 text-center">Vision</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {members.map((m) => (
+                <tr key={m.userId} className="hover:bg-surface-2/50">
+                  <td className="px-4 py-3">
+                    <p className="font-medium text-text">{m.gameName}</p>
+                    <p className="text-[10px] text-text-muted capitalize">{m.role.toLowerCase()}</p>
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    {m.rank ? (
+                      <span className="text-accent font-semibold">{m.rank.tier} {m.rank.division}</span>
+                    ) : <span className="text-text-muted">—</span>}
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    {m.winRate7d !== null ? (
+                      <span className={m.winRate7d >= 55 ? "text-success font-semibold" : m.winRate7d < 45 ? "text-danger" : "text-text"}>
+                        %{m.winRate7d}
+                      </span>
+                    ) : <span className="text-text-muted">—</span>}
+                  </td>
+                  <td className="px-4 py-3 text-center text-text">{m.avgKDA7d ?? "—"}</td>
+                  <td className="px-4 py-3 text-center text-text">{m.avgCSPerMinute7d ?? "—"}</td>
+                  <td className="px-4 py-3 text-center text-text">{m.avgVisionScore7d ?? "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 

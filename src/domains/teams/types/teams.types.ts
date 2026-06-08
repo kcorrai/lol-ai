@@ -36,6 +36,9 @@ export interface TeamMemberSummary {
   lastReportId: string | null;
   lastReportScore: number | null;
   winRate7d: number | null;
+  avgKDA7d: number | null;
+  avgCSPerMinute7d: number | null;
+  avgVisionScore7d: number | null;
 }
 
 export interface TeamDashboardData {
