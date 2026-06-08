@@ -27,6 +27,14 @@ export const metadata: Metadata = {
     "Connect your Riot account. Get specific, honest feedback on what's holding you back. Stop being hardstuck.",
   keywords: ["League of Legends", "coaching", "AI", "improve", "rank"],
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
