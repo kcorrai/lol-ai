@@ -14,6 +14,7 @@ export interface CoachingInput {
     periodGames: number;
     queueType: string;
     focusArea?: string;
+    teamfightContext?: string;
   };
   matches: MatchSummary[];
   aggregateStats: AggregateStats;

@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db/prisma";
 import { Errors } from "@/lib/api/errors";
 import { getPlayerPerformanceProfile } from "@/domains/analysis/services/matchAnalysisService";
 import { getBenchmarkForTier } from "@/domains/analysis/services/rankBenchmarkService";
+import { getTeamfightAnalysis, teamfightContextForAi } from "@/domains/analysis/services/teamfightService";
 import type { CoachingInput, ChampionSummary } from "@/domains/coaching/types/coaching.types";
 
 export async function buildCoachingInput(
@@ -58,7 +59,11 @@ export async function buildCoachingInput(
       avgCSPerMinute: parseFloat((stats.csSum / stats.games).toFixed(2)),
     }));
 
-  const rankBenchmarks = latestRank ? await getBenchmarkForTier(latestRank.tier) : null;
+  const [rankBenchmarks, teamfightAnalysis] = await Promise.all([
+    latestRank ? getBenchmarkForTier(latestRank.tier) : Promise.resolve(null),
+    getTeamfightAnalysis(riotAccountId, 10).catch(() => null),
+  ]);
+  const teamfightContext = teamfightAnalysis ? teamfightContextForAi(teamfightAnalysis) : undefined;
 
   return {
     player: {
@@ -73,6 +78,7 @@ export async function buildCoachingInput(
       periodGames: requestedMatches.length,
       queueType: "RANKED_SOLO_5x5",
       ...(focusArea ? { focusArea } : {}),
+      ...(teamfightContext ? { teamfightContext } : {}),
     },
     matches: requestedMatches.map((m, i) => ({
       matchNumber: i + 1,

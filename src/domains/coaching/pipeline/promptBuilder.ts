@@ -59,6 +59,7 @@ export function buildPrompt(input: CoachingInput, reportType: ReportType): Built
     input.analysisContext.focusArea
       ? `Focus area requested by player: ${input.analysisContext.focusArea}.`
       : "",
+    input.analysisContext.teamfightContext ?? "",
     focusInstruction,
   ]
     .filter(Boolean)
