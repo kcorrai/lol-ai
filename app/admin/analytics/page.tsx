@@ -45,7 +45,7 @@ export default async function AnalyticsPage({
           {RANGES.map((r) => (
             <Link
               key={r.value}
-              href={`/analytics?range=${r.value}`}
+              href={`/admin/analytics?range=${r.value}`}
               className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
                 validRange === r.value
                   ? "bg-accent text-background"
@@ -117,10 +117,9 @@ export default async function AnalyticsPage({
         </div>
       </div>
 
-      {/* Nav to AI cost */}
       <p className="text-xs text-text-muted">
         AI harcamalarına bak:{" "}
-        <Link href="/ai-cost" className="text-accent hover:underline">AI Cost Dashboard →</Link>
+        <Link href="/admin/ai-cost" className="text-accent hover:underline">AI Cost Dashboard →</Link>
       </p>
     </div>
   );

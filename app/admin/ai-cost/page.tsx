@@ -185,7 +185,7 @@ export default async function AiCostPage() {
 
       <p className="text-xs text-text-muted">
         Büyüme metriklerine bak:{" "}
-        <Link href="/analytics" className="text-accent hover:underline">Büyüme Analitiği →</Link>
+        <Link href="/admin/analytics" className="text-accent hover:underline">Büyüme Analitiği →</Link>
       </p>
     </div>
   );

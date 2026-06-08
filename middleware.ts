@@ -4,6 +4,7 @@ import { getToken } from "next-auth/jwt";
 
 const PROTECTED_PATHS = [
   "/dashboard",
+  "/admin",
   "/match",
   "/matches",
   "/coaching",
@@ -71,6 +72,7 @@ export const config = {
     "/analysis/:path*",
     "/onboarding/:path*",
     "/champion-pool/:path*",
+    "/admin/:path*",
     "/login",
     "/register",
     "/forgot-password",
