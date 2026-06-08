@@ -9,8 +9,6 @@ vi.mock("@/lib/db/prisma", () => ({
   },
 }));
 
-const NOW = new Date(2026, 4, 15); // 15 May 2026
-
 function participant(overrides: Partial<{
   won: boolean; kills: number; deaths: number; assists: number;
   cs: number; championName: string; gameDuration: number; gameStart: Date;

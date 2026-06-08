@@ -1,4 +1,4 @@
-import { generateSecret, generateSync, verifySync } from "otplib";
+import { generateSecret, verifySync } from "otplib";
 import { encryptString, decryptString } from "@/lib/crypto/encrypt";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";

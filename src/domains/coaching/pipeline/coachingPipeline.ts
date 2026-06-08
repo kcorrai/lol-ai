@@ -77,8 +77,8 @@ export async function runCoachingPipeline(
 
     let rawContent: string;
     let model: string;
-    let promptTokens: number;
-    let completionTokens: number;
+    let _promptTokens: number;
+    let _completionTokens: number;
     let totalTokens: number;
     let latencyMs: number;
     let cacheHit: boolean;
@@ -86,8 +86,8 @@ export async function runCoachingPipeline(
     if (cached) {
       rawContent = cached.responseRaw;
       model = cached.model;
-      promptTokens = cached.promptTokens;
-      completionTokens = cached.completionTokens;
+      _promptTokens = cached.promptTokens;
+      _completionTokens = cached.completionTokens;
       totalTokens = cached.totalTokens;
       latencyMs = 0;
       cacheHit = true;
@@ -95,8 +95,8 @@ export async function runCoachingPipeline(
       const r = await callAiAndPersist(reportId, reportType, systemPrompt, userMessage);
       rawContent = r.rawContent;
       model = r.model;
-      promptTokens = r.promptTokens;
-      completionTokens = r.completionTokens;
+      _promptTokens = r.promptTokens;
+      _completionTokens = r.completionTokens;
       totalTokens = r.totalTokens;
       latencyMs = r.latencyMs;
       cacheHit = false;
