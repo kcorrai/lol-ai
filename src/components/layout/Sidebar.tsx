@@ -94,7 +94,7 @@ interface SidebarProps {
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { user } = useAuth();
   const { data: subscription } = useSubscription();
-  const isPro = subscription?.plan === "pro" || subscription?.plan === "elite";
+  const isPro = subscription?.plan === "pro" || subscription?.plan === "elite" || subscription?.plan === "team";
   const displayName = user?.name ?? user?.email ?? "Player";
 
   return (

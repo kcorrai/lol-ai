@@ -117,7 +117,7 @@ export async function checkIsPro(userId: string): Promise<boolean> {
   });
   const isActive =
     subscription?.status === "active" || subscription?.status === "trialing";
-  return isActive && (subscription?.plan === "pro" || subscription?.plan === "elite");
+  return isActive && (subscription?.plan === "pro" || subscription?.plan === "elite" || subscription?.plan === "team");
 }
 
 // ── Report limits ────────────────────────────────────────────────────────────

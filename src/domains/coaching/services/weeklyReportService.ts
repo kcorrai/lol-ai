@@ -61,7 +61,7 @@ export async function sendWeeklyReports(): Promise<{
     if (alreadySent) { skipped++; continue; }
 
     const isPro =
-      (user.subscription?.plan === "pro" || user.subscription?.plan === "elite") &&
+      (user.subscription?.plan === "pro" || user.subscription?.plan === "elite" || user.subscription?.plan === "team") &&
       (user.subscription?.status === "active" || user.subscription?.status === "trialing");
 
     try {

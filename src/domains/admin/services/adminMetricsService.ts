@@ -40,7 +40,7 @@ export async function getAdminMetrics(rangeDays: number = 30): Promise<AdminMetr
     challengesInRange,
   ] = await Promise.all([
     prismaReadonly.user.count(),
-    prismaReadonly.subscription.count({ where: { plan: { in: ["pro", "elite"] }, status: { in: ["active", "trialing"] } } }),
+    prismaReadonly.subscription.count({ where: { plan: { in: ["pro", "elite", "team"] }, status: { in: ["active", "trialing"] } } }),
     // DAU proxy: Riot accounts synced in last 24h → users who were active
     prismaReadonly.riotAccount.groupBy({ by: ["userId"], where: { updatedAt: { gte: dayAgo } } }),
     // MAU proxy: Riot accounts synced in last 30 days

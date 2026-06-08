@@ -116,7 +116,7 @@ export async function sendMonthlyMilestoneReports(): Promise<{
       });
 
       const isPro =
-        (user.subscription?.plan === "pro" || user.subscription?.plan === "elite") &&
+        (user.subscription?.plan === "pro" || user.subscription?.plan === "elite" || user.subscription?.plan === "team") &&
         (user.subscription?.status === "active" || user.subscription?.status === "trialing");
 
       const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTAUTH_URL ?? "https://lolaicoach.gg";

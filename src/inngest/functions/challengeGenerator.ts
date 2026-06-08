@@ -38,7 +38,7 @@ export const weeklyChallengeGenerator = inngest.createFunction(
     const users = await prisma.user.findMany({
       where: {
         updatedAt: { gte: sevenDaysAgo },
-        subscription: { plan: { in: ["pro", "elite"] } },
+        subscription: { plan: { in: ["pro", "elite", "team"] } },
       },
       select: { id: true, riotAccounts: { where: { isPrimary: true }, select: { id: true }, take: 1 } },
     });
