@@ -7,7 +7,7 @@ import { Errors } from "@/lib/api/errors";
 import { assertOwnsRiotAccount, assertCanGenerateReport, getPlanLimits } from "@/lib/auth/authorization";
 import { buildCoachingInput } from "@/domains/coaching/pipeline/dataPreparator";
 import { createPendingReport } from "@/domains/coaching/services/reportService";
-import { checkRateLimit, rateLimitResponse } from "@/lib/api/rateLimit";
+import { checkRateLimit, rateLimitResponse, addRateLimitHeaders } from "@/lib/api/rateLimit";
 import { inngest } from "@/inngest/client";
 import { audit } from "@/lib/audit/auditService";
 
@@ -68,5 +68,6 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
     ipAddress: req.headers.get("x-forwarded-for") ?? undefined,
   }).catch(() => { /* non-critical */ });
 
-  return apiSuccess({ reportId, status: "pending" }, 202);
+  const response = apiSuccess({ reportId, status: "pending" }, 202);
+  return addRateLimitHeaders(response, rateCheck, rateConfig.windowMs);
 });
