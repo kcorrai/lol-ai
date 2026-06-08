@@ -105,7 +105,7 @@ export function PricingCard({
               "text-[11px] font-semibold uppercase tracking-widest",
               isPro ? "text-accent/70" : "text-warning/70"
             )}>
-              {isPro ? "Pro Exclusive" : "Team Exclusive"}
+              {isPro ? "Pro'ya Özel" : "Takım'a Özel"}
             </span>
             <div className={cn("h-px flex-1", isPro ? "bg-accent/20" : "bg-warning/20")} />
           </div>
@@ -135,12 +135,12 @@ export function PricingCard({
           </div>
           <ul className="space-y-2.5">
             {[
-              "Unlimited AI coaching reports",
-              "Matchup Intelligence",
-              "Champion Mastery Score",
-              "Habit Detection Engine",
-              "Improvement Tracker",
-              "Shareable AI Report Cards",
+              "Sınırsız AI koçluk raporu",
+              "Matchup Zekası",
+              "Şampiyon Ustalık Skoru",
+              "Alışkanlık Tespit Motoru",
+              "Gelişim Takibi",
+              "Paylaşılabilir AI Rapor Kartları",
             ].map((f) => (
               <li key={f} className="flex items-start gap-2.5 text-sm">
                 <Minus className="mt-0.5 h-4 w-4 shrink-0 text-text-muted/30" />

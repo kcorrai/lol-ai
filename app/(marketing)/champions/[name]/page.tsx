@@ -80,7 +80,7 @@ export default async function ChampionDetailPage({ params }: Props) {
       {/* Hero */}
       <div className="relative mb-8 overflow-hidden rounded-2xl border border-border">
         <div className="relative h-48 w-full">
-          <Image fill alt={champ.name} src={splashUrl} className="object-cover object-top" style={{ filter: "saturate(0.8)" }} />
+          <Image fill priority alt={champ.name} src={splashUrl} sizes="(max-width: 768px) 100vw, 800px" className="object-cover object-top" style={{ filter: "saturate(0.8)" }} />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
         </div>
         <div className="relative px-6 pb-6">

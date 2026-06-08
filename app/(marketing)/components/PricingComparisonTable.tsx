@@ -25,20 +25,20 @@ const ROWS: FeatureRow[] = [
   { feature: "OTP Asistanı",             free: true,           pro: true,           team: true,          category: "Araçlar" },
   { feature: "Matchup Koçu",             free: "3 / gün",      pro: "Sınırsız",     team: "Sınırsız",    category: "Araçlar" },
   // Pro exclusive
-  { feature: "Matchup Intelligence",      free: false,          pro: true,           team: true,          category: "Pro Exclusive" },
-  { feature: "Champion Mastery Score",    free: false,          pro: true,           team: true,          category: "Pro Exclusive" },
-  { feature: "Habit Detection Engine",    free: false,          pro: true,           team: true,          category: "Pro Exclusive" },
-  { feature: "Improvement Tracker",       free: false,          pro: "Tam geçmiş",   team: "Tam geçmiş",  category: "Pro Exclusive" },
-  { feature: "Shareable AI Raporlar",     free: false,          pro: true,           team: true,          category: "Pro Exclusive" },
-  { feature: "Haftalık AI E-posta",       free: false,          pro: true,           team: true,          category: "Pro Exclusive" },
-  { feature: "Sesli Koçluk (TTS)",        free: false,          pro: true,           team: true,          category: "Pro Exclusive" },
-  { feature: "Öncelikli AI İşleme",       free: false,          pro: true,           team: true,          category: "Pro Exclusive" },
+  { feature: "Matchup Zekası",            free: false,          pro: true,           team: true,          category: "Pro'ya Özel" },
+  { feature: "Şampiyon Ustalık Skoru",    free: false,          pro: true,           team: true,          category: "Pro'ya Özel" },
+  { feature: "Alışkanlık Tespit Motoru",  free: false,          pro: true,           team: true,          category: "Pro'ya Özel" },
+  { feature: "Gelişim Takibi",            free: false,          pro: "Tam geçmiş",   team: "Tam geçmiş",  category: "Pro'ya Özel" },
+  { feature: "Paylaşılabilir AI Raporlar",free: false,          pro: true,           team: true,          category: "Pro'ya Özel" },
+  { feature: "Haftalık AI E-posta",       free: false,          pro: true,           team: true,          category: "Pro'ya Özel" },
+  { feature: "Sesli Koçluk (TTS)",        free: false,          pro: true,           team: true,          category: "Pro'ya Özel" },
+  { feature: "Öncelikli AI İşleme",       free: false,          pro: true,           team: true,          category: "Pro'ya Özel" },
   // Team exclusive
-  { feature: "Takım Yönetimi",            free: false,          pro: false,          team: "5 takıma kadar", category: "Team Exclusive" },
-  { feature: "Üye Başına Performans",     free: false,          pro: false,          team: true,          category: "Team Exclusive" },
-  { feature: "Coach / Oyuncu Rolleri",    free: false,          pro: false,          team: true,          category: "Team Exclusive" },
-  { feature: "E-posta Davet Sistemi",     free: false,          pro: false,          team: true,          category: "Team Exclusive" },
-  { feature: "Takım Büyüklüğü",          free: false,          pro: false,          team: "5 kişi",      category: "Team Exclusive" },
+  { feature: "Takım Yönetimi",            free: false,          pro: false,          team: "5 takıma kadar", category: "Takım'a Özel" },
+  { feature: "Üye Başına Performans",     free: false,          pro: false,          team: true,          category: "Takım'a Özel" },
+  { feature: "Coach / Oyuncu Rolleri",    free: false,          pro: false,          team: true,          category: "Takım'a Özel" },
+  { feature: "E-posta Davet Sistemi",     free: false,          pro: false,          team: true,          category: "Takım'a Özel" },
+  { feature: "Takım Büyüklüğü",          free: false,          pro: false,          team: "5 kişi",      category: "Takım'a Özel" },
 ];
 
 function Cell({ value, variant }: { value: CellValue; variant: "free" | "pro" | "team" }) {

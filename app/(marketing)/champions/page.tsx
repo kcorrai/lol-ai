@@ -57,6 +57,7 @@ export default async function ChampionsPage({
                   src={`https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/img/champion/${iconKey}.png`}
                   alt={champ.name}
                   fill
+                  sizes="48px"
                   className="object-cover"
                 />
               </div>

@@ -107,39 +107,38 @@ export function HeroSection() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
               </span>
-              7 AI Tools · Match Analysis · Climb Faster
+              7 AI Aracı · Maç Analizi · Daha Hızlı Yüksel
             </div>
             <h1 className="font-display text-4xl font-bold leading-tight text-text md:text-5xl lg:text-6xl">
-              Your Personal{" "}
-              <span className="text-accent" style={{ textShadow: "0 0 40px rgba(200,155,60,0.35)" }}>AI Coach</span>{" "}
-              for League
+              League için{" "}
+              <span className="text-accent" style={{ textShadow: "0 0 40px rgba(200,155,60,0.35)" }}>Kişisel AI Koçun</span>
             </h1>
             <p className="text-lg leading-relaxed text-text-muted">
-              Connect your Riot account. Get specific, honest feedback on every game — not generic
-              Bronze tips. Track your ranked progress and stop being hardstuck.
+              Riot hesabını bağla. Her maç için özgün, dürüst geri bildirim al — genel
+              Bronze tavsiyeleri değil. Ranked ilerlemenizi takip et ve hardstuck olmayı bırak.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/register"
                 className="rounded-md bg-accent px-6 py-3 text-center text-sm font-semibold text-background btn-glow transition-all duration-200"
               >
-                Get Started Free
+                Ücretsiz Başla
               </Link>
               <Link
                 href="/pricing"
                 className="rounded-md border border-border px-6 py-3 text-center text-sm font-semibold text-text-muted transition-colors hover:border-accent/50 hover:text-text"
               >
-                See Pricing
+                Fiyatları Gör
               </Link>
             </div>
-            <p className="text-xs text-text-muted">No credit card required · Free tier available</p>
+            <p className="text-xs text-text-muted">Kredi kartı gerekmez · Ücretsiz plan mevcut</p>
 
             {/* Quick stats */}
             <div className="flex gap-6 border-t border-border/60 pt-6">
               {([
-                ["7 AI Tools", "Counter, Matchup, OTP, Draft, Build"],
-                ["AI Reports", "Session & Climb roadmap"],
-                ["Real Match Data", "Your games, not generic guides"],
+                ["7 AI Aracı", "Counter, Matchup, OTP, Draft, Build"],
+                ["AI Raporları", "Seans analizi & rank yol haritası"],
+                ["Gerçek Maç Verisi", "Senin oyunların, jenerik rehberler değil"],
               ] as [string, string][]).map(([title, sub]) => (
                 <div key={title}>
                   <p className="text-xs font-semibold text-text">{title}</p>
