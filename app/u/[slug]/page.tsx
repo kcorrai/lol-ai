@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getPublicProfile } from "@/domains/identity/services/profileService";
 import { championSplashUrl, rankEmblemUrl, profileIconUrl } from "@/lib/ddragon";
-import { Shield, Trophy, Calendar, Swords } from "lucide-react";
+import { Shield, Trophy, Calendar, Swords, Flame, Crosshair, Eye } from "lucide-react";
 
 export const revalidate = 3600;
 
@@ -15,7 +15,9 @@ const TIER_COLORS: Record<string, string> = {
 };
 
 const TIER_GLOW: Record<string, string> = {
-  MASTER: "rgba(158,79,198,0.35)", GRANDMASTER: "rgba(232,64,87,0.35)", CHALLENGER: "rgba(244,200,116,0.40)",
+  MASTER: "rgba(158,79,198,0.35)",
+  GRANDMASTER: "rgba(232,64,87,0.35)",
+  CHALLENGER: "rgba(244,200,116,0.40)",
 };
 
 const BADGE_STYLES: Record<string, string> = {
@@ -31,7 +33,31 @@ const TIER_LABELS: Record<string, string> = {
   MASTER: "Usta", GRANDMASTER: "Büyük Usta", CHALLENGER: "Challenger",
 };
 
+const REGION_FLAGS: Record<string, string> = {
+  euw1: "🇪🇺", eun1: "🇪🇺", tr1: "🇹🇷", ru: "🇷🇺",
+  na1: "🇺🇸", br1: "🇧🇷", la1: "🌎", la2: "🌎",
+  kr: "🇰🇷", jp1: "🇯🇵", oc1: "🇦🇺",
+};
+
 const CHAMPION_VERSION = "14.24.1";
+
+function formatMasteryPoints(pts: number): string {
+  if (pts >= 1_000_000) return `${(pts / 1_000_000).toFixed(1)}M`;
+  if (pts >= 1_000) return `${(pts / 1_000).toFixed(0)}K`;
+  return String(pts);
+}
+
+function kdaColor(kda: number): string {
+  if (kda >= 4) return "#4ade80";
+  if (kda >= 3) return "#c89b3c";
+  return "#f87171";
+}
+
+function wrColor(wr: number): string {
+  if (wr >= 55) return "#4ade80";
+  if (wr >= 50) return "#c89b3c";
+  return "#f87171";
+}
 
 interface Props { params: { slug: string } }
 
@@ -60,6 +86,7 @@ export default async function PublicProfilePage({ params }: Props) {
   const tierColor = profile.rank ? (TIER_COLORS[profile.rank.tier] ?? "#a5b4fc") : null;
   const tierGlow = profile.rank ? (TIER_GLOW[profile.rank.tier] ?? null) : null;
   const isApex = profile.rank && ["MASTER", "GRANDMASTER", "CHALLENGER"].includes(profile.rank.tier);
+  const regionFlag = profile.region ? (REGION_FLAGS[profile.region] ?? null) : null;
 
   return (
     <div className="min-h-screen bg-background text-text">
@@ -72,32 +99,28 @@ export default async function PublicProfilePage({ params }: Props) {
 
       <div className="mx-auto max-w-2xl px-4 py-8 space-y-4">
 
-        {/* ── Hero card ───────────────────────────────────────────── */}
+        {/* ── Hero ──────────────────────────────────────────────────── */}
         <div
           className="relative overflow-hidden rounded-2xl border border-white/10"
-          style={tierGlow ? { boxShadow: `0 0 40px ${tierGlow}` } : undefined}
+          style={tierGlow ? { boxShadow: `0 0 48px ${tierGlow}` } : undefined}
         >
-          {/* Champion splash background */}
           {splashUrl ? (
             <>
               <Image fill alt="" aria-hidden src={splashUrl}
                 className="object-cover object-[65%_15%]"
-                style={{ filter: "saturate(0.6) brightness(0.35)" }}
+                style={{ filter: "saturate(0.6) brightness(0.3)" }}
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-background/98 via-background/75 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/85 via-transparent to-transparent" />
             </>
           ) : (
             <div className="absolute inset-0 bg-surface" />
           )}
 
           <div className="relative flex items-end gap-5 p-6 pb-5">
-            {/* Avatar */}
+            {/* Avatar + rank emblem */}
             <div className="relative shrink-0">
-              <div
-                className="h-20 w-20 overflow-hidden rounded-full border-2"
-                style={{ borderColor: tierColor ?? "#a5b4fc" }}
-              >
+              <div className="h-20 w-20 overflow-hidden rounded-full border-2" style={{ borderColor: tierColor ?? "#a5b4fc" }}>
                 {iconUrl ? (
                   <Image src={iconUrl} alt={profile.displayName} width={80} height={80} unoptimized className="object-cover" />
                 ) : (
@@ -105,7 +128,7 @@ export default async function PublicProfilePage({ params }: Props) {
                 )}
               </div>
               {rankEmblem && (
-                <div className="absolute -bottom-2 -right-2 flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-background/80 shadow-lg">
+                <div className="absolute -bottom-2 -right-2 flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-background/90 shadow-lg">
                   <Image src={rankEmblem} alt={profile.rank!.tier} width={26} height={26} unoptimized />
                 </div>
               )}
@@ -113,30 +136,34 @@ export default async function PublicProfilePage({ params }: Props) {
 
             {/* Identity */}
             <div className="min-w-0 flex-1 pb-1">
-              <h1 className="font-display text-2xl font-bold leading-tight text-white drop-shadow-md">
-                {profile.displayName}
-              </h1>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="font-display text-2xl font-bold leading-tight text-white drop-shadow-md">
+                  {profile.displayName}
+                </h1>
+                {regionFlag && (
+                  <span className="text-lg leading-none" title={profile.region ?? ""}>{regionFlag}</span>
+                )}
+                {profile.rank?.hotStreak && (
+                  <span className="flex items-center gap-1 rounded-full border border-orange-400/40 bg-orange-400/10 px-2 py-0.5 text-[10px] font-bold text-orange-400">
+                    <Flame className="h-3 w-3" /> HOT STREAK
+                  </span>
+                )}
+              </div>
 
               {profile.rank && !profile.isPrivate ? (
                 <div className="mt-1.5 flex flex-wrap items-center gap-2">
                   <span
                     className="inline-flex items-center gap-1.5 rounded-full px-3 py-0.5 text-sm font-bold"
-                    style={{
-                      background: `${tierColor}20`,
-                      color: tierColor ?? "#a5b4fc",
-                      border: `1px solid ${tierColor}40`,
-                    }}
+                    style={{ background: `${tierColor}20`, color: tierColor ?? "#a5b4fc", border: `1px solid ${tierColor}40` }}
                   >
                     {isApex && <span className="h-1.5 w-1.5 animate-pulse rounded-full" style={{ background: tierColor ?? "#a5b4fc" }} />}
                     {TIER_LABELS[profile.rank.tier] ?? profile.rank.tier}
                     {!isApex && ` ${profile.rank.division}`}
                     {" · "}{profile.rank.lp} LP
                   </span>
-                  {profile.winRate !== null && (
-                    <span className="text-sm font-medium text-text-muted">
-                      %{profile.winRate} kazanma
-                    </span>
-                  )}
+                  <span className="text-sm text-text-muted">
+                    {profile.rank.wins}W {profile.rank.losses}L
+                  </span>
                 </div>
               ) : !profile.isPrivate ? (
                 <p className="mt-1 text-sm text-text-muted">Unranked</p>
@@ -150,7 +177,7 @@ export default async function PublicProfilePage({ params }: Props) {
           </div>
         </div>
 
-        {/* ── Private notice ──────────────────────────────────────── */}
+        {/* ── Private ───────────────────────────────────────────────── */}
         {profile.isPrivate && (
           <div className="rounded-2xl border border-border bg-surface p-8 text-center">
             <Shield className="mx-auto mb-3 h-8 w-8 text-text-muted/40" />
@@ -160,46 +187,104 @@ export default async function PublicProfilePage({ params }: Props) {
 
         {!profile.isPrivate && (
           <>
-            {/* ── Champion pool ────────────────────────────────────── */}
+            {/* ── Stats strip ───────────────────────────────────────── */}
+            {(profile.totalGames > 0 || profile.winRate !== null || profile.avgKda !== null) && (
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  {
+                    label: "Toplam Maç",
+                    value: profile.totalGames > 0 ? String(profile.totalGames) : "—",
+                    sub: profile.winRate !== null ? `%${profile.winRate} KO` : null,
+                    subColor: profile.winRate !== null ? wrColor(profile.winRate) : undefined,
+                  },
+                  {
+                    label: "Ort. KDA",
+                    value: profile.avgKda !== null ? String(profile.avgKda) : "—",
+                    sub: profile.avgKda !== null
+                      ? (profile.avgKda >= 4 ? "Mükemmel" : profile.avgKda >= 3 ? "İyi" : "Ortalama")
+                      : null,
+                    subColor: profile.avgKda !== null ? kdaColor(profile.avgKda) : undefined,
+                  },
+                  {
+                    label: "Sezon W/L",
+                    value: profile.rank ? `${profile.rank.wins}W` : "—",
+                    sub: profile.rank ? `${profile.rank.losses}L` : null,
+                    subColor: "#f87171",
+                  },
+                ].map(({ label, value, sub, subColor }) => (
+                  <div key={label} className="rounded-xl border border-border bg-surface p-4 text-center">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted/50">{label}</p>
+                    <p className="mt-1 font-display text-xl font-bold text-text">{value}</p>
+                    {sub && (
+                      <p className="mt-0.5 text-xs font-medium" style={{ color: subColor }}>{sub}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* ── Champion pool ──────────────────────────────────────── */}
             {profile.topChampions.length > 0 && (
               <div className="rounded-2xl border border-border bg-surface p-5">
                 <div className="mb-4 flex items-center gap-2">
                   <Swords className="h-3.5 w-3.5 text-text-muted/50" />
                   <h2 className="text-[10px] font-bold uppercase tracking-widest text-text-muted/50">
-                    En Çok Oynadığı Şampiyonlar
+                    Şampiyon Havuzu
                   </h2>
                 </div>
 
-                <div className="grid grid-cols-3 gap-3">
+                <div className="space-y-3">
                   {profile.topChampions.map((c, i) => {
                     const wr = c.winRate;
-                    const wrColor = wr >= 55 ? "#4ade80" : wr >= 50 ? "#c89b3c" : "#f87171";
+                    const wc = wrColor(wr);
+                    const kc = kdaColor(c.avgKda);
                     return (
-                      <div key={c.name} className="flex flex-col items-center gap-2 rounded-xl border border-white/5 bg-surface-2/50 p-3 text-center">
-                        <div className="relative">
+                      <div key={c.name} className="flex items-center gap-3 rounded-xl border border-white/5 bg-surface-2/40 p-3">
+                        {/* Rank number */}
+                        <span className="w-4 shrink-0 text-center text-xs font-bold text-text-muted/40">{i + 1}</span>
+
+                        {/* Icon */}
+                        <div className="relative shrink-0">
                           <Image
                             src={`https://ddragon.leagueoflegends.com/cdn/${CHAMPION_VERSION}/img/champion/${c.name}.png`}
                             alt={c.name}
-                            width={52}
-                            height={52}
+                            width={44}
+                            height={44}
                             unoptimized
                             className="rounded-lg border border-white/10"
                           />
-                          <span className="absolute -top-1.5 -left-1.5 flex h-5 w-5 items-center justify-center rounded-full border border-border bg-background text-[10px] font-bold text-text-muted">
-                            {i + 1}
-                          </span>
+                          {c.masteryLevel !== null && c.masteryLevel >= 7 && (
+                            <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full border border-yellow-400/40 bg-yellow-400/20 text-[8px] font-bold text-yellow-300">
+                              M{c.masteryLevel}
+                            </span>
+                          )}
                         </div>
-                        <div>
-                          <p className="text-xs font-semibold text-text leading-tight">{c.name}</p>
-                          <p className="mt-0.5 text-[11px] text-text-muted">{c.games} maç</p>
-                        </div>
-                        <div className="w-full">
-                          <div className="mb-1 flex justify-between text-[10px]">
-                            <span className="text-text-muted/50">KO</span>
-                            <span className="font-bold" style={{ color: wrColor }}>%{wr}</span>
+
+                        {/* Name + games */}
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="truncate text-sm font-semibold text-text">{c.name}</span>
+                            <span className="shrink-0 text-xs text-text-muted">{c.games} maç</span>
                           </div>
-                          <div className="h-1 overflow-hidden rounded-full bg-white/5">
-                            <div className="h-full rounded-full transition-all" style={{ width: `${wr}%`, background: wrColor }} />
+
+                          {/* Win rate bar */}
+                          <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-white/5">
+                            <div className="h-full rounded-full" style={{ width: `${wr}%`, background: wc }} />
+                          </div>
+
+                          {/* Stats row */}
+                          <div className="mt-1.5 flex items-center gap-3 text-[11px] text-text-muted">
+                            <span style={{ color: wc }} className="font-semibold">%{wr} KO</span>
+                            <span className="flex items-center gap-0.5">
+                              <Crosshair className="h-2.5 w-2.5" />
+                              <span style={{ color: kc }} className="font-medium">{c.avgKda} KDA</span>
+                            </span>
+                            <span className="flex items-center gap-0.5">
+                              <span className="font-medium">{c.avgCsPerMinute} CS/dk</span>
+                            </span>
+                            {c.masteryPoints !== null && (
+                              <span className="ml-auto text-yellow-400/60">{formatMasteryPoints(c.masteryPoints)} p</span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -209,7 +294,7 @@ export default async function PublicProfilePage({ params }: Props) {
               </div>
             )}
 
-            {/* ── Badges ───────────────────────────────────────────── */}
+            {/* ── Badges ────────────────────────────────────────────── */}
             {profile.badges.length > 0 && (
               <div className="rounded-2xl border border-border bg-surface p-5">
                 <div className="mb-4 flex items-center gap-2">
@@ -222,7 +307,7 @@ export default async function PublicProfilePage({ params }: Props) {
                   {profile.badges.map((b) => (
                     <span
                       key={b.id}
-                      className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition-colors ${BADGE_STYLES[b.tier] ?? BADGE_STYLES.common}`}
+                      className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium ${BADGE_STYLES[b.tier] ?? BADGE_STYLES.common}`}
                     >
                       <span>{b.iconSlug}</span>
                       <span>{b.name}</span>
@@ -234,7 +319,7 @@ export default async function PublicProfilePage({ params }: Props) {
           </>
         )}
 
-        {/* ── CTA ──────────────────────────────────────────────────── */}
+        {/* ── CTA ───────────────────────────────────────────────────── */}
         <div
           className="rounded-2xl border border-accent/25 p-6 text-center"
           style={{ background: "linear-gradient(135deg, rgba(200,155,60,0.08) 0%, rgba(88,70,180,0.06) 100%)" }}

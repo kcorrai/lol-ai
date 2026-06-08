@@ -9,15 +9,37 @@ export interface ProfileSettings {
   showChampions: boolean;
 }
 
+export interface PublicChampion {
+  name: string;
+  games: number;
+  wins: number;
+  winRate: number;
+  avgKda: number;
+  avgCsPerMinute: number;
+  avgVisionScore: number;
+  masteryLevel: number | null;
+  masteryPoints: number | null;
+}
+
 export interface PublicProfileData {
   displayName: string;
-  rank: { tier: string; division: string; lp: number } | null;
+  region: string | null;
+  profileIconId: number | null;
+  rank: {
+    tier: string;
+    division: string;
+    lp: number;
+    wins: number;
+    losses: number;
+    hotStreak: boolean;
+  } | null;
   winRate: number | null;
-  topChampions: { name: string; games: number; winRate: number }[];
+  totalGames: number;
+  avgKda: number | null;
+  topChampions: PublicChampion[];
   badges: { id: string; name: string; tier: string; iconSlug: string }[];
   joinedAt: string;
   isPrivate: boolean;
-  profileIconId: number | null;
 }
 
 const DEFAULT_SETTINGS: ProfileSettings = {
@@ -52,12 +74,14 @@ export async function getPublicProfile(slug: string): Promise<PublicProfileData 
         where: { isPrimary: true },
         include: {
           rankedHistory: {
+            where: { queueType: "RANKED_SOLO_5x5" },
             orderBy: { recordedAt: "desc" },
             take: 1,
           },
           championStats: {
+            where: { queueType: "RANKED_SOLO_5x5" },
             orderBy: { gamesPlayed: "desc" },
-            take: 3,
+            take: 5,
             include: { champion: { select: { name: true } } },
           },
         },
@@ -82,13 +106,16 @@ export async function getPublicProfile(slug: string): Promise<PublicProfileData 
   if (!user.profilePublic) {
     return {
       displayName,
+      region: null,
+      profileIconId: null,
       rank: null,
       winRate: null,
+      totalGames: 0,
+      avgKda: null,
       topChampions: [],
       badges: [],
       joinedAt: user.createdAt.toISOString(),
       isPrivate: true,
-      profileIconId: null,
     };
   }
 
@@ -98,26 +125,47 @@ export async function getPublicProfile(slug: string): Promise<PublicProfileData 
   };
 
   const latestRank = account?.rankedHistory[0] ?? null;
+  const stats = account?.championStats ?? [];
 
-  const topChampions = settings.showChampions
-    ? (account?.championStats ?? []).map((c) => ({
+  const topChampions: PublicChampion[] = settings.showChampions
+    ? stats.map((c) => ({
         name: c.champion.name,
         games: c.gamesPlayed,
+        wins: c.wins,
         winRate: c.gamesPlayed > 0 ? Math.round((c.wins / c.gamesPlayed) * 100) : 0,
+        avgKda: parseFloat(Number(c.avgKda).toFixed(2)),
+        avgCsPerMinute: parseFloat(Number(c.avgCsPerMinute).toFixed(1)),
+        avgVisionScore: parseFloat(Number(c.avgVisionScore).toFixed(1)),
+        masteryLevel: c.masteryLevel ?? null,
+        masteryPoints: c.masteryPoints ? Number(c.masteryPoints) : null,
       }))
     : [];
 
-  const allGames = (account?.championStats ?? []).reduce((s, c) => s + c.gamesPlayed, 0);
-  const allWins = (account?.championStats ?? []).reduce((s, c) => s + c.wins, 0);
-  const overallWR = allGames > 0 ? Math.round((allWins / allGames) * 100) : null;
+  const totalGames = stats.reduce((s, c) => s + c.gamesPlayed, 0);
+  const totalWins = stats.reduce((s, c) => s + c.wins, 0);
+  const overallWR = totalGames > 0 ? Math.round((totalWins / totalGames) * 100) : null;
+
+  // Weighted average KDA across top champions
+  const kdaSum = stats.reduce((s, c) => s + Number(c.avgKda) * c.gamesPlayed, 0);
+  const avgKda = totalGames > 0 ? parseFloat((kdaSum / totalGames).toFixed(2)) : null;
 
   return {
     displayName,
+    region: account?.region ?? null,
     profileIconId: account?.profileIconId ?? null,
     rank: settings.showRank && latestRank
-      ? { tier: latestRank.tier, division: latestRank.division, lp: latestRank.lp }
+      ? {
+          tier: latestRank.tier,
+          division: latestRank.division,
+          lp: latestRank.lp,
+          wins: latestRank.wins,
+          losses: latestRank.losses,
+          hotStreak: latestRank.hotStreak,
+        }
       : null,
     winRate: settings.showWR ? overallWR : null,
+    totalGames,
+    avgKda,
     topChampions,
     badges: settings.showBadges
       ? user.userAchievements.map((ua) => ({
