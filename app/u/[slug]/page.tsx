@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getPublicProfile } from "@/domains/identity/services/profileService";
 import { championSplashUrl, rankEmblemUrl, profileIconUrl } from "@/lib/ddragon";
-import { Shield, Trophy, Calendar, Swords, Flame, Crosshair, Eye } from "lucide-react";
+import { Shield, Trophy, Calendar, Swords, Flame, Crosshair } from "lucide-react";
 
 export const revalidate = 3600;
 
