@@ -3,8 +3,6 @@ import { ImageResponse } from "next/og";
 import { getCardByToken } from "@/domains/coaching/services/cardService";
 import type { WeeklyCardData, MasteryCardData } from "@/domains/coaching/services/cardService";
 
-export const runtime = "edge";
-
 const W = 1200;
 const H = 630;
 
