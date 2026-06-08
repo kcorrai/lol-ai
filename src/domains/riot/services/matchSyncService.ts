@@ -354,6 +354,11 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
     })
     .catch((err) => logger.warn("[sync] Failed to fire challenge/check-progress event", err));
 
+  // Performance snapshot: compute weekly stats and run habit detection after sync
+  inngest
+    .send({ name: "snapshot/compute", data: { riotAccountId: account.id } })
+    .catch((err) => logger.warn("[sync] Failed to fire snapshot/compute event", err));
+
   // Bust matchup-matrix cache for all position variants so stale empty results don't persist
   if (newCount > 0) {
     const positions = ["all", "TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"];
