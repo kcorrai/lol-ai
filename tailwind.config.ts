@@ -103,12 +103,17 @@ const config: Config = {
           "0%, 100%": { boxShadow: "0 0 6px rgba(200,155,60,0.25)" },
           "50%": { boxShadow: "0 0 18px rgba(200,155,60,0.55)" },
         },
+        "confetti-fall": {
+          "0%":   { transform: "translateY(-10px) rotate(0deg)", opacity: "1" },
+          "100%": { transform: "translateY(300px) rotate(720deg)", opacity: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         shimmer: "shimmer 2s infinite",
         "glow-pulse": "glow-pulse 2.5s ease-in-out infinite",
+        "confetti-fall": "confetti-fall 0.8s ease-in forwards",
       },
     },
   },
