@@ -1,9 +1,45 @@
 # API Design — LoL AI Coach
 
 **Version:** 1.0  
-**Base URL:** `/api`  
+**Base URL:** `/api` (unversioned, stable) | `/api/v1/` (versioned)  
 **Format:** REST, JSON  
 **Auth:** Session cookie + Bearer JWT
+
+---
+
+## 0. API Versioning & Deprecation Policy
+
+### Version Header
+
+Every API response includes:
+```
+X-API-Version: 1
+```
+
+### Versioned Paths
+
+Critical endpoints are available at both their legacy path and the `/api/v1/` prefix:
+
+| Versioned path | Legacy path |
+|---|---|
+| `POST /api/v1/coaching/generate` | `POST /api/coaching/generate` |
+| `GET /api/v1/coaching/reports` | `GET /api/coaching/reports` |
+| `GET /api/v1/riot/accounts` | `GET /api/riot/accounts` |
+
+### Deprecation Policy
+
+1. **Minor changes** (new optional fields, new endpoints): No version bump. Clients must ignore unknown fields.
+2. **Breaking changes** (removed fields, changed behavior, renamed endpoints): Require a version bump to `/api/v2/`.
+3. **Deprecation notice**: A `Deprecation: <date>` response header is added at least **90 days** before a breaking change ships to production.
+4. **Sunset**: After the deprecation period, old paths return `410 Gone` with a `Link` header pointing to the replacement.
+5. **Legacy path support**: Unversioned `/api/` paths remain aliases for `/api/v1/` indefinitely until a breaking change requires `/v2/`.
+
+### Migration Guide
+
+When a v2 ships:
+- Unversioned `/api/` paths will serve v1 behavior and emit `Deprecation` headers.
+- After 90 days, `/api/` paths redirect (308) to `/api/v2/`.
+- Applications should migrate to `/api/v2/` before the sunset date.
 
 ---
 
