@@ -1,7 +1,7 @@
 import { inngest } from "@/inngest/client";
 import { prisma } from "@/lib/db/prisma";
 import { sendPushToUser } from "@/lib/push/pushService";
-import { resend } from "@/lib/email/resend";
+import { getEmailClient } from "@/lib/email/client";
 
 export const referralReward = inngest.createFunction(
   { id: "referral-reward", name: "Referral: Award Pro Week to Referrer" },
@@ -25,7 +25,8 @@ export const referralReward = inngest.createFunction(
     });
 
     // Notify referrer via email
-    if (user.email) {
+    const resend = getEmailClient();
+    if (user.email && resend) {
       await resend.emails.send({
         from: "LoL AI Coach <noreply@lolai.coach>",
         to: user.email,

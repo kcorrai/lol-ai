@@ -1,6 +1,6 @@
 import { inngest } from "@/inngest/client";
 import { prisma } from "@/lib/db/prisma";
-import { resend } from "@/lib/email/resend";
+import { getEmailClient } from "@/lib/email/client";
 import { logger } from "@/lib/utils/logger";
 
 // Fires every Monday at 09:30 UTC — 30 minutes after individual weekly reports
@@ -84,7 +84,9 @@ export const teamWeeklyReport = inngest.createFunction(
         .map((m) => m.user?.email)
         .filter((e): e is string => !!e);
 
+      const resend = getEmailClient();
       for (const email of recipients) {
+        if (!resend) break;
         await resend.emails.send({
           from: "LoL AI Coach <noreply@lolaicoach.gg>",
           to: email,
