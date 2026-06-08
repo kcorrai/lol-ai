@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { toJsonInput, fromJsonValue } from "@/types/json";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -127,7 +128,7 @@ async function upsertHabits(
           weekCount: c.weekCount,
           lastDetected: now,
           severity: severityFor(c.weekCount),
-          evidence: c.evidence as unknown as object[],
+          evidence: toJsonInput(c.evidence),
         },
       });
     } else {
@@ -139,7 +140,7 @@ async function upsertHabits(
           weekCount: c.weekCount,
           firstDetected: now,
           lastDetected: now,
-          evidence: c.evidence as unknown as object[],
+          evidence: toJsonInput(c.evidence),
         },
       });
     }
@@ -186,7 +187,7 @@ function toDto(h: {
     firstDetected: h.firstDetected.toISOString(),
     lastDetected: h.lastDetected.toISOString(),
     isResolved: h.isResolved,
-    evidence: h.evidence as HabitEvidence[],
+    evidence: fromJsonValue<HabitEvidence[]>(h.evidence),
     message: habitMessage(meta.displayName, h.weekCount),
   };
 }

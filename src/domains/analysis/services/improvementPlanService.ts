@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { toJsonInput, fromJsonValue } from "@/types/json";
 import { getPlayerPerformanceProfile } from "./matchAnalysisService";
 import type {
   ImprovementTarget,
@@ -216,7 +217,7 @@ export async function getPlanHistory(riotAccountId: string): Promise<PlanHistory
   const profile = await getPlayerPerformanceProfile(riotAccountId, 30);
 
   return plans.map((plan) => {
-    const targets = (plan.targets as unknown as ImprovementTarget[]) ?? [];
+    const targets = fromJsonValue<ImprovementTarget[]>(plan.targets) ?? [];
     const progresses = targets.map((t) => toProgress(t, getCurrentValue(t.metric, profile)));
     const score = computeWeeklyScore(progresses);
     return {
@@ -246,7 +247,7 @@ export async function generatePlan(riotAccountId: string): Promise<PlanWithProgr
     data: {
       riotAccountId,
       expiresAt,
-      targets: targets as unknown as object[],
+      targets: toJsonInput(targets),
     },
   });
 

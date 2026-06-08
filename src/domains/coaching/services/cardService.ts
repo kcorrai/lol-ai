@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { toJsonInput, fromJsonValue } from "@/types/json";
 
 export type CardType = "weekly" | "mastery";
 
@@ -224,7 +225,7 @@ export async function generateShareableCard(
     data: {
       userId: opts.userId,
       cardType: opts.cardType,
-      data: data as unknown as object,
+      data: toJsonInput(data),
       expiresAt,
     },
   });
@@ -247,5 +248,5 @@ export async function getCardByToken(
       .catch(() => undefined);
   }
 
-  return { data: card.data as unknown as CardData, expired };
+  return { data: fromJsonValue<CardData>(card.data), expired };
 }

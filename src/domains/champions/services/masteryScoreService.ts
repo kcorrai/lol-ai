@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { toJsonInput, fromJsonValue } from "@/types/json";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -211,7 +212,7 @@ export async function computeChampionMastery(
     where: { id: stat.id },
     data: {
       masteryScore: total,
-      masterySubScores: subScores as unknown as object,
+      masterySubScores: toJsonInput(subScores),
       masteryScoreAt: new Date(),
     },
   });
@@ -256,7 +257,7 @@ export async function getChampionMastery(
       championName: stat.champion.name,
       imageUrl: stat.champion.imageUrl,
       total: stat.masteryScore,
-      subScores: stat.masterySubScores as unknown as MasterySubScores,
+      subScores: fromJsonValue<MasterySubScores>(stat.masterySubScores),
       tier: scoreToTier(stat.masteryScore),
       gamesAnalyzed: stat.gamesPlayed,
       computedAt: stat.masteryScoreAt!.toISOString(),
