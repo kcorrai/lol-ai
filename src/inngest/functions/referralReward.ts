@@ -4,8 +4,11 @@ import { sendPushToUser } from "@/lib/push/pushService";
 import { getEmailClient } from "@/lib/email/client";
 
 export const referralReward = inngest.createFunction(
-  { id: "referral-reward", name: "Referral: Award Pro Week to Referrer" },
-  { event: "referral/converted" },
+  {
+    id: "referral-reward",
+    name: "Referral: Award Pro Week to Referrer",
+    triggers: [{ event: "referral/converted" }],
+  },
   async ({ event }) => {
     const { referrerId } = event.data as { referrerId: string; refereeId: string; referralId: string };
 
