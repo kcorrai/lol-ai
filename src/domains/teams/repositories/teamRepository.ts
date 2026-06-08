@@ -60,6 +60,13 @@ export async function removeMember(teamId: string, userId: string) {
   });
 }
 
+export async function updateMemberRole(teamId: string, userId: string, role: TeamRole) {
+  return prisma.teamMember.update({
+    where: { teamId_userId: { teamId, userId } },
+    data: { role },
+  });
+}
+
 export async function createInvite(
   teamId: string,
   email: string,

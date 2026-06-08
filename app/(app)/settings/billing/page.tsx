@@ -11,7 +11,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useCreateCheckout } from "@/hooks/useCreateCheckout";
 import { useCreateTeamCheckout } from "@/hooks/useCreateTeamCheckout";
+import { useTeamSeats } from "@/hooks/useTeamSeats";
 import { useSearchParams } from "next/navigation";
+import { Users } from "lucide-react";
 
 const FREE_FEATURES = [
   "Ayda 3 AI koçluk raporu",
@@ -49,9 +51,11 @@ function BillingPageContent() {
   const checkout = useCreateCheckout(period);
   const teamCheckout = useCreateTeamCheckout();
 
-  const isPro = sub?.plan === "pro" || sub?.plan === "elite";
+  const isPro = sub?.plan === "pro" || sub?.plan === "elite" || sub?.plan === "team";
   const isTeam = sub?.plan === "team";
   const isUpgraded = isPro || isTeam;
+
+  const { data: seats } = useTeamSeats();
 
   if (isLoading) {
     return (
@@ -117,6 +121,38 @@ function BillingPageContent() {
             )}
           </CardContent>
         </Card>
+
+        {/* Team seat indicator — shown for team plan users */}
+        {isTeam && seats && (
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xs font-medium uppercase tracking-widest text-text-muted">
+                Takım Üyeleri
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex items-center gap-3">
+                <Users className="h-5 w-5 text-warning" />
+                <span className="text-2xl font-bold text-text">
+                  {seats.totalMembers}
+                  <span className="text-base font-normal text-text-muted">/{seats.maxMembers}</span>
+                </span>
+                {seats.totalMembers >= seats.maxMembers && (
+                  <Badge variant="warning">Takım dolu</Badge>
+                )}
+              </div>
+              <div className="h-2 w-full overflow-hidden rounded-full bg-surface-3">
+                <div
+                  className="h-full rounded-full bg-warning transition-all"
+                  style={{ width: `${Math.min((seats.totalMembers / seats.maxMembers) * 100, 100)}%` }}
+                />
+              </div>
+              <p className="text-xs text-text-muted">
+                {seats.maxMembers - seats.totalMembers} boş slot · {seats.teamsCount} takım
+              </p>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Pro upgrade card — shown when free */}
         {!isUpgraded && (

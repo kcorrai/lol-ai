@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db/prisma";
 import { Errors } from "@/lib/api/errors";
 import { logger } from "@/lib/utils/logger";
 import * as repo from "@/domains/teams/repositories/teamRepository";
-import { assertOwnerAccess, assertTeamPlan } from "@/domains/teams/services/teamService";
+import { assertCoachAccess, assertTeamPlan } from "@/domains/teams/services/teamService";
 import type { InviteMemberInput } from "@/domains/teams/types/teams.types";
 
 const INVITE_TTL_HOURS = 48;
@@ -20,7 +20,7 @@ export async function inviteMember(
   input: InviteMemberInput
 ): Promise<{ token: string }> {
   await assertTeamPlan(requestingUserId);
-  await assertOwnerAccess(teamId, requestingUserId);
+  await assertCoachAccess(teamId, requestingUserId);
 
   const team = await repo.findTeamById(teamId);
   if (!team) throw Errors.notFound("Team");

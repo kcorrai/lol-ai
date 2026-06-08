@@ -108,6 +108,22 @@ export async function getTeamMembers(
   }));
 }
 
+export async function updateMemberRole(
+  teamId: string,
+  targetUserId: string,
+  requestingUserId: string,
+  newRole: "COACH" | "PLAYER"
+): Promise<void> {
+  await assertOwnerAccess(teamId, requestingUserId);
+
+  const membership = await repo.findMembership(teamId, targetUserId);
+  if (!membership) throw Errors.notFound("Team member");
+  if (membership.role === "OWNER") throw Errors.forbidden("Cannot change owner role");
+
+  await repo.updateMemberRole(teamId, targetUserId, newRole);
+  logger.info("[teamService] member role updated", { teamId, targetUserId, newRole });
+}
+
 export async function removeMember(
   teamId: string,
   targetUserId: string,
@@ -149,14 +165,19 @@ export async function getTeamDashboard(
           gameName: true,
           tagLine: true,
           rankedHistory: {
+            where: { queueType: "RANKED_SOLO_5x5" },
             orderBy: { recordedAt: "desc" },
             take: 1,
             select: { tier: true, division: true, lp: true },
           },
+          championStats: {
+            where: { queueType: "RANKED_SOLO_5x5" },
+            orderBy: { gamesPlayed: "desc" },
+            take: 1,
+            include: { champion: { select: { name: true } } },
+          },
           matchParticipants: {
-            orderBy: {
-              match: { gameStart: "desc" },
-            },
+            orderBy: { match: { gameStart: "desc" } },
             take: 1,
             select: { won: true, championName: true },
           },
@@ -177,6 +198,7 @@ export async function getTeamDashboard(
           gameName: teamMember.user?.name ?? "Unknown",
           tagLine: "",
           rank: null,
+          topChampion: null,
           lastMatchResult: null,
           lastMatchChampion: null,
           lastReportId: null,
@@ -186,9 +208,10 @@ export async function getTeamDashboard(
       }
 
       const ranked = riotAccount.rankedHistory[0];
-      const rank = ranked ? `${ranked.tier} ${ranked.division} ${ranked.lp}LP` : null;
+      const rank = ranked ? { tier: ranked.tier, division: ranked.division, lp: ranked.lp } : null;
       const lastMatch = riotAccount.matchParticipants[0];
       const lastReport = riotAccount.coachingReports[0];
+      const topChampion = riotAccount.championStats[0]?.champion.name ?? null;
 
       // 7-day win rate
       const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -211,6 +234,7 @@ export async function getTeamDashboard(
         gameName: riotAccount.gameName,
         tagLine: riotAccount.tagLine,
         rank,
+        topChampion,
         lastMatchResult: lastMatch ? (lastMatch.won ? "WIN" : "LOSS") : null,
         lastMatchChampion: lastMatch?.championName ?? null,
         lastReportId: lastReport?.id ?? null,
@@ -220,8 +244,18 @@ export async function getTeamDashboard(
     })
   );
 
+  const rates = memberDataList.map((m) => m.winRate7d).filter((r): r is number => r !== null);
+  const avgWinRate7d = rates.length > 0 ? Math.round(rates.reduce((a, b) => a + b, 0) / rates.length) : null;
+
   return {
-    team: { id: team.id, name: team.name, logoUrl: team.logoUrl },
+    team: {
+      id: team.id,
+      name: team.name,
+      logoUrl: team.logoUrl,
+      memberCount: memberDataList.length,
+      maxMembers: 5,
+      avgWinRate7d,
+    },
     members: memberDataList,
   };
 }

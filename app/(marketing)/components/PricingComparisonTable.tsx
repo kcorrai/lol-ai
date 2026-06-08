@@ -14,8 +14,8 @@ interface FeatureRow {
 const ROWS: FeatureRow[] = [
   // Core
   { feature: "AI Coaching Reports",       free: "3 / ay",       pro: "Sınırsız",     team: "Sınırsız",    category: "Core" },
-  { feature: "Riot Hesabı",               free: "1",            pro: "3",            team: "3",           category: "Core" },
-  { feature: "Maç Geçmişi",              free: "10 maç",       pro: "100 maç",      team: "100 maç",     category: "Core" },
+  { feature: "Riot Hesabı",               free: "1",            pro: "3",            team: "5",           category: "Core" },
+  { feature: "Maç Geçmişi",              free: "10 maç",       pro: "100 maç",      team: "200 maç",     category: "Core" },
   { feature: "Maç Detay Analizi",         free: true,           pro: true,           team: true,          category: "Core" },
   { feature: "Ranked Takibi",             free: true,           pro: true,           team: true,          category: "Core" },
   { feature: "Coach Chat",                free: true,           pro: true,           team: true,          category: "Core" },

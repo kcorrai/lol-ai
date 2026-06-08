@@ -29,7 +29,8 @@ export interface TeamMemberSummary {
   role: TeamRole;
   gameName: string;
   tagLine: string;
-  rank: string | null;
+  rank: { tier: string; division: string; lp: number } | null;
+  topChampion: string | null;
   lastMatchResult: "WIN" | "LOSS" | null;
   lastMatchChampion: string | null;
   lastReportId: string | null;
@@ -42,6 +43,9 @@ export interface TeamDashboardData {
     id: string;
     name: string;
     logoUrl: string | null;
+    memberCount: number;
+    maxMembers: number;
+    avgWinRate7d: number | null;
   };
   members: TeamMemberSummary[];
 }
