@@ -1,12 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import { useParams } from "next/navigation";
-import { Download } from "lucide-react";
+import { Download, Mic } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { ErrorState } from "@/components/ui/error-state";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { CoachingReportDetail } from "@/domains/coaching/components/CoachingReportDetail";
+import { VoiceCoachPanel } from "@/domains/coaching/components/VoiceCoachPanel";
 import { ReportRating } from "@/domains/coaching/components/ReportRating";
 import { ShareReportButton } from "@/domains/coaching/components/ShareReportButton";
 import { useCoachingReport } from "@/hooks/useCoachingReport";
@@ -36,6 +39,7 @@ export default function ReportDetailPage() {
   const { reportId } = useParams<{ reportId: string }>();
   const { data: report, isLoading, error, refetch } = useCoachingReport(reportId);
   const { data: sub } = useSubscription();
+  const [voiceOpen, setVoiceOpen] = useState(false);
 
   const isPro = sub?.plan === "pro" || sub?.plan === "elite";
 
@@ -90,7 +94,8 @@ export default function ReportDetailPage() {
       {report.status === "complete" && (
         <>
           <CoachingReportDetail report={report} isPro={isPro} />
-          <div className="mt-4">
+
+          <div className="mt-4 flex flex-wrap gap-3">
             <a
               href={`/api/coaching/reports/${report.id}/pdf`}
               download
@@ -99,7 +104,28 @@ export default function ReportDetailPage() {
               <Download className="h-4 w-4" />
               PDF İndir
             </a>
+            {isPro && (
+              <Button
+                variant="secondary"
+                size="sm"
+                className="gap-1.5"
+                onClick={() => setVoiceOpen((o) => !o)}
+              >
+                <Mic className="h-4 w-4" />
+                {voiceOpen ? "Sesli Koçu Kapat" : "Sesli Koçla Konuş"}
+              </Button>
+            )}
           </div>
+
+          {voiceOpen && isPro && (
+            <div className="mt-4 h-[480px]">
+              <VoiceCoachPanel
+                riotAccountId={report.riotAccountId}
+                onClose={() => setVoiceOpen(false)}
+              />
+            </div>
+          )}
+
           <ShareReportButton reportId={report.id} />
           <ReportRating reportId={report.id} currentRating={report.userRating} />
         </>
