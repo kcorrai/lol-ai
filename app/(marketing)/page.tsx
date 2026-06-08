@@ -72,12 +72,12 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <TeamPlanSection />
       <HowItWorksSection />
       <ToolsShowcaseSection />
       <ToolsShowcaseSection2 />
       <FeaturesSection />
       <TestimonialsSection />
-      <TeamPlanSection />
 
       {/* Final CTA */}
       <section className="bg-background py-20">
