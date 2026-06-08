@@ -36,8 +36,10 @@ export async function buildCoachingInput(
     select: { tier: true, division: true, lp: true },
   });
 
-  // Performance profile for the requested matches
-  const profile = await getPlayerPerformanceProfile(riotAccountId, matchIds.length);
+  // Fetch enough history so champion-specific matches (which may not be the most recent)
+  // are within the window. matchIds.length alone is insufficient when the player
+  // alternates champions between sessions.
+  const profile = await getPlayerPerformanceProfile(riotAccountId, 100);
 
   // Filter to only the requested matches (latest N)
   const requestedMatches = profile.recentMatches.filter((m) =>
