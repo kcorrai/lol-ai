@@ -1,4 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
+import * as Sentry from "@sentry/nextjs";
 import { logger } from "@/lib/utils/logger";
 
 const globalForPrismaReadonly = globalThis as unknown as {
@@ -6,7 +7,12 @@ const globalForPrismaReadonly = globalThis as unknown as {
 };
 
 function createReadonlyClient(): PrismaClient {
-  const url = process.env.DATABASE_READONLY_URL ?? process.env.DATABASE_URL;
+  // Read replica uses its own pooler URL when available.
+  const url =
+    process.env.DATABASE_READONLY_POOLER_URL ??
+    process.env.DATABASE_READONLY_URL ??
+    process.env.DATABASE_POOLER_URL ??
+    process.env.DATABASE_URL;
 
   const client = new PrismaClient({
     datasources: { db: { url } },
@@ -26,6 +32,22 @@ function createReadonlyClient(): PrismaClient {
         duration: e.duration,
         query: e.query.slice(0, 200),
       });
+    }
+  });
+
+  client.$use(async (params, next) => {
+    try {
+      return await next(params);
+    } catch (err) {
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        (err.code === "P2024" || err.code === "P1001")
+      ) {
+        Sentry.captureException(err, {
+          tags: { prisma_error_code: err.code, layer: "db_pool_readonly" },
+        });
+      }
+      throw err;
     }
   });
 
