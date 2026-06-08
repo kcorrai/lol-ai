@@ -1,22 +1,8 @@
 import { prisma } from "@/lib/db/prisma";
 import { Errors } from "@/lib/api/errors";
 import { getPlayerPerformanceProfile } from "@/domains/analysis/services/matchAnalysisService";
-import type { CoachingInput, RankBenchmarks, ChampionSummary } from "@/domains/coaching/types/coaching.types";
-
-// Tier-specific averages based on publicly available Riot data
-// Used as context for the AI to benchmark the player against their rank
-const RANK_BENCHMARKS: Record<string, RankBenchmarks> = {
-  IRON:        { tier: "IRON",        avgCSPerMinute: 4.5, avgVisionScore: 18, avgKDA: 1.8, avgWinRate: 50 },
-  BRONZE:      { tier: "BRONZE",      avgCSPerMinute: 5.0, avgVisionScore: 20, avgKDA: 2.0, avgWinRate: 50 },
-  SILVER:      { tier: "SILVER",      avgCSPerMinute: 5.8, avgVisionScore: 22, avgKDA: 2.3, avgWinRate: 50 },
-  GOLD:        { tier: "GOLD",        avgCSPerMinute: 6.5, avgVisionScore: 26, avgKDA: 2.8, avgWinRate: 50 },
-  PLATINUM:    { tier: "PLATINUM",    avgCSPerMinute: 7.0, avgVisionScore: 28, avgKDA: 3.0, avgWinRate: 50 },
-  EMERALD:     { tier: "EMERALD",     avgCSPerMinute: 7.5, avgVisionScore: 30, avgKDA: 3.2, avgWinRate: 50 },
-  DIAMOND:     { tier: "DIAMOND",     avgCSPerMinute: 8.0, avgVisionScore: 32, avgKDA: 3.5, avgWinRate: 50 },
-  MASTER:      { tier: "MASTER",      avgCSPerMinute: 8.5, avgVisionScore: 35, avgKDA: 4.0, avgWinRate: 50 },
-  GRANDMASTER: { tier: "GRANDMASTER", avgCSPerMinute: 9.0, avgVisionScore: 38, avgKDA: 4.5, avgWinRate: 50 },
-  CHALLENGER:  { tier: "CHALLENGER",  avgCSPerMinute: 9.5, avgVisionScore: 40, avgKDA: 5.0, avgWinRate: 50 },
-};
+import { getBenchmarkForTier } from "@/domains/analysis/services/rankBenchmarkService";
+import type { CoachingInput, ChampionSummary } from "@/domains/coaching/types/coaching.types";
 
 export async function buildCoachingInput(
   riotAccountId: string,
@@ -72,7 +58,7 @@ export async function buildCoachingInput(
       avgCSPerMinute: parseFloat((stats.csSum / stats.games).toFixed(2)),
     }));
 
-  const rankBenchmarks = latestRank ? (RANK_BENCHMARKS[latestRank.tier] ?? null) : null;
+  const rankBenchmarks = latestRank ? await getBenchmarkForTier(latestRank.tier) : null;
 
   return {
     player: {
