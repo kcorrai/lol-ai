@@ -62,6 +62,18 @@ export default function CoachingPage() {
     generateReport.mutate({ riotAccountId: primaryId, reportType: "climb_roadmap", matchIds });
   }
 
+  function handleAramReview() {
+    if (!primaryId || !profile) return;
+    const aramMatchIds = profile.recentMatches
+      .filter((m) => m.queueType === "ARAM")
+      .slice(0, 5)
+      .map((m) => m.matchDbId);
+    if (aramMatchIds.length === 0) return;
+    generateReport.mutate({ riotAccountId: primaryId, reportType: "session_review", matchIds: aramMatchIds });
+  }
+
+  const hasAramMatches = (profile?.recentMatches ?? []).some((m) => m.queueType === "ARAM");
+
   if (accountsLoading) return <PageSkeleton />;
 
   if (!accounts || accounts.length === 0) {
@@ -103,6 +115,8 @@ export default function CoachingPage() {
         <CoachingActionsCard
           onSessionReview={handleSessionReview}
           onClimbRoadmap={handleClimbRoadmap}
+          onAramReview={handleAramReview}
+          hasAramMatches={hasAramMatches}
           isPending={generateReport.isPending}
           isDisabled={!profile || profileLoading}
         />

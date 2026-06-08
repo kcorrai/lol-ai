@@ -79,3 +79,21 @@ export async function getBenchmarkForTier(tier: string): Promise<RankBenchmarks 
   const all = await getRankBenchmarks();
   return all[tier] ?? null;
 }
+
+// ARAM benchmarks — CS does not apply; damage share and healing are key metrics.
+// Values are empirically derived from community data (patchpoints.gg / Fandom wiki averages).
+export interface AramBenchmarks {
+  avgKDA: number;
+  avgDamageShare: number;   // fraction (0–1), typical carry champion: 0.20–0.28
+  avgHealingPerMinute: number; // approximate gold equivalent
+  avgVisionScore: number;  // much lower in ARAM (no wards)
+  avgGoldPerMinute: number;
+}
+
+export const ARAM_BENCHMARKS: AramBenchmarks = {
+  avgKDA: 3.2,
+  avgDamageShare: 0.22,
+  avgHealingPerMinute: 80,
+  avgVisionScore: 12,
+  avgGoldPerMinute: 420,
+};

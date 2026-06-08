@@ -51,6 +51,7 @@ export async function getPlayerPerformanceProfile(
     matchPerformances.push({
       matchDbId: p.match.id,
       riotMatchId: p.match.matchId,
+      queueType: p.match.queueType,
       champion: p.championName,
       position: p.position,
       won: p.won,

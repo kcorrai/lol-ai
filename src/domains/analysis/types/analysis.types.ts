@@ -21,6 +21,7 @@ export interface NotableEvent {
 export interface MatchPerformance {
   matchDbId: string;
   riotMatchId: string;
+  queueType: string;
   champion: string;
   position: string;
   won: boolean;

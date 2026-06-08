@@ -37,6 +37,17 @@ export async function buildCoachingInput(
     throw Errors.validation("No valid match data found for the requested matches.");
   }
 
+  // Detect predominant queue type in requested matches
+  const matchQueueTypes = await prisma.match.findMany({
+    where: { id: { in: requestedMatches.map((m) => m.matchDbId) } },
+    select: { id: true, queueType: true },
+  });
+  const queueCounts = matchQueueTypes.reduce<Record<string, number>>((acc, m) => {
+    acc[m.queueType] = (acc[m.queueType] ?? 0) + 1;
+    return acc;
+  }, {});
+  const predominantQueue = Object.entries(queueCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "RANKED_SOLO_5x5";
+
   // Champion pool summary (top 5 by games played in analyzed set)
   const champMap = new Map<string, { wins: number; games: number; kdaSum: number; csSum: number }>();
   for (const m of profile.recentMatches) {
@@ -76,7 +87,7 @@ export async function buildCoachingInput(
     },
     analysisContext: {
       periodGames: requestedMatches.length,
-      queueType: "RANKED_SOLO_5x5",
+      queueType: predominantQueue,
       ...(focusArea ? { focusArea } : {}),
       ...(teamfightContext ? { teamfightContext } : {}),
     },

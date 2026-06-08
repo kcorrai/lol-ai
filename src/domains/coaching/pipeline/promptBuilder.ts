@@ -1,5 +1,14 @@
 import type { CoachingInput, ReportType } from "@/domains/coaching/types/coaching.types";
 
+const ARAM_SYSTEM_ADDENDUM = `
+ARAM-SPECIFIC RULES:
+- CS per minute is irrelevant in ARAM. Never mention it as a weakness.
+- Focus coaching on: teamfight positioning, damage output vs healing/utility balance, ability to peel and engage.
+- ARAM benchmark KDA is ~3.2, damage share ~22%. Use these as baselines.
+- Vision score benchmarks are ~12 (no wards placed). Lower scores are not a weakness.
+- Poke champions and healers have different success metrics than carries — adjust expectations accordingly.
+`;
+
 // The coach persona — defined once, used for all report types.
 // Constraints prevent hallucination; output format enables structured parsing.
 // See AI_ARCHITECTURE.md §4.2 for the rationale behind each rule.
@@ -34,26 +43,38 @@ const FOCUS_PROMPTS: Record<ReportType, string> = {
   climb_roadmap: `Given the player's current stats, rank, and champion pool, create a structured climb plan. Define: what rank they can realistically reach, which champion they should focus on, and what 3 habits to build over the next 50 games.`,
 };
 
+const ARAM_FOCUS_PROMPTS: Record<ReportType, string> = {
+  session_review: `Analyze these ${0} ARAM games. Focus on: (1) teamfight positioning — are they dying early or surviving to deal damage?, (2) damage output vs benchmark (~22% share), (3) peel/engage execution. Do NOT comment on CS.`,
+  champion_focus: `Analyze ARAM performance on the specific champions shown. Identify: champion-specific teamfight role execution, whether the player builds correctly for ARAM (e.g. Grievous Wounds, Ability Haste), and damage/healing contribution.`,
+  climb_roadmap: `For ARAM improvement, build a practice plan around: teamfight fundamentals, champion-specific mechanics, and resource management. Identify which champion the player excels on and which they should avoid.`,
+};
+
 export type BuiltPrompt = {
   systemPrompt: string;
   userMessage: string;
 };
 
 export function buildPrompt(input: CoachingInput, reportType: ReportType): BuiltPrompt {
+  const isAram = input.analysisContext.queueType === "ARAM";
+
   const rankContext = input.player.currentRank
     ? `Player is currently ${input.player.currentRank.tier} ${input.player.currentRank.rank} (${input.player.currentRank.lp} LP).`
     : "Player is unranked or has no recent ranked data.";
 
   const benchmarkContext = input.rankBenchmarks
     ? `${input.rankBenchmarks.tier} average benchmarks — CS/min: ${input.rankBenchmarks.avgCSPerMinute}, Vision score: ${input.rankBenchmarks.avgVisionScore}, KDA: ${input.rankBenchmarks.avgKDA}.`
-    : "";
+    : isAram
+      ? "ARAM benchmarks — KDA: 3.2, damage share: 22%, vision score: ~12."
+      : "";
 
-  const focusInstruction = FOCUS_PROMPTS[reportType].replace(
+  const focusPrompts = isAram ? ARAM_FOCUS_PROMPTS : FOCUS_PROMPTS;
+  const focusInstruction = focusPrompts[reportType].replace(
     "${0}",
     String(input.analysisContext.periodGames)
   );
 
   const contextInjection = [
+    isAram ? "QUEUE TYPE: ARAM — adjust all coaching for ARAM rules." : "",
     rankContext,
     benchmarkContext,
     input.analysisContext.focusArea
@@ -65,7 +86,8 @@ export function buildPrompt(input: CoachingInput, reportType: ReportType): Built
     .filter(Boolean)
     .join("\n");
 
-  const systemPrompt = `${SYSTEM_PROMPT_CORE}\n\nANALYSIS CONTEXT:\n${contextInjection}`;
+  const systemAddendum = isAram ? ARAM_SYSTEM_ADDENDUM : "";
+  const systemPrompt = `${SYSTEM_PROMPT_CORE}${systemAddendum}\n\nANALYSIS CONTEXT:\n${contextInjection}`;
   const userMessage = `Analyze this player's performance data and provide coaching:\n\n${JSON.stringify(input, null, 2)}`;
 
   return { systemPrompt, userMessage };
