@@ -1,14 +1,15 @@
 import OpenAI from "openai";
 import type { AiProvider, AiCompletionOptions, AiCompletionResult, ChatMessage } from "@/lib/ai/types";
+import type { AiTier } from "@/lib/ai/client";
 
-// Default model — update here when upgrading; nowhere else needs to change.
-const DEFAULT_MODEL = "gpt-4o";
+const FULL_MODEL = process.env.AI_FULL_MODEL ?? "gpt-4o";
+const LITE_MODEL = process.env.AI_LITE_MODEL ?? "gpt-4o-mini";
 const DEFAULT_MAX_TOKENS = 2000;
-// Low temperature for factual, structured coaching output (not creative generation).
 const DEFAULT_TEMPERATURE = 0.3;
 
-export function createOpenAiProvider(): AiProvider {
+export function createOpenAiProvider(tier: AiTier = "full"): AiProvider {
   const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const model = tier === "lite" ? LITE_MODEL : FULL_MODEL;
 
   return {
     async complete(
@@ -20,7 +21,7 @@ export function createOpenAiProvider(): AiProvider {
 
       const response = await client.chat.completions.create(
         {
-          model: DEFAULT_MODEL,
+          model,
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: userMessage },
@@ -53,7 +54,7 @@ export function createOpenAiProvider(): AiProvider {
       options: Pick<AiCompletionOptions, "maxTokens" | "temperature"> = {}
     ): AsyncGenerator<string, void, unknown> {
       const stream = await client.chat.completions.create({
-        model: DEFAULT_MODEL,
+        model,
         messages: [
           { role: "system", content: systemPrompt },
           ...messages,

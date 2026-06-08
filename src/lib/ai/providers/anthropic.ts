@@ -1,12 +1,15 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { AiProvider, AiCompletionOptions, AiCompletionResult, ChatMessage } from "@/lib/ai/types";
+import type { AiTier } from "@/lib/ai/client";
 
-const DEFAULT_MODEL = "claude-sonnet-4-6";
+const FULL_MODEL = process.env.AI_FULL_MODEL ?? "claude-sonnet-4-6";
+const LITE_MODEL = process.env.AI_LITE_MODEL ?? "claude-haiku-4-5-20251001";
 const DEFAULT_MAX_TOKENS = 2000;
 const DEFAULT_TEMPERATURE = 0.3;
 
-export function createAnthropicProvider(): AiProvider {
+export function createAnthropicProvider(tier: AiTier = "full"): AiProvider {
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  const model = tier === "lite" ? LITE_MODEL : FULL_MODEL;
 
   return {
     async complete(
@@ -18,7 +21,7 @@ export function createAnthropicProvider(): AiProvider {
 
       const response = await client.messages.create(
         {
-          model: DEFAULT_MODEL,
+          model,
           max_tokens: options.maxTokens ?? DEFAULT_MAX_TOKENS,
           temperature: options.temperature ?? DEFAULT_TEMPERATURE,
           // Instruct JSON output — Anthropic has no response_format param
@@ -48,7 +51,7 @@ export function createAnthropicProvider(): AiProvider {
       options: Pick<AiCompletionOptions, "maxTokens" | "temperature"> = {}
     ): AsyncGenerator<string, void, unknown> {
       const stream = await client.messages.create({
-        model: DEFAULT_MODEL,
+        model,
         max_tokens: options.maxTokens ?? 600,
         temperature: options.temperature ?? 0.7,
         system: systemPrompt,

@@ -142,7 +142,7 @@ async function buildDescription(
     const cached = await getCached(cacheKey);
     if (cached && typeof cached === "string") return cached;
 
-    const ai = getAiClient();
+    const ai = getAiClient("lite");
     const system = "Sen bir League of Legends koçusun. Kısa, motive edici Türkçe görev açıklamaları yazıyorsun.";
     const userMsg = `${type === "daily" ? "Günlük" : "Haftalık"} görev: "${base}". Türkçe, max 2 cümle, motive edici açıklama yaz.`;
     const result = await ai.complete(system, userMsg, { maxTokens: 120 });

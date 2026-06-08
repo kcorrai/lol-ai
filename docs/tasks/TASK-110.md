@@ -1,17 +1,17 @@
-# TASK-110: Billing Sayfasına Team Seat Göstergesi
+﻿# TASK-110 — Coaching Report Status: Polling yerine SSE
 
-## Status: TODO
+**Phase:** 4
+**Status:** Done
+**Priority:** P1
+**Puan:** 89/100
 
-## Amaç
-Team plan kullanıcısı kaç üyesi olduğunu ve kaç slot kaldığını billing sayfasında görsün.
+## Objective
 
-## Yapılacaklar
-- [ ] GET /api/teams/seats endpoint'i — kullanıcının tüm takımlarındaki toplam üye sayısını döndür
-- [ ] Billing sayfasında team plan aktifse "Takım Üyeleri: X/5" göstergesi ekle
-- [ ] Slot doluysa "Takım dolu" uyarısı
-- [ ] useTeamSeats hook'u oluştur
+Kullanıcı rapor oluştururken 45 saniye polling yapıyor. /api/coaching/reports/:id/status endpoint'i SSE ile anlık durum push'una dönüştürülmeli.
 
-## Etkilenen Dosyalar
-- `app/api/teams/seats/route.ts` (yeni)
-- `src/hooks/useTeamSeats.ts` (yeni)
-- `app/(app)/settings/billing/page.tsx`
+## Acceptance Criteria
+
+- /api/coaching/reports/:id/stream SSE endpoint'i eklendi
+- Frontend EventSource ile bağlanır, polling kaldırılır
+- connected, processing, complete, failed event tipleri
+- Bağlantı koparsa otomatik reconnect

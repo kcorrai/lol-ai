@@ -104,7 +104,7 @@ export async function generateTiltRecoveryMessage(
     : "?";
   const champs = recentMatches.map(m => m.championName).join(", ");
 
-  const ai = getAiClient();
+  const ai = getAiClient("lite");
   const result = await ai.complete(
     "Sen empatik ama doğrudan konuşan bir League of Legends koçusun.",
     `Oyuncu ${streak} maç üst üste kaybetti. Şampiyonlar: ${champs}. Ortalama ölüm: ${avgDeaths}.\n` +

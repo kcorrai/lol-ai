@@ -1,15 +1,16 @@
-# TASK-112: Comparison Table ve Plan Limitleri Tutarlılığı
+﻿# TASK-112 — DB Schema Dokümantasyon Senkronizasyonu (Stripe -> LemonSqueezy)
 
-## Status: TODO
+**Phase:** 4
+**Status:** Done
+**Priority:** P2
+**Puan:** 84/100
 
-## Amaç
-Marketing comparison table ile authorization.ts plan limitleri arasındaki uyumsuzlukları gider.
+## Objective
 
-## Yapılacaklar
-- [ ] Comparison table'da team için "Maç Geçmişi" 100 yazıyor ama PLAN_LIMITS.team.matchHistoryDepth = 200 — 200'e güncelle
-- [ ] "Riot Hesabı" team için 3 yazıyor ama PLAN_LIMITS.team.maxRiotAccounts = 5 — 5'e güncelle
-- [ ] Billing sayfasındaki PRO_FEATURES listesini kontrol et, gerçek limitlerle eşleştir
+DATABASE_SCHEMA.md ve API_DESIGN.md Stripe referansları içeriyor. LemonSqueezy'ye geçildi, dokümantasyon güncellenmeli.
 
-## Etkilenen Dosyalar
-- `app/(marketing)/components/PricingComparisonTable.tsx`
-- `app/(app)/settings/billing/page.tsx`
+## Acceptance Criteria
+
+- DATABASE_SCHEMA.md subscriptions tablosu LemonSqueezy alanlarını gösteriyor
+- API_DESIGN.md webhook ve checkout endpoint'leri LemonSqueezy'ye çevrildi
+- .env.example doğru LS env var'larını listeliyor

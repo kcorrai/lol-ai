@@ -1,17 +1,17 @@
-# TASK-111: Abonelik İptali — Takım Askıya Alma
+﻿# TASK-111 — Performans Snapshot Otomasyonu
 
-## Status: TODO
+**Phase:** 4
+**Status:** Done
+**Priority:** P1
+**Puan:** 88/100
 
-## Amaç
-Team plan iptal edildiğinde takımlar askıda kalmasın. Webhook bunu handle etsin.
+## Objective
 
-## Yapılacaklar
-- [ ] LemonSqueezy webhook: subscription_expired / subscription_cancelled event'inde plan "team" ise tüm takımları sil veya üyelikleri kaldır
-- [ ] Takım sahibine e-posta bildirimi gönder (Inngest job)
-- [ ] Takım üyelerine "takımınız kapatıldı" bildirimi
-- [ ] Team dashboard'da askıya alınmış takım için "Plan sona erdi" banner'ı
+performance_snapshots tablosu var ve habitDetection/tilt/milestone servisleri bu tabloyu okuyor. Ama otomatik dolduran Inngest fonksiyonu yok. matchSync tamamlandıktan sonra haftalık snapshot otomatik oluşturulmalı.
 
-## Etkilenen Dosyalar
-- `app/api/lemonsqueezy/webhook/route.ts`
-- `src/domains/teams/services/teamService.ts`
-- Yeni Inngest function: `teamSuspendNotifier`
+## Acceptance Criteria
+
+- matchSync worker tamamlandığında performance/snapshot.requested event'i fire eder
+- Yeni Inngest fonksiyonu haftalık snapshot hesaplayıp DB'ye yazar
+- Haftada en fazla 1 snapshot per account (duplicate koruması)
+- Habit detection bu snapshot'tan otomatik çalışır

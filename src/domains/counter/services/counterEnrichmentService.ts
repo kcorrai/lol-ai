@@ -109,7 +109,7 @@ export async function getEnrichedStaticCounters(
     (e, i, arr) => arr.findIndex((x) => x.champion === e.champion) === i
   );
 
-  const aiClient = getAiClient();
+  const aiClient = getAiClient("lite");
   const response = await aiClient.complete(
     buildEnrichmentSystemPrompt(),
     buildEnrichmentUserPrompt(champion, role, unique),

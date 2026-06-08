@@ -1,19 +1,18 @@
-# TASK-109: Coach/Player Rol Farklaştırması
+﻿# TASK-109 — AI Model Routing: Lite / Full Tier
 
-## Status: TODO
+**Phase:** 4
+**Status:** Done
+**Priority:** P1
+**Puan:** 91/100
 
-## Amaç
-COACH ve PLAYER rolleri DB'de var ama feature farkı yok. Coach'lara özel yetkiler ekle.
+## Objective
 
-## Yapılacaklar
-- [ ] PLAYER üyeler team dashboard'u görebilir ama üye ekleyemez/çıkaramaz (zaten var ama UI'da belirsiz)
-- [ ] COACH rolü: üye davet edebilir (şu an sadece OWNER yapabiliyor — bunu COACH'a da aç)
-- [ ] Üye listesinde rol değiştirme UI (OWNER → üyenin rolünü COACH/PLAYER yapabilir)
-- [ ] PATCH /api/teams/[teamId]/members/[userId] endpoint'i ekle (rol güncelleme)
-- [ ] Team sayfasında "Sen Coach'sun" / "Sen Oyuncu'sun" bilgi bandı
+Tüm AI çağrıları gpt-4o kullanıyor. Challenge açıklaması, tilt mesajı, recap özeti gibi hafif görevler için gpt-4o-mini kullanarak AI maliyetini %60-70 düşür. getAiClient() factory'sine tier parametresi ekle.
 
-## Etkilenen Dosyalar
-- `app/api/teams/[teamId]/members/[userId]/route.ts` (yeni PATCH endpoint)
-- `src/domains/teams/services/teamService.ts` (assertCoachAccess güncelle)
-- `src/domains/teams/components/TeamDashboard.tsx`
-- `app/(app)/teams/[teamId]/members/page.tsx`
+## Acceptance Criteria
+
+- getAiClient("lite") gpt-4o-mini döner
+- getAiClient("full") veya getAiClient() gpt-4o döner
+- Hafif görevler (challenge, tilt, recap, counter desc) lite kullanır
+- Coaching report full kullanır
+- AI_LITE_MODEL env var eklenir

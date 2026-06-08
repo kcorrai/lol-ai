@@ -52,7 +52,7 @@ async function generateSummary(deaths: DeathPoint[]): Promise<string> {
   const prompt = `Oyuncu son maçlarda ${deaths.length} kez öldü. Ölümlerin ${pct}%'si ${topRegion[0]}'nde gerçekleşiyor. Diğer ölüm dağılımı: ${sorted.slice(1).map(([r, c]) => `${r}: ${Math.round((c / deaths.length) * 100)}%`).join(", ")}. Türkçe, 2 cümle, somut pozisyon tavsiyesi.`;
 
   try {
-    const result = await getAiClient().complete(
+    const result = await getAiClient("lite").complete(
       "Sen bir LoL koçusun. Oyuncunun ölüm haritası verisini analiz ediyorsun.",
       prompt,
       { maxTokens: 120 }

@@ -54,7 +54,7 @@ async function aiSummary(data: Omit<RecapData, "aiSummary">): Promise<string> {
   const prompt = `Oyuncu ${data.seasonLabel} sezonunda ${data.totalMatches} maç oynadı. Kazanma oranı %${data.winRate}. En iyi şampiyonu ${data.topChampion.name} (%${data.topChampion.winRate} WR). ${data.startRank}'tan ${data.endRank}'a yükseldi. LP değişimi: ${data.lpDelta > 0 ? "+" : ""}${data.lpDelta}. Türkçe, 3 cümle, motive edici sezon değerlendirmesi. Güçlü yön ve geliştirme alanı belirt.`;
 
   try {
-    const result = await getAiClient().complete(
+    const result = await getAiClient("lite").complete(
       "Sen bir LoL koçusun. Sezon değerlendirmesi yazıyorsun.",
       prompt,
       { maxTokens: 200, temperature: 0.7 }
