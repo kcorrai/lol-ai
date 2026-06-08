@@ -14,13 +14,18 @@ export async function generateStaticParams() {
   return champions.map((c) => ({ name: c.id }));
 }
 
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const champ = await fetchChampionDetail(params.name);
   if (!champ) return { title: "Şampiyon bulunamadı" };
+  const pageUrl = `${BASE_URL}/champions/${params.name}`;
   return {
-    title: `${champ.name} Rehberi — LoL AI Coach`,
-    description: `${champ.name} — ${champ.title}. Counter pick'ler, build önerileri ve AI koç analizleri.`,
+    title: `${champ.name} Counter Rehberi — LoL AI Coach`,
+    description: `${champ.name} nasıl counter'lanır? ${champ.name} — ${champ.title}. Counter pick'ler, build önerileri ve AI koç analizleri.`,
+    alternates: { canonical: pageUrl },
     openGraph: {
+      url: pageUrl,
       images: [`https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${normalizeChampionKey(champ.name)}_0.jpg`],
     },
   };
@@ -32,9 +37,39 @@ export default async function ChampionDetailPage({ params }: Props) {
 
   const splashUrl = `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${normalizeChampionKey(champ.name)}_0.jpg`;
   const tips = [...(champ.allytips ?? []), ...(champ.enemytips ?? [])].slice(0, 3);
+  const counterTips = (champ.enemytips ?? []).slice(0, 4);
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `${champ.name} nasıl counter'lanır?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: counterTips.length > 0
+            ? counterTips.join(" ")
+            : `${champ.name}'a karşı erken baskı oluşturun ve zayıf noktalarını AI koçunuzla analiz edin.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `${champ.name} hangi pozisyonda oynanır?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `${champ.name} genellikle ${champ.tags.join(" ve ")} rollerinde oynanır.`,
+        },
+      },
+    ],
+  };
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       {/* Breadcrumb */}
       <p className="mb-6 text-xs text-text-muted">
         <Link href="/champions" className="hover:text-accent">Şampiyonlar</Link>
