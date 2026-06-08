@@ -45,10 +45,10 @@ export function ChampionFocusButton({ riotAccountId, championName }: ChampionFoc
   if (done) {
     return (
       <button
-        onClick={() => router.push("/dashboard")}
+        onClick={() => router.push("/coaching")}
         className="mt-2 w-full rounded-md bg-success/10 px-2 py-1.5 text-xs font-medium text-success hover:bg-success/20 transition-colors"
       >
-        Rapor kuyruğa alındı — dashboard&apos;da görüntüle →
+        Rapor kuyruğa alındı — raporlarda görüntüle →
       </button>
     );
   }
