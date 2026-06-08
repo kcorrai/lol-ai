@@ -35,7 +35,7 @@ const PRO_FEATURES = [
 const TEAM_FEATURES = [
   "Tüm Pro özellikleri",
   "5'e kadar takım oluşturma",
-  "50 üyeye kadar takım",
+  "5 kişilik takım (tam kadro)",
   "Takım performans panosu",
   "Coach ve oyuncu rolleri",
   "E-posta ile takım davet sistemi",

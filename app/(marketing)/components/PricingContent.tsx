@@ -35,7 +35,7 @@ const PRO_EXCLUSIVE_FEATURES = [
 const TEAM_BASE_FEATURES = [
   { label: "Tüm Pro özellikleri" },
   { label: "5'e kadar takım oluşturma" },
-  { label: "50 üyeye kadar takım" },
+  { label: "5 kişilik takım (tam kadro)" },
 ];
 
 const TEAM_EXCLUSIVE_FEATURES = [

@@ -38,7 +38,7 @@ const ROWS: FeatureRow[] = [
   { feature: "Üye Başına Performans",     free: false,          pro: false,          team: true,          category: "Team Exclusive" },
   { feature: "Coach / Oyuncu Rolleri",    free: false,          pro: false,          team: true,          category: "Team Exclusive" },
   { feature: "E-posta Davet Sistemi",     free: false,          pro: false,          team: true,          category: "Team Exclusive" },
-  { feature: "Takım Büyüklüğü",          free: false,          pro: false,          team: "50 üye",      category: "Team Exclusive" },
+  { feature: "Takım Büyüklüğü",          free: false,          pro: false,          team: "5 kişi",      category: "Team Exclusive" },
 ];
 
 function Cell({ value, variant }: { value: CellValue; variant: "free" | "pro" | "team" }) {

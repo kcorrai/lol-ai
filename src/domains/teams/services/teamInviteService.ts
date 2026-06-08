@@ -8,7 +8,7 @@ import { assertOwnerAccess, assertTeamPlan } from "@/domains/teams/services/team
 import type { InviteMemberInput } from "@/domains/teams/types/teams.types";
 
 const INVITE_TTL_HOURS = 48;
-const MAX_MEMBERS = 20;
+const MAX_MEMBERS = 5;
 
 function generateToken(): string {
   return randomBytes(24).toString("hex");
