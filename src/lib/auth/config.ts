@@ -80,17 +80,30 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         const dbUser = await prisma.user.findUnique({
           where: { id: user.id },
-          select: { emailVerified: true },
+          select: { emailVerified: true, sessionVersion: true },
         });
         token.emailVerified = dbUser?.emailVerified ?? null;
+        token.sessionVersion = dbUser?.sessionVersion ?? 0;
       }
-      // Re-fetch after explicit session update (e.g., post email verification)
+      // Re-fetch after explicit session update (e.g., post email verification, session revocation)
       if (trigger === "update" && token.id) {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id },
-          select: { emailVerified: true },
+          select: { emailVerified: true, sessionVersion: true },
         });
         token.emailVerified = dbUser?.emailVerified ?? null;
+        token.sessionVersion = dbUser?.sessionVersion ?? 0;
+      }
+      // Validate sessionVersion to support "sign out all devices"
+      if (token.id && token.sessionVersion !== undefined) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { sessionVersion: true },
+        });
+        // If the DB version is ahead of the token's version, this session was revoked
+        if (dbUser && dbUser.sessionVersion > (token.sessionVersion as number)) {
+          return null as never;
+        }
       }
       return token;
     },
@@ -119,6 +132,18 @@ export const authOptions: NextAuthOptions = {
         update: {},
         create: { userId: user.id },
       });
+    },
+
+    // Track active sessions for the session management UI
+    async signIn({ user }) {
+      await prisma.userSession.create({
+        data: {
+          userId: user.id,
+          // userAgent and ip are available in the request, but events don't
+          // receive the request object. Sessions are enriched on first API call
+          // via the /api/sessions/touch endpoint.
+        },
+      }).catch(() => { /* non-critical */ });
     },
   },
 };

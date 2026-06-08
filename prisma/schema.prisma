@@ -126,8 +126,11 @@ model User {
   totpSecret       String?   // AES-encrypted TOTP secret
   totpBackupCodes  String[]  // bcrypt-hashed backup codes
 
+  sessionVersion   Int       @default(0) // incremented to invalidate all active sessions
+
   accounts         Account[]
   sessions         Session[]
+  userSessions     UserSession[]
   profile          Profile?
   subscription     Subscription?
   riotAccounts     RiotAccount[]
@@ -945,4 +948,20 @@ model PushSubscription {
 
   @@index([userId])
   @@map("push_subscriptions")
+}
+
+// Tracks active JWT sessions for per-device revocation
+model UserSession {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @db.Uuid
+  sessionVersion Int      @default(0)
+  userAgent      String?
+  ipAddress      String?
+  lastActiveAt   DateTime @default(now())
+  createdAt      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("user_sessions")
 }
