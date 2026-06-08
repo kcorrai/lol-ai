@@ -2,6 +2,7 @@ import { inngest } from "@/inngest/client";
 import { prisma } from "@/lib/db/prisma";
 import { generateTiltRecoveryMessage } from "@/domains/analysis/services/tiltService";
 import { logger } from "@/lib/utils/logger";
+import { sendPushToUser } from "@/lib/push/pushService";
 
 export interface TiltCheckPayload {
   riotAccountId: string;
@@ -73,6 +74,14 @@ export const tiltStreakCheck = inngest.createFunction(
     await prisma.tiltAlert.create({
       data: { userId, riotAccountId, message, streakLength: 3 },
     });
+
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
+    await sendPushToUser(userId, {
+      title: "Tilt Uyarısı — Mola Ver!",
+      body: message.slice(0, 100),
+      url: `${appUrl}/dashboard`,
+      tag: `tilt-${userId}`,
+    }).catch(() => { /* non-blocking */ });
 
     logger.info(`[tiltStreakCheck] Alert created for userId=${userId.slice(0, 8)}…`);
     return { sent: true, streakLength: 3 };

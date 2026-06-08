@@ -6,6 +6,7 @@ import { buildRankChangeEmail } from "@/lib/email/templates/rankChange";
 import { sendDiscordWebhook } from "@/lib/discord/webhookService";
 import { rankUpEmbed } from "@/lib/discord/embeds";
 import { decryptString } from "@/lib/crypto/encrypt";
+import { sendPushToUser } from "@/lib/push/pushService";
 
 const TIER_ORDER: Record<string, number> = {
   IRON: 0, BRONZE: 1, SILVER: 2, GOLD: 3, PLATINUM: 4,
@@ -60,6 +61,7 @@ export const sendRankChangeEmail = inngest.createFunction(
         tagLine: true,
         user: {
           select: {
+            id: true,
             email: true,
             emailOptOut: true,
             discordIntegration: { select: { webhookUrl: true, notifyRankUp: true } },
@@ -100,6 +102,14 @@ export const sendRankChangeEmail = inngest.createFunction(
       from: formatRank(payload.previousTier, payload.previousDivision, payload.previousLp),
       to: formatRank(payload.newTier, payload.newDivision, payload.newLp),
     });
+
+    const newRankLabel = formatRank(payload.newTier, payload.newDivision, payload.newLp);
+    await sendPushToUser(account.user.id, {
+      title: type === "promotion" ? "Rank Yükseldin!" : "Rank Düştün",
+      body: `${account.gameName} artık ${newRankLabel}`,
+      url: `${appUrl}/dashboard`,
+      tag: `rank-${payload.riotAccountId}`,
+    }).catch(() => { /* non-blocking */ });
 
     // Discord webhook for rank changes (promotion only)
     const discord = account?.user?.discordIntegration;

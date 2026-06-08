@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
 import { getEmailClient, EMAIL_FROM } from "@/lib/email/client";
 import { buildReportReadyEmail } from "@/lib/email/templates/reportReady";
+import { sendPushToUser } from "@/lib/push/pushService";
 
 export interface ReportCompletedPayload {
   reportId: string;
@@ -23,7 +24,7 @@ export const sendReportReadyEmail = inngest.createFunction(
       where: { id: riotAccountId },
       select: {
         gameName: true,
-        user: { select: { email: true, emailOptOut: true } },
+        user: { select: { id: true, email: true, emailOptOut: true } },
       },
     });
     if (!account?.user?.email) return { skipped: "no_email" };
@@ -53,6 +54,14 @@ export const sendReportReadyEmail = inngest.createFunction(
     }
 
     logger.info("[sendReportReadyEmail] Sent", { reportId, gameName: account.gameName });
+
+    await sendPushToUser(account.user.id, {
+      title: "Koçluk Raporun Hazır!",
+      body: `${account.gameName} için ${reportType} raporu tamamlandı.`,
+      url: `${appUrl}/coaching/${reportId}`,
+      tag: `report-${reportId}`,
+    }).catch(() => { /* push failure must not block email result */ });
+
     return { sent: true };
   }
 );

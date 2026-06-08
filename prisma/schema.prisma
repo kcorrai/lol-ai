@@ -140,6 +140,7 @@ model User {
   ownedTeams          Team[]     @relation("TeamOwner")
   teamMemberships     TeamMember[]
   auditLogs           AuditLog[]
+  pushSubscriptions   PushSubscription[]
 
   @@map("users")
 }
@@ -902,4 +903,23 @@ model TeamInvite {
   @@index([teamId])
   @@index([token])
   @@map("team_invites")
+}
+
+// ============================================================
+// WEB PUSH SUBSCRIPTIONS
+// ============================================================
+
+model PushSubscription {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("push_subscriptions")
 }

@@ -72,6 +72,19 @@ This document records every production and development dependency added after th
 
 ---
 
+### `web-push` + `@types/web-push` (v3.x)
+
+**Added in:** TASK-135
+**Purpose:** Server-side VAPID authentication and AES-128-GCM encrypted push notification delivery. Used by `src/lib/push/pushService.ts` to send notifications to browsers that have subscribed via the Web Push API. Also handles stale subscription cleanup (HTTP 404/410 responses).
+**Why this, not alternatives:**
+- Manual ECDH + AES-128-GCM: implementing the Web Push Protocol from scratch is ~400 lines of crypto; `web-push` is the canonical Node.js implementation.
+- Firebase Cloud Messaging: requires Firebase SDK, introduces vendor lock-in, and requires users to have a Google account — unnecessary given our direct VAPID support.
+- Pusher / Ably: real-time channels, not needed here — we only push event-driven alerts.
+
+**Scope:** Used exclusively in `src/lib/push/pushService.ts`.
+
+---
+
 ### `fflate` (transitive, v0.8.x)
 
 **Added in:** TASK-132
