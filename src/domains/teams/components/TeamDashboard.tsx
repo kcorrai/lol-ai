@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Users, TrendingUp, UserPlus, TrendingDown, Minus, BarChart2 } from "lucide-react";
+import { Users, TrendingUp, UserPlus, TrendingDown, Minus, BarChart2, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TeamMemberCard } from "@/domains/teams/components/TeamMemberCard";
 import { TeamComparisonTable } from "@/domains/teams/components/TeamComparisonTable";
 import { TeamStatsPanel } from "@/domains/teams/components/TeamStatsPanel";
+import { TeamLineup } from "@/domains/teams/components/TeamLineup";
 import { PendingInvitesList } from "@/domains/teams/components/PendingInvitesList";
 import { InviteModal } from "@/domains/teams/components/InviteModal";
 import { useTeamDashboard, useRemoveTeamMember, useChangeTeamMemberRole } from "@/hooks/useTeamDashboard";
@@ -19,7 +20,7 @@ interface Props {
 
 export function TeamDashboard({ teamId, isCoach }: Props) {
   const [showInvite, setShowInvite] = useState(false);
-  const [activeTab, setActiveTab] = useState<"overview" | "comparison" | "stats">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "comparison" | "stats" | "lineup">("overview");
   const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useTeamDashboard(teamId);
@@ -118,6 +119,13 @@ export function TeamDashboard({ teamId, isCoach }: Props) {
           <TrendingUp className="inline mr-1.5 h-3.5 w-3.5" />
           İstatistikler
         </button>
+        <button
+          onClick={() => setActiveTab("lineup")}
+          className={`flex-1 rounded-md py-1.5 text-xs font-medium transition-colors ${activeTab === "lineup" ? "bg-surface text-text shadow-sm" : "text-text-muted hover:text-text"}`}
+        >
+          <LayoutGrid className="inline mr-1.5 h-3.5 w-3.5" />
+          Kadro
+        </button>
       </div>
 
       {/* Member list */}
@@ -152,6 +160,8 @@ export function TeamDashboard({ teamId, isCoach }: Props) {
       {activeTab === "comparison" && <TeamComparisonTable teamId={teamId} />}
 
       {activeTab === "stats" && <TeamStatsPanel teamId={teamId} />}
+
+      {activeTab === "lineup" && <TeamLineup teamId={teamId} members={members} canManage={isCoach} />}
 
       {/* Pending invites — coach only */}
       {isCoach && <PendingInvitesList teamId={teamId} />}
