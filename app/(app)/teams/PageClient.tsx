@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
 import { Users, Plus, Crown, Shield, Swords, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { useTeams } from "@/hooks/useTeams";
 import type { TeamSummary, TeamRole } from "@/domains/teams/types/teams.types";
 
 const ROLE_LABELS: Record<TeamRole, string> = { OWNER: "Sahip", COACH: "Koç", PLAYER: "Oyuncu" };
@@ -15,13 +15,6 @@ const ROLE_STYLES: Record<TeamRole, string> = {
   COACH: "text-purple-400 border-purple-400/40 bg-purple-400/10",
   PLAYER: "text-text-muted border-border bg-surface-3",
 };
-
-async function fetchMyTeams(): Promise<TeamSummary[]> {
-  const res = await fetch("/api/teams");
-  if (!res.ok) throw new Error("Takımlar yüklenemedi");
-  const body = await res.json() as { data: TeamSummary[] };
-  return body.data;
-}
 
 function TeamCard({ team }: { team: TeamSummary }) {
   const Icon = ROLE_ICONS[team.myRole] ?? Swords;
@@ -67,10 +60,7 @@ function TeamCard({ team }: { team: TeamSummary }) {
 }
 
 export default function TeamsPage() {
-  const { data: teams, isLoading, error } = useQuery({
-    queryKey: ["my-teams"],
-    queryFn: fetchMyTeams,
-  });
+  const { data: teams, isLoading, error } = useTeams();
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-4 py-6">

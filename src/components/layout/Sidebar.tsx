@@ -24,6 +24,7 @@ const NAV_MAIN = [
   { href: "/milestone",    icon: CalendarDays,    label: "Milestone" },
   { href: "/analysis",      icon: Map,             label: "Isı Haritası" },
   { href: "/recap",         icon: Film,            label: "Sezon Recap" },
+  { href: "/teams",         icon: Users,           label: "Takımlar" },
 ] as const;
 
 const NAV_TOOLS = [
