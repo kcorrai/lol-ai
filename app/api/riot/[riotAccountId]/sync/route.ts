@@ -1,9 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { withAuth } from "@/lib/api/withAuth";
 import { assertOwnsRiotAccount } from "@/lib/auth/authorization";
 import { prisma } from "@/lib/db/prisma";
 import { inngest } from "@/inngest/client";
 import { Errors } from "@/lib/api/errors";
+import { apiSuccess } from "@/lib/api/response";
 import { checkRateLimit, rateLimitResponse } from "@/lib/api/rateLimit";
 import type { MatchSyncPayload } from "@/inngest/functions/matchSync";
 
@@ -27,7 +28,7 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
 
   // Prevent duplicate sync when one is already in progress
   if (account.syncStatus === "RUNNING" || account.syncStatus === "PENDING") {
-    return NextResponse.json({ status: account.syncStatus }, { status: 202 });
+    return apiSuccess({ status: account.syncStatus }, 202);
   }
 
   await prisma.riotAccount.update({
@@ -40,5 +41,5 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
     data: { riotAccountId, userId } satisfies MatchSyncPayload,
   });
 
-  return NextResponse.json({ status: "pending", riotAccountId }, { status: 202 });
+  return apiSuccess({ status: "pending", riotAccountId }, 202);
 });
