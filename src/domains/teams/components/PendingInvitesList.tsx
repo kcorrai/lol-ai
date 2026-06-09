@@ -1,24 +1,11 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Mail, X, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { PendingInvite } from "@/domains/teams/types/teams.types";
+import { usePendingInvites, useCancelInvite } from "@/hooks/useTeamInvites";
 
 interface Props {
   teamId: string;
-}
-
-async function fetchInvites(teamId: string): Promise<PendingInvite[]> {
-  const res = await fetch(`/api/teams/${teamId}/invites`);
-  if (!res.ok) throw new Error("Davetler yüklenemedi");
-  const body = await res.json() as { data: PendingInvite[] };
-  return body.data;
-}
-
-async function cancelInvite(teamId: string, inviteId: string): Promise<void> {
-  const res = await fetch(`/api/teams/${teamId}/invites/${inviteId}`, { method: "DELETE" });
-  if (!res.ok) throw new Error("Davet iptal edilemedi");
 }
 
 const ROLE_LABELS: Record<string, string> = { COACH: "Koç", PLAYER: "Oyuncu" };
@@ -32,21 +19,8 @@ function hoursLeft(expiresAt: string): string {
 }
 
 export function PendingInvitesList({ teamId }: Props) {
-  const queryClient = useQueryClient();
-
-  const { data: invites, isLoading } = useQuery({
-    queryKey: ["team-invites", teamId],
-    queryFn: () => fetchInvites(teamId),
-    staleTime: 30_000,
-  });
-
-  const cancel = useMutation({
-    mutationFn: (inviteId: string) => cancelInvite(teamId, inviteId),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ["team-invites", teamId] });
-      void queryClient.invalidateQueries({ queryKey: ["team-dashboard", teamId] });
-    },
-  });
+  const { data: invites, isLoading } = usePendingInvites(teamId);
+  const cancel = useCancelInvite(teamId);
 
   if (isLoading || !invites || invites.length === 0) return null;
 

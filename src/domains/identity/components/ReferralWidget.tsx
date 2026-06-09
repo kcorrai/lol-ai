@@ -1,20 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { apiFetch } from "@/lib/api/fetcher";
+import { useReferralStats } from "@/hooks/useReferralStats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import type { ReferralStats } from "@/domains/identity/services/referralService";
 
 export function ReferralWidget() {
   const [copied, setCopied] = useState(false);
 
-  const { data, isLoading } = useQuery<ReferralStats>({
-    queryKey: ["referral-stats"],
-    queryFn: () => apiFetch("/api/referral/stats"),
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data, isLoading } = useReferralStats();
 
   const appUrl =
     typeof window !== "undefined"

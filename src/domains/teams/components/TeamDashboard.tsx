@@ -1,63 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Users, TrendingUp, UserPlus, TrendingDown, Minus, BarChart2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TeamMemberCard } from "@/domains/teams/components/TeamMemberCard";
 import { PendingInvitesList } from "@/domains/teams/components/PendingInvitesList";
 import { InviteModal } from "@/domains/teams/components/InviteModal";
-import type { TeamDashboardData } from "@/domains/teams/types/teams.types";
+import { useTeamDashboard, useRemoveTeamMember, useChangeTeamMemberRole } from "@/hooks/useTeamDashboard";
 
 interface Props {
   teamId: string;
   isCoach: boolean;
 }
 
-async function fetchDashboard(teamId: string): Promise<TeamDashboardData> {
-  const res = await fetch(`/api/teams/${teamId}/dashboard`);
-  if (!res.ok) throw new Error("Dashboard yüklenemedi");
-  const body = await res.json() as { data: TeamDashboardData };
-  return body.data;
-}
-
-async function removeMember(teamId: string, userId: string): Promise<void> {
-  const res = await fetch(`/api/teams/${teamId}/members/${userId}`, { method: "DELETE" });
-  if (!res.ok) throw new Error("Üye çıkarılamadı");
-}
-
-async function changeRole(teamId: string, userId: string, role: "COACH" | "PLAYER"): Promise<void> {
-  const res = await fetch(`/api/teams/${teamId}/members/${userId}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ role }),
-  });
-  if (!res.ok) throw new Error("Rol değiştirilemedi");
-}
-
 export function TeamDashboard({ teamId, isCoach }: Props) {
-  const queryClient = useQueryClient();
   const [showInvite, setShowInvite] = useState(false);
-  const invalidate = () => { void queryClient.invalidateQueries({ queryKey: ["team-dashboard", teamId] }); };
-
   const [activeTab, setActiveTab] = useState<"overview" | "comparison">("overview");
+  const queryClient = useQueryClient();
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["team-dashboard", teamId],
-    queryFn: () => fetchDashboard(teamId),
-  });
-
-  const removeM = useMutation({
-    mutationFn: (userId: string) => removeMember(teamId, userId),
-    onSuccess: invalidate,
-  });
-
-  const roleM = useMutation({
-    mutationFn: ({ userId, role }: { userId: string; role: "COACH" | "PLAYER" }) =>
-      changeRole(teamId, userId, role),
-    onSuccess: invalidate,
-  });
+  const { data, isLoading, error } = useTeamDashboard(teamId);
+  const removeM = useRemoveTeamMember(teamId);
+  const roleM = useChangeTeamMemberRole(teamId);
 
   if (isLoading) {
     return (
@@ -225,7 +190,7 @@ export function TeamDashboard({ teamId, isCoach }: Props) {
           teamId={teamId}
           onClose={() => setShowInvite(false)}
           onInvited={() => {
-            invalidate();
+            void queryClient.invalidateQueries({ queryKey: ["team-dashboard", teamId] });
             void queryClient.invalidateQueries({ queryKey: ["team-invites", teamId] });
           }}
         />
