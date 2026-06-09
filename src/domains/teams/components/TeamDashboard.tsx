@@ -6,6 +6,8 @@ import { Users, TrendingUp, UserPlus, TrendingDown, Minus, BarChart2 } from "luc
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TeamMemberCard } from "@/domains/teams/components/TeamMemberCard";
+import { TeamComparisonTable } from "@/domains/teams/components/TeamComparisonTable";
+import { TeamStatsPanel } from "@/domains/teams/components/TeamStatsPanel";
 import { PendingInvitesList } from "@/domains/teams/components/PendingInvitesList";
 import { InviteModal } from "@/domains/teams/components/InviteModal";
 import { useTeamDashboard, useRemoveTeamMember, useChangeTeamMemberRole } from "@/hooks/useTeamDashboard";
@@ -17,7 +19,7 @@ interface Props {
 
 export function TeamDashboard({ teamId, isCoach }: Props) {
   const [showInvite, setShowInvite] = useState(false);
-  const [activeTab, setActiveTab] = useState<"overview" | "comparison">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "comparison" | "stats">("overview");
   const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useTeamDashboard(teamId);
@@ -109,6 +111,13 @@ export function TeamDashboard({ teamId, isCoach }: Props) {
           <BarChart2 className="inline mr-1.5 h-3.5 w-3.5" />
           Karşılaştırma
         </button>
+        <button
+          onClick={() => setActiveTab("stats")}
+          className={`flex-1 rounded-md py-1.5 text-xs font-medium transition-colors ${activeTab === "stats" ? "bg-surface text-text shadow-sm" : "text-text-muted hover:text-text"}`}
+        >
+          <TrendingUp className="inline mr-1.5 h-3.5 w-3.5" />
+          İstatistikler
+        </button>
       </div>
 
       {/* Member list */}
@@ -140,47 +149,9 @@ export function TeamDashboard({ teamId, isCoach }: Props) {
         )
       )}
 
-      {activeTab === "comparison" && (
-        <div className="rounded-xl border border-border bg-surface overflow-hidden">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b border-border text-[11px] text-text-muted">
-                <th className="px-4 py-3 text-left">Oyuncu</th>
-                <th className="px-4 py-3 text-center">Rank</th>
-                <th className="px-4 py-3 text-center">7g WR</th>
-                <th className="px-4 py-3 text-center">KDA</th>
-                <th className="px-4 py-3 text-center">CS/dk</th>
-                <th className="px-4 py-3 text-center">Vision</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {members.map((m) => (
-                <tr key={m.userId} className="hover:bg-surface-2/50">
-                  <td className="px-4 py-3">
-                    <p className="font-medium text-text">{m.gameName}</p>
-                    <p className="text-[10px] text-text-muted capitalize">{m.role.toLowerCase()}</p>
-                  </td>
-                  <td className="px-4 py-3 text-center">
-                    {m.rank ? (
-                      <span className="text-accent font-semibold">{m.rank.tier} {m.rank.division}</span>
-                    ) : <span className="text-text-muted">—</span>}
-                  </td>
-                  <td className="px-4 py-3 text-center">
-                    {m.winRate7d !== null ? (
-                      <span className={m.winRate7d >= 55 ? "text-success font-semibold" : m.winRate7d < 45 ? "text-danger" : "text-text"}>
-                        %{m.winRate7d}
-                      </span>
-                    ) : <span className="text-text-muted">—</span>}
-                  </td>
-                  <td className="px-4 py-3 text-center text-text">{m.avgKDA7d ?? "—"}</td>
-                  <td className="px-4 py-3 text-center text-text">{m.avgCSPerMinute7d ?? "—"}</td>
-                  <td className="px-4 py-3 text-center text-text">{m.avgVisionScore7d ?? "—"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      {activeTab === "comparison" && <TeamComparisonTable members={members} />}
+
+      {activeTab === "stats" && <TeamStatsPanel teamId={teamId} />}
 
       {/* Pending invites — coach only */}
       {isCoach && <PendingInvitesList teamId={teamId} />}

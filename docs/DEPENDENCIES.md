@@ -6,6 +6,20 @@ This document records every production and development dependency added after th
 
 ## Production Dependencies
 
+### `recharts` (v2.x)
+
+**Added in:** TASK-156
+**Purpose:** Team stats trend charts — win rate over time (line chart) and per-member sparklines on the team dashboard. Composable React components with SSR-safe rendering.
+**Why this, not alternatives:**
+- Chart.js / react-chartjs-2: imperative API, less idiomatic in React, heavier bundle.
+- Visx: low-level primitives, too much boilerplate for simple line/area charts.
+- Tremor: opinionated design system that would conflict with the project's custom Tailwind theme.
+- Native SVG: viable but time-consuming to build accessible, responsive charts from scratch.
+
+**Scope:** `src/domains/teams/components/TeamWinRateTrend.tsx` and `TeamStatsPanel.tsx` only.
+
+---
+
 ### `posthog-js` + `posthog-node` (v1.x / v5.x)
 
 **Added in:** TASK-114

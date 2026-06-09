@@ -1,0 +1,92 @@
+"use client";
+
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { TeamWinRateTrend } from "@/domains/teams/components/TeamWinRateTrend";
+import { useTeamStats } from "@/hooks/useTeamStats";
+import { cn } from "@/lib/utils";
+
+const RANGES = [
+  { value: "7d", label: "7 Gün" },
+  { value: "30d", label: "30 Gün" },
+  { value: "90d", label: "90 Gün" },
+] as const;
+
+interface TeamStatsPanelProps {
+  teamId: string;
+}
+
+export function TeamStatsPanel({ teamId }: TeamStatsPanelProps) {
+  const [range, setRange] = useState<"7d" | "30d" | "90d">("30d");
+  const { data, isLoading, error } = useTeamStats(teamId, range);
+
+  return (
+    <div className="space-y-4">
+      {/* Range selector */}
+      <div className="flex items-center gap-2">
+        {RANGES.map((r) => (
+          <button
+            key={r.value}
+            onClick={() => setRange(r.value)}
+            className={cn(
+              "rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors",
+              range === r.value
+                ? "bg-blue-500/20 text-blue-400"
+                : "text-text-muted hover:bg-white/5 hover:text-text"
+            )}
+          >
+            {r.label}
+          </button>
+        ))}
+        {data && (
+          <span className="ml-auto text-xs text-text-muted">
+            {data.totalGames} maç · Ort. %{data.avgWinRate ?? "—"}
+          </span>
+        )}
+      </div>
+
+      {/* Chart */}
+      <div className="rounded-xl border border-border bg-surface p-4">
+        <p className="mb-3 text-xs font-bold uppercase tracking-wider text-text-muted/60">Takım Win Rate Trendi</p>
+        {isLoading && (
+          <div className="flex h-40 items-center justify-center">
+            <Loader2 className="h-5 w-5 animate-spin text-text-muted" />
+          </div>
+        )}
+        {error && (
+          <p className="flex h-40 items-center justify-center text-sm text-danger">
+            {error instanceof Error ? error.message : "Hata oluştu"}
+          </p>
+        )}
+        {data && <TeamWinRateTrend data={data.teamWinRateTrend} />}
+      </div>
+
+      {/* Member sparklines */}
+      {data && data.memberTrends.filter((m) => m.points.length > 0).length > 0 && (
+        <div className="grid gap-3 sm:grid-cols-2">
+          {data.memberTrends
+            .filter((m) => m.points.length > 0)
+            .map((member) => {
+              const last = member.points.at(-1);
+              return (
+                <div key={member.gameName} className="rounded-xl border border-border bg-surface p-3">
+                  <div className="mb-2 flex items-center justify-between">
+                    <p className="text-xs font-semibold text-text">{member.gameName}</p>
+                    {last && (
+                      <span className={cn(
+                        "text-xs font-bold",
+                        last.winRate >= 55 ? "text-success" : last.winRate < 45 ? "text-danger" : "text-text-muted"
+                      )}>
+                        %{last.winRate}
+                      </span>
+                    )}
+                  </div>
+                  <TeamWinRateTrend data={member.points} />
+                </div>
+              );
+            })}
+        </div>
+      )}
+    </div>
+  );
+}
