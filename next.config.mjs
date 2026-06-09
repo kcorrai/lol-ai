@@ -2,10 +2,12 @@ import { withSentryConfig } from "@sentry/nextjs";
 
 /** @type {import('next').NextConfig} */
 
+const isDev = process.env.NODE_ENV === "development";
+
 const CSP = [
   "default-src 'self'",
-  // Next.js App Router requires unsafe-inline for hydration scripts
-  "script-src 'self' 'unsafe-inline'",
+  // Dev mode needs unsafe-eval for Next.js HMR/Fast Refresh runtime
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   // Tailwind inline styles + Google Fonts stylesheets
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   // Google Fonts files
