@@ -1,5 +1,5 @@
 import { inngest } from "@/inngest/client";
-import { checkAndUpdateChallengeProgress, getActiveChallengeStreak } from "@/domains/analysis/services/challengeService";
+import { checkAndUpdateChallengeProgress, getActiveChallengeStreak } from "@/domains/analysis/services/challengeProgressService";
 import { logger } from "@/lib/utils/logger";
 
 // Triggered after every match sync to update challenge progress.

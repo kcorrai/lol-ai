@@ -1,6 +1,6 @@
 import { inngest } from "@/inngest/client";
 import { prisma } from "@/lib/db/prisma";
-import { generateDailyChallenge, generateWeeklyChallenge } from "@/domains/analysis/services/challengeService";
+import { generateDailyChallenge, generateWeeklyChallenge } from "@/domains/analysis/services/challengeGenerationService";
 import { logger } from "@/lib/utils/logger";
 
 // Fires every day at 00:00 UTC — generates a daily challenge for each active user.

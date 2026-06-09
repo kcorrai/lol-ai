@@ -1,10 +1,6 @@
 import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
-import {
-  getActiveChallenges,
-  getUserXpLevel,
-  getActiveChallengeStreak,
-} from "@/domains/analysis/services/challengeService";
+import { getActiveChallenges, getActiveChallengeStreak, getUserXpLevel } from "@/domains/analysis/services/challengeProgressService";
 
 export const dynamic = "force-dynamic";
 

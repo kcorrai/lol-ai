@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { getActiveChallengeStreak, getUserXpLevel } from "./challengeService";
+import { getActiveChallengeStreak, getUserXpLevel } from "./challengeProgressService";
 import { prisma } from "@/lib/db/prisma";
 
 vi.mock("@/lib/db/prisma", () => ({

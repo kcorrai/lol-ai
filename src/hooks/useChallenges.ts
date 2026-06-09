@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import type { ChallengeWithProgress } from "@/domains/analysis/services/challengeService";
+import type { ChallengeWithProgress } from "@/domains/analysis/services/challengeProgressService";
 
 interface ChallengesResponse {
   challenges: ChallengeWithProgress[];
