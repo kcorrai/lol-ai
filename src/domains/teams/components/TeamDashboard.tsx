@@ -11,6 +11,7 @@ import { TeamStatsPanel } from "@/domains/teams/components/TeamStatsPanel";
 import { TeamLineup } from "@/domains/teams/components/TeamLineup";
 import { PendingInvitesList } from "@/domains/teams/components/PendingInvitesList";
 import { InviteModal } from "@/domains/teams/components/InviteModal";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useTeamDashboard, useRemoveTeamMember, useChangeTeamMemberRole } from "@/hooks/useTeamDashboard";
 
 interface Props {
@@ -21,6 +22,7 @@ interface Props {
 export function TeamDashboard({ teamId, isCoach }: Props) {
   const [showInvite, setShowInvite] = useState(false);
   const [activeTab, setActiveTab] = useState<"overview" | "comparison" | "stats" | "lineup">("overview");
+  const [pendingRemoveId, setPendingRemoveId] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useTeamDashboard(teamId);
@@ -149,7 +151,7 @@ export function TeamDashboard({ teamId, isCoach }: Props) {
                 key={member.userId}
                 member={member}
                 canManage={isCoach}
-                onRemove={(uid) => removeM.mutate(uid)}
+                onRemove={(uid) => setPendingRemoveId(uid)}
                 onRoleChange={isCoach ? (uid, role) => roleM.mutate({ userId: uid, role }) : undefined}
               />
             ))}
@@ -165,6 +167,20 @@ export function TeamDashboard({ teamId, isCoach }: Props) {
 
       {/* Pending invites — coach only */}
       {isCoach && <PendingInvitesList teamId={teamId} />}
+
+      {pendingRemoveId && (
+        <ConfirmDialog
+          title="Üyeyi Çıkar"
+          description={`Bu üyeyi takımdan çıkarmak istediğinize emin misiniz?`}
+          confirmLabel="Çıkar"
+          danger
+          isPending={removeM.isPending}
+          onCancel={() => setPendingRemoveId(null)}
+          onConfirm={() => {
+            removeM.mutate(pendingRemoveId, { onSuccess: () => setPendingRemoveId(null) });
+          }}
+        />
+      )}
 
       {showInvite && (
         <InviteModal
