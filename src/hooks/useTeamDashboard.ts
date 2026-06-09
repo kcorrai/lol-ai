@@ -3,8 +3,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { TeamDashboardData } from "@/domains/teams/types/teams.types";
 
-async function fetchDashboard(teamId: string): Promise<TeamDashboardData> {
-  const res = await fetch(`/api/teams/${teamId}/dashboard`);
+async function fetchDashboard(teamId: string, range: string): Promise<TeamDashboardData> {
+  const res = await fetch(`/api/teams/${teamId}/dashboard?range=${range}`);
   if (!res.ok) throw new Error("Dashboard yüklenemedi");
   const body = await res.json() as { data: TeamDashboardData };
   return body.data;
@@ -24,10 +24,10 @@ async function changeRole(teamId: string, userId: string, role: "COACH" | "PLAYE
   if (!res.ok) throw new Error("Rol değiştirilemedi");
 }
 
-export function useTeamDashboard(teamId: string) {
+export function useTeamDashboard(teamId: string, range: "7d" | "30d" | "90d" = "7d") {
   return useQuery({
-    queryKey: ["team-dashboard", teamId],
-    queryFn: () => fetchDashboard(teamId),
+    queryKey: ["team-dashboard", teamId, range],
+    queryFn: () => fetchDashboard(teamId, range),
   });
 }
 

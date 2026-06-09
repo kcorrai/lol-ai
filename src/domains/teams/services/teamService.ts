@@ -142,9 +142,12 @@ export async function removeMember(
   logger.info("[teamService] member removed", { teamId, targetUserId, requestingUserId });
 }
 
+const RANGE_DAYS: Record<"7d" | "30d" | "90d", number> = { "7d": 7, "30d": 30, "90d": 90 };
+
 export async function getTeamDashboard(
   teamId: string,
-  userId: string
+  userId: string,
+  range: "7d" | "30d" | "90d" = "7d"
 ): Promise<TeamDashboardData> {
   await assertCoachAccess(teamId, userId);
 
@@ -216,8 +219,8 @@ export async function getTeamDashboard(
       const lastReport = riotAccount.coachingReports[0];
       const topChampion = riotAccount.championStats[0]?.champion.name ?? null;
 
-      // 7-day win rate
-      const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      // Win rate for selected range
+      const since7d = new Date(Date.now() - RANGE_DAYS[range] * 24 * 60 * 60 * 1000);
       const recentMatches = await prismaReadonly.matchParticipant.findMany({
         where: {
           riotAccountId: riotAccount.id,
@@ -230,7 +233,7 @@ export async function getTeamDashboard(
           ? Math.round((recentMatches.filter((m) => m.won).length / recentMatches.length) * 100)
           : null;
 
-      // 7-day comparison stats (KDA, CS/min, vision) for the comparison table
+      // Comparison stats (KDA, CS/min, vision) for selected range
       const recentStats = await prismaReadonly.matchParticipant.findMany({
         where: {
           riotAccountId: riotAccount.id,

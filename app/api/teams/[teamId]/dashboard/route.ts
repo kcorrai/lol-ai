@@ -10,6 +10,12 @@ export const GET = withAuth(async (req: NextRequest, { userId }) => {
   const teamId = segments.at(-2) ?? "";
   if (!teamId) throw Errors.validation("Missing teamId");
 
-  const data = await getTeamDashboard(teamId, userId);
+  const rangeParam = req.nextUrl.searchParams.get("range") ?? "7d";
+  const validRanges = ["7d", "30d", "90d"] as const;
+  const range = (validRanges as readonly string[]).includes(rangeParam)
+    ? (rangeParam as "7d" | "30d" | "90d")
+    : "7d";
+
+  const data = await getTeamDashboard(teamId, userId, range);
   return apiSuccess(data);
 });

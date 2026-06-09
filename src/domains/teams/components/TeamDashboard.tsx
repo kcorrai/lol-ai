@@ -149,7 +149,7 @@ export function TeamDashboard({ teamId, isCoach }: Props) {
         )
       )}
 
-      {activeTab === "comparison" && <TeamComparisonTable members={members} />}
+      {activeTab === "comparison" && <TeamComparisonTable teamId={teamId} />}
 
       {activeTab === "stats" && <TeamStatsPanel teamId={teamId} />}
 
