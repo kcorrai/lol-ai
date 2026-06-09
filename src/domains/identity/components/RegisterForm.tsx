@@ -49,7 +49,7 @@ export function RegisterForm() {
         name: values.name,
         email: values.email,
         password: values.password,
-        refCode,
+        ...(refCode !== null ? { refCode } : {}),
       }),
     });
 
