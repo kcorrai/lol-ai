@@ -131,3 +131,23 @@ export async function deleteInvite(inviteId: string, teamId: string) {
     where: { id: inviteId, teamId },
   });
 }
+
+export async function createTeamActivity(
+  teamId: string,
+  actorName: string,
+  action: string,
+  detail?: string
+) {
+  return prisma.teamActivity.create({
+    data: { teamId, actorName, action, detail },
+  });
+}
+
+export async function getTeamActivities(teamId: string, limit = 20) {
+  return prisma.teamActivity.findMany({
+    where: { teamId },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    select: { id: true, actorName: true, action: true, detail: true, createdAt: true },
+  });
+}

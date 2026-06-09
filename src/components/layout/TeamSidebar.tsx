@@ -6,7 +6,7 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import {
   LayoutDashboard, LogOut, ChevronLeft, ChevronRight,
-  ArrowLeft, Shield, Users, Loader2, Sparkles, Settings, ChevronDown, Check, FileText,
+  ArrowLeft, Shield, Users, Loader2, Sparkles, Settings, ChevronDown, Check, FileText, Activity,
 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
@@ -19,6 +19,7 @@ function makeTeamNav(teamId: string) {
     { href: `/teams/${teamId}/members`, icon: Users,           label: "Üyeler",     exact: false },
     { href: `/teams/${teamId}/report`,   icon: Sparkles,  label: "AI Raporu",     exact: false },
     { href: `/teams/${teamId}/reports`,  icon: FileText,  label: "Koç Raporları", exact: false },
+    { href: `/teams/${teamId}/activity`, icon: Activity,  label: "Aktivite",      exact: false },
   ] as const;
 }
 

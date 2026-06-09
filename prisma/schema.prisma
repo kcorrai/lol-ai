@@ -871,9 +871,10 @@ model Team {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  owner   User         @relation("TeamOwner", fields: [ownerId], references: [id])
-  members TeamMember[]
-  invites TeamInvite[]
+  owner      User           @relation("TeamOwner", fields: [ownerId], references: [id])
+  members    TeamMember[]
+  invites    TeamInvite[]
+  activities TeamActivity[]
 
   @@index([ownerId])
   @@map("teams")
@@ -911,6 +912,20 @@ model TeamInvite {
   @@index([teamId])
   @@index([token])
   @@map("team_invites")
+}
+
+model TeamActivity {
+  id        String   @id @default(uuid()) @db.Uuid
+  teamId    String   @db.Uuid
+  actorName String
+  action    String
+  detail    String?
+  createdAt DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId, createdAt(sort: Desc)])
+  @@map("team_activities")
 }
 
 // ============================================================

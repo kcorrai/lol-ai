@@ -152,7 +152,15 @@ export async function removeMember(
   const membership = await repo.findMembership(teamId, targetUserId);
   if (!membership) throw Errors.notFound("Team member");
 
+  const [actor, target] = await Promise.all([
+    prismaReadonly.user.findUnique({ where: { id: requestingUserId }, select: { name: true, email: true } }),
+    prismaReadonly.user.findUnique({ where: { id: targetUserId }, select: { name: true, email: true } }),
+  ]);
+  const actorName = actor?.name ?? actor?.email ?? "Unknown";
+  const targetName = target?.name ?? target?.email ?? "Unknown";
+
   await repo.removeMember(teamId, targetUserId);
+  void repo.createTeamActivity(teamId, actorName, "member_removed", targetName);
   logger.info("[teamService] member removed", { teamId, targetUserId, requestingUserId });
 }
 
@@ -328,6 +336,20 @@ export async function revokeInviteLink(teamId: string, userId: string): Promise<
   logger.info("[teamService] invite link revoked", { teamId, userId });
 }
 
+export interface TeamActivityItem {
+  id: string;
+  actorName: string;
+  action: string;
+  detail: string | null;
+  createdAt: string;
+}
+
+export async function getTeamActivityFeed(teamId: string, userId: string): Promise<TeamActivityItem[]> {
+  await assertTeamAccess(teamId, userId);
+  const rows = await repo.getTeamActivities(teamId, 30);
+  return rows.map((r) => ({ ...r, createdAt: r.createdAt.toISOString() }));
+}
+
 export async function acceptLinkInvite(token: string, userId: string): Promise<{ teamId: string }> {
   const invite = await repo.findInviteByToken(token);
   if (!invite || !invite.isLink) throw Errors.notFound("Invite");
@@ -338,6 +360,9 @@ export async function acceptLinkInvite(token: string, userId: string): Promise<{
   if (existing) return { teamId: invite.teamId };
 
   await repo.addMember(invite.teamId, userId, "PLAYER");
+  const newMember = await prismaReadonly.user.findUnique({ where: { id: userId }, select: { name: true, email: true } });
+  const memberName = newMember?.name ?? newMember?.email ?? "Unknown";
+  void repo.createTeamActivity(invite.teamId, memberName, "member_joined", "davet linki ile");
   logger.info("[teamService] link invite accepted", { teamId: invite.teamId, userId });
   return { teamId: invite.teamId };
 }
