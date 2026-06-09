@@ -32,6 +32,14 @@ export async function assertCoachAccess(
   }
 }
 
+export async function assertMemberAccess(
+  teamId: string,
+  userId: string
+): Promise<void> {
+  const membership = await repo.findMembership(teamId, userId);
+  if (!membership) throw Errors.forbidden("You are not a member of this team");
+}
+
 export async function assertOwnerAccess(
   teamId: string,
   userId: string
@@ -171,7 +179,7 @@ export async function getTeamDashboard(
   userId: string,
   range: "7d" | "30d" | "90d" = "7d"
 ): Promise<TeamDashboardData> {
-  await assertCoachAccess(teamId, userId);
+  await assertMemberAccess(teamId, userId);
 
   const team = await repo.findTeamById(teamId);
   if (!team) throw Errors.notFound("Team");
