@@ -65,10 +65,17 @@ export function TeamMemberCard({ member, canManage, onRemove, onRoleChange }: Pr
       {/* Identity + stats */}
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-          <p className="text-sm font-semibold text-text">
-            {member.gameName}
-            <span className="ml-1 text-xs font-normal text-text-muted">#{member.tagLine}</span>
-          </p>
+          {member.profileSlug ? (
+            <Link href={`/u/${member.profileSlug}`} className="text-sm font-semibold text-text hover:text-blue-400 transition-colors">
+              {member.gameName}
+              <span className="ml-1 text-xs font-normal text-text-muted">#{member.tagLine}</span>
+            </Link>
+          ) : (
+            <p className="text-sm font-semibold text-text">
+              {member.gameName}
+              <span className="ml-1 text-xs font-normal text-text-muted">#{member.tagLine}</span>
+            </p>
+          )}
 
           {/* Role badge — clickable for owners */}
           {canChangeRole ? (

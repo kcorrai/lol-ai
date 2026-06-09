@@ -29,6 +29,7 @@ export interface TeamMemberSummary {
   role: TeamRole;
   gameName: string;
   tagLine: string;
+  profileSlug: string | null;
   rank: { tier: string; division: string; lp: number } | null;
   topChampion: string | null;
   lastMatchResult: "WIN" | "LOSS" | null;

@@ -7,7 +7,7 @@ export async function findTeamById(id: string) {
     include: {
       members: {
         include: {
-          user: { select: { id: true, email: true, name: true, image: true } },
+          user: { select: { id: true, email: true, name: true, image: true, profileSlug: true } },
         },
       },
     },
