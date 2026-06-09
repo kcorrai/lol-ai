@@ -24,6 +24,8 @@ export function EmailVerificationBanner() {
         router.replace(url.pathname + (url.search || ""), { scroll: false });
       });
     }
+  // Intentional empty deps — runs once on mount to clean up the ?email_verified=1 param.
+  // Adding update/router/searchParams would re-run on every render and cause a redirect loop.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
