@@ -5,7 +5,7 @@ import { useParams, usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import {
   LayoutDashboard, LogOut, ChevronLeft, ChevronRight,
-  ArrowLeft, Shield, Users, Loader2, Sparkles,
+  ArrowLeft, Shield, Users, Loader2, Sparkles, Settings,
 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
@@ -65,7 +65,11 @@ export function TeamSidebar({ collapsed, onToggle }: TeamSidebarProps) {
   const { data: teams, isLoading } = useTeams();
   const currentTeam = teams?.find((t) => t.id === teamId);
   const displayName = user?.name ?? user?.email ?? "Player";
-  const teamNav = teamId ? makeTeamNav(teamId) : [];
+  const isOwner = currentTeam?.myRole === "OWNER";
+  const teamNav = teamId ? [
+    ...makeTeamNav(teamId),
+    ...(isOwner ? [{ href: `/teams/${teamId}/settings`, icon: Settings, label: "Ayarlar", exact: false } as const] : []),
+  ] : [];
 
   return (
     <aside

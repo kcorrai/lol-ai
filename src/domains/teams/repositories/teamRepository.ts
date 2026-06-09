@@ -38,6 +38,10 @@ export async function createTeamWithOwner(ownerId: string, name: string, logoUrl
   });
 }
 
+export async function updateTeam(teamId: string, data: { name?: string; logoUrl?: string }) {
+  return prisma.team.update({ where: { id: teamId }, data });
+}
+
 export async function deleteTeam(teamId: string) {
   return prisma.team.delete({ where: { id: teamId } });
 }

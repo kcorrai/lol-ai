@@ -69,6 +69,19 @@ export async function createTeam(
   return { id: team.id, name: team.name };
 }
 
+export async function updateTeam(
+  teamId: string,
+  userId: string,
+  data: { name?: string; logoUrl?: string }
+): Promise<void> {
+  await assertOwnerAccess(teamId, userId);
+  if (data.name !== undefined && data.name.trim().length < 2) {
+    throw Errors.validation("Team name must be at least 2 characters");
+  }
+  await repo.updateTeam(teamId, { name: data.name?.trim(), logoUrl: data.logoUrl });
+  logger.info("[teamService] team updated", { teamId, userId });
+}
+
 export async function deleteTeam(teamId: string, userId: string): Promise<void> {
   await assertOwnerAccess(teamId, userId);
   await repo.deleteTeam(teamId);
