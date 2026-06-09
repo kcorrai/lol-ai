@@ -1,5 +1,4 @@
 import { prismaReadonly } from "@/lib/db/prismaReadonly";
-import { assertCoachAccess } from "@/domains/teams/services/teamService";
 import * as repo from "@/domains/teams/repositories/teamRepository";
 import { Errors } from "@/lib/api/errors";
 
