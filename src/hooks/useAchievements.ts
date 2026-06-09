@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { apiFetch } from "@/lib/api/fetcher";
 import type { AchievementCatalogEntry } from "@/types/achievement";
 
@@ -17,10 +18,13 @@ export interface AchievementsData {
 }
 
 export function useAchievements() {
+  const { status } = useSession();
   return useQuery<AchievementsData>({
     queryKey: ["achievements"],
     queryFn: () => apiFetch("/api/achievements"),
+    enabled: status === "authenticated",
     staleTime: 5 * 60_000,
+    gcTime: 10 * 60_000,
   });
 }
 
