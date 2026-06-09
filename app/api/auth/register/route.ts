@@ -9,7 +9,7 @@ import { getEmailClient, EMAIL_FROM } from "@/lib/email/client";
 import { buildEmailVerificationEmail } from "@/lib/email/templates/emailVerification";
 import { logger } from "@/lib/utils/logger";
 
-const REGISTER_LIMIT = { limit: 5, windowMs: 3_600_000 };
+const REGISTER_LIMIT = { limit: 20, windowMs: 3_600_000 };
 const TOKEN_TTL_MS = 24 * 60 * 60 * 1000;
 
 async function sendVerificationEmail(email: string, userId: string): Promise<void> {
