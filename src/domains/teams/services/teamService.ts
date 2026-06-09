@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { prismaReadonly } from "@/lib/db/prismaReadonly";
 import { Errors } from "@/lib/api/errors";
 import { logger } from "@/lib/utils/logger";
@@ -304,4 +305,39 @@ export async function getTeamDashboard(
     },
     members: memberDataList,
   };
+}
+
+export async function getOrCreateInviteLink(
+  teamId: string,
+  userId: string
+): Promise<{ token: string; expiresAt: string }> {
+  await assertCoachAccess(teamId, userId);
+
+  const existing = await repo.findActiveLinkInvite(teamId);
+  if (existing) return { token: existing.token, expiresAt: existing.expiresAt.toISOString() };
+
+  const token = crypto.randomBytes(20).toString("hex");
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+  const invite = await repo.createLinkInvite(teamId, token, expiresAt);
+  return { token: invite.token, expiresAt: invite.expiresAt.toISOString() };
+}
+
+export async function revokeInviteLink(teamId: string, userId: string): Promise<void> {
+  await assertOwnerAccess(teamId, userId);
+  await repo.revokeLinkInvites(teamId);
+  logger.info("[teamService] invite link revoked", { teamId, userId });
+}
+
+export async function acceptLinkInvite(token: string, userId: string): Promise<{ teamId: string }> {
+  const invite = await repo.findInviteByToken(token);
+  if (!invite || !invite.isLink) throw Errors.notFound("Invite");
+  if (invite.usedAt) throw Errors.conflict("Invite link has already been used");
+  if (invite.expiresAt < new Date()) throw Errors.conflict("Invite link has expired");
+
+  const existing = await repo.findMembership(invite.teamId, userId);
+  if (existing) return { teamId: invite.teamId };
+
+  await repo.addMember(invite.teamId, userId, "PLAYER");
+  logger.info("[teamService] link invite accepted", { teamId: invite.teamId, userId });
+  return { teamId: invite.teamId };
 }

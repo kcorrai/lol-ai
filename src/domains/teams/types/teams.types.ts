@@ -66,7 +66,7 @@ export interface InviteMemberInput {
 
 export interface PendingInvite {
   id: string;
-  email: string;
+  email: string | null;
   role: TeamRole;
   expiresAt: string;
   createdAt: string;

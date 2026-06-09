@@ -39,7 +39,7 @@ export function PendingInvitesList({ teamId }: Props) {
               <Mail className="h-3.5 w-3.5 text-accent" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-text">{inv.email}</p>
+              <p className="truncate text-sm font-medium text-text">{inv.email ?? "—"}</p>
               <div className="flex items-center gap-1.5 text-xs text-text-muted">
                 <span className="rounded-full border border-border px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide">
                   {ROLE_LABELS[inv.role] ?? inv.role}

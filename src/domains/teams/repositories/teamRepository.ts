@@ -83,6 +83,27 @@ export async function createInvite(
   });
 }
 
+export async function findActiveLinkInvite(teamId: string) {
+  return prisma.teamInvite.findFirst({
+    where: { teamId, isLink: true, usedAt: null, expiresAt: { gt: new Date() } },
+    select: { token: true, expiresAt: true },
+  });
+}
+
+export async function createLinkInvite(teamId: string, token: string, expiresAt: Date) {
+  return prisma.teamInvite.create({
+    data: { teamId, token, isLink: true, expiresAt },
+    select: { token: true, expiresAt: true },
+  });
+}
+
+export async function revokeLinkInvites(teamId: string) {
+  return prisma.teamInvite.updateMany({
+    where: { teamId, isLink: true, usedAt: null },
+    data: { usedAt: new Date() },
+  });
+}
+
 export async function findInviteByToken(token: string) {
   return prisma.teamInvite.findUnique({
     where: { token },

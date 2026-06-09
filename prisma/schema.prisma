@@ -898,9 +898,10 @@ model TeamMember {
 model TeamInvite {
   id        String    @id @default(uuid()) @db.Uuid
   teamId    String    @db.Uuid
-  email     String
+  email     String?
   token     String    @unique
   role      TeamRole  @default(PLAYER)
+  isLink    Boolean   @default(false)
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime  @default(now())
