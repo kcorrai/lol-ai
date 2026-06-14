@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
-import { normalizeChampionKey, DDRAGON_VERSION } from "@/lib/ddragon";
+import { DDRAGON_VERSION } from "@/lib/ddragon";
 
 export const revalidate = 86400;
 
@@ -45,7 +45,6 @@ export default async function ChampionsPage({
 
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
         {sorted.map((champ) => {
-          const iconKey = normalizeChampionKey(champ.name);
           return (
             <Link
               key={champ.id}
@@ -54,7 +53,7 @@ export default async function ChampionsPage({
             >
               <div className="relative h-12 w-12 overflow-hidden rounded-lg">
                 <Image
-                  src={`https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/img/champion/${iconKey}.png`}
+                  src={`https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/img/champion/${champ.id}.png`}
                   alt={champ.name}
                   fill
                   sizes="48px"
