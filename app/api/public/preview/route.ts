@@ -3,6 +3,7 @@ import { getAccountByRiotId, getSummonerByPuuid, getRankedEntriesForPuuid, getMa
 import { getAiClient } from "@/lib/ai/client";
 import { getCached, setCached, buildCacheKey } from "@/lib/ai/aiCache";
 import { checkRateLimit, getIp, rateLimitResponse } from "@/lib/api/rateLimit";
+import { logger } from "@/lib/utils/logger";
 import type { PreviewMatch, PreviewChampion, PreviewResponse } from "@/types/preview";
 
 export const dynamic = "force-dynamic";
@@ -32,9 +33,14 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   }
 
   const cacheKey = buildCacheKey("preview", { gameName, tagLine, region });
-  const cached = await getCached(cacheKey);
-  if (cached) {
-    return NextResponse.json({ data: cached });
+
+  try {
+    const cached = await getCached(cacheKey);
+    if (cached) {
+      return NextResponse.json({ data: cached });
+    }
+  } catch {
+    // Cache unavailable — continue without it
   }
 
   try {
@@ -113,15 +119,23 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ data: result });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    if (msg.includes("404") || msg.includes("Not Found")) {
+    logger.error("[preview] handler error", { gameName, tagLine, region, error: msg });
+
+    if (msg.includes("404") || msg.includes("Not Found") || msg.includes("RIOT_NOT_FOUND")) {
       return NextResponse.json(
         { error: `${gameName}#${tagLine} bulunamadı. Riot ID'yi ve bölgeyi kontrol et.` },
         { status: 404 }
       );
     }
-    if (msg.includes("429")) {
+    if (msg.includes("429") || msg.includes("RIOT_RATE_LIMITED")) {
       return NextResponse.json(
         { error: "Riot API rate limit aşıldı. Birkaç saniye sonra tekrar dene." },
+        { status: 503 }
+      );
+    }
+    if (msg.includes("401") || msg.includes("403") || msg.includes("RIOT_UNAUTHORIZED") || msg.includes("RIOT_FORBIDDEN")) {
+      return NextResponse.json(
+        { error: "Riot API yapılandırma hatası. Lütfen daha sonra tekrar dene." },
         { status: 503 }
       );
     }
