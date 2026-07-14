@@ -78,7 +78,7 @@ function AchievementCard({
           className="flex items-center gap-1 text-[10px] text-accent hover:underline"
         >
           <Share2 className="h-2.5 w-2.5" />
-          Paylaş
+          Share
         </Link>
       )}
     </div>
@@ -111,10 +111,10 @@ export default function AchievementsPage() {
             <Trophy className="h-6 w-6 text-accent" />
           </div>
           <div>
-            <h1 className="font-display text-2xl font-bold text-text">Rozetlerim</h1>
+            <h1 className="font-display text-2xl font-bold text-text">My Badges</h1>
             <p className="text-sm text-text-muted">
               <span className="font-semibold text-accent">{data?.earnedCount ?? 0}</span>
-              {" "}/{" "}{data?.total ?? 0} rozet kazanıldı
+              {" "}/{" "}{data?.total ?? 0} badges earned
             </p>
           </div>
         </div>
@@ -124,7 +124,7 @@ export default function AchievementsPage() {
       {earned.length > 0 && (
         <section>
           <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-text-muted">
-            Kazanılanlar ({earned.length})
+            Earned ({earned.length})
           </p>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
             {earned.map((a) => (
@@ -144,7 +144,7 @@ export default function AchievementsPage() {
       {locked.length > 0 && (
         <section>
           <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-text-muted">
-            Kilitli ({locked.length})
+            Locked ({locked.length})
           </p>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
             {locked.map((a) => (
@@ -155,7 +155,7 @@ export default function AchievementsPage() {
       )}
 
       {earned.length === 0 && locked.length === 0 && (
-        <p className="text-center text-text-muted">Henüz rozet yok — maç senkronize et!</p>
+        <p className="text-center text-text-muted">No badges yet — sync matches!</p>
       )}
     </div>
   );

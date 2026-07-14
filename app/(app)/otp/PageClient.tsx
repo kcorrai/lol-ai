@@ -40,20 +40,20 @@ export default function OtpPage() {
   return (
     <div className="mx-auto max-w-3xl p-6">
       <PageHeader
-        title="OTP Asistanı"
-        subtitle="Tek bir şampiyonu ustaca oynamak için ihtiyacın olan her şey."
+        title="OTP Assistant"
+        subtitle="Everything you need to master a single champion."
       />
 
       {/* Inputs */}
       <div className="mb-6 space-y-3">
         <div>
           <label className="mb-1.5 block text-xs font-medium text-text-muted">
-            Şampiyonun
+            Your Champion
           </label>
           <ChampionSelector value={champion} onChange={setChampion} />
         </div>
         <div>
-          <label className="mb-1.5 block text-xs font-medium text-text-muted">Rol</label>
+          <label className="mb-1.5 block text-xs font-medium text-text-muted">Role</label>
           <div className="flex gap-1">
             {ROLES.map((r) => (
               <button
@@ -78,8 +78,8 @@ export default function OtpPage() {
       {showEmpty && (
         <EmptyState
           icon={<Target className="h-14 w-14" />}
-          title="Şampiyon ve rol seç"
-          description="Analiz otomatik başlar."
+          title="Select champion and role"
+          description="Analysis starts automatically."
         />
       )}
 
@@ -87,8 +87,8 @@ export default function OtpPage() {
 
       {!showEmpty && isError && (
         <ErrorState
-          title="Analiz yüklenemedi"
-          message={error?.message ?? "Lütfen tekrar dene."}
+          title="Analysis failed to load"
+          message={error?.message ?? "Please try again."}
         />
       )}
 
@@ -107,8 +107,7 @@ export default function OtpPage() {
           <div className="flex items-start gap-2 rounded-lg border border-border bg-surface px-4 py-3">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-text-muted/60" />
             <p className="text-xs text-text-muted">
-              Bu analiz yapay zeka tarafından oluşturulmuştur. Bilgiler mevcut yama ile
-              farklılık gösterebilir.
+              This analysis is AI-generated. Information may differ from the current patch.
             </p>
           </div>
         </div>

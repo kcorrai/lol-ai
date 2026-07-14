@@ -15,16 +15,16 @@ import { cn } from "@/lib/utils";
 
 const NAV_MAIN = [
   { href: "/dashboard",     icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/champion-pool", icon: Shield,          label: "Şampiyonlar" },
-  { href: "/coaching",      icon: ClipboardList,   label: "Raporlar" },
-  { href: "/coaching/chat", icon: MessageCircle,   label: "Koç Chat" },
-  { href: "/improvement",   icon: TrendingUp,      label: "Gelişim" },
-  { href: "/achievements",  icon: Trophy,          label: "Rozetler" },
-  { href: "/leaderboard",  icon: Medal,           label: "Lider Tablosu" },
+  { href: "/champion-pool", icon: Shield,          label: "Champions" },
+  { href: "/coaching",      icon: ClipboardList,   label: "Reports" },
+  { href: "/coaching/chat", icon: MessageCircle,   label: "Coach Chat" },
+  { href: "/improvement",   icon: TrendingUp,      label: "Improvement" },
+  { href: "/achievements",  icon: Trophy,          label: "Badges" },
+  { href: "/leaderboard",  icon: Medal,           label: "Leaderboard" },
   { href: "/milestone",    icon: CalendarDays,    label: "Milestone" },
-  { href: "/analysis",      icon: Map,             label: "Isı Haritası" },
-  { href: "/recap",         icon: Film,            label: "Sezon Recap" },
-  { href: "/teams",         icon: Users,           label: "Takımlar" },
+  { href: "/analysis",      icon: Map,             label: "Heat Map" },
+  { href: "/recap",         icon: Film,            label: "Season Recap" },
+  { href: "/teams",         icon: Users,           label: "Teams" },
 ] as const;
 
 const NAV_TOOLS = [
@@ -35,10 +35,10 @@ const NAV_TOOLS = [
 ] as const;
 
 const NAV_SETTINGS = [
-  { href: "/settings/accounts", icon: Gamepad2,   label: "Hesaplar" },
-  { href: "/settings/billing",  icon: CreditCard, label: "Fatura" },
-  { href: "/settings/profile",  icon: UserCircle, label: "Profil" },
-  { href: "/settings/privacy",  icon: Lock,       label: "Gizlilik" },
+  { href: "/settings/accounts", icon: Gamepad2,   label: "Accounts" },
+  { href: "/settings/billing",  icon: CreditCard, label: "Billing" },
+  { href: "/settings/profile",  icon: UserCircle, label: "Profile" },
+  { href: "/settings/privacy",  icon: Lock,       label: "Privacy" },
   { href: "/settings/discord",  icon: Bot,        label: "Discord" },
 ] as const;
 
@@ -118,11 +118,11 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto p-2">
-        <SectionLabel label="Oyna" collapsed={collapsed} />
+        <SectionLabel label="Play" collapsed={collapsed} />
         {NAV_MAIN.map((item) => <NavItem key={item.href} {...item} collapsed={collapsed} />)}
-        <SectionLabel label="Araçlar" collapsed={collapsed} />
+        <SectionLabel label="Tools" collapsed={collapsed} />
         {NAV_TOOLS.map((item) => <NavItem key={item.href} {...item} collapsed={collapsed} />)}
-        <SectionLabel label="Ayarlar" collapsed={collapsed} />
+        <SectionLabel label="Settings" collapsed={collapsed} />
         {NAV_SETTINGS.map((item) => <NavItem key={item.href} {...item} collapsed={collapsed} />)}
       </nav>
 
@@ -131,14 +131,14 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         <div className="mx-2 mb-2 rounded-xl border border-accent/25 p-3" style={{ background: "linear-gradient(135deg, rgba(200,155,60,0.12) 0%, rgba(200,155,60,0.04) 100%)" }}>
           <div className="mb-1 flex items-center gap-1.5">
             <Sparkles className="h-3.5 w-3.5 text-accent" />
-            <p className="text-xs font-bold text-accent">Pro&apos;ya Yükselt</p>
+            <p className="text-xs font-bold text-accent">Upgrade to Pro</p>
           </div>
-          <p className="mb-2 text-[11px] leading-relaxed text-text-muted">Sınırsız rapor, tüm araçlar ve öncelikli destek.</p>
+          <p className="mb-2 text-[11px] leading-relaxed text-text-muted">Unlimited reports, all tools, and priority support.</p>
           <Link
             href="/settings/billing"
             className="block w-full rounded-lg bg-accent/20 py-1.5 text-center text-[11px] font-bold text-accent transition-colors hover:bg-accent/30"
           >
-            Pro&apos;ya Geç →
+            Upgrade to Pro →
           </Link>
         </div>
       )}

@@ -32,7 +32,7 @@ export function DemoSearchBox() {
 
     const parts = input.trim().split("#");
     if (parts.length !== 2 || !parts[0] || !parts[1]) {
-      setError("Format: OyuncuAdı#TR1");
+      setError("Format: PlayerName#TR1");
       return;
     }
     const [gameName, tagLine] = parts;
@@ -43,12 +43,12 @@ export function DemoSearchBox() {
       const res = await fetch(`/api/public/preview?${params}`);
       const json = await res.json() as { data?: PreviewResponse; error?: string };
       if (!res.ok || json.error) {
-        setError(json.error ?? "Bir hata oluştu.");
+        setError(json.error ?? "An error occurred.");
       } else if (json.data) {
         setResult(json.data);
       }
     } catch {
-      setError("Bağlantı hatası. Tekrar dene.");
+      setError("Connection error. Try again.");
     } finally {
       setLoading(false);
     }
@@ -60,7 +60,7 @@ export function DemoSearchBox() {
         <div className="flex flex-1 overflow-hidden rounded-md border border-border bg-surface focus-within:border-accent/50">
           <input
             type="text"
-            placeholder="OyuncuAdı#TR1"
+            placeholder="PlayerName#TR1"
             value={input}
             onChange={e => setInput(e.target.value)}
             className="flex-1 bg-transparent px-4 py-3 text-sm text-text placeholder-text-muted outline-none"
@@ -85,7 +85,7 @@ export function DemoSearchBox() {
           disabled={loading || !input.trim()}
           className="rounded-md bg-accent px-6 py-3 text-sm font-semibold text-background transition-opacity hover:opacity-90 disabled:opacity-40"
         >
-          {loading ? "Analiz ediliyor..." : "Analiz Et"}
+          {loading ? "Analyzing..." : "Analyze"}
         </button>
       </form>
 
@@ -114,7 +114,7 @@ export function DemoSearchBox() {
               href={`/s/${region}/${encodeURIComponent(result.summoner.gameName)}/${encodeURIComponent(result.summoner.tagLine)}`}
               className="text-xs text-accent hover:underline"
             >
-              {result.summoner.gameName}#{result.summoner.tagLine} tam sayfasını gör →
+              {result.summoner.gameName}#{result.summoner.tagLine} view full profile →
             </a>
           </div>
         </>

@@ -7,9 +7,9 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { useTeamDashboard } from "@/hooks/useTeamDashboard";
 
 const TIER_TR: Record<string, string> = {
-  IRON: "Demir", BRONZE: "Bronz", SILVER: "Gümüş", GOLD: "Altın",
-  PLATINUM: "Platin", EMERALD: "Zümrüt", DIAMOND: "Elmas",
-  MASTER: "Usta", GRANDMASTER: "Büyükusta", CHALLENGER: "Challenger",
+  IRON: "Iron", BRONZE: "Bronze", SILVER: "Silver", GOLD: "Gold",
+  PLATINUM: "Platinum", EMERALD: "Emerald", DIAMOND: "Diamond",
+  MASTER: "Master", GRANDMASTER: "Grandmaster", CHALLENGER: "Challenger",
 };
 
 export default function TeamReportsPage() {
@@ -26,7 +26,7 @@ export default function TeamReportsPage() {
   }
 
   if (error || !data) {
-    return <p className="text-sm text-danger px-4 py-6">{error instanceof Error ? error.message : "Yüklenemedi"}</p>;
+    return <p className="text-sm text-danger px-4 py-6">{error instanceof Error ? error.message : "Failed to load"}</p>;
   }
 
   const { members } = data;
@@ -36,8 +36,8 @@ export default function TeamReportsPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6 px-4 py-6">
       <PageHeader
-        title="Koçluk Raporları"
-        subtitle={`${withReport.length}/${members.length} üyenin raporu var`}
+        title="Coaching Reports"
+        subtitle={`${withReport.length}/${members.length} members have reports`}
       />
 
       <div className="space-y-2">
@@ -68,7 +68,7 @@ export default function TeamReportsPage() {
                 className="flex shrink-0 items-center gap-1.5 rounded-lg border border-accent/30 bg-accent/10 px-3 py-1.5 text-xs font-medium text-accent hover:bg-accent/20 transition-colors"
               >
                 <FileText className="h-3.5 w-3.5" />
-                Raporu Gör
+                View Report
                 <ExternalLink className="h-3 w-3 opacity-60" />
               </Link>
             </div>
@@ -89,7 +89,7 @@ export default function TeamReportsPage() {
                 {m.gameName}
                 <span className="ml-1 text-xs font-normal text-text-muted">#{m.tagLine}</span>
               </p>
-              <p className="text-xs text-text-muted/60">Rapor yok</p>
+              <p className="text-xs text-text-muted/60">No report</p>
             </div>
           </div>
         ))}
@@ -97,7 +97,7 @@ export default function TeamReportsPage() {
         {members.length === 0 && (
           <div className="rounded-xl border border-dashed border-border py-14 text-center">
             <FileText className="mx-auto mb-3 h-8 w-8 text-text-muted/30" />
-            <p className="text-sm font-medium text-text-muted">Henüz üye yok</p>
+            <p className="text-sm font-medium text-text-muted">No members yet</p>
           </div>
         )}
       </div>

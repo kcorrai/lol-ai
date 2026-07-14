@@ -12,9 +12,9 @@ export default function SecuritySettingsPage() {
   return (
     <div className="mx-auto max-w-lg space-y-6 p-6">
       <div>
-        <h1 className="font-display text-2xl font-bold text-text">Güvenlik</h1>
+        <h1 className="font-display text-2xl font-bold text-text">Security</h1>
         <p className="mt-1 text-sm text-text-muted">
-          Hesabını iki faktörlü kimlik doğrulama ile güvence altına al.
+          Secure your account with two-factor authentication.
         </p>
       </div>
       <TwoFactorSetup />

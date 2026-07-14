@@ -36,7 +36,7 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
     );
   } catch (err: unknown) {
     if ((err as { code?: string }).code === "RIOT_RATE_LIMITED") {
-      throw Errors.validation("Riot API şu an meşgul, lütfen 1-2 dakika bekleyip tekrar deneyin.");
+      throw Errors.validation("Riot API is currently busy, please wait 1-2 minutes and try again.");
     }
     throw err;
   }

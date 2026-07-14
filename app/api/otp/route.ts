@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
       where: { name: { equals: champion, mode: "insensitive" } },
       select: { name: true },
     });
-    if (!dbChampion) throw Errors.notFound("Şampiyon");
+    if (!dbChampion) throw Errors.notFound("Champion");
 
     let result = await getOtpAnalysis(dbChampion.name, role);
 

@@ -32,10 +32,10 @@ const POSITION_ROLES: Record<Position, string[]> = {
 
 const POSITIONS: { key: Position; label: string }[] = [
   { key: "TOP", label: "Top" },
-  { key: "JUNGLE", label: "Orman" },
+  { key: "JUNGLE", label: "Jungle" },
   { key: "MIDDLE", label: "Mid" },
   { key: "BOTTOM", label: "ADC" },
-  { key: "UTILITY", label: "Destek" },
+  { key: "UTILITY", label: "Support" },
 ];
 
 export function RoleBasedTeamPicker({
@@ -67,7 +67,7 @@ export function RoleBasedTeamPicker({
             <ChampionSelector
               value={value[key]}
               onChange={(champ) => onChange({ ...value, [key]: champ })}
-              placeholder={`${posLabel} seç`}
+              placeholder={`${posLabel} select`}
               size="sm"
               excludeChampions={[
                 ...excludeChampions,

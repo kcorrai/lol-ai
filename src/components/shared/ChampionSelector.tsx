@@ -45,7 +45,7 @@ function useAllChampions() {
 export function ChampionSelector({
   value,
   onChange,
-  placeholder = "Şampiyon seç...",
+  placeholder = "Select champion...",
   disabled = false,
   size = "md",
   excludeChampions = [],
@@ -173,7 +173,7 @@ export function ChampionSelector({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ara..."
+              placeholder="Search..."
               className="w-full bg-transparent text-sm text-text placeholder:text-text-muted focus:outline-none"
             />
           </div>
@@ -183,7 +183,7 @@ export function ChampionSelector({
             role="listbox"
           >
             {filtered.length === 0 && (
-              <li className="px-3 py-2 text-sm text-text-muted">Sonuç bulunamadı</li>
+              <li className="px-3 py-2 text-sm text-text-muted">No results found</li>
             )}
             {filtered.map((champ, i) => (
               <li

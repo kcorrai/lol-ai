@@ -28,10 +28,10 @@ export function PatchImpactWidget({ riotAccountId }: Props) {
     return (
       <div className="rounded-xl border border-border bg-surface p-4">
         <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-          Yama {data.currentVersion} Etkisi
+          Patch {data.currentVersion} Impact
         </p>
         <p className="mt-1 text-sm text-text-muted">
-          Yama etkisini hesaplamak için her şampiyonla en az 5 maç gerekli.
+          Patch impact requires at least 5 matches with each champion to calculate.
         </p>
       </div>
     );
@@ -41,7 +41,7 @@ export function PatchImpactWidget({ riotAccountId }: Props) {
     <div className="rounded-xl border border-border bg-surface p-4">
       <div className="mb-3 flex items-center justify-between">
         <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-          Yama {data.currentVersion} Etkisi
+          Patch {data.currentVersion} Impact
         </p>
         {data.patchNotesUrl && (
           <a
@@ -50,7 +50,7 @@ export function PatchImpactWidget({ riotAccountId }: Props) {
             rel="noopener noreferrer"
             className="flex items-center gap-1 text-[10px] text-accent hover:underline"
           >
-            Patch Notları <ExternalLink className="h-2.5 w-2.5" />
+            Patch Notes <ExternalLink className="h-2.5 w-2.5" />
           </a>
         )}
       </div>
@@ -74,7 +74,7 @@ export function PatchImpactWidget({ riotAccountId }: Props) {
       </div>
 
       <p className="mt-3 text-[10px] text-text-muted">
-        Yama tarihi: {new Date(data.patchDetectedAt).toLocaleDateString("tr-TR")}
+        Patch date: {new Date(data.patchDetectedAt).toLocaleDateString("en-US")}
       </p>
     </div>
   );

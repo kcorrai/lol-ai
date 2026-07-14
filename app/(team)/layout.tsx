@@ -4,7 +4,7 @@ import { TeamShell } from "@/components/layout/TeamShell";
 
 export const metadata: Metadata = {
   title: {
-    default: "Takım | LoL AI Coach",
+    default: "Team | LoL AI Coach",
     template: "%s | LoL AI Coach",
   },
 };

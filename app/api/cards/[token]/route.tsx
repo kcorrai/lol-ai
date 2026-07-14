@@ -59,9 +59,9 @@ function WeeklyCard({ d }: { d: WeeklyCardData }) {
 
       {/* Stats row */}
       <div style={{ display: "flex", gap: 48 }}>
-        <StatBox label="LP Değişimi" value={`${lpSign}${d.lpDelta}`} color={lpColor} />
-        <StatBox label="Kazanma Oranı" value={`%${d.winRate}`} color={C.text} />
-        <StatBox label="Oynanan" value={`${d.gamesPlayed} Maç`} color={C.muted} />
+        <StatBox label="LP Change" value={`${lpSign}${d.lpDelta}`} color={lpColor} />
+        <StatBox label="Win Rate" value={`${d.winRate}%`} color={C.text} />
+        <StatBox label="Games" value={`${d.gamesPlayed} Matches`} color={C.muted} />
         {d.coachGrade && (
           <StatBox label="AI Coach Notu" value={d.coachGrade} color={C.gold} />
         )}
@@ -81,7 +81,7 @@ function WeeklyCard({ d }: { d: WeeklyCardData }) {
             gap: 24,
           }}
         >
-          <span style={{ color: C.muted, fontSize: 18 }}>En İyi Şampiyon</span>
+          <span style={{ color: C.muted, fontSize: 18 }}>Best Champion</span>
           <span style={{ color: C.text, fontSize: 22, fontWeight: 700 }}>
             {d.bestChampionName}
           </span>
@@ -203,7 +203,7 @@ function MasteryCard({ d }: { d: MasteryCardData }) {
           </div>
 
           <span style={{ color: C.muted, fontSize: 16, marginTop: 24 }}>
-            {d.gamesPlayed} ranked maçta hesaplandı
+            Calculated over {d.gamesPlayed} ranked matches
           </span>
         </div>
       </div>

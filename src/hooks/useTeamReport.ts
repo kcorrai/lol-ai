@@ -13,7 +13,7 @@ async function generateReport(teamId: string): Promise<TeamReportData> {
   const res = await fetch(`/api/teams/${teamId}/report`, { method: "POST" });
   if (!res.ok) {
     const body = (await res.json()) as { error?: { message?: string } };
-    throw new Error(body.error?.message ?? "Rapor oluşturulamadı");
+    throw new Error(body.error?.message ?? "Failed to generate report");
   }
   const body = (await res.json()) as { data: { report: TeamReportData } };
   return body.data.report;

@@ -5,14 +5,14 @@ import type { TeamDashboardData } from "@/domains/teams/types/teams.types";
 
 async function fetchDashboard(teamId: string, range: string): Promise<TeamDashboardData> {
   const res = await fetch(`/api/teams/${teamId}/dashboard?range=${range}`);
-  if (!res.ok) throw new Error("Dashboard yüklenemedi");
+  if (!res.ok) throw new Error("Failed to load dashboard");
   const body = await res.json() as { data: TeamDashboardData };
   return body.data;
 }
 
 async function removeMember(teamId: string, userId: string): Promise<void> {
   const res = await fetch(`/api/teams/${teamId}/members/${userId}`, { method: "DELETE" });
-  if (!res.ok) throw new Error("Üye çıkarılamadı");
+  if (!res.ok) throw new Error("Failed to remove member");
 }
 
 async function changeRole(teamId: string, userId: string, role: "COACH" | "PLAYER"): Promise<void> {
@@ -21,7 +21,7 @@ async function changeRole(teamId: string, userId: string, role: "COACH" | "PLAYE
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ role }),
   });
-  if (!res.ok) throw new Error("Rol değiştirilemedi");
+  if (!res.ok) throw new Error("Failed to change role");
 }
 
 export function useTeamDashboard(teamId: string, range: "7d" | "30d" | "90d" = "7d") {

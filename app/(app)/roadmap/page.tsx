@@ -18,7 +18,7 @@ function ProgressBar({ score }: { score: number }) {
   return (
     <div className="space-y-1">
       <div className="flex justify-between text-xs text-text-muted">
-        <span>Hedefe yakınlık</span>
+        <span>Progress to Goal</span>
         <span className={cn(pct >= 67 ? "text-green-400" : pct >= 34 ? "text-yellow-500" : "text-red-400")}>
           {pct}%
         </span>
@@ -44,8 +44,8 @@ export default function RoadmapPage() {
       <div className="mx-auto max-w-2xl p-6">
         <EmptyState
           icon={<Target className="h-14 w-14" />}
-          title="Hesap Bağlı Değil"
-          description="Roadmap'i görmek için Riot hesabını bağla."
+          title="Account Not Connected"
+          description="Connect your Riot account to see the roadmap."
         />
       </div>
     );
@@ -55,12 +55,12 @@ export default function RoadmapPage() {
     <div className="mx-auto max-w-2xl space-y-5 p-6">
       <PageHeader
         title="Rank Roadmap"
-        subtitle="Hedefini belirle, 14 günlük planınla ilerle."
+        subtitle="Set your goal, progress with your 14-day plan."
       />
 
       {/* Rank goal selector */}
       <div>
-        <p className="mb-2 text-xs font-medium uppercase tracking-widest text-text-muted">Rank Hedefi</p>
+        <p className="mb-2 text-xs font-medium uppercase tracking-widest text-text-muted">Rank Goal</p>
         <RankGoalSelector
           currentRank={ranked?.rank ?? null}
           value={rankGoal}
@@ -74,9 +74,9 @@ export default function RoadmapPage() {
           <ProgressBar score={rankUp.score} />
           {rankUp.estimatedGames !== null && (
             <p className="text-sm text-text-muted">
-              Tahmini{" "}
-              <span className="font-semibold text-text">≈ {rankUp.estimatedGames} maç</span>
-              {" "}({Math.round(rankUp.recentWinRate)}% WR ile)
+              Estimated{" "}
+              <span className="font-semibold text-text">≈ {rankUp.estimatedGames} matches</span>
+              {" "}({Math.round(rankUp.recentWinRate)}% WR)
             </p>
           )}
         </div>
@@ -84,7 +84,7 @@ export default function RoadmapPage() {
 
       {/* 14-day improvement plan */}
       <div>
-        <p className="mb-2 text-xs font-medium uppercase tracking-widest text-text-muted">14 Günlük Plan</p>
+        <p className="mb-2 text-xs font-medium uppercase tracking-widest text-text-muted">14-Day Plan</p>
         <ImprovementPlanWidget riotAccountId={primaryId} />
       </div>
     </div>

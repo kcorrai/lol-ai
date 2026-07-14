@@ -39,11 +39,11 @@ export default function ChampionsPage() {
       <div className="mx-auto max-w-6xl p-6">
         <EmptyState
           icon={<Gamepad2 className="h-16 w-16" />}
-          title="Riot Hesabı Bağlı Değil"
-          description="Şampiyon istatistiklerini görmek için League of Legends hesabını bağla."
+          title="Riot Account Not Connected"
+          description="Connect your League of Legends account to view champion statistics."
           action={
             <Link href="/settings/accounts">
-              <Button size="lg">Hesap Bağla</Button>
+              <Button size="lg">Connect Account</Button>
             </Link>
           }
         />
@@ -58,15 +58,15 @@ export default function ChampionsPage() {
   return (
     <div className="mx-auto max-w-5xl p-6">
       <PageHeader
-        title="Şampiyon Havuzu"
-        subtitle="Ranked maçlarındaki şampiyon performansın — kazanma oranına göre sıralanmış."
+        title="Champion Pool"
+        subtitle="Your champion performance in ranked matches — sorted by win rate."
       />
 
       {/* Tabs */}
       <div className="mb-5 flex gap-1 rounded-lg border border-border bg-surface-2 p-1 w-fit">
         {([
-          { id: "pool" as Tab, label: "Şampiyon Havuzu" },
-          { id: "matchup" as Tab, label: "Matchup Matrisi" },
+          { id: "pool" as Tab, label: "Champion Pool" },
+          { id: "matchup" as Tab, label: "Matchup Matrix" },
         ]).map((tab) => (
           <button
             key={tab.id}
@@ -90,9 +90,9 @@ export default function ChampionsPage() {
       {activeTab === "pool" && best && !poolLoading && (
         <div className="mb-5 mt-2 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-accent/30 bg-accent/5 px-4 py-3 text-sm">
           <div>
-            <span className="font-medium text-accent">Tırmanmak için en iyi seçim:</span>{" "}
+            <span className="font-medium text-accent">Best pick for climbing:</span>{" "}
             <span className="text-text">
-              {best.championName} — {best.gamesPlayed} maçta %{best.winRate} kazanma oranı
+              {best.championName} — {best.winRate}% win rate over {best.gamesPlayed} matches
             </span>
           </div>
           <Button
@@ -116,16 +116,16 @@ export default function ChampionsPage() {
             className="shrink-0 gap-1.5"
           >
             <BarChart2 className="h-3.5 w-3.5" />
-            {generateReport.isPending ? "Oluşturuluyor…" : `${best.championName} Analiz Et`}
+            {generateReport.isPending ? "Creating…" : `Analyze ${best.championName}`}
           </Button>
         </div>
       )}
 
       {activeTab === "pool" && <p className="mb-4 text-xs text-text-muted">
-        3+ Solo/Duo ranked maçı olan şampiyonlar · Kazanma oranına göre sıralanmış
+        Champions with 3+ Solo/Duo ranked matches · Sorted by win rate
         {!isPro && pool.length > FREE_CHAMPION_LIMIT && (
           <span className="ml-2 text-accent">
-            · {pool.length} şampiyondan ilk {FREE_CHAMPION_LIMIT} gösteriliyor
+            · showing first {FREE_CHAMPION_LIMIT} of {pool.length} champions
           </span>
         )}
       </p>}
@@ -161,13 +161,13 @@ export default function ChampionsPage() {
               <Lock className="h-5 w-5 text-accent" />
             </div>
             <p className="mt-3 font-display text-base font-semibold text-text">
-              {lockedCount} şampiyon kilitli
+              {lockedCount} champions locked
             </p>
             <p className="mt-1 text-xs text-text-muted">
-              Tüm şampiyon havuzunu görmek için Pro&apos;ya geç
+              Switch to Pro to see the full champion pool
             </p>
             <Link href="/settings/billing" className="mt-4">
-              <Button size="sm">Pro&apos;ya Geç</Button>
+              <Button size="sm">Upgrade to Pro</Button>
             </Link>
           </div>
         </div>

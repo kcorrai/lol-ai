@@ -8,7 +8,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { useTeams } from "@/hooks/useTeams";
 import type { TeamSummary, TeamRole } from "@/domains/teams/types/teams.types";
 
-const ROLE_LABELS: Record<TeamRole, string> = { OWNER: "Sahip", COACH: "Koç", PLAYER: "Oyuncu" };
+const ROLE_LABELS: Record<TeamRole, string> = { OWNER: "Owner", COACH: "Coach", PLAYER: "Player" };
 const ROLE_ICONS: Record<TeamRole, typeof Crown> = { OWNER: Crown, COACH: Shield, PLAYER: Swords };
 const ROLE_STYLES: Record<TeamRole, string> = {
   OWNER: "text-yellow-400 border-yellow-400/40 bg-yellow-400/10",
@@ -65,13 +65,13 @@ export default function TeamsPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-4 py-6">
       <PageHeader
-        title="Takımlarım"
-        subtitle="Esports takımınızı veya koçluk akademinizi yönetin"
+        title="My Teams"
+        subtitle="Manage your esports team or coaching academy"
         action={
           <Link href="/teams/create">
             <Button size="sm">
               <Plus className="mr-1.5 h-4 w-4" />
-              Yeni Takım
+              New Team
             </Button>
           </Link>
         }
@@ -87,7 +87,7 @@ export default function TeamsPage() {
 
       {error && (
         <p className="text-sm text-danger">
-          {error instanceof Error ? error.message : "Hata oluştu"}
+          {error instanceof Error ? error.message : "An error occurred"}
         </p>
       )}
 
@@ -95,13 +95,13 @@ export default function TeamsPage() {
         <div className="flex flex-col items-center gap-4 rounded-xl border border-dashed border-border py-16 text-center">
           <Users className="h-12 w-12 text-text-muted/30" />
           <div>
-            <p className="font-semibold text-text">Henüz takımınız yok</p>
+            <p className="font-semibold text-text">You don&apos;t have any teams yet</p>
             <p className="mt-1 text-sm text-text-muted">
-              Takım oluşturun ve oyuncularınızı davet edin
+              Create a team and invite your players
             </p>
           </div>
           <Link href="/teams/create">
-            <Button>Takım Oluştur</Button>
+            <Button>Create Team</Button>
           </Link>
         </div>
       )}

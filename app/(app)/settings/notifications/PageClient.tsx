@@ -14,9 +14,9 @@ export default function NotificationsSettingsPage() {
   return (
     <div className="mx-auto max-w-lg space-y-6 p-6">
       <div>
-        <h1 className="font-display text-2xl font-bold text-text">Bildirim Ayarları</h1>
+        <h1 className="font-display text-2xl font-bold text-text">Notification Settings</h1>
         <p className="mt-1 text-sm text-text-muted">
-          Tarayıcı push bildirimlerini yönet.
+          Manage browser push notifications.
         </p>
       </div>
 
@@ -30,23 +30,22 @@ export default function NotificationsSettingsPage() {
             )}
           </div>
           <div className="flex-1">
-            <p className="text-sm font-semibold text-text">Push Bildirimleri</p>
+            <p className="text-sm font-semibold text-text">Push Notifications</p>
             <p className="mt-0.5 text-xs text-text-muted">
-              Raporun hazır olduğunda, rank atladığında veya tilt uyarısı tetiklendiğinde
-              tarayıcı bildirimi al.
+              Receive browser notifications when your report is ready, you rank up, or a tilt warning is triggered.
             </p>
           </div>
         </div>
 
         {isUnsupported && (
           <p className="rounded-lg bg-surface-2 px-4 py-3 text-sm text-text-muted">
-            Tarayıcın push bildirimleri desteklemiyor veya izin verilmedi.
+            Your browser doesn&apos;t support push notifications or hasn&apos;t granted permission.
           </p>
         )}
 
         {isDenied && (
           <p className="rounded-lg bg-yellow-500/10 px-4 py-3 text-sm text-yellow-400">
-            Bildirimler engellendi. Tarayıcı ayarlarından bu site için bildirimlere izin ver.
+            Notifications are blocked. Allow notifications for this site in your browser settings.
           </p>
         )}
 
@@ -64,12 +63,12 @@ export default function NotificationsSettingsPage() {
               {isEnabled ? (
                 <>
                   <BellOff className="h-4 w-4" />
-                  {isLoading ? "İşleniyor…" : "Bildirimleri Kapat"}
+                  {isLoading ? "Processing…" : "Disable Notifications"}
                 </>
               ) : (
                 <>
                   <Bell className="h-4 w-4" />
-                  {isLoading ? "İşleniyor…" : "Bildirimleri Aç"}
+                  {isLoading ? "Processing…" : "Enable Notifications"}
                 </>
               )}
             </button>
@@ -77,26 +76,26 @@ export default function NotificationsSettingsPage() {
             {isEnabled && (
               <span className="flex items-center gap-1.5 text-xs text-green-400">
                 <span className="h-2 w-2 rounded-full bg-green-400" />
-                Aktif
+                Active
               </span>
             )}
           </div>
         )}
 
         <div className="border-t border-border pt-3">
-          <p className="text-xs font-medium text-text-muted mb-2">Bildirim türleri:</p>
+          <p className="text-xs font-medium text-text-muted mb-2">Notification types:</p>
           <ul className="space-y-1 text-xs text-text-muted">
             <li className="flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-              Koçluk raporu tamamlandı
+              Coaching report completed
             </li>
             <li className="flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-              Rank değişikliği (yükseldi / düştü)
+              Rank change (up / down)
             </li>
             <li className="flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-              Tilt uyarısı (üst üste kayıp serisi)
+              Tilt warning (losing streak)
             </li>
           </ul>
         </div>

@@ -51,8 +51,8 @@ export default function DiscordSettingsPage() {
     save.mutate(
       { webhookUrl, notifyRankUp, notifyBadge, notifyWeekly },
       {
-        onSuccess: () => { setWebhookUrl(""); setSaveMsg("✅ Webhook kaydedildi!"); },
-        onError: (e) => setSaveMsg(`❌ ${e instanceof Error ? e.message : "Kayıt başarısız"}`),
+        onSuccess: () => { setWebhookUrl(""); setSaveMsg("✅ Webhook saved!"); },
+        onError: (e) => setSaveMsg(`❌ ${e instanceof Error ? e.message : "Save failed"}`),
       }
     );
   }
@@ -60,8 +60,8 @@ export default function DiscordSettingsPage() {
   async function handleTest() {
     setTestMsg(null);
     test.mutate(undefined, {
-      onSuccess: () => setTestMsg("✅ Test mesajı gönderildi!"),
-      onError: (e) => setTestMsg(`❌ ${e instanceof Error ? e.message : "Hata"}`),
+      onSuccess: () => setTestMsg("✅ Test message sent!"),
+      onError: (e) => setTestMsg(`❌ ${e instanceof Error ? e.message : "Error"}`),
     });
   }
 
@@ -70,9 +70,9 @@ export default function DiscordSettingsPage() {
   return (
     <div className="mx-auto max-w-lg space-y-6 p-6">
       <div>
-        <h1 className="font-display text-2xl font-bold text-text">Discord Entegrasyonu</h1>
+        <h1 className="font-display text-2xl font-bold text-text">Discord Integration</h1>
         <p className="mt-1 text-sm text-text-muted">
-          Rank atlama ve rozet bildirimlerini Discord kanalına gönder.
+          Send rank-up and badge notifications to a Discord channel.
         </p>
       </div>
 
@@ -80,7 +80,7 @@ export default function DiscordSettingsPage() {
       <div className="space-y-3 rounded-xl border border-border bg-surface p-4">
         <h2 className="text-sm font-semibold text-text">Webhook URL</h2>
         {data?.hasWebhook && (
-          <p className="text-xs text-green-400">✓ Webhook kayıtlı (URL gizlenmiş)</p>
+          <p className="text-xs text-green-400">✓ Webhook registered (URL hidden)</p>
         )}
         <input
           type="url"
@@ -90,14 +90,14 @@ export default function DiscordSettingsPage() {
           className="w-full rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm text-text placeholder-text-muted focus:border-accent focus:outline-none"
         />
         <p className="text-xs text-text-muted">
-          Discord&apos;da Kanal Düzenle → Entegrasyonlar → Webhook oluştur → URL kopyala
+          In Discord: Edit Channel → Integrations → Create Webhook → Copy URL
         </p>
         <button
           onClick={handleSave}
           disabled={!webhookUrl || save.isPending}
           className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-background disabled:opacity-50"
         >
-          {save.isPending ? "Kaydediliyor..." : "Kaydet"}
+          {save.isPending ? "Saving..." : "Save"}
         </button>
         {saveMsg && <p className="text-sm">{saveMsg}</p>}
       </div>
@@ -105,9 +105,9 @@ export default function DiscordSettingsPage() {
       {/* Notification preferences */}
       <div className="divide-y divide-border rounded-xl border border-border bg-surface px-4">
         {[
-          { label: "Rank Atlama", description: "Yeni bir ranka geçince bildir", checked: notifyRankUp, onChange: setNotifyRankUp },
-          { label: "Rozet Kazanma", description: "Yeni rozet kazanınca bildir", checked: notifyBadge, onChange: setNotifyBadge },
-          { label: "Haftalık Özet", description: "Her Pazartesi haftalık özeti gönder", checked: notifyWeekly, onChange: setNotifyWeekly },
+          { label: "Rank Up", description: "Notify when you rank up", checked: notifyRankUp, onChange: setNotifyRankUp },
+          { label: "Badge Earned", description: "Notify when you earn a badge", checked: notifyBadge, onChange: setNotifyBadge },
+          { label: "Weekly Summary", description: "Send weekly summary every Monday", checked: notifyWeekly, onChange: setNotifyWeekly },
         ].map((item) => (
           <div key={item.label} className="flex items-center justify-between gap-4 py-3">
             <div>
@@ -127,7 +127,7 @@ export default function DiscordSettingsPage() {
           className="flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-2 text-sm font-semibold text-text disabled:opacity-50 hover:bg-surface-2"
         >
           <Send className="h-4 w-4" />
-          {test.isPending ? "Gönderiliyor..." : "Test Gönder"}
+          {test.isPending ? "Sending..." : "Send Test"}
         </button>
         <button
           onClick={() => del.mutate()}
@@ -135,7 +135,7 @@ export default function DiscordSettingsPage() {
           className="flex items-center gap-2 rounded-lg border border-red-500/30 bg-surface px-4 py-2 text-sm font-semibold text-danger disabled:opacity-50 hover:bg-danger/5"
         >
           <Trash2 className="h-4 w-4" />
-          Kaldır
+          Remove
         </button>
       </div>
 

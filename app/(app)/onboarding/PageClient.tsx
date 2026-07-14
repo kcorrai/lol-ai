@@ -18,8 +18,8 @@ const VALID_REGIONS = [
 ] as const;
 
 const schema = z.object({
-  gameName: z.string().min(1, "Riot adını gir").max(16),
-  tagLine:  z.string().min(2, "Tag gir (örn. EUW)").max(5),
+  gameName: z.string().min(1, "Enter your Riot username").max(16),
+  tagLine:  z.string().min(2, "Enter tag (e.g. EUW)").max(5),
   region:   z.enum(VALID_REGIONS),
 });
 
@@ -50,13 +50,13 @@ function WelcomeStep({ onNext }: { onNext: () => void }) {
         <Zap className="h-7 w-7 text-accent" />
       </div>
       <div>
-        <h1 className="font-display text-3xl font-bold text-text">LoL AI Coach&apos;a hoş geldin</h1>
+        <h1 className="font-display text-3xl font-bold text-text">Welcome to LoL AI Coach</h1>
         <p className="mt-3 text-base leading-relaxed text-text-muted">
-          2 dakikada hesabını bağla, ilk AI analiz raporunu al. Ne eksik olduğunu sana söyleyelim.
+          Connect your account in 2 minutes, get your first AI analysis report. We&apos;ll tell you what&apos;s missing.
         </p>
       </div>
       <div className="space-y-3 rounded-xl border border-border bg-surface-2 p-4">
-        {["Riot hesabını bağla", "AI koçunla maçlarını analiz et", "Kişisel gelişim planı al"].map((item, i) => (
+        {["Connect your Riot account", "Analyze your matches with your AI coach", "Get a personalized improvement plan"].map((item, i) => (
           <div key={i} className="flex items-center gap-3">
             <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent/15 text-xs font-bold text-accent">
               {i + 1}
@@ -66,7 +66,7 @@ function WelcomeStep({ onNext }: { onNext: () => void }) {
         ))}
       </div>
       <Button className="w-full" size="lg" onClick={onNext}>
-        Başlayalım <ChevronRight className="ml-1 h-4 w-4" />
+        Let&apos;s Go <ChevronRight className="ml-1 h-4 w-4" />
       </Button>
     </div>
   );
@@ -91,7 +91,7 @@ function ConnectStep({ onSuccess }: { onSuccess: (r: ConnectResult) => void }) {
     });
     const json = await res.json() as { data?: { id: string; gameName: string }; error?: { message: string } };
     if (!res.ok) {
-      setServerError(json.error?.message ?? "Hesap bağlanamadı, tekrar dene.");
+      setServerError(json.error?.message ?? "Account connection failed, please try again.");
       return;
     }
     posthog?.capture("onboarding_riot_connected");
@@ -104,14 +104,14 @@ function ConnectStep({ onSuccess }: { onSuccess: (r: ConnectResult) => void }) {
         <Gamepad2 className="h-7 w-7 text-accent" />
       </div>
       <div>
-        <h2 className="font-display text-2xl font-bold text-text">Riot hesabını bağla</h2>
-        <p className="mt-2 text-sm text-text-muted">Riot ID&apos;nı gir. Maç geçmişini çekip analiz edeceğiz.</p>
+        <h2 className="font-display text-2xl font-bold text-text">Connect your Riot account</h2>
+        <p className="mt-2 text-sm text-text-muted">Enter your Riot ID. We&apos;ll pull and analyze your match history.</p>
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="flex gap-2">
           <div className="flex-1 space-y-1.5">
-            <label className="text-xs font-medium text-text-muted">Oyun Adı</label>
-            <Input placeholder="Adın" {...register("gameName")} />
+            <label className="text-xs font-medium text-text-muted">Game Name</label>
+            <Input placeholder="Your name" {...register("gameName")} />
             {errors.gameName && <p className="text-xs text-danger">{errors.gameName.message}</p>}
           </div>
           <div className="w-28 space-y-1.5">
@@ -121,7 +121,7 @@ function ConnectStep({ onSuccess }: { onSuccess: (r: ConnectResult) => void }) {
           </div>
         </div>
         <div className="space-y-1.5">
-          <label className="text-xs font-medium text-text-muted">Sunucu</label>
+          <label className="text-xs font-medium text-text-muted">Server</label>
           <select className="flex h-10 w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text focus:outline-none focus:ring-2 focus:ring-ring" {...register("region")}>
             {VALID_REGIONS.map((r) => <option key={r} value={r}>{r.toUpperCase()}</option>)}
           </select>
@@ -130,11 +130,11 @@ function ConnectStep({ onSuccess }: { onSuccess: (r: ConnectResult) => void }) {
           <p className="rounded-lg border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">{serverError}</p>
         )}
         <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-          {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Bağlanıyor…</> : <>Hesabı Bağla <ChevronRight className="ml-1 h-4 w-4" /></>}
+          {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Connecting…</> : <>Connect Account <ChevronRight className="ml-1 h-4 w-4" /></>}
         </Button>
       </form>
       <p className="text-center text-xs text-text-muted">
-        Şunları okuyoruz: maç geçmişi, sıra bilgisi. Hesabında hiçbir değişiklik yapmıyoruz.
+        We read: match history, rank information. We don&apos;t make any changes to your account.
       </p>
     </div>
   );

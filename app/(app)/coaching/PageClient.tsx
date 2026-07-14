@@ -81,11 +81,11 @@ export default function CoachingPage() {
       <div className="mx-auto max-w-4xl p-6">
         <EmptyState
           icon={<Gamepad2 className="h-16 w-16" />}
-          title="Riot Hesabı Bağlı Değil"
-          description="Koçluk raporu oluşturmak için önce League of Legends hesabını bağla."
+          title="Riot Account Not Connected"
+          description="Connect your League of Legends account first to create a coaching report."
           action={
             <Link href="/settings/accounts">
-              <Button size="lg">Hesap Bağla</Button>
+              <Button size="lg">Connect Account</Button>
             </Link>
           }
         />
@@ -106,12 +106,12 @@ export default function CoachingPage() {
       />
 
       <PageHeader
-        title="AI Koç Raporları"
-        subtitle="Son maçlarını analiz et, kişisel gelişim önerileri al."
+        title="AI Coach Reports"
+        subtitle="Analyze your recent matches, get personalized improvement suggestions."
       />
 
       <section>
-        <SectionLabel>Yeni Rapor Oluştur</SectionLabel>
+        <SectionLabel>Generate New Report</SectionLabel>
         <CoachingActionsCard
           onSessionReview={handleSessionReview}
           onClimbRoadmap={handleClimbRoadmap}
@@ -126,7 +126,7 @@ export default function CoachingPage() {
       </section>
 
       <section>
-        <SectionLabel>Raporlarım</SectionLabel>
+        <SectionLabel>My Reports</SectionLabel>
         <ReportList
           reports={reportsData?.pages.flatMap((p) => p.reports)}
           isLoading={reportsLoading}

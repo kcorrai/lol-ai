@@ -64,8 +64,8 @@ export function EmailVerificationBanner() {
     <div className="flex items-center gap-3 rounded-xl border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 text-sm">
       <MailWarning className="h-4 w-4 shrink-0 text-yellow-400" />
       <p className="flex-1 text-yellow-200">
-        <span className="font-medium">Email adresin doğrulanmadı.</span>{" "}
-        AI rapor üretimi devre dışı — gelen kutunu kontrol et.
+        <span className="font-medium">Your email is not verified.</span>{" "}
+        AI report generation is disabled — check your inbox.
       </p>
       <Button
         size="sm"
@@ -75,10 +75,10 @@ export function EmailVerificationBanner() {
         disabled={sending || cooldownSecs > 0}
       >
         <RefreshCw className={`h-3 w-3 ${sending ? "animate-spin" : ""}`} />
-        {cooldownSecs > 0 ? `${cooldownSecs}s` : "Tekrar Gönder"}
+        {cooldownSecs > 0 ? `${cooldownSecs}s` : "Resend"}
       </Button>
       <button
-        aria-label="Kapat"
+        aria-label="Close"
         onClick={() => setDismissed(true)}
         className="text-yellow-500/60 hover:text-yellow-300 transition-colors"
       >

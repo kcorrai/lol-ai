@@ -64,8 +64,8 @@ export default function ProfileSettingsPage() {
   return (
     <div className="mx-auto max-w-lg p-8">
       <PageHeader
-        title="Profil"
-        subtitle="Hesap ayarlarını yönet."
+        title="Profile"
+        subtitle="Manage your account settings."
       />
 
       <div className="space-y-8">
@@ -76,7 +76,7 @@ export default function ProfileSettingsPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium uppercase tracking-widest text-text-muted">
-              Hesap
+              Account
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -88,15 +88,15 @@ export default function ProfileSettingsPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium uppercase tracking-widest text-text-muted">
-              Email Bildirimleri
+              Email Notifications
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-text">Tüm emaillerden çık</p>
+                <p className="text-sm font-medium text-text">Opt out of all emails</p>
                 <p className="text-xs text-text-muted">
-                  Rapor bildirimleri, haftalık özetler ve diğer emailler durdurulur.
+                  Report notifications, weekly summaries, and other emails will be stopped.
                 </p>
               </div>
               <button
@@ -113,7 +113,7 @@ export default function ProfileSettingsPage() {
             </div>
             {emailOptOut && (
               <p className="text-xs text-danger">
-                Email bildirimleri kapalı. Hiçbir email almayacaksın.
+                Email notifications are off. You won&apos;t receive any emails.
               </p>
             )}
           </CardContent>
@@ -121,10 +121,9 @@ export default function ProfileSettingsPage() {
 
         {/* Danger zone */}
         <div className="rounded-xl border border-danger/40 bg-danger/5 p-6">
-          <p className="mb-1 text-sm font-semibold text-danger">Hesabı Sil</p>
+          <p className="mb-1 text-sm font-semibold text-danger">Delete Account</p>
           <p className="mb-4 text-xs leading-relaxed text-text-muted">
-            Bu kalıcıdır ve geri alınamaz. Tüm Riot hesapların, maç verisi, koçluk raporları ve
-            abonelik geçmişi silinecek. Onaylamak için aşağıya e-posta adresini yaz.
+            This is permanent and irreversible. All your Riot accounts, match data, coaching reports, and subscription history will be deleted. Type your email below to confirm.
           </p>
 
           <div className="space-y-3">
@@ -147,7 +146,7 @@ export default function ProfileSettingsPage() {
               disabled={!canDelete || isDeleting}
               className="w-full"
             >
-              {isDeleting ? "Hesap siliniyor…" : "Hesabımı kalıcı olarak sil"}
+              {isDeleting ? "Deleting account…" : "Permanently delete my account"}
             </Button>
           </div>
         </div>

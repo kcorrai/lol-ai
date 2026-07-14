@@ -57,9 +57,9 @@ function Stat({ label, value, sub }: { label: string; value: React.ReactNode; su
 function WrTrend({ current, prev }: { current: number; prev: number }) {
   const diff = current - prev;
   if (prev === 0) return null;
-  if (Math.abs(diff) < 2) return <span className="flex items-center gap-0.5 text-[10px] text-text-muted"><Minus className="h-3 w-3" /> Stabil</span>;
-  if (diff > 0) return <span className="flex items-center gap-0.5 text-[10px] text-success"><TrendingUp className="h-3 w-3" /> +{diff}pp geçen haftaya göre</span>;
-  return <span className="flex items-center gap-0.5 text-[10px] text-danger"><TrendingDown className="h-3 w-3" /> {diff}pp geçen haftaya göre</span>;
+  if (Math.abs(diff) < 2) return <span className="flex items-center gap-0.5 text-[10px] text-text-muted"><Minus className="h-3 w-3" /> Stable</span>;
+  if (diff > 0) return <span className="flex items-center gap-0.5 text-[10px] text-success"><TrendingUp className="h-3 w-3" /> +{diff}pp vs last week</span>;
+  return <span className="flex items-center gap-0.5 text-[10px] text-danger"><TrendingDown className="h-3 w-3" /> {diff}pp vs last week</span>;
 }
 
 export function WeekSummaryWidget({ matches, isLoading }: Props) {
@@ -101,26 +101,26 @@ export function WeekSummaryWidget({ matches, isLoading }: Props) {
     <div className="rounded-xl border border-border bg-surface p-4">
       <div className="mb-3 flex items-center justify-between">
         <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted/60">
-          Bu Hafta
+          This Week
         </p>
         <WrTrend current={wr} prev={prevWr} />
       </div>
 
       <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4">
         <Stat
-          label="Maç"
+          label="Matches"
           value={thisWeekMatches.length}
-          sub={`${thisWeekMatches.filter((m) => m.won).length}G ${thisWeekMatches.filter((m) => !m.won).length}M`}
+          sub={`${thisWeekMatches.filter((m) => m.won).length}W ${thisWeekMatches.filter((m) => !m.won).length}L`}
         />
         <Stat
-          label="Kazanma Oranı"
+          label="Win Rate"
           value={<span className={wr >= 55 ? "text-success" : wr < 45 ? "text-danger" : "text-text"}>{wr}%</span>}
         />
         <Stat label="KDA" value={kda} />
         <Stat
-          label="Süre"
-          value={`${hours}s`}
-          sub="toplam"
+          label="Time"
+          value={`${hours}h`}
+          sub="total"
         />
       </div>
 
@@ -129,7 +129,7 @@ export function WeekSummaryWidget({ matches, isLoading }: Props) {
           <ChampionIcon name={champ} size={28} />
           <div>
             <p className="text-xs font-semibold text-text">{champ}</p>
-            <p className="text-[10px] text-text-muted">Bu haftanın şampiyonu</p>
+            <p className="text-[10px] text-text-muted">This week&apos;s champion</p>
           </div>
         </div>
       )}

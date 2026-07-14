@@ -15,10 +15,10 @@ function ChampionRow({ champion, rank }: { champion: ChampionMonth; rank: number
       <div className="min-w-0 flex-1">
         <p className="text-sm font-semibold text-text">{champion.name}</p>
         <p className="text-xs text-text-muted">
-          <span className="text-success">{champion.wins}G</span>{" "}
-          <span className="text-danger">{losses}M</span>
+          <span className="text-success">{champion.wins}W</span>{" "}
+          <span className="text-danger">{losses}L</span>
           <span className="mx-1 text-border">·</span>
-          {champion.games} maç
+          {champion.games} matches
         </p>
       </div>
       <div className="text-right">
@@ -36,7 +36,7 @@ interface Props {
 export function MilestoneChampionList({ champions }: Props) {
   return (
     <div className="gaming-card p-4">
-      <p className="mb-3 text-xs font-bold uppercase tracking-wider text-text-muted">Bu Aydaki Şampiyonlar</p>
+      <p className="mb-3 text-xs font-bold uppercase tracking-wider text-text-muted">This Month&apos;s Champions</p>
       <div className="space-y-1">
         {champions.map((champ, i) => (
           <ChampionRow key={champ.name} champion={champ} rank={i + 1} />

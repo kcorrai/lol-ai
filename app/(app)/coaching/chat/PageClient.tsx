@@ -15,9 +15,9 @@ export default function CoachingChatPage() {
   if (!primary) {
     return (
       <div className="mx-auto max-w-2xl p-6 text-center">
-        <p className="text-sm text-text-muted">Önce bir Riot hesabını bağla.</p>
+        <p className="text-sm text-text-muted">First, connect a Riot account.</p>
         <Link href="/settings/accounts" className="mt-2 text-sm text-accent underline">
-          Hesabı Bağla
+          Connect Account
         </Link>
       </div>
     );
@@ -33,7 +33,7 @@ export default function CoachingChatPage() {
           className="flex items-center gap-1.5 text-xs text-text-muted hover:text-text"
         >
           <ArrowLeft className="h-3 w-3" />
-          Dashboard&apos;a Dön
+          Back to Dashboard
         </Link>
       </div>
 

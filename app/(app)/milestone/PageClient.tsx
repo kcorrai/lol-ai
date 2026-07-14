@@ -10,8 +10,8 @@ import { MilestoneRankJourney } from "./MilestoneRankJourney";
 import { MilestoneChampionList } from "./MilestoneChampionList";
 
 const MONTH_NAMES = [
-  "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
-  "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık",
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
 ];
 
 function StatCard({
@@ -78,8 +78,8 @@ export default function MilestonePage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-6">
       <PageHeader
-        title="Aylık Milestone"
-        subtitle="Bir ayın tam özeti — istatistikler, rütbe yolculuğu, en iyi performanslar"
+        title="Monthly Milestone"
+        subtitle="Complete summary of a month — statistics, rank journey, top performances"
         action={<Trophy className="h-5 w-5 text-accent" />}
       />
 
@@ -91,7 +91,7 @@ export default function MilestonePage() {
           <Calendar className="h-4 w-4 text-accent" />
           <span className="text-sm font-semibold text-text">{MONTH_NAMES[month - 1]} {year}</span>
           {isCurrent && (
-            <span className="rounded-full bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold text-accent">Bu Ay</span>
+            <span className="rounded-full bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold text-accent">This Month</span>
           )}
         </div>
         <button onClick={next} disabled={isCurrent} className="rounded-lg border border-border p-1.5 text-text-muted transition-colors hover:border-accent/30 hover:text-accent disabled:opacity-30">
@@ -104,24 +104,24 @@ export default function MilestonePage() {
       ) : !data ? (
         <div className="rounded-xl border border-dashed border-border bg-surface/50 py-16 text-center">
           <Trophy className="mx-auto mb-3 h-10 w-10 text-text-muted/30" />
-          <p className="text-sm font-medium text-text">Bu ay için veri yok</p>
-          <p className="mt-1 text-xs text-text-muted">{MONTH_NAMES[month - 1]} {year} için ranked solo maç bulunamadı.</p>
+          <p className="text-sm font-medium text-text">No data for this month</p>
+          <p className="mt-1 text-xs text-text-muted">No ranked solo matches found for {MONTH_NAMES[month - 1]} {year}.</p>
         </div>
       ) : (
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <StatCard icon={Swords} label="Maçlar" value={String(data.gamesPlayed)} sub={`${data.wins}G · ${data.losses}M`} highlight={data.winRate >= 55 ? "success" : data.winRate < 45 ? "danger" : undefined} />
-            <StatCard icon={TrendingUp} label="Kazanma Oranı" value={`%${data.winRate}`} sub="Ranked Solo" highlight={data.winRate >= 55 ? "success" : data.winRate < 45 ? "danger" : undefined} />
-            <StatCard icon={Flame} label="Ort. KDA" value={data.avgKda.toFixed(2)} sub={`En iyi: ${data.bestKda.toFixed(2)}`} highlight={data.avgKda >= 3 ? "success" : data.avgKda < 2 ? "danger" : undefined} />
-            <StatCard icon={Clock} label="Süre" value={`${data.estimatedHours}s`} sub={`${data.avgCsPerMin.toFixed(1)} CS/dk ort.`} />
+            <StatCard icon={Swords} label="Matches" value={String(data.gamesPlayed)} sub={`${data.wins}W · ${data.losses}L`} highlight={data.winRate >= 55 ? "success" : data.winRate < 45 ? "danger" : undefined} />
+            <StatCard icon={TrendingUp} label="Win Rate" value={`%${data.winRate}`} sub="Ranked Solo" highlight={data.winRate >= 55 ? "success" : data.winRate < 45 ? "danger" : undefined} />
+            <StatCard icon={Flame} label="Avg KDA" value={data.avgKda.toFixed(2)} sub={`Best: ${data.bestKda.toFixed(2)}`} highlight={data.avgKda >= 3 ? "success" : data.avgKda < 2 ? "danger" : undefined} />
+            <StatCard icon={Clock} label="Duration" value={`${data.estimatedHours}h`} sub={`${data.avgCsPerMin.toFixed(1)} CS/min avg.`} />
           </div>
 
           {data.bestWinStreak >= 3 && (
             <div className="gaming-card-accent flex items-center gap-3 px-4 py-3">
               <Flame className="h-5 w-5 shrink-0 text-accent" />
               <div>
-                <p className="text-sm font-bold text-text">{data.bestWinStreak} maçlık galibiyet serisi!</p>
-                <p className="text-xs text-text-muted">Bu aydaki en iyi performans.</p>
+                <p className="text-sm font-bold text-text">{data.bestWinStreak} win streak!</p>
+                <p className="text-xs text-text-muted">Your best performance this month.</p>
               </div>
             </div>
           )}

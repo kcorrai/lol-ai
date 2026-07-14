@@ -38,7 +38,7 @@ export function useOnboardingFlow(accountId: string): OnboardingFlowState {
             const { data } = await res.json() as {
               data: { syncCompletedAt: string | null; status: string; lastSyncError: string | null };
             };
-            if (data.lastSyncError) { setError("Senkronizasyon başarısız. Lütfen tekrar dene."); return; }
+            if (data.lastSyncError) { setError("Sync failed. Please try again."); return; }
             if (data.syncCompletedAt || data.status === "complete") break;
           }
         } catch { /* keep polling */ }

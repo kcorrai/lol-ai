@@ -22,7 +22,7 @@ export const POST = withAuth(async (_req, { userId }) => {
     webhookUrl = decryptString(integration.webhookUrl);
   } catch {
     throw Errors.validation(
-      "Discord entegrasyonu şu an devre dışı. DISCORD_ENCRYPTION_KEY environment variable'ı ayarlanmamış."
+      "Discord integration is currently unavailable. DISCORD_ENCRYPTION_KEY environment variable is not set."
     );
   }
   await sendDiscordWebhook(webhookUrl, testEmbed());

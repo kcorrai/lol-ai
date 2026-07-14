@@ -35,8 +35,8 @@ export const POST = withAuth(async (req: NextRequest) => {
   if (cached) return apiSuccess({ guide: (cached as { guide: string }).guide, cacheHit: true });
 
   const guide = await getAiClient().complete(
-    "Sen LoL koçluk asistanısın. Kısa, aksiyon odaklı matchup rehberleri yazıyorsun.",
-    `${playerChampion} vs ${opponentChampion} matchup rehberi yaz. Oyuncu bu matchup'ta ${wins}G/${losses}M (KDA: ${avgKda}). Tam olarak 4 madde: lane fazı stratejisi, kaçınılacak 1 hata, gank zamanlaması, geç oyun önceliği. Her madde 1 cümle. Türkçe.`,
+    "You are a LoL coaching assistant. You write short, action-oriented matchup guides.",
+    `Write a ${playerChampion} vs ${opponentChampion} matchup guide. The player has ${wins}W/${losses}L in this matchup (KDA: ${avgKda}). Exactly 4 points: lane phase strategy, 1 mistake to avoid, gank timing, late game priority. One sentence per point.`,
     { maxTokens: 250, temperature: 0.5 }
   );
 

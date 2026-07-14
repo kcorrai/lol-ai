@@ -64,7 +64,7 @@ export default function RecapPage() {
       <div className="flex h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="h-8 w-8 animate-spin text-accent" />
-          <p className="text-sm text-text-muted">Sezon özeti hazırlanıyor…</p>
+          <p className="text-sm text-text-muted">Preparing season recap…</p>
         </div>
       </div>
     );
@@ -73,7 +73,7 @@ export default function RecapPage() {
   if (error || !recap) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <p className="text-sm text-danger">Recap yüklenemedi. En az 5 ranked maç gerekli.</p>
+        <p className="text-sm text-danger">Recap failed to load. At least 5 ranked matches required.</p>
       </div>
     );
   }
@@ -97,14 +97,14 @@ export default function RecapPage() {
           <div className="flex items-center gap-3">
             <Button variant="secondary" size="sm" onClick={copyLink}>
               {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-              <span className="ml-1">{copied ? "Kopyalandı!" : "Paylaş"}</span>
+              <span className="ml-1">{copied ? "Copied!" : "Share"}</span>
             </Button>
             {slide < TOTAL_SLIDES - 1 ? (
               <Button size="sm" onClick={next} className="gap-1 font-semibold">
-                Devam <ChevronRight className="h-4 w-4" />
+                Continue <ChevronRight className="h-4 w-4" />
               </Button>
             ) : (
-              <Button size="sm" onClick={() => setSlide(0)}>Başa Dön</Button>
+              <Button size="sm" onClick={() => setSlide(0)}>Return to Start</Button>
             )}
           </div>
           <button
@@ -112,7 +112,7 @@ export default function RecapPage() {
             disabled={slide === 0}
             className="text-xs text-text-muted disabled:opacity-30 hover:text-text"
           >
-            ← Geri
+            ← Back
           </button>
         </div>
       </div>

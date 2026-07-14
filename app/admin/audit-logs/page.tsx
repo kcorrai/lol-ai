@@ -37,7 +37,7 @@ export default async function AuditLogsPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="font-display text-2xl font-bold text-text">Audit Logs</h1>
-        <p className="text-sm text-text-muted">{total} kayıt</p>
+        <p className="text-sm text-text-muted">{total} records</p>
       </div>
 
       {/* Filter form */}
@@ -70,7 +70,7 @@ export default async function AuditLogsPage({
           type="submit"
           className="rounded-md bg-accent px-4 py-1.5 text-xs font-semibold text-background"
         >
-          Filtrele
+          Filter
         </button>
       </form>
 
@@ -79,7 +79,7 @@ export default async function AuditLogsPage({
         <table className="min-w-full text-xs">
           <thead className="bg-surface-2">
             <tr>
-              <th className="px-4 py-2 text-left text-text-muted">Tarih</th>
+              <th className="px-4 py-2 text-left text-text-muted">Date</th>
               <th className="px-4 py-2 text-left text-text-muted">Action</th>
               <th className="px-4 py-2 text-left text-text-muted">User ID</th>
               <th className="px-4 py-2 text-left text-text-muted">Resource ID</th>
@@ -105,7 +105,7 @@ export default async function AuditLogsPage({
             {logs.length === 0 && (
               <tr>
                 <td colSpan={5} className="py-8 text-center text-text-muted">
-                  Kayıt bulunamadı
+                  No records found
                 </td>
               </tr>
             )}
@@ -117,7 +117,7 @@ export default async function AuditLogsPage({
       {totalPages > 1 && (
         <div className="flex items-center justify-between text-xs text-text-muted">
           <span>
-            Sayfa {page + 1} / {totalPages}
+            Page {page + 1} / {totalPages}
           </span>
           <div className="flex gap-2">
             {page > 0 && (
@@ -125,7 +125,7 @@ export default async function AuditLogsPage({
                 href={`?${new URLSearchParams({ ...params, page: String(page - 1) })}`}
                 className="rounded-md border border-border px-3 py-1.5 hover:bg-surface-2"
               >
-                ← Önceki
+                ← Previous
               </a>
             )}
             {page < totalPages - 1 && (
@@ -133,7 +133,7 @@ export default async function AuditLogsPage({
                 href={`?${new URLSearchParams({ ...params, page: String(page + 1) })}`}
                 className="rounded-md border border-border px-3 py-1.5 hover:bg-surface-2"
               >
-                Sonraki →
+                Next →
               </a>
             )}
           </div>

@@ -34,17 +34,17 @@ async function saveDiscordSettings(payload: SavePayload): Promise<void> {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) await extractError(res, "Kayıt başarısız");
+  if (!res.ok) await extractError(res, "Save failed");
 }
 
 async function deleteDiscordIntegration(): Promise<void> {
   const res = await fetch("/api/settings/discord", { method: "DELETE" });
-  if (!res.ok) await extractError(res, "Kaldırma başarısız");
+  if (!res.ok) await extractError(res, "Deletion failed");
 }
 
 async function sendTestMessage(): Promise<void> {
   const res = await fetch("/api/settings/discord/test", { method: "POST" });
-  if (!res.ok) await extractError(res, "Test başarısız");
+  if (!res.ok) await extractError(res, "Test failed");
 }
 
 export function useDiscordSettings() {

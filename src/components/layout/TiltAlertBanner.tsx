@@ -16,14 +16,14 @@ export function TiltAlertBanner() {
         <span className="mt-0.5 shrink-0 text-base">🔴</span>
         <div className="flex-1">
           <p className="text-xs font-semibold uppercase tracking-wider text-danger">
-            Tilt Uyarısı — {alert.streakLength} Üst Üste Kayıp
+            Tilt Alert — {alert.streakLength} Consecutive Losses
           </p>
           <p className="mt-0.5 text-sm text-text-muted">{alert.message}</p>
         </div>
         <button
           onClick={() => acknowledge(alert.id)}
           disabled={isPending}
-          aria-label="Kapat"
+          aria-label="Close"
           className="shrink-0 rounded p-1 text-text-muted transition-colors hover:text-text disabled:opacity-40"
         >
           <X className="h-4 w-4" />

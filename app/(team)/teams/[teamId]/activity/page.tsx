@@ -11,8 +11,8 @@ export default function TeamActivityPage() {
   return (
     <div className="mx-auto max-w-xl space-y-6 px-4 py-6">
       <PageHeader
-        title="Takım Aktivitesi"
-        subtitle="Son üye hareketleri ve takım olayları"
+        title="Team Activity"
+        subtitle="Recent member activity and team events"
       />
       <TeamActivityFeed teamId={teamId} />
     </div>

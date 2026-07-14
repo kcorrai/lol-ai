@@ -4,7 +4,7 @@ import type { TeamStatsData } from "@/domains/teams/services/teamStatsService";
 
 async function fetchTeamStats(teamId: string, range: string): Promise<TeamStatsData> {
   const res = await fetch(`/api/teams/${teamId}/stats?range=${range}`);
-  if (!res.ok) throw new Error("İstatistikler yüklenemedi");
+  if (!res.ok) throw new Error("Failed to load statistics");
   const body = (await res.json()) as { data: TeamStatsData };
   return body.data;
 }

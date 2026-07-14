@@ -17,8 +17,8 @@ interface ConfirmDialogProps {
 export function ConfirmDialog({
   title,
   description,
-  confirmLabel = "Onayla",
-  cancelLabel = "İptal",
+  confirmLabel = "Confirm",
+  cancelLabel = "Cancel",
   isPending = false,
   danger = false,
   onConfirm,

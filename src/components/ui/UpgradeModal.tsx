@@ -13,31 +13,31 @@ interface UpgradeModalProps {
 }
 
 const PRO_FEATURES = [
-  "Sınırsız AI koçluk raporu",
-  "Pro oyuncu karşılaştırması",
-  "Haftalık performans özeti",
-  "Öncelikli AI modeli (GPT-4o)",
-  "Çoklu hesap takibi",
+  "Unlimited AI coaching report",
+  "Pro player comparison",
+  "Weekly performance summary",
+  "Priority AI model (GPT-4o)",
+  "Multiple account tracking",
 ];
 
 const REASON_COPY: Record<string, { title: string; subtitle: string }> = {
   REPORT_LIMIT_REACHED: {
-    title: "Aylık rapor limitine ulaştın",
-    subtitle: "Pro'ya geçerek sınırsız AI koçluk raporu al.",
+    title: "You've reached your monthly report limit",
+    subtitle: "Upgrade to Pro to get unlimited AI coaching reports.",
   },
   DAILY_REPORT_LIMIT_REACHED: {
-    title: "Günlük rapor limitine ulaştın",
-    subtitle: "Yarın tekrar dene veya Pro ile sınırsız rapor oluştur.",
+    title: "You've reached your daily report limit",
+    subtitle: "Try again tomorrow or create unlimited reports with Pro.",
   },
   PRO_REQUIRED: {
-    title: "Bu özellik Pro üyelere özel",
-    subtitle: "Pro'ya geç ve tüm özelliklere anında eriş.",
+    title: "This feature is exclusive to Pro members",
+    subtitle: "Upgrade to Pro and access all features instantly.",
   },
 };
 
 const DEFAULT_COPY = {
-  title: "Pro'ya Geç",
-  subtitle: "Tüm özelliklere sınırsız erişim için Pro planını dene.",
+  title: "Upgrade to Pro",
+  subtitle: "Try the Pro plan for unlimited access to all features.",
 };
 
 export function UpgradeModal({ open, onClose, reason }: UpgradeModalProps) {
@@ -89,7 +89,7 @@ export function UpgradeModal({ open, onClose, reason }: UpgradeModalProps) {
 
         <div className="mb-4 rounded-xl border border-border bg-background px-4 py-3 text-center">
           <span className="text-2xl font-black text-text">₺199</span>
-          <span className="text-sm text-text-muted"> / ay</span>
+          <span className="text-sm text-text-muted"> / month</span>
         </div>
 
         <Button
@@ -97,7 +97,7 @@ export function UpgradeModal({ open, onClose, reason }: UpgradeModalProps) {
           onClick={handleUpgrade}
           disabled={checkout.isPending}
         >
-          {checkout.isPending ? "Yönlendiriliyor..." : session ? "Pro'ya Geç →" : "Ücretsiz Başla →"}
+          {checkout.isPending ? "Redirecting..." : session ? "Upgrade to Pro →" : "Get Started Free →"}
         </Button>
       </div>
     </div>

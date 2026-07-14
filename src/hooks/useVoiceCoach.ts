@@ -86,7 +86,7 @@ export function useVoiceCoach(riotAccountId: string): VoiceCoachState {
 
       if (content.trim()) await speakText(content);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Bir hata oluştu.");
+      setError(err instanceof Error ? err.message : "An error occurred.");
       setMessages((prev) => (prev.at(-1)?.content === "" ? prev.slice(0, -1) : prev));
     } finally {
       setIsStreaming(false);
@@ -99,11 +99,11 @@ export function useVoiceCoach(riotAccountId: string): VoiceCoachState {
       const form = new FormData();
       form.append("audio", blob, "voice.webm");
       const res = await fetch("/api/coaching/voice/transcribe", { method: "POST", body: form });
-      if (!res.ok) throw new Error("Transkripsiyon başarısız");
+      if (!res.ok) throw new Error("Transcription failed");
       const { data } = await res.json() as { data: { text: string } };
       if (data.text.trim()) await sendToChat(data.text);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Ses anlaşılamadı.");
+      setError(err instanceof Error ? err.message : "Could not understand audio.");
     } finally {
       setIsTranscribing(false);
     }
@@ -131,7 +131,7 @@ export function useVoiceCoach(riotAccountId: string): VoiceCoachState {
       recorder.start();
       setIsRecording(true);
     } catch {
-      setError("Mikrofon erişimi reddedildi.");
+      setError("Microphone access denied.");
     }
   }
 

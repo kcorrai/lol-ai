@@ -63,7 +63,7 @@ export async function GET(req: NextRequest): Promise<Response> {
         </div>
         {champ && (
           <div style={{ fontSize: 20, color: "#94a3b8" }}>
-            En çok oynanan: {champ}
+            Most played: {champ}
           </div>
         )}
         <div
@@ -74,7 +74,7 @@ export async function GET(req: NextRequest): Promise<Response> {
             fontWeight: 600,
           }}
         >
-          lolaicoach.com — AI destekli LoL koçluğu
+          lolaicoach.com — AI-powered LoL coaching
         </div>
       </div>
     ),

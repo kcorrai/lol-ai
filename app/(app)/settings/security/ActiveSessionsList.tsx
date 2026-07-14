@@ -13,13 +13,13 @@ interface UserSession {
 }
 
 function parseDevice(userAgent: string | null): { label: string; icon: "desktop" | "mobile" } {
-  if (!userAgent) return { label: "Bilinmeyen Cihaz", icon: "desktop" };
+  if (!userAgent) return { label: "Unknown Device", icon: "desktop" };
   const ua = userAgent.toLowerCase();
   const isMobile = ua.includes("mobile") || ua.includes("android") || ua.includes("iphone");
-  if (ua.includes("chrome")) return { label: `Chrome${isMobile ? " (Mobil)" : ""}`, icon: isMobile ? "mobile" : "desktop" };
-  if (ua.includes("firefox")) return { label: `Firefox${isMobile ? " (Mobil)" : ""}`, icon: isMobile ? "mobile" : "desktop" };
-  if (ua.includes("safari")) return { label: `Safari${isMobile ? " (Mobil)" : ""}`, icon: isMobile ? "mobile" : "desktop" };
-  return { label: isMobile ? "Mobil Tarayıcı" : "Masaüstü Tarayıcı", icon: isMobile ? "mobile" : "desktop" };
+  if (ua.includes("chrome")) return { label: `Chrome${isMobile ? " (Mobile)" : ""}`, icon: isMobile ? "mobile" : "desktop" };
+  if (ua.includes("firefox")) return { label: `Firefox${isMobile ? " (Mobile)" : ""}`, icon: isMobile ? "mobile" : "desktop" };
+  if (ua.includes("safari")) return { label: `Safari${isMobile ? " (Mobile)" : ""}`, icon: isMobile ? "mobile" : "desktop" };
+  return { label: isMobile ? "Mobile Browser" : "Desktop Browser", icon: isMobile ? "mobile" : "desktop" };
 }
 
 export function ActiveSessionsList() {
@@ -60,8 +60,8 @@ export function ActiveSessionsList() {
     <div className="rounded-xl border border-border bg-surface p-5 space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-semibold text-text">Aktif Oturumlar</p>
-          <p className="text-xs text-text-muted mt-0.5">Hesabına bağlı cihazlar</p>
+          <p className="text-sm font-semibold text-text">Active Sessions</p>
+          <p className="text-xs text-text-muted mt-0.5">Devices logged into your account</p>
         </div>
         <button
           onClick={revokeAllSessions}
@@ -69,7 +69,7 @@ export function ActiveSessionsList() {
           className="flex items-center gap-1.5 rounded-lg bg-red-600/10 px-3 py-1.5 text-xs font-semibold text-red-400 hover:bg-red-600/20 disabled:opacity-50"
         >
           <LogOut className="h-3.5 w-3.5" />
-          Tüm Cihazlardan Çıkış
+          Log Out of All Devices
         </button>
       </div>
 
@@ -78,7 +78,7 @@ export function ActiveSessionsList() {
           {[1, 2].map((i) => <div key={i} className="h-12 animate-pulse rounded-lg bg-surface-2" />)}
         </div>
       ) : sessions.length === 0 ? (
-        <p className="text-xs text-text-muted">Aktif oturum bulunamadı.</p>
+        <p className="text-xs text-text-muted">No active sessions found.</p>
       ) : (
         <div className="divide-y divide-border">
           {sessions.map((s, idx) => {
@@ -92,10 +92,10 @@ export function ActiveSessionsList() {
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-medium text-text truncate">
                     {device.label}
-                    {isFirst && <span className="ml-2 rounded-full bg-accent/10 px-2 py-0.5 text-[10px] text-accent font-semibold">Bu cihaz</span>}
+                    {isFirst && <span className="ml-2 rounded-full bg-accent/10 px-2 py-0.5 text-[10px] text-accent font-semibold">This device</span>}
                   </p>
                   <p className="text-[11px] text-text-muted truncate">
-                    {s.ipAddress ?? "IP bilinmiyor"} · Son aktif: {new Date(s.lastActiveAt).toLocaleDateString("tr-TR")}
+                    {s.ipAddress ?? "IP unknown"} · Last active: {new Date(s.lastActiveAt).toLocaleDateString("en-US")}
                   </p>
                 </div>
                 {!isFirst && (
@@ -104,7 +104,7 @@ export function ActiveSessionsList() {
                     disabled={revoking === s.id}
                     className="shrink-0 rounded-lg bg-surface-2 px-2.5 py-1.5 text-xs text-red-400 hover:bg-red-600/10 disabled:opacity-50"
                   >
-                    Çıkış Yap
+                    Log Out
                   </button>
                 )}
               </div>

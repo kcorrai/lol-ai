@@ -114,9 +114,9 @@ export default function PrivacySettingsPage() {
   return (
     <div className="mx-auto max-w-lg space-y-6 p-6">
       <div>
-        <h1 className="font-display text-2xl font-bold text-text">Gizlilik Ayarları</h1>
+        <h1 className="font-display text-2xl font-bold text-text">Privacy Settings</h1>
         <p className="mt-1 text-sm text-text-muted">
-          Public profil sayfanda hangi bilgilerin görüneceğini kontrol et.
+          Control which information appears on your public profile page.
         </p>
       </div>
 
@@ -130,50 +130,50 @@ export default function PrivacySettingsPage() {
             className="flex items-center gap-1.5 rounded-md bg-surface-2 px-3 py-1.5 text-xs font-semibold text-text transition-colors hover:bg-accent hover:text-background"
           >
             <ExternalLink className="h-3.5 w-3.5" />
-            Görüntüle
+            View
           </Link>
           <button
             onClick={copyLink}
             className="flex items-center gap-1.5 rounded-md bg-surface-2 px-3 py-1.5 text-xs font-semibold text-text transition-colors hover:bg-accent hover:text-background"
           >
             {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-            {copied ? "Kopyalandı" : "Kopyala"}
+            {copied ? "Copied" : "Copy"}
           </button>
         </div>
       )}
 
       <div className="rounded-xl border border-border bg-surface divide-y divide-border px-4">
         <ToggleRow
-          label="Profil Herkese Açık"
-          description="Kapalıysa profil sayfana kimse erişemez"
+          label="Profile Public"
+          description="If off, no one can access your profile page"
           checked={local.profilePublic}
           onChange={() => toggle("profilePublic")}
           disabled={isPending}
         />
         <ToggleRow
-          label="Rank Göster"
-          description="Rank ve LP bilgin görünsün"
+          label="Show Rank"
+          description="Show your rank and LP"
           checked={local.showRank}
           onChange={() => toggle("showRank")}
           disabled={!local.profilePublic || isPending}
         />
         <ToggleRow
-          label="Kazanma Oranı Göster"
-          description="Genel WR yüzdeniz görünsün"
+          label="Show Win Rate"
+          description="Show your overall WR percentage"
           checked={local.showWR}
           onChange={() => toggle("showWR")}
           disabled={!local.profilePublic || isPending}
         />
         <ToggleRow
-          label="Rozetler Göster"
-          description="Kazandığın achievement rozetleri görünsün"
+          label="Show Badges"
+          description="Show achievement badges you've earned"
           checked={local.showBadges}
           onChange={() => toggle("showBadges")}
           disabled={!local.profilePublic || isPending}
         />
         <ToggleRow
-          label="Şampiyonlar Göster"
-          description="Favori şampiyonların görünsün"
+          label="Show Champions"
+          description="Show your favorite champions"
           checked={local.showChampions}
           onChange={() => toggle("showChampions")}
           disabled={!local.profilePublic || isPending}
@@ -182,20 +182,19 @@ export default function PrivacySettingsPage() {
 
       <div className="rounded-xl border border-border bg-surface p-5 space-y-3">
         <div>
-          <h2 className="text-sm font-semibold text-text">Verilerimi İndir</h2>
+          <h2 className="text-sm font-semibold text-text">Download My Data</h2>
           <p className="mt-1 text-xs text-text-muted">
-            GDPR kapsamında tüm verilerinin bir kopyasını talep edebilirsin. Veriler ZIP dosyası olarak
-            e-posta adresine birkaç dakika içinde gönderilir.
+            Under GDPR, you can request a copy of all your data. Data will be sent to your email as a ZIP file within minutes.
           </p>
         </div>
 
         {exportState === "done" ? (
           <p className="rounded-lg bg-green-500/10 px-4 py-2.5 text-sm text-green-400">
-            Talep alındı — verilerini içeren ZIP e-posta adresine gönderilecek.
+            Request received — ZIP with your data will be sent to your email.
           </p>
         ) : exportState === "error" ? (
           <p className="rounded-lg bg-red-500/10 px-4 py-2.5 text-sm text-red-400">
-            Bir hata oluştu. Lütfen tekrar dene.
+            An error occurred. Please try again.
           </p>
         ) : (
           <button
@@ -204,32 +203,31 @@ export default function PrivacySettingsPage() {
             className="flex items-center gap-2 rounded-lg bg-surface-2 px-4 py-2.5 text-sm font-semibold text-text transition-colors hover:bg-accent hover:text-background disabled:opacity-50"
           >
             <Download className="h-4 w-4" />
-            {exportState === "loading" ? "İşleniyor…" : "Verilerimi İndir"}
+            {exportState === "loading" ? "Processing…" : "Download My Data"}
           </button>
         )}
       </div>
 
       <div className="rounded-xl border border-red-500/20 bg-surface p-5 space-y-3">
         <div>
-          <h2 className="text-sm font-semibold text-red-400">Hesabımı Sil</h2>
+          <h2 className="text-sm font-semibold text-red-400">Delete My Account</h2>
           <p className="mt-1 text-xs text-text-muted">
-            Hesabını silmek istersen, tüm verilerinin kalıcı olarak silineceğini unutma.
-            Silme işlemi 30 gün sonra gerçekleşir — bu süre içinde vazgeçebilirsin.
+            If you want to delete your account, remember that all your data will be permanently deleted. Deletion will happen after 30 days — you can cancel during this time.
           </p>
         </div>
 
         {deleteState === "done" ? (
           <p className="rounded-lg bg-red-500/10 px-4 py-2.5 text-sm text-red-400">
-            Silme talebin alındı. Hesabın 30 gün içinde silinecek.
+            Deletion request received. Your account will be deleted within 30 days.
           </p>
         ) : deleteState === "error" ? (
           <p className="rounded-lg bg-red-500/10 px-4 py-2.5 text-sm text-red-400">
-            Bir hata oluştu. Lütfen tekrar dene.
+            An error occurred. Please try again.
           </p>
         ) : deleteStep === "confirm" ? (
           <div className="space-y-2">
             <p className="text-sm font-medium text-red-400">
-              Emin misin? Bu işlem geri alınamaz.
+              Are you sure? This action cannot be undone.
             </p>
             <div className="flex gap-2">
               <button
@@ -238,13 +236,13 @@ export default function PrivacySettingsPage() {
                 className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700 disabled:opacity-50"
               >
                 <Trash2 className="h-4 w-4" />
-                {deleteState === "loading" ? "İşleniyor…" : "Evet, hesabımı sil"}
+                {deleteState === "loading" ? "Processing…" : "Yes, delete my account"}
               </button>
               <button
                 onClick={() => setDeleteStep("idle")}
                 className="rounded-lg bg-surface-2 px-4 py-2.5 text-sm font-semibold text-text transition-colors hover:bg-accent hover:text-background"
               >
-                Vazgeç
+                Cancel
               </button>
             </div>
           </div>
@@ -254,7 +252,7 @@ export default function PrivacySettingsPage() {
             className="flex items-center gap-2 rounded-lg border border-red-500/30 px-4 py-2.5 text-sm font-semibold text-red-400 transition-colors hover:bg-red-500/10"
           >
             <Trash2 className="h-4 w-4" />
-            Hesabımı Sil
+            Delete My Account
           </button>
         )}
       </div>

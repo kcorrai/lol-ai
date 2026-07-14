@@ -92,14 +92,14 @@ function PlayerRow({ entry, index: _index }: { entry: LeaderboardEntry; index: n
       {/* Stats */}
       <div className="hidden shrink-0 items-center gap-6 sm:flex">
         <div className="text-right">
-          <p className="text-xs text-text-muted">Maç</p>
+          <p className="text-xs text-text-muted">Matches</p>
           <p className="text-sm font-semibold text-text">
-            <span className="text-success">{entry.wins}G</span>
-            <span className="text-text-muted"> {entry.losses}M</span>
+            <span className="text-success">{entry.wins}W</span>
+            <span className="text-text-muted"> {entry.losses}L</span>
           </p>
         </div>
         <div className="w-14 text-right">
-          <p className="text-xs text-text-muted">KO</p>
+          <p className="text-xs text-text-muted">WR</p>
           <p className={cn("text-sm font-bold", entry.winRate >= 55 ? "text-success" : entry.winRate < 45 ? "text-danger" : "text-text")}>
             %{entry.winRate}
           </p>
@@ -142,8 +142,8 @@ export default function LeaderboardPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-6">
       <PageHeader
-        title="Lider Tablosu"
-        subtitle="Platformdaki en hızlı yükselenler — sadece public profiller"
+        title="Leaderboard"
+        subtitle="Fastest climbers on the platform — public profiles only"
         action={<Trophy className="h-5 w-5 text-accent" />}
       />
 
@@ -158,7 +158,7 @@ export default function LeaderboardPage() {
               period === p ? "bg-surface text-text shadow-sm" : "text-text-muted hover:text-text"
             )}
           >
-            {p === "week" ? "Bu Hafta" : "Bu Ay"}
+            {p === "week" ? "This Week" : "This Month"}
           </button>
         ))}
       </div>
@@ -168,9 +168,9 @@ export default function LeaderboardPage() {
       ) : !data || data.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border bg-surface/50 py-16 text-center">
           <Trophy className="mx-auto mb-3 h-10 w-10 text-text-muted/30" />
-          <p className="text-sm font-medium text-text">Henüz yeterli veri yok</p>
+          <p className="text-sm font-medium text-text">Not enough data yet</p>
           <p className="mt-1 text-xs text-text-muted">
-            En az 3 maç oynayan ve public profili olan oyuncular görünür.
+            Only players who&apos;ve played at least 3 matches and have public profiles are shown.
           </p>
         </div>
       ) : (
@@ -182,9 +182,9 @@ export default function LeaderboardPage() {
       )}
 
       <p className="text-center text-xs text-text-muted">
-        Profil sayfanda görünmek için{" "}
+        To appear on the leaderboard,{" "}
         <Link href="/settings/privacy" className="text-accent hover:underline">
-          profilini herkese açık yap
+          make your profile public
         </Link>
       </p>
     </div>

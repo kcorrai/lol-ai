@@ -15,8 +15,8 @@ export default function TeamDashboardPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-4 py-6">
       <PageHeader
-        title={myMembership?.name ?? "Takım Dashboard"}
-        subtitle="Takım üyeleri, son maçlar ve koçluk raporları"
+        title={myMembership?.name ?? "Team Dashboard"}
+        subtitle="Team members, recent matches, and coaching reports"
       />
       <TeamDashboard teamId={teamId} isCoach={isCoach ?? false} />
     </div>

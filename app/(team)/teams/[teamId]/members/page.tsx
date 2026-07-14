@@ -16,8 +16,8 @@ export default function TeamMembersPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-4 py-6">
       <PageHeader
-        title="Üye Yönetimi"
-        subtitle="Takım üyelerini görüntüleyin, davet edin veya çıkarın"
+        title="Member Management"
+        subtitle="View, invite, or remove team members"
       />
       {canInvite && <InviteLinkBox teamId={teamId} />}
       <TeamDashboard teamId={teamId} isCoach={true} />

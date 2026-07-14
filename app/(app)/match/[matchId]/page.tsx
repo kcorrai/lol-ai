@@ -22,7 +22,7 @@ export default function MatchDetailPage() {
   if (error || !match) {
     return (
       <div className="mx-auto max-w-6xl p-6">
-        <ErrorState title="Maç bulunamadı" message="Bu maç mevcut değil veya bunda yer almadın." />
+        <ErrorState title="Match not found" message="This match doesn't exist or you didn't participate in it." />
       </div>
     );
   }
@@ -36,11 +36,11 @@ export default function MatchDetailPage() {
     <div className="mx-auto max-w-6xl space-y-5 p-6">
       <PageHeader
         title={match.gameMode}
-        subtitle={`${new Date(match.gameStart).toLocaleString("tr-TR")} · ${durationMin}:${String(durationSec).padStart(2, "0")}`}
+        subtitle={`${new Date(match.gameStart).toLocaleString("en-US")} · ${durationMin}:${String(durationSec).padStart(2, "0")}`}
         backHref="/dashboard"
         backLabel="Dashboard"
         action={userWon !== undefined ? (
-          <Badge variant={userWon ? "success" : "destructive"}>{userWon ? "Zafer" : "Yenilgi"}</Badge>
+          <Badge variant={userWon ? "success" : "destructive"}>{userWon ? "Victory" : "Defeat"}</Badge>
         ) : undefined}
       />
 

@@ -65,7 +65,7 @@ export function useGenerateReport(options?: UseGenerateReportOptions): UseGenera
         const retryAfter = res.headers.get("Retry-After");
         setRetryAfterSeconds(retryAfter ? Number(retryAfter) : 60);
         const json = await res.json().catch(() => null) as { error?: { message?: string; code?: string } } | null;
-        const message = json?.error?.message ?? "Çok fazla istek. Lütfen daha sonra tekrar deneyin.";
+        const message = json?.error?.message ?? "Too many requests. Please try again later.";
         throw new FetchError(message, 429, json?.error?.code);
       }
 

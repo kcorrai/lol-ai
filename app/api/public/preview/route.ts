@@ -23,13 +23,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
   if (!gameName || !tagLine || !region) {
     return NextResponse.json(
-      { error: "gameName, tagLine ve region zorunludur." },
+      { error: "gameName, tagLine and region are required." },
       { status: 400 }
     );
   }
 
   if (!VALID_REGIONS.includes(region)) {
-    return NextResponse.json({ error: "Geçersiz region." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid region." }, { status: 400 });
   }
 
   const cacheKey = buildCacheKey("preview", { gameName, tagLine, region });
@@ -114,7 +114,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       aiInsight,
     };
 
-    await setCached(cacheKey, "preview", result, 1); // 1 gün TTL
+    await setCached(cacheKey, "preview", result, 1); // 1 day TTL
 
     return NextResponse.json({ data: result });
   } catch (err) {
@@ -123,23 +123,23 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     if (msg.includes("404") || msg.includes("Not Found") || msg.includes("RIOT_NOT_FOUND")) {
       return NextResponse.json(
-        { error: `${gameName}#${tagLine} bulunamadı. Riot ID'yi ve bölgeyi kontrol et.` },
+        { error: `${gameName}#${tagLine} not found. Check your Riot ID and region.` },
         { status: 404 }
       );
     }
     if (msg.includes("429") || msg.includes("RIOT_RATE_LIMITED")) {
       return NextResponse.json(
-        { error: "Riot API rate limit aşıldı. Birkaç saniye sonra tekrar dene." },
+        { error: "Riot API rate limit exceeded. Try again in a few seconds." },
         { status: 503 }
       );
     }
     if (msg.includes("401") || msg.includes("403") || msg.includes("RIOT_UNAUTHORIZED") || msg.includes("RIOT_FORBIDDEN")) {
       return NextResponse.json(
-        { error: "Riot API yapılandırma hatası. Lütfen daha sonra tekrar dene." },
+        { error: "Riot API configuration error. Please try again later." },
         { status: 503 }
       );
     }
-    return NextResponse.json({ error: "Sunucu hatası oluştu." }, { status: 500 });
+    return NextResponse.json({ error: "Server error occurred." }, { status: 500 });
   }
 }
 
@@ -156,7 +156,7 @@ async function generateAiInsight(
     : "Unranked";
   const wins = matches.filter(m => m.win).length;
   const wr = matches.length > 0 ? Math.round((wins / matches.length) * 100) : 0;
-  const topChamp = topChamps[0]?.championName ?? "bilinmiyor";
+  const topChamp = topChamps[0]?.championName ?? "unknown";
   const avgDeaths =
     matches.length > 0
       ? (matches.reduce((s, m) => s + m.deaths, 0) / matches.length).toFixed(1)
@@ -164,9 +164,9 @@ async function generateAiInsight(
 
   const ai = getAiClient();
   const result = await ai.complete(
-    "Sen deneyimli bir League of Legends koçusun. Kısa, spesifik ve motive edici cümleler kurarsın.",
-    `Oyuncu: ${gameName}, Rank: ${rankStr}, Son ${matches.length} maç WR: %${wr}, En çok: ${topChamp}, Ortalama ölüm: ${avgDeaths}. ` +
-      "Bu oyuncuya 2 cümlelik koçluk mesajı yaz. Türkçe, spesifik ve aksiyonel olsun. JSON döndürme, sadece düz metin.",
+    "You are an experienced League of Legends coach. You construct short, specific, and motivating sentences.",
+    `Player: ${gameName}, Rank: ${rankStr}, Last ${matches.length} matches WR: %${wr}, Most played: ${topChamp}, Avg deaths: ${avgDeaths}. ` +
+      "Write a 2-sentence coaching message for this player. Be specific and actionable. Do not return JSON, just plain text.",
     { maxTokens: 150 }
   );
 

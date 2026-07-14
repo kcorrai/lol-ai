@@ -16,10 +16,10 @@ import { cn } from "@/lib/utils";
 function makeTeamNav(teamId: string) {
   return [
     { href: `/teams/${teamId}`,         icon: LayoutDashboard, label: "Dashboard",  exact: true  },
-    { href: `/teams/${teamId}/members`, icon: Users,           label: "Üyeler",     exact: false },
-    { href: `/teams/${teamId}/report`,   icon: Sparkles,  label: "AI Raporu",     exact: false },
-    { href: `/teams/${teamId}/reports`,  icon: FileText,  label: "Koç Raporları", exact: false },
-    { href: `/teams/${teamId}/activity`, icon: Activity,  label: "Aktivite",      exact: false },
+    { href: `/teams/${teamId}/members`, icon: Users,           label: "Members",     exact: false },
+    { href: `/teams/${teamId}/report`,   icon: Sparkles,  label: "AI Report",     exact: false },
+    { href: `/teams/${teamId}/reports`,  icon: FileText,  label: "Coach Reports", exact: false },
+    { href: `/teams/${teamId}/activity`, icon: Activity,  label: "Activity",      exact: false },
   ] as const;
 }
 
@@ -88,7 +88,7 @@ export function TeamSidebar({ collapsed, onToggle }: TeamSidebarProps) {
 
   const teamNav = teamId ? [
     ...makeTeamNav(teamId),
-    ...(isOwner ? [{ href: `/teams/${teamId}/settings`, icon: Settings, label: "Ayarlar", exact: false } as const] : []),
+    ...(isOwner ? [{ href: `/teams/${teamId}/settings`, icon: Settings, label: "Settings", exact: false } as const] : []),
   ] : [];
 
   return (
@@ -117,8 +117,8 @@ export function TeamSidebar({ collapsed, onToggle }: TeamSidebarProps) {
             ) : (
               <div className="flex items-center gap-1">
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-[10px] font-bold uppercase tracking-[0.1em] text-blue-400/70">Takım Modu</p>
-                  <p className="truncate text-sm font-bold text-text">{currentTeam?.name ?? "Takım"}</p>
+                  <p className="truncate text-[10px] font-bold uppercase tracking-[0.1em] text-blue-400/70">Team Mode</p>
+                  <p className="truncate text-sm font-bold text-text">{currentTeam?.name ?? "Team"}</p>
                 </div>
                 {hasMultipleTeams && (
                   <ChevronDown className={cn("h-3.5 w-3.5 shrink-0 text-text-muted/50 transition-transform", dropdownOpen && "rotate-180")} />
@@ -152,7 +152,7 @@ export function TeamSidebar({ collapsed, onToggle }: TeamSidebarProps) {
               onClick={() => setDropdownOpen(false)}
               className="flex w-full items-center px-3 py-2 text-xs text-text-muted hover:bg-white/5"
             >
-              Tüm Takımlar
+              All Teams
             </Link>
           </div>
         )}
@@ -162,21 +162,21 @@ export function TeamSidebar({ collapsed, onToggle }: TeamSidebarProps) {
       <nav className="flex-1 overflow-y-auto p-2">
         <Link
           href="/dashboard"
-          title={collapsed ? "Oyuncu Modu" : undefined}
+          title={collapsed ? "Player Mode" : undefined}
           className={cn(
             "mb-1 flex items-center rounded-lg py-2 text-xs text-text-muted/60 transition-colors hover:bg-white/5 hover:text-text-muted",
             collapsed ? "justify-center px-2" : "gap-2 px-3"
           )}
         >
           <ArrowLeft className="h-3.5 w-3.5 shrink-0" />
-          {!collapsed && <span>Oyuncu Modu</span>}
+          {!collapsed && <span>Player Mode</span>}
         </Link>
 
         <div className="mb-2 border-t border-white/5" />
 
         {!collapsed && (
           <p className="mb-1 px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-text-muted/40">
-            Takım
+            Team
           </p>
         )}
 
@@ -189,7 +189,7 @@ export function TeamSidebar({ collapsed, onToggle }: TeamSidebarProps) {
       <div className={cn("border-t border-white/5 p-2", collapsed ? "flex justify-center" : "")}>
         <button
           onClick={onToggle}
-          title={collapsed ? "Genişlet" : "Daralt"}
+          title={collapsed ? "Expand" : "Collapse"}
           className="flex items-center rounded-lg p-1.5 text-text-muted/50 transition-colors hover:bg-white/5 hover:text-text"
         >
           {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
@@ -208,7 +208,7 @@ export function TeamSidebar({ collapsed, onToggle }: TeamSidebarProps) {
             </div>
             <button
               onClick={() => signOut({ callbackUrl: "/login" })}
-              title="Çıkış"
+              title="Log out"
               className="rounded p-1 text-text-muted/40 transition-colors hover:text-danger"
             >
               <LogOut className="h-4 w-4" />

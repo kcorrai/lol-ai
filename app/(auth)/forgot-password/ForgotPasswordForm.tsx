@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 const schema = z.object({
-  email: z.string().email("Geçerli bir e-posta adresi girin"),
+  email: z.string().email("Enter a valid email address"),
 });
 type FormValues = z.infer<typeof schema>;
 
@@ -35,7 +35,7 @@ export function ForgotPasswordForm() {
       if (!res.ok) throw new Error("Request failed");
       setSent(true);
     } catch {
-      setServerError("Bir sorun oluştu. Lütfen tekrar deneyin.");
+      setServerError("Something went wrong. Please try again.");
     }
   }
 
@@ -43,14 +43,14 @@ export function ForgotPasswordForm() {
     return (
       <Card>
         <CardHeader className="space-y-1">
-          <CardTitle>E-postanı kontrol et</CardTitle>
+          <CardTitle>Check your email</CardTitle>
           <CardDescription>
-            Bu adrese kayıtlı bir hesap varsa sıfırlama bağlantısı gönderdik. 1 saat içinde geçersiz olur.
+            If there&apos;s an account associated with this address, we&apos;ve sent a password reset link. It will expire in 1 hour.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Link href="/login" className="text-sm text-accent hover:underline">
-            ← Girişe dön
+            ← Back to login
           </Link>
         </CardContent>
       </Card>
@@ -60,21 +60,21 @@ export function ForgotPasswordForm() {
   return (
     <Card>
       <CardHeader className="space-y-1">
-        <CardTitle>Şifremi unuttum</CardTitle>
+        <CardTitle>Forgot Password</CardTitle>
         <CardDescription>
-          E-posta adresini gir, sana sıfırlama bağlantısı gönderelim.
+          Enter your email address and we&apos;ll send you a password reset link.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-1">
             <label htmlFor="email" className="text-sm text-text-muted">
-              E-posta
+              Email
             </label>
             <Input
               id="email"
               type="email"
-              placeholder="oyuncu@ornek.com"
+              placeholder="player@example.com"
               autoComplete="email"
               {...register("email")}
             />
@@ -90,14 +90,14 @@ export function ForgotPasswordForm() {
           )}
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Gönderiliyor…" : "Sıfırlama bağlantısı gönder"}
+            {isSubmitting ? "Sending…" : "Send reset link"}
           </Button>
         </form>
 
         <p className="text-center text-sm text-text-muted">
-          Hatırladın mı?{" "}
+          Remember it?{" "}
           <Link href="/login" className="text-accent hover:underline">
-            Giriş yap
+            Log in
           </Link>
         </p>
       </CardContent>

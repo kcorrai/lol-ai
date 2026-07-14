@@ -120,7 +120,7 @@ export default function DashboardPage() {
                 </div>
               </div>
               <Link href="/coaching/chat">
-                <Button size="sm" className="gap-1.5"><MessageCircle className="h-4 w-4" />Koçuna Sor</Button>
+                <Button size="sm" className="gap-1.5"><MessageCircle className="h-4 w-4" />Ask Your Coach</Button>
               </Link>
             </div>
           </div>
@@ -129,9 +129,9 @@ export default function DashboardPage() {
 
       {profileError ? (
         <EmptyState
-          title="Henüz maç verisi yok"
-          description="Riot hesabını senkronize ederek maç geçmişini yükle ve koçluk önerileri al."
-          action={<Link href="/settings/accounts"><Button variant="secondary" size="sm">Hesabı Senkronize Et</Button></Link>}
+          title="No match data yet"
+          description="Sync your Riot account to load match history and get coaching suggestions."
+          action={<Link href="/settings/accounts"><Button variant="secondary" size="sm">Sync Account</Button></Link>}
         />
       ) : !profileLoading && (!profile?.recentMatches || profile.recentMatches.length === 0) ? (
         <div className="rounded-2xl border border-border bg-surface p-10 text-center space-y-5">
@@ -139,20 +139,20 @@ export default function DashboardPage() {
             <span className="text-2xl">⚡</span>
           </div>
           <div>
-            <h2 className="font-display text-xl font-bold text-text">Maç verilerin senkronize ediliyor</h2>
+            <h2 className="font-display text-xl font-bold text-text">Your match data is being synced</h2>
             <p className="mt-2 text-sm text-text-muted max-w-sm mx-auto">
-              Riot hesabın bağlandı. Maç geçmişin arka planda hazırlanıyor — bu birkaç dakika sürebilir.
-              Beklemene gerek yok, şimdi ilk AI raporunu alabilirsin.
+              Your Riot account is connected. Your match history is being prepared in the background — this may take a few minutes.
+              You don&apos;t need to wait, you can get your first AI report now.
             </p>
           </div>
           <div className="flex flex-col items-center gap-3">
             <Link href="/coaching">
               <Button size="lg" className="gap-2">
-                İlk Raporumu Al →
+                Get My First Report →
               </Button>
             </Link>
             <Link href="/settings/accounts" className="text-xs text-text-muted hover:text-text transition-colors">
-              Manuel senkronizasyon
+              Manual sync
             </Link>
           </div>
         </div>
@@ -162,7 +162,7 @@ export default function DashboardPage() {
           <PerformanceSummaryCards profile={profile} isLoading={profileLoading} />
           <RecentMatchesSummaryCard profile={profile} isLoading={profileLoading} />
 
-          {/* ── Bu Hafta Özeti ─────────────────────────────────────────── */}
+          {/* ── This Week Summary ──────────────────────────────────────── */}
           <WeekSummaryWidget matches={profile?.recentMatches} isLoading={profileLoading} />
 
           {/* ── Today's Brief ──────────────────────────────────────────── */}
@@ -175,30 +175,30 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
             <div className="space-y-4 lg:col-span-2">
               <div>
-                <SectionLabel>En İyi Şampiyonlar</SectionLabel>
+                <SectionLabel>Top Champions</SectionLabel>
                 <TopChampionsWidget matches={profile?.recentMatches} isLoading={profileLoading} />
               </div>
               <div>
-                <SectionLabel>Roller</SectionLabel>
+                <SectionLabel>Roles</SectionLabel>
                 <RoleDistributionWidget matches={profile?.recentMatches} isLoading={profileLoading} />
               </div>
               <div>
-                <SectionLabel>Mental Durum</SectionLabel>
+                <SectionLabel>Mental State</SectionLabel>
                 <div className="space-y-3">
                   <TiltWidget riotAccountId={primaryId} />
                   <WarmupWidget riotAccountId={primaryId} />
                 </div>
               </div>
               <div>
-                <SectionLabel>Alışkanlıklar</SectionLabel>
+                <SectionLabel>Habits</SectionLabel>
                 <HabitDetectionCard riotAccountId={primaryId} />
               </div>
               <div>
-                <SectionLabel>Yama Etkisi</SectionLabel>
+                <SectionLabel>Patch Impact</SectionLabel>
                 <PatchImpactWidget riotAccountId={primaryId} />
               </div>
               <div>
-                <SectionLabel>Günlük Görevler</SectionLabel>
+                <SectionLabel>Daily Tasks</SectionLabel>
                 <div className="space-y-3">
                   <XpLevelWidget />
                   <DailyChallengeWidget />
@@ -215,7 +215,7 @@ export default function DashboardPage() {
 
           {/* ── Recent Matches ─────────────────────────────────────────── */}
           <section>
-            <SectionLabel>Son Maçlar</SectionLabel>
+            <SectionLabel>Recent Matches</SectionLabel>
             <RecentMatchList matches={profile?.recentMatches} isLoading={profileLoading} />
           </section>
         </>

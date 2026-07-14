@@ -13,8 +13,8 @@ import type { PlanHistoryEntry } from "@/domains/analysis/services/improvementPl
 import { cn } from "@/lib/utils";
 
 function PlanHistoryCard({ entry }: { entry: PlanHistoryEntry }) {
-  const date = new Date(entry.createdAt).toLocaleDateString("tr-TR", { day: "numeric", month: "short" });
-  const exDate = new Date(entry.expiresAt).toLocaleDateString("tr-TR", { day: "numeric", month: "short" });
+  const date = new Date(entry.createdAt).toLocaleDateString("en-US", { day: "numeric", month: "short" });
+  const exDate = new Date(entry.expiresAt).toLocaleDateString("en-US", { day: "numeric", month: "short" });
   const score = entry.weeklyScore;
   const scoreColor = score >= 66 ? "text-success" : score >= 33 ? "text-warning" : "text-danger";
   const barColor = score >= 66 ? "bg-success" : score >= 33 ? "bg-warning" : "bg-danger/60";
@@ -26,13 +26,13 @@ function PlanHistoryCard({ entry }: { entry: PlanHistoryEntry }) {
         <div>
           <p className="text-sm font-semibold text-text">{date} — {exDate}</p>
           <p className="mt-0.5 text-xs text-text-muted">
-            {entry.completedCount}/{entry.totalTargets} hedef tamamlandı
+            {entry.completedCount}/{entry.totalTargets} targets completed
           </p>
         </div>
         <div className="flex items-center gap-2">
           {isActive && (
             <span className="rounded-full border border-accent/30 bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent">
-              Aktif
+              Active
             </span>
           )}
           <span className={cn("text-xl font-bold tabular-nums", scoreColor)}>{score}</span>
@@ -70,13 +70,13 @@ export default function ImprovementPage() {
   if (!primaryAccount) {
     return (
       <div className="space-y-6">
-        <PageHeader title="Gelişim Takibi" subtitle="Hedeflerini belirle, ilerlemeni takip et." />
+        <PageHeader title="Improvement Tracking" subtitle="Set your goals, track your progress." />
         <EmptyState
-          title="Riot hesabı bağlı değil"
-          description="Gelişim planı oluşturmak için önce Riot hesabını bağla."
+          title="Riot account not connected"
+          description="First, connect your Riot account to create an improvement plan."
           action={
             <Link href="/settings/accounts" className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90">
-              Hesap Bağla
+              Connect Account
             </Link>
           }
         />
@@ -89,8 +89,8 @@ export default function ImprovementPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-10 px-4 py-8">
       <PageHeader
-        title="Gelişim Takibi"
-        subtitle="AI koçunun verdiği hedefleri gerçekleştiriyor musun?"
+        title="Improvement Tracking"
+        subtitle="Are you meeting the goals set by your AI coach?"
         action={<TrendingUp className="h-5 w-5 text-text-muted" aria-hidden />}
       />
 
@@ -98,7 +98,7 @@ export default function ImprovementPage() {
       <section className="space-y-4">
         <SectionHeader
           icon={<span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" /><span className="relative inline-flex h-2 w-2 rounded-full bg-accent" /></span>}
-          label="Aktif Plan"
+          label="Active Plan"
         />
         <ImprovementPlanWidget riotAccountId={riotAccountId} />
       </section>
@@ -107,7 +107,7 @@ export default function ImprovementPage() {
       <section className="space-y-4">
         <SectionHeader
           icon={<History className="h-3.5 w-3.5" />}
-          label="Geçmiş Planlar"
+          label="Past Plans"
           badge={historyEntries.length > 0 ? (
             <span className="rounded-full bg-surface-2 px-2 py-0.5 text-xs text-text-muted">{historyEntries.length}</span>
           ) : undefined}
@@ -122,8 +122,8 @@ export default function ImprovementPage() {
         ) : historyEntries.length === 0 ? (
           <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border bg-surface/50 py-12 text-center">
             <History className="h-8 w-8 text-text-muted/40" />
-            <p className="text-sm font-medium text-text-muted">Henüz tamamlanmış plan yok</p>
-            <p className="text-xs text-text-muted/60">Aktif planını tamamladıktan sonra burada görünecek.</p>
+            <p className="text-sm font-medium text-text-muted">No completed plans yet</p>
+            <p className="text-xs text-text-muted/60">They will appear here once you complete your active plan.</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -135,8 +135,8 @@ export default function ImprovementPage() {
 
         {!isPro && historyEntries.length > 0 && (
           <p className="pt-2 text-center text-xs text-text-muted">
-            Sınırsız plan geçmişi için{" "}
-            <Link href="/settings/subscription" className="text-accent hover:underline">Pro&apos;ya geç</Link>
+            For unlimited plan history,{" "}
+            <Link href="/settings/subscription" className="text-accent hover:underline">upgrade to Pro</Link>
           </p>
         )}
       </section>

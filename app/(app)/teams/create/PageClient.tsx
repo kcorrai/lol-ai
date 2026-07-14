@@ -28,13 +28,13 @@ export default function CreateTeamPage() {
 
       if (!res.ok) {
         const body = await res.json() as { error?: { message?: string } };
-        throw new Error(body.error?.message ?? "Takım oluşturulamadı");
+        throw new Error(body.error?.message ?? "Failed to create team");
       }
 
       const body = await res.json() as { data: { id: string } };
       router.push(`/teams/${body.data.id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Hata oluştu");
+      setError(err instanceof Error ? err.message : "An error occurred");
       setLoading(false);
     }
   }
@@ -42,14 +42,14 @@ export default function CreateTeamPage() {
   return (
     <div className="mx-auto max-w-lg space-y-6 px-4 py-6">
       <PageHeader
-        title="Takım Oluştur"
-        subtitle="Esports takımınız veya koçluk akademiniz için bir profil oluşturun"
+        title="Create Team"
+        subtitle="Create a profile for your esports team or coaching academy"
       />
 
       <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-border bg-surface p-6">
         <div>
           <label className="mb-1 block text-sm font-medium text-text">
-            Takım Adı <span className="text-danger">*</span>
+            Team Name <span className="text-danger">*</span>
           </label>
           <input
             type="text"
@@ -58,14 +58,14 @@ export default function CreateTeamPage() {
             required
             minLength={2}
             maxLength={64}
-            placeholder="Örn: Team Wolves"
+            placeholder="E.g. Team Wolves"
             className="w-full rounded-md border border-border bg-surface-2 px-3 py-2.5 text-sm text-text placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-accent"
           />
         </div>
 
         <div>
           <label className="mb-1 block text-sm font-medium text-text">
-            Logo URL <span className="text-text-muted">(isteğe bağlı)</span>
+            Logo URL <span className="text-text-muted">(optional)</span>
           </label>
           <input
             type="url"
@@ -85,19 +85,18 @@ export default function CreateTeamPage() {
             className="flex-1"
             onClick={() => router.back()}
           >
-            İptal
+            Cancel
           </Button>
           <Button type="submit" className="flex-1" disabled={loading || !name.trim()}>
-            {loading ? "Oluşturuluyor…" : "Takım Oluştur"}
+            {loading ? "Creating…" : "Create Team"}
           </Button>
         </div>
       </form>
 
       <div className="rounded-xl border border-border bg-surface/50 p-4">
-        <p className="text-xs font-medium text-text-muted">Team Plan Gerekli</p>
+        <p className="text-xs font-medium text-text-muted">Team Plan Required</p>
         <p className="mt-1 text-xs text-text-muted/70">
-          Takım özellikleri yalnızca aktif Team aboneliği ile kullanılabilir.
-          Üye sayısı en fazla 20 olabilir.
+          Team features are only available with an active Team subscription. Maximum 20 members.
         </p>
       </div>
     </div>

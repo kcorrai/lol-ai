@@ -2,9 +2,9 @@ import Link from "next/link";
 import { getAdminMetrics } from "@/domains/admin/services/adminMetricsService";
 
 const RANGES = [
-  { label: "7 gün", value: 7 },
-  { label: "30 gün", value: 30 },
-  { label: "90 gün", value: 90 },
+  { label: "7 days", value: 7 },
+  { label: "30 days", value: 30 },
+  { label: "90 days", value: 90 },
 ];
 
 function Stat({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
@@ -28,9 +28,9 @@ export default async function AnalyticsPage({
 
   const funnelMax = metrics.funnel.registered || 1;
   const funnelSteps = [
-    { label: "Kayıt", count: metrics.funnel.registered },
-    { label: "Riot Bağlı", count: metrics.funnel.riotConnected },
-    { label: "İlk Rapor", count: metrics.funnel.firstReport },
+    { label: "Signed up", count: metrics.funnel.registered },
+    { label: "Connected Riot", count: metrics.funnel.riotConnected },
+    { label: "First Report", count: metrics.funnel.firstReport },
     { label: "Pro Plan", count: metrics.funnel.proPlan },
   ];
 
@@ -38,8 +38,8 @@ export default async function AnalyticsPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-2xl font-bold text-text">Büyüme Analitiği</h1>
-          <p className="mt-1 text-sm text-text-muted">Kullanıcı büyümesi ve özellik kullanımı</p>
+          <h1 className="font-display text-2xl font-bold text-text">Growth Analytics</h1>
+          <p className="mt-1 text-sm text-text-muted">User growth and feature usage</p>
         </div>
         <div className="flex gap-2">
           {RANGES.map((r) => (
@@ -60,21 +60,21 @@ export default async function AnalyticsPage({
 
       {/* KPI grid */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        <Stat label="DAU" value={metrics.dau} sub="son 24 saat aktif" />
-        <Stat label="MAU" value={metrics.mau} sub="son 30 gün aktif" />
-        <Stat label="Toplam Kullanıcı" value={metrics.totalUsers} />
-        <Stat label="Pro Kullanıcı" value={metrics.proUsers} />
-        <Stat label="Dönüşüm Oranı" value={`%${metrics.conversionRate}`} sub="free → pro" />
+        <Stat label="DAU" value={metrics.dau} sub="active last 24h" />
+        <Stat label="MAU" value={metrics.mau} sub="active last 30 days" />
+        <Stat label="Total Users" value={metrics.totalUsers} />
+        <Stat label="Pro Users" value={metrics.proUsers} />
+        <Stat label="Conversion Rate" value={`%${metrics.conversionRate}`} sub="free → pro" />
       </div>
 
       {/* Sub stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        <Stat label="Yeni Kayıt (7 gün)" value={metrics.newSignupsLast7Days} />
+        <Stat label="New Signups (7 days)" value={metrics.newSignupsLast7Days} />
       </div>
 
       {/* Funnel */}
       <div className="rounded-xl border border-border bg-surface p-6">
-        <h2 className="mb-5 text-xs font-bold uppercase tracking-widest text-text-muted">Kayıt Hunisi</h2>
+        <h2 className="mb-5 text-xs font-bold uppercase tracking-widest text-text-muted">Signup Funnel</h2>
         <div className="space-y-3">
           {funnelSteps.map((step, i) => {
             const pct = Math.round((step.count / funnelMax) * 100);
@@ -98,8 +98,8 @@ export default async function AnalyticsPage({
 
       {/* Feature usage */}
       <div className="rounded-xl border border-border bg-surface p-6">
-        <h2 className="mb-1 text-xs font-bold uppercase tracking-widest text-text-muted">Özellik Kullanımı</h2>
-        <p className="mb-5 text-xs text-text-muted">Son {validRange} gün</p>
+        <h2 className="mb-1 text-xs font-bold uppercase tracking-widest text-text-muted">Feature Usage</h2>
+        <p className="mb-5 text-xs text-text-muted">Last {validRange} days</p>
         <div className="space-y-3">
           {metrics.featureUsage.map((f) => {
             const max = metrics.featureUsage[0]?.count || 1;
@@ -118,7 +118,7 @@ export default async function AnalyticsPage({
       </div>
 
       <p className="text-xs text-text-muted">
-        AI harcamalarına bak:{" "}
+        Check AI spending:{" "}
         <Link href="/admin/ai-cost" className="text-accent hover:underline">AI Cost Dashboard →</Link>
       </p>
     </div>

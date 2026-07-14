@@ -22,8 +22,8 @@ export default function TeamReportPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6 px-4 py-6">
       <PageHeader
-        title="AI Takım Raporu"
-        subtitle="Takımın güçlü/zayıf yönleri ve koçluk önerileri"
+        title="AI Team Report"
+        subtitle="Team strengths/weaknesses and coaching recommendations"
       />
 
       {isLoading && (
@@ -36,15 +36,15 @@ export default function TeamReportPage() {
         <div className="flex flex-col items-center gap-4 rounded-xl border border-dashed border-border py-16 text-center">
           <Sparkles className="h-10 w-10 text-blue-400/50" />
           <div>
-            <p className="font-semibold text-text">Henüz rapor oluşturulmamış</p>
+            <p className="font-semibold text-text">No report generated yet</p>
             <p className="mt-1 text-sm text-text-muted">
-              Takımın son 7 günlük performansı analiz edilir ve AI koçluk raporu oluşturulur.
+              Analyzes the team&apos;s performance over the last 7 days and generates an AI coaching report.
             </p>
           </div>
           {isCoach && (
             <Button onClick={() => generate()} disabled={isGenerating} className="gap-2">
               {isGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-              {isGenerating ? "Rapor Oluşturuluyor..." : "Rapor Oluştur"}
+              {isGenerating ? "Generating Report..." : "Generate Report"}
             </Button>
           )}
         </div>

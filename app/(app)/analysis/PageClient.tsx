@@ -32,8 +32,8 @@ export default function AnalysisPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6 p-6">
       <PageHeader
-        title="Ölüm Isı Haritası"
-        subtitle="Hangi bölgede, hangi sürede öldüğünü haritada gör."
+        title="Death Heat Map"
+        subtitle="See where and when you die on the map."
       />
 
       <HeatMapControls
@@ -51,18 +51,18 @@ export default function AnalysisPage() {
       {isLoading && (
         <div className="flex items-center justify-center gap-2 py-8 text-text-muted">
           <Loader2 className="h-4 w-4 animate-spin" />
-          <span className="text-sm">Yükleniyor…</span>
+          <span className="text-sm">Loading…</span>
         </div>
       )}
 
       {!isLoading && data && !data.hasData && (
         <div className="rounded-xl border border-border bg-surface p-6 text-center">
           <MapPin className="mx-auto mb-3 h-8 w-8 text-text-muted" />
-          <p className="font-semibold text-text">Veri hazırlanıyor</p>
+          <p className="font-semibold text-text">Data is being prepared</p>
           <p className="mt-1 text-sm text-text-muted">
-            Match timeline verisi arka planda indiriliyor. Birkaç dakika içinde harita görünecek.
+            Match timeline data is being downloaded in the background. The map will appear in a few minutes.
           </p>
-          <p className="mt-3 text-xs text-text-muted">Sayfa 30 saniyede otomatik güncelleniyor…</p>
+          <p className="mt-3 text-xs text-text-muted">Page auto-refreshes in 30 seconds…</p>
         </div>
       )}
 

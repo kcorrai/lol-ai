@@ -67,7 +67,7 @@ export async function GET(
         )}
         {badgeCount > 0 && (
           <div style={{ fontSize: 18, color: "#94a3b8" }}>
-            {badgeCount} rozet kazanıldı
+            {badgeCount} badges earned
           </div>
         )}
         <div
@@ -78,7 +78,7 @@ export async function GET(
             fontWeight: 600,
           }}
         >
-          lolaicoach.com — AI destekli LoL koçluğu
+          lolaicoach.com — AI-powered LoL coaching
         </div>
       </div>
     ),

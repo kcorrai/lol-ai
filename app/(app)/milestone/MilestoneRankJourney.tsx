@@ -30,7 +30,7 @@ interface Props {
 export function MilestoneRankJourney({ rankStart, rankEnd, lpChange }: Props) {
   return (
     <div className="gaming-card p-4">
-      <p className="mb-4 text-xs font-bold uppercase tracking-wider text-text-muted">Rütbe Yolculuğu</p>
+      <p className="mb-4 text-xs font-bold uppercase tracking-wider text-text-muted">Rank Journey</p>
       <div className="flex items-center gap-4">
         <div className="flex flex-1 flex-col items-center gap-1">
           {rankStart ? (
@@ -39,10 +39,10 @@ export function MilestoneRankJourney({ rankStart, rankEnd, lpChange }: Props) {
               <p className={cn("text-xs font-semibold", TIER_COLORS[rankStart.tier] ?? "text-text-muted")}>
                 {formatRank(rankStart.tier, rankStart.division, rankStart.lp)}
               </p>
-              <p className="text-[10px] text-text-muted">Ay başı</p>
+              <p className="text-[10px] text-text-muted">Month start</p>
             </>
           ) : (
-            <p className="text-xs text-text-muted">Veri yok</p>
+            <p className="text-xs text-text-muted">No data</p>
           )}
         </div>
 
@@ -66,10 +66,10 @@ export function MilestoneRankJourney({ rankStart, rankEnd, lpChange }: Props) {
               <p className={cn("text-xs font-semibold", TIER_COLORS[rankEnd.tier] ?? "text-text-muted")}>
                 {formatRank(rankEnd.tier, rankEnd.division, rankEnd.lp)}
               </p>
-              <p className="text-[10px] text-text-muted">Şu an</p>
+              <p className="text-[10px] text-text-muted">Now</p>
             </>
           ) : (
-            <p className="text-xs text-text-muted">Veri yok</p>
+            <p className="text-xs text-text-muted">No data</p>
           )}
         </div>
       </div>

@@ -17,32 +17,32 @@ import { Users } from "lucide-react";
 import { CancelRetentionModal } from "@/domains/billing/components/CancelRetentionModal";
 
 const FREE_FEATURES = [
-  "Ayda 3 AI koçluk raporu",
-  "1 Riot hesabı",
-  "Son 10 maç",
-  "Maç detay analizi",
-  "Ranked ilerleme takibi",
+  "3 AI coaching reports per month",
+  "1 Riot account",
+  "Last 10 matches",
+  "Match detail analysis",
+  "Ranked progress tracking",
 ];
 
 const PRO_FEATURES = [
-  "Sınırsız AI koçluk raporu",
-  "3'e kadar Riot hesabı",
-  "Son 100 maç",
-  "Maç detay analizi",
-  "Ranked ilerleme takibi",
-  "Şampiyon havuzu analizi",
-  "Haftalık gelişim e-postaları",
-  "Öncelikli AI işleme",
+  "Unlimited AI coaching reports",
+  "Up to 3 Riot accounts",
+  "Last 100 matches",
+  "Match detail analysis",
+  "Ranked progress tracking",
+  "Champion pool analysis",
+  "Weekly improvement emails",
+  "Priority AI processing",
 ];
 
 const TEAM_FEATURES = [
-  "Tüm Pro özellikleri",
-  "5'e kadar takım oluşturma",
-  "5 kişilik takım (tam kadro)",
-  "Takım performans panosu",
-  "Coach ve oyuncu rolleri",
-  "E-posta ile takım davet sistemi",
-  "Toplu üye analizi",
+  "All Pro features",
+  "Create up to 5 teams",
+  "5-member team (full roster)",
+  "Team performance dashboard",
+  "Coach and player roles",
+  "Team invite via email",
+  "Bulk member analysis",
 ];
 
 const LS_PORTAL_URL = "https://app.lemonsqueezy.com/my-orders";
@@ -64,7 +64,7 @@ function BillingPageContent() {
   if (isLoading) {
     return (
       <div className="mx-auto max-w-lg p-8">
-        <PageHeader title="Fatura" subtitle="Aboneliğini ve planını yönet." />
+        <PageHeader title="Billing" subtitle="Manage your subscription and plan." />
         <Card>
           <CardHeader>
             <Skeleton className="h-4 w-24" />
@@ -81,14 +81,14 @@ function BillingPageContent() {
 
   return (
     <div className="mx-auto max-w-lg p-8">
-      <PageHeader title="Fatura" subtitle="Aboneliğini ve planını yönet." />
+      <PageHeader title="Billing" subtitle="Manage your subscription and plan." />
 
       <div className="space-y-4">
         {/* Current plan card */}
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-xs font-medium uppercase tracking-widest text-text-muted">
-              Mevcut Plan
+              Current Plan
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -98,13 +98,13 @@ function BillingPageContent() {
               </span>
               <Badge variant={isUpgraded ? "success" : "secondary"}>
                 {sub?.status === "trialing"
-                  ? "Deneme"
+                  ? "Trialing"
                   : isUpgraded
-                    ? "Aktif"
-                    : "Ücretsiz"}
+                    ? "Active"
+                    : "Free"}
               </Badge>
               {sub?.cancelAtPeriodEnd && (
-                <Badge variant="warning">Dönem sonunda iptal</Badge>
+                <Badge variant="warning">Canceling at period end</Badge>
               )}
             </div>
 
@@ -119,8 +119,8 @@ function BillingPageContent() {
 
             {sub?.currentPeriodEnd && isUpgraded && (
               <p className="text-xs text-text-muted">
-                {sub.cancelAtPeriodEnd ? "Erişim sona eriyor:" : "Yenileniyor:"}{" "}
-                {new Date(sub.currentPeriodEnd).toLocaleDateString("tr-TR")}
+                {sub.cancelAtPeriodEnd ? "Access ending:" : "Renewing:"}{" "}
+                {new Date(sub.currentPeriodEnd).toLocaleDateString("en-US")}
               </p>
             )}
           </CardContent>
@@ -131,15 +131,15 @@ function BillingPageContent() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-xs font-medium uppercase tracking-widest text-text-muted">
-                Takım Üyeleri
+                Team Members
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {seats.teamsCount === 0 ? (
                 <p className="text-sm text-text-muted">
-                  Henüz takım oluşturmadın.{" "}
+                  You haven&apos;t created a team yet.{" "}
                   <Link href="/teams/create" className="text-accent underline underline-offset-2 hover:opacity-80">
-                    Takım oluştur →
+                    Create team →
                   </Link>
                 </p>
               ) : (
@@ -151,7 +151,7 @@ function BillingPageContent() {
                       <span className="text-base font-normal text-text-muted">/{seats.maxMembers}</span>
                     </span>
                     {seats.maxMembers > 0 && seats.totalMembers >= seats.maxMembers && (
-                      <Badge variant="warning">Takım dolu</Badge>
+                      <Badge variant="warning">Team full</Badge>
                     )}
                   </div>
                   <div className="h-2 w-full overflow-hidden rounded-full bg-surface-3">
@@ -161,7 +161,7 @@ function BillingPageContent() {
                     />
                   </div>
                   <p className="text-xs text-text-muted">
-                    {seats.maxMembers - seats.totalMembers} boş slot · {seats.teamsCount} takım
+                    {seats.maxMembers - seats.totalMembers} empty slots · {seats.teamsCount} teams
                   </p>
                 </>
               )}
@@ -175,7 +175,7 @@ function BillingPageContent() {
             <CardHeader className="pb-2">
               <div className="flex items-baseline gap-2">
                 <CardTitle className="text-xs font-medium uppercase tracking-widest text-accent">
-                  Pro&apos;ya Yükselt
+                  Upgrade to Pro
                 </CardTitle>
                 <span className="font-display text-2xl font-bold text-text">$9.99</span>
                 <span className="text-xs text-text-muted">/ ay</span>
@@ -196,7 +196,7 @@ function BillingPageContent() {
                 disabled={checkout.isPending}
                 className="w-full"
               >
-                {checkout.isPending ? "Ödeme sayfasına yönlendiriliyor…" : "Pro'ya Yükselt — $9.99/ay"}
+                {checkout.isPending ? "Redirecting to checkout…" : "Upgrade to Pro — $9.99/month"}
               </Button>
 
               {checkout.isError && (
@@ -204,7 +204,7 @@ function BillingPageContent() {
               )}
 
               <p className="text-center text-xs text-text-muted">
-                LemonSqueezy ile güvenli ödeme · İstediğin zaman iptal et
+                Secure payment with LemonSqueezy · Cancel anytime
               </p>
             </CardContent>
           </Card>
@@ -238,7 +238,7 @@ function BillingPageContent() {
                 variant="outline"
                 className="w-full border-warning/60 text-warning hover:bg-warning/10"
               >
-                {teamCheckout.isPending ? "Ödeme sayfasına yönlendiriliyor…" : "Team Plan — $29.99/ay"}
+                {teamCheckout.isPending ? "Redirecting to checkout…" : "Team Plan — $29.99/month"}
               </Button>
 
               {teamCheckout.isError && (
@@ -246,7 +246,7 @@ function BillingPageContent() {
               )}
 
               <p className="text-center text-xs text-text-muted">
-                Takımlar için · LemonSqueezy ile güvenli ödeme
+                For teams · Secure payment with LemonSqueezy
               </p>
             </CardContent>
           </Card>
@@ -256,7 +256,7 @@ function BillingPageContent() {
         {isUpgraded && (
           <div className="rounded-lg border border-border bg-surface-2 p-4 text-center">
             <p className="text-sm text-text-muted">
-              Aboneliğini yönetmek için faturalandırma portalını ziyaret et.
+              Visit the billing portal to manage your subscription.
             </p>
             <div className="mt-2 flex flex-col items-center gap-1">
               <Link
@@ -265,14 +265,14 @@ function BillingPageContent() {
                 rel="noopener noreferrer"
                 className="text-sm text-accent underline underline-offset-2 hover:opacity-80"
               >
-                Fatura Geçmişi & Yönetim →
+                Billing History & Management →
               </Link>
               {!sub?.cancelAtPeriodEnd && (
                 <button
                   onClick={() => setShowRetentionModal(true)}
                   className="text-xs text-text-muted hover:text-danger transition-colors"
                 >
-                  Aboneliği iptal et
+                  Cancel subscription
                 </button>
               )}
             </div>
@@ -290,9 +290,9 @@ function BillingPageContent() {
         )}
 
         <p className="text-center text-xs text-text-muted">
-          Soruların mı var?{" "}
+          Have questions?{" "}
           <a href="mailto:support@lolaicoach.gg" className="underline hover:text-text">
-            Destek ile iletişime geç
+            Contact support
           </a>
         </p>
       </div>

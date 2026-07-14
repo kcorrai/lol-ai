@@ -5,14 +5,14 @@ import type { PendingInvite } from "@/domains/teams/types/teams.types";
 
 async function fetchInvites(teamId: string): Promise<PendingInvite[]> {
   const res = await fetch(`/api/teams/${teamId}/invites`);
-  if (!res.ok) throw new Error("Davetler yüklenemedi");
+  if (!res.ok) throw new Error("Failed to load invites");
   const body = await res.json() as { data: PendingInvite[] };
   return body.data;
 }
 
 async function cancelInvite(teamId: string, inviteId: string): Promise<void> {
   const res = await fetch(`/api/teams/${teamId}/invites/${inviteId}`, { method: "DELETE" });
-  if (!res.ok) throw new Error("Davet iptal edilemedi");
+  if (!res.ok) throw new Error("Failed to cancel invite");
 }
 
 export function usePendingInvites(teamId: string) {

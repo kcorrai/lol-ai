@@ -28,7 +28,7 @@ export function TwoFactorSetup() {
       setBackupCodes(json.data!.backupCodes);
       setStep("setup");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Bir hata oluştu");
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -49,7 +49,7 @@ export function TwoFactorSetup() {
       setStep("enabled");
       setToken("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Geçersiz kod");
+      setError(err instanceof Error ? err.message : "Invalid code");
     } finally {
       setLoading(false);
     }
@@ -69,7 +69,7 @@ export function TwoFactorSetup() {
       setStep("idle");
       setDisableToken("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Geçersiz kod");
+      setError(err instanceof Error ? err.message : "Invalid code");
     } finally {
       setLoading(false);
     }
@@ -92,9 +92,9 @@ export function TwoFactorSetup() {
           <div className="flex items-start gap-4">
             <ShieldOff className="mt-0.5 h-8 w-8 shrink-0 text-text-muted" />
             <div>
-              <p className="text-sm font-semibold text-text">İki Faktörlü Doğrulama</p>
+              <p className="text-sm font-semibold text-text">Two-Factor Authentication</p>
               <p className="mt-1 text-xs text-text-muted">
-                Google Authenticator veya benzeri bir uygulama ile giriş güvenliğini artır.
+                Enhance login security with Google Authenticator or similar app.
               </p>
             </div>
           </div>
@@ -104,16 +104,16 @@ export function TwoFactorSetup() {
             className="flex items-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-background hover:bg-accent/90 disabled:opacity-50"
           >
             <Shield className="h-4 w-4" />
-            {loading ? "Hazırlanıyor…" : "2FA Kurulumunu Başlat"}
+            {loading ? "Preparing…" : "Start 2FA Setup"}
           </button>
         </div>
       )}
 
       {step === "setup" && qrDataUrl && (
         <div className="rounded-xl border border-border bg-surface p-5 space-y-4">
-          <p className="text-sm font-semibold text-text">Adım 1: QR Kodu Tarat</p>
+          <p className="text-sm font-semibold text-text">Step 1: Scan QR Code</p>
           <p className="text-xs text-text-muted">
-            Google Authenticator veya Authy uygulamasıyla aşağıdaki QR kodu tarat.
+            Scan the QR code below with Google Authenticator or Authy.
           </p>
           <div className="flex justify-center">
             <Image src={qrDataUrl} alt="TOTP QR Code" width={180} height={180} className="rounded-xl" />
@@ -122,7 +122,7 @@ export function TwoFactorSetup() {
             onClick={() => setStep("backup")}
             className="w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-background hover:bg-accent/90"
           >
-            Yedek Kodlara Geç →
+            Go to Backup Codes →
           </button>
         </div>
       )}
@@ -130,13 +130,13 @@ export function TwoFactorSetup() {
       {step === "backup" && (
         <div className="rounded-xl border border-border bg-surface p-5 space-y-4">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold text-text">Adım 2: Yedek Kodları Sakla</p>
+            <p className="text-sm font-semibold text-text">Step 2: Save Backup Codes</p>
             <button onClick={() => setShowCodes(!showCodes)} className="text-text-muted hover:text-text">
               {showCodes ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
           <p className="text-xs text-text-muted">
-            Bu kodları güvenli bir yere kaydet. Her kod bir kez kullanılabilir.
+            Save these codes in a secure place. Each code can be used once.
           </p>
           <div className="grid grid-cols-2 gap-2">
             {backupCodes.map((code, i) => (
@@ -154,15 +154,15 @@ export function TwoFactorSetup() {
             onClick={() => setStep("verify")}
             className="w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-background hover:bg-accent/90"
           >
-            Kodu Girerek Doğrula →
+            Verify by Entering Code →
           </button>
         </div>
       )}
 
       {step === "verify" && (
         <div className="rounded-xl border border-border bg-surface p-5 space-y-4">
-          <p className="text-sm font-semibold text-text">Adım 3: Kodu Doğrula</p>
-          <p className="text-xs text-text-muted">Authenticator uygulamasındaki 6 haneli kodu gir.</p>
+          <p className="text-sm font-semibold text-text">Step 3: Verify Code</p>
+          <p className="text-xs text-text-muted">Enter the 6-digit code from your authenticator app.</p>
           <input
             type="text"
             inputMode="numeric"
@@ -177,7 +177,7 @@ export function TwoFactorSetup() {
             disabled={loading || token.length !== 6}
             className="w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-background hover:bg-accent/90 disabled:opacity-50"
           >
-            {loading ? "Doğrulanıyor…" : "2FA Etkinleştir"}
+            {loading ? "Verifying…" : "Enable 2FA"}
           </button>
         </div>
       )}
@@ -186,20 +186,20 @@ export function TwoFactorSetup() {
         <div className="rounded-xl border border-green-500/20 bg-surface p-5 space-y-3">
           <div className="flex items-center gap-3">
             <ShieldCheck className="h-6 w-6 text-green-400" />
-            <p className="text-sm font-semibold text-green-400">2FA Etkinleştirildi</p>
+            <p className="text-sm font-semibold text-green-400">2FA Enabled</p>
           </div>
-          <p className="text-xs text-text-muted">Hesabın artık iki faktörlü doğrulama ile korunuyor.</p>
+          <p className="text-xs text-text-muted">Your account is now protected with two-factor authentication.</p>
           <button onClick={() => setStep("disable")} className="text-xs text-red-400 hover:underline">
-            2FA&apos;yı devre dışı bırak
+            Disable 2FA
           </button>
         </div>
       )}
 
       {step === "disable" && (
         <div className="rounded-xl border border-red-500/20 bg-surface p-5 space-y-4">
-          <p className="text-sm font-semibold text-red-400">2FA Devre Dışı Bırak</p>
+          <p className="text-sm font-semibold text-red-400">Disable 2FA</p>
           <p className="text-xs text-text-muted">
-            Authenticator uygulamasındaki kodu girerek devre dışı bırakabilirsin.
+            You can disable it by entering the code from your authenticator app.
           </p>
           <input
             type="text"
@@ -216,13 +216,13 @@ export function TwoFactorSetup() {
               disabled={loading || disableToken.length !== 6}
               className="flex-1 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
             >
-              {loading ? "İşleniyor…" : "Devre Dışı Bırak"}
+              {loading ? "Processing…" : "Disable"}
             </button>
             <button
               onClick={() => { setStep("enabled"); setError(null); }}
               className="rounded-lg bg-surface-2 px-4 py-2.5 text-sm font-semibold text-text hover:bg-accent hover:text-background"
             >
-              Vazgeç
+              Cancel
             </button>
           </div>
         </div>

@@ -17,14 +17,14 @@ const TIER_COLORS: Record<string, string> = {
 };
 
 const TIER_LABELS: Record<string, string> = {
-  IRON: "Demir",
-  BRONZE: "Bronz",
-  SILVER: "Gümüş",
-  GOLD: "Altın",
-  PLATINUM: "Platin",
-  EMERALD: "Zümrüt",
-  DIAMOND: "Elmas",
-  MASTER: "Usta",
+  IRON: "Iron",
+  BRONZE: "Bronze",
+  SILVER: "Silver",
+  GOLD: "Gold",
+  PLATINUM: "Platinum",
+  EMERALD: "Emerald",
+  DIAMOND: "Diamond",
+  MASTER: "Master",
   GRANDMASTER: "Grandmaster",
   CHALLENGER: "Challenger",
 };
@@ -51,7 +51,7 @@ export function PreviewResultCard({ data }: Props) {
             {summoner.gameName}
             <span className="text-text-muted">#{summoner.tagLine}</span>
           </p>
-          <p className="text-xs text-text-muted">Seviye {summoner.summonerLevel}</p>
+          <p className="text-xs text-text-muted">Level {summoner.summonerLevel}</p>
         </div>
         {rank && (
           <div className={`ml-auto text-right text-sm font-bold ${TIER_COLORS[rank.tier] ?? "text-text"}`}>
@@ -61,7 +61,7 @@ export function PreviewResultCard({ data }: Props) {
         )}
         {!rank && (
           <div className="ml-auto text-right text-sm font-medium text-text-muted">
-            Ranked yok
+            No Ranked
           </div>
         )}
       </div>
@@ -69,11 +69,11 @@ export function PreviewResultCard({ data }: Props) {
       <div className="space-y-4 p-5">
         {/* Stats row */}
         <div className="grid grid-cols-3 gap-3">
-          <Stat label="Son Maçlar" value={`${wins}W / ${totalGames - wins}L`} />
-          <Stat label="Kazanma Oranı" value={`%${wr}`} highlight={wr >= 50} />
+          <Stat label="Recent Matches" value={`${wins}W / ${totalGames - wins}L`} />
+          <Stat label="Win Rate" value={`%${wr}`} highlight={wr >= 50} />
           <Stat
             label={rank ? `${rank.wins}W / ${rank.losses}L` : "Ranked"}
-            value={rank ? "Sezon" : "—"}
+            value={rank ? "Season" : "—"}
           />
         </div>
 
@@ -81,7 +81,7 @@ export function PreviewResultCard({ data }: Props) {
         {recentMatches.length > 0 && (
           <div>
             <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">
-              Son {recentMatches.length} Maç
+              Last {recentMatches.length} Matches
             </p>
             <div className="flex gap-1.5">
               {recentMatches.map((m, i) => (
@@ -101,7 +101,7 @@ export function PreviewResultCard({ data }: Props) {
                     {m.kills}/{m.deaths}/{m.assists}
                   </span>
                   <span className={`text-[10px] font-semibold ${m.win ? "text-success" : "text-danger"}`}>
-                    {m.win ? "G" : "M"}
+                    {m.win ? "W" : "L"}
                   </span>
                 </div>
               ))}
@@ -113,13 +113,13 @@ export function PreviewResultCard({ data }: Props) {
         {topChampions.length > 0 && (
           <div>
             <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">
-              Favori Şampiyonlar
+              Favorite Champions
             </p>
             <div className="space-y-1.5">
               {topChampions.map(c => (
                 <div key={c.championName} className="flex items-center gap-3 text-sm">
                   <span className="w-24 truncate font-medium text-text">{c.championName}</span>
-                  <span className="text-xs text-text-muted">{c.games} maç</span>
+                  <span className="text-xs text-text-muted">{c.games} matches</span>
                   <div className="flex-1">
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
                       <div
@@ -140,18 +140,18 @@ export function PreviewResultCard({ data }: Props) {
         {/* AI Insight — blurred */}
         <div className="relative overflow-hidden rounded-lg border border-accent/30 bg-accent/5 p-4">
           <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-accent">
-            AI Koç Analizi
+            AI Coach Analysis
           </p>
           <p className="text-sm leading-relaxed text-text-muted blur-[4px] select-none">
             {aiInsight}
           </p>
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-surface/70 backdrop-blur-[1px]">
-            <p className="text-xs font-semibold text-text">Tam analizi görmek için hesap bağla</p>
+            <p className="text-xs font-semibold text-text">Link your account to see full analysis</p>
             <Link
               href="/register"
               className="rounded-md bg-accent px-5 py-2 text-xs font-semibold text-background transition-opacity hover:opacity-90"
             >
-              Ücretsiz Başla →
+              Get Started Free →
             </Link>
           </div>
         </div>

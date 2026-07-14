@@ -16,16 +16,16 @@ import { useCoachingReport } from "@/hooks/useCoachingReport";
 import { useSubscription } from "@/hooks/useSubscription";
 
 const REPORT_TYPE_LABEL: Record<string, string> = {
-  session_review: "Seans Değerlendirmesi",
-  champion_focus: "Şampiyon Odağı",
-  climb_roadmap: "Çıkış Planı",
+  session_review: "Session Review",
+  champion_focus: "Champion Focus",
+  climb_roadmap: "Climb Roadmap",
 };
 
 const STATUS_LABEL: Record<string, string> = {
-  pending: "Bekliyor",
-  processing: "İşleniyor",
-  complete: "Tamamlandı",
-  failed: "Başarısız",
+  pending: "Pending",
+  processing: "Processing",
+  complete: "Complete",
+  failed: "Failed",
 };
 
 const STATUS_VARIANT = {
@@ -49,9 +49,9 @@ export default function ReportDetailPage() {
     return (
       <div className="mx-auto max-w-3xl p-6">
         <ErrorState
-          title="Rapor bulunamadı"
+          title="Report not found"
           message={
-            error?.message ?? "Bu rapor mevcut değil veya erişim iznin yok."
+            error?.message ?? "This report doesn't exist or you don't have access to it."
           }
           onRetry={() => refetch()}
         />
@@ -65,9 +65,9 @@ export default function ReportDetailPage() {
     <div className="mx-auto max-w-3xl p-6">
       <PageHeader
         title={REPORT_TYPE_LABEL[report.reportType] ?? report.reportType}
-        subtitle={`${new Date(report.createdAt).toLocaleString("tr-TR")} · ${report.matchesAnalyzed.length} maç`}
+        subtitle={`${new Date(report.createdAt).toLocaleString("en-US")} · ${report.matchesAnalyzed.length} matches`}
         backHref="/coaching"
-        backLabel="Raporlar"
+        backLabel="Reports"
         action={
           <Badge variant={STATUS_VARIANT[report.status] ?? "default"}>
             {STATUS_LABEL[report.status] ?? report.status}
@@ -79,15 +79,15 @@ export default function ReportDetailPage() {
         <div className="flex flex-col items-center justify-center rounded-lg bg-surface-2 py-12 text-center">
           <div className="mb-3 h-6 w-6 animate-spin rounded-full border-2 border-accent border-t-transparent" />
           <p className="text-sm text-text-muted">
-            AI maçlarını analiz ediyor — bu işlem yaklaşık 15–30 saniye sürer.
+            AI is analyzing the matches — this process takes approximately 15-30 seconds.
           </p>
         </div>
       )}
 
       {report.status === "failed" && (
         <ErrorState
-          title="Rapor oluşturulamadı"
-          message="AI bu raporu tamamlayamadı. Lütfen yeni bir rapor oluştur."
+          title="Could not create report"
+          message="AI couldn't complete this report. Please create a new report."
         />
       )}
 
@@ -102,7 +102,7 @@ export default function ReportDetailPage() {
               className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface-2 px-4 py-2.5 text-sm font-medium text-text-muted transition-colors hover:border-accent/50 hover:bg-surface hover:text-text"
             >
               <Download className="h-4 w-4" />
-              PDF İndir
+              Download PDF
             </a>
             {isPro && (
               <Button
@@ -112,7 +112,7 @@ export default function ReportDetailPage() {
                 onClick={() => setVoiceOpen((o) => !o)}
               >
                 <Mic className="h-4 w-4" />
-                {voiceOpen ? "Sesli Koçu Kapat" : "Sesli Koçla Konuş"}
+                {voiceOpen ? "Close Voice Coach" : "Speak with Voice Coach"}
               </Button>
             )}
           </div>
