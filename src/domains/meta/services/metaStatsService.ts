@@ -14,7 +14,17 @@ import type {
 // OP.GG's public ranked stats feed. Unofficial, so every consumer degrades
 // gracefully: a fresh copy is cached 12h, and a never-expiring "last good"
 // snapshot is kept as a fallback if the feed ever breaks.
-const OPGG_URL = "https://lol-api-champion.op.gg/api/global/champions/ranked";
+const OPGG_BASE = "https://lol-api-champion.op.gg/api/global/champions";
+const OPGG_URL = `${OPGG_BASE}/ranked`;
+
+// Canonical → OP.GG position path segment for the per-champion counters endpoint.
+const CANONICAL_TO_OPGG: Record<CanonicalPosition, string> = {
+  TOP: "TOP",
+  JUNGLE: "JUNGLE",
+  MIDDLE: "MID",
+  BOTTOM: "ADC",
+  UTILITY: "SUPPORT",
+};
 const USER_AGENT = "lol-ai-coach (+https://lolaicoach.gg)";
 const CACHE_TYPE = "meta-snapshot";
 const FRESH_KEY = "meta:snapshot:fresh";
@@ -176,6 +186,51 @@ export async function getMetaSnapshot(): Promise<MetaSnapshot | null> {
   } catch (err) {
     logger.warn("[metaStatsService] fresh fetch failed, falling back to last-good snapshot", err);
     const lastGood = (await getCached(LAST_GOOD_KEY).catch(() => null)) as MetaSnapshot | null;
+    return lastGood ?? null;
+  }
+}
+
+const CountersDetailSchema = z.object({
+  data: z.object({ counters: z.array(CounterSchema) }),
+});
+
+// Returns the full per-lane counter list for one champion (every opponent with a
+// meaningful sample this patch — far richer than the ~3 counters in the bulk
+// snapshot). Cached per champion+position with a last-good fallback.
+export async function getChampionCounters(
+  championId: number,
+  position: CanonicalPosition
+): Promise<MatchupEntry[] | null> {
+  const freshKey = `meta:counters:${championId}:${position}`;
+  const lastGoodKey = `${freshKey}:last-good`;
+
+  const fresh = (await getCached(freshKey).catch(() => null)) as MatchupEntry[] | null;
+  if (fresh) return fresh;
+
+  try {
+    const res = await fetch(`${OPGG_BASE}/ranked/${championId}/${CANONICAL_TO_OPGG[position]}`, {
+      headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
+      next: { revalidate: 43200 },
+    });
+    if (!res.ok) throw new Error(`op.gg counters responded ${res.status}`);
+
+    const parsed = CountersDetailSchema.parse(await res.json());
+    const entries: MatchupEntry[] = parsed.data.counters
+      .filter((c) => c.play >= MIN_MATCHUP_GAMES)
+      .map((c) => ({
+        opponentId: c.champion_id,
+        games: c.play,
+        subjectWins: c.win,
+        subjectWinRate: pct(c.win / c.play),
+      }))
+      .sort((a, b) => a.subjectWinRate - b.subjectWinRate);
+
+    await setCached(freshKey, "meta-counters", entries, FRESH_TTL_DAYS);
+    await setCached(lastGoodKey, "meta-counters", entries, SNAPSHOT_TTL_DAYS);
+    return entries;
+  } catch (err) {
+    logger.warn(`[metaStatsService] counters fetch failed for ${championId}/${position}`, err);
+    const lastGood = (await getCached(lastGoodKey).catch(() => null)) as MatchupEntry[] | null;
     return lastGood ?? null;
   }
 }

@@ -1,5 +1,9 @@
-import { getMetaSnapshot, findChampionStats } from "@/domains/meta/services/metaStatsService";
-import type { CanonicalPosition, ChampionMetaStats, MetaSnapshot } from "@/domains/meta/types";
+import {
+  getMetaSnapshot,
+  findChampionStats,
+  getChampionCounters,
+} from "@/domains/meta/services/metaStatsService";
+import type { CanonicalPosition, MatchupEntry, MetaSnapshot } from "@/domains/meta/types";
 
 // One opposing champion in a counter list, enriched for display.
 export interface CounterMatchup {
@@ -34,14 +38,10 @@ function buildChampionIndex(
 }
 
 function enrichMatchups(
-  champion: ChampionMetaStats,
-  position: CanonicalPosition,
+  counters: MatchupEntry[],
   index: Map<number, { key: string; name: string }>
 ): CounterMatchup[] {
-  const posStats = champion.positions.find((p) => p.position === position);
-  if (!posStats) return [];
-
-  return posStats.counters
+  return counters
     .map((c) => {
       const opp = index.get(c.opponentId);
       if (!opp) return null;
@@ -77,8 +77,11 @@ export async function getCounterData(
       ? position
       : [...champion.positions].sort((a, b) => b.games - a.games)[0].position;
 
+  const counters = await getChampionCounters(champion.championId, resolvedPosition);
+  if (!counters) return null;
+
   const index = buildChampionIndex(snapshot);
-  const matchups = enrichMatchups(champion, resolvedPosition, index);
+  const matchups = enrichMatchups(counters, index);
 
   // counters are pre-sorted ascending by subject win rate (hardest first).
   const strongAgainstSubject = matchups

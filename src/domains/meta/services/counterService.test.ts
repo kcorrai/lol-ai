@@ -3,14 +3,20 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 vi.mock("@/domains/meta/services/metaStatsService", () => ({
   getMetaSnapshot: vi.fn(),
   findChampionStats: vi.fn(),
+  getChampionCounters: vi.fn(),
 }));
 
 import { getCounterData } from "./counterService";
-import { getMetaSnapshot, findChampionStats } from "@/domains/meta/services/metaStatsService";
-import type { ChampionMetaStats, MetaSnapshot } from "@/domains/meta/types";
+import {
+  getMetaSnapshot,
+  findChampionStats,
+  getChampionCounters,
+} from "@/domains/meta/services/metaStatsService";
+import type { ChampionMetaStats, MatchupEntry, MetaSnapshot } from "@/domains/meta/types";
 
 const mockGetSnapshot = getMetaSnapshot as unknown as ReturnType<typeof vi.fn>;
 const mockFind = findChampionStats as unknown as ReturnType<typeof vi.fn>;
+const mockCounters = getChampionCounters as unknown as ReturnType<typeof vi.fn>;
 
 function champ(
   championId: number,
@@ -31,32 +37,17 @@ function champ(
 }
 
 const AHRI = champ(103, "Ahri", "Ahri", [
-  {
-    position: "MIDDLE",
-    games: 300000,
-    winRate: 51,
-    pickRate: 8,
-    banRate: 6,
-    tier: 1,
-    rank: 2,
-    counters: [
-      { opponentId: 10, games: 5000, subjectWins: 2100, subjectWinRate: 42 }, // hard
-      { opponentId: 7, games: 4000, subjectWins: 1800, subjectWinRate: 45 }, // hard
-      { opponentId: 99, games: 3000, subjectWins: 1800, subjectWinRate: 60 }, // easy
-      { opponentId: 55, games: 2000, subjectWins: 1160, subjectWinRate: 58 }, // easy
-    ],
-  },
-  {
-    position: "BOTTOM",
-    games: 5000,
-    winRate: 49,
-    pickRate: 1,
-    banRate: 6,
-    tier: 4,
-    rank: 30,
-    counters: [],
-  },
+  { position: "MIDDLE", games: 300000, winRate: 51, pickRate: 8, banRate: 6, tier: 1, rank: 2, counters: [] },
+  { position: "BOTTOM", games: 5000, winRate: 49, pickRate: 1, banRate: 6, tier: 4, rank: 30, counters: [] },
 ]);
+
+// Rich per-lane counters now come from getChampionCounters, not the snapshot.
+const AHRI_MID_COUNTERS: MatchupEntry[] = [
+  { opponentId: 10, games: 5000, subjectWins: 2100, subjectWinRate: 42 }, // hard
+  { opponentId: 7, games: 4000, subjectWins: 1800, subjectWinRate: 45 }, // hard
+  { opponentId: 99, games: 3000, subjectWins: 1800, subjectWinRate: 60 }, // easy
+  { opponentId: 55, games: 2000, subjectWins: 1160, subjectWinRate: 58 }, // easy
+];
 
 const SNAPSHOT: MetaSnapshot = {
   patch: "16.13",
@@ -74,6 +65,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   mockGetSnapshot.mockResolvedValue(SNAPSHOT);
   mockFind.mockReturnValue(AHRI);
+  mockCounters.mockResolvedValue(AHRI_MID_COUNTERS);
 });
 
 describe("getCounterData", () => {
@@ -112,5 +104,10 @@ describe("getCounterData", () => {
   it("returns null when the champion is not found", async () => {
     mockFind.mockReturnValue(null);
     expect(await getCounterData("Unknown", "MIDDLE")).toBeNull();
+  });
+
+  it("returns null when the counters feed is unavailable", async () => {
+    mockCounters.mockResolvedValue(null);
+    expect(await getCounterData("Ahri", "MIDDLE")).toBeNull();
   });
 });
