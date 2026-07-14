@@ -1,4 +1,23 @@
-export const DDRAGON_VERSION = "15.14.1";
+// Synchronous fallback used by client components to build patch-versioned image
+// URLs. Keep this reasonably current; server code that needs the exact live patch
+// should await getLatestDdragonVersion() instead.
+export const DDRAGON_VERSION = "16.13.1";
+
+const DDRAGON_VERSIONS_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
+
+// Server-side: returns the live latest Data Dragon version, cached 12h, falling
+// back to DDRAGON_VERSION if the version feed is unreachable. Must not be called
+// from client components (they cannot await).
+export async function getLatestDdragonVersion(): Promise<string> {
+  try {
+    const res = await fetch(DDRAGON_VERSIONS_URL, { next: { revalidate: 43200 } });
+    if (!res.ok) return DDRAGON_VERSION;
+    const versions = (await res.json()) as string[];
+    return versions[0] ?? DDRAGON_VERSION;
+  } catch {
+    return DDRAGON_VERSION;
+  }
+}
 
 const CHAMPION_KEY_OVERRIDES: Record<string, string> = {
   Wukong: "MonkeyKing",

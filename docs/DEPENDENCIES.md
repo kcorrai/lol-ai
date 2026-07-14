@@ -148,3 +148,15 @@ This document records every production and development dependency added after th
 **Added in:** TASK-005  
 **Purpose:** Resolves `@/*` TypeScript path aliases in Vitest (which uses Vite under the hood).  
 **Why needed:** Without this, Vitest cannot resolve `@/lib/...` imports in test files.
+
+---
+
+## External Data Sources (no npm package)
+
+### OP.GG public ranked feed
+
+**Added in:** TASK-166
+**Endpoint:** `https://lol-api-champion.op.gg/api/global/champions/ranked`
+**Purpose:** Zero-cost, patch-current global champion stats (win/pick/ban rate, tier, per-lane counters) powering the public free tools. One request returns all champions.
+**Integration:** Isolated behind `src/domains/meta/` with a 12h fresh cache plus a never-expiring last-good snapshot fallback. See `docs/adr/ADR-008-meta-stats-source.md`.
+**Note:** Unofficial endpoint — no API key, no npm dependency, fetched server-side only. Fallback and swap-in interface documented in the ADR.

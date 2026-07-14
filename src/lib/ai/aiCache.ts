@@ -20,8 +20,8 @@ export async function setCached(
   content: unknown,
   ttlDays: number
 ): Promise<void> {
-  const expiresAt = new Date();
-  expiresAt.setDate(expiresAt.getDate() + ttlDays);
+  // Millisecond-based so sub-day TTLs (e.g. 0.5 for a 12h cache) are honoured.
+  const expiresAt = new Date(Date.now() + ttlDays * 24 * 60 * 60 * 1000);
 
   await prisma.aiCache.upsert({
     where: { cacheKey },

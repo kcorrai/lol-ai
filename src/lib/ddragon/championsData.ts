@@ -23,16 +23,10 @@ export interface DdragonChampionDetail extends DdragonChampionSummary {
   passive: { name: string; description: string };
 }
 
-async function fetchLatestVersion(): Promise<string> {
-  const res = await fetch("https://ddragon.leagueoflegends.com/api/versions.json", {
-    next: { revalidate: 86400 },
-  });
-  const versions = (await res.json()) as string[];
-  return versions[0];
-}
+import { getLatestDdragonVersion } from "@/lib/ddragon";
 
 export async function fetchAllChampions(): Promise<DdragonChampionSummary[]> {
-  const version = await fetchLatestVersion();
+  const version = await getLatestDdragonVersion();
   const res = await fetch(
     `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`,
     { next: { revalidate: 86400 } }
@@ -42,7 +36,7 @@ export async function fetchAllChampions(): Promise<DdragonChampionSummary[]> {
 }
 
 export async function fetchChampionDetail(id: string): Promise<DdragonChampionDetail | null> {
-  const version = await fetchLatestVersion();
+  const version = await getLatestDdragonVersion();
   const res = await fetch(
     `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion/${id}.json`,
     { next: { revalidate: 86400 } }
