@@ -18,11 +18,11 @@ const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const champ = await fetchChampionDetail(params.name);
-  if (!champ) return { title: "Şampiyon bulunamadı" };
+  if (!champ) return { title: "Champion not found" };
   const pageUrl = `${BASE_URL}/champions/${params.name}`;
   return {
-    title: `${champ.name} Counter Rehberi — LoL AI Coach`,
-    description: `${champ.name} nasıl counter'lanır? ${champ.name} — ${champ.title}. Counter pick'ler, build önerileri ve AI koç analizleri.`,
+    title: `${champ.name} Counter Guide — LoL AI Coach`,
+    description: `How to counter ${champ.name}? ${champ.name} — ${champ.title}. Counter picks, build recommendations, and AI coach analysis.`,
     alternates: { canonical: pageUrl },
     openGraph: {
       url: pageUrl,
@@ -45,20 +45,20 @@ export default async function ChampionDetailPage({ params }: Props) {
     mainEntity: [
       {
         "@type": "Question",
-        name: `${champ.name} nasıl counter'lanır?`,
+        name: `How to counter ${champ.name}?`,
         acceptedAnswer: {
           "@type": "Answer",
           text: counterTips.length > 0
             ? counterTips.join(" ")
-            : `${champ.name}'a karşı erken baskı oluşturun ve zayıf noktalarını AI koçunuzla analiz edin.`,
+            : `Apply early pressure against ${champ.name} and analyze their weak points with your AI coach.`,
         },
       },
       {
         "@type": "Question",
-        name: `${champ.name} hangi pozisyonda oynanır?`,
+        name: `What position does ${champ.name} play?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: `${champ.name} genellikle ${champ.tags.join(" ve ")} rollerinde oynanır.`,
+          text: `${champ.name} is typically played in the ${champ.tags.join(" and ")} roles.`,
         },
       },
     ],
@@ -72,7 +72,7 @@ export default async function ChampionDetailPage({ params }: Props) {
       />
       {/* Breadcrumb */}
       <p className="mb-6 text-xs text-text-muted">
-        <Link href="/champions" className="hover:text-accent">Şampiyonlar</Link>
+        <Link href="/champions" className="hover:text-accent">Champions</Link>
         {" / "}
         <span className="text-text">{champ.name}</span>
       </p>
@@ -98,27 +98,27 @@ export default async function ChampionDetailPage({ params }: Props) {
 
       {/* Lore */}
       <div className="mb-8 rounded-2xl border border-border bg-surface p-6">
-        <h2 className="mb-3 text-xs font-bold uppercase tracking-widest text-text-muted">Hikaye</h2>
+        <h2 className="mb-3 text-xs font-bold uppercase tracking-widest text-text-muted">Story</h2>
         <p className="text-sm leading-relaxed text-text-muted">{champ.blurb}</p>
       </div>
 
       {/* Base stats */}
       <div className="mb-8 rounded-2xl border border-border bg-surface p-6">
-        <h2 className="mb-4 text-xs font-bold uppercase tracking-widest text-text-muted">Temel İstatistikler</h2>
+        <h2 className="mb-4 text-xs font-bold uppercase tracking-widest text-text-muted">Base Stats</h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          <StatRow label="Can" value={Math.round(champ.stats.hp)} />
-          <StatRow label="Zırh" value={Math.round(champ.stats.armor)} />
-          <StatRow label="Büyü Direnci" value={Math.round(champ.stats.spellblock)} />
-          <StatRow label="Saldırı Hasarı" value={Math.round(champ.stats.attackdamage)} />
-          <StatRow label="Menzil" value={champ.stats.attackrange} />
-          <StatRow label="Hareket Hızı" value={champ.stats.movespeed} />
+          <StatRow label="Health" value={Math.round(champ.stats.hp)} />
+          <StatRow label="Armor" value={Math.round(champ.stats.armor)} />
+          <StatRow label="Magic Resist" value={Math.round(champ.stats.spellblock)} />
+          <StatRow label="Attack Damage" value={Math.round(champ.stats.attackdamage)} />
+          <StatRow label="Range" value={champ.stats.attackrange} />
+          <StatRow label="Move Speed" value={champ.stats.movespeed} />
         </div>
       </div>
 
       {/* Tips */}
       {tips.length > 0 && (
         <div className="mb-8 rounded-2xl border border-border bg-surface p-6">
-          <h2 className="mb-4 text-xs font-bold uppercase tracking-widest text-text-muted">İpuçları</h2>
+          <h2 className="mb-4 text-xs font-bold uppercase tracking-widest text-text-muted">Tips</h2>
           <ul className="space-y-3">
             {tips.map((tip, i) => (
               <li key={i} className="flex gap-3 text-sm text-text-muted">
@@ -135,13 +135,13 @@ export default async function ChampionDetailPage({ params }: Props) {
         className="rounded-2xl border border-accent/30 p-6 text-center"
         style={{ background: "linear-gradient(135deg, rgba(200,155,60,0.08) 0%, rgba(88,70,180,0.06) 100%)" }}
       >
-        <p className="mb-1 text-sm font-semibold text-text">{champ.name} ile daha iyi oynamak ister misin?</p>
-        <p className="mb-4 text-xs text-text-muted">AI koçun seni analiz ediyor — ücretsiz başla</p>
+        <p className="mb-1 text-sm font-semibold text-text">Want to play better with {champ.name}?</p>
+        <p className="mb-4 text-xs text-text-muted">Your AI coach analyzes you — start free</p>
         <Link
           href="/register"
           className="inline-flex items-center gap-2 rounded-xl bg-accent px-6 py-2.5 text-sm font-bold text-background transition-opacity hover:opacity-90"
         >
-          Ücretsiz Başla →
+          Get Started Free →
         </Link>
       </div>
     </div>

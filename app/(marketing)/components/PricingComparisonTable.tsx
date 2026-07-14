@@ -13,32 +13,32 @@ interface FeatureRow {
 
 const ROWS: FeatureRow[] = [
   // Core
-  { feature: "AI Coaching Reports",       free: "3 / ay",       pro: "Sınırsız",     team: "Sınırsız",    category: "Core" },
-  { feature: "Riot Hesabı",               free: "1",            pro: "3",            team: "5",           category: "Core" },
-  { feature: "Maç Geçmişi",              free: "10 maç",       pro: "100 maç",      team: "200 maç",     category: "Core" },
-  { feature: "Maç Detay Analizi",         free: true,           pro: true,           team: true,          category: "Core" },
-  { feature: "Ranked Takibi",             free: true,           pro: true,           team: true,          category: "Core" },
+  { feature: "AI Coaching Reports",       free: "3 / month",       pro: "Unlimited",     team: "Unlimited",    category: "Core" },
+  { feature: "Riot Account",               free: "1",            pro: "3",            team: "5",           category: "Core" },
+  { feature: "Match History",              free: "10 matches",       pro: "100 matches",      team: "200 matches",     category: "Core" },
+  { feature: "Match Detail Analysis",         free: true,           pro: true,           team: true,          category: "Core" },
+  { feature: "Ranked Tracking",             free: true,           pro: true,           team: true,          category: "Core" },
   { feature: "Coach Chat",                free: true,           pro: true,           team: true,          category: "Core" },
   // Tools
-  { feature: "Counter Pick",              free: "3 counter",    pro: "Tam liste",    team: "Tam liste",   category: "Araçlar" },
-  { feature: "Draft Analyzer",            free: true,           pro: true,           team: true,          category: "Araçlar" },
-  { feature: "OTP Asistanı",             free: true,           pro: true,           team: true,          category: "Araçlar" },
-  { feature: "Matchup Koçu",             free: "3 / gün",      pro: "Sınırsız",     team: "Sınırsız",    category: "Araçlar" },
+  { feature: "Counter Pick",              free: "3 counters",    pro: "Full list",    team: "Full list",   category: "Tools" },
+  { feature: "Draft Analyzer",            free: true,           pro: true,           team: true,          category: "Tools" },
+  { feature: "OTP Assistant",             free: true,           pro: true,           team: true,          category: "Tools" },
+  { feature: "Matchup Coach",             free: "3 / day",      pro: "Unlimited",     team: "Unlimited",    category: "Tools" },
   // Pro exclusive
-  { feature: "Matchup Zekası",            free: false,          pro: true,           team: true,          category: "Pro'ya Özel" },
-  { feature: "Şampiyon Ustalık Skoru",    free: false,          pro: true,           team: true,          category: "Pro'ya Özel" },
-  { feature: "Alışkanlık Tespit Motoru",  free: false,          pro: true,           team: true,          category: "Pro'ya Özel" },
-  { feature: "Gelişim Takibi",            free: false,          pro: "Tam geçmiş",   team: "Tam geçmiş",  category: "Pro'ya Özel" },
-  { feature: "Paylaşılabilir AI Raporlar",free: false,          pro: true,           team: true,          category: "Pro'ya Özel" },
-  { feature: "Haftalık AI E-posta",       free: false,          pro: true,           team: true,          category: "Pro'ya Özel" },
-  { feature: "Sesli Koçluk (TTS)",        free: false,          pro: true,           team: true,          category: "Pro'ya Özel" },
-  { feature: "Öncelikli AI İşleme",       free: false,          pro: true,           team: true,          category: "Pro'ya Özel" },
+  { feature: "Matchup Intelligence",            free: false,          pro: true,           team: true,          category: "Pro Exclusive" },
+  { feature: "Champion Mastery Score",    free: false,          pro: true,           team: true,          category: "Pro Exclusive" },
+  { feature: "Habit Detection Engine",  free: false,          pro: true,           team: true,          category: "Pro Exclusive" },
+  { feature: "Progress Tracking",            free: false,          pro: "Full history",   team: "Full history",  category: "Pro Exclusive" },
+  { feature: "Shareable AI Reports",free: false,          pro: true,           team: true,          category: "Pro Exclusive" },
+  { feature: "Weekly AI Email",       free: false,          pro: true,           team: true,          category: "Pro Exclusive" },
+  { feature: "Voice Coaching (TTS)",        free: false,          pro: true,           team: true,          category: "Pro Exclusive" },
+  { feature: "Priority AI Processing",       free: false,          pro: true,           team: true,          category: "Pro Exclusive" },
   // Team exclusive
-  { feature: "Takım Yönetimi",            free: false,          pro: false,          team: "5 takıma kadar", category: "Takım'a Özel" },
-  { feature: "Üye Başına Performans",     free: false,          pro: false,          team: true,          category: "Takım'a Özel" },
-  { feature: "Coach / Oyuncu Rolleri",    free: false,          pro: false,          team: true,          category: "Takım'a Özel" },
-  { feature: "E-posta Davet Sistemi",     free: false,          pro: false,          team: true,          category: "Takım'a Özel" },
-  { feature: "Takım Büyüklüğü",          free: false,          pro: false,          team: "5 kişi",      category: "Takım'a Özel" },
+  { feature: "Team Management",            free: false,          pro: false,          team: "Up to 5 teams", category: "Team Exclusive" },
+  { feature: "Per-Member Performance",     free: false,          pro: false,          team: true,          category: "Team Exclusive" },
+  { feature: "Coach / Player Roles",    free: false,          pro: false,          team: true,          category: "Team Exclusive" },
+  { feature: "Email Invite System",     free: false,          pro: false,          team: true,          category: "Team Exclusive" },
+  { feature: "Team Size",          free: false,          pro: false,          team: "5 members",      category: "Team Exclusive" },
 ];
 
 function Cell({ value, variant }: { value: CellValue; variant: "free" | "pro" | "team" }) {
@@ -70,7 +70,7 @@ export function PricingComparisonTable() {
       <table className="w-full text-left">
         <thead>
           <tr className="border-b border-border bg-surface-2">
-            <th className="px-4 py-4 text-sm font-medium text-text-muted">Özellik</th>
+            <th className="px-4 py-4 text-sm font-medium text-text-muted">Feature</th>
             <th className="px-4 py-4 text-center text-sm font-bold text-text">Free</th>
             <th className="px-4 py-4 text-center text-sm font-bold text-accent">Pro</th>
             <th className="px-4 py-4 text-center text-sm font-bold text-warning">Team</th>

@@ -7,8 +7,8 @@ import { DDRAGON_VERSION } from "@/lib/ddragon";
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
-  title: "Şampiyon Rehberleri — LoL AI Coach",
-  description: "League of Legends tüm şampiyonlarının rehberleri, counter pick'ler ve AI koç analizleri.",
+  title: "Champion Guides — LoL AI Coach",
+  description: "League of Legends champion guides, counter picks, and AI coach analysis.",
 };
 
 const ALL_ROLES = ["Assassin", "Fighter", "Mage", "Marksman", "Support", "Tank"];
@@ -30,14 +30,14 @@ export default async function ChampionsPage({
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-16">
-      <h1 className="font-display text-4xl font-black text-text mb-2">Şampiyon Rehberleri</h1>
+      <h1 className="font-display text-4xl font-black text-text mb-2">Champion Guides</h1>
       <p className="text-text-muted mb-8">
-        AI koçunla her şampiyonun performansını analiz et.
+        Analyze every champion&apos;s performance with your AI coach.
       </p>
 
       {/* Role filter */}
       <div className="mb-8 flex flex-wrap gap-2">
-        <RoleChip href="/champions" label="Tümü" active={activeRole === "all"} />
+        <RoleChip href="/champions" label="All" active={activeRole === "all"} />
         {ALL_ROLES.map((role) => (
           <RoleChip key={role} href={`/champions?role=${role}`} label={role} active={activeRole === role} />
         ))}

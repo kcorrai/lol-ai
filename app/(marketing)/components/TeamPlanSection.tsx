@@ -4,40 +4,40 @@ import { Users, BarChart2, Mail, Trophy, Shield, Check } from "lucide-react";
 const FEATURES = [
   {
     icon: Users,
-    title: "5 Kişilik Takım",
-    desc: "Tam kadro 5v5 desteği. Her üye için ayrı AI analiz ve koçluk raporu.",
+    title: "5-Person Team",
+    desc: "Full 5v5 roster support. Separate AI analysis and coaching report for each member.",
   },
   {
     icon: BarChart2,
-    title: "Koç Panosu",
-    desc: "Tüm oyuncuların rankını, KDA ve CS istatistiklerini tek ekranda gör.",
+    title: "Coach Dashboard",
+    desc: "See all players' ranks, KDA, and CS stats on one screen.",
   },
   {
     icon: Mail,
-    title: "Haftalık Takım Raporu",
-    desc: "Her Pazartesi otomatik e-posta: kim form tuttu, kim geriledi, kim müdahale istiyor.",
+    title: "Weekly Team Report",
+    desc: "Auto email every Monday: who's hot, who's struggling, who needs coaching.",
   },
   {
     icon: Trophy,
-    title: "5'e Kadar Takım",
-    desc: "Farklı grupları, ligleri veya jenerasyon katmanlarını ayrı takımlar olarak yönet.",
+    title: "Up to 5 Teams",
+    desc: "Manage different groups, leagues, or age tiers as separate teams.",
   },
   {
     icon: Shield,
-    title: "Coach & Oyuncu Rolleri",
-    desc: "Koç olarak tüm üyeleri yönet, oyuncular sadece kendi verilerine odaklanır.",
+    title: "Coach & Player Roles",
+    desc: "As a coach, manage all members; players focus only on their own data.",
   },
 ];
 
 const PLAN_FEATURES = [
-  "Sınırsız AI koçluk raporu",
-  "5 adet 5 kişilik takım (25 üye)",
-  "Takım performans panosu",
-  "Coach ve oyuncu rolleri",
-  "E-posta ile üye daveti",
-  "Haftalık otomatik takım raporu",
-  "Toplu üye analizi",
-  "Tüm Pro özellikleri dahil",
+  "Unlimited AI Coaching Reports",
+  "5 teams of 5 members each (25 members)",
+  "Team Performance Dashboard",
+  "Coach and player roles",
+  "Email member invitations",
+  "Weekly auto team report",
+  "Bulk member analysis",
+  "All Pro features included",
 ];
 
 export function TeamPlanSection() {
@@ -55,15 +55,14 @@ export function TeamPlanSection() {
         <div className="mb-16 text-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-warning/40 bg-warning/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-warning">
             <Users className="h-3.5 w-3.5" />
-            Esports Akademileri &amp; Takımlar
+            Esports Academies &amp; Teams
           </span>
           <h2 className="mt-5 font-display text-4xl font-bold text-text md:text-5xl lg:text-6xl">
-            Takımın için{" "}
-            <span className="text-warning">AI Koçu</span>
+            For Your{" "}
+            <span className="text-warning">AI Coach</span>
           </h2>
           <p className="mt-4 mx-auto max-w-2xl text-base text-text-muted md:text-lg">
-            Esports akademileri, okul ligleri ve arkadaş grupları için. Tüm takımı tek panelden yönet,
-            haftalık raporlarla gelişimi takip et.
+            For esports academies, school leagues, and friend groups. Manage your entire team from one dashboard, track progress with weekly reports.
           </p>
         </div>
 
@@ -90,7 +89,7 @@ export function TeamPlanSection() {
           <div className="relative rounded-2xl border-2 border-warning/40 bg-surface p-8 space-y-6 shadow-[0_0_60px_-15px_rgba(245,158,11,0.25)]">
             <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
               <span className="rounded-full bg-warning px-4 py-1 text-xs font-bold uppercase tracking-wider text-background">
-                En Popüler
+                Most Popular
               </span>
             </div>
 
@@ -98,10 +97,10 @@ export function TeamPlanSection() {
               <p className="text-xs font-semibold uppercase tracking-widest text-warning">Team Plan</p>
               <div className="mt-3 flex items-baseline gap-2">
                 <span className="font-display text-6xl font-bold text-text">$29.99</span>
-                <span className="text-text-muted">/ay</span>
+                <span className="text-text-muted">/month</span>
               </div>
               <p className="mt-1.5 text-sm text-text-muted">
-                Tüm Pro özellikleri dahil · 5 takım · 5 üye/takım
+                All Pro features included · 5 teams · 5 members/team
               </p>
             </div>
 
@@ -119,18 +118,18 @@ export function TeamPlanSection() {
                 href="/register"
                 className="block w-full rounded-xl bg-warning px-5 py-3.5 text-center text-sm font-bold text-background transition-opacity hover:opacity-90"
               >
-                Team Başlat — $29.99/ay
+                Start Team — $29.99/month
               </Link>
               <a
                 href="mailto:team@lolaicoach.gg"
                 className="block w-full rounded-xl border border-border px-5 py-3.5 text-center text-sm font-semibold text-text-muted transition-colors hover:border-warning/40 hover:text-text"
               >
-                Kurumsal Teklif Al
+                Get Enterprise Quote
               </a>
             </div>
 
             <p className="text-center text-xs text-text-muted">
-              LemonSqueezy ile güvenli ödeme · İstediğin zaman iptal et
+              Secure payment with LemonSqueezy · Cancel anytime
             </p>
           </div>
         </div>

@@ -18,7 +18,7 @@ const TIER_COLORS: Record<string, string> = {
 };
 
 const POSITION_LABELS: Record<string, string> = {
-  TOP: "Üst", JUNGLE: "Orman", MIDDLE: "Orta", BOTTOM: "Alt", UTILITY: "Destek", FILL: "—",
+  TOP: "Top", JUNGLE: "Jungle", MIDDLE: "Mid", BOTTOM: "Bot", UTILITY: "Support", FILL: "—",
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const rankStr = rank
     ? `${rank.tier.charAt(0)}${rank.tier.slice(1).toLowerCase()} ${rank.division} · ${rank.lp} LP`
     : "Unranked";
-  const description = `${name} League of Legends istatistikleri (${server}). ${rankStr}${wr !== null ? ` · %${wr} WR` : ""}${topChamp ? ` · En çok: ${topChamp.championName}` : ""}. AI koç analizi al.`;
+  const description = `${name} League of Legends stats (${server}). ${rankStr}${wr !== null ? ` · %${wr} WR` : ""}${topChamp ? ` · Most: ${topChamp.championName}` : ""}. Get AI coach analysis.`;
 
   const ogParams = new URLSearchParams({
     name,
@@ -54,11 +54,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const ogImageUrl = `${appUrl}/api/og/summoner?${ogParams.toString()}`;
 
   return {
-    title: `${name} ${server} — LoL İstatistikleri & AI Koç`,
+    title: `${name} ${server} — LoL Stats & AI Coach`,
     description,
     keywords: [
       name, decodedName, server, "League of Legends", "LoL stats",
-      "LoL istatistik", "rank", "AI koç", "coaching",
+      "LoL stats", "rank", "AI coach", "coaching",
       ...(topChamp ? [topChamp.championName] : []),
     ],
     alternates: { canonical: pageUrl },
@@ -67,7 +67,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: pageUrl,
       title: `${name} — ${rankStr} · LoL AI Coach`,
       description,
-      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: `${name} LoL istatistikleri` }],
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: `${name} LoL stats` }],
       siteName: "LoL AI Coach",
     },
     twitter: {
@@ -98,9 +98,9 @@ export default async function SummonerPage({ params }: Props) {
           </div>
           <div className="flex min-h-[70vh] flex-col items-center justify-center px-6 text-center">
             <p className="mb-2 text-5xl font-bold text-text-muted/20">⏳</p>
-            <h1 className="mb-2 text-xl font-bold text-text">Riot API şu an meşgul</h1>
-            <p className="mb-6 text-sm text-text-muted">Birkaç saniye sonra tekrar dene.</p>
-            <Link href="/" className="rounded-md bg-accent px-5 py-2 text-sm font-semibold text-background hover:opacity-90">Ana Sayfaya Dön</Link>
+            <h1 className="mb-2 text-xl font-bold text-text">Riot API is busy</h1>
+            <p className="mb-6 text-sm text-text-muted">Try again in a few seconds.</p>
+            <Link href="/" className="rounded-md bg-accent px-5 py-2 text-sm font-semibold text-background hover:opacity-90">Go to Home</Link>
           </div>
         </div>
       );
@@ -113,12 +113,12 @@ export default async function SummonerPage({ params }: Props) {
         </div>
         <div className="flex min-h-[70vh] flex-col items-center justify-center px-6 text-center">
           <p className="mb-3 text-5xl font-bold text-text-muted/20">🔍</p>
-          <h1 className="mb-2 text-xl font-bold text-text">{displayName} bulunamadı</h1>
+          <h1 className="mb-2 text-xl font-bold text-text">{displayName} not found</h1>
           <p className="mb-6 max-w-sm text-sm text-text-muted">
-            Bu oyuncu {displayRegion} sunucusunda mevcut değil ya da kullanıcı adı değişmiş olabilir.
+            This player doesn&apos;t exist on the {displayRegion} server or their username may have changed.
           </p>
           <Link href="/" className="rounded-md bg-accent px-5 py-2 text-sm font-semibold text-background hover:opacity-90">
-            Ana Sayfaya Dön
+            Go to Home
           </Link>
         </div>
       </div>
@@ -146,8 +146,8 @@ export default async function SummonerPage({ params }: Props) {
       "@type": "Person",
       name: `${summoner.gameName}#${summoner.tagLine}`,
       description: rank
-        ? `League of Legends oyuncusu. ${rank.tier} ${rank.division} · ${rank.lp} LP`
-        : "League of Legends oyuncusu.",
+        ? `League of Legends player. ${rank.tier} ${rank.division} · ${rank.lp} LP`
+        : "League of Legends player.",
     },
   };
 
@@ -200,7 +200,7 @@ export default async function SummonerPage({ params }: Props) {
                       {rank.tier.charAt(0)}{rank.tier.slice(1).toLowerCase()} {rank.division} · {rank.lp} LP
                     </span>
                     {winRate !== null && (
-                      <span className="text-xs text-text-muted">%{winRate} KO</span>
+                      <span className="text-xs text-text-muted">%{winRate} WR</span>
                     )}
                   </div>
                 )}
@@ -214,7 +214,7 @@ export default async function SummonerPage({ params }: Props) {
         {topChampions.length > 0 && (
           <div className="rounded-2xl border border-border bg-surface p-5">
             <h2 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-text-muted/60">
-              Son Maçlarda En Çok
+              Most Played Recently
             </h2>
             <div className="space-y-3">
               {topChampions.map((c, i) => (
@@ -228,7 +228,7 @@ export default async function SummonerPage({ params }: Props) {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium text-text">{c.championName}</span>
-                      <span className="text-xs text-text-muted">{c.games} maç</span>
+                      <span className="text-xs text-text-muted">{c.games} matches</span>
                     </div>
                     <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface-2">
                       <div className="h-full rounded-full"
@@ -249,7 +249,7 @@ export default async function SummonerPage({ params }: Props) {
         {recentMatches.length > 0 && (
           <div className="rounded-2xl border border-border bg-surface p-5">
             <h2 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-text-muted/60">
-              Son Maçlar
+              Recent Matches
             </h2>
             <div className="space-y-2">
               {recentMatches.map((m, i) => (
@@ -266,7 +266,7 @@ export default async function SummonerPage({ params }: Props) {
                   <div className="text-right">
                     <p className="text-xs font-semibold text-text">{m.kills}/{m.deaths}/{m.assists}</p>
                     <p className={`text-[10px] font-bold ${m.win ? "text-success" : "text-danger"}`}>
-                      {m.win ? "Galibiyet" : "Mağlubiyet"}
+                      {m.win ? "Victory" : "Defeat"}
                     </p>
                   </div>
                 </div>
@@ -279,21 +279,21 @@ export default async function SummonerPage({ params }: Props) {
         <div className="rounded-2xl border border-accent/30 p-5 text-center"
           style={{ background: "linear-gradient(135deg, rgba(200,155,60,0.08) 0%, rgba(88,70,180,0.06) 100%)" }}>
           <p className="mb-1 text-sm font-semibold text-text">
-            {summoner.gameName} için AI koç analizi al
+            Get AI coach analysis for {summoner.gameName}
           </p>
           <p className="mb-4 text-xs text-text-muted">
-            Nerede hata yapıyorsun? Koçun söylüyor.
+            Where are you making mistakes? Your coach knows.
           </p>
           <Link href={`/register?ref=summoner`}
             className="inline-flex items-center gap-2 rounded-xl bg-accent px-6 py-2.5 text-sm font-bold text-background transition-opacity hover:opacity-90">
-            Ücretsiz AI Analiz Al →
+            Get Free AI Analysis →
           </Link>
         </div>
 
         {/* Search another */}
         <p className="text-center text-xs text-text-muted">
-          Başka bir oyuncu ara:{" "}
-          <Link href="/#demo" className="text-accent hover:underline">Ana sayfa demo →</Link>
+          Search another player:{" "}
+          <Link href="/#demo" className="text-accent hover:underline">home demo →</Link>
         </p>
       </div>
     </div>

@@ -56,14 +56,14 @@ export function PricingCard({
       {isPro && (
         <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
           <span className="rounded-full bg-accent px-4 py-1 text-xs font-bold uppercase tracking-wider text-background">
-            En Popüler
+            Most Popular
           </span>
         </div>
       )}
       {isTeam && (
         <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
           <span className="rounded-full bg-warning px-4 py-1 text-xs font-bold uppercase tracking-wider text-background">
-            Takımlar İçin
+            For Teams
           </span>
         </div>
       )}
@@ -105,7 +105,7 @@ export function PricingCard({
               "text-[11px] font-semibold uppercase tracking-widest",
               isPro ? "text-accent/70" : "text-warning/70"
             )}>
-              {isPro ? "Pro'ya Özel" : "Takım'a Özel"}
+              {isPro ? "Pro Exclusive" : "Team Exclusive"}
             </span>
             <div className={cn("h-px flex-1", isPro ? "bg-accent/20" : "bg-warning/20")} />
           </div>
@@ -129,18 +129,18 @@ export function PricingCard({
           <div className="my-5 flex items-center gap-3">
             <div className="h-px flex-1 bg-border" />
             <span className="text-[11px] font-semibold uppercase tracking-widest text-text-muted/50">
-              Pro&apos;da var
+              In Pro
             </span>
             <div className="h-px flex-1 bg-border" />
           </div>
           <ul className="space-y-2.5">
             {[
-              "Sınırsız AI koçluk raporu",
-              "Matchup Zekası",
-              "Şampiyon Ustalık Skoru",
-              "Alışkanlık Tespit Motoru",
-              "Gelişim Takibi",
-              "Paylaşılabilir AI Rapor Kartları",
+              "Unlimited AI Coaching Reports",
+              "Matchup Intelligence",
+              "Champion Mastery Score",
+              "Habit Detection Engine",
+              "Progress Tracking",
+              "Shareable AI Report Cards",
             ].map((f) => (
               <li key={f} className="flex items-start gap-2.5 text-sm">
                 <Minus className="mt-0.5 h-4 w-4 shrink-0 text-text-muted/30" />

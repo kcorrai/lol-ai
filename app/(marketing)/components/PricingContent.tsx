@@ -5,44 +5,44 @@ import { PricingCard } from "./PricingCard";
 import { PricingComparisonTable } from "./PricingComparisonTable";
 
 const FREE_FEATURES = [
-  { label: "Ayda 3 AI koçluk raporu" },
-  { label: "1 Riot hesabı" },
-  { label: "10 maçlık geçmiş" },
-  { label: "Maç detay analizi" },
-  { label: "Rank takibi" },
-  { label: "Counter Pick (3 counter)" },
-  { label: "Draft Analizci" },
+  { label: "3 AI Coaching Reports per month" },
+  { label: "1 Riot Account" },
+  { label: "10-game History" },
+  { label: "Match Detail Analysis" },
+  { label: "Rank Tracking" },
+  { label: "Counter Pick (3 counters)" },
+  { label: "Draft Analyzer" },
 ];
 
 const PRO_BASE_FEATURES = [
-  { label: "Sınırsız AI koçluk raporu" },
-  { label: "3 Riot hesabı" },
-  { label: "100 maçlık geçmiş" },
-  { label: "Counter Pick (tam liste)" },
-  { label: "Öncelikli AI işleme" },
+  { label: "Unlimited AI Coaching Reports" },
+  { label: "3 Riot Accounts" },
+  { label: "100-game History" },
+  { label: "Counter Pick (full list)" },
+  { label: "Priority AI Processing" },
 ];
 
 const PRO_EXCLUSIVE_FEATURES = [
-  { label: "Matchup Zekası" },
-  { label: "Şampiyon Ustalık Skoru" },
-  { label: "Alışkanlık Tespit Motoru" },
-  { label: "Gelişim Planı & Geçmişi" },
-  { label: "Paylaşılabilir AI Rapor Kartları" },
-  { label: "Haftalık AI Gelişim E-postası" },
-  { label: "Sesli Koçluk (TTS)" },
+  { label: "Matchup Intelligence" },
+  { label: "Champion Mastery Score" },
+  { label: "Habit Detection Engine" },
+  { label: "Progress Plan & History" },
+  { label: "Shareable AI Report Cards" },
+  { label: "Weekly AI Development Email" },
+  { label: "Voice Coaching (TTS)" },
 ];
 
 const TEAM_BASE_FEATURES = [
-  { label: "Tüm Pro özellikleri" },
-  { label: "5'e kadar takım oluşturma" },
-  { label: "5 kişilik takım (tam kadro)" },
+  { label: "All Pro features" },
+  { label: "Create up to 5 teams" },
+  { label: "5-person team (full roster)" },
 ];
 
 const TEAM_EXCLUSIVE_FEATURES = [
-  { label: "Takım performans panosu" },
-  { label: "Coach / Oyuncu rolleri" },
-  { label: "E-posta ile üye daveti" },
-  { label: "Toplu üye analizi" },
+  { label: "Team Performance Dashboard" },
+  { label: "Coach / Player roles" },
+  { label: "Email member invitations" },
+  { label: "Bulk member analysis" },
 ];
 
 const MONTHLY_PRICE = "$9.99";
@@ -54,10 +54,10 @@ export function PricingContent() {
   const [isAnnual, setIsAnnual] = useState(false);
 
   const proPrice = isAnnual ? ANNUAL_PRICE_PER_MONTH : MONTHLY_PRICE;
-  const proPeriod = isAnnual ? "/ay (yıllık)" : "/ay";
+  const proPeriod = isAnnual ? "/month (annual)" : "/month";
   const proCtaLabel = isAnnual
-    ? `Pro Başlat — ${ANNUAL_TOTAL}/yıl`
-    : `Pro Başlat — ${MONTHLY_PRICE}/ay`;
+    ? `Start Pro — ${ANNUAL_TOTAL}/year`
+    : `Start Pro — ${MONTHLY_PRICE}/month`;
   const proCtaHref = isAnnual
     ? `/settings/billing?period=annual`
     : `/settings/billing`;
@@ -73,7 +73,7 @@ export function PricingContent() {
               !isAnnual ? "bg-accent text-background" : "text-text-muted hover:text-text"
             }`}
           >
-            Aylık
+            Monthly
           </button>
           <button
             onClick={() => setIsAnnual(true)}
@@ -81,20 +81,20 @@ export function PricingContent() {
               isAnnual ? "bg-accent text-background" : "text-text-muted hover:text-text"
             }`}
           >
-            Yıllık
+            Annual
             <span
               className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
                 isAnnual ? "bg-background/20 text-background" : "bg-success/15 text-success"
               }`}
             >
-              2 ay bedava
+              2 months free
             </span>
           </button>
         </div>
         {isAnnual && (
           <p className="text-xs text-text-muted">
-            Yıllık ödeme ile{" "}
-            <span className="font-semibold text-success">toplam {ANNUAL_TOTAL}</span> — aylıktan %17 ucuz.
+            With annual payment{" "}
+            <span className="font-semibold text-success">total {ANNUAL_TOTAL}</span> — 17% cheaper than monthly.
           </p>
         )}
       </div>
@@ -105,9 +105,9 @@ export function PricingContent() {
           plan="free"
           name="Free"
           price="$0"
-          description="Başlamak için gereken her şey."
+          description="Everything you need to get started."
           features={FREE_FEATURES}
-          cta="Ücretsiz Başla"
+          cta="Start Free"
           ctaHref="/register"
         />
         <PricingCard
@@ -115,7 +115,7 @@ export function PricingContent() {
           name="Pro"
           price={proPrice}
           period={proPeriod}
-          description="Rank yükseltmeye ciddi bakanlar için."
+          description="For those serious about climbing."
           features={PRO_BASE_FEATURES}
           proFeatures={PRO_EXCLUSIVE_FEATURES}
           cta={proCtaLabel}
@@ -125,11 +125,11 @@ export function PricingContent() {
           plan="team"
           name="Team"
           price={TEAM_PRICE}
-          period="/ay"
-          description="Takımlarını analiz et, koçluk yap."
+          period="/month"
+          description="Analyze your teams, coach your players."
           features={TEAM_BASE_FEATURES}
           proFeatures={TEAM_EXCLUSIVE_FEATURES}
-          cta={`Team Başlat — ${TEAM_PRICE}/ay`}
+          cta={`Start Team — ${TEAM_PRICE}/month`}
           ctaHref="/settings/billing"
         />
       </div>
@@ -137,41 +137,41 @@ export function PricingContent() {
       {/* Comparison table */}
       <div className="mx-auto max-w-3xl">
         <h2 className="mb-8 text-center font-display text-2xl font-bold text-text">
-          Özellik Karşılaştırması
+          Feature Comparison
         </h2>
         <PricingComparisonTable />
       </div>
 
       <p className="mt-10 text-center text-sm text-text-muted">
-        Tüm planlara sınırsız maç senkronizasyonu ve dashboard erişimi dahildir.{" "}
-        <span className="text-text">Gizli ücret yok.</span>
+        All plans include unlimited match sync and dashboard access.{" "}
+        <span className="text-text">No hidden fees.</span>
       </p>
 
       {/* B2B / Esports section */}
       <div className="mx-auto mt-24 max-w-4xl">
         <div className="mb-10 text-center">
           <span className="rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">B2B / Esports</span>
-          <h2 className="mt-4 font-display text-3xl font-bold text-text">Akademi ve Esports Kulüpleri için</h2>
+          <h2 className="mt-4 font-display text-3xl font-bold text-text">For Esports Academies & Clubs</h2>
           <p className="mt-3 text-text-muted">
-            Birden fazla takımı yönetin, öğrencilerinizi toplu analiz edin ve haftalık performans raporlarını otomatikleştirin.
+            Manage multiple teams, bulk-analyze your students, and automate weekly performance reports.
           </p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">
           {[
             {
-              title: "Toplu Üye Analizi",
-              description: "Koç panosu: tüm oyuncuların rankını, 7 günlük WR'ını, KDA ve CS istatistiklerini tek ekranda görün.",
+              title: "Bulk Member Analysis",
+              description: "Coach dashboard: see all players&apos; ranks, 7-day WR, KDA, and CS stats on one screen.",
               icon: "📊",
             },
             {
-              title: "Haftalık Takım Raporu",
-              description: "Her Pazartesi otomatik e-posta: kim form tuttu, kim geriledi, hangi oyuncu müdahale istiyor.",
+              title: "Weekly Team Report",
+              description: "Auto email every Monday: who&apos;s hot, who&apos;s struggling, which player needs coaching.",
               icon: "📬",
             },
             {
-              title: "Çoklu Takım Desteği",
-              description: "5'e kadar takım oluşturun. Farklı okul liglerini, jenerasyon gruplarını ayrı ayrı yönetin.",
+              title: "Multi-Team Support",
+              description: "Create up to 5 teams. Manage different school leagues, age groups separately.",
               icon: "🏆",
             },
           ].map((item) => (
@@ -185,10 +185,10 @@ export function PricingContent() {
 
         <div className="mt-8 rounded-2xl border border-accent/20 bg-accent/5 p-6 flex flex-col items-center gap-4 text-center md:flex-row md:text-left md:items-start">
           <div className="flex-1">
-            <p className="text-lg font-bold text-text">Team Plan — $29.99/ay</p>
+            <p className="text-lg font-bold text-text">Team Plan — $29.99/month</p>
             <p className="mt-1 text-sm text-text-muted">
-              5 takım, 5 üye/takım, haftalık raporlar, koç/oyuncu rolleri. Tüm Pro özellikleri dahil.
-              Büyük akademiler için özel kurumsal fiyat teklifi alabiliriz.
+              5 teams, 5 members/team, weekly reports, coach/player roles. All Pro features included.
+              We can offer custom enterprise pricing for large academies.
             </p>
           </div>
           <div className="flex gap-3 shrink-0">
@@ -196,13 +196,13 @@ export function PricingContent() {
               href="/settings/billing"
               className="rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-background hover:bg-accent/90"
             >
-              Team Başlat
+              Start Team
             </a>
             <a
               href="mailto:team@lolaicoach.gg"
               className="rounded-xl border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-text hover:bg-surface-2"
             >
-              Kurumsal Teklif Al
+              Get Enterprise Quote
             </a>
           </div>
         </div>
