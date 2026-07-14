@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getCounterData, getPopularChampions, POSITION_LABELS } from "@/domains/meta";
+import { getCounterData, getPopularChampions, POSITION_LABELS, formatGamePatch } from "@/domains/meta";
 import { CounterResults } from "@/domains/meta/components/CounterResults";
 import { RelatedChampions } from "@/domains/meta/components/RelatedChampions";
 import { fetchAllChampions, fetchChampionDetail } from "@/lib/ddragon/championsData";
@@ -26,7 +26,7 @@ export async function generateMetadata({
   const detail = await fetchChampionDetail(params.champion);
   if (!detail) return { title: "Champion not found | LoL AI Coach" };
   const data = await getCounterData(detail.id);
-  const patch = data ? ` (Patch ${data.patch})` : "";
+  const patch = data ? ` (Patch ${formatGamePatch(data.patch)})` : "";
   return {
     title: `${detail.name} Counters — Best Champions to Beat ${detail.name}${patch} | LoL AI Coach`,
     description: `The best champions to counter ${detail.name} and the matchups ${detail.name} wins, ranked by real ranked win rate. Free counter picks, updated every patch.`,
@@ -104,7 +104,7 @@ export default async function ChampionCountersPage({
           </h1>
           <p className="mt-1 max-w-2xl text-sm text-text-muted">
             Best champions to beat {detail.name}
-            {data ? ` in ${POSITION_LABELS[data.position]} — Patch ${data.patch}` : ""}, by ranked win rate.
+            {data ? ` in ${POSITION_LABELS[data.position]} — Patch ${formatGamePatch(data.patch)}` : ""}, by ranked win rate.
           </p>
         </div>
       </div>

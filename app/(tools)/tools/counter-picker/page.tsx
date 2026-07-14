@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getCounterData, getPopularChampions, parsePosition, POSITION_LABELS } from "@/domains/meta";
+import { getCounterData, getPopularChampions, parsePosition, POSITION_LABELS, formatGamePatch } from "@/domains/meta";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { CounterResults } from "@/domains/meta/components/CounterResults";
 import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
@@ -116,7 +116,7 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
             <span className="rounded-full bg-surface-2 px-3 py-1 font-semibold text-text">
               {POSITION_LABELS[result.position]}
             </span>
-            <span>Patch {result.patch}</span>
+            <span>Patch {formatGamePatch(result.patch)}</span>
           </div>
 
           <CounterResults

@@ -2,6 +2,7 @@
 
 import { ExternalLink } from "lucide-react";
 import { usePatchImpact } from "@/hooks/usePatchImpact";
+import { formatGamePatch } from "@/lib/lolPatch";
 
 interface Props {
   riotAccountId: string | null | undefined;
@@ -28,7 +29,7 @@ export function PatchImpactWidget({ riotAccountId }: Props) {
     return (
       <div className="rounded-xl border border-border bg-surface p-4">
         <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-          Patch {data.currentVersion} Impact
+          Patch {formatGamePatch(data.currentVersion)} Impact
         </p>
         <p className="mt-1 text-sm text-text-muted">
           Patch impact requires at least 5 matches with each champion to calculate.
@@ -41,7 +42,7 @@ export function PatchImpactWidget({ riotAccountId }: Props) {
     <div className="rounded-xl border border-border bg-surface p-4">
       <div className="mb-3 flex items-center justify-between">
         <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-          Patch {data.currentVersion} Impact
+          Patch {formatGamePatch(data.currentVersion)} Impact
         </p>
         {data.patchNotesUrl && (
           <a

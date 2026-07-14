@@ -90,7 +90,7 @@ describe("getOrCreateCurrentPatch", () => {
       id: "p3",
       version: "14.21.1",
       detectedAt: new Date(),
-      patchNotesUrl: "https://www.leagueoflegends.com/en-us/news/game-updates/patch-14-21-notes/",
+      patchNotesUrl: "https://www.leagueoflegends.com/en-us/news/game-updates/league-of-legends-patch-14-21-notes/",
     } as never);
 
     await getOrCreateCurrentPatch();
@@ -98,7 +98,7 @@ describe("getOrCreateCurrentPatch", () => {
     expect(prisma.patchVersion.create).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({
-          patchNotesUrl: "https://www.leagueoflegends.com/en-us/news/game-updates/patch-14-21-notes/",
+          patchNotesUrl: "https://www.leagueoflegends.com/en-us/news/game-updates/league-of-legends-patch-14-21-notes/",
         }),
       })
     );

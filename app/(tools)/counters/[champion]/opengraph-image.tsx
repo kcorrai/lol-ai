@@ -1,4 +1,4 @@
-import { getCounterData } from "@/domains/meta";
+import { getCounterData, formatGamePatch } from "@/domains/meta";
 import { fetchChampionDetail } from "@/lib/ddragon/championsData";
 import { renderOgImage, OG_SIZE, OG_CONTENT_TYPE } from "@/lib/og/ogImage";
 
@@ -14,7 +14,7 @@ export default async function Image({ params }: { params: { champion: string } }
   const topCounters = data?.strongAgainstSubject.slice(0, 3).map((c) => c.name).join(" · ");
 
   return renderOgImage({
-    badge: data ? `Patch ${data.patch}` : "Counters",
+    badge: data ? `Patch ${formatGamePatch(data.patch)}` : "Counters",
     title: `${name} Counters`,
     subtitle: topCounters
       ? `Best picks to beat ${name}: ${topCounters}`

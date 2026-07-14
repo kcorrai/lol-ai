@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { CountUp } from "@/components/ui/CountUp";
-import { getMetaSnapshot, POSITION_LABELS } from "@/domains/meta";
+import { getMetaSnapshot, POSITION_LABELS, formatGamePatch } from "@/domains/meta";
 import type { CanonicalPosition } from "@/domains/meta";
 
 interface TopPick {
@@ -36,7 +36,7 @@ export async function MetaSnapshotSection() {
         <div className="mb-8 text-center">
           <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-accent">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
-            Patch {snapshot.patch} Meta · Updated Daily
+            Patch {formatGamePatch(snapshot.patch)} Meta · Updated Daily
           </div>
           <h2 className="font-display text-3xl font-bold text-text md:text-4xl">
             This Patch&apos;s Strongest Picks

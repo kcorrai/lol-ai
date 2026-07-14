@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { evaluateDraft, ALL_POSITIONS, type DraftTeam } from "@/domains/meta";
+import { evaluateDraft, ALL_POSITIONS, formatGamePatch, type DraftTeam } from "@/domains/meta";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
 import { DraftBuilder } from "./DraftBuilder";
@@ -86,7 +86,7 @@ export default async function DraftAnalyzerPage({ searchParams }: PageProps) {
 
       {evaluation && (
         <>
-          <div className="mb-6 text-sm text-text-muted">Patch {evaluation.patch}</div>
+          <div className="mb-6 text-sm text-text-muted">Patch {formatGamePatch(evaluation.patch)}</div>
           <DraftResults evaluation={evaluation} />
 
           <div className="mt-12 rounded-2xl border border-accent/30 bg-accent/5 p-6 text-center">

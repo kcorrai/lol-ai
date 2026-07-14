@@ -20,6 +20,7 @@ export {
   POSITION_LABELS,
   parsePosition,
 } from "@/domains/meta/positions";
+export { formatGamePatch, gamePatchSlug } from "@/lib/lolPatch";
 export type {
   CanonicalPosition,
   ChampionMetaStats,

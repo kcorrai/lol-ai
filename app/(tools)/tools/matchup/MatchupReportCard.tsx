@@ -1,5 +1,5 @@
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
-import type { MatchupReport } from "@/domains/meta";
+import { formatGamePatch, type MatchupReport } from "@/domains/meta";
 
 const VERDICT_COPY: Record<MatchupReport["verdict"], { label: string; className: string }> = {
   favored: { label: "Favoured", className: "text-success" },
@@ -40,7 +40,7 @@ export function MatchupReportCard({ report }: { report: MatchupReport }) {
 
       <p className="mt-4 text-center text-xs text-text-muted">
         {report.games > 0
-          ? `Based on ${report.games.toLocaleString()} ranked games this patch (${report.patch}).`
+          ? `Based on ${report.games.toLocaleString()} ranked games this patch (${formatGamePatch(report.patch)}).`
           : `Not enough ranked games this patch for a reliable win rate — hints are based on champion stats.`}
       </p>
 

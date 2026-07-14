@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getMatchupData, parsePosition, POSITION_LABELS } from "@/domains/meta";
+import { getMatchupData, parsePosition, POSITION_LABELS, formatGamePatch } from "@/domains/meta";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
 import { MatchupControls } from "./MatchupControls";
@@ -86,7 +86,7 @@ export default async function MatchupPage({ searchParams }: PageProps) {
             <span className="rounded-full bg-surface-2 px-3 py-1 font-semibold text-text">
               {POSITION_LABELS[report.position]}
             </span>
-            <span>Patch {report.patch}</span>
+            <span>Patch {formatGamePatch(report.patch)}</span>
           </div>
 
           <MatchupReportCard report={report} />

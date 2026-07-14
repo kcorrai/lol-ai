@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getTierList, parsePosition, ALL_POSITIONS, POSITION_LABELS } from "@/domains/meta";
+import { getTierList, parsePosition, ALL_POSITIONS, POSITION_LABELS, formatGamePatch } from "@/domains/meta";
 import type { CanonicalPosition } from "@/domains/meta";
 import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
 import { TierRow } from "./TierRow";
@@ -14,7 +14,7 @@ interface PageProps {
 export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
   const position = parsePosition(searchParams.role) ?? "MIDDLE";
   const list = await getTierList(position);
-  const patch = list?.patch ?? "";
+  const patch = list ? formatGamePatch(list.patch) : "";
   const lane = POSITION_LABELS[position];
   return {
     title: `LoL Tier List ${patch ? `Patch ${patch}` : ""} — ${lane} Rankings | LoL AI Coach`,
@@ -30,7 +30,7 @@ export default async function TierListPage({ searchParams }: PageProps) {
   const itemListJsonLd = list && {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: `LoL ${POSITION_LABELS[position]} Tier List — Patch ${list.patch}`,
+    name: `LoL ${POSITION_LABELS[position]} Tier List — Patch ${formatGamePatch(list.patch)}`,
     itemListElement: list.entries.slice(0, 20).map((e, i) => ({
       "@type": "ListItem",
       position: i + 1,
@@ -59,7 +59,7 @@ export default async function TierListPage({ searchParams }: PageProps) {
           Free Tool · No login required
         </p>
         <h1 className="font-display text-3xl font-black text-text md:text-4xl">
-          LoL Tier List{list ? ` — Patch ${list.patch}` : ""}
+          LoL Tier List{list ? ` — Patch ${formatGamePatch(list.patch)}` : ""}
         </h1>
         <p className="mt-2 text-text-muted">
           The strongest champions per lane, ranked by real ranked win rate. Updated every patch.
