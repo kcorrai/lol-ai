@@ -28,12 +28,12 @@ export function ReferralWidget() {
     <Card>
       <CardHeader className="pb-2">
         <CardTitle className="text-xs font-medium uppercase tracking-widest text-text-muted">
-          Arkadaşını Davet Et
+          Invite a Friend
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm text-text-muted">
-          Arkadaşın davet linkinle kaydolup Riot hesabını bağlarsa <span className="font-semibold text-accent">ikiniz de 7 gün Pro</span> kazanırsınız.
+          When your friend signs up with your referral link and connects their Riot account, <span className="font-semibold text-accent">you both get 7 days of Pro</span>.
         </p>
 
         {isLoading ? (
@@ -46,7 +46,7 @@ export function ReferralWidget() {
               className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-xs text-text-muted"
             />
             <Button size="sm" variant="secondary" onClick={handleCopy}>
-              {copied ? "Kopyalandı!" : "Kopyala"}
+              {copied ? "Copied!" : "Copy"}
             </Button>
           </div>
         )}
@@ -56,18 +56,18 @@ export function ReferralWidget() {
             <div className="flex gap-6 text-sm">
               <div>
                 <p className="font-semibold text-text">{data.totalInvited}</p>
-                <p className="text-xs text-text-muted">Davet edildi</p>
+                <p className="text-xs text-text-muted">Invited</p>
               </div>
               <div>
                 <p className="font-semibold text-success">{data.weeksEarned}</p>
-                <p className="text-xs text-text-muted">Hafta kazanıldı</p>
+                <p className="text-xs text-text-muted">Weeks earned</p>
               </div>
             </div>
             <div className="space-y-1.5">
               <div className="flex items-center justify-between text-xs text-text-muted">
-                <span>{data.weeksEarned} / {data.maxWeeks} hafta</span>
+                <span>{data.weeksEarned} / {data.maxWeeks} weeks</span>
                 {data.weeksEarned >= data.maxWeeks && (
-                  <span className="text-accent font-medium">Maksimum ödüle ulaştınız</span>
+                  <span className="text-accent font-medium">Max rewards reached</span>
                 )}
               </div>
               <div className="h-1.5 w-full rounded-full bg-surface-2">

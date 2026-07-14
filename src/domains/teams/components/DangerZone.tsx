@@ -10,7 +10,7 @@ async function deleteTeamRequest(teamId: string): Promise<void> {
   const res = await fetch(`/api/teams/${teamId}`, { method: "DELETE" });
   if (!res.ok) {
     const body = (await res.json()) as { error?: { message?: string } };
-    throw new Error(body.error?.message ?? "Takım silinemedi");
+    throw new Error(body.error?.message ?? "Team could not be deleted");
   }
 }
 
@@ -37,11 +37,11 @@ export function DangerZone({ teamId, teamName }: DangerZoneProps) {
     <div className="rounded-xl border border-danger/30 bg-danger/5 p-5 space-y-4">
       <div className="flex items-center gap-2">
         <AlertTriangle className="h-4 w-4 text-danger" />
-        <p className="text-sm font-bold text-danger">Tehlikeli Bölge</p>
+        <p className="text-sm font-bold text-danger">Danger Zone</p>
       </div>
 
       <p className="text-xs text-text-muted leading-relaxed">
-        Takımı silmek geri alınamaz. Tüm üyelik verileri, davetler ve takım geçmişi silinir.
+        Deleting the team is irreversible. All membership data, invites, and team history will be deleted.
       </p>
 
       {!confirm ? (
@@ -49,12 +49,12 @@ export function DangerZone({ teamId, teamName }: DangerZoneProps) {
           className="gap-1.5 border border-danger/40 text-danger hover:bg-danger/10 hover:text-danger"
           onClick={() => setConfirm(true)}>
           <Trash2 className="h-3.5 w-3.5" />
-          Takımı Sil
+          Delete Team
         </Button>
       ) : (
         <div className="space-y-3">
           <p className="text-xs font-medium text-text">
-            Onaylamak için takım adını yazın: <span className="text-danger font-bold">{teamName}</span>
+            Type the team name to confirm: <span className="text-danger font-bold">{teamName}</span>
           </p>
           <input
             type="text"
@@ -69,12 +69,12 @@ export function DangerZone({ teamId, teamName }: DangerZoneProps) {
           <div className="flex gap-2">
             <Button size="sm" variant="ghost" onClick={() => { setConfirm(false); setInput(""); }}
               className="text-text-muted">
-              İptal
+              Cancel
             </Button>
             <Button size="sm" onClick={() => mutate()} disabled={isPending || !canDelete}
               className="gap-1.5 bg-danger hover:bg-danger/90 text-white">
               {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
-              Sil
+              Delete
             </Button>
           </div>
         </div>

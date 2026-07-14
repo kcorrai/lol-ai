@@ -3,10 +3,10 @@
 import { cn } from "@/lib/utils";
 
 const TIME_RANGES = [
-  { value: undefined,  label: "Tümü" },
-  { value: "early",   label: "0-15dk" },
-  { value: "mid",     label: "15-30dk" },
-  { value: "late",    label: "30+dk" },
+  { value: undefined,  label: "All" },
+  { value: "early",   label: "0-15min" },
+  { value: "mid",     label: "15-30min" },
+  { value: "late",    label: "30+min" },
 ];
 
 const MATCH_COUNTS = [10, 20, 50];
@@ -37,13 +37,13 @@ export function HeatMapControls({
       {/* Champion filter */}
       {champions.length > 0 && (
         <div className="flex items-center gap-2">
-          <span className="text-xs text-text-muted">Şampiyon:</span>
+          <span className="text-xs text-text-muted">Champion:</span>
           <select
             className="rounded-md border border-border bg-surface px-2 py-1 text-xs text-text focus:outline-none"
             value={champion ?? ""}
             onChange={(e) => onChampionChange(e.target.value || undefined)}
           >
-            <option value="">Tümü</option>
+            <option value="">All</option>
             {champions.map((c) => (
               <option key={c} value={c}>{c}</option>
             ))}
@@ -53,7 +53,7 @@ export function HeatMapControls({
 
       {/* Time range */}
       <div className="flex items-center gap-1">
-        <span className="mr-1 text-xs text-text-muted">Süre:</span>
+        <span className="mr-1 text-xs text-text-muted">Duration:</span>
         {TIME_RANGES.map((t) => (
           <button
             key={t.label}
@@ -72,7 +72,7 @@ export function HeatMapControls({
 
       {/* Match count — Pro only for 50 */}
       <div className="flex items-center gap-1">
-        <span className="mr-1 text-xs text-text-muted">Maç:</span>
+        <span className="mr-1 text-xs text-text-muted">Matches:</span>
         {MATCH_COUNTS.map((n) => {
           const disabled = n === 50 && !isPro;
           return (

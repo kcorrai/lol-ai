@@ -8,14 +8,14 @@ interface Props {
   teamId: string;
 }
 
-const ROLE_LABELS: Record<string, string> = { COACH: "Koç", PLAYER: "Oyuncu" };
+const ROLE_LABELS: Record<string, string> = { COACH: "Coach", PLAYER: "Player" };
 
 function hoursLeft(expiresAt: string): string {
   const diff = new Date(expiresAt).getTime() - Date.now();
   const hours = Math.floor(diff / 3_600_000);
-  if (hours <= 0) return "süresi dolmuş";
-  if (hours < 24) return `${hours}s kaldı`;
-  return `${Math.floor(hours / 24)}g kaldı`;
+  if (hours <= 0) return "expired";
+  if (hours < 24) return `${hours}h left`;
+  return `${Math.floor(hours / 24)}d left`;
 }
 
 export function PendingInvitesList({ teamId }: Props) {
@@ -29,7 +29,7 @@ export function PendingInvitesList({ teamId }: Props) {
       <div className="flex items-center gap-2 border-b border-border px-4 py-3">
         <Mail className="h-3.5 w-3.5 text-text-muted" />
         <span className="text-xs font-semibold uppercase tracking-widest text-text-muted">
-          Bekleyen Davetler ({invites.length})
+          Pending Invites ({invites.length})
         </span>
       </div>
       <ul className="divide-y divide-border">
@@ -54,7 +54,7 @@ export function PendingInvitesList({ teamId }: Props) {
               className="h-6 w-6 shrink-0 p-0 text-text-muted hover:text-danger"
               onClick={() => cancel.mutate(inv.id)}
               disabled={cancel.isPending}
-              title="Daveti iptal et"
+              title="Cancel invite"
             >
               <X className="h-3.5 w-3.5" />
             </Button>

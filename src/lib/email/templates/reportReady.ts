@@ -8,10 +8,10 @@ function escapeHtml(str: string): string {
 }
 
 const REPORT_TYPE_LABELS: Record<string, string> = {
-  session_review: "Seans Değerlendirmesi",
-  climb_roadmap: "Rank Atlama Yol Haritası",
-  champion_deep_dive: "Şampiyon Analizi",
-  mental_coaching: "Mental Koçluk",
+  session_review: "Session Review",
+  climb_roadmap: "Rank Climb Roadmap",
+  champion_deep_dive: "Champion Deep Dive",
+  mental_coaching: "Mental Coaching",
 };
 
 export interface ReportReadyEmailData {
@@ -23,14 +23,14 @@ export interface ReportReadyEmailData {
 
 export function buildReportReadyEmail(data: ReportReadyEmailData): { subject: string; html: string } {
   const label = REPORT_TYPE_LABELS[data.reportType] ?? data.reportType;
-  const subject = `${data.gameName}, raporun hazır — ${label}`;
+  const subject = `${data.gameName}, your report is ready — ${label}`;
   const safeName = escapeHtml(data.gameName);
   const safeLabel = escapeHtml(label);
   const safeUrl = escapeHtml(data.appUrl);
   const reportUrl = `${safeUrl}/coaching`;
 
   const html = `<!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -59,13 +59,13 @@ export function buildReportReadyEmail(data: ReportReadyEmailData): { subject: st
                   <span style="font-size:28px;">✅</span>
                 </div>
                 <h1 style="margin:0;font-size:22px;font-weight:700;color:#E8E6F0;">
-                  Raporun hazır, ${safeName}!
+                  Your report is ready, ${safeName}!
                 </h1>
                 <p style="margin:8px 0 0;font-size:14px;color:#A0AEC0;">${safeLabel}</p>
               </div>
 
               <p style="margin:0 0 28px;font-size:14px;line-height:1.7;color:#A0AEC0;text-align:center;">
-                AI koçun maçlarını analiz etti. Güçlü yönlerin, gelişim alanların<br/>ve sıradaki adımların seni bekliyor.
+                Your AI coach has analyzed your matches. Your strengths, areas for improvement,<br/>and next steps are waiting for you.
               </p>
 
               <!-- CTA -->
@@ -74,14 +74,14 @@ export function buildReportReadyEmail(data: ReportReadyEmailData): { subject: st
                   <td style="border-radius:8px;background:#C89B3C;">
                     <a href="${reportUrl}"
                        style="display:inline-block;padding:14px 36px;font-size:15px;font-weight:700;color:#0A0E1A;text-decoration:none;border-radius:8px;">
-                      Raporu Gör →
+                      View Report →
                     </a>
                   </td>
                 </tr>
               </table>
 
               <p style="margin:24px 0 0;font-size:12px;color:#718096;text-align:center;">
-                Rapor uygulamada kaydedildi, istediğin zaman tekrar bakabilirsin.
+                Your report is saved in the app — you can review it anytime.
               </p>
             </td>
           </tr>
@@ -91,7 +91,7 @@ export function buildReportReadyEmail(data: ReportReadyEmailData): { subject: st
             <td style="background:#070B14;border-radius:0 0 12px 12px;padding:20px 32px;text-align:center;">
               <p style="margin:0;font-size:11px;color:#4A5568;">
                 LoL AI Coach · <a href="${safeUrl}" style="color:#4A5568;">lolaicoach.gg</a><br/>
-                <a href="${safeUrl}/settings/profile" style="color:#4A5568;">Abonelikten çık</a>
+                <a href="${safeUrl}/settings/profile" style="color:#4A5568;">Unsubscribe</a>
               </p>
             </td>
           </tr>

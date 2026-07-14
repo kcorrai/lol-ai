@@ -25,13 +25,13 @@ function TeamJoinContent() {
           data?: { teamId: string; teamName: string };
           error?: { message?: string };
         };
-        if (!res.ok) throw new Error(body.error?.message ?? "Davet kabul edilemedi");
+        if (!res.ok) throw new Error(body.error?.message ?? "Failed to accept invite");
         setTeamName(body.data?.teamName ?? null);
         setState("success");
         setTimeout(() => router.push(`/teams/${body.data?.teamId ?? ""}`), 2500);
       })
       .catch((err: unknown) => {
-        setErrorMsg(err instanceof Error ? err.message : "Hata oluştu");
+        setErrorMsg(err instanceof Error ? err.message : "An error occurred");
         setState("error");
       });
   }, [state, token, router]);
@@ -43,16 +43,16 @@ function TeamJoinContent() {
 
         {state === "no-token" && (
           <>
-            <p className="mt-4 text-text">Geçersiz davet bağlantısı.</p>
+            <p className="mt-4 text-text">Invalid invite link.</p>
             <Link href="/dashboard">
-              <Button className="mt-6">Ana Sayfaya Git</Button>
+              <Button className="mt-6">Go to Home</Button>
             </Link>
           </>
         )}
 
         {state === "idle" || state === "loading" ? (
           <>
-            <p className="mt-4 text-text">Davet kabul ediliyor…</p>
+            <p className="mt-4 text-text">Accepting invite…</p>
             <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
               <div className="h-full w-1/2 animate-pulse rounded-full bg-accent" />
             </div>
@@ -61,13 +61,13 @@ function TeamJoinContent() {
 
         {state === "success" && (
           <>
-            <p className="mt-4 text-lg font-semibold text-success">Takıma katıldınız!</p>
+            <p className="mt-4 text-lg font-semibold text-success">You&apos;ve joined the team!</p>
             {teamName && (
               <p className="mt-1 text-sm text-text-muted">
-                <strong className="text-text">{teamName}</strong> takımının artık bir üyesisiniz.
+                You&apos;re now a member of the <strong className="text-text">{teamName}</strong> team.
               </p>
             )}
-            <p className="mt-3 text-xs text-text-muted">Takım dashboardına yönlendiriliyorsunuz…</p>
+            <p className="mt-3 text-xs text-text-muted">Redirecting to team dashboard…</p>
           </>
         )}
 
@@ -76,10 +76,10 @@ function TeamJoinContent() {
             <p className="mt-4 text-sm text-danger">{errorMsg}</p>
             <div className="mt-6 flex gap-3">
               <Link href="/dashboard" className="flex-1">
-                <Button variant="outline" className="w-full">Ana Sayfa</Button>
+                <Button variant="outline" className="w-full">Home</Button>
               </Link>
               <Link href="/teams" className="flex-1">
-                <Button className="w-full">Takımlarım</Button>
+                <Button className="w-full">My Teams</Button>
               </Link>
             </div>
           </>

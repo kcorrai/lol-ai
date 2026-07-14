@@ -127,15 +127,15 @@ async function buildDescription(
   type: "daily" | "weekly"
 ): Promise<string> {
   const metricLabel: Record<ChallengeMetric, string> = {
-    cs_per_min:   `${targetValue}+ CS/dk`,
-    deaths:       `${targetValue} veya daha az ölüm`,
+    cs_per_min:   `${targetValue}+ CS/min`,
+    deaths:       `${targetValue} or fewer deaths`,
     vision_score: `${targetValue}+ vision score`,
-    win_streak:   `${matchCount} galibiyet serisi`,
+    win_streak:   `${matchCount} win streak`,
     kda:          `${targetValue}+ KDA`,
   };
 
-  const base = `${matchCount} maçta ${metricLabel[metric]}`;
-  if (metric === "win_streak") return `${matchCount} üst üste galibiyet kazan`;
+  const base = `${metricLabel[metric]} in ${matchCount} matches`;
+  if (metric === "win_streak") return `Get ${matchCount} wins in a row`;
 
   try {
     const cacheKey = buildCacheKey("challenge-desc", { metric, target: String(targetValue), type });
@@ -143,8 +143,8 @@ async function buildDescription(
     if (cached && typeof cached === "string") return cached;
 
     const ai = getAiClient("lite");
-    const system = "Sen bir League of Legends koçusun. Kısa, motive edici Türkçe görev açıklamaları yazıyorsun.";
-    const userMsg = `${type === "daily" ? "Günlük" : "Haftalık"} görev: "${base}". Türkçe, max 2 cümle, motive edici açıklama yaz.`;
+    const system = "You are a League of Legends coach. Write short, motivating challenge descriptions in English.";
+    const userMsg = `${type === "daily" ? "Daily" : "Weekly"} challenge: "${base}". Write a motivating description in English, max 2 sentences.`;
     const result = await ai.complete(system, userMsg, { maxTokens: 120 });
     const desc = result.content.trim() || base;
     await setCached(cacheKey, "challenge-desc", desc, 7);

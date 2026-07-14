@@ -15,10 +15,10 @@ const STATUS_BADGE: Record<string, "default" | "secondary" | "success" | "destru
 };
 
 const STATUS_LABEL: Record<string, string> = {
-  pending: "Bekliyor",
-  processing: "İşleniyor",
-  complete: "Tamamlandı",
-  failed: "Başarısız",
+  pending: "Pending",
+  processing: "Processing",
+  complete: "Complete",
+  failed: "Failed",
 };
 
 const TYPE_CONFIG: Record<string, { icon: React.ElementType; color: string; bg: string; glow: string }> = {
@@ -28,20 +28,20 @@ const TYPE_CONFIG: Record<string, { icon: React.ElementType; color: string; bg: 
 };
 
 const REPORT_TYPE_LABEL: Record<string, string> = {
-  session_review: "Seans Değerlendirmesi",
-  champion_focus: "Şampiyon Odağı",
-  climb_roadmap:  "Çıkış Planı",
+  session_review: "Session Review",
+  champion_focus: "Champion Focus",
+  climb_roadmap:  "Climb Roadmap",
 };
 
 function reportTitle(report: ReportSummary): string {
   if (report.reportType === "champion_focus" && report.focusArea) {
-    return `${report.focusArea} Odağı`;
+    return `${report.focusArea} Focus`;
   }
   return REPORT_TYPE_LABEL[report.reportType] ?? report.reportType;
 }
 
 function ReportRow({ report }: { report: ReportSummary }) {
-  const date = new Date(report.createdAt).toLocaleDateString("tr-TR", { day: "numeric", month: "short", year: "numeric" });
+  const date = new Date(report.createdAt).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
   const isComplete = report.status === "complete";
   const cfg = TYPE_CONFIG[report.reportType] ?? TYPE_CONFIG.session_review!;
   const Icon = cfg.icon;
@@ -62,7 +62,7 @@ function ReportRow({ report }: { report: ReportSummary }) {
           <Clock className="h-3 w-3 shrink-0" />
           <span>{date}</span>
           <span>·</span>
-          <span>{report.matchesAnalyzed} maç</span>
+          <span>{report.matchesAnalyzed} matches</span>
         </div>
         {report.summary && (
           <p className="mt-1 truncate text-xs text-text-muted/80">{report.summary}</p>
@@ -104,7 +104,7 @@ export function ReportList({ reports, isLoading, hasNextPage, isFetchingNextPage
   if (!reports || reports.length === 0) {
     return (
       <p className="rounded-xl border border-dashed border-border bg-surface/50 py-8 text-center text-sm text-text-muted">
-        Henüz rapor yok. Yukarıdan ilk koçluk raporunu oluştur.
+        No reports yet. Create your first coaching report above.
       </p>
     );
   }
@@ -116,7 +116,7 @@ export function ReportList({ reports, isLoading, hasNextPage, isFetchingNextPage
       ))}
       {hasNextPage && (
         <Button variant="secondary" size="sm" className="mt-2 w-full" onClick={onLoadMore} disabled={isFetchingNextPage}>
-          {isFetchingNextPage ? "Yükleniyor…" : "Daha fazla göster"}
+          {isFetchingNextPage ? "Loading…" : "Show more"}
         </Button>
       )}
     </div>

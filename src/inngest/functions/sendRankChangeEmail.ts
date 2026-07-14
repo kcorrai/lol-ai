@@ -105,8 +105,8 @@ export const sendRankChangeEmail = inngest.createFunction(
 
     const newRankLabel = formatRank(payload.newTier, payload.newDivision, payload.newLp);
     await sendPushToUser(account.user.id, {
-      title: type === "promotion" ? "Rank Yükseldin!" : "Rank Düştün",
-      body: `${account.gameName} artık ${newRankLabel}`,
+      title: type === "promotion" ? "Rank Up!" : "Rank Down",
+      body: `${account.gameName} is now ${newRankLabel}`,
       url: `${appUrl}/dashboard`,
       tag: `rank-${payload.riotAccountId}`,
     }).catch(() => { /* non-blocking */ });

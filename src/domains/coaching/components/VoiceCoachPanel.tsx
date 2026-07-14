@@ -24,21 +24,21 @@ export function VoiceCoachPanel({ riotAccountId, onClose }: Props) {
 
   const busy = isTranscribing || isStreaming || isSpeaking;
   const statusText = isRecording
-    ? "Dinleniyor… bırak → gönder"
+    ? "Recording… release to send"
     : isTranscribing
-    ? "Ses metne dönüştürülüyor…"
+    ? "Converting speech to text…"
     : isStreaming
-    ? "Koç düşünüyor…"
+    ? "Coach is thinking…"
     : isSpeaking
-    ? "Koç konuşuyor…"
-    : "Düğmeye bas ve konuş";
+    ? "Coach is speaking…"
+    : "Press and speak";
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div>
-          <p className="text-sm font-semibold text-text">Sesli Koç</p>
+          <p className="text-sm font-semibold text-text">Voice Coach</p>
           <p className="text-xs text-text-muted">{statusText}</p>
         </div>
         <div className="flex items-center gap-3">
@@ -47,7 +47,7 @@ export function VoiceCoachPanel({ riotAccountId, onClose }: Props) {
               onClick={clear}
               className="text-xs text-text-muted underline-offset-2 hover:text-text hover:underline"
             >
-              Temizle
+              Clear
             </button>
           )}
           <button onClick={onClose} className="text-text-muted transition-colors hover:text-text">
@@ -60,7 +60,7 @@ export function VoiceCoachPanel({ riotAccountId, onClose }: Props) {
       <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
         {messages.length === 0 && (
           <p className="pt-8 text-center text-xs text-text-muted">
-            Rapor hakkında sesli soru sor. Koçun sana sesli cevap verecek.
+            Ask your coach a voice question about this report. They&apos;ll respond with voice.
           </p>
         )}
         {messages.map((msg, i) => (
@@ -101,7 +101,7 @@ export function VoiceCoachPanel({ riotAccountId, onClose }: Props) {
           )}
         </button>
         <p className="text-xs text-text-muted">
-          {isRecording ? "Bırak → gönder" : "Bas ve konuş"}
+          {isRecording ? "Release to send" : "Press and speak"}
         </p>
       </div>
     </div>

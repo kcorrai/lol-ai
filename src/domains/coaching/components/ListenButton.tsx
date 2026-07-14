@@ -76,18 +76,18 @@ export function ListenButton({ reportId, text }: Props) {
 
   const label =
     state === "loading"
-      ? "Yükleniyor…"
+      ? "Loading…"
       : state === "playing"
-      ? "Durdur"
+      ? "Stop"
       : state === "error"
-      ? "Desteklenmiyor"
-      : "Seslendir";
+      ? "Unsupported"
+      : "Listen";
 
   return (
     <button
       onClick={handleClick}
       disabled={state === "loading" || state === "error"}
-      title={state === "error" ? "Bu tarayıcı sesli okumayı desteklemiyor" : undefined}
+      title={state === "error" ? "This browser doesn&apos;t support voice reading" : undefined}
       className="flex items-center gap-1.5 rounded-md border border-accent/30 bg-accent/5 px-2.5 py-1 text-[11px] font-medium text-accent transition-colors hover:bg-accent/10 disabled:opacity-60"
     >
       {state === "loading" ? (

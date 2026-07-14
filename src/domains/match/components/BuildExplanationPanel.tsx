@@ -55,7 +55,7 @@ export function BuildExplanationPanel({ matchId, puuid, isPro, itemIds = [] }: B
         onClick={open ? () => setOpen(false) : handleOpen}
         className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-surface-2 transition-colors"
       >
-        <span className="text-sm font-medium text-text">Bu Buildi AI ile Analiz Et</span>
+        <span className="text-sm font-medium text-text">Analyze This Build with AI</span>
         <div className="flex items-center gap-2">
           {!isPro && (
             <span className="rounded-full border border-accent/30 bg-accent/10 px-2 py-0.5 text-xs text-accent">
@@ -71,9 +71,9 @@ export function BuildExplanationPanel({ matchId, puuid, isPro, itemIds = [] }: B
           {!isPro && (
             <div className="flex flex-col items-center gap-3 rounded-lg border border-border bg-surface-2 py-8 text-center">
               <Lock className="h-6 w-6 text-text-muted" />
-              <p className="text-sm text-text-muted">Build analizi Pro özelliğidir.</p>
+              <p className="text-sm text-text-muted">Build analysis is a Pro feature.</p>
               <Button size="sm" asChild>
-                <a href="/pricing">Upgrade Yap →</a>
+                <a href="/pricing">Upgrade →</a>
               </Button>
             </div>
           )}
@@ -95,7 +95,7 @@ export function BuildExplanationPanel({ matchId, puuid, isPro, itemIds = [] }: B
               <p className="text-sm italic text-text-muted">{data.buildPath}</p>
               {data.biggestMistake && (
                 <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3">
-                  <p className="text-xs font-semibold text-red-400">En Büyük Hata</p>
+                  <p className="text-xs font-semibold text-red-400">Biggest Mistake</p>
                   <p className="text-sm text-text-muted">{data.biggestMistake}</p>
                 </div>
               )}

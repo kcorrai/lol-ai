@@ -39,7 +39,7 @@ export function TeamDashboard({ teamId, isCoach }: Props) {
   }
 
   if (error || !data) {
-    return <p className="text-sm text-danger">{error instanceof Error ? error.message : "Dashboard yüklenemedi"}</p>;
+    return <p className="text-sm text-danger">{error instanceof Error ? error.message : "Dashboard could not be loaded"}</p>;
   }
 
   const { team, members } = data;
@@ -59,8 +59,8 @@ export function TeamDashboard({ teamId, isCoach }: Props) {
             <h2 className="font-display text-xl font-bold text-text">{team.name}</h2>
             <p className="mt-0.5 text-xs text-text-muted">
               {slotsLeft > 0
-                ? `${slotsLeft} slot açık — ${team.memberCount}/${team.maxMembers} üye`
-                : `Takım tam dolu (${team.maxMembers}/${team.maxMembers})`}
+                ? `${slotsLeft} slot available — ${team.memberCount}/${team.maxMembers} members`
+                : `Team full (${team.maxMembers}/${team.maxMembers})`}
             </p>
           </div>
 
@@ -68,18 +68,18 @@ export function TeamDashboard({ teamId, isCoach }: Props) {
             {team.avgWinRate7d !== null && WrIcon && (
               <div className={`flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-semibold ${team.avgWinRate7d >= 55 ? "border-success/30 bg-success/10 text-success" : team.avgWinRate7d < 45 ? "border-danger/30 bg-danger/10 text-danger" : "border-border bg-surface-2 text-text-muted"}`}>
                 <WrIcon className="h-3 w-3" />
-                %{team.avgWinRate7d} takım 7g
+                %{team.avgWinRate7d} team 7d
               </div>
             )}
             {isCoach && slotsLeft > 0 && (
               <Button onClick={() => setShowInvite(true)} size="sm" className="gap-1.5">
                 <UserPlus className="h-3.5 w-3.5" />
-                Davet Et
+                Invite
               </Button>
             )}
             {isCoach && slotsLeft === 0 && (
               <span className="rounded-lg border border-border bg-surface-2 px-3 py-1.5 text-xs text-text-muted">
-                Takım dolu
+                Team full
               </span>
             )}
           </div>
@@ -105,28 +105,28 @@ export function TeamDashboard({ teamId, isCoach }: Props) {
           className={`flex-1 rounded-md py-1.5 text-xs font-medium transition-colors ${activeTab === "overview" ? "bg-surface text-text shadow-sm" : "text-text-muted hover:text-text"}`}
         >
           <Users className="inline mr-1.5 h-3.5 w-3.5" />
-          Üyeler
+          Members
         </button>
         <button
           onClick={() => setActiveTab("comparison")}
           className={`flex-1 rounded-md py-1.5 text-xs font-medium transition-colors ${activeTab === "comparison" ? "bg-surface text-text shadow-sm" : "text-text-muted hover:text-text"}`}
         >
           <BarChart2 className="inline mr-1.5 h-3.5 w-3.5" />
-          Karşılaştırma
+          Comparison
         </button>
         <button
           onClick={() => setActiveTab("stats")}
           className={`flex-1 rounded-md py-1.5 text-xs font-medium transition-colors ${activeTab === "stats" ? "bg-surface text-text shadow-sm" : "text-text-muted hover:text-text"}`}
         >
           <TrendingUp className="inline mr-1.5 h-3.5 w-3.5" />
-          İstatistikler
+          Stats
         </button>
         <button
           onClick={() => setActiveTab("lineup")}
           className={`flex-1 rounded-md py-1.5 text-xs font-medium transition-colors ${activeTab === "lineup" ? "bg-surface text-text shadow-sm" : "text-text-muted hover:text-text"}`}
         >
           <LayoutGrid className="inline mr-1.5 h-3.5 w-3.5" />
-          Kadro
+          Lineup
         </button>
       </div>
 
@@ -135,12 +135,12 @@ export function TeamDashboard({ teamId, isCoach }: Props) {
         members.length === 0 ? (
           <div className="rounded-xl border border-dashed border-border py-14 text-center">
             <Users className="mx-auto mb-3 h-8 w-8 text-text-muted/30" />
-            <p className="text-sm font-medium text-text-muted">Henüz üye yok</p>
-            <p className="mt-1 text-xs text-text-muted/60">Takımına oyuncu davet et</p>
+            <p className="text-sm font-medium text-text-muted">No members yet</p>
+            <p className="mt-1 text-xs text-text-muted/60">Invite players to your team</p>
             {isCoach && (
               <Button onClick={() => setShowInvite(true)} size="sm" className="mt-4 gap-1.5">
                 <UserPlus className="h-3.5 w-3.5" />
-                İlk Üyeyi Davet Et
+                Invite First Member
               </Button>
             )}
           </div>
@@ -170,9 +170,9 @@ export function TeamDashboard({ teamId, isCoach }: Props) {
 
       {pendingRemoveId && (
         <ConfirmDialog
-          title="Üyeyi Çıkar"
-          description={`Bu üyeyi takımdan çıkarmak istediğinize emin misiniz?`}
-          confirmLabel="Çıkar"
+          title="Remove Member"
+          description={`Are you sure you want to remove this member from the team?`}
+          confirmLabel="Remove"
           danger
           isPending={removeM.isPending}
           onCancel={() => setPendingRemoveId(null)}

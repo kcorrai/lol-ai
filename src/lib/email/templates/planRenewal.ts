@@ -13,12 +13,12 @@ export interface PlanRenewalEmailData {
 }
 
 export function buildPlanRenewalEmail({ gameName, appUrl }: PlanRenewalEmailData): { subject: string; html: string } {
-  const subject = "Yeni 14 günlük gelişim planın hazır — LoL AI Coach";
+  const subject = "Your new 14-day improvement plan is ready — LoL AI Coach";
   const safeName = escapeHtml(gameName);
   const safeUrl = escapeHtml(`${appUrl}/dashboard`);
 
   const html = `<!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -41,11 +41,11 @@ export function buildPlanRenewalEmail({ gameName, appUrl }: PlanRenewalEmailData
           <tr>
             <td style="background:#0F1629;padding:32px 32px 24px;border-radius:0 0 12px 12px;">
               <h1 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#E8F0FF;">
-                Yeni planın hazır, ${safeName}!
+                Your new plan is ready, ${safeName}!
               </h1>
               <p style="margin:0 0 24px;font-size:14px;line-height:1.6;color:#8899BB;">
-                Önceki 14 günlük gelişim planın sona erdi. Performans verilerine göre
-                yeni hedefler belirlendi &mdash; <strong style="color:#E8F0FF;">yeni 14 günlük planın aktif.</strong>
+                Your previous 14-day improvement plan has ended. Based on your performance data,
+                new goals have been set &mdash; <strong style="color:#E8F0FF;">your new 14-day plan is now active.</strong>
               </p>
 
               <!-- CTA button -->
@@ -54,14 +54,14 @@ export function buildPlanRenewalEmail({ gameName, appUrl }: PlanRenewalEmailData
                   <td style="background:#C89B3C;border-radius:8px;">
                     <a href="${safeUrl}"
                       style="display:inline-block;padding:14px 32px;font-size:14px;font-weight:700;color:#0A0E1A;text-decoration:none;border-radius:8px;">
-                      Planı Gör &rarr;
+                      View Plan &rarr;
                     </a>
                   </td>
                 </tr>
               </table>
 
               <p style="margin:0;font-size:12px;line-height:1.6;color:#5566AA;">
-                Planını iptal etmek istersen hesap ayarlarından bildirimleri kapatabilirsin.
+                If you want to cancel your plan, you can disable notifications in your account settings.
               </p>
             </td>
           </tr>

@@ -14,11 +14,11 @@ export function MatchPerformanceCards({ match }: Props) {
   if (!user) return null;
   const cards = [
     { label: "KDA",        value: fmt(user.kda, 2) },
-    { label: "Kil Kat.",   value: `${fmt(user.killParticipation * 100)}%` },
-    { label: "CS / dk",    value: fmt(user.csPerMinute) },
-    { label: "Hasar Payı", value: `${fmt(user.damageShare * 100)}%` },
-    { label: "Görüş",      value: String(user.visionScore) },
-    { label: "Altın / dk", value: fmt(user.goldPerMinute) },
+    { label: "Kill Part.", value: `${fmt(user.killParticipation * 100)}%` },
+    { label: "CS/min",     value: fmt(user.csPerMinute) },
+    { label: "Dmg Share",  value: `${fmt(user.damageShare * 100)}%` },
+    { label: "Vision",     value: String(user.visionScore) },
+    { label: "Gold/min",   value: fmt(user.goldPerMinute) },
   ];
   return (
     <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">

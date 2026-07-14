@@ -30,7 +30,7 @@ export function CounterPickCard({ riotAccountId, championName }: CounterPickCard
       {data.nemeses.length > 0 && (
         <div>
           <p className="mb-1 text-[10px] font-medium uppercase tracking-widest text-danger/70">
-            Kâbuslarım
+            My Nightmares
           </p>
           <div className="space-y-0.5">
             {data.nemeses.map((e) => (
@@ -40,7 +40,7 @@ export function CounterPickCard({ riotAccountId, championName }: CounterPickCard
                   {e.championName}
                 </span>
                 <span className="text-text-muted">
-                  <WinRatePip winRate={e.winRate} /> / {e.games} maç
+                  <WinRatePip winRate={e.winRate} /> / {e.games} games
                 </span>
               </div>
             ))}
@@ -51,7 +51,7 @@ export function CounterPickCard({ riotAccountId, championName }: CounterPickCard
       {data.prey.length > 0 && (
         <div>
           <p className="mb-1 text-[10px] font-medium uppercase tracking-widest text-success/70">
-            Kolay Avım
+            Easy Prey
           </p>
           <div className="space-y-0.5">
             {data.prey.map((e) => (
@@ -61,7 +61,7 @@ export function CounterPickCard({ riotAccountId, championName }: CounterPickCard
                   {e.championName}
                 </span>
                 <span className="text-text-muted">
-                  <WinRatePip winRate={e.winRate} /> / {e.games} maç
+                  <WinRatePip winRate={e.winRate} /> / {e.games} games
                 </span>
               </div>
             ))}

@@ -68,7 +68,7 @@ export const tiltStreakCheck = inngest.createFunction(
       message = await generateTiltRecoveryMessage(snippets);
     } catch (err) {
       logger.warn(`[tiltStreakCheck] AI message failed: ${err instanceof Error ? err.message : String(err)}`);
-      message = "3 üst üste kayıp sonrası mola vermek istatistiksel olarak win rate'ini artırır. 15-20 dakika dinlen, sonra devam et.";
+      message = "Taking a break after 3 consecutive losses statistically improves your win rate. Take 15-20 minutes to cool off, then play again.";
     }
 
     await prisma.tiltAlert.create({
@@ -77,7 +77,7 @@ export const tiltStreakCheck = inngest.createFunction(
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
     await sendPushToUser(userId, {
-      title: "Tilt Uyarısı — Mola Ver!",
+      title: "Tilt Alert — Take a Break!",
       body: message.slice(0, 100),
       url: `${appUrl}/dashboard`,
       tag: `tilt-${userId}`,

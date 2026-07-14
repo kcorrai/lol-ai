@@ -12,8 +12,8 @@ import { RIOT_REGION_OPTIONS } from "@/domains/riot/config/regions";
 import type { RiotRegion } from "@/domains/riot/config/regions";
 
 const schema = z.object({
-  gameName: z.string().min(1, "Riot oyun adını gir").max(16),
-  tagLine: z.string().min(2, "Etiket gir (örn. EUW)").max(5),
+  gameName: z.string().min(1, "Enter your Riot game name").max(16),
+  tagLine: z.string().min(2, "Enter tag (e.g., EUW)").max(5),
   region: z.string().min(1),
 });
 
@@ -37,7 +37,7 @@ export function AccountConnectionForm() {
     });
     const json = (await res.json()) as { error?: { message: string } };
     if (!res.ok) {
-      setServerError(json.error?.message ?? "Hesap bağlanamadı");
+      setServerError(json.error?.message ?? "Could not connect account");
       return;
     }
     router.push("/dashboard");
@@ -47,26 +47,26 @@ export function AccountConnectionForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Riot Hesabını Bağla</CardTitle>
-        <CardDescription>Riot ID&apos;nı gir (OyunAdı#TAG)</CardDescription>
+        <CardTitle>Connect Your Riot Account</CardTitle>
+        <CardDescription>Enter your Riot ID (GameName#TAG)</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="flex gap-2">
             <div className="flex-1 space-y-1">
-              <label className="text-sm text-text-muted">Oyun Adı</label>
+              <label className="text-sm text-text-muted">Game Name</label>
               <Input placeholder="YourName" {...register("gameName")} />
               {errors.gameName && <p className="text-xs text-danger">{errors.gameName.message}</p>}
             </div>
             <div className="w-24 space-y-1">
-              <label className="text-sm text-text-muted">Etiket</label>
+              <label className="text-sm text-text-muted">Tag</label>
               <Input placeholder="EUW" {...register("tagLine")} />
               {errors.tagLine && <p className="text-xs text-danger">{errors.tagLine.message}</p>}
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="text-sm text-text-muted">Sunucu / Bölge</label>
+            <label className="text-sm text-text-muted">Server / Region</label>
             <select
               className="flex h-10 w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-text"
               {...register("region")}
@@ -85,7 +85,7 @@ export function AccountConnectionForm() {
           )}
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Bağlanıyor…" : "Hesabı Bağla"}
+            {isSubmitting ? "Connecting…" : "Connect Account"}
           </Button>
         </form>
       </CardContent>

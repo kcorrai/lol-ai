@@ -33,17 +33,17 @@ export const referralReward = inngest.createFunction(
       await resend.emails.send({
         from: "LoL AI Coach <noreply@lolai.coach>",
         to: user.email,
-        subject: "Davetiniz kabul edildi — 1 hafta ücretsiz Pro kazandınız!",
-        html: `<p>Merhaba ${user.name ?? "Koç"},</p>
-<p>Davet ettiğiniz bir oyuncu hesabını tamamladı. Pro üyeliğiniz <strong>${newExpiry.toLocaleDateString("tr-TR")}</strong> tarihine kadar uzatıldı.</p>
-<p>Daha fazla davet göndererek toplamda 8 haftaya kadar ücretsiz Pro kazanabilirsiniz.</p>`,
+        subject: "Your invitation was accepted — you earned 1 week of free Pro!",
+        html: `<p>Hi ${user.name ?? "Coach"},</p>
+<p>A player you invited completed their account. Your Pro membership has been extended until <strong>${newExpiry.toLocaleDateString("en-US")}</strong>.</p>
+<p>By sending more invitations, you can earn up to 8 weeks of free Pro in total.</p>`,
       }).catch(() => {});
     }
 
     // Push notification
     await sendPushToUser(referrerId, {
-      title: "1 Hafta Ücretsiz Pro!",
-      body: "Davetiniz kabul edildi. Pro üyeliğiniz 1 hafta uzatıldı.",
+      title: "1 Week Free Pro!",
+      body: "Your invitation was accepted. Your Pro membership has been extended by 1 week.",
       url: "/settings/referral",
     }).catch(() => {});
 

@@ -36,7 +36,7 @@ export const teamInviteEmail = inngest.createFunction(
 
     const { subject, html } = buildTeamInviteEmail({
       teamName,
-      inviterName: inviter?.name ?? inviter?.email ?? "Bir koç",
+      inviterName: inviter?.name ?? inviter?.email ?? "A coach",
       joinUrl,
       appUrl,
       expiresHours: 48,

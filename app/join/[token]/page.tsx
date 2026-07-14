@@ -10,7 +10,7 @@ async function joinTeam(token: string): Promise<{ teamId: string }> {
   const res = await fetch(`/api/join/${token}`, { method: "POST" });
   if (!res.ok) {
     const body = (await res.json()) as { error?: { message?: string } };
-    throw new Error(body.error?.message ?? "Katılma başarısız");
+    throw new Error(body.error?.message ?? "Failed to join team");
   }
   const body = (await res.json()) as { data: { teamId: string } };
   return body.data;
@@ -44,7 +44,7 @@ export default function JoinPage() {
       const { teamId } = await joinTeam(token);
       router.push(`/teams/${teamId}`);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Katılma başarısız");
+      setError(e instanceof Error ? e.message : "Failed to join team");
       setIsPending(false);
     }
   }
@@ -59,20 +59,20 @@ export default function JoinPage() {
         </div>
 
         <div className="space-y-1">
-          <h1 className="text-xl font-bold text-text">Takıma Katıl</h1>
-          <p className="text-sm text-text-muted">Davet linki ile takıma katılıyorsunuz.</p>
+          <h1 className="text-xl font-bold text-text">Join Team</h1>
+          <p className="text-sm text-text-muted">You are joining the team via an invite link.</p>
         </div>
 
         <div className="flex items-center justify-center gap-2 rounded-lg bg-surface-2 px-4 py-3 text-xs text-text-muted">
           <Users className="h-3.5 w-3.5" />
-          Üye rolü ile katılacaksınız
+          You will join as a member
         </div>
 
         {error && <p className="text-sm text-danger">{error}</p>}
 
         <Button onClick={handleJoin} disabled={isPending} className="w-full gap-2">
           {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-          Takıma Katıl
+          Join Team
         </Button>
       </div>
     </div>

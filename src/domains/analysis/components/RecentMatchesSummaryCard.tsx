@@ -51,7 +51,7 @@ export function RecentMatchesSummaryCard({ profile, isLoading }: RecentMatchesSu
   return (
     <div className="rounded-xl border border-border bg-surface p-4">
       <p className="mb-3 text-xs font-medium uppercase tracking-widest text-text-muted">
-        Son {profile.gamesAnalyzed} Maç Performansı
+        Last {profile.gamesAnalyzed} Matches Performance
       </p>
 
       <div className="mb-4 grid grid-cols-3 gap-4">
@@ -74,11 +74,11 @@ export function RecentMatchesSummaryCard({ profile, isLoading }: RecentMatchesSu
       <div className="space-y-1.5">
         <div className="flex items-start gap-1.5 text-sm">
           <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-green-400" />
-          <span className="text-text-muted">Güçlü: <span className="text-text">{profile.strongestArea}</span></span>
+          <span className="text-text-muted">Strength: <span className="text-text">{profile.strongestArea}</span></span>
         </div>
         <div className="flex items-start gap-1.5 text-sm">
           <Zap className="mt-0.5 h-3.5 w-3.5 shrink-0 text-yellow-500" />
-          <span className="text-text-muted">Gelişim: <span className="text-text">{profile.weakestArea}</span></span>
+          <span className="text-text-muted">Growth Area: <span className="text-text">{profile.weakestArea}</span></span>
         </div>
       </div>
     </div>

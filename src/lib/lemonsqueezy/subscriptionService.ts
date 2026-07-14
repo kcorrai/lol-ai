@@ -226,8 +226,8 @@ export async function createLsTeamCheckoutUrl(
     },
     productOptions: {
       redirectUrl: `${appUrl}/teams?upgraded=true`,
-      receiptButtonText: "Takıma Git",
-      receiptThankYouNote: "Team Plan'a hoş geldiniz! Takımınızı oluşturabilirsiniz.",
+      receiptButtonText: "Go to Team",
+      receiptThankYouNote: "Welcome to Team Plan! You can now create your team.",
     },
   });
 

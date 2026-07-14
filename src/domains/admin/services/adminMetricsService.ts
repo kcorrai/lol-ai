@@ -71,12 +71,12 @@ export async function getAdminMetrics(rangeDays: number = 30): Promise<AdminMetr
       proPlan: proUserCount,
     },
     featureUsage: [
-      { label: "Koçluk Raporu", count: reportsInRange },
-      { label: "AI Analizi", count: aiAnalysesInRange },
-      { label: "Senkronize Maç", count: matchesInRange },
-      { label: "Sezon Özeti", count: recapsInRange },
-      { label: "Rozet Açıldı", count: achievementsInRange },
-      { label: "Görev Tamamlandı", count: challengesInRange },
+      { label: "Coaching Report", count: reportsInRange },
+      { label: "AI Analysis", count: aiAnalysesInRange },
+      { label: "Synced Match", count: matchesInRange },
+      { label: "Season Recap", count: recapsInRange },
+      { label: "Badge Unlocked", count: achievementsInRange },
+      { label: "Challenge Completed", count: challengesInRange },
     ].sort((a, b) => b.count - a.count),
     newSignupsLast7Days: newSignups7Days,
   };

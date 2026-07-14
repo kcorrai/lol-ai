@@ -22,11 +22,11 @@ function MasteryBar({ entry }: { entry: ChampionPoolEntry }) {
     <div className="mt-3 space-y-1.5">
       <div className="flex items-center justify-between">
         <span className="text-[10px] font-semibold uppercase tracking-widest text-text-muted/60">
-          Ustalık
+          Mastery
         </span>
         <span
           className={cn("text-xs font-bold", masteryScore >= 75 ? "text-accent" : "text-text-muted")}
-          title={`Deneyim: ${masterySubScores.experience} · Performans: ${masterySubScores.performance} · CS: ${masterySubScores.farm}`}
+          title={`Experience: ${masterySubScores.experience} · Performance: ${masterySubScores.performance} · CS: ${masterySubScores.farm}`}
         >
           {masteryScore}/100
         </span>
@@ -88,7 +88,7 @@ function ChampionCard({
 
       {entry.isBest && (
         <span className="absolute -top-2.5 left-3 rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-background">
-          En İyi Seçim
+          Best Pick
         </span>
       )}
 
@@ -101,16 +101,16 @@ function ChampionCard({
               {entry.championName}
             </p>
             <Badge variant={winRateVariant(entry.winRate)}>
-              {entry.winRate}% KO
+              {entry.winRate}% WR
             </Badge>
           </div>
           <div className="mt-1 flex gap-3 text-xs text-text-muted">
-            <span>{entry.gamesPlayed} maç</span>
+            <span>{entry.gamesPlayed} games</span>
             <span>KDA {entry.avgKda}</span>
-            <span>{entry.avgCsPerMinute} CS/dk</span>
+            <span>{entry.avgCsPerMinute} CS/min</span>
           </div>
           <div className="mt-1 text-xs text-text-muted">
-            {entry.wins}G {entry.gamesPlayed - entry.wins}M
+            {entry.wins}W {entry.gamesPlayed - entry.wins}L
           </div>
         </div>
       </div>
@@ -125,7 +125,7 @@ function ChampionCard({
                 onClick={() => onDeepDive(entry.championName)}
                 className="flex-1 rounded-md border border-border px-2 py-1 text-xs font-medium text-text-muted transition-colors hover:border-accent/50 hover:text-accent"
               >
-                Detaylı İncele
+                Deep Dive
               </button>
             )}
             <ChampionFocusButton riotAccountId={riotAccountId} championName={entry.championName} />
@@ -172,9 +172,9 @@ export function ChampionPoolGrid({ entries, isLoading, riotAccountId, onDeepDive
   if (entries.length === 0) {
     return (
       <div className="rounded-xl border border-dashed border-border bg-surface-2/50 py-14 text-center">
-        <p className="text-sm font-medium text-text">Henüz yeterli veri yok</p>
+        <p className="text-sm font-medium text-text">Not enough data yet</p>
         <p className="mt-1 text-xs text-text-muted">
-          Bir şampiyonla en az 3 ranked maç oyna — burada görünsün.
+          Play at least 3 ranked matches with a champion to see it appear here.
         </p>
       </div>
     );

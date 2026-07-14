@@ -28,7 +28,7 @@ export function DeathHeatMap({ deaths, isLoading, summary }: Props) {
   if (isLoading) {
     return (
       <div className="flex h-[480px] items-center justify-center rounded-xl border border-border bg-surface">
-        <p className="text-sm text-text-muted animate-pulse">Harita yükleniyor…</p>
+        <p className="text-sm text-text-muted animate-pulse">Loading map…</p>
       </div>
     );
   }
@@ -88,7 +88,7 @@ export function DeathHeatMap({ deaths, isLoading, summary }: Props) {
 
         {/* Death count badge */}
         <div className="absolute right-2 top-2 rounded-full bg-black/60 px-2 py-0.5 text-xs font-semibold text-white">
-          {deaths.length} ölüm
+          {deaths.length} deaths
         </div>
       </div>
 
@@ -96,7 +96,7 @@ export function DeathHeatMap({ deaths, isLoading, summary }: Props) {
       {summary && (
         <div className="rounded-lg border border-border bg-surface p-3 text-sm text-text-muted">
           <span className="mr-1 text-xs font-semibold uppercase tracking-wider text-accent">
-            AI Analiz:
+            AI Analysis:
           </span>
           {summary}
         </div>
@@ -104,7 +104,7 @@ export function DeathHeatMap({ deaths, isLoading, summary }: Props) {
 
       {deaths.length === 0 && !isLoading && (
         <p className="text-center text-sm text-text-muted">
-          Bu filtre için ölüm verisi bulunamadı.
+          No death data found for this filter.
         </p>
       )}
     </div>

@@ -28,9 +28,9 @@ export function CoachingActionsCard({ onSessionReview, onClimbRoadmap, onAramRev
         </div>
         <div className="relative">
           <p className="text-base font-bold text-text">
-            {isPending ? "Oluşturuluyor…" : "Seans Değerlendirmesi"}
+            {isPending ? "Creating…" : "Session Review"}
           </p>
-          <p className="mt-0.5 text-sm text-text-muted">Son 5 maçını AI ile analiz et</p>
+          <p className="mt-0.5 text-sm text-text-muted">Analyze your last 5 matches with AI</p>
         </div>
       </button>
 
@@ -45,9 +45,9 @@ export function CoachingActionsCard({ onSessionReview, onClimbRoadmap, onAramRev
         </div>
         <div className="relative">
           <p className="text-base font-bold text-text">
-            {isPending ? "Oluşturuluyor…" : "Çıkış Planı"}
+            {isPending ? "Creating…" : "Climb Roadmap"}
           </p>
-          <p className="mt-0.5 text-sm text-text-muted">Bir üst ranka giden yolu oluştur</p>
+          <p className="mt-0.5 text-sm text-text-muted">Create a path to the next rank</p>
         </div>
       </button>
 
@@ -62,9 +62,9 @@ export function CoachingActionsCard({ onSessionReview, onClimbRoadmap, onAramRev
           </div>
           <div className="relative">
             <p className="text-base font-bold text-text">
-              {isPending ? "Oluşturuluyor…" : "ARAM Analizi"}
+              {isPending ? "Creating…" : "ARAM Analysis"}
             </p>
-            <p className="mt-0.5 text-sm text-text-muted">Son ARAM maçların için takım dövüşü odaklı koçluk</p>
+            <p className="mt-0.5 text-sm text-text-muted">Team fight-focused coaching for your recent ARAM matches</p>
           </div>
           <span className="ml-auto shrink-0 rounded-full border border-blue-500/30 px-2 py-0.5 text-[11px] font-semibold text-blue-400">ARAM</span>
         </button>

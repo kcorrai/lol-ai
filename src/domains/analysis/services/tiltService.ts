@@ -14,7 +14,7 @@ export interface TiltStatus {
 }
 
 const MESSAGES: Record<TiltLevel, string> = {
-  focused: "You're in a good mental state. Keep playing.",
+  focused: "You&apos;re in a good mental state. Keep playing.",
   caution: "Performance is dipping. Play one more game, then reassess.",
   tilting: "Take a break. Playing now will cost you LP, not earn it.",
 };
@@ -106,11 +106,11 @@ export async function generateTiltRecoveryMessage(
 
   const ai = getAiClient("lite");
   const result = await ai.complete(
-    "Sen empatik ama doğrudan konuşan bir League of Legends koçusun.",
-    `Oyuncu ${streak} maç üst üste kaybetti. Şampiyonlar: ${champs}. Ortalama ölüm: ${avgDeaths}.\n` +
-      "Türkçe, 2 cümlelik mola önerisi yaz. " +
-      "İstatistiksel gerçeği söyle (örn. 'Üst üste kayıplarda win rate %15 daha düşük'), " +
-      "sonra aksiyonel öneri ver. Sadece düz metin, JSON değil.",
+    "You are an empathetic but direct League of Legends coach.",
+    `The player lost ${streak} matches in a row. Champions: ${champs}. Average deaths: ${avgDeaths}.\n` +
+      "Write a 2-sentence break recommendation in English. " +
+      "State the statistical reality (e.g., 'In loss streaks, win rate is 15% lower'), " +
+      "then give an actionable suggestion. Plain text only, no JSON.",
     { maxTokens: 120 }
   );
 

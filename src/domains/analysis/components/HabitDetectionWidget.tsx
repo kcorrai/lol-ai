@@ -18,13 +18,13 @@ const SEVERITY_ICON_COLOR: Record<string, string> = {
 };
 
 const WEEK_LABEL: Record<number, string> = {
-  2: "2 haftadır",
-  3: "3 haftadır",
-  4: "4+ haftadır",
+  2: "2 weeks",
+  3: "3 weeks",
+  4: "4+ weeks",
 };
 
 function weekText(n: number): string {
-  return WEEK_LABEL[Math.min(n, 4)] ?? `${n} haftadır`;
+  return WEEK_LABEL[Math.min(n, 4)] ?? `${n} weeks`;
 }
 
 interface Props {
@@ -48,8 +48,8 @@ export function HabitDetectionWidget({ riotAccountId }: Props) {
       <div className="flex items-center gap-3 rounded-xl border border-success/20 bg-success/5 px-4 py-3">
         <CheckCircle2 className="h-5 w-5 shrink-0 text-success" />
         <div>
-          <p className="text-sm font-medium text-text">Tespit edilen alışkanlık yok</p>
-          <p className="text-xs text-text-muted">Oyunun tutarlı görünüyor — bu hafta çok oyna!</p>
+          <p className="text-sm font-medium text-text">No detected habits</p>
+          <p className="text-xs text-text-muted">Your gameplay looks consistent — play a lot this week!</p>
         </div>
       </div>
     );
@@ -93,7 +93,7 @@ export function HabitDetectionCard({ riotAccountId }: Props) {
       <div className="mb-3 flex items-center gap-2">
         <Brain className="h-4 w-4 text-accent" />
         <p className="text-xs font-semibold uppercase tracking-widest text-text-muted">
-          Alışkanlık Tespiti
+          Habit Detection
         </p>
       </div>
       <HabitDetectionWidget riotAccountId={riotAccountId} />

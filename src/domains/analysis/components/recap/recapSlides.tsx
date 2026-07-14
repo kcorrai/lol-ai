@@ -39,15 +39,15 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
       </div>
       <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-background/70 to-transparent" />
       <div className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">{data.seasonLabel} · Sezon Özeti</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">{data.seasonLabel} · Season Recap</p>
         <h1 className="mt-3 font-display text-5xl font-black text-text"
           style={{ textShadow: "0 0 40px rgba(200,155,60,0.35)" }}>
           {displayName}
         </h1>
-        <p className="mt-4 text-base text-text-muted">Bu sezonun hikayesi başlıyor.</p>
+        <p className="mt-4 text-base text-text-muted">Your season&apos;s story begins here.</p>
         <div className="mt-6 flex items-center gap-1.5 text-[11px] text-text-muted/60">
           <span className="h-px w-8 bg-border" />
-          <span>kaydır veya ok tuşları</span>
+          <span>scroll or arrow keys</span>
           <span className="h-px w-8 bg-border" />
         </div>
       </div>
@@ -55,14 +55,14 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
 
     // 1 — Big Numbers
     <RecapSlide key={1} bgClass="bg-surface" active={active === 1}>
-      <p className="mb-6 text-xs font-semibold uppercase tracking-[0.15em] text-accent">Bu Sezon</p>
+      <p className="mb-6 text-xs font-semibold uppercase tracking-[0.15em] text-accent">This Season</p>
       <RecapStats
         active={active === 1}
         stats={[
-          { label: "Toplam Maç", value: data.totalMatches, icon: BarChart2 },
-          { label: "Kazanma Oranı", value: data.winRate, suffix: "%", icon: Trophy, color: data.winRate >= 50 ? "text-success" : "text-danger" },
-          { label: "LP Değişimi", value: Math.abs(data.lpDelta), prefix: data.lpDelta > 0 ? "+" : data.lpDelta < 0 ? "-" : "", icon: TrendingUp, color: data.lpDelta >= 0 ? "text-success" : "text-danger" },
-          { label: "En Uzun Seri", value: data.bestStreak, suffix: "W", icon: Zap, color: "text-warning" },
+          { label: "Total Matches", value: data.totalMatches, icon: BarChart2 },
+          { label: "Win Rate", value: data.winRate, suffix: "%", icon: Trophy, color: data.winRate >= 50 ? "text-success" : "text-danger" },
+          { label: "LP Change", value: Math.abs(data.lpDelta), prefix: data.lpDelta > 0 ? "+" : data.lpDelta < 0 ? "-" : "", icon: TrendingUp, color: data.lpDelta >= 0 ? "text-success" : "text-danger" },
+          { label: "Best Streak", value: data.bestStreak, suffix: "W", icon: Zap, color: "text-warning" },
         ]}
       />
     </RecapSlide>,
@@ -74,28 +74,28 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
         <div className="absolute right-1/4 top-1/3 h-32 w-32 rounded-full bg-danger/8 blur-3xl" />
       </div>
       <div className="relative">
-        <p className="mb-7 text-xs font-semibold uppercase tracking-[0.15em] text-text-muted">Bu Sezon Sahada</p>
+        <p className="mb-7 text-xs font-semibold uppercase tracking-[0.15em] text-text-muted">This Season on the Rift</p>
         <div className="flex items-center justify-center gap-5">
           <div className="flex flex-col items-center gap-1.5">
             <span className="font-display text-5xl font-black text-success">{totalKills}</span>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Öldürme</span>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Kills</span>
           </div>
           <span className="mb-5 text-3xl font-light text-border">/</span>
           <div className="flex flex-col items-center gap-1.5">
             <span className="font-display text-5xl font-black text-danger">{totalDeaths}</span>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Ölüm</span>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Deaths</span>
           </div>
           <span className="mb-5 text-3xl font-light text-border">/</span>
           <div className="flex flex-col items-center gap-1.5">
             <span className="font-display text-5xl font-black text-warning">{totalAssists}</span>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Asist</span>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Assists</span>
           </div>
         </div>
         <div className="mt-8 rounded-2xl border border-border/50 bg-white/[0.03] px-5 py-3">
           <p className="text-sm text-text-muted">
-            Tahminen{" "}
-            <span className="font-bold text-text">{estimatedHours} saat</span>{" "}
-            Summoner&apos;s Rift&apos;te geçirdin.
+            You&apos;ve spent approximately{" "}
+            <span className="font-bold text-text">{estimatedHours} hours</span>{" "}
+            on Summoner&apos;s Rift.
           </p>
         </div>
       </div>
@@ -116,7 +116,7 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
       </div>
-      <p className="mb-7 text-xs font-semibold uppercase tracking-[0.15em] text-accent">En Çok Oynadıkların</p>
+      <p className="mb-7 text-xs font-semibold uppercase tracking-[0.15em] text-accent">Your Main Champions</p>
       <div className="flex items-end justify-center gap-3">
         {topChampions.map((c, i) => (
           <div
@@ -134,7 +134,7 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
             <p className={`text-[11px] font-semibold ${c.winRate >= 50 ? "text-success" : "text-danger"}`}>
               %{c.winRate} WR
             </p>
-            <p className="text-[10px] text-text-muted">{c.games} maç</p>
+            <p className="text-[10px] text-text-muted">{c.games} matches</p>
           </div>
         ))}
       </div>
@@ -146,10 +146,10 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
         <div className="absolute left-1/2 top-1/2 h-40 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/8 blur-3xl" />
       </div>
       <div className="relative">
-        <p className="mb-8 text-xs font-semibold uppercase tracking-[0.15em] text-accent">Rank Yolculuğun</p>
+        <p className="mb-8 text-xs font-semibold uppercase tracking-[0.15em] text-accent">Your Rank Journey</p>
         <div className="flex items-center justify-center gap-6">
           <div className="flex flex-col items-center gap-2">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Başlangıç</p>
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Start</p>
             <p className="font-display text-2xl font-bold text-text-muted">{data.startRank}</p>
           </div>
           <div className="flex flex-col items-center gap-2">
@@ -160,7 +160,7 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
             </p>
           </div>
           <div className="flex flex-col items-center gap-2">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Şu An</p>
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Now</p>
             <p className="font-display text-2xl font-bold text-accent"
               style={{ textShadow: "0 0 20px rgba(200,155,60,0.35)" }}>
               {data.endRank}
@@ -168,9 +168,9 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
           </div>
         </div>
         {data.lpDelta >= 0 ? (
-          <p className="mt-8 text-sm text-text-muted">Yolun yukarı. Devam et.</p>
+          <p className="mt-8 text-sm text-text-muted">Climbing the ranks. Keep it up.</p>
         ) : (
-          <p className="mt-8 text-sm text-text-muted">Her sezon bir ders. Bir sonrakinde daha güçlü.</p>
+          <p className="mt-8 text-sm text-text-muted">Every season teaches a lesson. You&apos;ll be stronger next time.</p>
         )}
       </div>
     </RecapSlide>,
@@ -181,22 +181,22 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
         <div className="absolute left-1/2 top-1/3 h-32 w-32 -translate-x-1/2 rounded-full bg-danger/8 blur-3xl" />
       </div>
       <div className="relative">
-        <p className="mb-6 text-xs font-semibold uppercase tracking-[0.15em] text-text-muted/60">Bir de bunlar vardı...</p>
+        <p className="mb-6 text-xs font-semibold uppercase tracking-[0.15em] text-text-muted/60">But there&apos;s more...</p>
         {data.worstDay ? (
           <>
             <p className="font-display text-3xl font-black text-danger"
               style={{ textShadow: "0 0 20px rgba(239,68,68,0.3)" }}>
-              {new Date(data.worstDay.date).toLocaleDateString("tr-TR", { day: "numeric", month: "long" })}
+              {new Date(data.worstDay.date).toLocaleDateString("en-US", { day: "numeric", month: "long" })}
             </p>
             <p className="mt-3 text-lg text-text-muted">
-              <span className="font-bold text-danger">{data.worstDay.losses}</span> üst üste kayıp
+              <span className="font-bold text-danger">{data.worstDay.losses}</span> losses in a row
             </p>
             <div className="mt-6 rounded-2xl border border-border/50 bg-white/[0.03] px-5 py-3">
-              <p className="text-sm italic text-text-muted">&ldquo;Ama geri döndün.&rdquo;</p>
+              <p className="text-sm italic text-text-muted">&ldquo;But you came back.&rdquo;</p>
             </div>
           </>
         ) : (
-          <p className="text-lg font-semibold text-success">Bu sezon geri dönüşler yoktu — çok sağlam oynadın!</p>
+          <p className="text-lg font-semibold text-success">No comebacks needed this season — you played solid!</p>
         )}
       </div>
     </RecapSlide>,
@@ -211,7 +211,7 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
           style={{ boxShadow: "0 0 24px rgba(200,155,60,0.2)" }}>
           <MessageCircle className="h-6 w-6 text-accent" />
         </div>
-        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">AI Koç Yorumu</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">AI Coach Feedback</p>
         <div className="gaming-card max-w-xs rounded-2xl p-5 text-left"
           style={{ boxShadow: "0 0 30px rgba(200,155,60,0.08), inset 0 1px 0 rgba(255,255,255,0.05)" }}>
           <p className="mb-2 font-display text-3xl text-accent/60">&ldquo;</p>
@@ -232,15 +232,15 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
         <div className="h-40 w-48 rounded-full bg-accent/12 blur-3xl" />
       </div>
       <div className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-text-muted/60">Sıradaki Hedef</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-text-muted/60">Next Goal</p>
         <p className="mt-4 font-display text-4xl font-black text-accent"
           style={{ textShadow: "0 0 40px rgba(200,155,60,0.5)" }}>
-          {data.nextGoal ?? `${data.endRank}'dan daha yükseğe`}
+          {data.nextGoal ?? `Higher than ${data.endRank}`}
         </p>
-        <p className="mt-4 text-base text-text-muted">Hazır mısın?</p>
+        <p className="mt-4 text-base text-text-muted">Ready?</p>
         {data.resolvedHabit && (
           <p className="mt-6 text-xs text-text-muted/60">
-            Bu sezon <span className="text-accent">{data.resolvedHabit.replace(/_/g, " ")}</span> alışkanlığını kırdın.
+            This season you broke the <span className="text-accent">{data.resolvedHabit.replace(/_/g, " ")}</span> habit.
           </p>
         )}
       </div>

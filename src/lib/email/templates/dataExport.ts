@@ -12,11 +12,11 @@ export interface DataExportEmailData {
 }
 
 export function buildDataExportEmail({ gameName }: DataExportEmailData): { subject: string; html: string } {
-  const subject = "Verileriniz hazır — LoL AI Coach";
+  const subject = "Your data is ready — LoL AI Coach";
   const safeName = escapeHtml(gameName);
 
   const html = `<!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -39,27 +39,27 @@ export function buildDataExportEmail({ gameName }: DataExportEmailData): { subje
           <tr>
             <td style="background:#0F1629;padding:32px 32px 24px;border-radius:0 0 12px 12px;">
               <h1 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#E8F0FF;">
-                Verilerinin kopyası hazır, ${safeName}!
+                Your data copy is ready, ${safeName}!
               </h1>
               <p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#8899BB;">
-                Talep ettiğin veri dışa aktarımı tamamlandı. Tüm hesap verilerini içeren ZIP dosyasını bu e-postanın ekinde bulabilirsin.
+                Your data export request has been completed. You can find the ZIP file containing all your account data attached to this email.
               </p>
               <p style="margin:0 0 24px;font-size:14px;line-height:1.6;color:#8899BB;">
-                ZIP dosyası şunları içeriyor:
+                The ZIP file contains:
               </p>
               <ul style="margin:0 0 24px;padding:0 0 0 20px;font-size:14px;line-height:1.8;color:#8899BB;">
-                <li><strong style="color:#E8F0FF;">profile.json</strong> — Hesap ve profil bilgileri</li>
-                <li><strong style="color:#E8F0FF;">riot_accounts.json</strong> — Bağlı Riot hesapları</li>
-                <li><strong style="color:#E8F0FF;">matches.json</strong> — Maç geçmişi ve istatistikler</li>
-                <li><strong style="color:#E8F0FF;">coaching_reports.json</strong> — AI koçluk raporları</li>
-                <li><strong style="color:#E8F0FF;">achievements.json</strong> — Kazanılan başarımlar</li>
-                <li><strong style="color:#E8F0FF;">improvement_plans.json</strong> — Gelişim planı geçmişi</li>
-                <li><strong style="color:#E8F0FF;">activity_log.json</strong> — Hesap aktivite kaydı</li>
+                <li><strong style="color:#E8F0FF;">profile.json</strong> — Account and profile information</li>
+                <li><strong style="color:#E8F0FF;">riot_accounts.json</strong> — Connected Riot accounts</li>
+                <li><strong style="color:#E8F0FF;">matches.json</strong> — Match history and statistics</li>
+                <li><strong style="color:#E8F0FF;">coaching_reports.json</strong> — AI coaching reports</li>
+                <li><strong style="color:#E8F0FF;">achievements.json</strong> — Earned achievements</li>
+                <li><strong style="color:#E8F0FF;">improvement_plans.json</strong> — Improvement plan history</li>
+                <li><strong style="color:#E8F0FF;">activity_log.json</strong> — Account activity log</li>
               </ul>
 
               <p style="margin:0;font-size:12px;line-height:1.6;color:#5566AA;">
-                Bu e-posta, veri dışa aktarma talebini yerine getirmek için otomatik olarak gönderilmiştir.
-                GDPR kapsamındaki haklarınız hakkında daha fazla bilgi için gizlilik politikamızı inceleyebilirsiniz.
+                This email was sent automatically to fulfill your data export request.
+                For more information about your GDPR rights, please review our privacy policy.
               </p>
             </td>
           </tr>

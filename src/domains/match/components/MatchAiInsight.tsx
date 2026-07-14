@@ -16,8 +16,8 @@ export function MatchAiInsight({ insight }: Props) {
     <Card className="border-accent/30 bg-accent/5">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-sm text-accent uppercase tracking-widest">AI İçgörüsü</CardTitle>
-          <Link href={`/coaching/${insight.reportId}`} className="text-xs text-text-muted hover:text-accent">Tam Rapor →</Link>
+          <CardTitle className="text-sm text-accent uppercase tracking-widest">AI Insight</CardTitle>
+          <Link href={`/coaching/${insight.reportId}`} className="text-xs text-text-muted hover:text-accent">Full Report →</Link>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -25,13 +25,13 @@ export function MatchAiInsight({ insight }: Props) {
         <div className="grid gap-3 sm:grid-cols-2">
           {strengths.length > 0 && (
             <div>
-              <p className="mb-1 text-xs font-semibold text-success">Güçlü Yönler</p>
+              <p className="mb-1 text-xs font-semibold text-success">Strengths</p>
               {strengths.slice(0, 2).map((s, i) => <p key={i} className="text-xs text-text-muted">· {s.area}: {s.description}</p>)}
             </div>
           )}
           {weaknesses.length > 0 && (
             <div>
-              <p className="mb-1 text-xs font-semibold text-danger">Zayıf Yönler</p>
+              <p className="mb-1 text-xs font-semibold text-danger">Weaknesses</p>
               {weaknesses.slice(0, 2).map((w, i) => <p key={i} className="text-xs text-text-muted">· {w.area}: {w.description}</p>)}
             </div>
           )}

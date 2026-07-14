@@ -9,29 +9,29 @@ import { useOnboardingFlow } from "@/hooks/useOnboardingFlow";
 import { usePostHog } from "posthog-js/react";
 
 const FEATURES = [
-  { icon: Zap,        title: "AI Koç",           description: "Her maç için kişisel analiz" },
-  { icon: Target,     title: "Aksiyon Planı",     description: "Somut iyileştirme adımları" },
-  { icon: TrendingUp, title: "İlerleme Takibi",   description: "Haftalık büyüme metrikleri" },
+  { icon: Zap,        title: "AI Coach",           description: "Personal analysis for every match" },
+  { icon: Target,     title: "Action Plan",     description: "Concrete improvement steps" },
+  { icon: TrendingUp, title: "Progress Tracking",   description: "Weekly growth metrics" },
 ];
 
 function SyncPhaseLabel({ phase }: { phase: string }) {
   const labels: Record<string, string> = {
-    syncing:    "Maç geçmişin yükleniyor…",
-    generating: "İlk rapor hazırlanıyor…",
-    polling:    "AI maçlarını analiz ediyor…",
-    done:       "Hazır!",
-    email_required: "Email doğrulama gerekiyor",
-    error:      "Bir sorun oluştu",
+    syncing:    "Loading your match history…",
+    generating: "Preparing your first report…",
+    polling:    "AI is analyzing your matches…",
+    done:       "Ready!",
+    email_required: "Email verification required",
+    error:      "Something went wrong",
   };
-  return <>{labels[phase] ?? "İşleniyor…"}</>;
+  return <>{labels[phase] ?? "Processing…"}</>;
 }
 
 function ProgressDots({ phase }: { phase: string }) {
   const steps = [
-    { key: "syncing",    label: "Veri Sync" },
-    { key: "generating", label: "AI Başlatma" },
-    { key: "polling",    label: "Analiz" },
-    { key: "done",       label: "Hazır" },
+    { key: "syncing",    label: "Data Sync" },
+    { key: "generating", label: "Start AI" },
+    { key: "polling",    label: "Analysis" },
+    { key: "done",       label: "Ready" },
   ];
   const order = ["syncing", "generating", "polling", "done"];
   const current = order.indexOf(phase);
@@ -111,7 +111,7 @@ export function SyncingStep({ accountId, gameName, onComplete }: SyncingStepProp
     <div className="space-y-8">
       <div className="flex flex-col items-center gap-2 text-center">
         <h2 className="font-display text-2xl font-bold text-text">
-          Merhaba, {gameName}!
+          Hi, {gameName}!
         </h2>
         <p className="text-sm text-text-muted">
           <SyncPhaseLabel phase={error ? "error" : phase} />
@@ -130,7 +130,7 @@ export function SyncingStep({ accountId, gameName, onComplete }: SyncingStepProp
 
       <div className="space-y-3 rounded-xl border border-border bg-surface-2 p-4">
         <p className="text-xs font-medium uppercase tracking-widest text-text-muted">
-          Seni neler bekliyor
+          What&apos;s Waiting for You
         </p>
         {FEATURES.map(({ icon: Icon, title, description }) => (
           <div key={title} className="flex items-center gap-3">
@@ -171,14 +171,14 @@ export function FinalStep({ gameName, reportId, emailRequired }: FinalStepProps)
         </div>
         <div>
           <h2 className="font-display text-2xl font-bold text-text">
-            {reportId ? `İlk raporun hazır, ${gameName}!` : `Hazırsın, ${gameName}!`}
+            {reportId ? `Your first report is ready, ${gameName}!` : `You&apos;re all set, ${gameName}!`}
           </h2>
           <p className="mt-2 text-sm text-text-muted">
             {emailRequired
-              ? "Emailini doğruladıktan sonra AI raporlarını kullanabilirsin."
+              ? "After you verify your email, you can start using AI reports."
               : reportId
-              ? "AI koçun maçlarını analiz etti. Hadi bakalım."
-              : "Maç geçmişin arka planda hazırlanıyor."}
+              ? "Your AI coach has analyzed your matches. Let&apos;s go!"
+              : "Your match history is being prepared in the background."}
           </p>
         </div>
       </div>
@@ -187,19 +187,19 @@ export function FinalStep({ gameName, reportId, emailRequired }: FinalStepProps)
         {reportId ? (
           <Link href={`/coaching/${reportId}`}>
             <Button className="w-full" size="lg">
-              İlk Raporu Gör →
+              View First Report →
             </Button>
           </Link>
         ) : (
           <Link href="/coaching">
             <Button className="w-full" size="lg">
-              Koçluk Sayfasına Git →
+              Go to Coaching →
             </Button>
           </Link>
         )}
         <p className="text-center">
           <Link href="/dashboard" className="text-xs text-text-muted/60 underline-offset-2 hover:text-text-muted hover:underline transition-colors">
-            Şimdilik dashboard&apos;a git
+            Go to dashboard for now
           </Link>
         </p>
       </div>

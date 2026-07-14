@@ -94,7 +94,7 @@ export async function fetchPublicSummonerData(
           : null,
         recentMatches,
         topChampions,
-        aiInsight: `${account.gameName} son ${recentMatches.length} maçta %${recentMatches.length > 0 ? Math.round((wins / recentMatches.length) * 100) : 0} kazanma oranıyla oynadı.`,
+        aiInsight: `${account.gameName} played the last ${recentMatches.length} matches with a ${recentMatches.length > 0 ? Math.round((wins / recentMatches.length) * 100) : 0}% win rate.`,
       },
     };
   } catch (err) {

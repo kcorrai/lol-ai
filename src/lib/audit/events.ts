@@ -1,36 +1,36 @@
 export const AUDIT_EVENTS = {
   // Auth
-  "auth.login": "Kullanıcı giriş yaptı",
-  "auth.logout": "Kullanıcı çıkış yaptı",
-  "auth.login.failed": "Başarısız giriş denemesi",
+  "auth.login": "User logged in",
+  "auth.logout": "User logged out",
+  "auth.login.failed": "Failed login attempt",
 
   // Riot
-  "riot.account.connected": "Riot hesabı bağlandı",
-  "riot.account.removed": "Riot hesabı kaldırıldı",
-  "riot.sync.started": "Maç senkronizasyonu başladı",
+  "riot.account.connected": "Riot account connected",
+  "riot.account.removed": "Riot account removed",
+  "riot.sync.started": "Match synchronization started",
 
   // Coaching
-  "report.generated": "Koçluk raporu üretildi",
-  "report.viewed": "Koçluk raporu görüntülendi",
+  "report.generated": "Coaching report generated",
+  "report.viewed": "Coaching report viewed",
 
   // Subscription
-  "subscription.upgraded": "Pro'ya yükseltildi",
-  "subscription.cancelled": "Abonelik iptal edildi",
+  "subscription.upgraded": "Upgraded to Pro",
+  "subscription.cancelled": "Subscription cancelled",
 
   // Data / GDPR
-  "data.export.requested": "Veri dışa aktarma talep edildi",
-  "data.deletion.requested": "Veri silme talep edildi",
-  "data.deletion.completed": "Veri silme tamamlandı",
+  "data.export.requested": "Data export requested",
+  "data.deletion.requested": "Data deletion requested",
+  "data.deletion.completed": "Data deletion completed",
 
   // Admin
-  "admin.user.viewed": "Admin kullanıcı verisini görüntüledi",
-  "admin.impersonation": "Admin kullanıcı adına işlem yaptı",
+  "admin.user.viewed": "Admin viewed user data",
+  "admin.impersonation": "Admin acted on behalf of user",
 
   // Teams
-  "team.created": "Takım oluşturuldu",
-  "team.member.invited": "Takım üyesi davet edildi",
-  "team.member.joined": "Takıma üye katıldı",
-  "team.member.removed": "Takımdan üye çıkarıldı",
+  "team.created": "Team created",
+  "team.member.invited": "Team member invited",
+  "team.member.joined": "Team member joined",
+  "team.member.removed": "Team member removed",
 } as const;
 
 export type AuditEvent = keyof typeof AUDIT_EVENTS;

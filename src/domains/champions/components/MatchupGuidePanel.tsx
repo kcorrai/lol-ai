@@ -29,7 +29,7 @@ export function MatchupGuidePanel({ cell, onClose }: Props) {
         <div className="flex items-start justify-between border-b border-border p-5">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-              Matchup Rehberi
+              Matchup Guide
             </p>
             <h2 className="mt-1 font-display text-lg font-bold text-text">
               {cell.playerChampion}
@@ -37,7 +37,7 @@ export function MatchupGuidePanel({ cell, onClose }: Props) {
               {cell.opponentChampion}
             </h2>
             <p className="mt-0.5 text-xs text-text-muted">
-              {cell.wins}G / {cell.losses}M · KDA {cell.avgKda} · {cell.winRate}% WR
+              {cell.wins}W / {cell.losses}L · KDA {cell.avgKda} · {cell.winRate}% WR
             </p>
           </div>
           <button
@@ -53,18 +53,18 @@ export function MatchupGuidePanel({ cell, onClose }: Props) {
           {isLoading && (
             <div className="flex flex-col items-center gap-3 py-8 text-text-muted">
               <Loader2 className="h-6 w-6 animate-spin" />
-              <p className="text-sm">AI rehber oluşturuluyor…</p>
+              <p className="text-sm">Generating AI guide…</p>
             </div>
           )}
 
           {isError && (
-            <p className="text-sm text-danger">Rehber yüklenemedi. Tekrar dene.</p>
+            <p className="text-sm text-danger">Could not load guide. Please try again.</p>
           )}
 
           {data && (
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-wider text-accent">
-                AI Coach Tavsiyesi
+                AI Coach Advice
               </p>
               <div className="rounded-lg border border-border bg-surface-2 p-4 text-sm leading-relaxed text-text">
                 {data.guide.split("\n").filter(Boolean).map((line, i) => (
@@ -74,7 +74,7 @@ export function MatchupGuidePanel({ cell, onClose }: Props) {
                 ))}
               </div>
               {data.cacheHit && (
-                <p className="text-[10px] text-text-muted">Önbelleğe alınmış rehber</p>
+                <p className="text-[10px] text-text-muted">Cached guide</p>
               )}
             </div>
           )}
@@ -82,7 +82,7 @@ export function MatchupGuidePanel({ cell, onClose }: Props) {
 
         <div className="border-t border-border p-4">
           <Button variant="secondary" className="w-full" onClick={onClose}>
-            Kapat
+            Close
           </Button>
         </div>
       </aside>

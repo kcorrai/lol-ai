@@ -46,7 +46,7 @@ Respond with exactly this JSON structure:
   "memberHighlights": [{"gameName":"<name>","insight":"<1 sentence>"}]
 }
 
-Write in Turkish. Be specific, data-driven, and direct.`;
+Write in English. Be specific, data-driven, and direct.`;
 }
 
 function parseReport(raw: string, teamName: string): TeamReportData {
@@ -83,7 +83,7 @@ export async function generateTeamReport(
   const dashboard = await getTeamDashboard(teamId, userId);
 
   if (dashboard.members.length === 0) {
-    throw new Error("Takımda henüz üye yok — rapor oluşturulamaz.");
+    throw new Error("Team has no members yet — report cannot be generated.");
   }
 
   const prompt = buildPrompt(dashboard);

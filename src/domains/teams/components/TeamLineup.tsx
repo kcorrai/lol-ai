@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import type { TeamMemberSummary } from "@/domains/teams/types/teams.types";
 
 const POSITIONS = [
-  { key: "top",     label: "Üst",     abbr: "TOP" },
-  { key: "jungle",  label: "Orman",   abbr: "JGL" },
-  { key: "mid",     label: "Orta",    abbr: "MID" },
-  { key: "bot",     label: "Alt",     abbr: "BOT" },
-  { key: "support", label: "Destek",  abbr: "SUP" },
+  { key: "top",     label: "Top",     abbr: "TOP" },
+  { key: "jungle",  label: "Jungle",  abbr: "JGL" },
+  { key: "mid",     label: "Mid",     abbr: "MID" },
+  { key: "bot",     label: "Bot",     abbr: "BOT" },
+  { key: "support", label: "Support", abbr: "SUP" },
 ] as const;
 
 type PositionKey = typeof POSITIONS[number]["key"];
@@ -50,7 +50,7 @@ export function TeamLineup({ teamId, members, canManage }: Props) {
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between px-1">
-        <p className="text-xs font-bold uppercase tracking-widest text-text-muted/50">Kadro</p>
+        <p className="text-xs font-bold uppercase tracking-widest text-text-muted/50">Lineup</p>
         {canManage && (
           <button
             onClick={() => {
@@ -59,7 +59,7 @@ export function TeamLineup({ teamId, members, canManage }: Props) {
             }}
             className="text-[10px] text-text-muted/40 hover:text-text-muted transition-colors"
           >
-            Sıfırla
+            Reset
           </button>
         )}
       </div>
@@ -85,7 +85,7 @@ export function TeamLineup({ teamId, members, canManage }: Props) {
                   <span className="ml-1 text-xs font-normal text-text-muted">#{member.tagLine}</span>
                 </p>
               ) : (
-                <p className="text-sm text-text-muted/50">Boş</p>
+                <p className="text-sm text-text-muted/50">Empty</p>
               )}
             </div>
 
@@ -95,7 +95,7 @@ export function TeamLineup({ teamId, members, canManage }: Props) {
                 onChange={(e) => assign(pos.key, e.target.value || null)}
                 className="shrink-0 rounded-lg border border-border bg-surface-2 px-2 py-1 text-xs text-text focus:outline-none focus:ring-1 focus:ring-blue-500/40"
               >
-                <option value="">— Seç —</option>
+                <option value="">— Select —</option>
                 {available.map((m) => (
                   <option key={m.userId} value={m.userId}>
                     {m.gameName}

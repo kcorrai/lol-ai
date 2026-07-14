@@ -7,9 +7,9 @@ import { useTeamStats } from "@/hooks/useTeamStats";
 import { cn } from "@/lib/utils";
 
 const RANGES = [
-  { value: "7d", label: "7 Gün" },
-  { value: "30d", label: "30 Gün" },
-  { value: "90d", label: "90 Gün" },
+  { value: "7d", label: "7 Days" },
+  { value: "30d", label: "30 Days" },
+  { value: "90d", label: "90 Days" },
 ] as const;
 
 interface TeamStatsPanelProps {
@@ -40,14 +40,14 @@ export function TeamStatsPanel({ teamId }: TeamStatsPanelProps) {
         ))}
         {data && (
           <span className="ml-auto text-xs text-text-muted">
-            {data.totalGames} maç · Ort. %{data.avgWinRate ?? "—"}
+            {data.totalGames} matches · Avg. %{data.avgWinRate ?? "—"}
           </span>
         )}
       </div>
 
       {/* Chart */}
       <div className="rounded-xl border border-border bg-surface p-4">
-        <p className="mb-3 text-xs font-bold uppercase tracking-wider text-text-muted/60">Takım Win Rate Trendi</p>
+        <p className="mb-3 text-xs font-bold uppercase tracking-wider text-text-muted/60">Team Win Rate Trend</p>
         {isLoading && (
           <div className="flex h-40 items-center justify-center">
             <Loader2 className="h-5 w-5 animate-spin text-text-muted" />
@@ -55,7 +55,7 @@ export function TeamStatsPanel({ teamId }: TeamStatsPanelProps) {
         )}
         {error && (
           <p className="flex h-40 items-center justify-center text-sm text-danger">
-            {error instanceof Error ? error.message : "Hata oluştu"}
+            {error instanceof Error ? error.message : "An error occurred"}
           </p>
         )}
         {data && <TeamWinRateTrend data={data.teamWinRateTrend} />}

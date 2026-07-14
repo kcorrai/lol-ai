@@ -13,7 +13,7 @@ function fmt(n: number, d = 1) { return n.toFixed(d); }
 function fmtK(n: number) { return n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n); }
 
 const POSITION_LABELS: Record<string, string> = {
-  TOP: "Top", JUNGLE: "Orman", MIDDLE: "Mid", BOTTOM: "ADC", UTILITY: "Destek",
+  TOP: "Top", JUNGLE: "Jungle", MIDDLE: "Mid", BOTTOM: "ADC", UTILITY: "Support",
 };
 
 const POSITION_ORDER: Record<string, number> = {
@@ -77,20 +77,20 @@ function TeamHeader({ team, won, objectives }: { team: ParticipantDetail[]; won:
   return (
     <div className={`flex flex-wrap items-center justify-between gap-3 rounded-t-lg border-b border-border px-4 py-2.5 ${won ? "bg-success/10" : "bg-danger/10"}`}>
       <span className={`text-xs font-bold uppercase tracking-widest ${won ? "text-success" : "text-danger"}`}>
-        {won ? "Zafer" : "Yenilgi"}
+        {won ? "Victory" : "Defeat"}
       </span>
       <div className="flex flex-wrap gap-4 text-xs text-text-muted">
-        <span><span className="font-semibold text-text">{totalKills}</span> Kil</span>
-        <span><span className="font-semibold text-text">{fmtK(totalDmg)}</span> Hasar</span>
-        <span><span className="font-semibold text-text">{fmtK(totalGold)}</span> Altın</span>
+        <span><span className="font-semibold text-text">{totalKills}</span> Kills</span>
+        <span><span className="font-semibold text-text">{fmtK(totalDmg)}</span> Damage</span>
+        <span><span className="font-semibold text-text">{fmtK(totalGold)}</span> Gold</span>
         <span><span className="font-semibold text-text">{totalCS}</span> CS</span>
         {objectives && (
           <>
-            <ObjectivePip icon="🏰" count={objectives.towers}    label="Kuleler" />
-            <ObjectivePip icon="🐉" count={objectives.dragons}   label="Ejderler" />
+            <ObjectivePip icon="🏰" count={objectives.towers}    label="Towers" />
+            <ObjectivePip icon="🐉" count={objectives.dragons}   label="Dragons" />
             <ObjectivePip icon="👁️" count={objectives.heralds}   label="Rift Heralds" />
             <ObjectivePip icon="💀" count={objectives.barons}    label="Baron" />
-            <ObjectivePip icon="🔴" count={objectives.inhibitors} label="İnhibitörler" />
+            <ObjectivePip icon="🔴" count={objectives.inhibitors} label="Inhibitors" />
           </>
         )}
       </div>
@@ -120,15 +120,15 @@ export function MatchTeamTable({ participants, teamId, userRiotAccountId, object
         <table className="w-full text-xs">
           <thead>
             <tr className="border-b border-border bg-surface-2 text-text-muted">
-              <th className="px-3 py-2 text-left">Şampiyon</th>
+              <th className="px-3 py-2 text-left">Champion</th>
               <th className="px-3 py-2 text-left">Rank</th>
               <th className="px-3 py-2 text-center">K / D / A</th>
               <th className="px-3 py-2 text-center">CS</th>
-              <th className="px-3 py-2 text-center">Verilen</th>
-              <th className="px-3 py-2 text-center">Alınan</th>
-              <th className="px-3 py-2 text-center">Altın</th>
-              <th className="px-3 py-2 text-center">Görüş</th>
-              <th className="px-3 py-2 text-left">Eşyalar</th>
+              <th className="px-3 py-2 text-center">Dealt</th>
+              <th className="px-3 py-2 text-center">Taken</th>
+              <th className="px-3 py-2 text-center">Gold</th>
+              <th className="px-3 py-2 text-center">Vision</th>
+              <th className="px-3 py-2 text-left">Items</th>
             </tr>
           </thead>
           <tbody>
@@ -156,7 +156,7 @@ export function MatchTeamTable({ participants, teamId, userRiotAccountId, object
                           </Link>
                         )}
                         <p className="text-[10px] text-text-muted/60">
-                          {POSITION_LABELS[p.position] ?? p.position}{isUser ? " · sen" : ""}
+                          {POSITION_LABELS[p.position] ?? p.position}{isUser ? " · you" : ""}
                         </p>
                       </div>
                     </div>

@@ -28,13 +28,13 @@ export function InviteLinkBox({ teamId }: Props) {
     <div className="rounded-xl border border-border bg-surface p-4 space-y-3">
       <div className="flex items-center gap-2">
         <Link2 className="h-4 w-4 text-blue-400" />
-        <p className="text-sm font-bold text-text">Paylaşılabilir Davet Linki</p>
+        <p className="text-sm font-bold text-text">Shareable Invite Link</p>
       </div>
 
       {isLoading ? (
         <div className="flex items-center gap-2 text-xs text-text-muted">
           <Loader2 className="h-3.5 w-3.5 animate-spin" />
-          Yükleniyor…
+          Loading…
         </div>
       ) : (
         <>
@@ -44,7 +44,7 @@ export function InviteLinkBox({ teamId }: Props) {
             </p>
             <button
               onClick={handleCopy}
-              title="Kopyala"
+              title="Copy"
               className="shrink-0 rounded p-1 text-text-muted hover:text-text transition-colors"
             >
               {copied ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
@@ -53,7 +53,7 @@ export function InviteLinkBox({ teamId }: Props) {
 
           {data && (
             <p className="text-[11px] text-text-muted/60">
-              Geçerlilik: {new Date(data.expiresAt).toLocaleDateString("tr-TR")}
+              Expires: {new Date(data.expiresAt).toLocaleDateString("en-US")}
             </p>
           )}
 
@@ -65,7 +65,7 @@ export function InviteLinkBox({ teamId }: Props) {
             className="gap-1.5 text-xs text-text-muted border border-border hover:text-text"
           >
             {revoke.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
-            Yeni Link Oluştur
+            Generate New Link
           </Button>
         </>
       )}

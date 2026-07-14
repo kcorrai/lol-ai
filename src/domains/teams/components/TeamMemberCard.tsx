@@ -7,7 +7,7 @@ import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { TeamMemberSummary } from "@/domains/teams/types/teams.types";
 
-const ROLE_LABELS: Record<string, string> = { OWNER: "Sahip", COACH: "Koç", PLAYER: "Oyuncu" };
+const ROLE_LABELS: Record<string, string> = { OWNER: "Owner", COACH: "Coach", PLAYER: "Player" };
 const ROLE_STYLES: Record<string, string> = {
   OWNER: "border-yellow-400/50 bg-yellow-400/10 text-yellow-300",
   COACH: "border-purple-400/50 bg-purple-400/10 text-purple-300",
@@ -18,10 +18,10 @@ const TIER_COLORS: Record<string, string> = {
   GOLD: "#c89b3c", PLATINUM: "#3cba8c", EMERALD: "#00be93",
   DIAMOND: "#576bce", MASTER: "#9e4fc6", GRANDMASTER: "#e84057", CHALLENGER: "#f4c874",
 };
-const TIER_TR: Record<string, string> = {
-  IRON: "Demir", BRONZE: "Bronz", SILVER: "Gümüş", GOLD: "Altın",
-  PLATINUM: "Platin", EMERALD: "Zümrüt", DIAMOND: "Elmas",
-  MASTER: "Usta", GRANDMASTER: "Büyükusta", CHALLENGER: "Challenger",
+const TIER_EN: Record<string, string> = {
+  IRON: "Iron", BRONZE: "Bronze", SILVER: "Silver", GOLD: "Gold",
+  PLATINUM: "Platinum", EMERALD: "Emerald", DIAMOND: "Diamond",
+  MASTER: "Master", GRANDMASTER: "Grandmaster", CHALLENGER: "Challenger",
 };
 const CHAMPION_VERSION = "14.24.1";
 
@@ -36,7 +36,7 @@ export function TeamMemberCard({ member, canManage, onRemove, onRoleChange }: Pr
   const [roleMenuOpen, setRoleMenuOpen] = useState(false);
 
   const tierColor = member.rank ? (TIER_COLORS[member.rank.tier] ?? "#a5b4fc") : null;
-  const tierName = member.rank ? (TIER_TR[member.rank.tier] ?? member.rank.tier) : null;
+  const tierName = member.rank ? (TIER_EN[member.rank.tier] ?? member.rank.tier) : null;
   const wrColor =
     member.winRate7d === null ? "text-text-muted"
     : member.winRate7d >= 55 ? "text-success"
@@ -127,7 +127,7 @@ export function TeamMemberCard({ member, canManage, onRemove, onRoleChange }: Pr
       {/* Right: champion icons + actions */}
       <div className="flex shrink-0 items-center gap-2">
         {member.topChampion && (
-          <div className="relative" title={`En çok oynadığı: ${member.topChampion}`}>
+          <div className="relative" title={`Most played: ${member.topChampion}`}>
             <Image
               src={`https://ddragon.leagueoflegends.com/cdn/${CHAMPION_VERSION}/img/champion/${member.topChampion}.png`}
               alt={member.topChampion}
@@ -140,7 +140,7 @@ export function TeamMemberCard({ member, canManage, onRemove, onRoleChange }: Pr
         )}
 
         {member.lastMatchChampion && member.lastMatchChampion !== member.topChampion && (
-          <div className="relative" title={`Son maç: ${member.lastMatchChampion}`}>
+          <div className="relative" title={`Last match: ${member.lastMatchChampion}`}>
             <Image
               src={`https://ddragon.leagueoflegends.com/cdn/${CHAMPION_VERSION}/img/champion/${member.lastMatchChampion}.png`}
               alt={member.lastMatchChampion}
@@ -151,7 +151,7 @@ export function TeamMemberCard({ member, canManage, onRemove, onRoleChange }: Pr
             />
             {member.lastMatchResult && (
               <span className={`absolute -bottom-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full text-[8px] font-bold ${member.lastMatchResult === "WIN" ? "bg-success text-background" : "bg-danger text-background"}`}>
-                {member.lastMatchResult === "WIN" ? "G" : "M"}
+                {member.lastMatchResult === "WIN" ? "W" : "L"}
               </span>
             )}
           </div>
@@ -160,7 +160,7 @@ export function TeamMemberCard({ member, canManage, onRemove, onRoleChange }: Pr
         {member.lastReportId && (
           <Link href={`/coaching/${member.lastReportId}`}>
             <Button variant="outline" size="sm" className="h-7 px-2 text-xs">
-              Rapor
+              Report
             </Button>
           </Link>
         )}
@@ -172,7 +172,7 @@ export function TeamMemberCard({ member, canManage, onRemove, onRoleChange }: Pr
             className="h-7 px-2 text-xs text-text-muted hover:text-danger"
             onClick={() => onRemove(member.userId)}
           >
-            Çıkar
+            Remove
           </Button>
         )}
       </div>

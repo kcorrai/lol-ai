@@ -44,8 +44,8 @@ export const teamSubscriptionCancelledNotification = inngest.createFunction(
       ownerName: user.name ?? user.email,
       teams: ownedTeams.map((t) => t.name),
       periodEndDate: periodEndDate
-        ? new Date(periodEndDate).toLocaleDateString("tr-TR")
-        : "dönem sonu",
+        ? new Date(periodEndDate).toLocaleDateString("en-US")
+        : "period end",
       appUrl,
     });
 

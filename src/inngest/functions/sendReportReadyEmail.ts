@@ -56,8 +56,8 @@ export const sendReportReadyEmail = inngest.createFunction(
     logger.info("[sendReportReadyEmail] Sent", { reportId, gameName: account.gameName });
 
     await sendPushToUser(account.user.id, {
-      title: "Koçluk Raporun Hazır!",
-      body: `${account.gameName} için ${reportType} raporu tamamlandı.`,
+      title: "Your Coaching Report is Ready!",
+      body: `${reportType} report for ${account.gameName} is complete.`,
       url: `${appUrl}/coaching/${reportId}`,
       tag: `report-${reportId}`,
     }).catch(() => { /* push failure must not block email result */ });

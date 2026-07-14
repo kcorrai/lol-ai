@@ -9,7 +9,7 @@ import type { MatchupCell } from "@/domains/analysis/services/matchupService";
 import { cn } from "@/lib/utils";
 
 const POSITIONS = [
-  { value: undefined,    label: "Tümü" },
+  { value: undefined,    label: "All" },
   { value: "TOP",        label: "Top" },
   { value: "JUNGLE",     label: "Jungle" },
   { value: "MIDDLE",     label: "Mid" },
@@ -30,7 +30,7 @@ export function MatchupMatrix({ riotAccountId }: Props) {
     return (
       <div className="flex items-center justify-center py-16 text-text-muted">
         <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-        <span className="text-sm">Matchup verisi hesaplanıyor…</span>
+        <span className="text-sm">Calculating matchup data…</span>
       </div>
     );
   }
@@ -38,9 +38,9 @@ export function MatchupMatrix({ riotAccountId }: Props) {
   if (!data || data.playerChampions.length === 0) {
     return (
       <div className="py-12 text-center text-sm text-text-muted">
-        Yeterli ranked maç verisi bulunamadı.
+        Not enough ranked match data found.
         <br />
-        <span className="text-xs">En az 1 lane matchup için ranked maç gerekli.</span>
+        <span className="text-xs">You need ranked matches for at least 1 lane matchup.</span>
       </div>
     );
   }
@@ -78,7 +78,7 @@ export function MatchupMatrix({ riotAccountId }: Props) {
         <span className="flex items-center gap-1"><span className="inline-block h-3 w-3 rounded bg-yellow-500/20" />45-49%</span>
         <span className="flex items-center gap-1"><span className="inline-block h-3 w-3 rounded bg-danger/20" />40-44%</span>
         <span className="flex items-center gap-1"><span className="inline-block h-3 w-3 rounded bg-danger/40" />&lt;40%</span>
-        <span className="flex items-center gap-1"><span className="inline-block h-3 w-3 rounded bg-surface-2" />{"<3 maç"}</span>
+        <span className="flex items-center gap-1"><span className="inline-block h-3 w-3 rounded bg-surface-2" />{"<3 games"}</span>
       </div>
 
       {/* Scrollable matrix */}
@@ -115,8 +115,8 @@ export function MatchupMatrix({ riotAccountId }: Props) {
       </div>
 
       <p className="mt-2 text-[10px] text-text-muted">
-        Son hesaplama: {data.generatedAt ? new Date(data.generatedAt).toLocaleTimeString("tr-TR") : "—"}
-        {" · "}Hücreye tıkla → AI matchup rehberi
+        Last calculated: {data.generatedAt ? new Date(data.generatedAt).toLocaleTimeString("en-US") : "—"}
+        {" · "}Click cell → AI matchup guide
       </p>
 
       <MatchupGuidePanel cell={selectedCell} onClose={() => setSelectedCell(null)} />

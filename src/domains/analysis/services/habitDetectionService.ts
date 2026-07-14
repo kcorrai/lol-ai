@@ -26,12 +26,12 @@ export interface DetectedHabit {
 // ── Habit catalogue ───────────────────────────────────────────────────────────
 
 const HABIT_META: Record<string, { displayName: string }> = {
-  low_vision:        { displayName: "Düşük Vizyon Skoru" },
-  high_deaths:       { displayName: "Yüksek Ölüm Sayısı" },
-  low_cs:            { displayName: "Düşük CS / Dakika" },
-  late_game_throw:   { displayName: "Geç Oyun Hatası" },
-  tilt_prone:        { displayName: "Tilt Eğilimi" },
-  objective_neglect: { displayName: "Amaç İhmali" },
+  low_vision:        { displayName: "Low Vision Score" },
+  high_deaths:       { displayName: "High Death Count" },
+  low_cs:            { displayName: "Low CS Per Minute" },
+  late_game_throw:   { displayName: "Late Game Throw" },
+  tilt_prone:        { displayName: "Tilt Prone" },
+  objective_neglect: { displayName: "Objective Neglect" },
 };
 
 // weakestArea values coming from PerformanceSnapshot → habit type mapping
@@ -47,7 +47,7 @@ function severityFor(weekCount: number): HabitSeverity {
 }
 
 function habitMessage(displayName: string, weekCount: number): string {
-  return `${displayName} problemi son ${weekCount} haftadır devam ediyor.`;
+  return `${displayName} issue has been happening for the last ${weekCount} weeks.`;
 }
 
 // ── Core detection logic ──────────────────────────────────────────────────────
@@ -61,7 +61,7 @@ interface SnapshotRow {
 }
 
 function weekLabel(date: Date): string {
-  return date.toLocaleDateString("tr-TR", { day: "numeric", month: "short" });
+  return date.toLocaleDateString("en-US", { day: "numeric", month: "short" });
 }
 
 async function detectCandidates(
@@ -99,7 +99,7 @@ async function detectCandidates(
           .filter((s) => Number(s.tiltScore ?? 0) > 0)
           .map((s) => ({
             weekLabel: weekLabel(s.periodEnd),
-            value: `tilt skoru ${Math.round(Number(s.tiltScore ?? 0))}`,
+            value: `tilt score ${Math.round(Number(s.tiltScore ?? 0))}`,
           })),
       });
     }

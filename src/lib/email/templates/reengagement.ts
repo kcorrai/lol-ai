@@ -35,46 +35,46 @@ function getNudgeCopy(nudge: NudgeType, gameName: string, lossStreak?: number): 
   switch (nudge) {
     case "stop_queuing":
       return {
-        subject: "Dur bir dakika — verilerin tilt'te olduğunu gösteriyor",
-        headline: "Tilt Uyarısı",
-        body: `${name}, son maçlarında kaybettikten hemen sonra yeniden kuyruğa girdiğini görüyoruz. Bu klasik bir tilt döngüsü. Koçun seni analiz etti ve çözüm yolu hazır.`,
-        cta: "Koç Analizini Gör",
+        subject: "Hold up — your data shows you're tilting",
+        headline: "Tilt Alert",
+        body: `${name}, we noticed you're queuing again right after losing your last matches. This is a classic tilt cycle. Your coach has analyzed this and has a solution ready.`,
+        cta: "See Coach Analysis",
       };
     case "loss_streak":
       return {
-        subject: `${lossStreak ?? "Birkaç"} maçlık seri kaybın var — koçun nedenini biliyor`,
-        headline: `${lossStreak ?? "Seri"} Maçlık Kayıp`,
-        body: `${name}, ${lossStreak ?? "birkaç"} maçlık bir kayıp serisi yaşadın. Bu durum herkesin başına gelir — önemli olan doğru dersi çıkarmak. AI koçun seni bekliyor.`,
-        cta: "Analiz Raporu Al",
+        subject: `You have a ${lossStreak ?? "few"}-game losing streak — your coach knows why`,
+        headline: `${lossStreak ?? "Multi"}-Game Loss`,
+        body: `${name}, you're experiencing a ${lossStreak ?? "few"}-game losing streak. This happens to everyone — what matters is learning the right lesson. Your AI coach is waiting for you.`,
+        cta: "Get Analysis Report",
       };
     case "pool_too_wide":
       return {
-        subject: "Çok fazla şampiyonla oynuyorsun — odaklan ve yüksel",
-        headline: "Şampiyon Havuzu Çok Geniş",
-        body: `${name}, son 20 maçında çok farklı şampiyonla oynadın. Araştırmalar gösteriyor ki 2-3 şampiyona odaklanmak rank'i en hızlı yükseltme yöntemi. Koçun hangi şampiyonlara odaklanman gerektiğini söylüyor.`,
-        cta: "Şampiyon Havuzunu İncele",
+        subject: "You're playing too many champions — focus and climb",
+        headline: "Champion Pool Too Wide",
+        body: `${name}, you played many different champions in your last 20 matches. Research shows that focusing on 2-3 champions is the fastest way to climb rank. Your coach tells you which champions you should focus on.`,
+        cta: "Review Champion Pool",
       };
     case "death_spike":
       return {
-        subject: "Son maçlarında ölüm sayın arttı — bunu çözelim",
-        headline: "Ölüm Artışı Tespit Edildi",
-        body: `${name}, son birkaç maçındaki ölüm sayın ortalamanın üzerine çıktı. Bu genellikle belirli bir hatanın tekrarlandığını gösteriyor. Koçun tam olarak neyi farklı yapman gerektiğini analiz etti.`,
-        cta: "Koç Analizini Gör",
+        subject: "Your deaths increased in recent matches — let's fix this",
+        headline: "Death Spike Detected",
+        body: `${name}, your death count in the last few matches is above your average. This usually means you're repeating a specific mistake. Your coach has analyzed exactly what you need to do differently.`,
+        cta: "See Coach Analysis",
       };
     case "cs_drop":
       return {
-        subject: "CS/dk'n düştü — küçük bir düzeltme büyük fark yaratır",
-        headline: "CS Performansın Düşüyor",
-        body: `${name}, bu hafta CS/dk ortalaması geçen haftanın altında. CS kaybı genellikle görünmez LP kaybıdır. Koçun sana özel bir laning egzersizi hazırladı.`,
-        cta: "Koç Analizini Gör",
+        subject: "Your CS/min dropped — a small fix creates a big difference",
+        headline: "Your CS Performance is Declining",
+        body: `${name}, this week your CS/min average is below last week. CS loss is usually invisible LP loss. Your coach prepared a laning exercise just for you.`,
+        cta: "See Coach Analysis",
       };
     case "generic":
     default:
       return {
-        subject: `${name}, bir haftadır görünmüyorsun — hesabında neler oldu?`,
-        headline: "Seni Özledik",
-        body: `${name}, birkaç gündür giriş yapmadın. Hesabında yeni maç verileri olabilir — koçun her zaman analiz yapmaya hazır.`,
-        cta: "Dashboarda Dön",
+        subject: `${name}, we haven't seen you in a week — what's going on?`,
+        headline: "We Miss You",
+        body: `${name}, you haven't logged in for a few days. There might be new match data in your account — your coach is always ready to analyze.`,
+        cta: "Back to Dashboard",
       };
   }
 }
@@ -89,7 +89,7 @@ export function buildReengagementEmail(data: ReengagementEmailData): { subject: 
       : `${safeUrl}/dashboard`;
 
   const html = `<!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -140,7 +140,7 @@ export function buildReengagementEmail(data: ReengagementEmailData): { subject: 
             <td style="background:#070B14;border-radius:0 0 12px 12px;padding:20px 32px;text-align:center;">
               <p style="margin:0;font-size:11px;color:#4A5568;">
                 LoL AI Coach · <a href="${safeUrl}" style="color:#4A5568;">lolaicoach.gg</a><br/>
-                <a href="${safeUrl}/settings/profile" style="color:#4A5568;">Abonelikten çık</a>
+                <a href="${safeUrl}/settings/profile" style="color:#4A5568;">Unsubscribe</a>
               </p>
             </td>
           </tr>

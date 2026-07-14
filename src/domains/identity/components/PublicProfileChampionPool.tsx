@@ -41,7 +41,7 @@ export function PublicProfileChampionPool({ champions }: Props) {
     <div className="rounded-2xl border border-border bg-surface p-5">
       <div className="mb-4 flex items-center gap-2">
         <Swords className="h-3.5 w-3.5 text-text-muted/50" />
-        <h2 className="text-[10px] font-bold uppercase tracking-widest text-text-muted/50">Şampiyon Havuzu</h2>
+        <h2 className="text-[10px] font-bold uppercase tracking-widest text-text-muted/50">Champion Pool</h2>
       </div>
       <div className="space-y-3">
         {champions.map((c, i) => {
@@ -65,18 +65,18 @@ export function PublicProfileChampionPool({ champions }: Props) {
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
                   <span className="truncate text-sm font-semibold text-text">{c.name}</span>
-                  <span className="shrink-0 text-xs text-text-muted">{c.games} maç</span>
+                  <span className="shrink-0 text-xs text-text-muted">{c.games} games</span>
                 </div>
                 <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-white/5">
                   <div className="h-full rounded-full" style={{ width: `${c.winRate}%`, background: wc }} />
                 </div>
                 <div className="mt-1.5 flex items-center gap-3 text-[11px] text-text-muted">
-                  <span style={{ color: wc }} className="font-semibold">%{c.winRate} KO</span>
+                  <span style={{ color: wc }} className="font-semibold">{c.winRate}% WR</span>
                   <span className="flex items-center gap-0.5">
                     <Crosshair className="h-2.5 w-2.5" />
                     <span style={{ color: kc }} className="font-medium">{c.avgKda} KDA</span>
                   </span>
-                  <span className="font-medium">{c.avgCsPerMinute} CS/dk</span>
+                  <span className="font-medium">{c.avgCsPerMinute} CS/min</span>
                   {c.masteryPoints !== null && (
                     <span className="ml-auto text-yellow-400/60">{formatMasteryPoints(c.masteryPoints)} p</span>
                   )}

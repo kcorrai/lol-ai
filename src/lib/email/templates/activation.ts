@@ -13,12 +13,12 @@ export interface ActivationEmailData {
 }
 
 export function buildActivationEmail(data: ActivationEmailData): { subject: string; html: string } {
-  const subject = `${data.gameName}, ilk AI raporun seni bekliyor`;
+  const subject = `${data.gameName}, your first AI report is waiting for you`;
   const safeName = escapeHtml(data.gameName);
   const safeUrl = escapeHtml(data.appUrl);
 
   const html = `<!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -41,11 +41,11 @@ export function buildActivationEmail(data: ActivationEmailData): { subject: stri
           <tr>
             <td style="background:#0F1629;padding:32px;">
               <h1 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#E8E6F0;">
-                Riot hesabın bağlandı, ${safeName}!
+                Riot account connected, ${safeName}!
               </h1>
 
               <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#A0AEC0;">
-                Maç geçmişini okuduk. Artık AI koçun maçlarını analiz edip nerede hata yaptığını söyleyebilir.
+                We've read your match history. Your AI coach can now analyze your matches and tell you where you went wrong.
               </p>
 
               <!-- Steps -->
@@ -56,19 +56,19 @@ export function buildActivationEmail(data: ActivationEmailData): { subject: stri
                       <tr>
                         <td style="padding:6px 0;">
                           <span style="color:#4ade80;font-weight:700;margin-right:10px;">✓</span>
-                          <span style="font-size:14px;color:#CBD5E0;">Riot hesabı bağlandı</span>
+                          <span style="font-size:14px;color:#CBD5E0;">Riot account connected</span>
                         </td>
                       </tr>
                       <tr>
                         <td style="padding:6px 0;">
                           <span style="color:#C89B3C;font-weight:700;margin-right:10px;">→</span>
-                          <span style="font-size:14px;color:#E8E6F0;font-weight:600;">İlk AI raporunu al</span>
+                          <span style="font-size:14px;color:#E8E6F0;font-weight:600;">Get your first AI report</span>
                         </td>
                       </tr>
                       <tr>
                         <td style="padding:6px 0;">
                           <span style="color:#4A5568;font-weight:700;margin-right:10px;">○</span>
-                          <span style="font-size:14px;color:#718096;">Kişisel gelişim planı oluştur</span>
+                          <span style="font-size:14px;color:#718096;">Create a personal improvement plan</span>
                         </td>
                       </tr>
                     </table>
@@ -82,14 +82,14 @@ export function buildActivationEmail(data: ActivationEmailData): { subject: stri
                   <td style="border-radius:8px;background:#C89B3C;">
                     <a href="${safeUrl}/coaching"
                        style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:700;color:#0A0E1A;text-decoration:none;border-radius:8px;">
-                      İlk Raporumu Al →
+                      Get My First Report →
                     </a>
                   </td>
                 </tr>
               </table>
 
               <p style="margin:24px 0 0;font-size:13px;color:#718096;">
-                Rapor 1-2 dakika içinde hazır olur. Hesabını her gün otomatik senkronize ediyoruz.
+                Your report will be ready in 1-2 minutes. We automatically sync your account every day.
               </p>
             </td>
           </tr>
@@ -99,7 +99,7 @@ export function buildActivationEmail(data: ActivationEmailData): { subject: stri
             <td style="background:#070B14;border-radius:0 0 12px 12px;padding:20px 32px;text-align:center;">
               <p style="margin:0;font-size:11px;color:#4A5568;">
                 LoL AI Coach · <a href="${safeUrl}" style="color:#4A5568;">lolaicoach.gg</a><br/>
-                <a href="${safeUrl}/settings/profile" style="color:#4A5568;">Abonelikten çık</a>
+                <a href="${safeUrl}/settings/profile" style="color:#4A5568;">Unsubscribe</a>
               </p>
             </td>
           </tr>

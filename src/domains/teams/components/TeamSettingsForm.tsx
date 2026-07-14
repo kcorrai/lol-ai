@@ -13,7 +13,7 @@ async function patchTeam(teamId: string, data: { name?: string }): Promise<void>
   });
   if (!res.ok) {
     const body = (await res.json()) as { error?: { message?: string } };
-    throw new Error(body.error?.message ?? "Güncelleme başarısız");
+    throw new Error(body.error?.message ?? "Update failed");
   }
 }
 
@@ -38,11 +38,11 @@ export function TeamSettingsForm({ teamId, initialName }: TeamSettingsFormProps)
 
   return (
     <div className="rounded-xl border border-border bg-surface p-5 space-y-4">
-      <p className="text-sm font-bold text-text">Genel Bilgiler</p>
+      <p className="text-sm font-bold text-text">General Information</p>
 
       <div className="space-y-1.5">
         <label htmlFor="team-name" className="text-xs font-medium text-text-muted">
-          Takım Adı
+          Team Name
         </label>
         <input
           id="team-name"
@@ -58,7 +58,7 @@ export function TeamSettingsForm({ teamId, initialName }: TeamSettingsFormProps)
         <p className="text-xs text-danger">{error.message}</p>
       )}
       {isSuccess && (
-        <p className="text-xs text-success">Kaydedildi.</p>
+        <p className="text-xs text-success">Saved.</p>
       )}
 
       <Button
@@ -68,7 +68,7 @@ export function TeamSettingsForm({ teamId, initialName }: TeamSettingsFormProps)
         className="gap-1.5"
       >
         {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
-        Kaydet
+        Save
       </Button>
     </div>
   );

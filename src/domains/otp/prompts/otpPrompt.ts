@@ -1,11 +1,11 @@
 import type { Position } from "@/types/common.types";
 
 export function buildOtpSystemPrompt(champion: string): string {
-  return `Sen ${champion} konusunda uzmanlaşmış bir OTP koçusun. Bu şampiyonu yüzlerce saat oynadın, her matchup'ı, her gizli mekaniği ve her meta değişikliğini biliyorsun.
+  return `You are an OTP coach specialized in ${champion}. You have played this champion for hundreds of hours, knowing every matchup, every hidden mechanic, and every meta shift.
 
-Yanıtlarını her zaman geçerli JSON formatında ver. Markdown code block kullanma, sadece saf JSON objesi döndür.
+Respond in valid JSON format only. Do not use markdown code blocks, just return a pure JSON object.
 
-Casual bir overview değil — sadece gerçek OTP oyuncularının bildiği derinlemesine analizler sun.`;
+Provide deep analysis that only real OTP players would know — not casual overviews.`;
 }
 
 const ROLE_LABELS: Record<Position, string> = {
@@ -19,40 +19,40 @@ const ROLE_LABELS: Record<Position, string> = {
 export function buildOtpUserPrompt(champion: string, role: Position): string {
   const roleLabel = ROLE_LABELS[role];
 
-  return `${roleLabel}'da ${champion} için kapsamlı bir OTP rehberi oluştur.
+  return `Create a comprehensive OTP guide for ${champion} in ${roleLabel}.
 
-Yanıtı şu JSON formatında ver:
+Return your response in this exact JSON format:
 {
   "matchupTierList": {
-    "easy": [en az 5 kolay matchup — düşük skill gereksinimli, sen avantajlısın],
-    "medium": [en az 5 eşit matchup — dikkat gerektiriyor],
-    "hard": [en az 5 zor matchup — lane kaybedebilirsin]
+    "easy": [at least 5 easy matchups — low skill requirement, you have the advantage],
+    "medium": [at least 5 even matchups — requires attention],
+    "hard": [at least 5 hard matchups — you can lose lane]
   },
   "banPriority": [
-    { "champion": "isim", "priority": 1, "reason": "neden ban öncelikli" },
-    { "champion": "isim", "priority": 2, "reason": "neden" },
-    { "champion": "isim", "priority": 3, "reason": "neden" }
+    { "champion": "name", "priority": 1, "reason": "why ban priority" },
+    { "champion": "name", "priority": 2, "reason": "why" },
+    { "champion": "name", "priority": 3, "reason": "why" }
   ],
   "hiddenMechanics": [
-    "3-5 adet gizli mekanik veya interact — casual oyuncuların bilmediği şeyler"
+    "3-5 hidden mechanics or interactions — things casual players don't know"
   ],
   "powerSpikes": [
-    { "trigger": "Level 6", "description": "açıklama" },
-    { "trigger": "Trinity Force", "description": "açıklama" }
+    { "trigger": "Level 6", "description": "explanation" },
+    { "trigger": "Trinity Force", "description": "explanation" }
   ],
   "laneStrategies": [
-    "3-5 adet lane stratejisi ipucu"
+    "3-5 lane strategy tips"
   ],
   "metaRating": {
     "score": 7,
-    "assessment": "Güçlü / Orta / Zayıf / Broken",
-    "reasoning": "bu metada neden bu puana layık",
-    "patchContext": "son patch değişiklikleri bağlamı"
+    "assessment": "Strong / Average / Weak / Broken",
+    "reasoning": "why this champion deserves this score in current meta",
+    "patchContext": "context of recent patch changes"
   }
 }
 
-Her matchup kartı için şu alanları doldur:
-{ "opponent": "şampiyon adı", "difficulty": "easy"/"medium"/"hard", "summary": "kısa özet", "keyTip": "en kritik ipucu" }
+For each matchup card, fill these fields:
+{ "opponent": "champion name", "difficulty": "easy"/"medium"/"hard", "summary": "brief summary", "keyTip": "most critical tip" }
 
-Sadece JSON döndür, başka açıklama ekleme.`;
+Return only valid JSON, no additional explanation.`;
 }

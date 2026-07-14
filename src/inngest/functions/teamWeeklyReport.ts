@@ -67,12 +67,12 @@ export const teamWeeklyReport = inngest.createFunction(
         .join("");
 
       const html = `
-<h2 style="font-family:sans-serif">${team.name} — Haftalık Rapor</h2>
-<p style="font-family:sans-serif;color:#9ca3af">Son 7 günlük takım performans özeti</p>
+<h2 style="font-family:sans-serif">${team.name} — Weekly Report</h2>
+<p style="font-family:sans-serif;color:#9ca3af">Last 7 days team performance summary</p>
 <table style="border-collapse:collapse;width:100%;font-family:sans-serif;font-size:14px">
   <thead><tr style="background:#1f2937;color:#9ca3af">
-    <th style="padding:8px 12px;text-align:left">Oyuncu</th>
-    <th style="padding:8px 12px;text-align:center">Maç</th>
+    <th style="padding:8px 12px;text-align:left">Player</th>
+    <th style="padding:8px 12px;text-align:center">Games</th>
     <th style="padding:8px 12px;text-align:center">WR</th>
     <th style="padding:8px 12px;text-align:center">KDA</th>
   </tr></thead>
@@ -90,7 +90,7 @@ export const teamWeeklyReport = inngest.createFunction(
         await resend.emails.send({
           from: "LoL AI Coach <noreply@lolaicoach.gg>",
           to: email,
-          subject: `${team.name} Haftalık Rapor`,
+          subject: `${team.name} Weekly Report`,
           html,
         }).catch(() => {});
         sent++;

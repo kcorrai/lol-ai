@@ -26,7 +26,7 @@ export function ChampionFocusButton({ riotAccountId, championName }: ChampionFoc
       );
 
       if (matchIds.length === 0) {
-        setError("Bu şampiyonla henüz yeterli ranked maç yok.");
+        setError("Not enough ranked matches with this champion yet.");
         return;
       }
 
@@ -34,11 +34,11 @@ export function ChampionFocusButton({ riotAccountId, championName }: ChampionFoc
         { riotAccountId, reportType: "champion_focus", matchIds, focusArea: championName },
         {
           onSuccess: () => setDone(true),
-          onError: () => setError("Rapor oluşturulamadı, tekrar dene."),
+          onError: () => setError("Could not generate report, please try again."),
         }
       );
     } catch {
-      setError("Bir hata oluştu, tekrar dene.");
+      setError("An error occurred, please try again.");
     }
   }
 
@@ -48,7 +48,7 @@ export function ChampionFocusButton({ riotAccountId, championName }: ChampionFoc
         onClick={() => router.push("/coaching")}
         className="mt-2 w-full rounded-md bg-success/10 px-2 py-1.5 text-xs font-medium text-success hover:bg-success/20 transition-colors"
       >
-        Rapor kuyruğa alındı — raporlarda görüntüle →
+        Report queued — view in reports →
       </button>
     );
   }
@@ -63,7 +63,7 @@ export function ChampionFocusButton({ riotAccountId, championName }: ChampionFoc
         disabled={generateReport.isPending}
       >
         <Sparkles className="mr-1.5 h-3 w-3" />
-        {generateReport.isPending ? "Oluşturuluyor…" : "AI Analiz"}
+        {generateReport.isPending ? "Generating…" : "AI Analysis"}
       </Button>
       {error && (
         <p className="mt-1 text-center text-[11px] text-danger">{error}</p>

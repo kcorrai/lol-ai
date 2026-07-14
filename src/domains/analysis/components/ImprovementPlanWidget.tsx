@@ -27,11 +27,11 @@ function ProgressBar({ target }: { target: PlanProgress }) {
           )}
         >
           {achieved ? (
-            <><CheckCircle2 className="h-3 w-3" /> Tamamlandı</>
+            <><CheckCircle2 className="h-3 w-3" /> Completed</>
           ) : onTrack ? (
-            "↑ Yolunda"
+            "↑ On Track"
           ) : (
-            "→ Çalışılıyor"
+            "→ In Progress"
           )}
         </span>
       </div>
@@ -45,8 +45,8 @@ function ProgressBar({ target }: { target: PlanProgress }) {
         />
       </div>
       <div className="flex justify-between text-[11px] text-text-muted">
-        <span>Mevcut: <span className="font-medium text-text">{target.current}{target.unit ?? ""}</span></span>
-        <span>Hedef: <span className="font-medium text-text">{target.goal}{target.unit ?? ""}</span></span>
+        <span>Current: <span className="font-medium text-text">{target.current}{target.unit ?? ""}</span></span>
+        <span>Goal: <span className="font-medium text-text">{target.goal}{target.unit ?? ""}</span></span>
       </div>
     </div>
   );
@@ -75,20 +75,20 @@ export function ImprovementPlanWidget({ riotAccountId }: ImprovementPlanWidgetPr
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-accent/20 bg-accent/10">
             <Sparkles className="h-6 w-6 text-accent" />
           </div>
-          <p className="mb-1 text-base font-bold text-text">Gelişim Planını Başlat</p>
+          <p className="mb-1 text-base font-bold text-text">Start Improvement Plan</p>
           <p className="mx-auto mb-5 max-w-xs text-xs leading-relaxed text-text-muted">
-            Performansına özel 2 haftalık plan — mevcut verilerine göre günlük hedefler oluşturulur.
+            2-week personalized plan — daily goals created based on your current data.
           </p>
           <button
             onClick={() => generate.mutate()}
             disabled={generate.isPending}
             className="rounded-xl bg-accent px-6 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90 disabled:opacity-50"
           >
-            {generate.isPending ? "Oluşturuluyor…" : "Planımı Oluştur"}
+            {generate.isPending ? "Creating…" : "Create My Plan"}
           </button>
           <p className="mt-3 text-[11px] text-text-muted">
             <Clock className="mb-0.5 mr-0.5 inline h-3 w-3" />
-            Ortalama süre: ~10 saniye
+            Average time: ~10 seconds
           </p>
         </div>
       </div>
@@ -101,10 +101,10 @@ export function ImprovementPlanWidget({ riotAccountId }: ImprovementPlanWidgetPr
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-text-muted" />
-            <p className="text-xs font-semibold uppercase tracking-widest text-text-muted">Gelişim Planı</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-text-muted">Improvement Plan</p>
           </div>
           <span className="rounded-full border border-border bg-surface-2 px-2.5 py-0.5 text-xs text-text-muted">
-            Süresi Doldu
+            Expired
           </span>
         </div>
         <div className="mb-5 space-y-4">
@@ -115,7 +115,7 @@ export function ImprovementPlanWidget({ riotAccountId }: ImprovementPlanWidgetPr
           disabled={generate.isPending}
           className="w-full rounded-xl border border-accent px-4 py-2.5 text-sm font-semibold text-accent transition-colors hover:bg-accent/10 disabled:opacity-50"
         >
-          {generate.isPending ? "Oluşturuluyor…" : "Yeni Plan Başlat"}
+          {generate.isPending ? "Creating…" : "Start New Plan"}
         </button>
       </div>
     );
@@ -133,12 +133,12 @@ export function ImprovementPlanWidget({ riotAccountId }: ImprovementPlanWidgetPr
           </div>
           <div>
             <p className="text-sm font-semibold text-text">{plan.weekLabel}</p>
-            <p className="text-[11px] text-text-muted">{plan.daysLeft} gün kaldı</p>
+            <p className="text-[11px] text-text-muted">{plan.daysLeft} days left</p>
           </div>
         </div>
         <div className="text-right">
           <p className="text-lg font-bold text-accent">{achievedCount}/{plan.targets.length}</p>
-          <p className="text-[11px] text-text-muted">hedef</p>
+          <p className="text-[11px] text-text-muted">goals</p>
         </div>
       </div>
 
@@ -146,7 +146,7 @@ export function ImprovementPlanWidget({ riotAccountId }: ImprovementPlanWidgetPr
         <div className="mb-4 flex items-center gap-2 rounded-xl border border-success/20 bg-success/10 px-3 py-2.5">
           <CheckCircle2 className="h-4 w-4 shrink-0 text-success" />
           <p className="text-xs font-medium text-success">
-            Tüm hedeflere ulaştın! Gelişmeye devam etmek için yeni plan oluştur.
+            All goals reached! Create a new plan to keep improving.
           </p>
         </div>
       )}
@@ -161,7 +161,7 @@ export function ImprovementPlanWidget({ riotAccountId }: ImprovementPlanWidgetPr
           disabled={generate.isPending}
           className="w-full rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90 disabled:opacity-50"
         >
-          {generate.isPending ? "Oluşturuluyor…" : "Yeni Plan Oluştur"}
+          {generate.isPending ? "Creating…" : "Create New Plan"}
         </button>
       )}
     </div>

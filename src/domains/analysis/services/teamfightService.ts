@@ -48,7 +48,7 @@ export async function getTeamfightAnalysis(
       deathTiming: { early: 0, mid: 0, late: 0 },
       deathTimingPct: { early: 0, mid: 0, late: 0 },
       avgDeathTimeMinutes: 0,
-      peakDangerWindow: "yeterli veri yok",
+      peakDangerWindow: "insufficient data",
       matchCount: matchDbIds.length,
     };
   }
@@ -66,9 +66,9 @@ export async function getTeamfightAnalysis(
   const pct = (n: number) => Math.round((n / totalDeaths) * 100);
   const peakCount = Math.max(early, mid, late);
   const peakDangerWindow =
-    peakCount === early ? "Erken oyun (0-15 dk)"
-    : peakCount === mid ? "Orta oyun (15-25 dk)"
-    : "Geç oyun (25+ dk)";
+    peakCount === early ? "Early game (0-15 min)"
+    : peakCount === mid ? "Mid game (15-25 min)"
+    : "Late game (25+ min)";
 
   return {
     totalDeaths,
@@ -83,11 +83,11 @@ export async function getTeamfightAnalysis(
 export function teamfightContextForAi(analysis: TeamfightAnalysis): string {
   if (analysis.totalDeaths === 0) return "";
   return (
-    `Ölüm zamanlama analizi (son ${analysis.matchCount} maç): ` +
-    `Erken %${analysis.deathTimingPct.early}, ` +
-    `Orta %${analysis.deathTimingPct.mid}, ` +
-    `Geç %${analysis.deathTimingPct.late}. ` +
-    `En tehlikeli pencere: ${analysis.peakDangerWindow}. ` +
-    `Ortalama ölüm dakikası: ${analysis.avgDeathTimeMinutes}.`
+    `Death timing analysis (last ${analysis.matchCount} matches): ` +
+    `Early ${analysis.deathTimingPct.early}%, ` +
+    `Mid ${analysis.deathTimingPct.mid}%, ` +
+    `Late ${analysis.deathTimingPct.late}%. ` +
+    `Most dangerous window: ${analysis.peakDangerWindow}. ` +
+    `Average death minute: ${analysis.avgDeathTimeMinutes}.`
   );
 }

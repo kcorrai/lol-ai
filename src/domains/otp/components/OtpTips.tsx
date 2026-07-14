@@ -16,7 +16,7 @@ export function OtpTips({ powerSpikes, laneStrategies, hiddenMechanics, isPro }:
     <div className="space-y-4">
       {/* Power spikes */}
       <div className="rounded-xl border border-border bg-surface p-4 space-y-3">
-        <h3 className="text-sm font-semibold text-text">Power Spike&apos;lar</h3>
+        <h3 className="text-sm font-semibold text-text">Power Spikes</h3>
         <div className="space-y-2">
           {powerSpikes.map((spike, i) => (
             <div key={i} className="flex items-start gap-2">
@@ -33,7 +33,7 @@ export function OtpTips({ powerSpikes, laneStrategies, hiddenMechanics, isPro }:
 
       {/* Lane strategies */}
       <div className="rounded-xl border border-border bg-surface p-4 space-y-3">
-        <h3 className="text-sm font-semibold text-text">Lane Stratejileri</h3>
+        <h3 className="text-sm font-semibold text-text">Lane Strategies</h3>
         <ul className="space-y-1.5">
           {laneStrategies.map((strategy, i) => (
             <li key={i} className="flex items-start gap-2 text-sm text-text-muted">
@@ -47,7 +47,7 @@ export function OtpTips({ powerSpikes, laneStrategies, hiddenMechanics, isPro }:
       {/* Hidden mechanics */}
       <div className="rounded-xl border border-border bg-surface p-4 space-y-3">
         <div className="flex items-center gap-2">
-          <h3 className="text-sm font-semibold text-text">Gizli Mekanikler</h3>
+          <h3 className="text-sm font-semibold text-text">Hidden Mechanics</h3>
           {!isPro && (
             <span className="rounded-full border border-accent/30 bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent">
               PRO
@@ -66,10 +66,10 @@ export function OtpTips({ powerSpikes, laneStrategies, hiddenMechanics, isPro }:
           <div className="mt-2 rounded-lg border border-border bg-surface-2 p-4 text-center">
             <Lock className="mx-auto mb-2 h-5 w-5 text-text-muted" />
             <p className="mb-3 text-sm text-text-muted">
-              Tüm gizli mekanikleri görmek için Pro&apos;ya geçin
+              Upgrade to Pro to see all hidden mechanics
             </p>
             <Button size="sm" variant="default" asChild>
-              <a href="/pricing">Pro&apos;ya Geç →</a>
+              <a href="/pricing">Upgrade to Pro →</a>
             </Button>
           </div>
         )}

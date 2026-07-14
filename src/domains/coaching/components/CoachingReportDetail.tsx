@@ -37,18 +37,18 @@ function ReportHero({ report }: { report: CoachingReportDetail }) {
         <div className="flex gap-4">
           <div className="text-center">
             <p className="text-lg font-bold text-text">{report.matchesAnalyzed.length}</p>
-            <p className="text-xs text-text-muted">Maç</p>
+            <p className="text-xs text-text-muted">Matches</p>
           </div>
           {report.processingTimeMs && (
             <div className="text-center">
               <p className="text-lg font-bold text-text">{(report.processingTimeMs / 1000).toFixed(0)}s</p>
-              <p className="text-xs text-text-muted">AI Süresi</p>
+              <p className="text-xs text-text-muted">AI Time</p>
             </div>
           )}
           {report.estimatedRankPotential && (
             <div className="text-center">
               <p className="text-lg font-bold text-accent">{report.estimatedRankPotential}</p>
-              <p className="text-xs text-text-muted">Potansiyel</p>
+              <p className="text-xs text-text-muted">Potential</p>
             </div>
           )}
         </div>
@@ -62,7 +62,7 @@ function StrengthsList({ strengths }: { strengths: NonNullable<CoachingReportDet
     <Card className="border-success/20 bg-success/5">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-base text-success">
-          <CheckCircle2 className="h-4 w-4" /> Güçlü Yönler
+          <CheckCircle2 className="h-4 w-4" /> Strengths
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -88,7 +88,7 @@ function WeaknessesList({ weaknesses }: { weaknesses: NonNullable<CoachingReport
     <Card className="border-danger/20 bg-danger/5">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-base text-danger">
-          <XCircle className="h-4 w-4" /> Zayıf Yönler
+          <XCircle className="h-4 w-4" /> Weaknesses
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -101,7 +101,7 @@ function WeaknessesList({ weaknesses }: { weaknesses: NonNullable<CoachingReport
               <p className="text-sm font-semibold text-text">{w.area}</p>
               <p className="text-sm text-text-muted">{w.description}</p>
               {w.rootCause && (
-                <p className="mt-0.5 text-xs italic text-text-muted/70">Kök neden: {w.rootCause}</p>
+                <p className="mt-0.5 text-xs italic text-text-muted/70">Root cause: {w.rootCause}</p>
               )}
               <p className="mt-0.5 text-xs italic text-text-muted/70">{w.evidence}</p>
             </div>
@@ -118,7 +118,7 @@ function ActionItems({ items }: { items: NonNullable<CoachingReportDetail["actio
     <Card>
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-base text-accent">
-          <Target className="h-4 w-4" /> Aksiyon Planı
+          <Target className="h-4 w-4" /> Action Plan
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -153,7 +153,7 @@ function ChampionRecs({ recs }: { recs: NonNullable<CoachingReportDetail["champi
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-base text-accent">Odaklanılacak Şampiyonlar</CardTitle>
+        <CardTitle className="text-base text-accent">Focus Champions</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {recs.map((rec, i) => (
@@ -195,12 +195,12 @@ function ProInsightsGate() {
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/20">
           <Lock className="h-5 w-5 text-accent" />
         </div>
-        <p className="mt-3 font-display text-base font-semibold text-text">Tüm içgörüler Pro gerektirir</p>
+        <p className="mt-3 font-display text-base font-semibold text-text">All insights require Pro</p>
         <p className="mt-1 max-w-xs text-center text-xs text-text-muted">
-          Zayıf yönler, tüm aksiyon maddeleri ve şampiyon önerileri için Pro&apos;ya yükselt.
+          Upgrade to Pro for weaknesses, all action items, and champion recommendations.
         </p>
         <Link href="/settings/billing" className="mt-4">
-          <Button size="sm">Pro&apos;ya Yükselt</Button>
+          <Button size="sm">Upgrade to Pro</Button>
         </Link>
       </div>
     </div>
@@ -229,7 +229,7 @@ export function CoachingReportDetail({ report, isPro }: Props) {
         <Card className="border-accent/30 bg-accent/5">
           <CardHeader className="pb-1">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-xs uppercase tracking-widest text-accent">Koç Yorumu</CardTitle>
+              <CardTitle className="text-xs uppercase tracking-widest text-accent">Coach&apos;s Comment</CardTitle>
               <ListenButton reportId={report.id} text={report.coachPersonaResponse} />
             </div>
           </CardHeader>

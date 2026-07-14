@@ -29,15 +29,15 @@ export default async function PublicRecapPage({ params }: Props) {
       <div className="w-full max-w-sm space-y-6 rounded-2xl border border-border bg-surface p-6 shadow-xl">
         <div className="text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-accent">{recap.seasonLabel}</p>
-          <h1 className="mt-2 font-display text-3xl font-black text-text">Bu Sezonun Rekoru</h1>
+          <h1 className="mt-2 font-display text-3xl font-black text-text">This Season&apos;s Record</h1>
         </div>
 
         <div className="grid grid-cols-2 gap-4 text-center">
           {[
-            { label: "Maç", value: String(data.totalMatches) },
-            { label: "Kazanma", value: `%${data.winRate}` },
+            { label: "Matches", value: String(data.totalMatches) },
+            { label: "Win Rate", value: `%${data.winRate}` },
             { label: "LP", value: `${data.lpDelta > 0 ? "+" : ""}${data.lpDelta}` },
-            { label: "En İyi", value: data.topChampion.name },
+            { label: "Best", value: data.topChampion.name },
           ].map((s) => (
             <div key={s.label} className="rounded-xl border border-border bg-surface-2 p-3">
               <p className="font-display text-2xl font-bold text-text">{s.value}</p>
@@ -59,12 +59,12 @@ export default async function PublicRecapPage({ params }: Props) {
 
       {/* CTA */}
       <div className="mt-8 text-center">
-        <p className="mb-3 text-sm text-text-muted">Sen de kendi recapını oluştur!</p>
+        <p className="mb-3 text-sm text-text-muted">Create your own recap!</p>
         <Link
           href="/login"
           className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
         >
-          Bunu ben de dene →
+          Try it yourself →
         </Link>
       </div>
     </div>

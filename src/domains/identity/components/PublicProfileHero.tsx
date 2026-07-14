@@ -15,9 +15,9 @@ const TIER_GLOW: Record<string, string> = {
 };
 
 const TIER_LABELS: Record<string, string> = {
-  IRON: "Demir", BRONZE: "Bronz", SILVER: "Gümüş", GOLD: "Altın",
-  PLATINUM: "Platin", EMERALD: "Zümrüt", DIAMOND: "Elmas",
-  MASTER: "Usta", GRANDMASTER: "Büyük Usta", CHALLENGER: "Challenger",
+  IRON: "Iron", BRONZE: "Bronze", SILVER: "Silver", GOLD: "Gold",
+  PLATINUM: "Platinum", EMERALD: "Emerald", DIAMOND: "Diamond",
+  MASTER: "Master", GRANDMASTER: "Grandmaster", CHALLENGER: "Challenger",
 };
 
 const REGION_FLAGS: Record<string, string> = {
@@ -108,7 +108,7 @@ export function PublicProfileHero({ displayName, profileIconId, rank, region, jo
 
           <p className="mt-2 flex items-center gap-1.5 text-xs text-text-muted/50">
             <Calendar className="h-3 w-3" />
-            {new Date(joinedAt).toLocaleDateString("tr-TR", { month: "long", year: "numeric" })} tarihinden beri
+            Member since {new Date(joinedAt).toLocaleDateString("en-US", { month: "long", year: "numeric" })}
           </p>
         </div>
       </div>

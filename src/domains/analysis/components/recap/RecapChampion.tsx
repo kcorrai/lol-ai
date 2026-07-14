@@ -37,7 +37,7 @@ export function RecapChampion({ championName, games, winRate, kda }: Props) {
 
       {/* Stats overlay */}
       <div className="relative z-10 flex flex-col items-center gap-3">
-        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">Bu Sezonun Yıldızı</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">Season Star</p>
         <h2
           className="font-display text-5xl font-black text-text"
           style={{ textShadow: "0 0 40px rgba(200,155,60,0.4)" }}
@@ -47,7 +47,7 @@ export function RecapChampion({ championName, games, winRate, kda }: Props) {
         <div className="flex gap-4">
           <div className="gaming-card flex flex-col items-center gap-0.5 rounded-xl px-4 py-2">
             <span className="font-display text-xl font-black text-text">{games}</span>
-            <span className="text-[10px] text-text-muted">Maç</span>
+            <span className="text-[10px] text-text-muted">Matches</span>
           </div>
           <div className="gaming-card flex flex-col items-center gap-0.5 rounded-xl px-4 py-2">
             <span className={`font-display text-xl font-black ${wrColor}`}>%{winRate}</span>

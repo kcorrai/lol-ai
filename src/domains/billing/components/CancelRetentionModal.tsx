@@ -11,11 +11,11 @@ interface Props {
 }
 
 const USED_FEATURES = [
-  "Sınırsız AI koçluk raporu",
-  "Şampiyon havuzu analizi",
-  "Haftalık gelişim e-postaları",
-  "Ranked ilerleme takibi",
-  "Maç detay analizi",
+  "Unlimited AI coaching report",
+  "Champion pool analysis",
+  "Weekly progress emails",
+  "Ranked progression tracking",
+  "Match detail analysis",
 ];
 
 export function CancelRetentionModal({ onClose, onCancelAnyway }: Props) {
@@ -42,12 +42,12 @@ export function CancelRetentionModal({ onClose, onCancelAnyway }: Props) {
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
         <div className="relative mx-4 w-full max-w-md rounded-2xl border border-success/30 bg-surface p-6 text-center shadow-2xl">
           <CheckCircle2 className="mx-auto mb-3 h-12 w-12 text-success" />
-          <h2 className="mb-2 font-display text-xl font-bold text-text">İndirim Uygulandı!</h2>
+          <h2 className="mb-2 font-display text-xl font-bold text-text">Discount Applied!</h2>
           <p className="text-sm text-text-muted">
-            Bir sonraki faturanızda %20 indirim uygulanacaktır. Pro üyeliğiniz aktif kalmaya devam ediyor.
+            A 20% discount will be applied to your next invoice. Your Pro membership will continue to remain active.
           </p>
           <Button onClick={onClose} className="mt-5 w-full">
-            Harika, kalmaya devam et!
+            Great, keep me subscribed!
           </Button>
         </div>
       </div>
@@ -66,9 +66,9 @@ export function CancelRetentionModal({ onClose, onCancelAnyway }: Props) {
 
         <div className="mb-4">
           <Gift className="mb-2 h-8 w-8 text-accent" />
-          <h2 className="font-display text-xl font-bold text-text">Gitmeden önce...</h2>
+          <h2 className="font-display text-xl font-bold text-text">Before you go...</h2>
           <p className="mt-1 text-sm text-text-muted">
-            Pro üyeliğinle şu anda bunları kullanıyorsun:
+            With your Pro membership, you&apos;re currently using:
           </p>
         </div>
 
@@ -82,9 +82,9 @@ export function CancelRetentionModal({ onClose, onCancelAnyway }: Props) {
         </ul>
 
         <div className="mb-5 rounded-xl border border-accent/30 bg-accent/5 p-4 text-center">
-          <p className="text-sm font-semibold text-text">Özel teklif: Sonraki ay %20 indirim</p>
+          <p className="text-sm font-semibold text-text">Special offer: 20% off next month</p>
           <p className="mt-0.5 text-xs text-text-muted">
-            Bu teklifi kabul edersen planın aktif kalır ve bir sonraki faturanda indirim uygulanır.
+            If you accept this offer, your plan will remain active and the discount will be applied to your next invoice.
           </p>
         </div>
 
@@ -96,14 +96,14 @@ export function CancelRetentionModal({ onClose, onCancelAnyway }: Props) {
             disabled={loading}
             className="w-full"
           >
-            {loading ? "Uygulanıyor..." : "%20 İndirimle Devam Et"}
+            {loading ? "Applying..." : "Continue with 20% Off"}
           </Button>
           <Button
             variant="ghost"
             onClick={onCancelAnyway}
             className="w-full text-text-muted hover:text-text"
           >
-            Yine de iptal et →
+            Cancel anyway →
           </Button>
         </div>
       </div>

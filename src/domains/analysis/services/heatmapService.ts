@@ -24,9 +24,9 @@ const TIME_RANGES: Record<string, [number, number]> = {
 };
 
 function mapRegion(x: number): string {
-  if (x < 4500) return "kendi bölgesi";
-  if (x > 10000) return "düşman bölgesi";
-  return "orta bölge";
+  if (x < 4500) return "own side";
+  if (x > 10000) return "enemy side";
+  return "center";
 }
 
 async function generateSummary(deaths: DeathPoint[]): Promise<string> {
@@ -49,11 +49,11 @@ async function generateSummary(deaths: DeathPoint[]): Promise<string> {
   const topRegion = sorted[0];
   const pct = Math.round((topRegion[1] / deaths.length) * 100);
 
-  const prompt = `Oyuncu son maçlarda ${deaths.length} kez öldü. Ölümlerin ${pct}%'si ${topRegion[0]}'nde gerçekleşiyor. Diğer ölüm dağılımı: ${sorted.slice(1).map(([r, c]) => `${r}: ${Math.round((c / deaths.length) * 100)}%`).join(", ")}. Türkçe, 2 cümle, somut pozisyon tavsiyesi.`;
+  const prompt = `The player died ${deaths.length} times in recent matches. ${pct}% of deaths happen on ${topRegion[0]}. Other death distribution: ${sorted.slice(1).map(([r, c]) => `${r}: ${Math.round((c / deaths.length) * 100)}%`).join(", ")}. In English, provide 2 sentences with concrete positioning advice.`;
 
   try {
     const result = await getAiClient("lite").complete(
-      "Sen bir LoL koçusun. Oyuncunun ölüm haritası verisini analiz ediyorsun.",
+      "You are a LoL coach. Analyze the player's death heatmap data.",
       prompt,
       { maxTokens: 120 }
     );
@@ -61,7 +61,7 @@ async function generateSummary(deaths: DeathPoint[]): Promise<string> {
     return result.content;
   } catch (err) {
     logger.warn(`[heatmapService] AI summary failed: ${err instanceof Error ? err.message : String(err)}`);
-    return `Ölümlerinin ${pct}'si ${topRegion[0]}'nde gerçekleşiyor.`;
+    return `${pct}% of deaths happen on ${topRegion[0]}.`;
   }
 }
 

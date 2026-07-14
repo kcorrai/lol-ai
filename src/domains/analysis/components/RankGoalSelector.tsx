@@ -53,7 +53,7 @@ export function RankGoalSelector({ currentRank, value, onChange }: RankGoalSelec
     <div className="rounded-lg border border-border bg-surface p-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:gap-6">
         <div>
-          <p className="mb-1 text-xs text-text-muted">Mevcut Rank</p>
+          <p className="mb-1 text-xs text-text-muted">Current Rank</p>
           <p className="text-sm font-semibold text-text">
             {currentRank
               ? `${TIER_LABELS[currentRank.tier as RankTier]} ${currentRank.division} — ${currentRank.lp} LP`
@@ -65,13 +65,13 @@ export function RankGoalSelector({ currentRank, value, onChange }: RankGoalSelec
 
         <div className="flex items-end gap-2">
           <div>
-            <p className="mb-1 text-xs text-text-muted">Hedef Tier</p>
+            <p className="mb-1 text-xs text-text-muted">Goal Tier</p>
             <select
               value={value?.tier ?? ""}
               onChange={(e) => handleTierChange(e.target.value as RankTier)}
               className="rounded-md border border-border bg-surface px-3 py-1.5 text-sm text-text"
             >
-              <option value="">Seç...</option>
+              <option value="">Choose...</option>
               {availableTiers.map((t) => (
                 <option key={t} value={t}>{TIER_LABELS[t]}</option>
               ))}

@@ -14,12 +14,12 @@ import { useSetPrimaryAccount } from "@/hooks/useSetPrimaryAccount";
 import { useSubscription } from "@/hooks/useSubscription";
 
 function relativeTime(date: string | Date | null): string {
-  if (!date) return "Hiç senkronize edilmedi";
+  if (!date) return "Never synced";
   const secs = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
-  if (secs < 60) return "Az önce";
-  if (secs < 3600) return `${Math.floor(secs / 60)} dk önce`;
-  if (secs < 86400) return `${Math.floor(secs / 3600)} s önce`;
-  return `${Math.floor(secs / 86400)} g önce`;
+  if (secs < 60) return "Just now";
+  if (secs < 3600) return `${Math.floor(secs / 60)}m ago`;
+  if (secs < 86400) return `${Math.floor(secs / 3600)}h ago`;
+  return `${Math.floor(secs / 86400)}d ago`;
 }
 
 function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, profileIconId, summonerLevel, canDisconnect }: {
@@ -70,17 +70,17 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
           </div>
         </div>
         <div className="flex gap-1.5 shrink-0">
-          {isPrimary && <Badge variant="secondary" className="text-xs">Birincil</Badge>}
+          {isPrimary && <Badge variant="secondary" className="text-xs">Primary</Badge>}
         </div>
       </div>
 
       {syncStatus?.status === "RUNNING" || syncStatus?.status === "PENDING" ? (
-        <p className="text-xs text-accent animate-pulse">Senkronize ediliyor…</p>
+        <p className="text-xs text-accent animate-pulse">Syncing…</p>
       ) : syncStatus?.status === "COMPLETED" ? (
-        <p className="text-xs text-success">Senkronize edildi</p>
+        <p className="text-xs text-success">Synced</p>
       ) : syncStatus?.status === "FAILED" ? (
         <p className="text-xs text-danger">
-          Senkronizasyon başarısız — &quot;Şimdi Senkronize Et&quot; ile tekrar dene.
+          Sync failed — try again with &quot;Sync Now&quot;.
         </p>
       ) : null}
       {sync.isError && sync.variables === id && (
@@ -94,7 +94,7 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
           onClick={() => sync.mutate(id)}
           disabled={isSyncing || disconnect.isPending}
         >
-          {isSyncing ? "Senkronize ediliyor…" : "Şimdi Senkronize Et"}
+          {isSyncing ? "Syncing…" : "Sync Now"}
         </Button>
 
         {!isPrimary && (
@@ -104,7 +104,7 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
             onClick={() => setPrimary.mutate(id)}
             disabled={isSettingPrimary}
           >
-            {isSettingPrimary ? "Ayarlanıyor…" : "Birincil Yap"}
+            {isSettingPrimary ? "Setting…" : "Make Primary"}
           </Button>
         )}
 
@@ -116,7 +116,7 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
               className="text-danger hover:text-danger"
               onClick={() => setConfirmDisconnect(true)}
             >
-              Bağlantıyı Kes
+              Disconnect
             </Button>
           ) : (
             <div className="flex gap-1.5">
@@ -126,10 +126,10 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
                 onClick={() => disconnect.mutate(id)}
                 disabled={disconnect.isPending}
               >
-                {disconnect.isPending ? "Kaldırılıyor…" : "Onayla"}
+                {disconnect.isPending ? "Removing…" : "Confirm"}
               </Button>
               <Button size="sm" variant="ghost" onClick={() => setConfirmDisconnect(false)}>
-                İptal
+                Cancel
               </Button>
             </div>
           )
@@ -156,7 +156,7 @@ export function ConnectedAccountsList() {
 
   if (!accounts || accounts.length === 0) {
     return (
-      <p className="text-sm text-text-muted">Henüz bağlı hesap yok. Aşağıda bir tane ekle.</p>
+      <p className="text-sm text-text-muted">No connected accounts yet. Add one below.</p>
     );
   }
 

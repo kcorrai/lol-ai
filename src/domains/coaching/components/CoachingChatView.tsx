@@ -7,18 +7,18 @@ import type { CoachPersona } from "@/lib/ai/chatSystemPrompt";
 import { cn } from "@/lib/utils";
 
 const SUGGESTED = [
-  "Şu an en büyük zayıflığım ne?",
-  "Pozitif skora rağmen neden maç kaybediyorum?",
-  "Takım gerideyken nasıl oynamalıyım?",
-  "Bu hafta hangi şampiyona odaklanmalıyım?",
-  "CS'im neden bu kadar düşük?",
-  "Roaming ne zaman yapmalıyım?",
+  "What's my biggest weakness right now?",
+  "Why am I losing despite being ahead?",
+  "How should I play when my team is behind?",
+  "Which champion should I focus on this week?",
+  "Why is my CS so low?",
+  "When should I roam?",
 ];
 
 const PERSONAS: { value: CoachPersona; label: string; description: string }[] = [
-  { value: "direct",       label: "Direkt",      description: "Lafı dolandırmadan, net ve özlü" },
-  { value: "analytical",   label: "Analitik",    description: "Veri odaklı, sayısal analiz" },
-  { value: "motivational", label: "Motive Edici", description: "Teşvik edici ve pozitif" },
+  { value: "direct",       label: "Direct",        description: "Straight to the point, concise and clear" },
+  { value: "analytical",   label: "Analytical",    description: "Data-driven, numerical analysis" },
+  { value: "motivational", label: "Motivational",  description: "Encouraging and positive" },
 ];
 
 interface CoachingChatViewProps {
@@ -60,13 +60,13 @@ export function CoachingChatView({ riotAccountId, playerLabel }: CoachingChatVie
       <div className="border-b border-border px-4 py-3 space-y-2">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-text">AI Koçun</p>
+            <p className="text-sm font-semibold text-text">Your AI Coach</p>
             <p className="text-xs text-text-muted">{playerLabel}</p>
           </div>
           <div className="flex items-center gap-3">
             {dailyLimit !== null && (
               <span className="text-xs text-text-muted">
-                {remaining}/{dailyLimit} mesaj kaldı
+                {remaining}/{dailyLimit} messages remaining
               </span>
             )}
             {messages.length > 0 && (
@@ -74,7 +74,7 @@ export function CoachingChatView({ riotAccountId, playerLabel }: CoachingChatVie
                 onClick={clear}
                 className="text-xs text-text-muted underline-offset-2 hover:text-text hover:underline"
               >
-                Yeni Sohbet
+                New Chat
               </button>
             )}
           </div>
@@ -106,7 +106,7 @@ export function CoachingChatView({ riotAccountId, playerLabel }: CoachingChatVie
         {messages.length === 0 ? (
           <div className="space-y-3">
             <p className="text-center text-xs text-text-muted">
-              Performansın, şampiyon havuzun veya gelişim planın hakkında her şeyi sorabilirsin.
+              Ask me anything about your performance, champion pool, or growth plan.
             </p>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               {SUGGESTED.map((q) => (
@@ -141,11 +141,11 @@ export function CoachingChatView({ riotAccountId, playerLabel }: CoachingChatVie
       <div className="border-t border-border px-4 py-3">
         {limitReached ? (
           <p className="text-center text-xs text-text-muted">
-            Günlük limit doldu.{" "}
+            Daily limit reached.{" "}
             <a href="/settings/billing" className="text-accent underline">
-              Pro&apos;ya Geç
+              Upgrade to Pro
             </a>{" "}
-            — günde 50 mesaj.
+            — 50 messages per day.
           </p>
         ) : (
           <div className="flex items-end gap-2">
@@ -155,7 +155,7 @@ export function CoachingChatView({ riotAccountId, playerLabel }: CoachingChatVie
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               disabled={isStreaming || limitReached}
-              placeholder="Koçuna sor…"
+              placeholder="Ask your coach…"
               rows={1}
               className="flex-1 resize-none rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text placeholder:text-text-muted focus:border-accent focus:outline-none disabled:opacity-50"
             />
@@ -164,7 +164,7 @@ export function CoachingChatView({ riotAccountId, playerLabel }: CoachingChatVie
               disabled={isStreaming || !input.trim()}
               className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
             >
-              Gönder
+              Send
             </button>
           </div>
         )}

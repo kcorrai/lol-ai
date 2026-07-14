@@ -12,14 +12,14 @@ interface TeamWinRateTrendProps {
 
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr);
-  return d.toLocaleDateString("tr-TR", { day: "numeric", month: "short" });
+  return d.toLocaleDateString("en-US", { day: "numeric", month: "short" });
 }
 
 export function TeamWinRateTrend({ data }: TeamWinRateTrendProps) {
   if (data.length === 0) {
     return (
       <div className="flex h-40 items-center justify-center text-sm text-text-muted">
-        Bu dönemde maç verisi yok
+        No match data for this period
       </div>
     );
   }

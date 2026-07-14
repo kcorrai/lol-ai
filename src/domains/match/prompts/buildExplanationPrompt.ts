@@ -9,9 +9,9 @@ interface ParticipantContext {
 }
 
 export function buildBuildExplanationSystemPrompt(): string {
-  return `Sen bir League of Legends build analisti koçusun. Sana gerçek bir maçın verilerini vereceğim. Oyuncunun aldığı itemleri analiz et ve yapay zekâ gibi değil, deneyimli bir koç gibi yanıt ver.
+  return `You are a League of Legends build analysis coach. I will provide you with real match data. Analyze the items the player bought and respond like an experienced coach, not like an AI.
 
-Yanıtlarını her zaman geçerli JSON formatında ver. Sadece saf JSON objesi döndür, markdown code block kullanma.`;
+Always respond in valid JSON format. Return only the pure JSON object, do not use markdown code blocks.`;
 }
 
 export function buildBuildExplanationUserPrompt(
@@ -20,45 +20,45 @@ export function buildBuildExplanationUserPrompt(
   itemNames: Record<number, string>
 ): string {
   const kda = `${participant.kills}/${participant.deaths}/${participant.assists}`;
-  const outcome = participant.won ? "Kazandı" : "Kaybetti";
+  const outcome = participant.won ? "Won" : "Lost";
   const nonZeroItems = participant.itemIds
     .filter((id) => id > 0)
-    .map((id, i) => `${i + 1}. ${itemNames[id] ?? `Bilinmeyen Item (ID: ${id})`}`);
+    .map((id, i) => `${i + 1}. ${itemNames[id] ?? `Unknown Item (ID: ${id})`}`);
 
   const itemCount = nonZeroItems.length;
 
-  return `Bu maçı analiz et:
+  return `Analyze this match:
 
-Oyuncu: ${participant.championName}
+Player: ${participant.championName}
 KDA: ${kda} — ${outcome}
-Oyun Süresi: ${participant.gameDurationMinutes} dakika
-Rakip Takım: ${enemyChampions.join(", ")}
+Game Duration: ${participant.gameDurationMinutes} minutes
+Enemy Team: ${enemyChampions.join(", ")}
 
-Oyuncunun envanterinde TAM OLARAK şu ${itemCount} item var (sırası önemli):
+The player's inventory has EXACTLY ${itemCount} items (order matters):
 ${nonZeroItems.join("\n")}
 
-KURALLAR:
-- "items" dizisinde TAM OLARAK ${itemCount} eleman olmalı — ne fazla ne eksik.
-- Her eleman yukarıdaki listedeki sırayla birebir eşleşmeli (1. item → items[0], 2. item → items[1], …).
-- "itemName" alanına yukarıdaki listedeki adı aynen yaz, değiştirme.
-- Yukarıdaki tüm itemler Riot Games'in resmi DDragon veritabanından çekilmiştir ve güncel sezonda MEVCUTTUR. "Oyunda mevcut değil", "kaldırılmış", "eski sezon" gibi ifadeler KULLANMA — bu bilgi yanlış olur.
-- Bir item adını tanımıyorsan bu senin bilgi kesim tarihinden kaynaklanıyor olabilir; yine de o item için meta içindeki rolüne göre mantıklı bir analiz yap.
+RULES:
+- The "items" array must have EXACTLY ${itemCount} elements — no more, no less.
+- Each element must match the order above precisely (1st item → items[0], 2nd item → items[1], …).
+- In the "itemName" field, use the exact name from the list above, do not change it.
+- All items above are from Riot Games' official DDragon database and EXIST in the current season. Do NOT use phrases like "doesn't exist in-game", "removed", or "old season" — this information would be wrong.
+- If you don't recognize an item name, it may be due to your knowledge cutoff date; still provide a reasonable analysis based on the item's role in the meta.
 
-Şu JSON formatında yanıt ver:
+Respond in this JSON format:
 {
-  "summary": "Genel build analizi — 2-3 cümle",
+  "summary": "General build analysis — 2-3 sentences",
   "items": [
     {
-      "itemName": "Yukarıdaki listedeki adın aynısı",
+      "itemName": "The exact name from the list above",
       "wasGoodChoice": true,
-      "reasoning": "Neden iyi/kötü seçimdi",
-      "betterAlternative": "Daha iyi alternatif item adı (yoksa null)",
-      "whenToChoose": "Bu item ne zaman alınmalı"
+      "reasoning": "Why it was a good or bad choice",
+      "betterAlternative": "A better alternative item name (or null)",
+      "whenToChoose": "When this item should be purchased"
     }
   ],
-  "buildPath": "Bu oyun için ideal build sırası ne olurdu — kısa özet",
-  "biggestMistake": "Bu builddeki en büyük hata (yoksa null)"
+  "buildPath": "What would have been the ideal build order for this game — brief summary",
+  "biggestMistake": "The biggest mistake in this build (or null)"
 }
 
-Sadece JSON döndür.`;
+Return only JSON.`;
 }
