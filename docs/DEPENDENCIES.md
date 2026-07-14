@@ -160,3 +160,24 @@ This document records every production and development dependency added after th
 **Purpose:** Zero-cost, patch-current global champion stats (win/pick/ban rate, tier, per-lane counters) powering the public free tools. One request returns all champions.
 **Integration:** Isolated behind `src/domains/meta/` with a 12h fresh cache plus a never-expiring last-good snapshot fallback. See `docs/adr/ADR-008-meta-stats-source.md`.
 **Note:** Unofficial endpoint — no API key, no npm dependency, fetched server-side only. Fallback and swap-in interface documented in the ADR.
+
+---
+
+## 3D Landing Dependencies
+
+### `three`, `@react-three/fiber` (v8), `@react-three/drei` (v9)
+
+**Added in:** TASK-176
+**Purpose:** 3D hextech hero on the landing page — floating real champion splash
+cards with a golden particle field and mouse parallax.
+**Why this, not alternatives:** R3F is the declarative React wrapper for Three.js
+with the richest ecosystem; drei provides `useTexture`/`Float` helpers. Pinned to
+the **v8/v9 line** because R3F v9 requires React 19 and the app is on React 18.
+**Scope:** `app/(marketing)/components/hero3d/` only, lazy-loaded via
+`next/dynamic({ ssr: false })`. See `docs/adr/ADR-009-3d-landing-stack.md`.
+
+### `framer-motion` (v11)
+
+**Added in:** TASK-176
+**Purpose:** Lightweight declarative UI animation for the marketing surface.
+**Scope:** marketing components.
