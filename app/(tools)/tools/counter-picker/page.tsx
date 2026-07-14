@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getCounterData, parsePosition, POSITION_LABELS } from "@/domains/meta";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
+import { CounterResults } from "@/domains/meta/components/CounterResults";
 import { CounterPickerControls } from "./CounterPickerControls";
-import { CounterResults } from "./CounterResults";
 
 interface PageProps {
   searchParams: { champion?: string; role?: string };
