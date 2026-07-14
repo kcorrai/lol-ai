@@ -91,7 +91,16 @@ export default async function MatchupPage({ searchParams }: PageProps) {
 
           <MatchupReportCard report={report} />
 
-          <div className="mt-12 rounded-2xl border border-accent/30 bg-accent/5 p-6 text-center">
+          <div className="mt-4 text-center">
+            <Link
+              href={`/matchups/${[report.championA.key.toLowerCase(), report.championB.key.toLowerCase()].sort().join("-vs-")}`}
+              className="inline-block rounded-md border border-border px-5 py-2 text-sm font-semibold text-text-muted transition-colors hover:border-accent/50 hover:text-text"
+            >
+              Full {report.championA.name} vs {report.championB.name} guide →
+            </Link>
+          </div>
+
+          <div className="mt-8 rounded-2xl border border-accent/30 bg-accent/5 p-6 text-center">
             <h2 className="font-display text-xl font-bold text-text">
               Struggling with this lane in your own games?
             </h2>

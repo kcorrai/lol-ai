@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
+import { getMatchupPairs } from "@/domains/meta";
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const champions = await fetchAllChampions();
+  const [champions, matchupPairs] = await Promise.all([fetchAllChampions(), getMatchupPairs(1500)]);
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: BASE_URL, changeFrequency: "weekly", priority: 1 },
@@ -36,5 +37,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...championRoutes, ...counterRoutes, ...buildRoutes];
+  const matchupRoutes: MetadataRoute.Sitemap = matchupPairs.map((p) => ({
+    url: `${BASE_URL}/matchups/${p.a.toLowerCase()}-vs-${p.b.toLowerCase()}`,
+    changeFrequency: "weekly" as const,
+    priority: 0.6,
+  }));
+
+  return [
+    ...staticRoutes,
+    ...championRoutes,
+    ...counterRoutes,
+    ...buildRoutes,
+    ...matchupRoutes,
+  ];
 }
