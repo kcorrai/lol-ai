@@ -27,6 +27,19 @@ export const metadata: Metadata = {
     "Connect your Riot account. Get specific, honest feedback on what's holding you back. Stop being hardstuck.",
   keywords: ["League of Legends", "coaching", "AI", "improve", "rank"],
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
+  openGraph: {
+    type: "website",
+    siteName: "LoL AI Coach",
+    title: "LoL AI Coach — AI-Powered League of Legends Coaching",
+    description:
+      "Free LoL tools and AI coaching: counters, matchups, drafts and tier lists from real ranked data.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "LoL AI Coach — AI-Powered League of Legends Coaching",
+    description:
+      "Free LoL tools and AI coaching: counters, matchups, drafts and tier lists from real ranked data.",
+  },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "32x32" },
