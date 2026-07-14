@@ -36,6 +36,14 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    // Old authed tool routes are now public keyword URLs under /tools.
+    return [
+      { source: "/counter", destination: "/tools/counter-picker", permanent: true },
+      { source: "/matchup", destination: "/tools/matchup", permanent: true },
+      { source: "/draft", destination: "/tools/draft-analyzer", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

@@ -44,6 +44,13 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
 
+    // Public free tools — no auth, no setup dependency
+    {
+      name: "tools",
+      testMatch: /tools\.spec\.ts$/,
+      use: { ...devices["Desktop Chrome"] },
+    },
+
     // Smoke tests requiring authentication — depend on setup project
     {
       name: "smoke",

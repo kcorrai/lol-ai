@@ -17,24 +17,27 @@ export function MarketingHeader() {
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-8 md:flex">
+          <Link href="/tools" className="text-sm text-text-muted transition-colors hover:text-text">
+            Free Tools
+          </Link>
           <Link href="/champions" className="text-sm text-text-muted transition-colors hover:text-text">
-            Şampiyonlar
+            Champions
           </Link>
           <Link href="/pricing" className="text-sm text-text-muted transition-colors hover:text-text">
-            Fiyatlar
+            Pricing
           </Link>
         </nav>
 
         {/* Desktop CTAs */}
         <div className="hidden items-center gap-3 md:flex">
           <Link href="/login" className="text-sm text-text-muted transition-colors hover:text-text">
-            Giriş Yap
+            Log In
           </Link>
           <Link
             href="/register"
             className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-90"
           >
-            Ücretsiz Başla
+            Get Started Free
           </Link>
         </div>
 
@@ -44,11 +47,11 @@ export function MarketingHeader() {
             href="/register"
             className="rounded-md bg-accent px-3 py-1.5 text-xs font-semibold text-background transition-opacity hover:opacity-90"
           >
-            Ücretsiz Başla
+            Get Started Free
           </Link>
           <button
             onClick={() => setOpen((v) => !v)}
-            aria-label="Menüyü aç"
+            aria-label="Open menu"
             className="rounded-md p-2 text-text-muted hover:text-text"
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -60,14 +63,17 @@ export function MarketingHeader() {
       {open && (
         <div className="border-t border-border bg-background px-6 py-4 md:hidden">
           <nav className="flex flex-col gap-4">
+            <Link href="/tools" className="text-sm text-text-muted hover:text-text" onClick={() => setOpen(false)}>
+              Free Tools
+            </Link>
             <Link href="/champions" className="text-sm text-text-muted hover:text-text" onClick={() => setOpen(false)}>
-              Şampiyonlar
+              Champions
             </Link>
             <Link href="/pricing" className="text-sm text-text-muted hover:text-text" onClick={() => setOpen(false)}>
-              Fiyatlar
+              Pricing
             </Link>
             <Link href="/login" className="text-sm text-text-muted hover:text-text" onClick={() => setOpen(false)}>
-              Giriş Yap
+              Log In
             </Link>
           </nav>
         </div>

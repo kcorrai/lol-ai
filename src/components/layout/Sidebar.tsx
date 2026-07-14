@@ -28,10 +28,10 @@ const NAV_MAIN = [
 ] as const;
 
 const NAV_TOOLS = [
-  { href: "/counter", icon: Target, label: "Counter Pick" },
-  { href: "/matchup", icon: Swords, label: "Matchup Koçu" },
-  { href: "/otp",     icon: Star,   label: "OTP Asistanı" },
-  { href: "/draft",   icon: Users,  label: "Draft Analizci" },
+  { href: "/tools/counter-picker", icon: Target, label: "Counter Picker" },
+  { href: "/tools/matchup",        icon: Swords, label: "Matchup Analyzer" },
+  { href: "/otp",                  icon: Star,   label: "OTP Assistant" },
+  { href: "/tools/draft-analyzer", icon: Users,  label: "Draft Analyzer" },
 ] as const;
 
 const NAV_SETTINGS = [
