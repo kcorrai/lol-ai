@@ -1,5 +1,5 @@
 // Public API of the meta domain — zero-cost, patch-current champion stats.
-export { getMetaSnapshot, findChampionStats } from "@/domains/meta/services/metaStatsService";
+export { getMetaSnapshot, findChampionStats, getPopularChampions } from "@/domains/meta/services/metaStatsService";
 export { getCounterData } from "@/domains/meta/services/counterService";
 export type { CounterMatchup, CounterResult } from "@/domains/meta/services/counterService";
 export { getMatchupData } from "@/domains/meta/services/matchupService";

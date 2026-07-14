@@ -75,7 +75,7 @@ const ChampionSchema = z.object({
 
 const OpggResponseSchema = z.object({
   data: z.array(ChampionSchema),
-  meta: z.object({ version: z.string().optional() }).optional(),
+  meta: z.object({ version: z.string().optional(), match_count: z.number().optional() }).optional(),
 });
 
 type OpggChampion = z.infer<typeof ChampionSchema>;
@@ -140,6 +140,7 @@ function buildSnapshot(
   return {
     patch: parsed.meta?.version ?? fallbackPatch,
     fetchedAt: new Date().toISOString(),
+    matchCount: parsed.meta?.match_count,
     champions,
   };
 }
@@ -233,6 +234,22 @@ export async function getChampionCounters(
     const lastGood = (await getCached(lastGoodKey).catch(() => null)) as MatchupEntry[] | null;
     return lastGood ?? null;
   }
+}
+
+// Most-picked champions this patch, for related-links rows. Optionally excludes
+// one champion key (the current page's champion).
+export async function getPopularChampions(
+  limit = 8,
+  excludeKey?: string
+): Promise<{ key: string; name: string }[]> {
+  const snapshot = await getMetaSnapshot();
+  if (!snapshot) return [];
+  const needle = excludeKey?.toLowerCase();
+  return [...snapshot.champions]
+    .filter((c) => c.championKey.toLowerCase() !== needle)
+    .sort((a, b) => b.overallPickRate - a.overallPickRate)
+    .slice(0, limit)
+    .map((c) => ({ key: c.championKey, name: c.name }));
 }
 
 // Looks up one champion in a snapshot by Data Dragon key (case-insensitive) or

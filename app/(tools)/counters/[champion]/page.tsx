@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getCounterData, POSITION_LABELS } from "@/domains/meta";
+import { getCounterData, getPopularChampions, POSITION_LABELS } from "@/domains/meta";
 import { CounterResults } from "@/domains/meta/components/CounterResults";
+import { RelatedChampions } from "@/domains/meta/components/RelatedChampions";
 import { fetchAllChampions, fetchChampionDetail } from "@/lib/ddragon/championsData";
 import { championSplashUrl } from "@/lib/ddragon";
 
@@ -41,7 +42,10 @@ export default async function ChampionCountersPage({
   const detail = await fetchChampionDetail(params.champion);
   if (!detail) notFound();
 
-  const data = await getCounterData(detail.id);
+  const [data, popular] = await Promise.all([
+    getCounterData(detail.id),
+    getPopularChampions(10, detail.id),
+  ]);
 
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
@@ -146,6 +150,8 @@ export default async function ChampionCountersPage({
           Current tier list →
         </Link>
       </div>
+
+      <RelatedChampions title="More counter guides" champions={popular} />
     </div>
   );
 }

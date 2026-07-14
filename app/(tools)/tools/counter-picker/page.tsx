@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getCounterData, parsePosition, POSITION_LABELS } from "@/domains/meta";
+import { getCounterData, getPopularChampions, parsePosition, POSITION_LABELS } from "@/domains/meta";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { CounterResults } from "@/domains/meta/components/CounterResults";
+import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
+import { RelatedChampions } from "@/domains/meta/components/RelatedChampions";
 import { CounterPickerControls } from "./CounterPickerControls";
 
 interface PageProps {
@@ -27,9 +29,10 @@ export function generateMetadata({ searchParams }: PageProps): Metadata {
 export default async function CounterPickerPage({ searchParams }: PageProps) {
   const champion = searchParams.champion?.trim() || null;
   const requestedPosition = parsePosition(searchParams.role);
-  const [result, allChampions] = await Promise.all([
+  const [result, allChampions, popular] = await Promise.all([
     champion ? getCounterData(champion, requestedPosition ?? undefined) : Promise.resolve(null),
     fetchAllChampions(),
+    getPopularChampions(10, champion ?? undefined),
   ]);
   const championOptions = allChampions
     .map((c) => ({ key: c.id, name: c.name }))
@@ -63,6 +66,13 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+
+      <ToolBreadcrumb
+        items={[
+          { name: "Free Tools", href: "/tools" },
+          { name: "Counter Picker", href: "/tools/counter-picker" },
+        ]}
       />
 
       <header className="mb-8">
@@ -132,6 +142,8 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
           </div>
         </>
       )}
+
+      <RelatedChampions title="Popular this patch" champions={popular} />
     </div>
   );
 }

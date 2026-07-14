@@ -31,7 +31,7 @@ const DDRAGON_CHAMPIONS = [
 ];
 
 const OPGG_SAMPLE = {
-  meta: { version: "16.13" },
+  meta: { version: "16.13", match_count: 38_692_282 },
   data: [
     {
       id: 103,
@@ -87,6 +87,7 @@ describe("getMetaSnapshot — happy path", () => {
 
     expect(snapshot).not.toBeNull();
     expect(snapshot!.patch).toBe("16.13");
+    expect(snapshot!.matchCount).toBe(38_692_282);
     // champion 99999 is skipped (absent from Data Dragon)
     expect(snapshot!.champions).toHaveLength(1);
 

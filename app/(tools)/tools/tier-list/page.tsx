@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getTierList, parsePosition, ALL_POSITIONS, POSITION_LABELS } from "@/domains/meta";
 import type { CanonicalPosition } from "@/domains/meta";
+import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
 import { TierRow } from "./TierRow";
 
 export const revalidate = 43200; // 12h ISR
@@ -45,6 +46,13 @@ export default async function TierListPage({ searchParams }: PageProps) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
         />
       )}
+
+      <ToolBreadcrumb
+        items={[
+          { name: "Free Tools", href: "/tools" },
+          { name: "Tier List", href: "/tools/tier-list" },
+        ]}
+      />
 
       <header className="mb-6">
         <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">

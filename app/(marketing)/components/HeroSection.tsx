@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { HeroVisual } from "./hero3d/HeroVisual";
+import { CountUp } from "@/components/ui/CountUp";
+import { getMetaSnapshot } from "@/domains/meta";
 
-export function HeroSection() {
+export async function HeroSection() {
+  const snapshot = await getMetaSnapshot();
+  const matchCount = snapshot?.matchCount ?? 0;
+
   return (
     <section className="relative overflow-hidden py-24 md:py-32">
       {/* Multi-layer background atmosphere */}
@@ -50,6 +55,15 @@ export function HeroSection() {
               </Link>
             </div>
             <p className="text-xs text-text-muted">No credit card required · Free plan available</p>
+
+            {matchCount > 0 && (
+              <p className="text-xs text-text-muted">
+                <span className="mr-1.5 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-success align-middle" />
+                Powered by{" "}
+                <CountUp value={matchCount} className="font-semibold text-text" />
+                {" "}ranked games analyzed this patch
+              </p>
+            )}
 
             {/* Quick stats */}
             <div className="flex gap-6 border-t border-border/60 pt-6">

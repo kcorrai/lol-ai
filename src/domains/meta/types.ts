@@ -35,5 +35,6 @@ export interface ChampionMetaStats {
 export interface MetaSnapshot {
   patch: string; // e.g. "16.13"
   fetchedAt: string; // ISO timestamp
+  matchCount?: number; // total ranked games op.gg analyzed this patch
   champions: ChampionMetaStats[];
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
+import { CountUp } from "@/components/ui/CountUp";
 import { getMetaSnapshot, POSITION_LABELS } from "@/domains/meta";
 import type { CanonicalPosition } from "@/domains/meta";
 
@@ -43,6 +44,13 @@ export async function MetaSnapshotSection() {
           <p className="mt-3 text-sm text-text-muted md:text-base">
             Live win rates from real ranked games — the same data that powers our free tools.
           </p>
+          {snapshot.matchCount ? (
+            <p className="mt-4 text-sm text-text-muted">
+              Analyzing{" "}
+              <CountUp value={snapshot.matchCount} className="font-bold text-accent" />
+              {" "}ranked games this patch
+            </p>
+          ) : null}
         </div>
 
         <div className="overflow-hidden rounded-2xl border border-border bg-surface/60">

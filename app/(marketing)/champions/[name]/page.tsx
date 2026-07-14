@@ -96,6 +96,22 @@ export default async function ChampionDetailPage({ params }: Props) {
         </div>
       </div>
 
+      {/* Counter tool cross-link */}
+      <Link
+        href={`/counters/${params.name}`}
+        className="mb-8 flex items-center justify-between rounded-2xl border border-accent/30 bg-accent/5 px-5 py-4 transition-colors hover:border-accent/50"
+      >
+        <span>
+          <span className="block text-sm font-semibold text-text">
+            Who counters {champ.name}?
+          </span>
+          <span className="block text-xs text-text-muted">
+            See the best counter picks by real ranked win rate — updated every patch.
+          </span>
+        </span>
+        <span className="shrink-0 text-accent">→</span>
+      </Link>
+
       {/* Lore */}
       <div className="mb-8 rounded-2xl border border-border bg-surface p-6">
         <h2 className="mb-3 text-xs font-bold uppercase tracking-widest text-text-muted">Story</h2>
