@@ -4,6 +4,15 @@ export { getCounterData } from "@/domains/meta/services/counterService";
 export type { CounterMatchup, CounterResult } from "@/domains/meta/services/counterService";
 export { getMatchupData } from "@/domains/meta/services/matchupService";
 export type { MatchupReport } from "@/domains/meta/services/matchupService";
+export { evaluateDraft } from "@/domains/meta/services/draftEvalService";
+export type {
+  DraftTeam,
+  DraftSide,
+  DraftChampion,
+  TeamEval,
+  LaneEdge,
+  DraftEvaluation,
+} from "@/domains/meta/services/draftEvalService";
 export {
   ALL_POSITIONS,
   POSITION_LABELS,
