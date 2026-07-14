@@ -16,8 +16,8 @@ describe("rankUpEmbed", () => {
   it("includes prev and new rank fields", () => {
     const embed = rankUpEmbed(params);
     const fieldNames = embed.fields?.map((f) => f.name) ?? [];
-    expect(fieldNames).toContain("Önceki Rank");
-    expect(fieldNames).toContain("Yeni Rank");
+    expect(fieldNames).toContain("Previous Rank");
+    expect(fieldNames).toContain("New Rank");
   });
 
   it("has a color value", () => {
@@ -35,12 +35,12 @@ describe("achievementEmbed", () => {
   it("includes achievement name in title", () => {
     const embed = achievementEmbed({
       gameName: "KaaN",
-      achievementName: "CS Makinesi",
-      achievementDescription: "3 maçta 7.0+ CS/dk",
+      achievementName: "CS Machine",
+      achievementDescription: "7.0+ CS/min in 3 games",
       tier: "silver",
       iconSlug: "⚔️",
     });
-    expect(embed.title).toContain("CS Makinesi");
+    expect(embed.title).toContain("CS Machine");
   });
 });
 
@@ -57,13 +57,13 @@ describe("weeklyRecapEmbed", () => {
 
   it("includes win rate in fields", () => {
     const embed = weeklyRecapEmbed({ gameName: "KaaN", wins: 6, losses: 4, lpDelta: 20 });
-    const wrField = embed.fields?.find((f) => f.name === "Kazanma Oranı");
+    const wrField = embed.fields?.find((f) => f.name === "Win Rate");
     expect(wrField?.value).toContain("60");
   });
 
   it("optionally includes top champion", () => {
     const embed = weeklyRecapEmbed({ gameName: "KaaN", wins: 5, losses: 5, lpDelta: 0, topChampion: "Ahri" });
-    const champField = embed.fields?.find((f) => f.name === "En İyi Şampiyon");
+    const champField = embed.fields?.find((f) => f.name === "Top Champion");
     expect(champField?.value).toBe("Ahri");
   });
 });

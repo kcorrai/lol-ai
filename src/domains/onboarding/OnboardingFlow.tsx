@@ -171,13 +171,13 @@ export function FinalStep({ gameName, reportId, emailRequired }: FinalStepProps)
         </div>
         <div>
           <h2 className="font-display text-2xl font-bold text-text">
-            {reportId ? `Your first report is ready, ${gameName}!` : `You&apos;re all set, ${gameName}!`}
+            {reportId ? `Your first report is ready, ${gameName}!` : `You're all set, ${gameName}!`}
           </h2>
           <p className="mt-2 text-sm text-text-muted">
             {emailRequired
               ? "After you verify your email, you can start using AI reports."
               : reportId
-              ? "Your AI coach has analyzed your matches. Let&apos;s go!"
+              ? "Your AI coach has analyzed your matches. Let's go!"
               : "Your match history is being prepared in the background."}
           </p>
         </div>

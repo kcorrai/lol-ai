@@ -112,6 +112,6 @@ describe("getMonthlyMilestone", () => {
     vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([]);
 
     const result = await getMonthlyMilestone("acc-1", 2026, 5);
-    expect(result!.label).toBe("Mayıs 2026");
+    expect(result!.label).toBe("May 2026");
   });
 });

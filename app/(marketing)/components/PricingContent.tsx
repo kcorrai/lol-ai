@@ -161,12 +161,12 @@ export function PricingContent() {
           {[
             {
               title: "Bulk Member Analysis",
-              description: "Coach dashboard: see all players&apos; ranks, 7-day WR, KDA, and CS stats on one screen.",
+              description: "Coach dashboard: see all players' ranks, 7-day WR, KDA, and CS stats on one screen.",
               icon: "📊",
             },
             {
               title: "Weekly Team Report",
-              description: "Auto email every Monday: who&apos;s hot, who&apos;s struggling, which player needs coaching.",
+              description: "Auto email every Monday: who's hot, who's struggling, which player needs coaching.",
               icon: "📬",
             },
             {

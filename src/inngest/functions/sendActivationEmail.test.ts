@@ -36,7 +36,7 @@ describe("buildActivationEmail", () => {
   it("generates correct subject", () => {
     const { subject } = buildActivationEmail({ gameName: "Faker", appUrl: "https://lolaicoach.gg" });
     expect(subject).toContain("Faker");
-    expect(subject).toContain("rapor");
+    expect(subject).toContain("report");
   });
 
   it("includes gameName in html body", () => {

@@ -14,7 +14,7 @@ export interface TiltStatus {
 }
 
 const MESSAGES: Record<TiltLevel, string> = {
-  focused: "You&apos;re in a good mental state. Keep playing.",
+  focused: "You're in a good mental state. Keep playing.",
   caution: "Performance is dipping. Play one more game, then reassess.",
   tilting: "Take a break. Playing now will cost you LP, not earn it.",
 };

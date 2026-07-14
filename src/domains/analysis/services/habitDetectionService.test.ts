@@ -199,9 +199,9 @@ describe("getActiveHabits", () => {
     const result = await getActiveHabits("acc-1");
 
     expect(result).toHaveLength(1);
-    expect(result[0].displayName).toBe("Düşük CS / Dakika");
+    expect(result[0].displayName).toBe("Low CS Per Minute");
     expect(result[0].habitType).toBe("low_cs");
-    expect(result[0].message).toContain("3 haftadır");
+    expect(result[0].message).toContain("3 weeks");
     expect(result[0].isResolved).toBe(false);
   });
 

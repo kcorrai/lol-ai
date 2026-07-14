@@ -36,9 +36,14 @@ lol-ai/
 ```
 app/
 ├── (marketing)/                → Public marketing pages
-│   ├── page.tsx                → Landing page
+│   ├── page.tsx                → Landing page (3D hero, live meta, real screenshots)
 │   ├── pricing/page.tsx        → Pricing page
 │   └── layout.tsx              → Marketing layout
+│
+├── (tools)/                    → Public, no-login free tools (marketing chrome)
+│   ├── tools/                  → hub + counter-picker / matchup / draft-analyzer / tier-list
+│   ├── counters/[champion]/    → ~170 programmatic SEO counter pages
+│   └── layout.tsx
 │
 ├── (auth)/                     → Authentication pages
 │   ├── login/page.tsx
@@ -102,6 +107,17 @@ Each domain is a self-contained feature slice. The domain owns its own services,
 
 ```
 src/domains/
+├── meta/                       → Zero-cost, patch-current champion meta stats
+│   ├── services/
+│   │   ├── metaStatsService.ts → OP.GG feed fetch + cache (snapshot & per-lane counters)
+│   │   ├── counterService.ts   → best/worst matchups per lane
+│   │   ├── matchupService.ts   → head-to-head win rate + lane tips
+│   │   ├── draftEvalService.ts → deterministic 5v5 comp scoring
+│   │   └── tierListService.ts  → per-lane tier list
+│   ├── components/             → shared meta UI (ChampionCombobox, CounterResults)
+│   ├── positions.ts, types.ts
+│   └── index.ts                → Public API (powers the app/(tools)/ route group)
+│
 ├── identity/                   → User accounts, auth, subscriptions
 │   ├── services/
 │   │   ├── userService.ts

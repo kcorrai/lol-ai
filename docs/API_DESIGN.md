@@ -7,6 +7,26 @@
 
 ---
 
+## Public Free Tools (no auth, zero AI cost)
+
+The counter, matchup, and draft tools are now **public, data-driven pages** under the
+`app/(tools)/` route group — they read cached meta stats server-side (RSC) from the
+`meta` domain rather than calling an AI provider. There are no dedicated API routes:
+
+- `/tools/counter-picker`, `/tools/matchup`, `/tools/draft-analyzer`, `/tools/tier-list`
+- `/counters/[champion]` — ~170 statically generated SEO pages
+
+**Removed** (previously AI-powered, now deleted): `GET /api/counter`,
+`POST /api/matchup/analyze`, `POST /api/draft/analyze`.
+
+**Redirects (308):** `/counter → /tools/counter-picker`, `/matchup → /tools/matchup`,
+`/draft → /tools/draft-analyzer` (see `next.config.mjs`).
+
+`GET /api/public/preview` still powers the landing demo but its coaching insight is now
+**rule-based** (no AI call), so the entire anonymous surface is zero-AI-cost.
+
+---
+
 ## 0. API Versioning & Deprecation Policy
 
 ### Version Header
