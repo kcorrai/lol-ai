@@ -16,6 +16,15 @@ export const POSITION_LABELS: Record<CanonicalPosition, string> = {
   UTILITY: "Support",
 };
 
+// Lowercase URL slug for a lane (used in /builds/[champion]/[role]).
+export const POSITION_SLUG: Record<CanonicalPosition, string> = {
+  TOP: "top",
+  JUNGLE: "jungle",
+  MIDDLE: "mid",
+  BOTTOM: "bot",
+  UTILITY: "support",
+};
+
 // Accepts canonical values plus common aliases (mid/adc/bottom/sup) and returns
 // the canonical position, or null if unrecognised.
 export function parsePosition(raw: string | null | undefined): CanonicalPosition | null {

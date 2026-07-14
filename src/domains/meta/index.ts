@@ -25,6 +25,7 @@ export type {
 export {
   ALL_POSITIONS,
   POSITION_LABELS,
+  POSITION_SLUG,
   parsePosition,
 } from "@/domains/meta/positions";
 export { formatGamePatch, gamePatchSlug } from "@/lib/lolPatch";

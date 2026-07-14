@@ -24,14 +24,19 @@ import type {
 
 const CACHE_TYPE = "meta-snapshot";
 
+const nullableNum = z.number().nullable().optional();
+const TierDataSchema = z
+  .object({ tier: nullableNum, rank: nullableNum, rank_prev_patch: nullableNum })
+  .optional();
+
 const PositionSchema = z.object({
   name: z.string(),
   stats: z.object({
     play: z.number(),
     win_rate: z.number(),
     pick_rate: z.number(),
-    ban_rate: z.number().nullable().optional(),
-    tier_data: z.object({ tier: z.number(), rank: z.number() }).partial().optional(),
+    ban_rate: nullableNum,
+    tier_data: TierDataSchema,
   }),
   counters: z.array(CounterSchema).optional().default([]),
 });
@@ -41,12 +46,9 @@ const ChampionSchema = z.object({
   average_stats: z.object({
     win_rate: z.number(),
     pick_rate: z.number(),
-    ban_rate: z.number().nullable().optional(),
-    tier: z.number().optional(),
-    tier_data: z
-      .object({ tier: z.number(), rank: z.number(), rank_prev_patch: z.number() })
-      .partial()
-      .optional(),
+    ban_rate: nullableNum,
+    tier: nullableNum,
+    tier_data: TierDataSchema,
   }),
   // ARAM has no positions array.
   positions: z.array(PositionSchema).optional().default([]),
