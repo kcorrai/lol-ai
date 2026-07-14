@@ -1,8 +1,5 @@
-import {
-  getMetaSnapshot,
-  findChampionStats,
-  getChampionCounters,
-} from "@/domains/meta/services/metaStatsService";
+import { getMetaSnapshot, findChampionStats } from "@/domains/meta/services/metaStatsService";
+import { getChampionCounters } from "@/domains/meta/services/championDetailService";
 import { fetchAllChampions, type DdragonChampionSummary } from "@/lib/ddragon/championsData";
 import { ALL_POSITIONS } from "@/domains/meta/positions";
 import type { CanonicalPosition, MetaSnapshot } from "@/domains/meta/types";

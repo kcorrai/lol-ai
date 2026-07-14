@@ -14,7 +14,7 @@ vi.mock("@/lib/utils/logger", () => ({
   logger: { warn: vi.fn(), info: vi.fn(), error: vi.fn(), debug: vi.fn() },
 }));
 
-import { getMetaSnapshot, findChampionStats, getChampionCounters } from "./metaStatsService";
+import { getMetaSnapshot, findChampionStats } from "./metaStatsService";
 import { getCached, setCached } from "@/lib/ai/aiCache";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { getLatestDdragonVersion } from "@/lib/ddragon";
@@ -134,7 +134,7 @@ describe("getMetaSnapshot — degradation", () => {
     };
     // null for fresh key, snapshot for last-good key
     mockGetCached.mockImplementation(async (key: string) =>
-      key === "meta:snapshot:last-good" ? lastGood : null
+      key.endsWith(":last-good") ? lastGood : null
     );
     global.fetch = vi.fn().mockResolvedValue({ ok: false, status: 503 }) as unknown as typeof fetch;
 
@@ -147,7 +147,7 @@ describe("getMetaSnapshot — degradation", () => {
   it("falls back to the last-good snapshot on malformed data", async () => {
     const lastGood: MetaSnapshot = { patch: "16.12", fetchedAt: "old", champions: [] };
     mockGetCached.mockImplementation(async (key: string) =>
-      key === "meta:snapshot:last-good" ? lastGood : null
+      key.endsWith(":last-good") ? lastGood : null
     );
     mockFetchOk({ unexpected: "shape" });
 
@@ -166,60 +166,6 @@ describe("getMetaSnapshot — degradation", () => {
   });
 });
 
-describe("getChampionCounters", () => {
-  const DETAIL = {
-    data: {
-      counters: [
-        { champion_id: 238, play: 9882, win: 4926 }, // 49.8
-        { champion_id: 517, play: 16741, win: 8253 }, // 49.3
-        { champion_id: 99, play: 100, win: 60 }, // filtered: sample < 200
-      ],
-    },
-  };
-
-  it("fetches, filters, maps and sorts the detailed counters", async () => {
-    mockGetCached.mockResolvedValue(null);
-    mockFetchOk(DETAIL);
-
-    const counters = await getChampionCounters(103, "MIDDLE");
-
-    expect(counters).not.toBeNull();
-    expect(counters).toHaveLength(2); // tiny sample dropped
-    // sorted ascending by subject win rate
-    expect(counters![0].opponentId).toBe(517); // 49.3
-    expect(counters![1].opponentId).toBe(238); // 49.8
-    expect(counters![0].subjectWinRate).toBe(49.3);
-    expect(mockSetCached).toHaveBeenCalledTimes(2); // fresh + last-good
-  });
-
-  it("hits the correct per-position endpoint", async () => {
-    mockGetCached.mockResolvedValue(null);
-    const fetchSpy = vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => DETAIL });
-    global.fetch = fetchSpy as unknown as typeof fetch;
-
-    await getChampionCounters(103, "BOTTOM");
-
-    expect(fetchSpy.mock.calls[0][0]).toContain("/champions/ranked/103/ADC");
-  });
-
-  it("falls back to the last-good counters on an API error", async () => {
-    const lastGood = [{ opponentId: 1, games: 500, subjectWins: 260, subjectWinRate: 52 }];
-    mockGetCached.mockImplementation(async (key: string) =>
-      key.endsWith(":last-good") ? lastGood : null
-    );
-    global.fetch = vi.fn().mockResolvedValue({ ok: false, status: 500 }) as unknown as typeof fetch;
-
-    const counters = await getChampionCounters(103, "MIDDLE");
-    expect(counters).toBe(lastGood);
-  });
-
-  it("returns null when the feed is down and nothing was cached", async () => {
-    mockGetCached.mockResolvedValue(null);
-    global.fetch = vi.fn().mockRejectedValue(new Error("network")) as unknown as typeof fetch;
-    expect(await getChampionCounters(103, "MIDDLE")).toBeNull();
-  });
-});
-
 describe("findChampionStats", () => {
   const snapshot: MetaSnapshot = {
     patch: "16.13",
@@ -233,6 +179,8 @@ describe("findChampionStats", () => {
         overallPickRate: 8.7,
         overallBanRate: 6.9,
         overallTier: 1,
+        overallRank: 5,
+        prevPatchRank: 7,
         positions: [],
       },
     ],

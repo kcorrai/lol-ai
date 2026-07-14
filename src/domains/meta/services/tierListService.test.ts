@@ -22,6 +22,8 @@ function champ(
     overallPickRate: 5,
     overallBanRate: 2,
     overallTier: 3,
+    overallRank: 15,
+    prevPatchRank: 15,
     positions: mid
       ? [
           {

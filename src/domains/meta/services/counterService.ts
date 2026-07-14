@@ -1,8 +1,5 @@
-import {
-  getMetaSnapshot,
-  findChampionStats,
-  getChampionCounters,
-} from "@/domains/meta/services/metaStatsService";
+import { getMetaSnapshot, findChampionStats } from "@/domains/meta/services/metaStatsService";
+import { getChampionCounters } from "@/domains/meta/services/championDetailService";
 import type { CanonicalPosition, MatchupEntry, MetaSnapshot } from "@/domains/meta/types";
 
 // One opposing champion in a counter list, enriched for display.

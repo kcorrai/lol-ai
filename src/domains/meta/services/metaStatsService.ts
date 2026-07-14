@@ -3,49 +3,26 @@ import { getCached, setCached } from "@/lib/ai/aiCache";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { getLatestDdragonVersion } from "@/lib/ddragon";
 import { logger } from "@/lib/utils/logger";
+import {
+  OPGG_BASE,
+  FRESH_TTL_DAYS,
+  SNAPSHOT_TTL_DAYS,
+  MIN_MATCHUP_GAMES,
+  OPGG_POSITION_TO_CANONICAL,
+  CounterSchema,
+  opggFetch,
+  pct,
+  type SnapshotMode,
+  type SnapshotTier,
+} from "@/domains/meta/services/opggShared";
 import type {
-  CanonicalPosition,
   ChampionMetaStats,
   MatchupEntry,
   MetaSnapshot,
   PositionStats,
 } from "@/domains/meta/types";
 
-// OP.GG's public ranked stats feed. Unofficial, so every consumer degrades
-// gracefully: a fresh copy is cached 12h, and a never-expiring "last good"
-// snapshot is kept as a fallback if the feed ever breaks.
-const OPGG_BASE = "https://lol-api-champion.op.gg/api/global/champions";
-const OPGG_URL = `${OPGG_BASE}/ranked`;
-
-// Canonical → OP.GG position path segment for the per-champion counters endpoint.
-const CANONICAL_TO_OPGG: Record<CanonicalPosition, string> = {
-  TOP: "TOP",
-  JUNGLE: "JUNGLE",
-  MIDDLE: "MID",
-  BOTTOM: "ADC",
-  UTILITY: "SUPPORT",
-};
-const USER_AGENT = "lol-ai-coach (+https://lolaicoach.gg)";
 const CACHE_TYPE = "meta-snapshot";
-const FRESH_KEY = "meta:snapshot:fresh";
-const LAST_GOOD_KEY = "meta:snapshot:last-good";
-const FRESH_TTL_DAYS = 0.5; // 12h
-const SNAPSHOT_TTL_DAYS = 365; // effectively permanent fallback
-const MIN_MATCHUP_GAMES = 200; // ignore tiny, noisy matchup samples
-
-const OPGG_POSITION_TO_CANONICAL: Record<string, CanonicalPosition> = {
-  TOP: "TOP",
-  JUNGLE: "JUNGLE",
-  MID: "MIDDLE",
-  ADC: "BOTTOM",
-  SUPPORT: "UTILITY",
-};
-
-const CounterSchema = z.object({
-  champion_id: z.number(),
-  play: z.number(),
-  win: z.number(),
-});
 
 const PositionSchema = z.object({
   name: z.string(),
@@ -53,11 +30,8 @@ const PositionSchema = z.object({
     play: z.number(),
     win_rate: z.number(),
     pick_rate: z.number(),
-    ban_rate: z.number().optional(),
-    tier_data: z
-      .object({ tier: z.number(), rank: z.number() })
-      .partial()
-      .optional(),
+    ban_rate: z.number().nullable().optional(),
+    tier_data: z.object({ tier: z.number(), rank: z.number() }).partial().optional(),
   }),
   counters: z.array(CounterSchema).optional().default([]),
 });
@@ -67,10 +41,15 @@ const ChampionSchema = z.object({
   average_stats: z.object({
     win_rate: z.number(),
     pick_rate: z.number(),
-    ban_rate: z.number().optional(),
+    ban_rate: z.number().nullable().optional(),
     tier: z.number().optional(),
+    tier_data: z
+      .object({ tier: z.number(), rank: z.number(), rank_prev_patch: z.number() })
+      .partial()
+      .optional(),
   }),
-  positions: z.array(PositionSchema),
+  // ARAM has no positions array.
+  positions: z.array(PositionSchema).optional().default([]),
 });
 
 const OpggResponseSchema = z.object({
@@ -80,11 +59,7 @@ const OpggResponseSchema = z.object({
 
 type OpggChampion = z.infer<typeof ChampionSchema>;
 
-const pct = (fraction: number): number => Math.round(fraction * 1000) / 10;
-
-function mapPosition(
-  raw: OpggChampion["positions"][number]
-): PositionStats | null {
+function mapPosition(raw: OpggChampion["positions"][number]): PositionStats | null {
   const position = OPGG_POSITION_TO_CANONICAL[raw.name];
   if (!position) return null;
 
@@ -133,6 +108,8 @@ function buildSnapshot(
       overallPickRate: pct(raw.average_stats.pick_rate),
       overallBanRate: pct(raw.average_stats.ban_rate ?? 0),
       overallTier: raw.average_stats.tier ?? 0,
+      overallRank: raw.average_stats.tier_data?.rank ?? 0,
+      prevPatchRank: raw.average_stats.tier_data?.rank_prev_patch ?? 0,
       positions,
     });
   }
@@ -145,19 +122,20 @@ function buildSnapshot(
   };
 }
 
-async function fetchAndBuildSnapshot(): Promise<MetaSnapshot> {
+interface SnapshotOpts {
+  mode?: SnapshotMode;
+  tier?: SnapshotTier;
+}
+
+async function fetchAndBuildSnapshot(opts: Required<SnapshotOpts>): Promise<MetaSnapshot> {
+  const params = opts.tier ? `?tier=${opts.tier}` : "";
   const [res, champions, version] = await Promise.all([
-    fetch(OPGG_URL, {
-      headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
-      next: { revalidate: 43200 },
-    }),
+    opggFetch(`${OPGG_BASE}/${opts.mode}${params}`),
     fetchAllChampions(),
     getLatestDdragonVersion(),
   ]);
 
-  if (!res.ok) {
-    throw new Error(`op.gg responded ${res.status}`);
-  }
+  if (!res.ok) throw new Error(`op.gg responded ${res.status}`);
 
   const parsed = OpggResponseSchema.parse(await res.json());
 
@@ -173,65 +151,26 @@ async function fetchAndBuildSnapshot(): Promise<MetaSnapshot> {
   return buildSnapshot(parsed, championIndex, patch);
 }
 
-// Returns the current meta snapshot, or the last-good fallback, or null if the
-// feed is down and nothing has ever been cached.
-export async function getMetaSnapshot(): Promise<MetaSnapshot | null> {
-  const fresh = (await getCached(FRESH_KEY).catch(() => null)) as MetaSnapshot | null;
+// Returns the meta snapshot for a mode/rank bracket, or the last-good fallback, or
+// null if the feed is down and nothing was ever cached. Defaults to ranked at
+// op.gg's default bracket (emerald+).
+export async function getMetaSnapshot(opts: SnapshotOpts = {}): Promise<MetaSnapshot | null> {
+  const resolved = { mode: opts.mode ?? "ranked", tier: opts.tier } as Required<SnapshotOpts>;
+  const variant = `${resolved.mode}:${resolved.tier ?? "default"}`;
+  const freshKey = `meta:snapshot:${variant}:fresh`;
+  const lastGoodKey = `meta:snapshot:${variant}:last-good`;
+
+  const fresh = (await getCached(freshKey).catch(() => null)) as MetaSnapshot | null;
   if (fresh) return fresh;
 
   try {
-    const snapshot = await fetchAndBuildSnapshot();
-    await setCached(FRESH_KEY, CACHE_TYPE, snapshot, FRESH_TTL_DAYS);
-    await setCached(LAST_GOOD_KEY, CACHE_TYPE, snapshot, SNAPSHOT_TTL_DAYS);
+    const snapshot = await fetchAndBuildSnapshot(resolved);
+    await setCached(freshKey, CACHE_TYPE, snapshot, FRESH_TTL_DAYS);
+    await setCached(lastGoodKey, CACHE_TYPE, snapshot, SNAPSHOT_TTL_DAYS);
     return snapshot;
   } catch (err) {
-    logger.warn("[metaStatsService] fresh fetch failed, falling back to last-good snapshot", err);
-    const lastGood = (await getCached(LAST_GOOD_KEY).catch(() => null)) as MetaSnapshot | null;
-    return lastGood ?? null;
-  }
-}
-
-const CountersDetailSchema = z.object({
-  data: z.object({ counters: z.array(CounterSchema) }),
-});
-
-// Returns the full per-lane counter list for one champion (every opponent with a
-// meaningful sample this patch — far richer than the ~3 counters in the bulk
-// snapshot). Cached per champion+position with a last-good fallback.
-export async function getChampionCounters(
-  championId: number,
-  position: CanonicalPosition
-): Promise<MatchupEntry[] | null> {
-  const freshKey = `meta:counters:${championId}:${position}`;
-  const lastGoodKey = `${freshKey}:last-good`;
-
-  const fresh = (await getCached(freshKey).catch(() => null)) as MatchupEntry[] | null;
-  if (fresh) return fresh;
-
-  try {
-    const res = await fetch(`${OPGG_BASE}/ranked/${championId}/${CANONICAL_TO_OPGG[position]}`, {
-      headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
-      next: { revalidate: 43200 },
-    });
-    if (!res.ok) throw new Error(`op.gg counters responded ${res.status}`);
-
-    const parsed = CountersDetailSchema.parse(await res.json());
-    const entries: MatchupEntry[] = parsed.data.counters
-      .filter((c) => c.play >= MIN_MATCHUP_GAMES)
-      .map((c) => ({
-        opponentId: c.champion_id,
-        games: c.play,
-        subjectWins: c.win,
-        subjectWinRate: pct(c.win / c.play),
-      }))
-      .sort((a, b) => a.subjectWinRate - b.subjectWinRate);
-
-    await setCached(freshKey, "meta-counters", entries, FRESH_TTL_DAYS);
-    await setCached(lastGoodKey, "meta-counters", entries, SNAPSHOT_TTL_DAYS);
-    return entries;
-  } catch (err) {
-    logger.warn(`[metaStatsService] counters fetch failed for ${championId}/${position}`, err);
-    const lastGood = (await getCached(lastGoodKey).catch(() => null)) as MatchupEntry[] | null;
+    logger.warn(`[metaStatsService] snapshot fetch failed (${variant}), using last-good`, err);
+    const lastGood = (await getCached(lastGoodKey).catch(() => null)) as MetaSnapshot | null;
     return lastGood ?? null;
   }
 }

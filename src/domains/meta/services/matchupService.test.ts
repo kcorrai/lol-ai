@@ -3,6 +3,8 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 vi.mock("@/domains/meta/services/metaStatsService", () => ({
   getMetaSnapshot: vi.fn(),
   findChampionStats: vi.fn(),
+}));
+vi.mock("@/domains/meta/services/championDetailService", () => ({
   getChampionCounters: vi.fn(),
 }));
 vi.mock("@/lib/ddragon/championsData", () => ({
@@ -10,11 +12,8 @@ vi.mock("@/lib/ddragon/championsData", () => ({
 }));
 
 import { getMatchupData } from "./matchupService";
-import {
-  getMetaSnapshot,
-  findChampionStats,
-  getChampionCounters,
-} from "@/domains/meta/services/metaStatsService";
+import { getMetaSnapshot, findChampionStats } from "@/domains/meta/services/metaStatsService";
+import { getChampionCounters } from "@/domains/meta/services/championDetailService";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import type { ChampionMetaStats, MatchupEntry, MetaSnapshot } from "@/domains/meta/types";
 
@@ -31,6 +30,8 @@ const AHRI: ChampionMetaStats = {
   overallPickRate: 8,
   overallBanRate: 6,
   overallTier: 1,
+  overallRank: 5,
+  prevPatchRank: 7,
   positions: [
     { position: "MIDDLE", games: 300000, winRate: 51, pickRate: 8, banRate: 6, tier: 1, rank: 2, counters: [] },
   ],
@@ -49,6 +50,8 @@ const ZED: ChampionMetaStats = {
   overallPickRate: 9,
   overallBanRate: 20,
   overallTier: 2,
+  overallRank: 12,
+  prevPatchRank: 9,
   positions: [
     { position: "MIDDLE", games: 250000, winRate: 50, pickRate: 9, banRate: 20, tier: 2, rank: 8, counters: [] },
   ],

@@ -1,5 +1,12 @@
 // Public API of the meta domain — zero-cost, patch-current champion stats.
 export { getMetaSnapshot, findChampionStats, getPopularChampions } from "@/domains/meta/services/metaStatsService";
+export {
+  getChampionDetail,
+  getChampionCounters,
+  getChampionBuild,
+} from "@/domains/meta/services/championDetailService";
+export type { ChampionDetail } from "@/domains/meta/services/championDetailService";
+export type { SnapshotMode, SnapshotTier } from "@/domains/meta/services/opggShared";
 export { getCounterData } from "@/domains/meta/services/counterService";
 export type { CounterMatchup, CounterResult } from "@/domains/meta/services/counterService";
 export { getMatchupData } from "@/domains/meta/services/matchupService";
@@ -27,4 +34,9 @@ export type {
   MatchupEntry,
   MetaSnapshot,
   PositionStats,
+  ChampionBuild,
+  RuneBuild,
+  BuildItemSet,
+  GameLengthPoint,
+  PatchTrendPoint,
 } from "@/domains/meta/types";

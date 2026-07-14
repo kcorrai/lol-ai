@@ -3,15 +3,14 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 vi.mock("@/domains/meta/services/metaStatsService", () => ({
   getMetaSnapshot: vi.fn(),
   findChampionStats: vi.fn(),
+}));
+vi.mock("@/domains/meta/services/championDetailService", () => ({
   getChampionCounters: vi.fn(),
 }));
 
 import { getCounterData } from "./counterService";
-import {
-  getMetaSnapshot,
-  findChampionStats,
-  getChampionCounters,
-} from "@/domains/meta/services/metaStatsService";
+import { getMetaSnapshot, findChampionStats } from "@/domains/meta/services/metaStatsService";
+import { getChampionCounters } from "@/domains/meta/services/championDetailService";
 import type { ChampionMetaStats, MatchupEntry, MetaSnapshot } from "@/domains/meta/types";
 
 const mockGetSnapshot = getMetaSnapshot as unknown as ReturnType<typeof vi.fn>;
@@ -32,6 +31,8 @@ function champ(
     overallPickRate: 5,
     overallBanRate: 1,
     overallTier: 3,
+    overallRank: 10,
+    prevPatchRank: 10,
     positions,
   };
 }

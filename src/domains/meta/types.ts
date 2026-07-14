@@ -29,6 +29,8 @@ export interface ChampionMetaStats {
   overallPickRate: number; // 0-100
   overallBanRate: number; // 0-100
   overallTier: number; // 1 (best) .. 5 (worst)
+  overallRank: number; // ordinal rank across all champions this patch
+  prevPatchRank: number; // ordinal rank on the previous patch (0 if unknown)
   positions: PositionStats[];
 }
 
@@ -37,4 +39,47 @@ export interface MetaSnapshot {
   fetchedAt: string; // ISO timestamp
   matchCount?: number; // total ranked games op.gg analyzed this patch
   champions: ChampionMetaStats[];
+}
+
+// ── Champion build (from the per-champion+lane detail endpoint) ───────────────
+
+export interface BuildItemSet {
+  ids: number[]; // Riot item ids
+  games: number;
+  winRate: number; // 0-100
+}
+
+export interface RuneBuild {
+  primaryPageId: number;
+  primaryRuneIds: number[]; // keystone + 3 minor runes
+  secondaryPageId: number;
+  secondaryRuneIds: number[]; // 2 runes
+  statShardIds: number[]; // 3 stat shards
+  games: number;
+  winRate: number; // 0-100
+}
+
+export interface GameLengthPoint {
+  minutes: number; // bucket lower bound (0, 25, 30, 35, 40)
+  winRate: number; // 0-100
+}
+
+export interface PatchTrendPoint {
+  version: string; // raw Data Dragon version, e.g. "16.13"
+  winRate: number; // 0-100
+  rank: number;
+}
+
+export interface ChampionBuild {
+  championId: number;
+  runes: RuneBuild | null;
+  summonerSpellIds: number[];
+  starterItems: BuildItemSet | null;
+  coreItems: BuildItemSet | null;
+  boots: BuildItemSet | null;
+  lateItemOptions: BuildItemSet[]; // top single-item options for later slots
+  skillOrder: string[]; // 15-level order, e.g. ["W","Q","E",...]
+  skillMaxOrder: string[]; // ability max priority, e.g. ["Q","W","E"]
+  gameLengths: GameLengthPoint[];
+  trend: PatchTrendPoint[];
 }

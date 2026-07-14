@@ -3,6 +3,8 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 vi.mock("@/domains/meta/services/metaStatsService", () => ({
   getMetaSnapshot: vi.fn(),
   findChampionStats: vi.fn(),
+}));
+vi.mock("@/domains/meta/services/championDetailService", () => ({
   getChampionCounters: vi.fn(),
 }));
 vi.mock("@/lib/ddragon/championsData", () => ({
@@ -10,11 +12,8 @@ vi.mock("@/lib/ddragon/championsData", () => ({
 }));
 
 import { evaluateDraft } from "./draftEvalService";
-import {
-  getMetaSnapshot,
-  findChampionStats,
-  getChampionCounters,
-} from "@/domains/meta/services/metaStatsService";
+import { getMetaSnapshot, findChampionStats } from "@/domains/meta/services/metaStatsService";
+import { getChampionCounters } from "@/domains/meta/services/championDetailService";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import type { CanonicalPosition, ChampionMetaStats, MetaSnapshot } from "@/domains/meta/types";
 
@@ -49,6 +48,8 @@ function stats(id: number, key: string, position: CanonicalPosition, winRate: nu
     overallPickRate: 5,
     overallBanRate: 2,
     overallTier: tier,
+    overallRank: 20,
+    prevPatchRank: 20,
     positions: [
       { position, games: 10000, winRate, pickRate: 5, banRate: 2, tier, rank: 5, counters: [] },
     ],
