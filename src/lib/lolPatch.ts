@@ -18,3 +18,8 @@ export function formatGamePatch(version: string): string {
 export function gamePatchSlug(version: string): string {
   return formatGamePatch(version).replace(".", "-");
 }
+
+// The official Riot patch-notes URL for a Data Dragon version (year-based slug).
+export function patchNotesUrl(version: string): string {
+  return `https://www.leagueoflegends.com/en-us/news/game-updates/league-of-legends-patch-${gamePatchSlug(version)}-notes/`;
+}

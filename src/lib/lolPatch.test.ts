@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { formatGamePatch, gamePatchSlug } from "./lolPatch";
+import { formatGamePatch, gamePatchSlug, patchNotesUrl } from "./lolPatch";
 
 describe("formatGamePatch", () => {
   it("maps Data Dragon 16.x to in-game 26.x", () => {
@@ -29,5 +29,13 @@ describe("gamePatchSlug", () => {
   it("builds a hyphenated patch-notes slug", () => {
     expect(gamePatchSlug("16.13.1")).toBe("26-13");
     expect(gamePatchSlug("16.14")).toBe("26-14");
+  });
+});
+
+describe("patchNotesUrl", () => {
+  it("builds the official year-based patch-notes URL", () => {
+    expect(patchNotesUrl("16.14")).toBe(
+      "https://www.leagueoflegends.com/en-us/news/game-updates/league-of-legends-patch-26-14-notes/"
+    );
   });
 });

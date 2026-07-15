@@ -18,6 +18,8 @@ export {
   getMatchupPairs,
 } from "@/domains/meta/services/matchupPairsService";
 export { getTierList, getAramTierList, tierLetter } from "@/domains/meta/services/tierListService";
+export { getMetaReport } from "@/domains/meta/services/patchMetaService";
+export type { MetaReport, MetaMover } from "@/domains/meta/services/patchMetaService";
 export type { TierListEntry, RoleTierList } from "@/domains/meta/services/tierListService";
 export { evaluateDraft } from "@/domains/meta/services/draftEvalService";
 export type {

@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
-import { gamePatchSlug } from "@/lib/lolPatch";
+import { patchNotesUrl } from "@/lib/lolPatch";
 
 const DDRAGON_VERSIONS_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const MIN_GAMES_PER_WINDOW = 5;
@@ -44,22 +44,12 @@ export async function getOrCreateCurrentPatch(): Promise<{ version: string; dete
   if (existing) return { version: existing.version, detectedAt: existing.detectedAt, isNew: false };
 
   // New patch detected — create record
-  const majorMinor = latestVersion.split(".").slice(0, 2).join(".");
-  const patchNotesUrl = buildPatchNotesUrl(majorMinor);
-
   const created = await prisma.patchVersion.create({
-    data: { version: latestVersion, patchNotesUrl },
+    data: { version: latestVersion, patchNotesUrl: patchNotesUrl(latestVersion) },
   });
 
   logger.info(`[patchService] New patch detected: ${latestVersion}`);
   return { version: created.version, detectedAt: created.detectedAt, isNew: true };
-}
-
-function buildPatchNotesUrl(majorMinor: string): string {
-  // Riot's patch-notes URLs use the in-game (year-based) patch number, e.g. Data
-  // Dragon "16.13" -> ".../league-of-legends-patch-26-13-notes/".
-  const slug = gamePatchSlug(majorMinor);
-  return `https://www.leagueoflegends.com/en-us/news/game-updates/league-of-legends-patch-${slug}-notes/`;
 }
 
 // Returns WR before/after current patch for the user's most-played champions.

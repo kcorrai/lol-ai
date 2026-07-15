@@ -11,7 +11,13 @@ export function MarketingFooter() {
             <span className="font-display text-sm font-bold text-text">LoL AI Coach</span>
           </div>
 
-          <nav className="flex items-center gap-6 text-sm text-text-muted">
+          <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-text-muted">
+            <Link href="/tools" className="transition-colors hover:text-text">
+              Free Tools
+            </Link>
+            <Link href="/meta" className="transition-colors hover:text-text">
+              Patch Meta
+            </Link>
             <Link href="/pricing" className="transition-colors hover:text-text">
               Pricing
             </Link>
