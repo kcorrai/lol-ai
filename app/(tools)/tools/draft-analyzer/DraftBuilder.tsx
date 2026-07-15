@@ -49,20 +49,30 @@ export function DraftBuilder({ champions, blue, red }: Props) {
               {side === "blue" ? "Blue Team" : "Red Team"}
             </h2>
             <div className="flex flex-col gap-2">
-              {ALL_POSITIONS.map((pos: CanonicalPosition, i) => (
-                <div key={pos} className="flex items-center gap-2">
-                  <span className="w-16 shrink-0 text-xs font-semibold text-text-muted">
-                    {POSITION_LABELS[pos]}
-                  </span>
-                  <ChampionCombobox
-                    champions={champions}
-                    value={team[i]}
-                    onSelect={(key) => setPick(side, i, key)}
-                    placeholder="Add champion…"
-                    className="flex-1"
-                  />
-                </div>
-              ))}
+              {ALL_POSITIONS.map((pos: CanonicalPosition, i) => {
+                // Hide champions already taken on either team (a champion can't be
+                // drafted twice), but keep this slot's own pick selectable.
+                const current = team[i];
+                const taken = new Set(
+                  [...blue, ...red].filter((k): k is string => !!k && k !== current)
+                );
+                const options = champions.filter((c) => !taken.has(c.key));
+                return (
+                  <div key={pos} className="flex items-center gap-2">
+                    <span className="w-16 shrink-0 text-xs font-semibold text-text-muted">
+                      {POSITION_LABELS[pos]}
+                    </span>
+                    <ChampionCombobox
+                      champions={options}
+                      value={team[i]}
+                      position={pos}
+                      onSelect={(key) => setPick(side, i, key)}
+                      placeholder="Add champion…"
+                      className="flex-1"
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
         );

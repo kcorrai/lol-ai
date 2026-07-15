@@ -12,7 +12,7 @@ vi.mock("@/lib/ddragon/championsData", () => ({
   fetchAllChampions: vi.fn(),
 }));
 
-import { evaluateDraft } from "./draftEvalService";
+import { evaluateDraft, dedupeDraft } from "./draftEvalService";
 import { getMetaSnapshot, findChampionStats } from "@/domains/meta/services/metaStatsService";
 import { getChampionCounters, getChampionBuild } from "@/domains/meta/services/championDetailService";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
@@ -166,5 +166,27 @@ describe("evaluateDraft", () => {
   it("returns null when the snapshot is unavailable", async () => {
     mockSnapshot.mockResolvedValue(null);
     expect(await evaluateDraft(BLUE, RED)).toBeNull();
+  });
+
+  it("drops a champion drafted on both teams before evaluating", async () => {
+    // Garen smuggled into Red's top slot too — must be stripped from Red.
+    const result = await evaluateDraft(BLUE, { ...RED, TOP: "Garen" });
+    const redTop = result!.red.champions.find((c) => c.position === "TOP");
+    expect(redTop).toBeUndefined();
+    expect(result!.red.champions).toHaveLength(4);
+    expect(result!.blue.champions).toHaveLength(5); // blue keeps Garen
+  });
+});
+
+describe("dedupeDraft", () => {
+  it("keeps blue and removes the later duplicate from red", () => {
+    const { blue, red } = dedupeDraft({ TOP: "Garen" }, { TOP: "garen", MIDDLE: "Zed" });
+    expect(blue).toEqual({ TOP: "Garen" });
+    expect(red).toEqual({ MIDDLE: "Zed" }); // case-insensitive dupe dropped
+  });
+
+  it("removes a duplicate repeated within the same team", () => {
+    const { blue } = dedupeDraft({ TOP: "Garen", MIDDLE: "Garen" }, {});
+    expect(blue).toEqual({ TOP: "Garen" });
   });
 });

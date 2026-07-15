@@ -3,11 +3,13 @@
 import { useMemo, useRef, useState } from "react";
 import { ChevronDown, Search, X } from "lucide-react";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
+import type { CanonicalPosition } from "@/domains/meta/types";
 import { cn } from "@/lib/utils";
 
 export interface ChampionOption {
   key: string; // Data Dragon id, e.g. "Ahri"
   name: string; // display name
+  positions?: CanonicalPosition[]; // lanes this champion plays (omitted = plays anywhere)
 }
 
 interface Props {
@@ -16,6 +18,9 @@ interface Props {
   onSelect: (key: string | null) => void;
   placeholder?: string;
   className?: string;
+  // When set, the dropdown only offers champions that play this lane. Champions
+  // with no known positions are always shown (so the picker never goes empty).
+  position?: CanonicalPosition;
 }
 
 // Self-contained, server-data-driven champion picker. Deliberately avoids React
@@ -26,6 +31,7 @@ export function ChampionCombobox({
   onSelect,
   placeholder = "Select a champion…",
   className,
+  position,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -38,9 +44,15 @@ export function ChampionCombobox({
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return champions;
-    return champions.filter((c) => c.name.toLowerCase().includes(q));
-  }, [champions, query]);
+    return champions.filter((c) => {
+      // Off-lane champions are hidden when a position is enforced, but champions
+      // with no role data fall through so the list is never empty.
+      if (position && c.positions && c.positions.length > 0 && !c.positions.includes(position)) {
+        return false;
+      }
+      return !q || c.name.toLowerCase().includes(q);
+    });
+  }, [champions, query, position]);
 
   function choose(key: string | null): void {
     onSelect(key);

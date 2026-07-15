@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { evaluateDraft, ALL_POSITIONS, formatGamePatch, type DraftTeam } from "@/domains/meta";
+import {
+  evaluateDraft,
+  getMetaSnapshot,
+  ALL_POSITIONS,
+  formatGamePatch,
+  type CanonicalPosition,
+  type DraftTeam,
+} from "@/domains/meta";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
 import { DraftBuilder } from "./DraftBuilder";
@@ -46,12 +53,22 @@ export default async function DraftAnalyzerPage({ searchParams }: PageProps) {
   const redSlots = parseSlots(searchParams.red);
   const hasPicks = blueSlots.some(Boolean) && redSlots.some(Boolean);
 
-  const [evaluation, allChampions] = await Promise.all([
+  const [evaluation, allChampions, snapshot] = await Promise.all([
     hasPicks ? evaluateDraft(toTeam(blueSlots), toTeam(redSlots)) : Promise.resolve(null),
     fetchAllChampions(),
+    getMetaSnapshot(),
   ]);
+
+  // Which lanes each champion actually plays, so the picker can offer only
+  // on-role champions per slot. Keyed by lowercased Data Dragon id.
+  const positionsByKey = new Map<string, CanonicalPosition[]>();
+  for (const champion of snapshot?.champions ?? []) {
+    const lanes = champion.positions.map((p) => p.position);
+    if (lanes.length > 0) positionsByKey.set(champion.championKey.toLowerCase(), lanes);
+  }
+
   const championOptions = allChampions
-    .map((c) => ({ key: c.id, name: c.name }))
+    .map((c) => ({ key: c.id, name: c.name, positions: positionsByKey.get(c.id.toLowerCase()) }))
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (

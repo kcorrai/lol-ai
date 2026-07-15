@@ -223,12 +223,33 @@ function buildVerdict(blue: TeamEval, red: TeamEval): string {
   return parts.join(" ");
 }
 
+// A champion may only be drafted once across both teams. Drops later duplicates
+// (blue is resolved first) so a hand-crafted ?blue=Garen,Garen URL can't smuggle
+// the same pick into multiple slots.
+export function dedupeDraft(blue: DraftTeam, red: DraftTeam): { blue: DraftTeam; red: DraftTeam } {
+  const seen = new Set<string>();
+  const clean = (team: DraftTeam): DraftTeam => {
+    const out: DraftTeam = {};
+    for (const position of ALL_POSITIONS) {
+      const key = team[position];
+      if (!key) continue;
+      const lower = key.toLowerCase();
+      if (seen.has(lower)) continue;
+      seen.add(lower);
+      out[position] = key;
+    }
+    return out;
+  };
+  return { blue: clean(blue), red: clean(red) };
+}
+
 // Deterministic, stats-based evaluation of two team comps. Returns null if the
 // meta snapshot is unavailable.
 export async function evaluateDraft(
-  blue: DraftTeam,
-  red: DraftTeam
+  rawBlue: DraftTeam,
+  rawRed: DraftTeam
 ): Promise<DraftEvaluation | null> {
+  const { blue, red } = dedupeDraft(rawBlue, rawRed);
   const [snapshot, summaries] = await Promise.all([getMetaSnapshot(), fetchAllChampions()]);
   if (!snapshot) return null;
 
