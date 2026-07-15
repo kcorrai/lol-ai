@@ -18,9 +18,9 @@ const runeIconUrl = (icon: string): string =>
   `https://ddragon.leagueoflegends.com/cdn/img/${icon}`;
 
 // Stat shards are not in runesReforged.json — small static catalog (id → label +
-// Community Dragon icon).
-const SHARD_BASE =
-  "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-perks/global/default/images";
+// Community Dragon icon). The rcp-fe-lol-perks image path 404s; the shard icons
+// live under the game assets tree.
+const SHARD_BASE = "https://raw.communitydragon.org/latest/game/assets/perks";
 export const STAT_SHARDS: Record<number, RuneInfo> = {
   5008: { id: 5008, name: "Adaptive Force", iconUrl: `${SHARD_BASE}/statmods/statmodsadaptiveforceicon.png` },
   5005: { id: 5005, name: "Attack Speed", iconUrl: `${SHARD_BASE}/statmods/statmodsattackspeedicon.png` },

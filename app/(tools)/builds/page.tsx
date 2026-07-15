@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getMetaSnapshot, formatGamePatch } from "@/domains/meta";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
+import { BuildSearch } from "./BuildSearch";
 
 export const revalidate = 43200;
 
@@ -38,6 +39,11 @@ export default async function BuildsHubPage() {
         <p className="mt-2 text-text-muted">
           Runes, items and skill order with the highest win rate for every champion.
         </p>
+        {champions.length > 0 && (
+          <div className="mt-5">
+            <BuildSearch champions={champions.map((c) => ({ key: c.championKey, name: c.name }))} />
+          </div>
+        )}
       </header>
 
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
