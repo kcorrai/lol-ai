@@ -164,7 +164,7 @@ export default async function SummonerPage({ params }: Props) {
         </Link>
       </div>
 
-      <div className="mx-auto max-w-lg px-4 py-8 space-y-4">
+      <div className="mx-auto max-w-3xl px-4 py-8 space-y-4">
 
         {/* Hero card */}
         <div className="relative overflow-hidden rounded-2xl border border-border bg-surface">
@@ -210,6 +210,8 @@ export default async function SummonerPage({ params }: Props) {
           </div>
         </div>
 
+        {/* Stats grid — champions + matches side by side on desktop */}
+        <div className="grid gap-4 md:grid-cols-2 md:items-start">
         {/* Top champions */}
         {topChampions.length > 0 && (
           <div className="rounded-2xl border border-border bg-surface p-5">
@@ -254,10 +256,10 @@ export default async function SummonerPage({ params }: Props) {
             <div className="space-y-2">
               {recentMatches.map((m, i) => (
                 <div key={i} className={`flex items-center gap-3 rounded-xl px-3 py-2 ${m.win ? "bg-success/5 border border-success/15" : "bg-danger/5 border border-danger/15"}`}>
-                  <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-lg">
+                  <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-lg border border-border">
                     <Image fill alt={m.championName}
-                      src={`https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${normalizeChampionKey(m.championName)}_0.jpg`}
-                      className="object-cover object-top scale-125" />
+                      src={championIconUrl(m.championName)}
+                      className="object-cover" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-xs font-medium text-text">{m.championName}</p>
@@ -274,6 +276,7 @@ export default async function SummonerPage({ params }: Props) {
             </div>
           </div>
         )}
+        </div>
 
         {/* CTA */}
         <div className="rounded-2xl border border-accent/30 p-5 text-center"

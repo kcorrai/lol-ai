@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import { profileIconUrl, championIconUrl } from "@/lib/ddragon";
 import type { PreviewResponse } from "@/types/preview";
 
 const TIER_COLORS: Record<string, string> = {
@@ -43,9 +45,14 @@ export function PreviewResultCard({ data }: Props) {
     <div className="mt-6 overflow-hidden rounded-xl border border-border bg-surface shadow-lg">
       {/* Header */}
       <div className="flex items-center gap-3 border-b border-border bg-surface-2 px-5 py-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/20 text-lg font-bold text-accent">
-          {summoner.gameName[0]?.toUpperCase()}
-        </div>
+        <Image
+          src={profileIconUrl(summoner.profileIconId)}
+          alt={summoner.gameName}
+          width={40}
+          height={40}
+          unoptimized
+          className="h-10 w-10 rounded-full border border-accent/40"
+        />
         <div>
           <p className="font-semibold text-text">
             {summoner.gameName}
@@ -72,8 +79,8 @@ export function PreviewResultCard({ data }: Props) {
           <Stat label="Recent Matches" value={`${wins}W / ${totalGames - wins}L`} />
           <Stat label="Win Rate" value={`%${wr}`} highlight={wr >= 50} />
           <Stat
-            label={rank ? `${rank.wins}W / ${rank.losses}L` : "Ranked"}
-            value={rank ? "Season" : "—"}
+            label={rank ? "Ranked (Season)" : "Ranked"}
+            value={rank ? `${rank.wins}W / ${rank.losses}L` : "—"}
           />
         </div>
 
@@ -118,7 +125,15 @@ export function PreviewResultCard({ data }: Props) {
             <div className="space-y-1.5">
               {topChampions.map(c => (
                 <div key={c.championName} className="flex items-center gap-3 text-sm">
-                  <span className="w-24 truncate font-medium text-text">{c.championName}</span>
+                  <Image
+                    src={championIconUrl(c.championName)}
+                    alt={c.championName}
+                    width={24}
+                    height={24}
+                    unoptimized
+                    className="h-6 w-6 shrink-0 rounded-md border border-border"
+                  />
+                  <span className="w-20 truncate font-medium text-text">{c.championName}</span>
                   <span className="text-xs text-text-muted">{c.games} matches</span>
                   <div className="flex-1">
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-2">

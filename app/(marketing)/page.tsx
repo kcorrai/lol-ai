@@ -27,7 +27,7 @@ export default function LandingPage() {
       <HeroSection />
 
       {/* Frictionless Demo */}
-      <section className="relative overflow-hidden bg-background py-20">
+      <section id="demo" className="relative overflow-hidden bg-background py-20 scroll-mt-20">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff06_1px,transparent_1px),linear-gradient(to_bottom,#ffffff06_1px,transparent_1px)] bg-[size:48px_48px]" />
           <div className="absolute left-1/2 top-1/2 h-[480px] w-[720px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/10 blur-[120px]" />
