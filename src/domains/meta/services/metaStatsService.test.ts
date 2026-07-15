@@ -35,7 +35,7 @@ const OPGG_SAMPLE = {
   data: [
     {
       id: 103,
-      average_stats: { win_rate: 0.517, pick_rate: 0.087, ban_rate: 0.069, tier: 1 },
+      average_stats: { play: 3_500_000, win_rate: 0.517, pick_rate: 0.087, ban_rate: 0.069, tier: 1 },
       positions: [
         {
           name: "MID",
@@ -94,6 +94,7 @@ describe("getMetaSnapshot — happy path", () => {
     const ahri = snapshot!.champions[0];
     expect(ahri.championKey).toBe("Ahri");
     expect(ahri.overallWinRate).toBe(51.7);
+    expect(ahri.overallGames).toBe(3_500_000);
     expect(ahri.overallTier).toBe(1);
 
     const mid = ahri.positions.find((p) => p.position === "MIDDLE");
@@ -178,6 +179,7 @@ describe("findChampionStats", () => {
         overallWinRate: 51.7,
         overallPickRate: 8.7,
         overallBanRate: 6.9,
+        overallGames: 3_500_000,
         overallTier: 1,
         overallRank: 5,
         prevPatchRank: 7,

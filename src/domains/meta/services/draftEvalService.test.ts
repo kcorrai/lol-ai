@@ -47,6 +47,7 @@ function stats(id: number, key: string, position: CanonicalPosition, winRate: nu
     overallWinRate: winRate,
     overallPickRate: 5,
     overallBanRate: 2,
+    overallGames: 70000,
     overallTier: tier,
     overallRank: 20,
     prevPatchRank: 20,

@@ -21,6 +21,7 @@ function champ(
     overallWinRate: 50,
     overallPickRate: 5,
     overallBanRate: 2,
+    overallGames: 100000,
     overallTier: 3,
     overallRank: 15,
     prevPatchRank: 15,

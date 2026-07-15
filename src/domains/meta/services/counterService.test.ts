@@ -30,6 +30,7 @@ function champ(
     overallWinRate: 50,
     overallPickRate: 5,
     overallBanRate: 1,
+    overallGames: 80000,
     overallTier: 3,
     overallRank: 10,
     prevPatchRank: 10,

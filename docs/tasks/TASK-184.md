@@ -1,6 +1,6 @@
 # TASK-184: ARAM Tier List + ARAM Build Pages
 
-## Status: Pending
+## Status: Done
 ## Score: 90/100
 
 ## Goal

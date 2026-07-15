@@ -10,7 +10,16 @@ const TIER_COLORS: Record<string, string> = {
   D: "bg-rose-400/10 text-rose-300 border-rose-400/30",
 };
 
-export function TierRow({ entry, index }: { entry: TierListEntry; index: number }) {
+interface TierRowProps {
+  entry: TierListEntry;
+  index: number;
+  // Where the champion name links (defaults to the counter page). ARAM points at the build.
+  hrefBase?: string;
+  // ARAM has no bans — hide that column.
+  showBan?: boolean;
+}
+
+export function TierRow({ entry, index, hrefBase = "/counters", showBan = true }: TierRowProps) {
   const letter = tierLetter(entry.tier);
   return (
     <tr className="border-b border-border/60 last:border-0">
@@ -26,7 +35,7 @@ export function TierRow({ entry, index }: { entry: TierListEntry; index: number 
       </td>
       <td className="px-2">
         <Link
-          href={`/counters/${entry.championKey}`}
+          href={`${hrefBase}/${entry.championKey}`}
           className="flex items-center gap-2 hover:text-accent"
         >
           <ChampionIcon name={entry.championKey} size={30} />
@@ -34,8 +43,12 @@ export function TierRow({ entry, index }: { entry: TierListEntry; index: number 
         </Link>
       </td>
       <td className="px-2 text-right text-sm font-semibold text-text">{entry.winRate.toFixed(1)}%</td>
-      <td className="px-2 text-right text-sm text-text-muted">{entry.pickRate.toFixed(1)}%</td>
-      <td className="py-2.5 pl-2 pr-3 text-right text-sm text-text-muted">{entry.banRate.toFixed(1)}%</td>
+      <td className={`${showBan ? "px-2" : "py-2.5 pl-2 pr-3"} text-right text-sm text-text-muted`}>
+        {entry.pickRate.toFixed(1)}%
+      </td>
+      {showBan && (
+        <td className="py-2.5 pl-2 pr-3 text-right text-sm text-text-muted">{entry.banRate.toFixed(1)}%</td>
+      )}
     </tr>
   );
 }

@@ -66,6 +66,18 @@ export default async function TierListPage({ searchParams }: PageProps) {
         </p>
       </header>
 
+      <div className="mb-3 flex flex-wrap gap-1.5">
+        <span className="rounded-full bg-accent px-4 py-1.5 text-xs font-semibold text-background">
+          Ranked
+        </span>
+        <Link
+          href="/aram/tier-list"
+          className="rounded-full border border-border bg-surface px-4 py-1.5 text-xs font-semibold text-text-muted transition-colors hover:border-accent/40 hover:text-text"
+        >
+          ARAM
+        </Link>
+      </div>
+
       <div className="mb-6 flex flex-wrap gap-1.5">
         {ALL_POSITIONS.map((pos) => (
           <Link

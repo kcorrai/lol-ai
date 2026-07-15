@@ -28,10 +28,11 @@ export interface ChampionMetaStats {
   overallWinRate: number; // 0-100
   overallPickRate: number; // 0-100
   overallBanRate: number; // 0-100
+  overallGames: number; // total games this patch (0 if the feed omits it)
   overallTier: number; // 1 (best) .. 5 (worst)
   overallRank: number; // ordinal rank across all champions this patch
   prevPatchRank: number; // ordinal rank on the previous patch (0 if unknown)
-  positions: PositionStats[];
+  positions: PositionStats[]; // empty for ARAM (no lanes)
 }
 
 export interface MetaSnapshot {

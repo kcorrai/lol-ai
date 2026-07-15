@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Swords, Users, Layers, Trophy } from "lucide-react";
+import { Swords, Users, Layers, Trophy, BookOpen, Snowflake } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Free LoL Tools — Counters, Matchups, Draft & Tier List | LoL AI Coach",
@@ -33,6 +33,18 @@ const TOOLS = [
     title: "Tier List",
     description: "The strongest champions per lane this patch, by win rate.",
     Icon: Trophy,
+  },
+  {
+    href: "/builds",
+    title: "Champion Builds",
+    description: "Runes, items and skill order with the highest win rate for every champion.",
+    Icon: BookOpen,
+  },
+  {
+    href: "/aram/tier-list",
+    title: "ARAM Tier List",
+    description: "The best ARAM champions and builds this patch, by real win rate.",
+    Icon: Snowflake,
   },
 ];
 

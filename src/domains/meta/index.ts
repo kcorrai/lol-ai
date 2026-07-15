@@ -16,7 +16,7 @@ export {
   parseMatchupSlug,
   getMatchupPairs,
 } from "@/domains/meta/services/matchupPairsService";
-export { getTierList, tierLetter } from "@/domains/meta/services/tierListService";
+export { getTierList, getAramTierList, tierLetter } from "@/domains/meta/services/tierListService";
 export type { TierListEntry, RoleTierList } from "@/domains/meta/services/tierListService";
 export { evaluateDraft } from "@/domains/meta/services/draftEvalService";
 export type {

@@ -44,14 +44,18 @@ const PositionSchema = z.object({
 const ChampionSchema = z.object({
   id: z.number(),
   average_stats: z.object({
+    play: nullableNum,
     win_rate: z.number(),
     pick_rate: z.number(),
     ban_rate: nullableNum,
     tier: nullableNum,
     tier_data: TierDataSchema,
   }),
-  // ARAM has no positions array.
-  positions: z.array(PositionSchema).optional().default([]),
+  // ARAM omits positions entirely (null); ranked sends an array.
+  positions: z
+    .array(PositionSchema)
+    .nullish()
+    .transform((v) => v ?? []),
 });
 
 const OpggResponseSchema = z.object({
@@ -109,6 +113,7 @@ function buildSnapshot(
       overallWinRate: pct(raw.average_stats.win_rate),
       overallPickRate: pct(raw.average_stats.pick_rate),
       overallBanRate: pct(raw.average_stats.ban_rate ?? 0),
+      overallGames: raw.average_stats.play ?? 0,
       overallTier: raw.average_stats.tier ?? 0,
       overallRank: raw.average_stats.tier_data?.rank ?? 0,
       prevPatchRank: raw.average_stats.tier_data?.rank_prev_patch ?? 0,
