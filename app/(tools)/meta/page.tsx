@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getMetaReport, formatGamePatch } from "@/domains/meta";
 import { patchNotesUrl } from "@/lib/lolPatch";
 import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
+import { DataFreshness } from "@/domains/meta/components/DataFreshness";
 import { MoverList } from "./MoverList";
 import { metaSummary, metaFaq } from "./metaReportText";
 
@@ -16,10 +17,6 @@ export async function generateMetadata(): Promise<Metadata> {
     description: `The biggest winners and losers of League of Legends patch ${patch}: which champions climbed the rankings, which fell off, and what it means for your climb. Free, updated every patch.`,
     alternates: { canonical: "/meta" },
   };
-}
-
-function hoursAgo(iso: string): number {
-  return Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 3_600_000));
 }
 
 export default async function MetaReportPage() {
@@ -46,6 +43,16 @@ export default async function MetaReportPage() {
       "@type": "ItemList",
       name: `LoL Patch ${patch} biggest winners`,
       itemListElement: report.climbers.map((m, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: m.name,
+      })),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: `LoL Patch ${patch} biggest losers`,
+      itemListElement: report.fallers.map((m, i) => ({
         "@type": "ListItem",
         position: i + 1,
         name: m.name,
@@ -85,16 +92,8 @@ export default async function MetaReportPage() {
       </header>
 
       {/* Freshness strip */}
-      <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-muted">
-        <span>Data updated {hoursAgo(report.fetchedAt)}h ago</span>
-        <span aria-hidden>·</span>
-        <span>Patch {patch}</span>
-        {report.matchCount && (
-          <>
-            <span aria-hidden>·</span>
-            <span>{report.matchCount.toLocaleString()} ranked games analyzed</span>
-          </>
-        )}
+      <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-muted">
+        <DataFreshness fetchedAt={report.fetchedAt} patch={report.patch} matchCount={report.matchCount} />
         <span aria-hidden>·</span>
         <a
           href={patchNotesUrl(report.patch)}
@@ -112,6 +111,13 @@ export default async function MetaReportPage() {
         <MoverList title="Biggest Winners" movers={report.climbers} direction="up" />
         <MoverList title="Biggest Losers" movers={report.fallers} direction="down" />
       </div>
+
+      <p className="mt-4 text-xs leading-relaxed text-text-muted/70">
+        How this is calculated: movement is the change in a champion&apos;s overall op.gg rank versus
+        the previous patch. We only include champions picked in at least 0.5% of games that moved 3+
+        ranks, weighted by pick rate so popular shifts rank above fringe ones. Figures reflect rank
+        movement, not win-rate change. WR = win rate, PR = pick rate, BR = ban rate.
+      </p>
 
       {/* FAQ */}
       <div className="mt-10">

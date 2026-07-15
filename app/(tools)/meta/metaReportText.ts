@@ -44,7 +44,11 @@ export interface MetaFaqItem {
 export function metaFaq(r: MetaReport, gamePatch: string): MetaFaqItem[] {
   const names = (movers: MetaMover[]): string =>
     movers.slice(0, 3).map((m) => m.name).join(", ") || "several champions";
-  return [
+
+  // Highest ban rate among the risers — the pick most worth banning.
+  const banTarget = [...r.climbers].sort((a, b) => b.banRate - a.banRate)[0];
+
+  const faq: MetaFaqItem[] = [
     {
       question: `Who are the biggest winners in patch ${gamePatch}?`,
       answer: `${names(r.climbers)} climbed the most in overall rank this patch, based on real ranked win rate and pick rate.`,
@@ -53,9 +57,25 @@ export function metaFaq(r: MetaReport, gamePatch: string): MetaFaqItem[] {
       question: `Which champions got worse in patch ${gamePatch}?`,
       answer: `${names(r.fallers)} fell the most in the rankings this patch and are weaker picks right now.`,
     },
+  ];
+
+  if (banTarget) {
+    faq.push({
+      question: `Which champion should I ban in patch ${gamePatch}?`,
+      answer: `${banTarget.name} is a strong ban target — it climbed ${banTarget.delta} ranks this patch with a ${banTarget.winRate.toFixed(1)}% win rate and a ${banTarget.banRate.toFixed(1)}% ban rate.`,
+    });
+  }
+
+  faq.push(
+    {
+      question: `How is the patch ${gamePatch} meta report measured?`,
+      answer: `Each champion's overall op.gg rank this patch is compared with the previous patch. We include champions picked in at least 0.5% of games that moved 3 or more ranks, weighted by pick rate. Figures reflect rank movement, not win-rate change.`,
+    },
     {
       question: `How often is the patch meta report updated?`,
       answer: `It refreshes automatically from live ranked data every patch, so it always reflects the current ${gamePatch} meta.`,
-    },
-  ];
+    }
+  );
+
+  return faq;
 }

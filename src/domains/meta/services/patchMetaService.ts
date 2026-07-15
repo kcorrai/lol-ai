@@ -10,6 +10,8 @@ export interface MetaMover {
   delta: number; // prevPatchRank - rank (positive = climbed)
   winRate: number; // 0-100
   pickRate: number; // 0-100
+  banRate: number; // 0-100
+  games: number; // total games this patch (sample size)
   tier: number; // 1 (best) .. 5
 }
 
@@ -35,6 +37,8 @@ function toMover(c: ChampionMetaStats): MetaMover {
     delta: c.prevPatchRank - c.overallRank,
     winRate: c.overallWinRate,
     pickRate: c.overallPickRate,
+    banRate: c.overallBanRate,
+    games: c.overallGames,
     tier: c.overallTier,
   };
 }
