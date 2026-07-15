@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import {
   LayoutDashboard, Gamepad2, LogOut, Zap, CreditCard, ChevronLeft, ChevronRight,
-  UserCircle, Shield, MessageCircle, Target, Swords, Star, Users, ClipboardList,
+  UserCircle, Shield, MessageCircle, Star, Users, ClipboardList,
   TrendingUp, Trophy, Map, Film, Lock, Bot, Sparkles, Medal, CalendarDays,
 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
@@ -24,14 +24,8 @@ const NAV_MAIN = [
   { href: "/milestone",    icon: CalendarDays,    label: "Milestone" },
   { href: "/analysis",      icon: Map,             label: "Heat Map" },
   { href: "/recap",         icon: Film,            label: "Season Recap" },
+  { href: "/otp",           icon: Star,            label: "OTP Assistant" },
   { href: "/teams",         icon: Users,           label: "Teams" },
-] as const;
-
-const NAV_TOOLS = [
-  { href: "/tools/counter-picker", icon: Target, label: "Counter Picker" },
-  { href: "/tools/matchup",        icon: Swords, label: "Matchup Analyzer" },
-  { href: "/otp",                  icon: Star,   label: "OTP Assistant" },
-  { href: "/tools/draft-analyzer", icon: Users,  label: "Draft Analyzer" },
 ] as const;
 
 const NAV_SETTINGS = [
@@ -51,7 +45,7 @@ function NavItem({
   collapsed: boolean;
 }) {
   const pathname = usePathname();
-  const allHrefs = [...NAV_MAIN, ...NAV_TOOLS, ...NAV_SETTINGS].map((n) => n.href);
+  const allHrefs = [...NAV_MAIN, ...NAV_SETTINGS].map((n) => n.href);
   const active =
     pathname === href ||
     (pathname.startsWith(`${href}/`) &&
@@ -120,8 +114,6 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       <nav className="flex-1 overflow-y-auto p-2">
         <SectionLabel label="Play" collapsed={collapsed} />
         {NAV_MAIN.map((item) => <NavItem key={item.href} {...item} collapsed={collapsed} />)}
-        <SectionLabel label="Tools" collapsed={collapsed} />
-        {NAV_TOOLS.map((item) => <NavItem key={item.href} {...item} collapsed={collapsed} />)}
         <SectionLabel label="Settings" collapsed={collapsed} />
         {NAV_SETTINGS.map((item) => <NavItem key={item.href} {...item} collapsed={collapsed} />)}
       </nav>

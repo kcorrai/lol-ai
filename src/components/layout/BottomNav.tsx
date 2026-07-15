@@ -2,14 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, MessageCircle, Target, TrendingUp, Gamepad2 } from "lucide-react";
+import { LayoutDashboard, MessageCircle, Shield, TrendingUp, Gamepad2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+// All in-app routes — the old /counter entry 308-redirected into the public
+// marketing-chrome tools and ejected the user from the app shell.
 const NAV = [
   { href: "/dashboard",     icon: LayoutDashboard, label: "Home" },
   { href: "/coaching",      icon: TrendingUp,      label: "Reports"  },
   { href: "/coaching/chat", icon: MessageCircle,   label: "Coach Chat"  },
-  { href: "/counter",       icon: Target,          label: "Counter"   },
+  { href: "/champion-pool", icon: Shield,          label: "Champions" },
   { href: "/settings/accounts", icon: Gamepad2,    label: "Accounts"  },
 ] as const;
 
