@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getCounterData, getPopularChampions, parsePosition, POSITION_LABELS, formatGamePatch } from "@/domains/meta";
+import { getCounterData, getPopularChampions, parsePosition, parseTier, POSITION_LABELS, formatGamePatch } from "@/domains/meta";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { CounterResults } from "@/domains/meta/components/CounterResults";
 import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
 import { RelatedChampions } from "@/domains/meta/components/RelatedChampions";
+import { PersonalMatchupPanel } from "@/domains/counter/components/PersonalMatchupPanel";
 import { CounterPickerControls } from "./CounterPickerControls";
 
 interface PageProps {
-  searchParams: { champion?: string; role?: string };
+  searchParams: { champion?: string; role?: string; tier?: string };
 }
 
 export function generateMetadata({ searchParams }: PageProps): Metadata {
@@ -32,8 +33,11 @@ export function generateMetadata({ searchParams }: PageProps): Metadata {
 export default async function CounterPickerPage({ searchParams }: PageProps) {
   const champion = searchParams.champion?.trim() || null;
   const requestedPosition = parsePosition(searchParams.role);
+  const requestedTier = parseTier(searchParams.tier);
   const [result, allChampions, popular] = await Promise.all([
-    champion ? getCounterData(champion, requestedPosition ?? undefined) : Promise.resolve(null),
+    champion
+      ? getCounterData(champion, requestedPosition ?? undefined, requestedTier ?? undefined)
+      : Promise.resolve(null),
     fetchAllChampions(),
     getPopularChampions(10, champion ?? undefined),
   ]);
@@ -97,6 +101,7 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
           champion={result?.championKey ?? champion}
           position={result?.position ?? requestedPosition}
           availablePositions={result?.availablePositions ?? []}
+          tier={requestedTier}
         />
       </div>
 
@@ -128,6 +133,8 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
             weakAgainstSubject={result.weakAgainstSubject}
             subjectKey={result.championKey}
           />
+
+          <PersonalMatchupPanel championId={result.championId} championName={result.name} />
 
           <div className="mt-8 flex flex-wrap gap-3 text-sm">
             <Link

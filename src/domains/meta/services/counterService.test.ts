@@ -7,15 +7,20 @@ vi.mock("@/domains/meta/services/metaStatsService", () => ({
 vi.mock("@/domains/meta/services/championDetailService", () => ({
   getChampionDetail: vi.fn(),
 }));
+vi.mock("@/lib/ddragon/championsData", () => ({
+  fetchAllChampions: vi.fn(),
+}));
 
 import { getCounterData } from "./counterService";
 import { getMetaSnapshot, findChampionStats } from "@/domains/meta/services/metaStatsService";
 import { getChampionDetail } from "@/domains/meta/services/championDetailService";
+import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import type { ChampionBuild, ChampionMetaStats, MatchupEntry, MetaSnapshot } from "@/domains/meta/types";
 
 const mockGetSnapshot = getMetaSnapshot as unknown as ReturnType<typeof vi.fn>;
 const mockFind = findChampionStats as unknown as ReturnType<typeof vi.fn>;
 const mockDetail = getChampionDetail as unknown as ReturnType<typeof vi.fn>;
+const mockChampions = fetchAllChampions as unknown as ReturnType<typeof vi.fn>;
 
 function champ(
   championId: number,
@@ -82,6 +87,7 @@ beforeEach(() => {
   mockGetSnapshot.mockResolvedValue(SNAPSHOT);
   mockFind.mockReturnValue(AHRI);
   mockDetail.mockResolvedValue({ counters: AHRI_MID_COUNTERS, build: AHRI_BUILD });
+  mockChampions.mockResolvedValue([]); // no Data Dragon fallback needed by default
 });
 
 describe("getCounterData", () => {
@@ -132,5 +138,28 @@ describe("getCounterData", () => {
   it("returns null when the detail feed is unavailable", async () => {
     mockDetail.mockResolvedValue(null);
     expect(await getCounterData("Ahri", "MIDDLE")).toBeNull();
+  });
+
+  it("keeps an exact 50.0% matchup instead of dropping it from both columns", async () => {
+    const even: MatchupEntry = { opponentId: 99, games: 3000, subjectWins: 1500, subjectWinRate: 50 };
+    mockDetail.mockResolvedValue({ counters: [even], build: AHRI_BUILD });
+
+    const result = await getCounterData("Ahri", "MIDDLE");
+    const strong = result!.strongAgainstSubject.map((m) => m.name);
+    const weak = result!.weakAgainstSubject.map((m) => m.name);
+    expect([...strong, ...weak]).toContain("Lux"); // not lost at the boundary
+    expect(strong).not.toContain("Lux"); // 50 is not a "beats the subject" counter
+  });
+
+  it("resolves opponents missing from the snapshot via the Data Dragon fallback", async () => {
+    // Opponent 111 is not in the snapshot — without a fallback it would vanish.
+    const counters: MatchupEntry[] = [
+      { opponentId: 111, games: 4000, subjectWins: 1600, subjectWinRate: 40 },
+    ];
+    mockDetail.mockResolvedValue({ counters, build: AHRI_BUILD });
+    mockChampions.mockResolvedValue([{ id: "Aurora", key: "111", name: "Aurora" }]);
+
+    const result = await getCounterData("Ahri", "MIDDLE");
+    expect(result!.strongAgainstSubject.map((m) => m.name)).toContain("Aurora");
   });
 });

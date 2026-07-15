@@ -1,5 +1,6 @@
 import { getMetaSnapshot, findChampionStats } from "@/domains/meta/services/metaStatsService";
 import { getChampionDetail } from "@/domains/meta/services/championDetailService";
+import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import type { SnapshotTier } from "@/domains/meta/services/opggShared";
 import type {
   CanonicalPosition,
@@ -88,18 +89,31 @@ export async function getCounterData(
       ? position
       : [...champion.positions].sort((a, b) => b.games - a.games)[0].position;
 
-  const detail = await getChampionDetail(champion.championId, resolvedPosition, { tier });
+  const [detail, ddragon] = await Promise.all([
+    getChampionDetail(champion.championId, resolvedPosition, { tier }),
+    fetchAllChampions(),
+  ]);
   if (!detail) return null;
 
+  // Merge the snapshot index with a Data Dragon fallback so opponents that op.gg
+  // lists but the snapshot omits (new or low-sample champions) still resolve
+  // instead of silently vanishing from the counter lists.
   const index = buildChampionIndex(snapshot);
+  for (const c of ddragon) {
+    const numericKey = Number(c.key);
+    if (!Number.isNaN(numericKey) && !index.has(numericKey)) {
+      index.set(numericKey, { key: c.id, name: c.name });
+    }
+  }
   const matchups = enrichMatchups(detail.counters, index);
 
-  // counters are pre-sorted ascending by subject win rate (hardest first).
+  // counters are pre-sorted ascending by subject win rate (hardest first). The
+  // exact-50.0 boundary belongs in one column, not dropped from both.
   const strongAgainstSubject = matchups
     .filter((m) => m.subjectWinRate < 50)
     .slice(0, LIST_SIZE);
   const weakAgainstSubject = matchups
-    .filter((m) => m.subjectWinRate > 50)
+    .filter((m) => m.subjectWinRate >= 50)
     .sort((a, b) => b.subjectWinRate - a.subjectWinRate)
     .slice(0, LIST_SIZE);
 

@@ -5,12 +5,14 @@ import { notFound } from "next/navigation";
 import {
   getCounterData,
   getPopularChampions,
+  parsePosition,
   parseTier,
   POSITION_LABELS,
   SNAPSHOT_TIERS,
   TIER_LABELS,
   formatGamePatch,
 } from "@/domains/meta";
+import type { CanonicalPosition, SnapshotTier } from "@/domains/meta";
 import { CounterResults } from "@/domains/meta/components/CounterResults";
 import { RelatedChampions } from "@/domains/meta/components/RelatedChampions";
 import { DataFreshness } from "@/domains/meta/components/DataFreshness";
@@ -30,7 +32,20 @@ export async function generateStaticParams(): Promise<{ champion: string }[]> {
 
 interface PageProps {
   params: { champion: string };
-  searchParams: { tier?: string };
+  searchParams: { tier?: string; role?: string };
+}
+
+// Builds a /counters/[champion] URL preserving the other active filter.
+function counterHref(
+  championKey: string,
+  role: CanonicalPosition | null,
+  tier: SnapshotTier | null
+): string {
+  const params = new URLSearchParams();
+  if (role) params.set("role", role);
+  if (tier) params.set("tier", tier);
+  const query = params.toString();
+  return `/counters/${championKey}${query ? `?${query}` : ""}`;
 }
 
 export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
@@ -38,8 +53,8 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   if (!detail) return { title: "Champion not found | LoL AI Coach" };
   const data = await getCounterData(detail.id);
   const patch = data ? ` (Patch ${formatGamePatch(data.patch)})` : "";
-  // Rank-filtered views are near-duplicates — keep them out of the index.
-  const filtered = Boolean(parseTier(searchParams.tier));
+  // Rank/lane-filtered views are near-duplicates — keep them out of the index.
+  const filtered = Boolean(parseTier(searchParams.tier) || parsePosition(searchParams.role));
   return {
     title: `${detail.name} Counters — Best Champions to Beat ${detail.name}${patch} | LoL AI Coach`,
     description: `The best champions to counter ${detail.name} and the matchups ${detail.name} wins, ranked by real ranked win rate. Free counter picks, updated every patch.`,
@@ -53,8 +68,9 @@ export default async function ChampionCountersPage({ params, searchParams }: Pag
   if (!detail) notFound();
 
   const tier = parseTier(searchParams.tier);
+  const requestedPosition = parsePosition(searchParams.role);
   const [data, popular] = await Promise.all([
-    getCounterData(detail.id, undefined, tier ?? undefined),
+    getCounterData(detail.id, requestedPosition ?? undefined, tier ?? undefined),
     getPopularChampions(10, detail.id),
   ]);
 
@@ -121,11 +137,31 @@ export default async function ChampionCountersPage({ params, searchParams }: Pag
         </div>
       </div>
 
+      {/* Lane filter — only when the champion plays more than one lane */}
+      {data && data.availablePositions.length > 1 && (
+        <div className="mb-3 flex flex-wrap items-center gap-1.5">
+          <span className="mr-1 text-[11px] uppercase tracking-wide text-text-muted">Lane</span>
+          {data.availablePositions.map((pos) => (
+            <Link
+              key={pos}
+              href={counterHref(detail.id, pos, tier)}
+              className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
+                pos === data.position
+                  ? "bg-accent text-background"
+                  : "border border-border bg-surface text-text-muted hover:border-accent/40 hover:text-text"
+              }`}
+            >
+              {POSITION_LABELS[pos]}
+            </Link>
+          ))}
+        </div>
+      )}
+
       {/* Rank bracket filter */}
       <div className="mb-6 flex flex-wrap items-center gap-1.5">
         <span className="mr-1 text-[11px] uppercase tracking-wide text-text-muted">Rank</span>
         <Link
-          href={`/counters/${detail.id}`}
+          href={counterHref(detail.id, requestedPosition, null)}
           className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
             tier === null
               ? "bg-accent text-background"
@@ -137,7 +173,7 @@ export default async function ChampionCountersPage({ params, searchParams }: Pag
         {SNAPSHOT_TIERS.map((t) => (
           <Link
             key={t}
-            href={`/counters/${detail.id}?tier=${t}`}
+            href={counterHref(detail.id, requestedPosition, t)}
             className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
               t === tier
                 ? "bg-accent text-background"
