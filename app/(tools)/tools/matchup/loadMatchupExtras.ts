@@ -4,8 +4,12 @@ import { fetchItems, type ItemInfo } from "@/lib/ddragon/itemsData";
 import { fetchRunes, type RuneInfo } from "@/lib/ddragon/runesData";
 
 export interface MatchupSideBuild {
-  coreItems: ItemInfo[];
+  summonerSpellIds: number[];
   keystone: RuneInfo | null;
+  coreItems: ItemInfo[];
+  boots: ItemInfo[];
+  situationalItems: ItemInfo[]; // top later-slot options to adapt into the matchup
+  skillMaxOrder: string[]; // ability max priority, e.g. ["Q","W","E"]
   curve: GameLengthPoint[];
 }
 
@@ -19,13 +23,21 @@ function toSide(
   items: Map<number, ItemInfo>,
   runes: Map<number, RuneInfo>
 ): MatchupSideBuild {
-  const coreItems = (build?.coreItems?.ids ?? [])
-    .map((id) => items.get(id))
-    .filter((i): i is ItemInfo => Boolean(i));
+  const mapItems = (ids: number[]): ItemInfo[] =>
+    ids.map((id) => items.get(id)).filter((i): i is ItemInfo => Boolean(i));
+  // Each late option is a single-item slot — take its top pick, capped to a few.
+  const situationalIds = (build?.lateItemOptions ?? [])
+    .map((o) => o.ids[0])
+    .filter((id): id is number => typeof id === "number")
+    .slice(0, 4);
   const keystoneId = build?.runes?.primaryRuneIds[0];
   return {
-    coreItems,
+    summonerSpellIds: build?.summonerSpellIds ?? [],
     keystone: keystoneId ? runes.get(keystoneId) ?? null : null,
+    coreItems: mapItems(build?.coreItems?.ids ?? []),
+    boots: mapItems(build?.boots?.ids ?? []),
+    situationalItems: mapItems(situationalIds),
+    skillMaxOrder: build?.skillMaxOrder ?? [],
     curve: build?.gameLengths ?? [],
   };
 }

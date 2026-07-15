@@ -7,6 +7,7 @@ export interface MatchupReport {
   championA: { key: string; name: string };
   championB: { key: string; name: string };
   position: CanonicalPosition;
+  availablePositions: CanonicalPosition[]; // lanes both champions share (for the lane selector)
   patch: string;
   aWinRateVsB: number; // 0-100
   games: number; // matchup sample size (0 = not enough data)
@@ -15,26 +16,29 @@ export interface MatchupReport {
 }
 
 const RANGE_DIFF_THRESHOLD = 75;
+// A matchup needs a real sample before its win rate is worth acting on in a hint.
+const HINT_MIN_GAMES = 100;
 
+// Lanes both champions play, plus the resolved lane to analyze. `requested` is
+// honored only when both champions share it; otherwise falls back to the
+// most-played shared lane (so we never query a lane one champion doesn't play),
+// then to A's most-played lane. Returns null only when A has no lanes at all.
 function resolvePosition(
   a: ChampionMetaStats,
   b: ChampionMetaStats,
   requested?: CanonicalPosition
-): CanonicalPosition | null {
-  const aPositions = a.positions.map((p) => p.position);
+): { position: CanonicalPosition; shared: CanonicalPosition[] } | null {
   const bPositions = new Set(b.positions.map((p) => p.position));
-  const shared = aPositions.filter((p) => bPositions.has(p));
+  const sharedStats = [...a.positions]
+    .filter((p) => bPositions.has(p.position))
+    .sort((x, y) => y.games - x.games);
+  const shared = sharedStats.map((p) => p.position);
 
-  if (requested && shared.includes(requested)) return requested;
-  if (requested && aPositions.includes(requested)) return requested;
-  if (shared.length > 0) {
-    // most-played shared lane (a.positions is not sorted, so compare games)
-    return [...a.positions]
-      .filter((p) => bPositions.has(p.position))
-      .sort((x, y) => y.games - x.games)[0].position;
-  }
+  if (requested && shared.includes(requested)) return { position: requested, shared };
+  if (sharedStats.length > 0) return { position: sharedStats[0].position, shared };
   if (a.positions.length === 0) return null;
-  return [...a.positions].sort((x, y) => y.games - x.games)[0].position;
+  const fallback = [...a.positions].sort((x, y) => y.games - x.games)[0].position;
+  return { position: fallback, shared: [fallback] };
 }
 
 async function lookupWinRate(
@@ -55,8 +59,30 @@ async function lookupWinRate(
   return { winRate: 50, games: 0 };
 }
 
-function buildHints(a: DdragonChampionSummary, b: DdragonChampionSummary): string[] {
+function buildHints(
+  a: DdragonChampionSummary,
+  b: DdragonChampionSummary,
+  winRate: number,
+  games: number
+): string[] {
   const hints: string[] = [];
+
+  // Lead with the actual matchup result when the sample is meaningful.
+  if (games >= HINT_MIN_GAMES) {
+    if (winRate >= 52) {
+      hints.push(
+        `${a.name} wins this lane ${winRate.toFixed(1)}% of the time — you have a real edge, so look to trade and press your advantage.`
+      );
+    } else if (winRate <= 48) {
+      hints.push(
+        `${a.name} wins only ${winRate.toFixed(1)}% into ${b.name} — play safe, prioritise farm, and scale rather than forcing early fights.`
+      );
+    } else {
+      hints.push(
+        `${a.name} vs ${b.name} is close to even (${winRate.toFixed(1)}%) — the lane comes down to who plays the wave and cooldowns better.`
+      );
+    }
+  }
 
   const rangeDiff = a.stats.attackrange - b.stats.attackrange;
   if (rangeDiff >= RANGE_DIFF_THRESHOLD) {
@@ -110,8 +136,9 @@ export async function getMatchupData(
   const b = findChampionStats(snapshot, championBKey);
   if (!a || !b) return null;
 
-  const position = resolvePosition(a, b, requestedPosition);
-  if (!position) return null;
+  const resolved = resolvePosition(a, b, requestedPosition);
+  if (!resolved) return null;
+  const { position, shared } = resolved;
 
   const { winRate, games } = await lookupWinRate(a, b, position);
 
@@ -123,10 +150,11 @@ export async function getMatchupData(
     championA: { key: a.championKey, name: a.name },
     championB: { key: b.championKey, name: b.name },
     position,
+    availablePositions: shared,
     patch: snapshot.patch,
     aWinRateVsB: winRate,
     games,
     verdict: verdictFor(winRate, games),
-    hints: aSummary && bSummary ? buildHints(aSummary, bSummary) : [],
+    hints: aSummary && bSummary ? buildHints(aSummary, bSummary, winRate, games) : [],
   };
 }

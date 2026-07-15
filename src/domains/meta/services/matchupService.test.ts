@@ -140,6 +140,29 @@ describe("getMatchupData", () => {
     expect(report!.verdict).toBe("even");
   });
 
+  it("exposes the lanes both champions share for the lane selector", async () => {
+    const report = await getMatchupData("Ahri", "Zed", "MIDDLE");
+    expect(report!.availablePositions).toEqual(["MIDDLE"]);
+  });
+
+  it("ignores a requested lane the champions don't share and uses a shared one", async () => {
+    // A plays TOP + MID, B plays MID only. Requesting TOP must resolve to MID.
+    const aFlex: ChampionMetaStats = {
+      ...AHRI,
+      positions: [
+        { position: "TOP", games: 20000, winRate: 50, pickRate: 3, banRate: 2, tier: 3, rank: 20, prevPatchRank: 22, counters: [] },
+        { position: "MIDDLE", games: 300000, winRate: 51, pickRate: 8, banRate: 6, tier: 1, rank: 2, prevPatchRank: 4, counters: [] },
+      ],
+    };
+    mockFind.mockImplementation((_s: MetaSnapshot, key: string | number) =>
+      key === "Ahri" || key === 103 ? aFlex : key === "Zed" || key === 238 ? ZED : null
+    );
+
+    const report = await getMatchupData("Ahri", "Zed", "TOP");
+    expect(report!.position).toBe("MIDDLE"); // TOP isn't shared, fell back to shared MID
+    expect(report!.availablePositions).toEqual(["MIDDLE"]);
+  });
+
   it("returns null when the snapshot is unavailable", async () => {
     mockSnapshot.mockResolvedValue(null);
     expect(await getMatchupData("Ahri", "Zed")).toBeNull();

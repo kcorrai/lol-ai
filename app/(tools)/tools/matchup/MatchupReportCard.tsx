@@ -9,12 +9,10 @@ const VERDICT_COPY: Record<MatchupReport["verdict"], { label: string; className:
 
 export function MatchupReportCard({ report }: { report: MatchupReport }) {
   const verdict = VERDICT_COPY[report.verdict];
-  const winColor =
-    report.aWinRateVsB >= 52
-      ? "text-success"
-      : report.aWinRateVsB <= 48
-        ? "text-danger"
-        : "text-text";
+  const hasData = report.games > 0;
+  const aWin = report.aWinRateVsB;
+  const bWin = Math.round((100 - aWin) * 10) / 10;
+  const winColor = aWin >= 52 ? "text-success" : aWin <= 48 ? "text-danger" : "text-text";
 
   return (
     <div className="rounded-2xl border border-border bg-surface/60 p-6">
@@ -24,13 +22,18 @@ export function MatchupReportCard({ report }: { report: MatchupReport }) {
           <span className="text-sm font-semibold text-text">{report.championA.name}</span>
         </div>
         <div className="text-center">
-          <div className={`font-display text-4xl font-black ${winColor}`}>
-            {report.aWinRateVsB.toFixed(1)}%
-          </div>
-          <div className="text-xs text-text-muted">
-            {report.championA.name} win rate
-          </div>
-          <div className={`mt-1 text-sm font-bold ${verdict.className}`}>{verdict.label}</div>
+          {hasData ? (
+            <>
+              <div className={`font-display text-4xl font-black ${winColor}`}>{aWin.toFixed(1)}%</div>
+              <div className="text-xs text-text-muted">{report.championA.name} win rate</div>
+              <div className={`mt-1 text-sm font-bold ${verdict.className}`}>{verdict.label}</div>
+            </>
+          ) : (
+            <>
+              <div className="font-display text-3xl font-black text-text-muted">—</div>
+              <div className="text-xs text-text-muted">Not enough games</div>
+            </>
+          )}
         </div>
         <div className="flex flex-col items-center gap-2">
           <ChampionIcon name={report.championB.key} size={64} />
@@ -38,10 +41,24 @@ export function MatchupReportCard({ report }: { report: MatchupReport }) {
         </div>
       </div>
 
+      {/* Opposed head-to-head bar — both champions' win rates in the matchup */}
+      {hasData && (
+        <div className="mt-5">
+          <div className="flex h-3 overflow-hidden rounded-full">
+            <div className="bg-sky-500" style={{ width: `${aWin}%` }} />
+            <div className="bg-rose-500" style={{ width: `${bWin}%` }} />
+          </div>
+          <div className="mt-1 flex justify-between text-[11px] font-semibold">
+            <span className="text-sky-400">{report.championA.name} {aWin.toFixed(1)}%</span>
+            <span className="text-rose-400">{bWin.toFixed(1)}% {report.championB.name}</span>
+          </div>
+        </div>
+      )}
+
       <p className="mt-4 text-center text-xs text-text-muted">
-        {report.games > 0
+        {hasData
           ? `Based on ${report.games.toLocaleString()} ranked games this patch (${formatGamePatch(report.patch)}).`
-          : `Not enough ranked games this patch for a reliable win rate — hints are based on champion stats.`}
+          : `op.gg has no significant sample for this exact pairing yet, so no head-to-head win rate is shown. The lane tips below are based on champion stats.`}
       </p>
 
       {report.hints.length > 0 && (

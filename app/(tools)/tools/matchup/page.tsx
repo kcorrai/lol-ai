@@ -75,7 +75,7 @@ export default async function MatchupPage({ searchParams }: PageProps) {
           championA={report?.championA.key ?? a}
           championB={report?.championB.key ?? b}
           position={report?.position ?? requestedPosition}
-          availablePositions={report ? [report.position] : []}
+          availablePositions={report?.availablePositions ?? []}
         />
       </div>
 
