@@ -94,4 +94,19 @@ describe("getTierList", () => {
     mockSnapshot.mockResolvedValue(null);
     expect(await getTierList("MIDDLE")).toBeNull();
   });
+
+  it("flags tiny-sample lanes and sinks them below trustworthy rows", async () => {
+    // A noisy 28-game 'S-tier' must not outrank a solid 10k-game B-tier champion.
+    const noisy = champ("Noisy", { tier: 1, rank: 1, winRate: 58, pickRate: 5 });
+    noisy.positions[0].games = 28;
+    mockSnapshot.mockResolvedValue({ ...SNAPSHOT, champions: [...SNAPSHOT.champions, noisy] });
+
+    const list = await getTierList("MIDDLE");
+    const noisyEntry = list!.entries.find((e) => e.championKey === "Noisy")!;
+    expect(noisyEntry.lowConfidence).toBe(true);
+    expect(noisyEntry.games).toBe(28);
+    // Every confident row ranks above the noisy one.
+    expect(list!.entries[list!.entries.length - 1].championKey).toBe("Noisy");
+    expect(list!.entries.find((e) => e.championKey === "Yasuo")!.lowConfidence).toBe(false);
+  });
 });

@@ -2,6 +2,11 @@ import Link from "next/link";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { tierLetter, type TierListEntry } from "@/domains/meta";
 
+// Compact sample-size label: 1234 → "1.2k", 28 → "28".
+function formatGames(games: number): string {
+  return games >= 1000 ? `${(games / 1000).toFixed(1)}k` : String(games);
+}
+
 const TIER_COLORS: Record<string, string> = {
   S: "bg-amber-400/20 text-amber-300 border-amber-400/40",
   A: "bg-emerald-400/15 text-emerald-300 border-emerald-400/30",
@@ -29,14 +34,18 @@ export function TierRow({
   showMovement = false,
 }: TierRowProps) {
   const letter = tierLetter(entry.tier);
+  // A tiny sample makes op.gg's S/A grade meaningless — show the letter greyed
+  // rather than in a confident tier colour.
+  const tierClass = entry.lowConfidence
+    ? "border-border text-text-muted/50"
+    : (TIER_COLORS[letter] ?? "border-border text-text-muted");
   return (
     <tr className="border-b border-border/60 last:border-0">
       <td className="py-2.5 pl-3 pr-2 text-sm text-text-muted">{index + 1}</td>
       <td className="px-2">
         <span
-          className={`inline-flex h-6 w-6 items-center justify-center rounded border text-xs font-bold ${
-            TIER_COLORS[letter] ?? "border-border text-text-muted"
-          }`}
+          title={entry.lowConfidence ? `Low sample — ${formatGames(entry.games)} games` : undefined}
+          className={`inline-flex h-6 w-6 items-center justify-center rounded border text-xs font-bold ${tierClass}`}
         >
           {letter}
         </span>
@@ -47,7 +56,14 @@ export function TierRow({
           className="flex items-center gap-2 hover:text-accent"
         >
           <ChampionIcon name={entry.championKey} size={30} />
-          <span className="text-sm font-medium text-text">{entry.name}</span>
+          <span className="flex flex-col leading-tight">
+            <span className="text-sm font-medium text-text">{entry.name}</span>
+            {entry.games > 0 && (
+              <span className={`text-[10px] ${entry.lowConfidence ? "text-amber-400/70" : "text-text-muted/60"}`}>
+                {formatGames(entry.games)} games{entry.lowConfidence ? " · low confidence" : ""}
+              </span>
+            )}
+          </span>
         </Link>
       </td>
       {showMovement && (

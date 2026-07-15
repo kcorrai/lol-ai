@@ -11,6 +11,8 @@ export interface TierListEntry {
   winRate: number; // 0-100
   pickRate: number; // 0-100
   banRate: number; // 0-100
+  games: number; // sample size in this lane
+  lowConfidence: boolean; // sample too small for the tier/rank to be trustworthy
 }
 
 export interface RoleTierList {
@@ -29,6 +31,12 @@ export function tierLetter(tier: number): string {
 
 // Exclude near-zero pick rates so the list reflects the real meta, not off-meta noise.
 const MIN_PICK_RATE = 0.3;
+
+// Below this many games the op.gg tier/rank is statistical noise (a 28-game
+// "S-tier" at 28% win rate). Small brackets like Challenger trip this constantly;
+// mainstream brackets never do (every shown champion has thousands of games), so
+// the default view is unaffected. Flagged rows are kept but marked and sunk.
+const MIN_CONFIDENT_GAMES = 200;
 
 // Returns the champion tier list for one lane, ordered best-first, or null if the
 // meta snapshot is unavailable. An optional rank bracket (tier) narrows the data
@@ -53,6 +61,8 @@ export async function getTierList(
       winRate: stats.winRate,
       pickRate: stats.pickRate,
       banRate: stats.banRate,
+      games: stats.games,
+      lowConfidence: stats.games < MIN_CONFIDENT_GAMES,
     });
   }
 
@@ -67,9 +77,16 @@ export async function getTierList(
 }
 
 // Shared best-first ordering: tier, then ordinal rank, then win rate. Missing
-// tier/rank (0, e.g. brand-new champions) sinks to the bottom.
+// tier/rank (0, e.g. brand-new champions) sinks to the bottom. Low-confidence
+// (tiny-sample) rows sink below every trustworthy row so noise can't top the
+// list; among themselves they order by sample size (most reliable first).
 function sortTierEntries(entries: TierListEntry[]): void {
   entries.sort((a, b) => {
+    if (a.lowConfidence !== b.lowConfidence) return a.lowConfidence ? 1 : -1;
+    if (a.lowConfidence) {
+      if (a.games !== b.games) return b.games - a.games;
+      return b.winRate - a.winRate;
+    }
     const at = a.tier || 99;
     const bt = b.tier || 99;
     if (at !== bt) return at - bt;
@@ -97,6 +114,8 @@ export async function getAramTierList(): Promise<RoleTierList | null> {
       winRate: c.overallWinRate,
       pickRate: c.overallPickRate,
       banRate: 0,
+      games: c.overallGames,
+      lowConfidence: c.overallGames > 0 && c.overallGames < MIN_CONFIDENT_GAMES,
     }));
 
   sortTierEntries(entries);
