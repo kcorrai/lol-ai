@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
 import { MatchupCurveCompare } from "@/domains/meta/components/MatchupCurveCompare";
+import { DataFreshness } from "@/domains/meta/components/DataFreshness";
 import type { MatchupPageData } from "./loadMatchupData";
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
@@ -37,6 +38,7 @@ export function MatchupPageView({ d }: { d: MatchupPageData }) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
+    dateModified: d.fetchedAt,
     mainEntity: [
       {
         "@type": "Question",
@@ -73,11 +75,13 @@ export function MatchupPageView({ d }: { d: MatchupPageData }) {
         ]}
       />
 
-      <header className="mb-6">
+      <header className="mb-4">
         <h1 className="font-display text-3xl font-black text-text md:text-4xl">
           {d.a.name} vs {d.b.name} — {d.laneLabel} Matchup, Patch {d.gamePatch}
         </h1>
       </header>
+
+      <DataFreshness fetchedAt={d.fetchedAt} patch={d.rawPatch} matchCount={d.matchCount} className="mb-6" />
 
       {/* Head-to-head card */}
       <div className="mb-8 flex items-center justify-center gap-6 rounded-2xl border border-border bg-surface/60 p-6">

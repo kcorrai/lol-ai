@@ -23,6 +23,9 @@ export function generateMetadata({ searchParams }: PageProps): Metadata {
     title,
     description,
     alternates: { canonical: "/tools/counter-picker" },
+    // The ?champion permalink duplicates the canonical /counters/[champion] SSG
+    // page — keep the query variant out of the index.
+    ...(champion ? { robots: { index: false, follow: true } } : {}),
   };
 }
 

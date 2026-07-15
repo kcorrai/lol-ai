@@ -13,6 +13,7 @@ import {
 } from "@/domains/meta";
 import { CounterResults } from "@/domains/meta/components/CounterResults";
 import { RelatedChampions } from "@/domains/meta/components/RelatedChampions";
+import { DataFreshness } from "@/domains/meta/components/DataFreshness";
 import { CounterInsights } from "./CounterInsights";
 import { fetchAllChampions, fetchChampionDetail } from "@/lib/ddragon/championsData";
 import { championSplashUrl } from "@/lib/ddragon";
@@ -69,6 +70,7 @@ export default async function ChampionCountersPage({ params, searchParams }: Pag
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
+    ...(data ? { dateModified: data.fetchedAt } : {}),
     mainEntity: [
       {
         "@type": "Question",
@@ -146,6 +148,15 @@ export default async function ChampionCountersPage({ params, searchParams }: Pag
           </Link>
         ))}
       </div>
+
+      {data && (
+        <DataFreshness
+          fetchedAt={data.fetchedAt}
+          patch={data.patch}
+          matchCount={data.matchCount}
+          className="mb-6"
+        />
+      )}
 
       {data ? (
         <CounterResults

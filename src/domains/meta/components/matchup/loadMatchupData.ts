@@ -14,6 +14,9 @@ export interface MatchupPageData {
   b: { key: string; name: string };
   laneLabel: string;
   gamePatch: string;
+  rawPatch: string;
+  fetchedAt: string;
+  matchCount?: number;
   aWinRate: number;
   games: number;
   verdict: MatchupReport["verdict"];
@@ -54,6 +57,9 @@ export async function loadMatchupData(
     b: { key: b.championKey, name: b.name },
     laneLabel: POSITION_LABELS[report.position],
     gamePatch: formatGamePatch(report.patch),
+    rawPatch: report.patch,
+    fetchedAt: snapshot.fetchedAt,
+    matchCount: snapshot.matchCount,
     aWinRate: report.aWinRateVsB,
     games: report.games,
     verdict: report.verdict,

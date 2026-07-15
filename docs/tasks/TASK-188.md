@@ -1,6 +1,6 @@
 # TASK-188: SEO Infra Polish — Freshness, Noindex Params, Footer Hub
 
-## Status: Pending
+## Status: Done
 ## Score: 89/100
 
 ## Goal

@@ -23,7 +23,13 @@ export function generateMetadata({ searchParams }: PageProps): Metadata {
     a && b
       ? `Who wins ${a} vs ${b}? See the real ranked win rate and lane tips for the matchup, updated every patch. Free, no login.`
       : "Compare any two League of Legends champions head-to-head: real ranked win rates and lane tips, updated every patch. Free, no login.";
-  return { title, description, alternates: { canonical: "/tools/matchup" } };
+  return {
+    title,
+    description,
+    alternates: { canonical: "/tools/matchup" },
+    // The ?a/?b permalink duplicates the canonical /matchups/[slug] page.
+    ...(a && b ? { robots: { index: false, follow: true } } : {}),
+  };
 }
 
 export default async function MatchupPage({ searchParams }: PageProps) {

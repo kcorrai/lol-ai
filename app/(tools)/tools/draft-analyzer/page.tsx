@@ -6,15 +6,21 @@ import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
 import { DraftBuilder } from "./DraftBuilder";
 import { DraftResults } from "./DraftResults";
 
-export const metadata: Metadata = {
-  title: "LoL Draft Analyzer — Team Composition Checker | LoL AI Coach",
-  description:
-    "Analyze any League of Legends 5v5 draft: damage profile, frontline, scaling, meta strength and lane matchups from real ranked data. Free, no login.",
-  alternates: { canonical: "/tools/draft-analyzer" },
-};
-
 interface PageProps {
   searchParams: { blue?: string; red?: string };
+}
+
+export function generateMetadata({ searchParams }: PageProps): Metadata {
+  // Shared draft permalinks (?blue/?red) are unlimited combinations — keep them
+  // out of the index and canonicalise to the clean tool page.
+  const hasParams = Boolean(searchParams.blue || searchParams.red);
+  return {
+    title: "LoL Draft Analyzer — Team Composition Checker | LoL AI Coach",
+    description:
+      "Analyze any League of Legends 5v5 draft: damage profile, frontline, scaling, meta strength and lane matchups from real ranked data. Free, no login.",
+    alternates: { canonical: "/tools/draft-analyzer" },
+    ...(hasParams ? { robots: { index: false, follow: true } } : {}),
+  };
 }
 
 // "Garen,Vi,,Jinx,Leona" → array of 5 (null for blanks), indexed by ALL_POSITIONS.

@@ -25,6 +25,8 @@ export interface CounterResult {
   name: string;
   position: CanonicalPosition;
   patch: string;
+  fetchedAt: string;
+  matchCount?: number;
   overallTier: number;
   availablePositions: CanonicalPosition[];
   stats: PositionStats; // the subject's stats in this lane
@@ -109,6 +111,8 @@ export async function getCounterData(
     name: champion.name,
     position: resolvedPosition,
     patch: snapshot.patch,
+    fetchedAt: snapshot.fetchedAt,
+    matchCount: snapshot.matchCount,
     overallTier: champion.overallTier,
     availablePositions,
     stats,

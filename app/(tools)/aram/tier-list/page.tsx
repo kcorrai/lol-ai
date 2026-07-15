@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getAramTierList, formatGamePatch } from "@/domains/meta";
 import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
+import { DataFreshness } from "@/domains/meta/components/DataFreshness";
 import { TierRow } from "../../tools/tier-list/TierRow";
 
 export const revalidate = 43200; // 12h ISR
@@ -70,6 +71,16 @@ export default async function AramTierListPage() {
           ARAM
         </span>
       </div>
+
+      {list && (
+        <DataFreshness
+          fetchedAt={list.fetchedAt}
+          patch={list.patch}
+          matchCount={list.matchCount}
+          gamesLabel="ARAM games analyzed"
+          className="mb-4"
+        />
+      )}
 
       {!list || list.entries.length === 0 ? (
         <p className="rounded-xl border border-dashed border-border px-4 py-12 text-center text-text-muted">

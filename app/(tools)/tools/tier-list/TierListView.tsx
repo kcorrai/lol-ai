@@ -7,6 +7,7 @@ import {
   TIER_LABELS,
 } from "@/domains/meta";
 import type { CanonicalPosition, RoleTierList, SnapshotTier } from "@/domains/meta";
+import { DataFreshness } from "@/domains/meta/components/DataFreshness";
 import { TierRow } from "./TierRow";
 
 interface TierListViewProps {
@@ -68,6 +69,10 @@ export function TierListView({ position, list, activeTier }: TierListViewProps) 
           </Link>
         ))}
       </div>
+
+      {list && (
+        <DataFreshness fetchedAt={list.fetchedAt} patch={list.patch} matchCount={list.matchCount} className="mb-4" />
+      )}
 
       {!list || list.entries.length === 0 ? (
         <p className="rounded-xl border border-dashed border-border px-4 py-12 text-center text-text-muted">

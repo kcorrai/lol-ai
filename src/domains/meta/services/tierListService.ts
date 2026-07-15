@@ -16,6 +16,8 @@ export interface TierListEntry {
 export interface RoleTierList {
   position: CanonicalPosition;
   patch: string;
+  fetchedAt: string; // ISO timestamp of the snapshot
+  matchCount?: number; // games analyzed this patch
   entries: TierListEntry[]; // sorted best-first
 }
 
@@ -55,7 +57,13 @@ export async function getTierList(
   }
 
   sortTierEntries(entries);
-  return { position, patch: snapshot.patch, entries };
+  return {
+    position,
+    patch: snapshot.patch,
+    fetchedAt: snapshot.fetchedAt,
+    matchCount: snapshot.matchCount,
+    entries,
+  };
 }
 
 // Shared best-first ordering: tier, then ordinal rank, then win rate. Missing
@@ -93,5 +101,11 @@ export async function getAramTierList(): Promise<RoleTierList | null> {
 
   sortTierEntries(entries);
   // "MIDDLE" is a filler — ARAM has no positions; consumers ignore it.
-  return { position: "MIDDLE", patch: snapshot.patch, entries };
+  return {
+    position: "MIDDLE",
+    patch: snapshot.patch,
+    fetchedAt: snapshot.fetchedAt,
+    matchCount: snapshot.matchCount,
+    entries,
+  };
 }

@@ -9,6 +9,24 @@ interface ToolShot {
   alt: string;
 }
 
+const MORE_TOOLS: { href: string; title: string; description: string }[] = [
+  {
+    href: "/builds",
+    title: "Champion Builds",
+    description: "Runes, items and skill order with the highest win rate for every champion.",
+  },
+  {
+    href: "/aram/tier-list",
+    title: "ARAM Tier List",
+    description: "The best ARAM champions and builds this patch, by real win rate.",
+  },
+  {
+    href: "/meta",
+    title: "Patch Meta Report",
+    description: "The biggest winners and losers of the current patch, updated automatically.",
+  },
+];
+
 const TOOLS: ToolShot[] = [
   {
     href: "/tools/counter-picker",
@@ -81,6 +99,23 @@ export function ToolsInActionSection() {
                 </Link>
               </div>
             </div>
+          ))}
+        </div>
+
+        {/* Additional tools without screenshots */}
+        <div className="mt-16 grid gap-4 sm:grid-cols-3">
+          {MORE_TOOLS.map((tool) => (
+            <Link
+              key={tool.href}
+              href={tool.href}
+              className="group rounded-2xl border border-border bg-surface p-6 transition-all hover:border-accent/40 hover:bg-surface-2"
+            >
+              <h3 className="font-display text-lg font-bold text-text group-hover:text-accent">
+                {tool.title}
+              </h3>
+              <p className="mt-2 text-sm text-text-muted">{tool.description}</p>
+              <span className="mt-4 inline-block text-sm font-semibold text-accent">Open →</span>
+            </Link>
           ))}
         </div>
       </div>
