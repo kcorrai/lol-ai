@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
-import { getMatchupPairs } from "@/domains/meta";
+import { getMatchupPairs, ALL_POSITIONS, POSITION_SLUG } from "@/domains/meta";
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
 
@@ -18,6 +18,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/tools/tier-list`, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE_URL}/builds`, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE_URL}/aram/tier-list`, changeFrequency: "daily", priority: 0.8 },
+    ...ALL_POSITIONS.map((pos) => ({
+      url: `${BASE_URL}/tools/tier-list/${POSITION_SLUG[pos]}`,
+      changeFrequency: "daily" as const,
+      priority: 0.8,
+    })),
   ];
 
   const buildRoutes: MetadataRoute.Sitemap = champions.map((c) => ({

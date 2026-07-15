@@ -35,6 +35,7 @@ function champ(
             banRate: 3,
             tier: mid.tier,
             rank: mid.rank,
+            prevPatchRank: mid.rank + 3,
             counters: [],
           },
         ]

@@ -1,36 +1,43 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { getTierList, parsePosition, ALL_POSITIONS, POSITION_LABELS, formatGamePatch } from "@/domains/meta";
+import { permanentRedirect } from "next/navigation";
+import { getTierList, parsePosition, POSITION_SLUG, formatGamePatch } from "@/domains/meta";
 import type { CanonicalPosition } from "@/domains/meta";
 import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
-import { TierRow } from "./TierRow";
+import { TierListView } from "./TierListView";
+import { tierBlurb } from "./tierBlurb";
 
 export const revalidate = 43200; // 12h ISR
+
+// The default landing view; role-specific hubs live at /tools/tier-list/[role].
+const DEFAULT_POSITION: CanonicalPosition = "MIDDLE";
 
 interface PageProps {
   searchParams: { role?: string };
 }
 
-export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
-  const position = parsePosition(searchParams.role) ?? "MIDDLE";
-  const list = await getTierList(position);
+export async function generateMetadata(): Promise<Metadata> {
+  const list = await getTierList(DEFAULT_POSITION);
   const patch = list ? formatGamePatch(list.patch) : "";
-  const lane = POSITION_LABELS[position];
   return {
-    title: `LoL Tier List ${patch ? `Patch ${patch}` : ""} — ${lane} Rankings | LoL AI Coach`,
-    description: `The best ${lane} champions in League of Legends${patch ? ` on patch ${patch}` : ""}, ranked by real ranked win rate, pick rate and ban rate. Free, updated every patch.`,
+    title: `LoL Tier List${patch ? ` — Patch ${patch}` : ""} — Best Champions Every Lane`,
+    description: `The best champions in League of Legends${patch ? ` on patch ${patch}` : ""}, ranked by real win rate, pick rate and ban rate per lane. Free, updated every patch.`,
     alternates: { canonical: "/tools/tier-list" },
   };
 }
 
 export default async function TierListPage({ searchParams }: PageProps) {
-  const position: CanonicalPosition = parsePosition(searchParams.role) ?? "MIDDLE";
-  const list = await getTierList(position);
+  // Legacy ?role= query params are consolidated onto the path-based role hubs.
+  const requested = parsePosition(searchParams.role);
+  if (requested) permanentRedirect(`/tools/tier-list/${POSITION_SLUG[requested]}`);
+
+  const list = await getTierList(DEFAULT_POSITION);
+  const patch = list ? formatGamePatch(list.patch) : "";
+  const lane = "Mid";
 
   const itemListJsonLd = list && {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: `LoL ${POSITION_LABELS[position]} Tier List — Patch ${formatGamePatch(list.patch)}`,
+    name: `LoL ${lane} Tier List — Patch ${patch}`,
     itemListElement: list.entries.slice(0, 20).map((e, i) => ({
       "@type": "ListItem",
       position: i + 1,
@@ -59,65 +66,17 @@ export default async function TierListPage({ searchParams }: PageProps) {
           Free Tool · No login required
         </p>
         <h1 className="font-display text-3xl font-black text-text md:text-4xl">
-          LoL Tier List{list ? ` — Patch ${formatGamePatch(list.patch)}` : ""}
+          LoL Tier List{patch ? ` — Patch ${patch}` : ""}
         </h1>
         <p className="mt-2 text-text-muted">
-          The strongest champions per lane, ranked by real ranked win rate. Updated every patch.
+          The strongest champions per lane, ranked by real ranked win rate. Pick a lane below.
         </p>
       </header>
 
-      <div className="mb-3 flex flex-wrap gap-1.5">
-        <span className="rounded-full bg-accent px-4 py-1.5 text-xs font-semibold text-background">
-          Ranked
-        </span>
-        <Link
-          href="/aram/tier-list"
-          className="rounded-full border border-border bg-surface px-4 py-1.5 text-xs font-semibold text-text-muted transition-colors hover:border-accent/40 hover:text-text"
-        >
-          ARAM
-        </Link>
-      </div>
+      <TierListView position={DEFAULT_POSITION} list={list} activeTier={null} />
 
-      <div className="mb-6 flex flex-wrap gap-1.5">
-        {ALL_POSITIONS.map((pos) => (
-          <Link
-            key={pos}
-            href={`/tools/tier-list?role=${pos}`}
-            className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
-              pos === position
-                ? "bg-accent text-background"
-                : "border border-border bg-surface text-text-muted hover:border-accent/40 hover:text-text"
-            }`}
-          >
-            {POSITION_LABELS[pos]}
-          </Link>
-        ))}
-      </div>
-
-      {!list || list.entries.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-border px-4 py-12 text-center text-text-muted">
-          Tier data is unavailable right now. Please try again shortly.
-        </p>
-      ) : (
-        <div className="overflow-x-auto rounded-2xl border border-border bg-surface/60">
-          <table className="w-full min-w-[520px]">
-            <thead>
-              <tr className="border-b border-border text-left text-[11px] uppercase tracking-wide text-text-muted">
-                <th className="py-2 pl-3 pr-2 font-semibold">#</th>
-                <th className="px-2 font-semibold">Tier</th>
-                <th className="px-2 font-semibold">Champion</th>
-                <th className="px-2 text-right font-semibold">Win</th>
-                <th className="px-2 text-right font-semibold">Pick</th>
-                <th className="py-2 pl-2 pr-3 text-right font-semibold">Ban</th>
-              </tr>
-            </thead>
-            <tbody>
-              {list.entries.map((entry, i) => (
-                <TierRow key={entry.championKey} entry={entry} index={i} />
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {list && list.entries.length > 0 && (
+        <p className="mt-8 leading-relaxed text-text-muted">{tierBlurb(lane, list, patch)}</p>
       )}
     </div>
   );

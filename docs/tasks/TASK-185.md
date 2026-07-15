@@ -1,6 +1,6 @@
 # TASK-185: Tier List Upgrades — Role Hubs, Rank Filter, Patch Movement
 
-## Status: Pending
+## Status: Done
 ## Score: 90/100
 
 ## Goal

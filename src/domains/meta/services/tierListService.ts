@@ -1,11 +1,13 @@
 import { getMetaSnapshot } from "@/domains/meta/services/metaStatsService";
 import type { CanonicalPosition } from "@/domains/meta/types";
+import type { SnapshotTier } from "@/domains/meta/services/opggShared";
 
 export interface TierListEntry {
   championKey: string;
   name: string;
   tier: number; // 1 (best) .. 5
   rank: number; // ordinal within the lane
+  prevPatchRank: number; // ordinal within the lane last patch (0 if unknown)
   winRate: number; // 0-100
   pickRate: number; // 0-100
   banRate: number; // 0-100
@@ -27,9 +29,13 @@ export function tierLetter(tier: number): string {
 const MIN_PICK_RATE = 0.3;
 
 // Returns the champion tier list for one lane, ordered best-first, or null if the
-// meta snapshot is unavailable.
-export async function getTierList(position: CanonicalPosition): Promise<RoleTierList | null> {
-  const snapshot = await getMetaSnapshot();
+// meta snapshot is unavailable. An optional rank bracket (tier) narrows the data
+// to that op.gg bracket (e.g. diamond_plus).
+export async function getTierList(
+  position: CanonicalPosition,
+  tier?: SnapshotTier
+): Promise<RoleTierList | null> {
+  const snapshot = await getMetaSnapshot({ tier });
   if (!snapshot) return null;
 
   const entries: TierListEntry[] = [];
@@ -41,6 +47,7 @@ export async function getTierList(position: CanonicalPosition): Promise<RoleTier
       name: champion.name,
       tier: stats.tier,
       rank: stats.rank,
+      prevPatchRank: stats.prevPatchRank,
       winRate: stats.winRate,
       pickRate: stats.pickRate,
       banRate: stats.banRate,
@@ -78,6 +85,7 @@ export async function getAramTierList(): Promise<RoleTierList | null> {
       name: c.name,
       tier: c.overallTier,
       rank: c.overallRank,
+      prevPatchRank: c.prevPatchRank,
       winRate: c.overallWinRate,
       pickRate: c.overallPickRate,
       banRate: 0,

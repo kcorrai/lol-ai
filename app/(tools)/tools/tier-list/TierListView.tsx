@@ -1,0 +1,100 @@
+import Link from "next/link";
+import {
+  ALL_POSITIONS,
+  POSITION_LABELS,
+  POSITION_SLUG,
+  SNAPSHOT_TIERS,
+  TIER_LABELS,
+} from "@/domains/meta";
+import type { CanonicalPosition, RoleTierList, SnapshotTier } from "@/domains/meta";
+import { TierRow } from "./TierRow";
+
+interface TierListViewProps {
+  position: CanonicalPosition;
+  list: RoleTierList | null;
+  activeTier: SnapshotTier | null; // current ?tier= rank filter (null = default bracket)
+}
+
+const pill =
+  "rounded-full px-4 py-1.5 text-xs font-semibold transition-colors";
+const activePill = "bg-accent text-background";
+const idlePill =
+  "border border-border bg-surface text-text-muted hover:border-accent/40 hover:text-text";
+
+// Shared body for the ranked role tier lists: mode + lane tabs, rank-bracket
+// filter, and the ranking table with a patch-movement column.
+export function TierListView({ position, list, activeTier }: TierListViewProps) {
+  const rolePath = `/tools/tier-list/${POSITION_SLUG[position]}`;
+
+  return (
+    <>
+      {/* Mode tabs */}
+      <div className="mb-3 flex flex-wrap gap-1.5">
+        <span className={`${pill} ${activePill}`}>Ranked</span>
+        <Link href="/aram/tier-list" className={`${pill} ${idlePill}`}>
+          ARAM
+        </Link>
+      </div>
+
+      {/* Lane tabs (path-based hubs) */}
+      <div className="mb-3 flex flex-wrap gap-1.5">
+        {ALL_POSITIONS.map((pos) => (
+          <Link
+            key={pos}
+            href={`/tools/tier-list/${POSITION_SLUG[pos]}`}
+            className={`${pill} ${pos === position ? activePill : idlePill}`}
+          >
+            {POSITION_LABELS[pos]}
+          </Link>
+        ))}
+      </div>
+
+      {/* Rank bracket filter */}
+      <div className="mb-6 flex flex-wrap items-center gap-1.5">
+        <span className="mr-1 text-[11px] uppercase tracking-wide text-text-muted">Rank</span>
+        <Link
+          href={rolePath}
+          className={`${pill} ${activeTier === null ? activePill : idlePill}`}
+        >
+          Default
+        </Link>
+        {SNAPSHOT_TIERS.map((t) => (
+          <Link
+            key={t}
+            href={`${rolePath}?tier=${t}`}
+            className={`${pill} ${t === activeTier ? activePill : idlePill}`}
+          >
+            {TIER_LABELS[t]}
+          </Link>
+        ))}
+      </div>
+
+      {!list || list.entries.length === 0 ? (
+        <p className="rounded-xl border border-dashed border-border px-4 py-12 text-center text-text-muted">
+          Tier data is unavailable right now. Please try again shortly.
+        </p>
+      ) : (
+        <div className="overflow-x-auto rounded-2xl border border-border bg-surface/60">
+          <table className="w-full min-w-[560px]">
+            <thead>
+              <tr className="border-b border-border text-left text-[11px] uppercase tracking-wide text-text-muted">
+                <th className="py-2 pl-3 pr-2 font-semibold">#</th>
+                <th className="px-2 font-semibold">Tier</th>
+                <th className="px-2 font-semibold">Champion</th>
+                <th className="px-2 text-center font-semibold">Patch</th>
+                <th className="px-2 text-right font-semibold">Win</th>
+                <th className="px-2 text-right font-semibold">Pick</th>
+                <th className="py-2 pl-2 pr-3 text-right font-semibold">Ban</th>
+              </tr>
+            </thead>
+            <tbody>
+              {list.entries.map((entry, i) => (
+                <TierRow key={entry.championKey} entry={entry} index={i} showMovement />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </>
+  );
+}

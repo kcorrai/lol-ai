@@ -52,7 +52,7 @@ function stats(id: number, key: string, position: CanonicalPosition, winRate: nu
     overallRank: 20,
     prevPatchRank: 20,
     positions: [
-      { position, games: 10000, winRate, pickRate: 5, banRate: 2, tier, rank: 5, counters: [] },
+      { position, games: 10000, winRate, pickRate: 5, banRate: 2, tier, rank: 5, prevPatchRank: 7, counters: [] },
     ],
   };
 }

@@ -34,7 +34,7 @@ const AHRI: ChampionMetaStats = {
   overallRank: 5,
   prevPatchRank: 7,
   positions: [
-    { position: "MIDDLE", games: 300000, winRate: 51, pickRate: 8, banRate: 6, tier: 1, rank: 2, counters: [] },
+    { position: "MIDDLE", games: 300000, winRate: 51, pickRate: 8, banRate: 6, tier: 1, rank: 2, prevPatchRank: 4, counters: [] },
   ],
 };
 
@@ -55,7 +55,7 @@ const ZED: ChampionMetaStats = {
   overallRank: 12,
   prevPatchRank: 9,
   positions: [
-    { position: "MIDDLE", games: 250000, winRate: 50, pickRate: 9, banRate: 20, tier: 2, rank: 8, counters: [] },
+    { position: "MIDDLE", games: 250000, winRate: 50, pickRate: 9, banRate: 20, tier: 2, rank: 8, prevPatchRank: 6, counters: [] },
   ],
 };
 

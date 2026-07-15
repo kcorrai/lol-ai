@@ -39,8 +39,8 @@ function champ(
 }
 
 const AHRI = champ(103, "Ahri", "Ahri", [
-  { position: "MIDDLE", games: 300000, winRate: 51, pickRate: 8, banRate: 6, tier: 1, rank: 2, counters: [] },
-  { position: "BOTTOM", games: 5000, winRate: 49, pickRate: 1, banRate: 6, tier: 4, rank: 30, counters: [] },
+  { position: "MIDDLE", games: 300000, winRate: 51, pickRate: 8, banRate: 6, tier: 1, rank: 2, prevPatchRank: 4, counters: [] },
+  { position: "BOTTOM", games: 5000, winRate: 49, pickRate: 1, banRate: 6, tier: 4, rank: 30, prevPatchRank: 28, counters: [] },
 ]);
 
 // Rich per-lane counters now come from getChampionCounters, not the snapshot.

@@ -10,15 +10,34 @@ export const SNAPSHOT_TTL_DAYS = 365; // effectively permanent fallback
 export const MIN_MATCHUP_GAMES = 200; // ignore tiny, noisy matchup samples
 
 export type SnapshotMode = "ranked" | "aram";
-// op.gg rank brackets. Default (no param) == emerald_plus.
-export type SnapshotTier =
-  | "all"
-  | "gold_plus"
-  | "platinum_plus"
-  | "emerald_plus"
-  | "diamond_plus"
-  | "master_plus"
-  | "challenger";
+// op.gg rank brackets, low → high. Default (no param) == emerald_plus.
+export const SNAPSHOT_TIERS = [
+  "all",
+  "gold_plus",
+  "platinum_plus",
+  "emerald_plus",
+  "diamond_plus",
+  "master_plus",
+  "challenger",
+] as const;
+export type SnapshotTier = (typeof SNAPSHOT_TIERS)[number];
+
+// Human labels for each rank bracket (for filter UI).
+export const TIER_LABELS: Record<SnapshotTier, string> = {
+  all: "All ranks",
+  gold_plus: "Gold+",
+  platinum_plus: "Platinum+",
+  emerald_plus: "Emerald+",
+  diamond_plus: "Diamond+",
+  master_plus: "Master+",
+  challenger: "Challenger",
+};
+
+// Validates a raw ?tier= value, returning the bracket or null if unrecognised.
+export function parseTier(raw: string | null | undefined): SnapshotTier | null {
+  if (!raw) return null;
+  return (SNAPSHOT_TIERS as readonly string[]).includes(raw) ? (raw as SnapshotTier) : null;
+}
 
 // Canonical → op.gg position path segment (for the per-champion detail endpoint).
 export const CANONICAL_TO_OPGG: Record<CanonicalPosition, string> = {

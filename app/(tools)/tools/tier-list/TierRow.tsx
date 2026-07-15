@@ -17,9 +17,17 @@ interface TierRowProps {
   hrefBase?: string;
   // ARAM has no bans — hide that column.
   showBan?: boolean;
+  // Show the patch-movement (▲/▼) column from rank_prev_patch vs rank.
+  showMovement?: boolean;
 }
 
-export function TierRow({ entry, index, hrefBase = "/counters", showBan = true }: TierRowProps) {
+export function TierRow({
+  entry,
+  index,
+  hrefBase = "/counters",
+  showBan = true,
+  showMovement = false,
+}: TierRowProps) {
   const letter = tierLetter(entry.tier);
   return (
     <tr className="border-b border-border/60 last:border-0">
@@ -42,6 +50,11 @@ export function TierRow({ entry, index, hrefBase = "/counters", showBan = true }
           <span className="text-sm font-medium text-text">{entry.name}</span>
         </Link>
       </td>
+      {showMovement && (
+        <td className="px-2 text-center">
+          <Movement rank={entry.rank} prev={entry.prevPatchRank} />
+        </td>
+      )}
       <td className="px-2 text-right text-sm font-semibold text-text">{entry.winRate.toFixed(1)}%</td>
       <td className={`${showBan ? "px-2" : "py-2.5 pl-2 pr-3"} text-right text-sm text-text-muted`}>
         {entry.pickRate.toFixed(1)}%
@@ -50,5 +63,19 @@ export function TierRow({ entry, index, hrefBase = "/counters", showBan = true }
         <td className="py-2.5 pl-2 pr-3 text-right text-sm text-text-muted">{entry.banRate.toFixed(1)}%</td>
       )}
     </tr>
+  );
+}
+
+// Patch movement: lower rank number is better, so a drop in rank number is a climb.
+function Movement({ rank, prev }: { rank: number; prev: number }) {
+  if (!rank || !prev) return <span className="text-xs text-text-muted">—</span>;
+  const delta = prev - rank;
+  if (delta === 0) return <span className="text-xs text-text-muted">–</span>;
+  const up = delta > 0;
+  return (
+    <span className={`text-xs font-semibold ${up ? "text-success" : "text-danger"}`}>
+      {up ? "▲" : "▼"}
+      {Math.abs(delta)}
+    </span>
   );
 }

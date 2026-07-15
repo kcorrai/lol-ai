@@ -7,6 +7,7 @@ export {
 } from "@/domains/meta/services/championDetailService";
 export type { ChampionDetail } from "@/domains/meta/services/championDetailService";
 export type { SnapshotMode, SnapshotTier } from "@/domains/meta/services/opggShared";
+export { SNAPSHOT_TIERS, TIER_LABELS, parseTier } from "@/domains/meta/services/opggShared";
 export { getCounterData } from "@/domains/meta/services/counterService";
 export type { CounterMatchup, CounterResult } from "@/domains/meta/services/counterService";
 export { getMatchupData } from "@/domains/meta/services/matchupService";

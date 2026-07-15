@@ -87,6 +87,7 @@ function mapPosition(raw: OpggChampion["positions"][number]): PositionStats | nu
     banRate: pct(raw.stats.ban_rate ?? 0),
     tier: raw.stats.tier_data?.tier ?? 0,
     rank: raw.stats.tier_data?.rank ?? 0,
+    prevPatchRank: raw.stats.tier_data?.rank_prev_patch ?? 0,
     counters,
   };
 }

@@ -18,6 +18,7 @@ export interface PositionStats {
   banRate: number; // 0-100
   tier: number; // 1 (best) .. 5 (worst)
   rank: number; // ordinal rank within the position
+  prevPatchRank: number; // ordinal rank within the position last patch (0 if unknown)
   counters: MatchupEntry[]; // matchups, sorted by ascending subject win rate (hardest first)
 }
 
