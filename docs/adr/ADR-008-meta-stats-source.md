@@ -48,3 +48,17 @@ synchronous client image URLs).
   Mitigated by the last-good snapshot fallback and the isolating interface.
 - **Legal:** stats and Riot-owned assets are used the way community tools commonly
   do; keep the "not endorsed by Riot Games" boilerplate in the footer.
+
+## Addendum (Phase 7): mode and rank-tier variants
+
+`getMetaSnapshot({ mode, tier })` now fans out to per-variant cache keys
+(`meta:snapshot:<mode>:<tier>:fresh` / `:last-good`):
+
+- **`mode`** — `"ranked"` (default) or `"aram"`. ARAM uses the `/champions/aram` bulk
+  feed and the `/aram/{id}/NONE` detail endpoint; its `positions` field is `null`
+  (not `[]`) and it has no ban data, both handled in the schema/UI.
+- **`tier`** — op.gg rank bracket (`gold_plus`…`challenger`); omitted = op.gg default
+  (emerald+). Only applied to ranked. Rank-filtered pages are `noindex`.
+
+The per-champion detail endpoint (`championDetailService`) mirrors the same variant
+keys. All variants share the same 12h-fresh + never-expiring last-good policy.

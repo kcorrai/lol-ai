@@ -16,8 +16,16 @@ server-side (see `docs/adr/ADR-008-meta-stats-source.md`). All live under
 - **Counter Picker** — `/tools/counter-picker` — best counters for any champion by real ranked win rate
 - **Matchup Analyzer** — `/tools/matchup` — head-to-head win rate and lane tips for two champions
 - **Draft Analyzer** — `/tools/draft-analyzer` — deterministic 5v5 comp scoring (damage, frontline, scaling, lane edges)
-- **Tier List** — `/tools/tier-list` — strongest champions per lane this patch
-- **Per-champion counter pages** — `/counters/[champion]` — ~170 statically generated SEO pages
+- **Tier List** — `/tools/tier-list` (+ `/tools/tier-list/[role]` role hubs, rank filter, patch movement)
+- **Champion Builds** — `/builds/[champion]` — runes, items, skill order, game-length curve and patch trend
+- **Champion vs Champion** — `/matchups/[a]-vs-[b]` — head-to-head guides (alphabetical canonical)
+- **ARAM** — `/aram/tier-list` and `/aram/[champion]` — ARAM tier list and builds
+- **Patch Meta Report** — `/meta` — the patch's biggest winners and losers
+- **Per-champion counter pages** — `/counters/[champion]` — statically generated SEO pages with
+  game-length curve, patch trend and a data-driven "how to play against X" writeup
+
+All data pages show a "Data updated Xh ago · Patch NN · N games analyzed" freshness strip and
+carry JSON-LD `dateModified`. Query-param permalinks are `noindex` with a canonical to the clean path.
 
 Old authed tool URLs (`/counter`, `/matchup`, `/draft`) permanently redirect to the new public routes.
 

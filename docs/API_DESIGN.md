@@ -16,11 +16,30 @@ The counter, matchup, and draft tools are now **public, data-driven pages** unde
 - `/tools/counter-picker`, `/tools/matchup`, `/tools/draft-analyzer`, `/tools/tier-list`
 - `/counters/[champion]` — ~170 statically generated SEO pages
 
+### Phase 7 SEO expansion (page map)
+
+- `/builds`, `/builds/[champion]`, `/builds/[champion]/[role]` — champion build pages
+  (runes, items, skill order, game-length curve, patch trend). Prerender top 50, ISR 12h.
+- `/matchups/[slug]` — champion-vs-champion pages, alphabetical canonical
+  (`ahri-vs-zed`); the reverse slug 308-redirects to canonical.
+- `/aram/tier-list` and `/aram/[champion]` — ARAM tier list + ARAM build pages
+  (`mode: "aram"`, NONE position, no bans).
+- `/tools/tier-list/[role]` — top/jungle/mid/bot/support role hubs. `?role=` 308-redirects
+  onto the path; `?tier=` (gold_plus…challenger) rank filter is `noindex`.
+- `/meta` — evergreen patch "Winners & Losers" report (climbers/fallers by rank movement).
+
+All data pages carry a visible freshness strip and JSON-LD `dateModified` from the
+snapshot's `fetchedAt`. Tool pages with query-param permalinks
+(`counter-picker?champion`, `matchup?a/b`, `draft-analyzer?blue/red`,
+`tier-list/[role]?tier`, `counters/[champion]?tier`) are `noindex, follow` with a
+canonical to the clean path.
+
 **Removed** (previously AI-powered, now deleted): `GET /api/counter`,
 `POST /api/matchup/analyze`, `POST /api/draft/analyze`.
 
 **Redirects (308):** `/counter → /tools/counter-picker`, `/matchup → /tools/matchup`,
-`/draft → /tools/draft-analyzer` (see `next.config.mjs`).
+`/draft → /tools/draft-analyzer` (see `next.config.mjs`); `?role=` → role hub;
+reverse matchup slug → alphabetical canonical.
 
 `GET /api/public/preview` still powers the landing demo but its coaching insight is now
 **rule-based** (no AI call), so the entire anonymous surface is zero-AI-cost.

@@ -42,7 +42,12 @@ app/
 │
 ├── (tools)/                    → Public, no-login free tools (marketing chrome)
 │   ├── tools/                  → hub + counter-picker / matchup / draft-analyzer / tier-list
-│   ├── counters/[champion]/    → ~170 programmatic SEO counter pages
+│   │   └── tier-list/[role]/   → top/jungle/mid/bot/support role hubs (+ ?tier= filter)
+│   ├── counters/[champion]/    → ~170 programmatic SEO counter pages (curve, trend, tips)
+│   ├── builds/[champion]/[role]→ champion build pages (runes/items/skills/curves)
+│   ├── matchups/[slug]/        → champion-vs-champion pages (alphabetical canonical)
+│   ├── aram/                   → aram/tier-list + aram/[champion] build pages
+│   ├── meta/                   → patch "Winners & Losers" report
 │   └── layout.tsx
 │
 ├── (auth)/                     → Authentication pages
