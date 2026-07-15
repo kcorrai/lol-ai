@@ -16,7 +16,9 @@ node_modules
 # Next.js build output
 .next
 out
-build
+# Anchor to repo root so nested source dirs named "build" (e.g. component folders)
+# are NOT ignored.
+/build
 
 # Prisma
 prisma/migrations/dev.db
