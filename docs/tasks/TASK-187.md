@@ -1,6 +1,6 @@
 # TASK-187: Tool Depth — Counter/Matchup/Draft Upgrades
 
-## Status: Pending
+## Status: Done
 ## Score: 90/100
 
 ## Goal

@@ -1,6 +1,13 @@
 import { getMetaSnapshot, findChampionStats } from "@/domains/meta/services/metaStatsService";
-import { getChampionCounters } from "@/domains/meta/services/championDetailService";
-import type { CanonicalPosition, MatchupEntry, MetaSnapshot } from "@/domains/meta/types";
+import { getChampionDetail } from "@/domains/meta/services/championDetailService";
+import type { SnapshotTier } from "@/domains/meta/services/opggShared";
+import type {
+  CanonicalPosition,
+  ChampionBuild,
+  MatchupEntry,
+  MetaSnapshot,
+  PositionStats,
+} from "@/domains/meta/types";
 
 // One opposing champion in a counter list, enriched for display.
 export interface CounterMatchup {
@@ -13,11 +20,15 @@ export interface CounterMatchup {
 }
 
 export interface CounterResult {
+  championId: number;
   championKey: string;
   name: string;
   position: CanonicalPosition;
   patch: string;
+  overallTier: number;
   availablePositions: CanonicalPosition[];
+  stats: PositionStats; // the subject's stats in this lane
+  build: ChampionBuild | null; // for the game-length curve + patch trend
   strongAgainstSubject: CounterMatchup[]; // opponents that beat the subject (its counters)
   weakAgainstSubject: CounterMatchup[]; // opponents the subject beats (favourable)
 }
@@ -56,12 +67,13 @@ function enrichMatchups(
 
 // Returns the counter breakdown for a champion in a lane, or null if the champion
 // or meta snapshot is unavailable. Position defaults to the champion's most-played
-// lane when not supplied.
+// lane when not supplied. An optional rank bracket narrows the data.
 export async function getCounterData(
   championKey: string,
-  position?: CanonicalPosition
+  position?: CanonicalPosition,
+  tier?: SnapshotTier
 ): Promise<CounterResult | null> {
-  const snapshot = await getMetaSnapshot();
+  const snapshot = await getMetaSnapshot({ tier });
   if (!snapshot) return null;
 
   const champion = findChampionStats(snapshot, championKey);
@@ -74,11 +86,11 @@ export async function getCounterData(
       ? position
       : [...champion.positions].sort((a, b) => b.games - a.games)[0].position;
 
-  const counters = await getChampionCounters(champion.championId, resolvedPosition);
-  if (!counters) return null;
+  const detail = await getChampionDetail(champion.championId, resolvedPosition, { tier });
+  if (!detail) return null;
 
   const index = buildChampionIndex(snapshot);
-  const matchups = enrichMatchups(counters, index);
+  const matchups = enrichMatchups(detail.counters, index);
 
   // counters are pre-sorted ascending by subject win rate (hardest first).
   const strongAgainstSubject = matchups
@@ -89,12 +101,18 @@ export async function getCounterData(
     .sort((a, b) => b.subjectWinRate - a.subjectWinRate)
     .slice(0, LIST_SIZE);
 
+  const stats = champion.positions.find((p) => p.position === resolvedPosition)!;
+
   return {
+    championId: champion.championId,
     championKey: champion.championKey,
     name: champion.name,
     position: resolvedPosition,
     patch: snapshot.patch,
+    overallTier: champion.overallTier,
     availablePositions,
+    stats,
+    build: detail.build,
     strongAgainstSubject,
     weakAgainstSubject,
   };

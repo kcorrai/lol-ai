@@ -1,8 +1,8 @@
 import { getMetaSnapshot, findChampionStats } from "@/domains/meta/services/metaStatsService";
-import { getChampionCounters } from "@/domains/meta/services/championDetailService";
+import { getChampionCounters, getChampionBuild } from "@/domains/meta/services/championDetailService";
 import { fetchAllChampions, type DdragonChampionSummary } from "@/lib/ddragon/championsData";
 import { ALL_POSITIONS } from "@/domains/meta/positions";
-import type { CanonicalPosition, MetaSnapshot } from "@/domains/meta/types";
+import type { CanonicalPosition, GameLengthPoint, MetaSnapshot } from "@/domains/meta/types";
 
 // A team is a mapping of lane → Data Dragon champion key. Partial so the UI can
 // evaluate incomplete drafts.
@@ -12,6 +12,7 @@ export type DraftSide = "blue" | "red";
 export interface DraftChampion {
   key: string;
   name: string;
+  championId: number;
   position: CanonicalPosition;
   winRate: number; // 0-100 in this lane
   tier: number; // 1 (best) .. 5
@@ -26,6 +27,7 @@ export interface TeamEval {
   engageScore: number; // 0-100
   avgWinRate: number; // 0-100
   scalingLean: "early" | "balanced" | "late";
+  gameLengthCurve: GameLengthPoint[]; // aggregated team win rate by game length
 }
 
 export interface LaneEdge {
@@ -47,7 +49,9 @@ export interface DraftEvaluation {
 
 const clamp = (n: number): number => Math.max(0, Math.min(100, Math.round(n)));
 
-function scalingLean(champs: DdragonChampionSummary[]): TeamEval["scalingLean"] {
+// Fallback scaling read from champion tags, used only when no real game-length
+// data is available for the team.
+function tagScaling(champs: DdragonChampionSummary[]): TeamEval["scalingLean"] {
   let score = 0;
   for (const c of champs) {
     if (c.tags.includes("Marksman")) score += 2;
@@ -60,12 +64,45 @@ function scalingLean(champs: DdragonChampionSummary[]): TeamEval["scalingLean"] 
   return "balanced";
 }
 
-function evaluateTeam(
+// Averages each champion's real win-rate-by-game-length curve into one team curve.
+async function aggregateTeamCurve(
+  members: { championId: number; position: CanonicalPosition }[]
+): Promise<GameLengthPoint[]> {
+  const builds = await Promise.all(
+    members.map((m) => getChampionBuild(m.championId, m.position))
+  );
+  const buckets = new Map<number, { sum: number; n: number }>();
+  for (const build of builds) {
+    if (!build) continue;
+    for (const g of build.gameLengths) {
+      const e = buckets.get(g.minutes) ?? { sum: 0, n: 0 };
+      e.sum += g.winRate;
+      e.n += 1;
+      buckets.set(g.minutes, e);
+    }
+  }
+  return [...buckets.entries()]
+    .sort((a, b) => a[0] - b[0])
+    .map(([minutes, e]) => ({ minutes, winRate: Math.round((e.sum / e.n) * 10) / 10 }));
+}
+
+// Scaling derived from the real aggregated curve (< 25 min vs 40+ min), or null
+// when the curve lacks both endpoints.
+function curveScaling(curve: GameLengthPoint[]): TeamEval["scalingLean"] | null {
+  const early = curve.find((g) => g.minutes === 0)?.winRate;
+  const late = curve.find((g) => g.minutes === 40)?.winRate;
+  if (early === undefined || late === undefined) return null;
+  if (late >= early + 1) return "late";
+  if (early >= late + 1) return "early";
+  return "balanced";
+}
+
+async function evaluateTeam(
   side: DraftSide,
   team: DraftTeam,
   ddragonByKey: Map<string, DdragonChampionSummary>,
   snapshot: MetaSnapshot
-): TeamEval {
+): Promise<TeamEval> {
   const champions: DraftChampion[] = [];
   const summaries: DdragonChampionSummary[] = [];
   let attack = 0;
@@ -94,11 +131,22 @@ function evaluateTeam(
     const tier = posStats?.tier ?? stats?.overallTier ?? 3;
     winRateSum += winRate;
 
-    champions.push({ key: summary.id, name: summary.name, position, winRate, tier });
+    champions.push({
+      key: summary.id,
+      name: summary.name,
+      championId: stats?.championId ?? 0,
+      position,
+      winRate,
+      tier,
+    });
   }
 
   const dmgTotal = attack + magic || 1;
   const count = champions.length || 1;
+
+  const curve = await aggregateTeamCurve(
+    champions.filter((c) => c.championId > 0).map((c) => ({ championId: c.championId, position: c.position }))
+  );
 
   return {
     side,
@@ -108,7 +156,9 @@ function evaluateTeam(
     frontlineScore: clamp(tankCount * 40 + fighterCount * 15),
     engageScore: clamp(tankCount * 35 + supportCount * 20 + fighterCount * 10),
     avgWinRate: Math.round((winRateSum / count) * 10) / 10,
-    scalingLean: scalingLean(summaries),
+    // Prefer the real curve; fall back to tag heuristics when data is missing.
+    scalingLean: curveScaling(curve) ?? tagScaling(summaries),
+    gameLengthCurve: curve,
   };
 }
 
@@ -184,9 +234,11 @@ export async function evaluateDraft(
 
   const ddragonByKey = new Map(summaries.map((s) => [s.id.toLowerCase(), s]));
 
-  const blueEval = evaluateTeam("blue", blue, ddragonByKey, snapshot);
-  const redEval = evaluateTeam("red", red, ddragonByKey, snapshot);
-  const laneEdges = await computeLaneEdges(blue, red, snapshot, ddragonByKey);
+  const [blueEval, redEval, laneEdges] = await Promise.all([
+    evaluateTeam("blue", blue, ddragonByKey, snapshot),
+    evaluateTeam("red", red, ddragonByKey, snapshot),
+    computeLaneEdges(blue, red, snapshot, ddragonByKey),
+  ]);
 
   return {
     patch: snapshot.patch,

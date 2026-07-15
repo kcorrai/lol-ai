@@ -123,7 +123,23 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
             name={result.name}
             strongAgainstSubject={result.strongAgainstSubject}
             weakAgainstSubject={result.weakAgainstSubject}
+            subjectKey={result.championKey}
           />
+
+          <div className="mt-8 flex flex-wrap gap-3 text-sm">
+            <Link
+              href={`/counters/${result.championKey}`}
+              className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
+            >
+              View the full {result.name} counter guide →
+            </Link>
+            <Link
+              href={`/builds/${result.championKey}`}
+              className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
+            >
+              {result.name} build &amp; runes →
+            </Link>
+          </div>
 
           <div className="mt-12 rounded-2xl border border-accent/30 bg-accent/5 p-6 text-center">
             <h2 className="font-display text-xl font-bold text-text">

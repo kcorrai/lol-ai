@@ -2,9 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getCounterData, getPopularChampions, POSITION_LABELS, formatGamePatch } from "@/domains/meta";
+import {
+  getCounterData,
+  getPopularChampions,
+  parseTier,
+  POSITION_LABELS,
+  SNAPSHOT_TIERS,
+  TIER_LABELS,
+  formatGamePatch,
+} from "@/domains/meta";
 import { CounterResults } from "@/domains/meta/components/CounterResults";
 import { RelatedChampions } from "@/domains/meta/components/RelatedChampions";
+import { CounterInsights } from "./CounterInsights";
 import { fetchAllChampions, fetchChampionDetail } from "@/lib/ddragon/championsData";
 import { championSplashUrl } from "@/lib/ddragon";
 
@@ -18,32 +27,33 @@ export async function generateStaticParams(): Promise<{ champion: string }[]> {
   return champions.map((c) => ({ champion: c.id }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
+interface PageProps {
   params: { champion: string };
-}): Promise<Metadata> {
+  searchParams: { tier?: string };
+}
+
+export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
   const detail = await fetchChampionDetail(params.champion);
   if (!detail) return { title: "Champion not found | LoL AI Coach" };
   const data = await getCounterData(detail.id);
   const patch = data ? ` (Patch ${formatGamePatch(data.patch)})` : "";
+  // Rank-filtered views are near-duplicates — keep them out of the index.
+  const filtered = Boolean(parseTier(searchParams.tier));
   return {
     title: `${detail.name} Counters — Best Champions to Beat ${detail.name}${patch} | LoL AI Coach`,
     description: `The best champions to counter ${detail.name} and the matchups ${detail.name} wins, ranked by real ranked win rate. Free counter picks, updated every patch.`,
     alternates: { canonical: `/counters/${detail.id}` },
+    ...(filtered ? { robots: { index: false, follow: true } } : {}),
   };
 }
 
-export default async function ChampionCountersPage({
-  params,
-}: {
-  params: { champion: string };
-}) {
+export default async function ChampionCountersPage({ params, searchParams }: PageProps) {
   const detail = await fetchChampionDetail(params.champion);
   if (!detail) notFound();
 
+  const tier = parseTier(searchParams.tier);
   const [data, popular] = await Promise.all([
-    getCounterData(detail.id),
+    getCounterData(detail.id, undefined, tier ?? undefined),
     getPopularChampions(10, detail.id),
   ]);
 
@@ -109,11 +119,40 @@ export default async function ChampionCountersPage({
         </div>
       </div>
 
+      {/* Rank bracket filter */}
+      <div className="mb-6 flex flex-wrap items-center gap-1.5">
+        <span className="mr-1 text-[11px] uppercase tracking-wide text-text-muted">Rank</span>
+        <Link
+          href={`/counters/${detail.id}`}
+          className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
+            tier === null
+              ? "bg-accent text-background"
+              : "border border-border bg-surface text-text-muted hover:border-accent/40 hover:text-text"
+          }`}
+        >
+          Default
+        </Link>
+        {SNAPSHOT_TIERS.map((t) => (
+          <Link
+            key={t}
+            href={`/counters/${detail.id}?tier=${t}`}
+            className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
+              t === tier
+                ? "bg-accent text-background"
+                : "border border-border bg-surface text-text-muted hover:border-accent/40 hover:text-text"
+            }`}
+          >
+            {TIER_LABELS[t]}
+          </Link>
+        ))}
+      </div>
+
       {data ? (
         <CounterResults
           name={data.name}
           strongAgainstSubject={data.strongAgainstSubject}
           weakAgainstSubject={data.weakAgainstSubject}
+          subjectKey={data.championKey}
         />
       ) : (
         <p className="rounded-xl border border-dashed border-border px-4 py-10 text-center text-text-muted">
@@ -121,21 +160,14 @@ export default async function ChampionCountersPage({
         </p>
       )}
 
-      {/* Tips against this champion (from Data Dragon) */}
-      {detail.enemytips.length > 0 && (
-        <div className="mt-12">
-          <h2 className="mb-3 font-display text-lg font-bold text-text">
-            How to play against {detail.name}
-          </h2>
-          <ul className="flex flex-col gap-2">
-            {detail.enemytips.slice(0, 4).map((tip, i) => (
-              <li key={i} className="flex gap-2 text-sm text-text">
-                <span className="mt-0.5 text-accent">▸</span>
-                <span>{tip}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+      {/* Data-rich how-to-play block with game-length curve, trend and build link */}
+      {data && (
+        <CounterInsights
+          data={data}
+          laneLabel={POSITION_LABELS[data.position]}
+          gamePatch={formatGamePatch(data.patch)}
+          enemyTips={detail.enemytips}
+        />
       )}
 
       {/* Internal links */}

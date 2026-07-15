@@ -6,6 +6,7 @@ vi.mock("@/domains/meta/services/metaStatsService", () => ({
 }));
 vi.mock("@/domains/meta/services/championDetailService", () => ({
   getChampionCounters: vi.fn(),
+  getChampionBuild: vi.fn(),
 }));
 vi.mock("@/lib/ddragon/championsData", () => ({
   fetchAllChampions: vi.fn(),
@@ -13,13 +14,14 @@ vi.mock("@/lib/ddragon/championsData", () => ({
 
 import { evaluateDraft } from "./draftEvalService";
 import { getMetaSnapshot, findChampionStats } from "@/domains/meta/services/metaStatsService";
-import { getChampionCounters } from "@/domains/meta/services/championDetailService";
+import { getChampionCounters, getChampionBuild } from "@/domains/meta/services/championDetailService";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import type { CanonicalPosition, ChampionMetaStats, MetaSnapshot } from "@/domains/meta/types";
 
 const mockSnapshot = getMetaSnapshot as unknown as ReturnType<typeof vi.fn>;
 const mockFind = findChampionStats as unknown as ReturnType<typeof vi.fn>;
 const mockCounters = getChampionCounters as unknown as ReturnType<typeof vi.fn>;
+const mockBuild = getChampionBuild as unknown as ReturnType<typeof vi.fn>;
 const mockChampions = fetchAllChampions as unknown as ReturnType<typeof vi.fn>;
 
 function summary(id: string, tags: string[], attack: number, magic: number, defense: number) {
@@ -93,6 +95,7 @@ beforeEach(() => {
   mockChampions.mockResolvedValue(SUMMARIES);
   mockFind.mockImplementation((_s: MetaSnapshot, key: string) => STATS[key] ?? null);
   mockCounters.mockResolvedValue([]);
+  mockBuild.mockResolvedValue(null); // no curve data → scaling falls back to tags
 });
 
 describe("evaluateDraft", () => {
@@ -131,6 +134,33 @@ describe("evaluateDraft", () => {
     const top = result!.laneEdges.find((e) => e.position === "TOP");
     expect(top!.favored).toBe("blue");
     expect(top!.blueWinRate).toBe(60);
+  });
+
+  it("derives scaling from the real aggregated game-length curve when available", async () => {
+    // Every champion scales: higher win rate in longer games.
+    mockBuild.mockResolvedValue({
+      championId: 0,
+      runes: null,
+      summonerSpellIds: [],
+      starterItems: null,
+      coreItems: null,
+      boots: null,
+      lateItemOptions: [],
+      skillOrder: [],
+      skillMaxOrder: [],
+      gameLengths: [
+        { minutes: 0, winRate: 47 },
+        { minutes: 40, winRate: 53 },
+      ],
+      trend: [],
+    });
+
+    const result = await evaluateDraft(BLUE, RED);
+    expect(result!.blue.scalingLean).toBe("late");
+    expect(result!.blue.gameLengthCurve).toEqual([
+      { minutes: 0, winRate: 47 },
+      { minutes: 40, winRate: 53 },
+    ]);
   });
 
   it("returns null when the snapshot is unavailable", async () => {

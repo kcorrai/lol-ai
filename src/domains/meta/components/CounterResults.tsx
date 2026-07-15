@@ -1,12 +1,26 @@
 import Link from "next/link";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
+import { matchupSlug } from "@/domains/meta";
 import type { CounterMatchup } from "@/domains/meta";
 
-function MatchupRow({ matchup, metric }: { matchup: CounterMatchup; metric: number }) {
+function MatchupRow({
+  matchup,
+  metric,
+  subjectKey,
+}: {
+  matchup: CounterMatchup;
+  metric: number;
+  subjectKey?: string;
+}) {
   const good = metric >= 50;
+  // With a subject, link to the head-to-head matchup guide; otherwise to the
+  // opponent's own counters page.
+  const href = subjectKey
+    ? `/matchups/${matchupSlug(subjectKey, matchup.championKey)}`
+    : `/counters/${matchup.championKey}`;
   return (
     <Link
-      href={`/counters/${matchup.championKey}`}
+      href={href}
       className="flex items-center gap-3 rounded-lg border border-border bg-surface px-3 py-2 transition-colors hover:border-accent/40 hover:bg-surface-2"
     >
       <ChampionIcon name={matchup.championKey} size={36} />
@@ -29,12 +43,14 @@ function MatchupColumn({
   matchups,
   metric,
   emptyLabel,
+  subjectKey,
 }: {
   title: string;
   subtitle: string;
   matchups: CounterMatchup[];
   metric: "opponent" | "subject";
   emptyLabel: string;
+  subjectKey?: string;
 }) {
   return (
     <div>
@@ -51,6 +67,7 @@ function MatchupColumn({
               key={m.championId}
               matchup={m}
               metric={metric === "opponent" ? m.opponentWinRate : m.subjectWinRate}
+              subjectKey={subjectKey}
             />
           ))}
         </div>
@@ -63,10 +80,12 @@ export function CounterResults({
   name,
   strongAgainstSubject,
   weakAgainstSubject,
+  subjectKey,
 }: {
   name: string;
   strongAgainstSubject: CounterMatchup[];
   weakAgainstSubject: CounterMatchup[];
+  subjectKey?: string; // when set, rows deep-link to the head-to-head matchup guide
 }) {
   return (
     <div className="grid gap-8 md:grid-cols-2">
@@ -76,6 +95,7 @@ export function CounterResults({
         matchups={strongAgainstSubject}
         metric="opponent"
         emptyLabel="Not enough ranked data for this lane yet."
+        subjectKey={subjectKey}
       />
       <MatchupColumn
         title={`${name} is strong against`}
@@ -83,6 +103,7 @@ export function CounterResults({
         matchups={weakAgainstSubject}
         metric="subject"
         emptyLabel="Not enough ranked data for this lane yet."
+        subjectKey={subjectKey}
       />
     </div>
   );

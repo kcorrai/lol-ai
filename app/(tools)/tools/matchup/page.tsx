@@ -5,6 +5,8 @@ import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
 import { MatchupControls } from "./MatchupControls";
 import { MatchupReportCard } from "./MatchupReportCard";
+import { MatchupBuildSummary } from "./MatchupBuildSummary";
+import { loadMatchupExtras } from "./loadMatchupExtras";
 
 interface PageProps {
   searchParams: { a?: string; b?: string; role?: string };
@@ -33,6 +35,9 @@ export default async function MatchupPage({ searchParams }: PageProps) {
     a && b ? getMatchupData(a, b, requestedPosition ?? undefined) : Promise.resolve(null),
     fetchAllChampions(),
   ]);
+  const extras = report
+    ? await loadMatchupExtras(report.championA.key, report.championB.key, report.position)
+    : null;
   const championOptions = allChampions
     .map((c) => ({ key: c.id, name: c.name }))
     .sort((x, y) => x.name.localeCompare(y.name));
@@ -91,7 +96,15 @@ export default async function MatchupPage({ searchParams }: PageProps) {
 
           <MatchupReportCard report={report} />
 
-          <div className="mt-4 text-center">
+          {extras && (
+            <MatchupBuildSummary
+              nameA={report.championA.name}
+              nameB={report.championB.name}
+              extras={extras}
+            />
+          )}
+
+          <div className="mt-6 text-center">
             <Link
               href={`/matchups/${[report.championA.key.toLowerCase(), report.championB.key.toLowerCase()].sort().join("-vs-")}`}
               className="inline-block rounded-md border border-border px-5 py-2 text-sm font-semibold text-text-muted transition-colors hover:border-accent/50 hover:text-text"

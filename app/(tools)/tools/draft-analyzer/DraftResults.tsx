@@ -1,5 +1,6 @@
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { POSITION_LABELS } from "@/domains/meta/positions";
+import { GameLengthCurve } from "@/domains/meta/components/build/GameLengthCurve";
 import type { DraftEvaluation, LaneEdge, TeamEval } from "@/domains/meta";
 
 function DamageBar({ ad, ap }: { ad: number; ap: number }) {
@@ -44,7 +45,12 @@ function TeamCard({ team, label, accent }: { team: TeamEval; label: string; acce
         </div>
         <div className="flex items-center justify-between">
           <dt className="text-text-muted">Scaling</dt>
-          <dd className="font-semibold capitalize text-text">{team.scalingLean}</dd>
+          <dd className="font-semibold capitalize text-text">
+            {team.scalingLean}
+            {team.gameLengthCurve.length > 0 && (
+              <span className="ml-1 text-[11px] font-normal text-text-muted">(from real games)</span>
+            )}
+          </dd>
         </div>
       </dl>
     </div>
@@ -81,6 +87,29 @@ export function DraftResults({ evaluation }: { evaluation: DraftEvaluation }) {
         <TeamCard team={evaluation.blue} label="Blue Team" accent="text-sky-400" />
         <TeamCard team={evaluation.red} label="Red Team" accent="text-danger" />
       </div>
+
+      {(evaluation.blue.gameLengthCurve.length > 0 || evaluation.red.gameLengthCurve.length > 0) && (
+        <div>
+          <h2 className="mb-3 font-display text-lg font-bold text-text">Win rate by game length</h2>
+          <p className="mb-3 text-sm text-text-muted">
+            Each team&apos;s aggregated win rate across game durations, from real ranked games.
+          </p>
+          <div className="grid gap-5 md:grid-cols-2">
+            {evaluation.blue.gameLengthCurve.length > 0 && (
+              <div>
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-sky-400">Blue Team</p>
+                <GameLengthCurve points={evaluation.blue.gameLengthCurve} />
+              </div>
+            )}
+            {evaluation.red.gameLengthCurve.length > 0 && (
+              <div>
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-danger">Red Team</p>
+                <GameLengthCurve points={evaluation.red.gameLengthCurve} />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {evaluation.laneEdges.length > 0 && (
         <div>

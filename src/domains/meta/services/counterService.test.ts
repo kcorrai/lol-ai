@@ -5,17 +5,17 @@ vi.mock("@/domains/meta/services/metaStatsService", () => ({
   findChampionStats: vi.fn(),
 }));
 vi.mock("@/domains/meta/services/championDetailService", () => ({
-  getChampionCounters: vi.fn(),
+  getChampionDetail: vi.fn(),
 }));
 
 import { getCounterData } from "./counterService";
 import { getMetaSnapshot, findChampionStats } from "@/domains/meta/services/metaStatsService";
-import { getChampionCounters } from "@/domains/meta/services/championDetailService";
-import type { ChampionMetaStats, MatchupEntry, MetaSnapshot } from "@/domains/meta/types";
+import { getChampionDetail } from "@/domains/meta/services/championDetailService";
+import type { ChampionBuild, ChampionMetaStats, MatchupEntry, MetaSnapshot } from "@/domains/meta/types";
 
 const mockGetSnapshot = getMetaSnapshot as unknown as ReturnType<typeof vi.fn>;
 const mockFind = findChampionStats as unknown as ReturnType<typeof vi.fn>;
-const mockCounters = getChampionCounters as unknown as ReturnType<typeof vi.fn>;
+const mockDetail = getChampionDetail as unknown as ReturnType<typeof vi.fn>;
 
 function champ(
   championId: number,
@@ -63,11 +63,25 @@ const SNAPSHOT: MetaSnapshot = {
   ],
 };
 
+const AHRI_BUILD: ChampionBuild = {
+  championId: 103,
+  runes: null,
+  summonerSpellIds: [],
+  starterItems: null,
+  coreItems: null,
+  boots: null,
+  lateItemOptions: [],
+  skillOrder: [],
+  skillMaxOrder: [],
+  gameLengths: [],
+  trend: [],
+};
+
 beforeEach(() => {
   vi.clearAllMocks();
   mockGetSnapshot.mockResolvedValue(SNAPSHOT);
   mockFind.mockReturnValue(AHRI);
-  mockCounters.mockResolvedValue(AHRI_MID_COUNTERS);
+  mockDetail.mockResolvedValue({ counters: AHRI_MID_COUNTERS, build: AHRI_BUILD });
 });
 
 describe("getCounterData", () => {
@@ -108,8 +122,15 @@ describe("getCounterData", () => {
     expect(await getCounterData("Unknown", "MIDDLE")).toBeNull();
   });
 
-  it("returns null when the counters feed is unavailable", async () => {
-    mockCounters.mockResolvedValue(null);
+  it("returns the subject's lane stats and build for the curve", async () => {
+    const result = await getCounterData("Ahri", "MIDDLE");
+    expect(result!.stats.winRate).toBe(51);
+    expect(result!.build).toBe(AHRI_BUILD);
+    expect(result!.championId).toBe(103);
+  });
+
+  it("returns null when the detail feed is unavailable", async () => {
+    mockDetail.mockResolvedValue(null);
     expect(await getCounterData("Ahri", "MIDDLE")).toBeNull();
   });
 });
