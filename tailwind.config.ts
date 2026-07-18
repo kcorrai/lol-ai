@@ -107,6 +107,18 @@ const config: Config = {
           "0%":   { transform: "translateY(-10px) rotate(0deg)", opacity: "1" },
           "100%": { transform: "translateY(300px) rotate(720deg)", opacity: "0" },
         },
+        "coach-bounce": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%":      { transform: "translateY(-6px)" },
+        },
+        blink: {
+          "0%, 92%, 100%": { transform: "scaleY(1)" },
+          "96%":           { transform: "scaleY(0.1)" },
+        },
+        nudge: {
+          "0%, 100%": { transform: "translateX(0)" },
+          "50%":      { transform: "translateX(5px)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -114,6 +126,9 @@ const config: Config = {
         shimmer: "shimmer 2s infinite",
         "glow-pulse": "glow-pulse 2.5s ease-in-out infinite",
         "confetti-fall": "confetti-fall 0.8s ease-in forwards",
+        "coach-bounce": "coach-bounce 2s ease-in-out infinite",
+        blink: "blink 4s ease-in-out infinite",
+        nudge: "nudge 1s ease-in-out infinite",
       },
     },
   },

@@ -16,10 +16,10 @@ import { cn } from "@/lib/utils";
 const NAV_MAIN = [
   { href: "/dashboard",     icon: LayoutDashboard, label: "Dashboard" },
   { href: "/champion-pool", icon: Shield,          label: "Champions" },
-  { href: "/coaching",      icon: ClipboardList,   label: "Reports" },
+  { href: "/coaching",      icon: ClipboardList,   label: "Reports", tourId: "nav-reports" },
   { href: "/coaching/chat", icon: MessageCircle,   label: "Coach Chat" },
   { href: "/improvement",   icon: TrendingUp,      label: "Improvement" },
-  { href: "/achievements",  icon: Trophy,          label: "Badges" },
+  { href: "/achievements",  icon: Trophy,          label: "Badges", tourId: "nav-badges" },
   { href: "/leaderboard",  icon: Medal,           label: "Leaderboard" },
   { href: "/milestone",    icon: CalendarDays,    label: "Milestone" },
   { href: "/analysis",      icon: Map,             label: "Heat Map" },
@@ -37,12 +37,13 @@ const NAV_SETTINGS = [
 ] as const;
 
 function NavItem({
-  href, icon: Icon, label, collapsed,
+  href, icon: Icon, label, collapsed, tourId,
 }: {
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   collapsed: boolean;
+  tourId?: string;
 }) {
   const pathname = usePathname();
   const allHrefs = [...NAV_MAIN, ...NAV_SETTINGS].map((n) => n.href);
@@ -54,6 +55,7 @@ function NavItem({
   return (
     <Link
       href={href}
+      data-tour={tourId}
       title={collapsed ? label : undefined}
       className={cn(
         "relative flex items-center rounded-lg py-2 text-sm transition-all duration-150",

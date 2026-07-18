@@ -1,5 +1,6 @@
 "use client";
 
+import { Flame } from "lucide-react";
 import { useChallenges } from "@/hooks/useChallenges";
 
 const XP_PER_LEVEL = 500;
@@ -14,14 +15,19 @@ export function XpLevelWidget() {
   const xp = data?.xp ?? 0;
   const level = data?.level ?? 1;
   const xpToNext = data?.xpToNext ?? XP_PER_LEVEL;
+  const streak = data?.streak ?? 0;
   const xpInLevel = XP_PER_LEVEL - xpToNext;
   const pct = Math.round((xpInLevel / XP_PER_LEVEL) * 100);
 
   return (
     <div className="rounded-xl border border-border bg-surface p-4 space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-semibold text-text">Seviye {level}</span>
-        <span className="text-xs text-text-muted">{xpToNext} XP → Seviye {level + 1}</span>
+        <span className="text-sm font-semibold text-text">Level {level}</span>
+        {streak > 0 && (
+          <span className="inline-flex items-center gap-1 text-xs font-semibold text-orange-400">
+            <Flame className="h-3.5 w-3.5" /> {streak} day streak
+          </span>
+        )}
       </div>
       <div className="h-2 w-full overflow-hidden rounded-full bg-surface-2">
         <div
@@ -29,7 +35,9 @@ export function XpLevelWidget() {
           style={{ width: `${pct}%` }}
         />
       </div>
-      <p className="text-[11px] text-text-muted">{xp} toplam XP</p>
+      <p className="text-[11px] text-text-muted">
+        {xpToNext} XP → Level {level + 1} · {xp.toLocaleString()} total XP
+      </p>
     </div>
   );
 }

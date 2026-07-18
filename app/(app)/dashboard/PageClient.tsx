@@ -34,7 +34,8 @@ import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 import { useSubscription } from "@/hooks/useSubscription";
 import { EmailVerificationBanner } from "@/components/ui/EmailVerificationBanner";
 import { ReferralWidget } from "@/domains/identity/components/ReferralWidget";
-import { DashboardOnboarding } from "@/components/dashboard/DashboardOnboarding";
+import { ProgressionStrip } from "@/components/dashboard/ProgressionStrip";
+import { CoachTour } from "@/components/onboarding/tour/CoachTour";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -67,7 +68,7 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6">
-      <DashboardOnboarding />
+      <CoachTour />
       <Suspense fallback={null}>
         <EmailVerificationBanner />
       </Suspense>
@@ -122,13 +123,16 @@ export default function DashboardPage() {
                   )}
                 </div>
               </div>
-              <Link href="/coaching/chat">
+              <Link href="/coaching/chat" data-tour="ask-coach">
                 <Button size="sm" className="gap-1.5"><MessageCircle className="h-4 w-4" />Ask Your Coach</Button>
               </Link>
             </div>
           </div>
         );
       })()}
+
+      {/* ── Player progression (level · XP · streak) ─────────────────── */}
+      <ProgressionStrip summonerLevel={primaryAccount?.summonerLevel} isPro={isPro} />
 
       {profileError ? (
         <EmptyState
@@ -200,7 +204,7 @@ export default function DashboardPage() {
                 <SectionLabel>Patch Impact</SectionLabel>
                 <PatchImpactWidget riotAccountId={primaryId} />
               </div>
-              <div>
+              <div data-tour="daily-tasks">
                 <SectionLabel>Daily Tasks</SectionLabel>
                 <div className="space-y-3">
                   <XpLevelWidget />
