@@ -34,6 +34,7 @@ import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 import { useSubscription } from "@/hooks/useSubscription";
 import { EmailVerificationBanner } from "@/components/ui/EmailVerificationBanner";
 import { ReferralWidget } from "@/domains/identity/components/ReferralWidget";
+import { DashboardOnboarding } from "@/components/dashboard/DashboardOnboarding";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -66,6 +67,7 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6">
+      <DashboardOnboarding />
       <Suspense fallback={null}>
         <EmailVerificationBanner />
       </Suspense>
