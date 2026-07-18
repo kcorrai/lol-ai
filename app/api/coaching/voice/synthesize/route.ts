@@ -1,9 +1,9 @@
-import OpenAI from "openai";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { withAuth } from "@/lib/api/withAuth";
 import { Errors } from "@/lib/api/errors";
 import { checkRateLimit, rateLimitResponse } from "@/lib/api/rateLimit";
+import { generateSpeech } from "@/lib/ai/tts";
 
 const bodySchema = z.object({
   text: z.string().min(1).max(1000),
@@ -26,14 +26,7 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   const parsed = bodySchema.safeParse(body);
   if (!parsed.success) throw Errors.validation(parsed.error.issues[0].message);
 
-  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-  const response = await client.audio.speech.create({
-    model: "tts-1",
-    voice: "nova",
-    input: parsed.data.text,
-  });
-
-  const buffer = Buffer.from(await response.arrayBuffer());
+  const buffer = await generateSpeech(parsed.data.text);
   const ab = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer;
 
   return new NextResponse(ab, {

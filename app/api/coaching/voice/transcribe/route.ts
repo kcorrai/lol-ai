@@ -1,9 +1,9 @@
-import OpenAI from "openai";
 import { NextRequest } from "next/server";
 import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
 import { Errors } from "@/lib/api/errors";
 import { checkRateLimit, rateLimitResponse } from "@/lib/api/rateLimit";
+import { transcribeAudio } from "@/lib/ai/stt";
 
 // 20 transcriptions per hour per user
 const TRANSCRIBE_LIMIT = { limit: 20, windowMs: 3_600_000 };
@@ -24,13 +24,8 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
 
   if (file.size > 25 * 1024 * 1024) throw Errors.validation("Audio file too large (max 25 MB)");
 
-  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
   const audioFile = new File([file], "voice.webm", { type: file.type || "audio/webm" });
-  const transcription = await client.audio.transcriptions.create({
-    model: "whisper-1",
-    file: audioFile,
-  });
+  const text = await transcribeAudio(audioFile);
 
-  return apiSuccess({ text: transcription.text });
+  return apiSuccess({ text });
 });
