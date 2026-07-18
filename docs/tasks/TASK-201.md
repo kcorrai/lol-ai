@@ -24,7 +24,7 @@ React component 200 · Service 250 · API route 80 · Utility 150.
 - [x] cardService.ts (252) → 58; extracted cardDataBuilders.ts (168) + card.types.ts (29)
 
 ### API routes (>80)
-- [ ] cards/[token]/route.tsx (260)
+- [x] cards/[token]/route.tsx (260) → 38; extracted OG templates (weeklyCardOg 111, masteryCardOg 94, cardOgTokens 17)
 - [ ] og/report/[shareToken]/route.tsx (188)
 - [ ] public/preview/route.ts (187)
 - [ ] achievements/share/[achievementId]/route.tsx (139)
