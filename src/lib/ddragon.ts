@@ -73,3 +73,22 @@ export function roleIconUrl(position: string): string {
 export function profileIconUrl(iconId: number): string {
   return `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/img/profileicon/${iconId}.png`;
 }
+
+// Ability (spell/passive) icons are versioned; the version is threaded from the
+// same fetch that produced the champion detail so icons match the data patch.
+export function spellIconUrl(version: string, imageFull: string): string {
+  return `https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${imageFull}`;
+}
+
+export function passiveIconUrl(version: string, imageFull: string): string {
+  return `https://ddragon.leagueoflegends.com/cdn/${version}/img/passive/${imageFull}`;
+}
+
+export type AbilitySlot = "P1" | "Q1" | "W1" | "E1" | "R1";
+
+// Official Riot ability preview clips. The numeric champion key is zero-padded to
+// four digits (Ahri 103 → 0103); the unpadded form 403s.
+export function abilityVideoUrl(championKey: string, slot: AbilitySlot): string {
+  const id = championKey.padStart(4, "0");
+  return `https://d28xe8vt774jo5.cloudfront.net/champion-abilities/${id}/ability_${id}_${slot}.webm`;
+}

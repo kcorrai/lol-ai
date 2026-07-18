@@ -15,15 +15,48 @@ export interface DdragonChampionSummary {
   blurb: string;
 }
 
+export interface DdragonSpell {
+  id: string;
+  name: string;
+  description: string;
+  tooltip: string;
+  cooldownBurn: string;
+  costBurn: string;
+  rangeBurn: string;
+  image: { full: string };
+}
+
+export interface DdragonSkin {
+  id: string;
+  num: number;
+  name: string;
+  chromas: boolean;
+}
+
 export interface DdragonChampionDetail extends DdragonChampionSummary {
   lore: string;
   allytips: string[];
   enemytips: string[];
-  spells: { id: string; name: string; description: string }[];
-  passive: { name: string; description: string };
+  spells: DdragonSpell[];
+  passive: { name: string; description: string; image: { full: string } };
+  skins: DdragonSkin[];
 }
 
 import { getLatestDdragonVersion } from "@/lib/ddragon";
+
+// Data Dragon ability text carries `{{ var }}` template placeholders and HTML
+// markup (<br>, <font>, <scaleAP> …). Strip both to plain, readable prose.
+export function cleanAbilityText(raw: string): string {
+  return raw
+    .replace(/\{\{[^}]*\}\}/g, "")
+    .replace(/<br\s*\/?>/gi, " ")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
 export async function fetchAllChampions(): Promise<DdragonChampionSummary[]> {
   const version = await getLatestDdragonVersion();

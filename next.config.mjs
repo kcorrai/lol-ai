@@ -14,6 +14,8 @@ const CSP = [
   "font-src 'self' data: https://fonts.gstatic.com",
   // Champion/item images via Data Dragon + rank emblems via Community Dragon
   "img-src 'self' data: blob: https://ddragon.leagueoflegends.com https://raw.communitydragon.org",
+  // Official champion ability preview videos (Riot CloudFront)
+  "media-src 'self' https://d28xe8vt774jo5.cloudfront.net",
   // Same-origin API calls + DDragon JSON data + Sentry error reporting
   "connect-src 'self' https://ddragon.leagueoflegends.com https://*.ingest.sentry.io https://*.sentry.io",
   "frame-ancestors 'none'",
