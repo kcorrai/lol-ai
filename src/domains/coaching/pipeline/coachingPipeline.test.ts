@@ -5,12 +5,17 @@ vi.mock("@/lib/db/prisma", () => ({
   prisma: {
     coachingReport: {
       update: vi.fn(),
+      findUnique: vi.fn(),
     },
     aiAnalysis: {
       findUnique: vi.fn(),
-      create: vi.fn(),
+      upsert: vi.fn(),
     },
   },
+}));
+
+vi.mock("@/lib/analytics/posthog", () => ({
+  capture: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock("@/lib/ai/client", () => ({
@@ -37,8 +42,8 @@ import { buildPrompt } from "@/domains/coaching/pipeline/promptBuilder";
 import { parseCoachingResponse } from "@/lib/ai/responseParser";
 
 const mockPrisma = prisma as unknown as {
-  coachingReport: { update: ReturnType<typeof vi.fn> };
-  aiAnalysis: { findUnique: ReturnType<typeof vi.fn>; create: ReturnType<typeof vi.fn> };
+  coachingReport: { update: ReturnType<typeof vi.fn>; findUnique: ReturnType<typeof vi.fn> };
+  aiAnalysis: { findUnique: ReturnType<typeof vi.fn>; upsert: ReturnType<typeof vi.fn> };
 };
 
 const REPORT_ID = "report-uuid-001";
@@ -69,8 +74,9 @@ describe("runCoachingPipeline", () => {
     });
     (parseCoachingResponse as ReturnType<typeof vi.fn>).mockReturnValue(mockParsedOutput);
     mockPrisma.coachingReport.update.mockResolvedValue({});
+    mockPrisma.coachingReport.findUnique.mockResolvedValue({ riotAccount: { userId: "user-1" } });
     mockPrisma.aiAnalysis.findUnique.mockResolvedValue(null);
-    mockPrisma.aiAnalysis.create.mockResolvedValue({});
+    mockPrisma.aiAnalysis.upsert.mockResolvedValue({});
   });
 
   it("marks report as processing then complete on success", async () => {
@@ -110,7 +116,7 @@ describe("runCoachingPipeline", () => {
 
     await runCoachingPipeline(REPORT_ID, ACCOUNT_ID, MATCH_IDS, "session_review");
 
-    expect(mockPrisma.aiAnalysis.create).toHaveBeenCalledOnce();
+    expect(mockPrisma.aiAnalysis.upsert).toHaveBeenCalledOnce();
   });
 
   it("skips AI call on a cache hit", async () => {
@@ -129,7 +135,7 @@ describe("runCoachingPipeline", () => {
     await runCoachingPipeline(REPORT_ID, ACCOUNT_ID, MATCH_IDS, "session_review");
 
     expect(mockComplete).not.toHaveBeenCalled();
-    expect(mockPrisma.aiAnalysis.create).not.toHaveBeenCalled();
+    expect(mockPrisma.aiAnalysis.upsert).not.toHaveBeenCalled();
   });
 
   it("marks report as failed when AI call throws", async () => {

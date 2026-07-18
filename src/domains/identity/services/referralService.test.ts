@@ -7,6 +7,7 @@ vi.mock("@/lib/db/prisma", () => ({
       findFirst: vi.fn(),
       findUnique: vi.fn(),
       findMany: vi.fn(),
+      count: vi.fn(),
       create: vi.fn(),
       update: vi.fn(),
     },
@@ -17,6 +18,10 @@ vi.mock("@/lib/db/prisma", () => ({
 
 vi.mock("@/lib/utils/logger", () => ({
   logger: { info: vi.fn(), error: vi.fn(), warn: vi.fn() },
+}));
+
+vi.mock("@/inngest/client", () => ({
+  inngest: { send: vi.fn().mockResolvedValue(undefined) },
 }));
 
 import { prisma } from "@/lib/db/prisma";
@@ -135,6 +140,8 @@ describe("completeReferral", () => {
     vi.mocked(mockReferral.findUnique).mockResolvedValueOnce({
       id: "ref-1", referrerId: "referrer-1", status: "pending",
     } as never);
+    // Referrer is below the reward cap → both parties get the trial (3 tx ops)
+    vi.mocked(mockReferral.count).mockResolvedValueOnce(0 as never);
     vi.mocked(prisma.$transaction).mockResolvedValueOnce([] as never);
 
     await completeReferral("referee-1");

@@ -14,6 +14,7 @@ vi.mock("@/lib/db/prismaReadonly", () => ({
     subscription: { findUnique: vi.fn() },
     riotAccount: { findFirst: vi.fn() },
     matchParticipant: { findMany: vi.fn() },
+    user: { findUnique: vi.fn() },
   },
 }));
 vi.mock("@/lib/utils/logger", () => ({

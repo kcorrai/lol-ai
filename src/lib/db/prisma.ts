@@ -11,8 +11,11 @@ function createPrismaClient(): PrismaClient {
   // because pgbouncer handles multiplexing at the database layer.
   const url = process.env.DATABASE_POOLER_URL ?? process.env.DATABASE_URL;
 
+  // Only override datasources when a url is actually configured. Passing
+  // `{ db: { url: undefined } }` makes PrismaClient throw at construction, which
+  // crashes any test that imports a db-touching module at collection time.
   return new PrismaClient({
-    datasources: { db: { url } },
+    ...(url ? { datasources: { db: { url } } } : {}),
     log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
   });
 }

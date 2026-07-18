@@ -2,9 +2,9 @@ import { describe, it, expect } from "vitest";
 import { currentSeasonLabel } from "./recapService";
 
 describe("currentSeasonLabel", () => {
-  it("returns a label in YYYY-SN format", () => {
+  it("returns a label in YYYY-SeasonN format", () => {
     const label = currentSeasonLabel();
-    expect(label).toMatch(/^\d{4}-S\d+$/);
+    expect(label).toMatch(/^\d{4}-Season\d+$/);
   });
 
   it("includes the current year", () => {

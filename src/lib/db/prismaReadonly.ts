@@ -14,8 +14,10 @@ function createReadonlyClient(): PrismaClient {
     process.env.DATABASE_POOLER_URL ??
     process.env.DATABASE_URL;
 
+  // Only override datasources when a url is configured — passing an undefined
+  // url makes PrismaClient throw at construction (breaks test collection).
   const client = new PrismaClient({
-    datasources: { db: { url } },
+    ...(url ? { datasources: { db: { url } } } : {}),
     log:
       process.env.NODE_ENV === "development"
         ? [
