@@ -28,7 +28,7 @@ React component 200 · Service 250 · API route 80 · Utility 150.
 - [x] og/report/[shareToken]/route.tsx (188) → 29; extracted reportOgTemplate.tsx (162)
 - [x] public/preview/route.ts (187) → 57; extracted buildAccountPreview to domains/riot/services/previewService.ts (142)
 - [x] achievements/share/[achievementId]/route.tsx (139) → 30; extracted achievementOgTemplate.tsx (124)
-- [ ] riot/[riotAccountId]/chat/route.ts (127)
+- [x] riot/[riotAccountId]/chat/route.ts (127) → 65; extracted coachChatService.ts (71)
 - [ ] auth/register/route.ts (105)
 - [ ] coaching/reports/[reportId]/stream/route.ts (101)
 - [ ] lemonsqueezy/webhook/route.ts (89)

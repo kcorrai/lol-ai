@@ -2,12 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
 import { assertOwnsRiotAccount } from "@/lib/auth/authorization";
-import { getAiClient } from "@/lib/ai/client";
-import { buildChatSystemPrompt } from "@/lib/ai/chatSystemPrompt";
 import { checkRateLimit } from "@/lib/api/rateLimit";
-import { getPlayerPerformanceProfile } from "@/domains/analysis/services/matchAnalysisService";
-import { getActivePlan } from "@/domains/analysis/services/improvementPlanService";
 import { prisma } from "@/lib/db/prisma";
+import { buildCoachChatContext, createCoachChatStream } from "@/domains/coaching/services/coachChatService";
 import type { ChatMessage } from "@/lib/ai/types";
 import type { CoachPersona } from "@/lib/ai/chatSystemPrompt";
 
@@ -21,7 +18,6 @@ function errJson(message: string, status: number) {
 
 // POST /api/riot/[riotAccountId]/chat — returns text/plain stream
 export async function POST(req: NextRequest): Promise<Response> {
-  // Auth
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return errJson("Authentication required", 401);
   const userId = session.user.id;
@@ -36,10 +32,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
 
   // Rate limit by subscription plan
-  const sub = await prisma.subscription.findUnique({
-    where: { userId },
-    select: { plan: true },
-  });
+  const sub = await prisma.subscription.findUnique({ where: { userId }, select: { plan: true } });
   const isPro = sub?.plan === "pro" || sub?.plan === "elite";
   const dailyLimit = isPro ? DAILY_LIMIT_PRO : DAILY_LIMIT_FREE;
 
@@ -51,73 +44,18 @@ export async function POST(req: NextRequest): Promise<Response> {
     );
   }
 
-  // Parse body
-  const body = await req.json().catch(() => ({})) as { messages?: ChatMessage[]; persona?: CoachPersona };
+  const body = (await req.json().catch(() => ({}))) as { messages?: ChatMessage[]; persona?: CoachPersona };
   const messages = body.messages ?? [];
   const persona: CoachPersona = ["direct", "analytical", "motivational"].includes(body.persona ?? "")
     ? (body.persona as CoachPersona)
     : "direct";
-  if (!Array.isArray(messages) || messages.length === 0) {
-    return errJson("messages array is required", 400);
-  }
+  if (!Array.isArray(messages) || messages.length === 0) return errJson("messages array is required", 400);
   if (messages.length > 40) return errJson("Conversation too long", 400);
 
-  // Build context
-  const [account, profile, plan] = await Promise.all([
-    prisma.riotAccount.findUnique({
-      where: { id: riotAccountId },
-      select: { gameName: true, tagLine: true, region: true },
-    }),
-    getPlayerPerformanceProfile(riotAccountId, 20),
-    getActivePlan(riotAccountId),
-  ]);
+  const systemPrompt = await buildCoachChatContext(riotAccountId, persona);
+  if (!systemPrompt) return errJson("Riot account not found", 404);
 
-  if (!account) return errJson("Riot account not found", 404);
-
-  const latestReport = await prisma.coachingReport.findFirst({
-    where: { riotAccountId, status: "complete" },
-    orderBy: { completedAt: "desc" },
-    select: { actionItems: true },
-  });
-  const actionItems = latestReport?.actionItems as Array<{ priority: number; action: string }> | null;
-  const focusAction = actionItems?.sort((a, b) => a.priority - b.priority)[0]?.action ?? null;
-
-  const rankRow = await prisma.rankedHistory.findFirst({
-    where: { riotAccountId, queueType: "RANKED_SOLO_5x5" },
-    orderBy: { recordedAt: "desc" },
-    select: { tier: true, division: true, lp: true },
-  });
-  const rankDisplay = rankRow ? `${rankRow.tier} ${rankRow.division} ${rankRow.lp} LP` : null;
-
-  const systemPrompt = buildChatSystemPrompt({
-    gameName: account.gameName,
-    tagLine: account.tagLine,
-    region: account.region,
-    rankDisplay,
-    profile,
-    plan,
-    focusAction,
-    persona,
-  });
-
-  // Stream
-  const ai = getAiClient();
-  const tokenStream = ai.streamChat(systemPrompt, messages);
-  const encoder = new TextEncoder();
-
-  const readable = new ReadableStream<Uint8Array>({
-    async start(controller) {
-      try {
-        for await (const token of tokenStream) {
-          controller.enqueue(encoder.encode(token));
-        }
-      } finally {
-        controller.close();
-      }
-    },
-  });
-
-  return new Response(readable, {
+  return new Response(createCoachChatStream(systemPrompt, messages), {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
       "X-RateLimit-Remaining": String(rl.remaining),
