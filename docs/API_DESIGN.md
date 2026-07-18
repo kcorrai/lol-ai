@@ -266,6 +266,21 @@ Initiate connection of a Riot account by Riot ID.
 
 ---
 
+### `POST /api/onboarding/complete`
+
+Mark the forced first-journey onboarding complete (TASK-217). Idempotent — a repeat call keeps the
+original timestamp. This is the single, bypass-proof source of truth for the onboarding gate; the
+step position itself is tracked client-side (localStorage). Called by the guided overlay's final step.
+
+**Auth required.**
+
+**Response 200:**
+```json
+{ "data": { "completedAt": "2026-07-18T20:00:00.000Z" } }
+```
+
+---
+
 ### `DELETE /api/riot/:riotAccountId`
 
 Disconnect a Riot account. Preserves historical data.

@@ -97,6 +97,7 @@ Extended user preferences and coaching context.
 | `weekly_play_hours` | `int` | NULLABLE | Self-reported |
 | `timezone` | `varchar(50)` | DEFAULT `'UTC'` | |
 | `language` | `varchar(10)` | DEFAULT `'en'` | AI report language |
+| `onboarding_completed_at` | `timestamptz` | NULLABLE | Set once the forced first-journey onboarding is finished (TASK-217). NULL = not done; bypass-proof gate. |
 | `created_at` | `timestamptz` | NOT NULL, default `now()` | |
 | `updated_at` | `timestamptz` | NOT NULL | |
 

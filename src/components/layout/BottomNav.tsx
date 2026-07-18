@@ -15,11 +15,11 @@ interface NavEntry {
 // All in-app routes — the old /counter entry 308-redirected into the public
 // marketing-chrome tools and ejected the user from the app shell.
 const NAV: NavEntry[] = [
-  { href: "/dashboard",     icon: LayoutDashboard, label: "Home" },
+  { href: "/dashboard",     icon: LayoutDashboard, label: "Home", tourId: "nav-dashboard" },
   { href: "/coaching",      icon: TrendingUp,      label: "Reports", tourId: "nav-reports" },
   { href: "/coaching/chat", icon: MessageCircle,   label: "Coach Chat"  },
   { href: "/champion-pool", icon: Shield,          label: "Champions" },
-  { href: "/settings/accounts", icon: Gamepad2,    label: "Accounts"  },
+  { href: "/settings/accounts", icon: Gamepad2,    label: "Accounts", tourId: "nav-accounts"  },
 ];
 
 export function BottomNav() {

@@ -1,5 +1,4 @@
-// CSS-only confetti burst rendered on mount. Extracted from the retired DashboardOnboarding
-// so the coach tour finale and any future celebration can share it.
+// CSS-only confetti burst rendered on mount — shared by the guided-onboarding finale.
 const COLORS = ["#C89B3C", "#4ADE80", "#60A5FA", "#F472B6", "#A78BFA"];
 
 export function Confetti(): React.JSX.Element {
@@ -8,9 +7,9 @@ export function Confetti(): React.JSX.Element {
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
       {pieces.map((i) => {
         const color = COLORS[i % COLORS.length];
-        const left = `${4 + (i * 4) % 92}%`;
+        const left = `${4 + ((i * 4) % 92)}%`;
         const delay = `${(i * 120) % 800}ms`;
-        const duration = `${700 + (i * 80) % 600}ms`;
+        const duration = `${700 + ((i * 80) % 600)}ms`;
         return (
           <div
             key={i}

@@ -53,11 +53,13 @@ function RoleFilterBtn({
   );
 }
 
-function MatchRow({ match }: { match: MatchPerformance }) {
+function MatchRow({ match, isFirst }: { match: MatchPerformance; isFirst?: boolean }) {
   const kda = ((match.kills + match.assists) / Math.max(match.deaths, 1)).toFixed(2);
   const kdaColor = Number(kda) >= 4 ? "text-success" : Number(kda) >= 2 ? "text-warning" : "text-text-muted";
   return (
     <Link
+      // `match-row` anchors the guided-onboarding "open a match" spotlight to the newest game.
+      data-tour={isFirst ? "match-row" : undefined}
       href={`/match/${match.matchDbId}`}
       className={`flex items-center gap-4 rounded-xl border px-4 py-3 transition-colors hover:bg-surface-2/60 ${
         match.won ? "border-success/20 bg-success/5" : "border-danger/20 bg-danger/5"
@@ -208,7 +210,7 @@ export function RecentMatchList({ matches, isLoading }: Props) {
       {filtered.length === 0 ? (
         <p className="py-6 text-center text-sm text-text-muted">No matches match the selected filters.</p>
       ) : (
-        filtered.slice(0, 20).map((m) => <MatchRow key={m.riotMatchId} match={m} />)
+        filtered.slice(0, 20).map((m, i) => <MatchRow key={m.riotMatchId} match={m} isFirst={i === 0} />)
       )}
     </div>
   );

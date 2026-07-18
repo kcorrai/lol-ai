@@ -14,13 +14,13 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { cn } from "@/lib/utils";
 
 const NAV_MAIN = [
-  { href: "/dashboard",     icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/dashboard",     icon: LayoutDashboard, label: "Dashboard", tourId: "nav-dashboard" },
   { href: "/champion-pool", icon: Shield,          label: "Champions" },
   { href: "/coaching",      icon: ClipboardList,   label: "Reports", tourId: "nav-reports" },
   { href: "/coaching/chat", icon: MessageCircle,   label: "Coach Chat" },
-  { href: "/improvement",   icon: TrendingUp,      label: "Improvement" },
+  { href: "/improvement",   icon: TrendingUp,      label: "Improvement", tourId: "nav-improvement" },
   { href: "/achievements",  icon: Trophy,          label: "Badges", tourId: "nav-badges" },
-  { href: "/leaderboard",  icon: Medal,           label: "Leaderboard" },
+  { href: "/leaderboard",  icon: Medal,           label: "Leaderboard", tourId: "nav-leaderboard" },
   { href: "/milestone",    icon: CalendarDays,    label: "Milestone" },
   { href: "/analysis",      icon: Map,             label: "Heat Map" },
   { href: "/recap",         icon: Film,            label: "Season Recap" },
@@ -29,7 +29,7 @@ const NAV_MAIN = [
 ] as const;
 
 const NAV_SETTINGS = [
-  { href: "/settings/accounts", icon: Gamepad2,   label: "Accounts" },
+  { href: "/settings/accounts", icon: Gamepad2,   label: "Accounts", tourId: "nav-accounts" },
   { href: "/settings/billing",  icon: CreditCard, label: "Billing" },
   { href: "/settings/profile",  icon: UserCircle, label: "Profile" },
   { href: "/settings/privacy",  icon: Lock,       label: "Privacy" },

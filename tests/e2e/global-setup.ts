@@ -52,7 +52,9 @@ async function seedTestData(prisma: Awaited<ReturnType<typeof createTestPrisma>>
       email: E2E_USER.email,
       name: E2E_USER.name,
       emailVerified: new Date(),
-      profile: { create: { emailWeeklyReport: false } },
+      // Mark onboarding done so the forced first-journey overlay (TASK-217) doesn't block the
+      // other smoke specs. The guided-onboarding spec resets this to null for its own run.
+      profile: { create: { emailWeeklyReport: false, onboardingCompletedAt: new Date() } },
       subscription: { create: { plan: "free", status: "active" } },
     },
     select: { id: true },

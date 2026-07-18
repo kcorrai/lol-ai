@@ -60,7 +60,7 @@ export function RegisterForm() {
       return;
     }
 
-    router.push("/login?registered=1&callbackUrl=%2Fonboarding");
+    router.push("/login?registered=1&callbackUrl=%2Fdashboard");
   }
 
   return (

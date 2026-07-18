@@ -209,6 +209,8 @@ model Profile {
   timezone           String    @default("UTC")
   language           String    @default("en")
   emailWeeklyReport  Boolean   @default(true)
+  // Set once the forced first-journey onboarding is completed (TASK-217). Null = not done.
+  onboardingCompletedAt DateTime?
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
 

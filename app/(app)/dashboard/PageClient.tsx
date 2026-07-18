@@ -1,7 +1,6 @@
 "use client";
 
-import { Suspense, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
@@ -35,7 +34,6 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { EmailVerificationBanner } from "@/components/ui/EmailVerificationBanner";
 import { ReferralWidget } from "@/domains/identity/components/ReferralWidget";
 import { ProgressionStrip } from "@/components/dashboard/ProgressionStrip";
-import { CoachTour } from "@/components/onboarding/tour/CoachTour";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -46,15 +44,8 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 export default function DashboardPage() {
-  const router = useRouter();
   const { data: accounts, isLoading: accountsLoading } = useRiotAccounts();
   const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!accountsLoading && accounts && accounts.length === 0) {
-      router.replace("/onboarding");
-    }
-  }, [accountsLoading, accounts, router]);
 
   const primaryId = selectedAccountId ?? accounts?.[0]?.id ?? null;
   const primaryAccount = accounts?.find((a) => a.id === primaryId);
@@ -68,7 +59,6 @@ export default function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6">
-      <CoachTour />
       <Suspense fallback={null}>
         <EmailVerificationBanner />
       </Suspense>

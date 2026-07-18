@@ -54,7 +54,7 @@ export default defineConfig({
     // Smoke tests requiring authentication — depend on setup project
     {
       name: "smoke",
-      testMatch: /\/(riot|coaching|share|tour)\.spec\.ts$/,
+      testMatch: /\/(riot|coaching|share|guided-onboarding)\.spec\.ts$/,
       dependencies: ["setup"],
       use: {
         ...devices["Desktop Chrome"],

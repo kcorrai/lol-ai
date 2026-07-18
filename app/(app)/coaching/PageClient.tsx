@@ -110,7 +110,7 @@ export default function CoachingPage() {
         subtitle="Analyze your recent matches, get personalized improvement suggestions."
       />
 
-      <section>
+      <section data-tour="generate-report">
         <SectionLabel>Generate New Report</SectionLabel>
         <CoachingActionsCard
           onSessionReview={handleSessionReview}

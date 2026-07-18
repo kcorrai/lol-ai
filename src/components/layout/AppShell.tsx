@@ -6,9 +6,16 @@ import { TopBar } from "./TopBar";
 import { BottomNav } from "./BottomNav";
 import { TiltAlertBanner } from "./TiltAlertBanner";
 import { AchievementToast } from "@/components/achievements/AchievementToast";
+import { GuidedOnboarding } from "@/domains/onboarding/guide/GuidedOnboarding";
 import { useUIStore } from "@/lib/stores/uiStore";
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({
+  children,
+  onboardingComplete,
+}: {
+  children: React.ReactNode;
+  onboardingComplete: boolean;
+}) {
   const sidebarCollapsed = useUIStore((s) => s.sidebarCollapsed);
   const setSidebarCollapsed = useUIStore((s) => s.setSidebarCollapsed);
 
@@ -34,6 +41,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </div>
       <AchievementToast />
       <BottomNav />
+      {!onboardingComplete && <GuidedOnboarding />}
     </div>
   );
 }
