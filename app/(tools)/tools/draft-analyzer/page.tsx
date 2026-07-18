@@ -10,6 +10,7 @@ import {
 } from "@/domains/meta";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
+import { ToolUpgradeNudge } from "../../ToolUpgradeNudge";
 import { DraftBuilder } from "./DraftBuilder";
 import { DraftResults } from "./DraftResults";
 
@@ -111,6 +112,8 @@ export default async function DraftAnalyzerPage({ searchParams }: PageProps) {
         <>
           <div className="mb-6 text-sm text-text-muted">Patch {formatGamePatch(evaluation.patch)}</div>
           <DraftResults evaluation={evaluation} />
+
+          <ToolUpgradeNudge message="Go Pro for AI coaching on YOUR games — how your real drafts play out, your worst matchups, and a step-by-step climb plan." />
 
           <div className="mt-12 rounded-2xl border border-accent/30 bg-accent/5 p-6 text-center">
             <h2 className="font-display text-xl font-bold text-text">

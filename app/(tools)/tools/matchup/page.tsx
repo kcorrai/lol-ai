@@ -7,6 +7,7 @@ import { MatchupControls } from "./MatchupControls";
 import { MatchupReportCard } from "./MatchupReportCard";
 import { MatchupBuildSummary } from "./MatchupBuildSummary";
 import { loadMatchupExtras } from "./loadMatchupExtras";
+import { ToolUpgradeNudge } from "../../ToolUpgradeNudge";
 
 interface PageProps {
   searchParams: { a?: string; b?: string; role?: string };
@@ -101,6 +102,8 @@ export default async function MatchupPage({ searchParams }: PageProps) {
           </div>
 
           <MatchupReportCard report={report} />
+
+          <ToolUpgradeNudge message="Go Pro to see this matchup in YOUR games — your real win rate in the lane, the mistakes costing you, and a plan to win it." />
 
           {extras && (
             <MatchupBuildSummary
