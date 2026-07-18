@@ -84,7 +84,7 @@ export default async function PublicProfilePage({ params }: Props) {
             {(profile.totalGames > 0 || profile.winRate !== null || profile.avgKda !== null) && (
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { label: "Total Matches", value: profile.totalGames > 0 ? String(profile.totalGames) : "—", sub: profile.winRate !== null ? `%${profile.winRate} WR` : null, subColor: profile.winRate !== null ? wrColor(profile.winRate) : undefined },
+                  { label: "Total Matches", value: profile.totalGames > 0 ? String(profile.totalGames) : "—", sub: profile.winRate !== null ? `${profile.winRate}% WR` : null, subColor: profile.winRate !== null ? wrColor(profile.winRate) : undefined },
                   { label: "Avg KDA", value: profile.avgKda !== null ? String(profile.avgKda) : "—", sub: profile.avgKda !== null ? (profile.avgKda >= 4 ? "Perfect" : profile.avgKda >= 3 ? "Good" : "Average") : null, subColor: profile.avgKda !== null ? kdaColor(profile.avgKda) : undefined },
                   { label: "Season W/L", value: profile.rank ? `${profile.rank.wins}W` : "—", sub: profile.rank ? `${profile.rank.losses}L` : null, subColor: "#f87171" },
                 ].map(({ label, value, sub, subColor }) => (

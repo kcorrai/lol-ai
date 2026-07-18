@@ -50,7 +50,7 @@ export function RecapChampion({ championName, games, winRate, kda }: Props) {
             <span className="text-[10px] text-text-muted">Matches</span>
           </div>
           <div className="gaming-card flex flex-col items-center gap-0.5 rounded-xl px-4 py-2">
-            <span className={`font-display text-xl font-black ${wrColor}`}>%{winRate}</span>
+            <span className={`font-display text-xl font-black ${wrColor}`}>{winRate}%</span>
             <span className="text-[10px] text-text-muted">Win Rate</span>
           </div>
           <div className="gaming-card flex flex-col items-center gap-0.5 rounded-xl px-4 py-2">

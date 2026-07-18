@@ -68,7 +68,7 @@ export function TeamDashboard({ teamId, isCoach }: Props) {
             {team.avgWinRate7d !== null && WrIcon && (
               <div className={`flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-semibold ${team.avgWinRate7d >= 55 ? "border-success/30 bg-success/10 text-success" : team.avgWinRate7d < 45 ? "border-danger/30 bg-danger/10 text-danger" : "border-border bg-surface-2 text-text-muted"}`}>
                 <WrIcon className="h-3 w-3" />
-                %{team.avgWinRate7d} team 7d
+                {team.avgWinRate7d}% team 7d
               </div>
             )}
             {isCoach && slotsLeft > 0 && (

@@ -40,7 +40,7 @@ export function TeamStatsPanel({ teamId }: TeamStatsPanelProps) {
         ))}
         {data && (
           <span className="ml-auto text-xs text-text-muted">
-            {data.totalGames} matches · Avg. %{data.avgWinRate ?? "—"}
+            {data.totalGames} matches · Avg. {data.avgWinRate ?? "—"}%
           </span>
         )}
       </div>
@@ -77,7 +77,7 @@ export function TeamStatsPanel({ teamId }: TeamStatsPanelProps) {
                         "text-xs font-bold",
                         last.winRate >= 55 ? "text-success" : last.winRate < 45 ? "text-danger" : "text-text-muted"
                       )}>
-                        %{last.winRate}
+                        {last.winRate}%
                       </span>
                     )}
                   </div>

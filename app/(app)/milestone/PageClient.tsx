@@ -111,7 +111,7 @@ export default function MilestonePage() {
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <StatCard icon={Swords} label="Matches" value={String(data.gamesPlayed)} sub={`${data.wins}W · ${data.losses}L`} highlight={data.winRate >= 55 ? "success" : data.winRate < 45 ? "danger" : undefined} />
-            <StatCard icon={TrendingUp} label="Win Rate" value={`%${data.winRate}`} sub="Ranked Solo" highlight={data.winRate >= 55 ? "success" : data.winRate < 45 ? "danger" : undefined} />
+            <StatCard icon={TrendingUp} label="Win Rate" value={`${data.winRate}%`} sub="Ranked Solo" highlight={data.winRate >= 55 ? "success" : data.winRate < 45 ? "danger" : undefined} />
             <StatCard icon={Flame} label="Avg KDA" value={data.avgKda.toFixed(2)} sub={`Best: ${data.bestKda.toFixed(2)}`} highlight={data.avgKda >= 3 ? "success" : data.avgKda < 2 ? "danger" : undefined} />
             <StatCard icon={Clock} label="Duration" value={`${data.estimatedHours}h`} sub={`${data.avgCsPerMin.toFixed(1)} CS/min avg.`} />
           </div>

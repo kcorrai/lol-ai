@@ -46,7 +46,7 @@ export function WeeklyCard({ d }: { d: WeeklyCardData }) {
             <span style={{ color: C.muted, fontWeight: 400, fontSize: 24 }}>#{d.tagLine}</span>
           </span>
         </div>
-        <span style={{ color: C.muted, fontSize: 16 }}>Bu Hafta</span>
+        <span style={{ color: C.muted, fontSize: 16 }}>This Week</span>
       </div>
 
       {/* Divider */}
@@ -80,7 +80,7 @@ export function WeeklyCard({ d }: { d: WeeklyCardData }) {
           <span style={{ color: C.text, fontSize: 22, fontWeight: 700 }}>
             {d.bestChampionName}
           </span>
-          <span style={{ color: C.green, fontSize: 20 }}>%{d.bestChampionWinRate} WR</span>
+          <span style={{ color: C.green, fontSize: 20 }}>{d.bestChampionWinRate}% WR</span>
           {d.masteryScore !== null && (
             <span style={{ color: C.brand, fontSize: 18 }}>
               Mastery {d.masteryScore}/100

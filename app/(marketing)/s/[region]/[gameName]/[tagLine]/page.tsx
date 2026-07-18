@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const rankStr = rank
     ? `${rank.tier.charAt(0)}${rank.tier.slice(1).toLowerCase()} ${rank.division} · ${rank.lp} LP`
     : "Unranked";
-  const description = `${name} League of Legends stats (${server}). ${rankStr}${wr !== null ? ` · %${wr} WR` : ""}${topChamp ? ` · Most: ${topChamp.championName}` : ""}. Get AI coach analysis.`;
+  const description = `${name} League of Legends stats (${server}). ${rankStr}${wr !== null ? ` · ${wr}% WR` : ""}${topChamp ? ` · Most: ${topChamp.championName}` : ""}. Get AI coach analysis.`;
 
   const ogParams = new URLSearchParams({
     name,
@@ -200,7 +200,7 @@ export default async function SummonerPage({ params }: Props) {
                       {rank.tier.charAt(0)}{rank.tier.slice(1).toLowerCase()} {rank.division} · {rank.lp} LP
                     </span>
                     {winRate !== null && (
-                      <span className="text-xs text-text-muted">%{winRate} WR</span>
+                      <span className="text-xs text-text-muted">{winRate}% WR</span>
                     )}
                   </div>
                 )}
@@ -239,7 +239,7 @@ export default async function SummonerPage({ params }: Props) {
                   </div>
                   <span className="shrink-0 text-xs font-semibold"
                     style={{ color: c.winRate >= 55 ? "#4ade80" : c.winRate >= 50 ? "#c89b3c" : "#f87171" }}>
-                    %{c.winRate}
+                    {c.winRate}%
                   </span>
                 </div>
               ))}

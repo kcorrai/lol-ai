@@ -64,7 +64,7 @@ export default async function AnalyticsPage({
         <Stat label="MAU" value={metrics.mau} sub="active last 30 days" />
         <Stat label="Total Users" value={metrics.totalUsers} />
         <Stat label="Pro Users" value={metrics.proUsers} />
-        <Stat label="Conversion Rate" value={`%${metrics.conversionRate}`} sub="free → pro" />
+        <Stat label="Conversion Rate" value={`${metrics.conversionRate}%`} sub="free → pro" />
       </div>
 
       {/* Sub stats */}

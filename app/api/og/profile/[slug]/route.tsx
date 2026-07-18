@@ -20,7 +20,7 @@ export async function GET(
     ? `${profile.rank.tier} ${profile.rank.division} · ${profile.rank.lp} LP`
     : "Unranked";
   const wr = profile?.winRate !== null && profile?.winRate !== undefined
-    ? `%${profile.winRate} WR`
+    ? `${profile.winRate}% WR`
     : "";
   const topChamp = profile?.topChampions[0]?.name ?? "";
   const badgeCount = profile?.badges.length ?? 0;

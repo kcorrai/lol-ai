@@ -22,7 +22,7 @@ function ChampionRow({ champion, rank }: { champion: ChampionMonth; rank: number
         </p>
       </div>
       <div className="text-right">
-        <p className={cn("text-sm font-bold", wrColor)}>%{champion.winRate}</p>
+        <p className={cn("text-sm font-bold", wrColor)}>{champion.winRate}%</p>
         <p className="text-xs text-text-muted">{champion.avgKda.toFixed(2)} KDA</p>
       </div>
     </div>

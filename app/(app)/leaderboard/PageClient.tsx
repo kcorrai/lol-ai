@@ -101,7 +101,7 @@ function PlayerRow({ entry, index: _index }: { entry: LeaderboardEntry; index: n
         <div className="w-14 text-right">
           <p className="text-xs text-text-muted">WR</p>
           <p className={cn("text-sm font-bold", entry.winRate >= 55 ? "text-success" : entry.winRate < 45 ? "text-danger" : "text-text")}>
-            %{entry.winRate}
+            {entry.winRate}%
           </p>
         </div>
       </div>

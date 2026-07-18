@@ -35,7 +35,7 @@ export default async function PublicRecapPage({ params }: Props) {
         <div className="grid grid-cols-2 gap-4 text-center">
           {[
             { label: "Matches", value: String(data.totalMatches) },
-            { label: "Win Rate", value: `%${data.winRate}` },
+            { label: "Win Rate", value: `${data.winRate}%` },
             { label: "LP", value: `${data.lpDelta > 0 ? "+" : ""}${data.lpDelta}` },
             { label: "Best", value: data.topChampion.name },
           ].map((s) => (

@@ -119,7 +119,7 @@ export function TeamComparisonTable({ teamId }: TeamComparisonTableProps) {
                   <td className="px-4 py-3 text-center">
                     {m.winRate7d !== null ? (
                       <span className={m.winRate7d >= 55 ? "font-semibold text-success" : m.winRate7d < 45 ? "text-danger" : "text-text"}>
-                        %{m.winRate7d}
+                        {m.winRate7d}%
                       </span>
                     ) : <span className="text-text-muted">—</span>}
                   </td>

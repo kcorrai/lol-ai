@@ -59,7 +59,7 @@ export async function GET(req: NextRequest): Promise<Response> {
           {name}
         </div>
         <div style={{ fontSize: 28, color: tierColor, marginBottom: 8 }}>
-          {rank} {wr ? `· %${wr} WR` : ""}
+          {rank} {wr ? `· ${wr}% WR` : ""}
         </div>
         {champ && (
           <div style={{ fontSize: 20, color: "#94a3b8" }}>

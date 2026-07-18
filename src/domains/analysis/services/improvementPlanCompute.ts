@@ -152,7 +152,7 @@ export function buildPlanWithProgress(
     Math.ceil((plan.expiresAt.getTime() - now) / (1000 * 60 * 60 * 24))
   );
   const dayElapsed = PLAN_DAYS - daysLeft;
-  const weekLabel = dayElapsed <= 7 ? "2'den 1. Hafta" : "2'den 2. Hafta";
+  const weekLabel = dayElapsed <= 7 ? "Week 1 of 2" : "Week 2 of 2";
   const isExpired = plan.expiresAt.getTime() < now || plan.status === "expired";
 
   const progresses = targets.map((t) =>

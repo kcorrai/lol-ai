@@ -118,7 +118,7 @@ export function TeamMemberCard({ member, canManage, onRemove, onRoleChange }: Pr
           {!member.rank && <span className="text-text-muted/60">Unranked</span>}
           {member.winRate7d !== null && (
             <span className={`font-medium ${wrColor}`}>
-              {wrArrow} %{member.winRate7d} KO (7g)
+              {wrArrow} {member.winRate7d}% WR (7d)
             </span>
           )}
         </div>

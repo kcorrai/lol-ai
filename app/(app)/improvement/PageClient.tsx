@@ -136,7 +136,7 @@ export default function ImprovementPage() {
         {!isPro && historyEntries.length > 0 && (
           <p className="pt-2 text-center text-xs text-text-muted">
             For unlimited plan history,{" "}
-            <Link href="/settings/subscription" className="text-accent hover:underline">upgrade to Pro</Link>
+            <Link href="/settings/billing" className="text-accent hover:underline">upgrade to Pro</Link>
           </p>
         )}
       </section>

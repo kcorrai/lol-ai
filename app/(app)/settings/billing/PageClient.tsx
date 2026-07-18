@@ -178,7 +178,7 @@ function BillingPageContent() {
                   Upgrade to Pro
                 </CardTitle>
                 <span className="font-display text-2xl font-bold text-text">$9.99</span>
-                <span className="text-xs text-text-muted">/ ay</span>
+                <span className="text-xs text-text-muted">/ month</span>
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -219,7 +219,7 @@ function BillingPageContent() {
                   Team Plan
                 </CardTitle>
                 <span className="font-display text-2xl font-bold text-text">$29.99</span>
-                <span className="text-xs text-text-muted">/ ay</span>
+                <span className="text-xs text-text-muted">/ month</span>
               </div>
             </CardHeader>
             <CardContent className="space-y-3">

@@ -77,7 +77,7 @@ export function PreviewResultCard({ data }: Props) {
         {/* Stats row */}
         <div className="grid grid-cols-3 gap-3">
           <Stat label="Recent Matches" value={`${wins}W / ${totalGames - wins}L`} />
-          <Stat label="Win Rate" value={`%${wr}`} highlight={wr >= 50} />
+          <Stat label="Win Rate" value={`${wr}%`} highlight={wr >= 50} />
           <Stat
             label={rank ? "Ranked (Season)" : "Ranked"}
             value={rank ? `${rank.wins}W / ${rank.losses}L` : "—"}
@@ -144,7 +144,7 @@ export function PreviewResultCard({ data }: Props) {
                     </div>
                   </div>
                   <span className={`w-10 text-right text-xs font-semibold ${c.winRate >= 50 ? "text-success" : "text-danger"}`}>
-                    %{c.winRate}
+                    {c.winRate}%
                   </span>
                 </div>
               ))}

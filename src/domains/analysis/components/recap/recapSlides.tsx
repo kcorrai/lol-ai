@@ -132,7 +132,7 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
               className="rounded-xl ring-1 ring-border" style={{ imageRendering: "auto" }} />
             <p className="text-xs font-bold text-text">{c.name}</p>
             <p className={`text-[11px] font-semibold ${c.winRate >= 50 ? "text-success" : "text-danger"}`}>
-              %{c.winRate} WR
+              {c.winRate}% WR
             </p>
             <p className="text-[10px] text-text-muted">{c.games} matches</p>
           </div>
