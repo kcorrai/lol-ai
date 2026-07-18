@@ -9,6 +9,7 @@ import { TestimonialsSection } from "./components/TestimonialsSection";
 import { TeamPlanSection } from "./components/TeamPlanSection";
 import { DemoSearchBox } from "@/components/landing/DemoSearchBox";
 import { StartFreeCta } from "./components/StartFreeCta";
+import { Reveal } from "./components/Reveal";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -65,13 +66,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <MetaSnapshotSection />
-      <ToolsInActionSection />
-      <HowItWorksSection />
-      <ProductDemo />
-      <FeaturesSection />
-      <TeamPlanSection />
-      <TestimonialsSection />
+      <Reveal><MetaSnapshotSection /></Reveal>
+      <Reveal><ToolsInActionSection /></Reveal>
+      <Reveal><HowItWorksSection /></Reveal>
+      <Reveal><ProductDemo /></Reveal>
+      <Reveal><FeaturesSection /></Reveal>
+      <Reveal><TeamPlanSection /></Reveal>
+      <Reveal><TestimonialsSection /></Reveal>
 
       {/* Final CTA */}
       <section className="bg-background py-20">
