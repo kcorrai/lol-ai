@@ -1,0 +1,898 @@
+"filename", "language", "JSON", "Markdown", "JSON with Comments", "TypeScript", "YAML", "TypeScript JSX", "PostCSS", "MS SQL", "XML", "JavaScript", "comment", "blank", "total"
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\.eslintrc.json", "JSON with Comments", 0, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 1, 16
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\.github\workflows\ci.yml", "YAML", 0, 0, 0, 0, 84, 0, 0, 0, 0, 0, 2, 21, 107
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\.github\workflows\e2e.yml", "YAML", 0, 0, 0, 0, 70, 0, 0, 0, 0, 0, 1, 14, 85
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\CLAUDE.md", "Markdown", 0, 204, 0, 0, 0, 0, 0, 0, 0, 0, 0, 85, 289
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\EXECUTION_PLAN.md", "Markdown", 0, 433, 0, 0, 0, 0, 0, 0, 0, 0, 0, 183, 616
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\README.md", "Markdown", 0, 294, 0, 0, 0, 0, 0, 0, 0, 0, 0, 76, 370
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\STABILITY_REPORT.md", "Markdown", 0, 197, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 297
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\achievements\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 143, 0, 0, 0, 0, 5, 15, 163
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\achievements\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\analysis\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 1, 13, 78
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\analysis\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\champion-pool\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 156, 0, 0, 0, 0, 6, 16, 178
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\champion-pool\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\coaching\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 125, 0, 0, 0, 0, 0, 16, 141
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\coaching\[reportId]\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 119, 0, 0, 0, 0, 0, 17, 136
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\coaching\chat\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 41, 0, 0, 0, 0, 0, 8, 49
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\coaching\chat\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\coaching\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\counter\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 143, 0, 0, 0, 0, 2, 14, 159
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\counter\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\dashboard\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 204, 0, 0, 0, 0, 6, 16, 226
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\dashboard\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\draft\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 156, 0, 0, 0, 0, 5, 19, 180
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\draft\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\improvement\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 130, 0, 0, 0, 0, 2, 14, 146
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\improvement\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\layout.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 16, 0, 0, 0, 0, 0, 3, 19
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\leaderboard\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 168, 0, 0, 0, 0, 6, 19, 193
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\leaderboard\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\match\[matchId]\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 65, 0, 0, 0, 0, 0, 10, 75
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\matchup\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 153, 0, 0, 0, 0, 4, 18, 175
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\matchup\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\milestone\MilestoneChampionList.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 43, 0, 0, 0, 0, 0, 5, 48
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\milestone\MilestoneRankJourney.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 70, 0, 0, 0, 0, 0, 9, 79
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\milestone\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 122, 0, 0, 0, 0, 0, 14, 136
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\milestone\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\onboarding\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 166, 0, 0, 0, 0, 0, 16, 182
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\onboarding\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\otp\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 103, 0, 0, 0, 0, 2, 14, 119
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\otp\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\recap\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 105, 0, 0, 0, 0, 3, 14, 122
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\recap\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\roadmap\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 80, 0, 0, 0, 0, 3, 10, 93
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\settings\accounts\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 29, 0, 0, 0, 0, 0, 5, 34
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\settings\billing\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 278, 0, 0, 0, 0, 5, 27, 310
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\settings\billing\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\settings\discord\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 131, 0, 0, 0, 0, 3, 14, 148
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\settings\discord\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\settings\notifications\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 96, 0, 0, 0, 0, 0, 11, 107
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\settings\notifications\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\settings\privacy\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 244, 0, 0, 0, 0, 0, 20, 264
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\settings\privacy\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\settings\profile\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 138, 0, 0, 0, 0, 4, 16, 158
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\settings\profile\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\settings\security\ActiveSessionsList.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 107, 0, 0, 0, 0, 0, 11, 118
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\settings\security\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 0, 5, 25
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\settings\security\TwoFactorSetup.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 218, 0, 0, 0, 0, 0, 15, 233
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\settings\security\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\teams\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 4, 13, 117
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\teams\create\PageClient.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 92, 0, 0, 0, 0, 0, 14, 106
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\teams\create\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(app)\teams\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 3, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(auth)\forgot-password\ForgotPasswordForm.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 96, 0, 0, 0, 0, 0, 11, 107
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(auth)\forgot-password\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 3, 11
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(auth)\layout.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 1, 12
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(auth)\login\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 13, 0, 0, 0, 0, 0, 3, 16
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(auth)\register\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 13, 0, 0, 0, 0, 0, 3, 16
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(auth)\reset-password\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 13, 0, 0, 0, 0, 0, 3, 16
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\champions\[name]\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 137, 0, 0, 0, 0, 6, 16, 159
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\champions\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 76, 0, 0, 0, 0, 1, 11, 88
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\components\FeaturesSection.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 211, 0, 0, 0, 0, 13, 16, 240
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\components\HeroSection.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 138, 0, 0, 0, 0, 13, 10, 161
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\components\HowItWorksSection.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 62, 0, 0, 0, 0, 3, 6, 71
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\components\MarketingFooter.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 43, 0, 0, 0, 0, 0, 4, 47
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\components\MarketingHeader.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 66, 0, 0, 0, 0, 4, 8, 78
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\components\PricingCard.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 155, 0, 0, 0, 0, 7, 11, 173
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\components\PricingComparisonTable.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 99, 0, 0, 0, 0, 4, 8, 111
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\components\PricingContent.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 192, 0, 0, 0, 0, 4, 17, 213
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\components\TeamPlanSection.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 126, 0, 0, 0, 0, 4, 11, 141
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\components\TestimonialsSection.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 85, 0, 0, 0, 0, 1, 5, 91
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\components\ToolsShowcaseSection.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 290, 0, 0, 0, 0, 4, 32, 326
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\components\ToolsShowcaseSection2.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 218, 0, 0, 0, 0, 3, 25, 246
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\layout.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 2, 13
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 95, 0, 0, 0, 0, 6, 9, 110
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\pricing\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 4, 27
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\privacy\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 95, 0, 0, 0, 0, 0, 9, 104
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\s\[region]\[gameName]\[tagLine]\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 271, 0, 0, 0, 0, 7, 24, 302
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(marketing)\terms\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 103, 0, 0, 0, 0, 0, 9, 112
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(team)\layout.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 16, 0, 0, 0, 0, 0, 3, 19
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(team)\teams\[teamId]\activity\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 17, 0, 0, 0, 0, 0, 4, 21
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(team)\teams\[teamId]\members\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 4, 27
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(team)\teams\[teamId]\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 4, 25
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(team)\teams\[teamId]\report\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 60, 0, 0, 0, 0, 0, 10, 70
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(team)\teams\[teamId]\reports\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 92, 0, 0, 0, 0, 0, 15, 107
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\(team)\teams\[teamId]\settings\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 40, 0, 0, 0, 0, 0, 7, 47
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\admin\ai-cost\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 182, 0, 0, 0, 0, 0, 11, 193
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\admin\analytics\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 112, 0, 0, 0, 0, 4, 11, 127
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\admin\audit-logs\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 132, 0, 0, 0, 0, 3, 10, 145
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\admin\feature-flags\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 169, 0, 0, 0, 0, 2, 14, 185
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\admin\layout.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 31, 0, 0, 0, 0, 0, 4, 35
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\account\export\route.ts", "TypeScript", 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 3, 6, 30
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\account\route.ts", "TypeScript", 0, 0, 0, 35, 0, 0, 0, 0, 0, 0, 6, 8, 49
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\achievements\route.ts", "TypeScript", 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 1, 7, 28
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\achievements\seen\route.ts", "TypeScript", 0, 0, 0, 26, 0, 0, 0, 0, 0, 0, 1, 7, 34
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\achievements\share\[achievementId]\route.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 119, 0, 0, 0, 0, 7, 14, 140
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\admin\ai-cost\route.ts", "TypeScript", 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 2, 10
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\admin\backfill-slugs\route.ts", "TypeScript", 0, 0, 0, 48, 0, 0, 0, 0, 0, 0, 3, 10, 61
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\admin\feature-flags\route.ts", "TypeScript", 0, 0, 0, 48, 0, 0, 0, 0, 0, 0, 0, 15, 63
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\admin\promote-team\route.ts", "TypeScript", 0, 0, 0, 39, 0, 0, 0, 0, 0, 0, 0, 10, 49
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\analysis\habits\route.ts", "TypeScript", 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 2, 7, 25
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\analysis\heatmap\route.ts", "TypeScript", 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 2, 9, 38
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\analysis\matchup-guide\route.ts", "TypeScript", 0, 0, 0, 36, 0, 0, 0, 0, 0, 0, 2, 8, 46
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\analysis\matchup-matrix\route.ts", "TypeScript", 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 1, 5, 21
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\auth\2fa\challenge\route.ts", "TypeScript", 0, 0, 0, 45, 0, 0, 0, 0, 0, 0, 3, 12, 60
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\auth\2fa\disable\route.ts", "TypeScript", 0, 0, 0, 52, 0, 0, 0, 0, 0, 0, 1, 11, 64
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\auth\2fa\setup\route.ts", "TypeScript", 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 2, 9, 38
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\auth\2fa\verify\route.ts", "TypeScript", 0, 0, 0, 34, 0, 0, 0, 0, 0, 0, 1, 11, 46
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\auth\[...nextauth]\route.ts", "TypeScript", 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 3, 7
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\auth\forgot-password\route.ts", "TypeScript", 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 4, 15, 82
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\auth\register\route.ts", "TypeScript", 0, 0, 0, 83, 0, 0, 0, 0, 0, 0, 3, 20, 106
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\auth\resend-verification\route.ts", "TypeScript", 0, 0, 0, 44, 0, 0, 0, 0, 0, 0, 1, 11, 56
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\auth\reset-password\route.ts", "TypeScript", 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 2, 17, 82
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\auth\verify-email\route.ts", "TypeScript", 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 10, 35
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\cards\[token]\route.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 224, 0, 0, 0, 0, 13, 24, 261
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\cards\generate\route.ts", "TypeScript", 0, 0, 0, 30, 0, 0, 0, 0, 0, 0, 1, 9, 40
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\challenges\[id]\progress\route.ts", "TypeScript", 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 1, 4, 21
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\challenges\route.ts", "TypeScript", 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 1, 4, 17
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\champions\[championId]\mastery\route.ts", "TypeScript", 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 2, 9, 38
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\champions\[championId]\matchups\route.ts", "TypeScript", 0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 3, 11, 46
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\champions\all\route.ts", "TypeScript", 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 2, 3, 14
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\champions\route.ts", "TypeScript", 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 1, 9, 33
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\coaching\generate\route.ts", "TypeScript", 0, 0, 0, 57, 0, 0, 0, 0, 0, 0, 3, 14, 74
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\coaching\reports\[reportId]\pdf\route.ts", "TypeScript", 0, 0, 0, 59, 0, 0, 0, 0, 0, 0, 1, 11, 71
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\coaching\reports\[reportId]\rating\route.ts", "TypeScript", 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 6, 30
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\coaching\reports\[reportId]\route.ts", "TypeScript", 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 2, 11
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\coaching\reports\[reportId]\share\route.ts", "TypeScript", 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 2, 5, 24
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\coaching\reports\[reportId]\status\route.ts", "TypeScript", 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 3, 14
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\coaching\reports\[reportId]\stream\route.ts", "TypeScript", 0, 0, 0, 81, 0, 0, 0, 0, 0, 0, 2, 19, 102
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\coaching\reports\[reportId]\tts\route.ts", "TypeScript", 0, 0, 0, 22, 0, 0, 0, 0, 0, 0, 0, 5, 27
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\coaching\reports\route.ts", "TypeScript", 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 2, 12
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\coaching\voice\synthesize\route.ts", "TypeScript", 0, 0, 0, 37, 0, 0, 0, 0, 0, 0, 1, 9, 47
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\coaching\voice\transcribe\route.ts", "TypeScript", 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 1, 9, 37
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\counter\route.ts", "TypeScript", 0, 0, 0, 43, 0, 0, 0, 0, 0, 0, 0, 9, 52
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\cron\monthly-milestone\route.ts", "TypeScript", 0, 0, 0, 18, 0, 0, 0, 0, 0, 0, 1, 6, 25
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\cron\weekly-report\route.ts", "TypeScript", 0, 0, 0, 19, 0, 0, 0, 0, 0, 0, 4, 9, 32
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\draft\analyze\route.ts", "TypeScript", 0, 0, 0, 71, 0, 0, 0, 0, 0, 0, 0, 12, 83
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\feature-flags\route.ts", "TypeScript", 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 7, 30
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\health\route.ts", "TypeScript", 0, 0, 0, 50, 0, 0, 0, 0, 0, 0, 0, 9, 59
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\inngest\route.ts", "TypeScript", 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 0, 2, 30
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\join\[token]\route.ts", "TypeScript", 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 2, 11
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\leaderboard\route.ts", "TypeScript", 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 3, 12
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\lemonsqueezy\checkout\route.ts", "TypeScript", 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 5, 26
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\lemonsqueezy\checkout\team\route.ts", "TypeScript", 0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 4, 17
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\lemonsqueezy\webhook\route.ts", "TypeScript", 0, 0, 0, 73, 0, 0, 0, 0, 0, 0, 6, 11, 90
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\match\[matchId]\build-explanation\route.ts", "TypeScript", 0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 0, 9, 41
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\match\[matchId]\route.ts", "TypeScript", 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 4, 16
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\matchup\analyze\route.ts", "TypeScript", 0, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 12, 84
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\milestone\route.ts", "TypeScript", 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 6, 26
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\og\profile\[slug]\route.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 81, 0, 0, 0, 0, 1, 6, 88
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\og\report\[shareToken]\route.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 170, 0, 0, 0, 0, 5, 14, 189
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\og\summoner\route.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 77, 0, 0, 0, 0, 1, 6, 84
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\otp\route.ts", "TypeScript", 0, 0, 0, 65, 0, 0, 0, 0, 0, 0, 0, 14, 79
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\patch\impact\route.ts", "TypeScript", 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 1, 4, 19
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\public\champions\route.ts", "TypeScript", 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 1, 5, 20
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\public\preview\route.ts", "TypeScript", 0, 0, 0, 151, 0, 0, 0, 0, 0, 0, 2, 22, 175
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\public\profile\[slug]\route.ts", "TypeScript", 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 1, 5, 22
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\push\subscribe\route.ts", "TypeScript", 0, 0, 0, 26, 0, 0, 0, 0, 0, 0, 0, 6, 32
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\push\unsubscribe\route.ts", "TypeScript", 0, 0, 0, 18, 0, 0, 0, 0, 0, 0, 0, 5, 23
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\push\vapid-key\route.ts", "TypeScript", 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 1, 2, 8
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\recap\generate\route.ts", "TypeScript", 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 1, 6, 27
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\recap\share\[shareToken]\route.ts", "TypeScript", 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 1, 4, 22
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\referral\apply\route.ts", "TypeScript", 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 5, 25
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\referral\code\route.ts", "TypeScript", 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 2, 10
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\referral\stats\route.ts", "TypeScript", 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 2, 10
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\[riotAccountId]\champion-deep-dive\route.ts", "TypeScript", 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 1, 4, 21
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\[riotAccountId]\champion-matches\route.ts", "TypeScript", 0, 0, 0, 26, 0, 0, 0, 0, 0, 0, 2, 6, 34
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\[riotAccountId]\chat\route.ts", "TypeScript", 0, 0, 0, 105, 0, 0, 0, 0, 0, 0, 6, 17, 128
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\[riotAccountId]\counters\route.ts", "TypeScript", 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 1, 5, 22
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\[riotAccountId]\focus\route.ts", "TypeScript", 0, 0, 0, 36, 0, 0, 0, 0, 0, 0, 1, 9, 46
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\[riotAccountId]\habits\route.ts", "TypeScript", 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 4, 5, 25
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\[riotAccountId]\performance\route.ts", "TypeScript", 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 1, 3, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\[riotAccountId]\plan\history\route.ts", "TypeScript", 0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 1, 2, 16
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\[riotAccountId]\plan\route.ts", "TypeScript", 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 2, 4, 29
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\[riotAccountId]\pro-comparison\route.ts", "TypeScript", 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 3, 6, 30
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\[riotAccountId]\rank-up\route.ts", "TypeScript", 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 3, 17
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\[riotAccountId]\ranked\route.ts", "TypeScript", 0, 0, 0, 19, 0, 0, 0, 0, 0, 0, 0, 6, 25
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\[riotAccountId]\route.ts", "TypeScript", 0, 0, 0, 30, 0, 0, 0, 0, 0, 0, 0, 9, 39
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\[riotAccountId]\sync\route.ts", "TypeScript", 0, 0, 0, 35, 0, 0, 0, 0, 0, 0, 1, 10, 46
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\[riotAccountId]\sync\status\route.ts", "TypeScript", 0, 0, 0, 30, 0, 0, 0, 0, 0, 0, 1, 5, 36
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\[riotAccountId]\teamfight\route.ts", "TypeScript", 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 1, 5, 23
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\[riotAccountId]\tilt\route.ts", "TypeScript", 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 1, 3, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\[riotAccountId]\warmup\route.ts", "TypeScript", 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 1, 3, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\accounts\route.ts", "TypeScript", 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 2, 10
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\riot\connect\route.ts", "TypeScript", 0, 0, 0, 53, 0, 0, 0, 0, 0, 0, 2, 9, 64
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\sessions\route.ts", "TypeScript", 0, 0, 0, 48, 0, 0, 0, 0, 0, 0, 7, 13, 68
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\settings\discord\route.ts", "TypeScript", 0, 0, 0, 67, 0, 0, 0, 0, 0, 0, 3, 12, 82
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\settings\discord\test\route.ts", "TypeScript", 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 1, 6, 32
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\share\[shareToken]\route.ts", "TypeScript", 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 4, 24
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\subscription\retention-offer\route.ts", "TypeScript", 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 4, 4, 29
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\subscription\route.ts", "TypeScript", 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 2, 10
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\teams\[teamId]\activity\route.ts", "TypeScript", 0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 3, 16
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\teams\[teamId]\dashboard\route.ts", "TypeScript", 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 1, 4, 22
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\teams\[teamId]\invite-link\route.ts", "TypeScript", 0, 0, 0, 18, 0, 0, 0, 0, 0, 0, 0, 4, 22
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\teams\[teamId]\invites\[inviteId]\route.ts", "TypeScript", 0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 3, 16
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\teams\[teamId]\invites\route.ts", "TypeScript", 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 3, 15
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\teams\[teamId]\members\[userId]\route.ts", "TypeScript", 0, 0, 0, 26, 0, 0, 0, 0, 0, 0, 0, 6, 32
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\teams\[teamId]\members\invite\route.ts", "TypeScript", 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 1, 6, 30
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\teams\[teamId]\report\route.ts", "TypeScript", 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 1, 6, 31
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\teams\[teamId]\route.ts", "TypeScript", 0, 0, 0, 35, 0, 0, 0, 0, 0, 0, 0, 6, 41
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\teams\[teamId]\stats\route.ts", "TypeScript", 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 0, 4, 21
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\teams\invites\[token]\accept\route.ts", "TypeScript", 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 1, 3, 16
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\teams\route.ts", "TypeScript", 0, 0, 0, 19, 0, 0, 0, 0, 0, 0, 0, 5, 24
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\teams\seats\route.ts", "TypeScript", 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 1, 4, 17
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\tilt\acknowledge\route.ts", "TypeScript", 0, 0, 0, 18, 0, 0, 0, 0, 0, 0, 1, 6, 25
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\tilt\alerts\route.ts", "TypeScript", 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 1, 4, 19
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\user\email-preferences\route.ts", "TypeScript", 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 3, 23
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\user\profile-settings\route.ts", "TypeScript", 0, 0, 0, 31, 0, 0, 0, 0, 0, 0, 2, 8, 41
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\user\route.ts", "TypeScript", 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 7, 7, 31
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\v1\coaching\generate\route.ts", "TypeScript", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 3
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\v1\coaching\reports\route.ts", "TypeScript", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 3
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\api\v1\riot\accounts\route.ts", "TypeScript", 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 3
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\error.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 44, 0, 0, 0, 0, 0, 5, 49
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\global-error.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 57, 0, 0, 0, 0, 2, 5, 64
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\icon.svg", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 1, 5
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\join\[token]\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 69, 0, 0, 0, 0, 0, 12, 81
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\layout.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 51, 0, 0, 0, 0, 0, 5, 56
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\not-found.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 32, 0, 0, 0, 0, 0, 3, 35
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\recap\share\[shareToken]\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 59, 0, 0, 0, 0, 3, 11, 73
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\share\report\[shareToken]\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 160, 0, 0, 0, 0, 8, 16, 184
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\sitemap.ts", "TypeScript", 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 0, 6, 23
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\teams\join\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 87, 0, 0, 0, 0, 0, 12, 99
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\app\u\[slug]\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 116, 0, 0, 0, 0, 0, 16, 132
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\components.json", "JSON", 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 21
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docker-compose.yml", "YAML", 0, 0, 0, 0, 36, 0, 0, 0, 0, 0, 0, 4, 40
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\AI_ARCHITECTURE.md", "Markdown", 0, 369, 0, 0, 0, 0, 0, 0, 0, 0, 0, 90, 459
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\API_DESIGN.md", "Markdown", 0, 769, 0, 0, 0, 0, 0, 0, 0, 0, 0, 229, 998
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\ARCHITECTURE.md", "Markdown", 0, 260, 0, 0, 0, 0, 0, 0, 0, 0, 0, 76, 336
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\DATABASE_SCHEMA.md", "Markdown", 0, 426, 0, 0, 0, 0, 0, 0, 0, 0, 0, 111, 537
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\DEPENDENCIES.md", "Markdown", 0, 104, 0, 0, 0, 0, 0, 0, 0, 0, 0, 47, 151
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\DEPLOYMENT_CHECKLIST.md", "Markdown", 0, 67, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22, 89
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\FEATURES.md", "Markdown", 0, 197, 0, 0, 0, 0, 0, 0, 0, 0, 0, 136, 333
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\FRONTEND_ARCHITECTURE.md", "Markdown", 0, 271, 0, 0, 0, 0, 0, 0, 0, 0, 0, 78, 349
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\PRD.md", "Markdown", 0, 208, 0, 0, 0, 0, 0, 0, 0, 0, 0, 82, 290
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\PROJECT_STRUCTURE.md", "Markdown", 0, 360, 0, 0, 0, 0, 0, 0, 0, 0, 0, 44, 404
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\ROADMAP.md", "Markdown", 0, 176, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 240
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\adr\ADR-001-prisma-version.md", "Markdown", 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 23
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\adr\ADR-002-task003-contract.md", "Markdown", 0, 181, 0, 0, 0, 0, 0, 0, 0, 0, 0, 63, 244
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\adr\ADR-003-auth-library.md", "Markdown", 0, 41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 59
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\adr\ADR-004-audit-logging.md", "Markdown", 0, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 44
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\adr\ADR-005-live-client-api.md", "Markdown", 0, 67, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28, 95
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\adr\ADR-006-performance-prediction.md", "Markdown", 0, 88, 0, 0, 0, 0, 0, 0, 0, 0, 0, 35, 123
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\adr\ADR-007-replay-upload-analysis.md", "Markdown", 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 33, 105
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-001.md", "Markdown", 0, 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 73
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-002.5.md", "Markdown", 0, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 71
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-002.md", "Markdown", 0, 65, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 94
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-003.5.md", "Markdown", 0, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 79
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-003.6.md", "Markdown", 0, 42, 0, 0, 0, 0, 0, 0, 0, 0, 0, 17, 59
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-003.md", "Markdown", 0, 73, 0, 0, 0, 0, 0, 0, 0, 0, 0, 30, 103
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-004.md", "Markdown", 0, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 92
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-005.md", "Markdown", 0, 39, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 50
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-006.md", "Markdown", 0, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 61
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-007.md", "Markdown", 0, 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 38
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-008.md", "Markdown", 0, 37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 17, 54
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-009.md", "Markdown", 0, 104, 0, 0, 0, 0, 0, 0, 0, 0, 0, 39, 143
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-010.md", "Markdown", 0, 62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 33, 95
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-011.md", "Markdown", 0, 75, 0, 0, 0, 0, 0, 0, 0, 0, 0, 37, 112
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-012.md", "Markdown", 0, 97, 0, 0, 0, 0, 0, 0, 0, 0, 0, 38, 135
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-013.md", "Markdown", 0, 88, 0, 0, 0, 0, 0, 0, 0, 0, 0, 37, 125
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-014.md", "Markdown", 0, 80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 39, 119
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-015.md", "Markdown", 0, 58, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22, 80
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-016.md", "Markdown", 0, 39, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 55
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-024.md", "Markdown", 0, 33, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 45
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-025.md", "Markdown", 0, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 26
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-026.md", "Markdown", 0, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 26
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-027.md", "Markdown", 0, 17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 25
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-028.md", "Markdown", 0, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 26
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-029.md", "Markdown", 0, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 26
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-030.md", "Markdown", 0, 17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 25
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-031.md", "Markdown", 0, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 27
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-032.md", "Markdown", 0, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 24
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-033.md", "Markdown", 0, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 27
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-034.md", "Markdown", 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 29
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-035.md", "Markdown", 0, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 27
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-036.md", "Markdown", 0, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 24
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-037.md", "Markdown", 0, 67, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27, 94
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-038.md", "Markdown", 0, 69, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 93
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-039.md", "Markdown", 0, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 86
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-040.md", "Markdown", 0, 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 30, 98
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-041.md", "Markdown", 0, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 85
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-042.md", "Markdown", 0, 47, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 66
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-043.md", "Markdown", 0, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 89
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-044.md", "Markdown", 0, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 80
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-045.md", "Markdown", 0, 79, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 100
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-046.md", "Markdown", 0, 69, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 94
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-047.md", "Markdown", 0, 45, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 64
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-048.md", "Markdown", 0, 58, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 77
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-049.md", "Markdown", 0, 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27, 95
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-050.md", "Markdown", 0, 35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 53
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-051.md", "Markdown", 0, 55, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 78
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-052.md", "Markdown", 0, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 79
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-053.md", "Markdown", 0, 75, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22, 97
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-054.md", "Markdown", 0, 65, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22, 87
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-055.md", "Markdown", 0, 56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 77
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-056.md", "Markdown", 0, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 56
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-057.md", "Markdown", 0, 74, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22, 96
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-058.md", "Markdown", 0, 36, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 54
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-059.md", "Markdown", 0, 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 91
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-060.md", "Markdown", 0, 66, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 91
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-061.md", "Markdown", 0, 89, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27, 116
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-062.md", "Markdown", 0, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 78
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-063.md", "Markdown", 0, 53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 74
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-064.md", "Markdown", 0, 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 62
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-065.md", "Markdown", 0, 69, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22, 91
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-066.md", "Markdown", 0, 36, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 54
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-067.md", "Markdown", 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27, 99
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-068.md", "Markdown", 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 19
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-069.md", "Markdown", 0, 25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 31
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-070.md", "Markdown", 0, 139, 0, 0, 0, 0, 0, 0, 0, 0, 0, 44, 183
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-071.md", "Markdown", 0, 156, 0, 0, 0, 0, 0, 0, 0, 0, 0, 52, 208
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-072.md", "Markdown", 0, 171, 0, 0, 0, 0, 0, 0, 0, 0, 0, 55, 226
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-073.md", "Markdown", 0, 172, 0, 0, 0, 0, 0, 0, 0, 0, 0, 57, 229
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-074.md", "Markdown", 0, 152, 0, 0, 0, 0, 0, 0, 0, 0, 0, 53, 205
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-075.md", "Markdown", 0, 127, 0, 0, 0, 0, 0, 0, 0, 0, 0, 43, 170
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-076.md", "Markdown", 0, 164, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50, 214
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-077.md", "Markdown", 0, 168, 0, 0, 0, 0, 0, 0, 0, 0, 0, 51, 219
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-078.md", "Markdown", 0, 166, 0, 0, 0, 0, 0, 0, 0, 0, 0, 54, 220
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-079.md", "Markdown", 0, 154, 0, 0, 0, 0, 0, 0, 0, 0, 0, 48, 202
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-080.md", "Markdown", 0, 157, 0, 0, 0, 0, 0, 0, 0, 0, 0, 59, 216
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-081.md", "Markdown", 0, 176, 0, 0, 0, 0, 0, 0, 0, 0, 0, 53, 229
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-082.md", "Markdown", 0, 184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 52, 236
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-083.md", "Markdown", 0, 127, 0, 0, 0, 0, 0, 0, 0, 0, 0, 44, 171
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-084.md", "Markdown", 0, 143, 0, 0, 0, 0, 0, 0, 0, 0, 0, 47, 190
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-085.md", "Markdown", 0, 166, 0, 0, 0, 0, 0, 0, 0, 0, 0, 57, 223
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-086.md", "Markdown", 0, 35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 45
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-087.md", "Markdown", 0, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 63
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-088.md", "Markdown", 0, 43, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 54
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-089.md", "Markdown", 0, 39, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 50
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-090.md", "Markdown", 0, 44, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 54
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-091.md", "Markdown", 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 20
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-092.md", "Markdown", 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 13
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-093.md", "Markdown", 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 11
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-094.md", "Markdown", 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 10
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-095.md", "Markdown", 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 8
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-100.md", "Markdown", 0, 120, 0, 0, 0, 0, 0, 0, 0, 0, 0, 36, 156
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-101.md", "Markdown", 0, 125, 0, 0, 0, 0, 0, 0, 0, 0, 0, 35, 160
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-102.md", "Markdown", 0, 122, 0, 0, 0, 0, 0, 0, 0, 0, 0, 40, 162
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-103.md", "Markdown", 0, 132, 0, 0, 0, 0, 0, 0, 0, 0, 0, 45, 177
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-104.md", "Markdown", 0, 147, 0, 0, 0, 0, 0, 0, 0, 0, 0, 47, 194
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-105.md", "Markdown", 0, 136, 0, 0, 0, 0, 0, 0, 0, 0, 0, 46, 182
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-106.md", "Markdown", 0, 200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 53, 253
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-107.md", "Markdown", 0, 200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 55, 255
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-108.md", "Markdown", 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 17
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-109.md", "Markdown", 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 19
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-110.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-111.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-112.md", "Markdown", 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 17
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-113.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-114.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-115.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-116.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-117.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-118.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-119.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-120.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-121.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-122.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-123.md", "Markdown", 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 19
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-124.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-125.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-126.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-127.md", "Markdown", 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 17
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-128.md", "Markdown", 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 19
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-129.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-130.md", "Markdown", 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 19
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-131.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-132.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-133.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-134.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-135.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-136.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-137.md", "Markdown", 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 19
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-138.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-139.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-140.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-141.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-142.md", "Markdown", 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 17
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-143.md", "Markdown", 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 17
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-144.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-145.md", "Markdown", 0, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 25
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-146.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-147.md", "Markdown", 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 17
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-148.md", "Markdown", 0, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 26
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-149.md", "Markdown", 0, 17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 25
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-150.md", "Markdown", 0, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 26
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-151.md", "Markdown", 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-152.md", "Markdown", 0, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 32
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-153.md", "Markdown", 0, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 31
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-154.md", "Markdown", 0, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 21
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-155.md", "Markdown", 0, 17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 22
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-156.md", "Markdown", 0, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 24
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-157.md", "Markdown", 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 20
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-158.md", "Markdown", 0, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 21
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-159.md", "Markdown", 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-160.md", "Markdown", 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-161.md", "Markdown", 0, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 21
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-162.md", "Markdown", 0, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 21
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-163.md", "Markdown", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 17
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-164.md", "Markdown", 0, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 21
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\docs\tasks\TASK-165.md", "Markdown", 0, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 24
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\instrumentation-client.ts", "TypeScript", 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 4, 15
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\instrumentation.ts", "TypeScript", 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 1, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\middleware.ts", "TypeScript", 0, 0, 0, 69, 0, 0, 0, 0, 0, 0, 4, 9, 82
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\next.config.mjs", "JavaScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 56, 8, 6, 70
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\package-lock.json", "JSON", 15943, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 15944
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\package.json", "JSON", 88, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 89
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\playwright.config.ts", "TypeScript", 0, 0, 0, 61, 0, 0, 0, 0, 0, 0, 11, 8, 80
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\postcss.config.mjs", "JavaScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 1, 2, 10
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260603000000_init\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 314, 0, 0, 75, 92, 481
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260603000001_add_share_token\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 2, 6
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260604000001_add_email_weekly_report\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2, 1, 4
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260604000002_add_improvement_plan\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 17, 0, 0, 3, 4, 24
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260604000003_champion_coaching_summary\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 1, 1, 5
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260604000004_match_team_objectives\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 3
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260605000001_add_ai_cache\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 13, 0, 0, 4, 5, 22
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260605000002_match_participant_rank\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 1, 4
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260605000003_add_ranked_history_streak_columns\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 3, 2, 8
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260606000001_add_focus_area_to_coaching_report\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 2
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260606000002_riot_account_puuid_per_user_unique\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 2, 6
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260606000003_fix_focus_area_column\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 2, 1, 13
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260606000004_add_participant_game_name\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1, 3
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260606000005_add_mastery_score\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 1, 1, 6
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260606000006_add_shareable_cards\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 16, 0, 0, 1, 4, 21
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260606000007_add_player_habits\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 1, 4, 25
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260607000001_add_tilt_alerts\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 3, 4, 19
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260607000002_add_patch_versions\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 3, 4, 16
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260607000003_add_achievements\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 27, 0, 0, 6, 6, 39
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260607000004_add_death_events\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 23, 0, 0, 5, 6, 34
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260607000005_add_season_recap\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 19, 0, 0, 2, 5, 26
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260607000006_add_challenges\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 33, 0, 0, 3, 8, 44
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260607000007_add_profile_fields\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 1, 2, 7
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260607000008_add_discord_integration\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 16, 0, 0, 1, 3, 20
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260607000009_add_referral_system\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 17, 0, 0, 4, 6, 27
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260607000010_add_email_opt_out\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 2
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260607000011_add_sync_status\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 2, 2, 10
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260607000012_analytics_indexes\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 8, 6, 24
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260607000013_teams\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 56, 0, 0, 8, 13, 77
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260607000014_audit_logs\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 19, 0, 0, 4, 5, 28
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260607000015_fix_subscription_ls_columns\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 1, 2, 15
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260608000001_push_subscriptions\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 13, 0, 0, 4, 5, 22
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260608000002_totp_2fa\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 1, 1, 6
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260608000003_feature_flags\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 23, 0, 0, 4, 5, 32
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260608000004_user_sessions\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 2, 5, 21
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260609000001_team_invite_link\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 1, 4
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\migrations\20260609000002_team_activity\migration.sql", "MS SQL", 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 1, 4, 17
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\prisma\seed.ts", "TypeScript", 0, 0, 0, 233, 0, 0, 0, 0, 0, 0, 9, 17, 259
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\public\sw.js", "JavaScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 34, 0, 5, 39
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\scripts\promote-team.ts", "TypeScript", 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 8, 33
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\scripts\syncChampions.ts", "TypeScript", 0, 0, 0, 143, 0, 0, 0, 0, 0, 0, 11, 32, 186
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\sentry.client.config.ts", "TypeScript", 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 3, 13
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\sentry.edge.config.ts", "TypeScript", 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 3, 13
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\sentry.server.config.ts", "TypeScript", 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 3, 13
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\achievements\AchievementToast.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 49, 0, 0, 0, 0, 3, 11, 63
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\dashboard\DailyChallengeWidget.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 98, 0, 0, 0, 0, 0, 13, 111
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\dashboard\PatchImpactWidget.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 72, 0, 0, 0, 0, 0, 10, 82
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\dashboard\WeekSummaryWidget.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 119, 0, 0, 0, 0, 0, 20, 139
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\dashboard\XpLevelWidget.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 29, 0, 0, 0, 0, 0, 7, 36
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\landing\DemoSearchBox.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 114, 0, 0, 0, 0, 0, 11, 125
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\landing\PreviewResultCard.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 154, 0, 0, 0, 0, 5, 12, 171
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\layout\AppShell.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 35, 0, 0, 0, 0, 0, 5, 40
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\layout\BottomNav.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 35, 0, 0, 0, 0, 0, 5, 40
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\layout\NotificationBell.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 3, 15
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\layout\PageHeader.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 38, 0, 0, 0, 0, 0, 3, 41
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\layout\PageSkeleton.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 2, 17
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\layout\RiotAccountSelector.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 120, 0, 0, 0, 0, 0, 11, 131
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\layout\Sidebar.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 163, 0, 0, 0, 0, 5, 15, 183
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\layout\TeamShell.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 37, 0, 0, 0, 0, 0, 5, 42
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\layout\TeamSidebar.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 199, 0, 0, 0, 0, 5, 18, 222
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\layout\TiltAlertBanner.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 30, 0, 0, 0, 0, 0, 5, 35
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\layout\TopBar.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 1, 5, 26
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\layout\UserMenu.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 70, 0, 0, 0, 0, 0, 6, 76
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\providers\QueryProvider.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 3, 17
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\shared\ChampionSelector.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 186, 0, 0, 0, 0, 5, 19, 210
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\shared\RoleBasedTeamPicker.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 72, 0, 0, 0, 0, 3, 10, 85
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\shared\index.ts", "TypeScript", 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 2, 6
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\ui\ChampionIcon.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 33, 0, 0, 0, 0, 0, 6, 39
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\ui\ConfirmDialog.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 54, 0, 0, 0, 0, 0, 5, 59
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\ui\EmailVerificationBanner.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 76, 0, 0, 0, 0, 5, 9, 90
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\ui\ItemIcon.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 30, 0, 0, 0, 0, 0, 6, 36
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\ui\SummonerSpellIcon.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 31, 0, 0, 0, 0, 0, 6, 37
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\ui\UpgradeModal.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 91, 0, 0, 0, 0, 0, 15, 106
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\ui\avatar.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 26, 0, 0, 0, 0, 0, 4, 30
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\ui\badge.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 27, 0, 0, 0, 0, 0, 5, 32
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\ui\button.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 43, 0, 0, 0, 0, 0, 5, 48
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\ui\card.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 51, 0, 0, 0, 0, 0, 8, 59
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\ui\empty-state.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 18, 0, 0, 0, 0, 0, 2, 20
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\ui\error-state.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 26, 0, 0, 0, 0, 0, 4, 30
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\ui\input.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 4, 28
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\components\ui\skeleton.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 2, 13
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\admin\services\adminMetricsService.ts", "TypeScript", 0, 0, 0, 75, 0, 0, 0, 0, 0, 0, 3, 6, 84
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\admin\services\aiCostService.ts", "TypeScript", 0, 0, 0, 152, 0, 0, 0, 0, 0, 0, 1, 15, 168
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\calculators\performanceCalculator.test.ts", "TypeScript", 0, 0, 0, 108, 0, 0, 0, 0, 0, 0, 0, 25, 133
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\calculators\performanceCalculator.ts", "TypeScript", 0, 0, 0, 87, 0, 0, 0, 0, 0, 0, 3, 11, 101
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\calculators\playstyleClassifier.test.ts", "TypeScript", 0, 0, 0, 60, 0, 0, 0, 0, 0, 0, 0, 8, 68
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\calculators\playstyleClassifier.ts", "TypeScript", 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 7, 8, 30
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\DeathHeatMap.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 92, 0, 0, 0, 0, 7, 14, 113
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\HabitDetectionWidget.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 90, 0, 0, 0, 0, 1, 12, 103
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\HeatMapControls.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 86, 0, 0, 0, 0, 3, 8, 97
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\ImprovementGoalRow.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 46, 0, 0, 0, 0, 0, 9, 55
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\ImprovementPlanWidget.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 154, 0, 0, 0, 0, 2, 14, 170
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\LastGameInsightCard.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 51, 0, 0, 0, 0, 0, 11, 62
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\PerformanceSummaryCards.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 114, 0, 0, 0, 0, 0, 9, 123
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\PerformanceTrendChart.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 88, 0, 0, 0, 0, 0, 11, 99
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\RankGoalSelector.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 83, 0, 0, 0, 0, 0, 17, 100
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\RecentMatchList.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 192, 0, 0, 0, 0, 6, 18, 216
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\RecentMatchesSummaryCard.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 83, 0, 0, 0, 0, 0, 13, 96
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\RoleDistributionWidget.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 91, 0, 0, 0, 0, 0, 11, 102
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\SessionReadinessWidget.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 85, 0, 0, 0, 0, 2, 12, 99
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\TiltBreakModal.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 55, 0, 0, 0, 0, 0, 11, 66
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\TiltWidget.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 82, 0, 0, 0, 0, 2, 12, 96
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\TodaysFocusCard.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 31, 0, 0, 0, 0, 0, 7, 38
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\TopChampionsWidget.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 75, 0, 0, 0, 0, 0, 9, 84
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\WarmupWidget.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 60, 0, 0, 0, 0, 0, 12, 72
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\WinrateTrendWidget.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 96, 0, 0, 0, 0, 4, 10, 110
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\recap\RecapChampion.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 55, 0, 0, 0, 0, 3, 7, 65
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\recap\RecapSlide.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 22, 0, 0, 0, 0, 0, 4, 26
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\recap\RecapStats.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 7, 70
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\components\recap\recapSlides.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 225, 0, 0, 0, 0, 10, 15, 250
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\poc\roflParser.ts", "TypeScript", 0, 0, 0, 96, 0, 0, 0, 0, 0, 0, 13, 17, 126
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\achievementService.test.ts", "TypeScript", 0, 0, 0, 66, 0, 0, 0, 0, 0, 0, 0, 14, 80
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\achievementService.ts", "TypeScript", 0, 0, 0, 161, 0, 0, 0, 0, 0, 0, 1, 21, 183
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\challengeConstants.ts", "TypeScript", 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 0, 5, 33
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\challengeGenerationService.ts", "TypeScript", 0, 0, 0, 125, 0, 0, 0, 0, 0, 0, 0, 25, 150
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\challengeProgressService.ts", "TypeScript", 0, 0, 0, 106, 0, 0, 0, 0, 0, 0, 0, 18, 124
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\challengeService.test.ts", "TypeScript", 0, 0, 0, 79, 0, 0, 0, 0, 0, 0, 0, 14, 93
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\challengeService.ts", "TypeScript", 0, 0, 0, 327, 0, 0, 0, 0, 0, 0, 7, 58, 392
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\draftAnalysisService.test.ts", "TypeScript", 0, 0, 0, 75, 0, 0, 0, 0, 0, 0, 0, 14, 89
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\habitDetectionService.test.ts", "TypeScript", 0, 0, 0, 176, 0, 0, 0, 0, 0, 0, 3, 41, 220
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\habitDetectionService.ts", "TypeScript", 0, 0, 0, 193, 0, 0, 0, 0, 0, 0, 8, 32, 233
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\heatmapService.test.ts", "TypeScript", 0, 0, 0, 111, 0, 0, 0, 0, 0, 0, 0, 36, 147
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\heatmapService.ts", "TypeScript", 0, 0, 0, 92, 0, 0, 0, 0, 0, 0, 3, 20, 115
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\improvementPlanService.test.ts", "TypeScript", 0, 0, 0, 121, 0, 0, 0, 0, 0, 0, 0, 16, 137
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\improvementPlanService.ts", "TypeScript", 0, 0, 0, 212, 0, 0, 0, 0, 0, 0, 10, 34, 256
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\leaderboardService.test.ts", "TypeScript", 0, 0, 0, 137, 0, 0, 0, 0, 0, 0, 10, 33, 180
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\leaderboardService.ts", "TypeScript", 0, 0, 0, 94, 0, 0, 0, 0, 0, 0, 1, 17, 112
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\matchAnalysisService.ts", "TypeScript", 0, 0, 0, 150, 0, 0, 0, 0, 0, 0, 2, 18, 170
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\matchupService.test.ts", "TypeScript", 0, 0, 0, 134, 0, 0, 0, 0, 0, 0, 2, 27, 163
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\matchupService.ts", "TypeScript", 0, 0, 0, 114, 0, 0, 0, 0, 0, 0, 6, 19, 139
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\milestoneService.test.ts", "TypeScript", 0, 0, 0, 101, 0, 0, 0, 0, 0, 0, 1, 16, 118
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\milestoneService.ts", "TypeScript", 0, 0, 0, 148, 0, 0, 0, 0, 0, 0, 4, 21, 173
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\patchService.test.ts", "TypeScript", 0, 0, 0, 144, 0, 0, 0, 0, 0, 0, 11, 38, 193
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\patchService.ts", "TypeScript", 0, 0, 0, 87, 0, 0, 0, 0, 0, 0, 8, 17, 112
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\performancePredictionService.ts", "TypeScript", 0, 0, 0, 90, 0, 0, 0, 0, 0, 0, 11, 18, 119
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\performanceSnapshotService.ts", "TypeScript", 0, 0, 0, 107, 0, 0, 0, 0, 0, 0, 4, 18, 129
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\proComparisonService.ts", "TypeScript", 0, 0, 0, 141, 0, 0, 0, 0, 0, 0, 2, 18, 161
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\rankBenchmarkService.ts", "TypeScript", 0, 0, 0, 79, 0, 0, 0, 0, 0, 0, 4, 17, 100
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\rankUpService.test.ts", "TypeScript", 0, 0, 0, 97, 0, 0, 0, 0, 0, 0, 9, 18, 124
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\rankUpService.ts", "TypeScript", 0, 0, 0, 105, 0, 0, 0, 0, 0, 0, 1, 19, 125
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\recapService.test.ts", "TypeScript", 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0, 4, 19
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\recapService.ts", "TypeScript", 0, 0, 0, 145, 0, 0, 0, 0, 0, 0, 8, 23, 176
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\retentionService.test.ts", "TypeScript", 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 1, 20, 121
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\retentionService.ts", "TypeScript", 0, 0, 0, 103, 0, 0, 0, 0, 0, 0, 7, 15, 125
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\sessionReadinessService.test.ts", "TypeScript", 0, 0, 0, 110, 0, 0, 0, 0, 0, 0, 2, 20, 132
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\sessionReadinessService.ts", "TypeScript", 0, 0, 0, 70, 0, 0, 0, 0, 0, 0, 3, 12, 85
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\teamfightService.ts", "TypeScript", 0, 0, 0, 80, 0, 0, 0, 0, 0, 0, 0, 14, 94
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\tiltService.test.ts", "TypeScript", 0, 0, 0, 78, 0, 0, 0, 0, 0, 0, 4, 10, 92
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\tiltService.ts", "TypeScript", 0, 0, 0, 93, 0, 0, 0, 0, 0, 0, 4, 22, 119
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\warmupService.test.ts", "TypeScript", 0, 0, 0, 56, 0, 0, 0, 0, 0, 0, 0, 11, 67
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\services\warmupService.ts", "TypeScript", 0, 0, 0, 113, 0, 0, 0, 0, 0, 0, 6, 21, 140
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\types\analysis.types.ts", "TypeScript", 0, 0, 0, 125, 0, 0, 0, 0, 0, 0, 0, 16, 141
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\analysis\utils\matchInsights.ts", "TypeScript", 0, 0, 0, 68, 0, 0, 0, 0, 0, 0, 5, 10, 83
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\billing\components\CancelRetentionModal.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 99, 0, 0, 0, 0, 1, 13, 113
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\champions\components\ChampionDeepDiveModal.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 113, 0, 0, 0, 0, 5, 10, 128
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\champions\components\ChampionFocusButton.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 65, 0, 0, 0, 0, 0, 9, 74
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\champions\components\ChampionPoolGrid.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 178, 0, 0, 0, 0, 1, 17, 196
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\champions\components\CounterPickCard.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 65, 0, 0, 0, 0, 0, 9, 74
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\champions\components\MatchupGuidePanel.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 77, 0, 0, 0, 0, 4, 11, 92
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\champions\components\MatchupMatrix.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 109, 0, 0, 0, 0, 4, 13, 126
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\champions\components\MatchupMatrixCell.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 45, 0, 0, 0, 0, 0, 7, 52
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\champions\services\championCacheService.ts", "TypeScript", 0, 0, 0, 103, 0, 0, 0, 0, 0, 0, 3, 13, 119
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\champions\services\championDeepDiveService.ts", "TypeScript", 0, 0, 0, 149, 0, 0, 0, 0, 0, 0, 5, 18, 172
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\champions\services\championStatsService.ts", "TypeScript", 0, 0, 0, 126, 0, 0, 0, 0, 0, 0, 7, 17, 150
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\champions\services\counterPickService.ts", "TypeScript", 0, 0, 0, 79, 0, 0, 0, 0, 0, 0, 5, 15, 99
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\champions\services\masteryScoreService.ts", "TypeScript", 0, 0, 0, 213, 0, 0, 0, 0, 0, 0, 15, 41, 269
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\components\ChatBubble.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 31, 0, 0, 0, 0, 0, 6, 37
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\components\CoachingActionsCard.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 69, 0, 0, 0, 0, 0, 6, 75
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\components\CoachingChatView.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 157, 0, 0, 0, 0, 4, 14, 175
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\components\CoachingReportDetail.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 244, 0, 0, 0, 0, 0, 15, 259
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\components\ListenButton.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 94, 0, 0, 0, 0, 1, 11, 106
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\components\ReportList.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 111, 0, 0, 0, 0, 0, 14, 125
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\components\ReportRating.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 97, 0, 0, 0, 0, 1, 13, 111
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\components\ShareReportButton.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 94, 0, 0, 0, 0, 0, 11, 105
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\components\VoiceCoachPanel.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 97, 0, 0, 0, 0, 3, 10, 110
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\pdf\ReportPDF.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 269, 0, 0, 0, 0, 19, 16, 304
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\pipeline\coachingPipeline.test.ts", "TypeScript", 0, 0, 0, 139, 0, 0, 0, 0, 0, 0, 1, 27, 167
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\pipeline\coachingPipeline.ts", "TypeScript", 0, 0, 0, 143, 0, 0, 0, 0, 0, 0, 2, 17, 162
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\pipeline\dataPreparator.ts", "TypeScript", 0, 0, 0, 105, 0, 0, 0, 0, 0, 0, 7, 10, 122
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\pipeline\promptBuilder.ts", "TypeScript", 0, 0, 0, 79, 0, 0, 0, 0, 0, 0, 3, 13, 95
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\services\cardService.test.ts", "TypeScript", 0, 0, 0, 93, 0, 0, 0, 0, 0, 0, 0, 14, 107
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\services\cardService.ts", "TypeScript", 0, 0, 0, 212, 0, 0, 0, 0, 0, 0, 8, 33, 253
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\services\monthlyMilestoneService.ts", "TypeScript", 0, 0, 0, 122, 0, 0, 0, 0, 0, 0, 8, 24, 154
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\services\reportService.test.ts", "TypeScript", 0, 0, 0, 180, 0, 0, 0, 0, 0, 0, 4, 51, 235
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\services\reportService.ts", "TypeScript", 0, 0, 0, 202, 0, 0, 0, 0, 0, 0, 4, 23, 229
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\services\weeklyEmailRenderer.ts", "TypeScript", 0, 0, 0, 229, 0, 0, 0, 0, 0, 0, 10, 41, 280
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\services\weeklyReportService.test.ts", "TypeScript", 0, 0, 0, 88, 0, 0, 0, 0, 0, 0, 9, 21, 118
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\services\weeklyReportService.ts", "TypeScript", 0, 0, 0, 70, 0, 0, 0, 0, 0, 0, 6, 17, 93
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\coaching\types\coaching.types.ts", "TypeScript", 0, 0, 0, 83, 0, 0, 0, 0, 0, 0, 3, 9, 95
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\counter\components\CounterCard.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 90, 0, 0, 0, 0, 0, 13, 103
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\counter\components\CounterCardDetails.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 269, 0, 0, 0, 0, 14, 23, 306
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\counter\components\CounterList.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 4, 25
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\counter\components\CounterPageSkeleton.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 38, 0, 0, 0, 0, 2, 5, 45
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\counter\data\counters\bot.ts", "TypeScript", 0, 0, 0, 311, 0, 0, 0, 0, 0, 0, 0, 21, 332
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\counter\data\counters\jungle.ts", "TypeScript", 0, 0, 0, 379, 0, 0, 0, 0, 0, 0, 0, 25, 404
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\counter\data\counters\mid.ts", "TypeScript", 0, 0, 0, 430, 0, 0, 0, 0, 0, 0, 0, 28, 458
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\counter\data\counters\support.ts", "TypeScript", 0, 0, 0, 328, 0, 0, 0, 0, 0, 0, 0, 22, 350
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\counter\data\counters\top.ts", "TypeScript", 0, 0, 0, 430, 0, 0, 0, 0, 0, 0, 0, 28, 458
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\counter\data\staticCounters.ts", "TypeScript", 0, 0, 0, 33, 0, 0, 0, 0, 0, 0, 0, 5, 38
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\counter\index.ts", "TypeScript", 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 1, 9
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\counter\prompts\counterPrompt.test.ts", "TypeScript", 0, 0, 0, 45, 0, 0, 0, 0, 0, 0, 0, 10, 55
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\counter\prompts\counterPrompt.ts", "TypeScript", 0, 0, 0, 116, 0, 0, 0, 0, 0, 0, 0, 8, 124
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\counter\services\counterEnrichmentService.test.ts", "TypeScript", 0, 0, 0, 149, 0, 0, 0, 0, 0, 0, 1, 39, 189
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\counter\services\counterEnrichmentService.ts", "TypeScript", 0, 0, 0, 123, 0, 0, 0, 0, 0, 0, 0, 16, 139
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\counter\services\generalCounterService.test.ts", "TypeScript", 0, 0, 0, 98, 0, 0, 0, 0, 0, 0, 1, 28, 127
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\counter\services\generalCounterService.ts", "TypeScript", 0, 0, 0, 70, 0, 0, 0, 0, 0, 0, 1, 11, 82
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\counter\services\personalCounterService.ts", "TypeScript", 0, 0, 0, 151, 0, 0, 0, 0, 0, 0, 9, 26, 186
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\counter\types\counter.types.ts", "TypeScript", 0, 0, 0, 133, 0, 0, 0, 0, 0, 0, 1, 11, 145
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\draft\components\BanRecommendationsCard.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 40, 0, 0, 0, 0, 0, 6, 46
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\draft\components\CompositionRadarChart.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 96, 0, 0, 0, 0, 5, 15, 116
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\draft\components\DraftInput.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 2
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\draft\components\DraftSkeleton.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 40, 0, 0, 0, 0, 4, 4, 48
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\draft\components\ScalingChart.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 66, 0, 0, 0, 0, 0, 7, 73
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\draft\components\TeamCompositionCard.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 58, 0, 0, 0, 0, 0, 10, 68
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\draft\components\WinConditionsCard.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 83, 0, 0, 0, 0, 0, 11, 94
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\draft\index.ts", "TypeScript", 0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 1, 14
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\draft\prompts\draftPrompt.test.ts", "TypeScript", 0, 0, 0, 51, 0, 0, 0, 0, 0, 0, 0, 11, 62
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\draft\prompts\draftPrompt.ts", "TypeScript", 0, 0, 0, 89, 0, 0, 0, 0, 0, 0, 0, 5, 94
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\draft\services\draftAnalysisService.test.ts", "TypeScript", 0, 0, 0, 136, 0, 0, 0, 0, 0, 0, 0, 28, 164
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\draft\services\draftAnalysisService.ts", "TypeScript", 0, 0, 0, 67, 0, 0, 0, 0, 0, 0, 0, 14, 81
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\draft\types\draft.types.ts", "TypeScript", 0, 0, 0, 123, 0, 0, 0, 0, 0, 0, 0, 21, 144
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\identity\components\LoginForm.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 128, 0, 0, 0, 0, 0, 19, 147
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\identity\components\OAuthButton.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 30, 0, 0, 0, 0, 0, 7, 37
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\identity\components\PublicProfileChampionPool.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 84, 0, 0, 0, 0, 0, 8, 92
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\identity\components\PublicProfileHero.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 105, 0, 0, 0, 0, 0, 13, 118
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\identity\components\ReferralWidget.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 76, 0, 0, 0, 0, 0, 10, 86
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\identity\components\RegisterForm.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 148, 0, 0, 0, 0, 0, 20, 168
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\identity\components\ResetPasswordForm.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 127, 0, 0, 0, 0, 0, 15, 142
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\identity\index.ts", "TypeScript", 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 1, 5
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\identity\services\profileService.test.ts", "TypeScript", 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 7, 32
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\identity\services\profileService.ts", "TypeScript", 0, 0, 0, 183, 0, 0, 0, 0, 0, 0, 4, 23, 210
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\identity\services\referralService.test.ts", "TypeScript", 0, 0, 0, 134, 0, 0, 0, 0, 0, 0, 1, 40, 175
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\identity\services\referralService.ts", "TypeScript", 0, 0, 0, 104, 0, 0, 0, 0, 0, 0, 9, 20, 133
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\match\components\BuildExplanationPanel.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 99, 0, 0, 0, 0, 0, 10, 109
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\match\components\MatchAiInsight.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 39, 0, 0, 0, 0, 0, 4, 43
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\match\components\MatchPerformanceCards.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 33, 0, 0, 0, 0, 0, 5, 38
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\match\components\MatchTeamTable.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 192, 0, 0, 0, 0, 0, 13, 205
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\match\index.ts", "TypeScript", 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 1, 5
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\match\prompts\buildExplanationPrompt.ts", "TypeScript", 0, 0, 0, 60, 0, 0, 0, 0, 0, 0, 0, 5, 65
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\match\services\buildExplanationService.ts", "TypeScript", 0, 0, 0, 121, 0, 0, 0, 0, 0, 0, 3, 18, 142
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\match\services\matchService.ts", "TypeScript", 0, 0, 0, 175, 0, 0, 0, 0, 0, 0, 4, 18, 197
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\match\types\buildExplanation.types.ts", "TypeScript", 0, 0, 0, 31, 0, 0, 0, 0, 0, 0, 0, 6, 37
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\matchup\components\MatchupBuildTab.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 148, 0, 0, 0, 0, 0, 13, 161
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\matchup\components\MatchupLaneTab.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 105, 0, 0, 0, 0, 0, 10, 115
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\matchup\components\MatchupMistakesTab.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 58, 0, 0, 0, 0, 0, 6, 64
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\matchup\components\MatchupResult.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 2
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\matchup\components\MatchupSection.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 17, 0, 0, 0, 0, 0, 5, 22
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\matchup\components\MatchupSkeleton.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 40, 0, 0, 0, 0, 0, 4, 44
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\matchup\components\MatchupTradeTab.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 89, 0, 0, 0, 0, 0, 9, 98
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\matchup\index.ts", "TypeScript", 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 1, 7
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\matchup\prompts\matchupPrompt.test.ts", "TypeScript", 0, 0, 0, 44, 0, 0, 0, 0, 0, 0, 0, 10, 54
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\matchup\prompts\matchupPrompt.ts", "TypeScript", 0, 0, 0, 82, 0, 0, 0, 0, 0, 0, 0, 5, 87
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\matchup\services\matchupAnalysisService.test.ts", "TypeScript", 0, 0, 0, 104, 0, 0, 0, 0, 0, 0, 0, 23, 127
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\matchup\services\matchupAnalysisService.ts", "TypeScript", 0, 0, 0, 70, 0, 0, 0, 0, 0, 0, 0, 11, 81
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\matchup\types\matchup.types.ts", "TypeScript", 0, 0, 0, 116, 0, 0, 0, 0, 0, 0, 0, 8, 124
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\onboarding\OnboardingFlow.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 194, 0, 0, 0, 0, 2, 18, 214
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\otp\components\BanPriority.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 41, 0, 0, 0, 0, 0, 5, 46
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\otp\components\MatchupTierList.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 62, 0, 0, 0, 0, 0, 8, 70
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\otp\components\MetaRating.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 51, 0, 0, 0, 0, 0, 9, 60
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\otp\components\OtpSkeleton.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 43, 0, 0, 0, 0, 4, 7, 54
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\otp\components\OtpTips.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 71, 0, 0, 0, 0, 3, 6, 80
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\otp\index.ts", "TypeScript", 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 1, 4
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\otp\prompts\otpPrompt.test.ts", "TypeScript", 0, 0, 0, 50, 0, 0, 0, 0, 0, 0, 0, 12, 62
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\otp\prompts\otpPrompt.ts", "TypeScript", 0, 0, 0, 54, 0, 0, 0, 0, 0, 0, 0, 5, 59
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\otp\services\otpAssistantService.test.ts", "TypeScript", 0, 0, 0, 143, 0, 0, 0, 0, 0, 0, 0, 25, 168
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\otp\services\otpAssistantService.ts", "TypeScript", 0, 0, 0, 50, 0, 0, 0, 0, 0, 0, 0, 9, 59
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\otp\types\otp.types.ts", "TypeScript", 0, 0, 0, 74, 0, 0, 0, 0, 0, 0, 0, 10, 84
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\riot\components\AccountConnectionForm.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 84, 0, 0, 0, 0, 0, 11, 95
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\riot\components\ConnectedAccountsList.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 156, 0, 0, 0, 0, 0, 15, 171
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\riot\components\RankUpWidget.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 91, 0, 0, 0, 0, 3, 14, 108
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\riot\components\RankedCard.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 184, 0, 0, 0, 0, 2, 17, 203
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\riot\config\regions.ts", "TypeScript", 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 0, 3, 20
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\riot\index.ts", "TypeScript", 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 1, 1, 8
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\riot\mappers\matchMapper.ts", "TypeScript", 0, 0, 0, 137, 0, 0, 0, 0, 0, 0, 3, 16, 156
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\riot\services\accountService.ts", "TypeScript", 0, 0, 0, 150, 0, 0, 0, 0, 0, 0, 10, 21, 181
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\riot\services\matchSyncRankedService.ts", "TypeScript", 0, 0, 0, 109, 0, 0, 0, 0, 0, 0, 2, 16, 127
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\riot\services\matchSyncService.test.ts", "TypeScript", 0, 0, 0, 117, 0, 0, 0, 0, 0, 0, 2, 34, 153
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\riot\services\matchSyncService.ts", "TypeScript", 0, 0, 0, 102, 0, 0, 0, 0, 0, 0, 5, 20, 127
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\riot\services\rankedService.ts", "TypeScript", 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 8, 72
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\riot\services\riotApiClient.ts", "TypeScript", 0, 0, 0, 148, 0, 0, 0, 0, 0, 0, 11, 13, 172
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\riot\services\timelineService.ts", "TypeScript", 0, 0, 0, 55, 0, 0, 0, 0, 0, 0, 3, 8, 66
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\riot\types\riot.types.ts", "TypeScript", 0, 0, 0, 125, 0, 0, 0, 0, 0, 0, 3, 10, 138
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\components\DangerZone.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 75, 0, 0, 0, 0, 0, 10, 85
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\components\InviteLinkBox.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 65, 0, 0, 0, 0, 0, 10, 75
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\components\InviteModal.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 84, 0, 0, 0, 0, 0, 11, 95
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\components\PendingInvitesList.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 59, 0, 0, 0, 0, 0, 8, 67
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\components\TeamActivityFeed.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 65, 0, 0, 0, 0, 0, 11, 76
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\components\TeamComparisonTable.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 122, 0, 0, 0, 0, 1, 15, 138
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\components\TeamDashboard.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 174, 0, 0, 0, 0, 5, 19, 198
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\components\TeamLineup.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 95, 0, 0, 0, 0, 1, 16, 112
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\components\TeamMemberCard.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 162, 0, 0, 0, 0, 5, 15, 182
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\components\TeamReportCard.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 102, 0, 0, 0, 0, 6, 11, 119
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\components\TeamSettingsForm.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 65, 0, 0, 0, 0, 0, 11, 76
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\components\TeamStatsPanel.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 82, 0, 0, 0, 0, 3, 8, 93
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\components\TeamWinRateTrend.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 46, 0, 0, 0, 0, 0, 7, 53
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\index.ts", "TypeScript", 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 1, 4
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\repositories\teamRepository.ts", "TypeScript", 0, 0, 0, 134, 0, 0, 0, 0, 0, 0, 0, 20, 154
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\services\teamInviteService.ts", "TypeScript", 0, 0, 0, 99, 0, 0, 0, 0, 0, 0, 3, 19, 121
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\services\teamReportService.ts", "TypeScript", 0, 0, 0, 92, 0, 0, 0, 0, 0, 0, 0, 15, 107
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\services\teamService.test.ts", "TypeScript", 0, 0, 0, 127, 0, 0, 0, 0, 0, 0, 1, 21, 149
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\services\teamService.ts", "TypeScript", 0, 0, 0, 328, 0, 0, 0, 0, 0, 0, 3, 46, 377
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\services\teamStatsService.ts", "TypeScript", 0, 0, 0, 88, 0, 0, 0, 0, 0, 0, 4, 16, 108
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\domains\teams\types\teams.types.ts", "TypeScript", 0, 0, 0, 65, 0, 0, 0, 0, 0, 0, 0, 9, 74
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useAchievements.ts", "TypeScript", 0, 0, 0, 39, 0, 0, 0, 0, 0, 0, 0, 6, 45
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useAuth.ts", "TypeScript", 0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 4, 17
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useBuildExplanation.ts", "TypeScript", 0, 0, 0, 22, 0, 0, 0, 0, 0, 0, 0, 4, 26
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useChallenges.ts", "TypeScript", 0, 0, 0, 22, 0, 0, 0, 0, 0, 0, 0, 4, 26
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useChampionDeepDive.ts", "TypeScript", 0, 0, 0, 18, 0, 0, 0, 0, 0, 0, 0, 3, 21
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useChampionMastery.ts", "TypeScript", 0, 0, 0, 19, 0, 0, 0, 0, 0, 0, 0, 3, 22
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useChampionPool.ts", "TypeScript", 0, 0, 0, 18, 0, 0, 0, 0, 0, 0, 0, 3, 21
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useCoachingChat.ts", "TypeScript", 0, 0, 0, 93, 0, 0, 0, 0, 0, 0, 8, 17, 118
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useCoachingReport.ts", "TypeScript", 0, 0, 0, 55, 0, 0, 0, 0, 0, 0, 4, 15, 74
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useCoachingReports.ts", "TypeScript", 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 3, 27
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useCounterPicks.ts", "TypeScript", 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 0, 3, 19
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useCreateCheckout.ts", "TypeScript", 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 3, 15
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useCreateTeamCheckout.ts", "TypeScript", 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 3, 15
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useDDragonItems.ts", "TypeScript", 0, 0, 0, 31, 0, 0, 0, 0, 0, 0, 1, 6, 38
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useDDragonRunes.ts", "TypeScript", 0, 0, 0, 33, 0, 0, 0, 0, 0, 0, 0, 6, 39
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useDeathHeatmap.ts", "TypeScript", 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 1, 4, 28
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useDisconnectAccount.ts", "TypeScript", 0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 4, 17
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useDiscordSettings.ts", "TypeScript", 0, 0, 0, 61, 0, 0, 0, 0, 0, 0, 0, 12, 73
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useDraftAnalysis.ts", "TypeScript", 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 4, 25
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useFeatureFlag.ts", "TypeScript", 0, 0, 0, 31, 0, 0, 0, 0, 0, 0, 0, 8, 39
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useGeneralCounterPick.ts", "TypeScript", 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 3, 24
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useGenerateReport.ts", "TypeScript", 0, 0, 0, 83, 0, 0, 0, 0, 0, 0, 1, 15, 99
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useHabits.ts", "TypeScript", 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0, 3, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useImprovementPlan.ts", "TypeScript", 0, 0, 0, 33, 0, 0, 0, 0, 0, 0, 0, 6, 39
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useInviteLink.ts", "TypeScript", 0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 0, 6, 38
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useLeaderboard.ts", "TypeScript", 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 2, 12
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useMatchDetail.ts", "TypeScript", 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 3, 15
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useMatchupAnalysis.ts", "TypeScript", 0, 0, 0, 39, 0, 0, 0, 0, 0, 0, 0, 8, 47
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useMatchupGuide.ts", "TypeScript", 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 0, 4, 31
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useMatchupMatrix.ts", "TypeScript", 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 4, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useMilestone.ts", "TypeScript", 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 2, 13
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useOnboardingFlow.ts", "TypeScript", 0, 0, 0, 76, 0, 0, 0, 0, 0, 0, 4, 16, 96
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useOtpAssistant.ts", "TypeScript", 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 0, 3, 19
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\usePatchImpact.ts", "TypeScript", 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 3, 15
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\usePerformanceProfile.ts", "TypeScript", 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 3, 15
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\usePersonalMatchups.ts", "TypeScript", 0, 0, 0, 19, 0, 0, 0, 0, 0, 0, 0, 3, 22
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\usePlayerHabits.ts", "TypeScript", 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 0, 4, 21
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useProfileSettings.ts", "TypeScript", 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 0, 6, 33
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\usePushNotifications.ts", "TypeScript", 0, 0, 0, 75, 0, 0, 0, 0, 0, 0, 0, 14, 89
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useRankUpProbability.ts", "TypeScript", 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 3, 15
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useRankedData.ts", "TypeScript", 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 5, 26
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useRecap.ts", "TypeScript", 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 0, 4, 31
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useReferralStats.ts", "TypeScript", 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 3, 14
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useReportStatus.ts", "TypeScript", 0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 1, 10, 43
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useRiotAccounts.ts", "TypeScript", 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0, 3, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useSetPrimaryAccount.ts", "TypeScript", 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 0, 4, 20
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useShareReport.ts", "TypeScript", 0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 4, 17
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useSubmitRating.ts", "TypeScript", 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 5, 26
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useSubscription.ts", "TypeScript", 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0, 3, 18
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useSyncAccount.ts", "TypeScript", 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 1, 5, 23
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useSyncStatus.ts", "TypeScript", 0, 0, 0, 40, 0, 0, 0, 0, 0, 0, 2, 10, 52
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useTeamActivity.ts", "TypeScript", 0, 0, 0, 18, 0, 0, 0, 0, 0, 0, 0, 3, 21
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useTeamDashboard.ts", "TypeScript", 0, 0, 0, 46, 0, 0, 0, 0, 0, 0, 0, 8, 54
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useTeamInvites.ts", "TypeScript", 0, 0, 0, 30, 0, 0, 0, 0, 0, 0, 0, 6, 36
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useTeamReport.ts", "TypeScript", 0, 0, 0, 37, 0, 0, 0, 0, 0, 0, 0, 5, 42
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useTeamSeats.ts", "TypeScript", 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 3, 17
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useTeamStats.ts", "TypeScript", 0, 0, 0, 19, 0, 0, 0, 0, 0, 0, 0, 3, 22
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useTeams.ts", "TypeScript", 0, 0, 0, 19, 0, 0, 0, 0, 0, 0, 0, 3, 22
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useTiltAlerts.ts", "TypeScript", 0, 0, 0, 34, 0, 0, 0, 0, 0, 0, 0, 5, 39
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useTiltStatus.ts", "TypeScript", 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 3, 15
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useTodaysFocus.ts", "TypeScript", 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 3, 15
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useVoiceCoach.ts", "TypeScript", 0, 0, 0, 132, 0, 0, 0, 0, 0, 0, 0, 18, 150
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\hooks\useWarmupStatus.ts", "TypeScript", 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 3, 15
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\client.ts", "TypeScript", 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 4, 3, 19
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\achievementChecker.ts", "TypeScript", 0, 0, 0, 53, 0, 0, 0, 0, 0, 0, 0, 6, 59
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\autoSessionReview.ts", "TypeScript", 0, 0, 0, 79, 0, 0, 0, 0, 0, 0, 5, 15, 99
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\challengeGenerator.ts", "TypeScript", 0, 0, 0, 53, 0, 0, 0, 0, 0, 0, 2, 7, 62
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\challengeProgressChecker.ts", "TypeScript", 0, 0, 0, 19, 0, 0, 0, 0, 0, 0, 1, 5, 25
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\gdprErasure.ts", "TypeScript", 0, 0, 0, 39, 0, 0, 0, 0, 0, 0, 3, 9, 51
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\gdprExport.ts", "TypeScript", 0, 0, 0, 130, 0, 0, 0, 0, 0, 0, 0, 14, 144
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\matchSync.test.ts", "TypeScript", 0, 0, 0, 110, 0, 0, 0, 0, 0, 0, 0, 25, 135
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\matchSync.ts", "TypeScript", 0, 0, 0, 55, 0, 0, 0, 0, 0, 0, 2, 10, 67
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\patchVersionPoller.ts", "TypeScript", 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 1, 2, 19
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\performanceSnapshotWorker.ts", "TypeScript", 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 1, 5, 26
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\planRenewal.ts", "TypeScript", 0, 0, 0, 61, 0, 0, 0, 0, 0, 0, 4, 15, 80
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\referralReward.ts", "TypeScript", 0, 0, 0, 42, 0, 0, 0, 0, 0, 0, 3, 8, 53
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\runCoachingJob.ts", "TypeScript", 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 5, 6, 39
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\sendActivationEmail.test.ts", "TypeScript", 0, 0, 0, 77, 0, 0, 0, 0, 0, 0, 0, 18, 95
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\sendActivationEmail.ts", "TypeScript", 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 0, 9, 50
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\sendRankChangeEmail.ts", "TypeScript", 0, 0, 0, 117, 0, 0, 0, 0, 0, 0, 3, 19, 139
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\sendReengagementEmails.ts", "TypeScript", 0, 0, 0, 86, 0, 0, 0, 0, 0, 0, 6, 15, 107
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\sendReportReadyEmail.ts", "TypeScript", 0, 0, 0, 57, 0, 0, 0, 0, 0, 0, 0, 11, 68
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\sendWeeklyReportEmails.ts", "TypeScript", 0, 0, 0, 89, 0, 0, 0, 0, 0, 0, 5, 12, 106
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\teamInviteEmail.ts", "TypeScript", 0, 0, 0, 51, 0, 0, 0, 0, 0, 0, 0, 10, 61
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\teamSubscriptionNotification.ts", "TypeScript", 0, 0, 0, 99, 0, 0, 0, 0, 0, 0, 0, 20, 119
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\teamWeeklyReport.ts", "TypeScript", 0, 0, 0, 86, 0, 0, 0, 0, 0, 0, 5, 13, 104
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\tiltStreakCheck.ts", "TypeScript", 0, 0, 0, 74, 0, 0, 0, 0, 0, 0, 2, 14, 90
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\inngest\functions\timelineFetcher.ts", "TypeScript", 0, 0, 0, 60, 0, 0, 0, 0, 0, 0, 1, 9, 70
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\ai\aiCache.test.ts", "TypeScript", 0, 0, 0, 117, 0, 0, 0, 0, 0, 0, 1, 19, 137
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\ai\aiCache.ts", "TypeScript", 0, 0, 0, 46, 0, 0, 0, 0, 0, 0, 2, 10, 58
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\ai\chatSystemPrompt.ts", "TypeScript", 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 13, 77
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\ai\client.ts", "TypeScript", 0, 0, 0, 22, 0, 0, 0, 0, 0, 0, 0, 5, 27
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\ai\providers\anthropic.ts", "TypeScript", 0, 0, 0, 60, 0, 0, 0, 0, 0, 0, 1, 9, 70
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\ai\providers\openai.ts", "TypeScript", 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 1, 9, 74
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\ai\responseParser.test.ts", "TypeScript", 0, 0, 0, 65, 0, 0, 0, 0, 0, 0, 1, 10, 76
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\ai\responseParser.ts", "TypeScript", 0, 0, 0, 38, 0, 0, 0, 0, 0, 0, 2, 9, 49
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\ai\tts.ts", "TypeScript", 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 2, 12
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\ai\types.ts", "TypeScript", 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 0, 5, 33
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\analytics\PostHogProvider.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 19, 0, 0, 0, 0, 0, 6, 25
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\analytics\posthog.ts", "TypeScript", 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 1, 8, 34
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\api\errors.ts", "TypeScript", 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 1, 13, 78
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\api\fetcher.ts", "TypeScript", 0, 0, 0, 30, 0, 0, 0, 0, 0, 0, 0, 5, 35
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\api\rateLimit.test.ts", "TypeScript", 0, 0, 0, 66, 0, 0, 0, 0, 0, 0, 2, 21, 89
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\api\rateLimit.ts", "TypeScript", 0, 0, 0, 121, 0, 0, 0, 0, 0, 0, 11, 28, 160
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\api\response.ts", "TypeScript", 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 1, 4, 32
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\api\withAdminAuth.ts", "TypeScript", 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 2, 6, 29
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\api\withAuth.ts", "TypeScript", 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 6, 8, 61
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\audit\auditService.test.ts", "TypeScript", 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 1, 16, 80
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\audit\auditService.ts", "TypeScript", 0, 0, 0, 77, 0, 0, 0, 0, 0, 0, 2, 7, 86
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\audit\events.ts", "TypeScript", 0, 0, 0, 22, 0, 0, 0, 0, 0, 0, 7, 8, 37
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\auth\authorization.ts", "TypeScript", 0, 0, 0, 126, 0, 0, 0, 0, 0, 0, 12, 22, 160
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\auth\config.ts", "TypeScript", 0, 0, 0, 123, 0, 0, 0, 0, 0, 0, 11, 16, 150
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\auth\provider.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 3, 8
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\auth\session.ts", "TypeScript", 0, 0, 0, 44, 0, 0, 0, 0, 0, 0, 4, 7, 55
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\auth\totpService.ts", "TypeScript", 0, 0, 0, 54, 0, 0, 0, 0, 0, 0, 0, 12, 66
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\context\requestContext.ts", "TypeScript", 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 3, 4, 15
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\crypto\encrypt.test.ts", "TypeScript", 0, 0, 0, 31, 0, 0, 0, 0, 0, 0, 0, 8, 39
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\crypto\encrypt.ts", "TypeScript", 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 5, 28
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\db\prisma.ts", "TypeScript", 0, 0, 0, 30, 0, 0, 0, 0, 0, 0, 5, 8, 43
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\db\prismaReadonly.ts", "TypeScript", 0, 0, 0, 52, 0, 0, 0, 0, 0, 0, 2, 9, 63
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\ddragon.ts", "TypeScript", 0, 0, 0, 127, 0, 0, 0, 0, 0, 0, 1, 20, 148
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\ddragon\championsData.ts", "TypeScript", 0, 0, 0, 50, 0, 0, 0, 0, 0, 0, 0, 5, 55
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\discord\embeds.test.ts", "TypeScript", 0, 0, 0, 66, 0, 0, 0, 0, 0, 0, 0, 12, 78
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\discord\embeds.ts", "TypeScript", 0, 0, 0, 85, 0, 0, 0, 0, 0, 0, 0, 9, 94
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\discord\webhookService.ts", "TypeScript", 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 4, 25
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\email\client.ts", "TypeScript", 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 2, 4, 16
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\email\templates\activation.ts", "TypeScript", 0, 0, 0, 111, 0, 0, 0, 0, 0, 0, 0, 5, 116
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\email\templates\dataExport.ts", "TypeScript", 0, 0, 0, 80, 0, 0, 0, 0, 0, 0, 0, 5, 85
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\email\templates\emailVerification.ts", "TypeScript", 0, 0, 0, 89, 0, 0, 0, 0, 0, 0, 0, 4, 93
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\email\templates\monthlyMilestone.ts", "TypeScript", 0, 0, 0, 144, 0, 0, 0, 0, 0, 0, 0, 11, 155
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\email\templates\passwordReset.ts", "TypeScript", 0, 0, 0, 90, 0, 0, 0, 0, 0, 0, 0, 4, 94
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\email\templates\planRenewal.ts", "TypeScript", 0, 0, 0, 82, 0, 0, 0, 0, 0, 0, 0, 5, 87
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\email\templates\rankChange.ts", "TypeScript", 0, 0, 0, 107, 0, 0, 0, 0, 0, 0, 0, 7, 114
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\email\templates\reengagement.ts", "TypeScript", 0, 0, 0, 147, 0, 0, 0, 0, 0, 0, 0, 10, 157
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\email\templates\reportReady.ts", "TypeScript", 0, 0, 0, 102, 0, 0, 0, 0, 0, 0, 0, 6, 108
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\email\templates\teamInvite.ts", "TypeScript", 0, 0, 0, 94, 0, 0, 0, 0, 0, 0, 0, 5, 99
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\email\templates\teamSubscriptionNotification.ts", "TypeScript", 0, 0, 0, 166, 0, 0, 0, 0, 0, 0, 0, 9, 175
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\features\featureFlagService.ts", "TypeScript", 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 5, 14, 66
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\lemonsqueezy\client.ts", "TypeScript", 0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 0, 9, 41
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\lemonsqueezy\subscriptionService.ts", "TypeScript", 0, 0, 0, 216, 0, 0, 0, 0, 0, 0, 21, 41, 278
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\lemonsqueezy\types.ts", "TypeScript", 0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 2, 5, 39
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\push\pushService.ts", "TypeScript", 0, 0, 0, 53, 0, 0, 0, 0, 0, 0, 1, 12, 66
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\riot\cache.ts", "TypeScript", 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 3, 7, 38
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\riot\client.ts", "TypeScript", 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 6, 15, 85
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\riot\dedup.ts", "TypeScript", 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 9, 4, 21
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\riot\errors.ts", "TypeScript", 0, 0, 0, 52, 0, 0, 0, 0, 0, 0, 2, 2, 56
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\riot\lifecycle.ts", "TypeScript", 0, 0, 0, 38, 0, 0, 0, 0, 0, 0, 17, 9, 64
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\riot\publicSummoner.ts", "TypeScript", 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 11, 111
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\riot\rateLimit.ts", "TypeScript", 0, 0, 0, 36, 0, 0, 0, 0, 0, 0, 10, 10, 56
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\riot\retry.ts", "TypeScript", 0, 0, 0, 42, 0, 0, 0, 0, 0, 0, 8, 13, 63
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\security\bruteForce.ts", "TypeScript", 0, 0, 0, 69, 0, 0, 0, 0, 0, 0, 2, 11, 82
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\stores\uiStore.ts", "TypeScript", 0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 0, 3, 35
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\stripe\subscriptionService.ts", "TypeScript", 0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 0, 5, 37
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\utils.ts", "TypeScript", 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 2, 7
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\lib\utils\logger.ts", "TypeScript", 0, 0, 0, 50, 0, 0, 0, 0, 0, 0, 1, 7, 58
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\styles\globals.css", "PostCSS", 0, 0, 0, 0, 0, 0, 73, 0, 0, 0, 5, 10, 88
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\types\achievement.ts", "TypeScript", 0, 0, 0, 119, 0, 0, 0, 0, 0, 0, 0, 5, 124
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\types\api.types.ts", "TypeScript", 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 4, 29
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\types\auth.types.ts", "TypeScript", 0, 0, 0, 22, 0, 0, 0, 0, 0, 0, 1, 5, 28
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\types\coaching.frontend.ts", "TypeScript", 0, 0, 0, 36, 0, 0, 0, 0, 0, 0, 3, 2, 41
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\types\common.types.ts", "TypeScript", 0, 0, 0, 34, 0, 0, 0, 0, 0, 0, 0, 7, 41
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\types\json.ts", "TypeScript", 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 4, 4, 15
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\src\types\preview.ts", "TypeScript", 0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 0, 3, 35
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\tailwind.config.ts", "TypeScript", 0, 0, 0, 118, 0, 0, 0, 0, 0, 0, 3, 3, 124
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\tests\e2e\auth-setup.setup.ts", "TypeScript", 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 4, 5, 19
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\tests\e2e\auth.spec.ts", "TypeScript", 0, 0, 0, 57, 0, 0, 0, 0, 0, 0, 5, 18, 80
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\tests\e2e\coaching.spec.ts", "TypeScript", 0, 0, 0, 74, 0, 0, 0, 0, 0, 0, 11, 17, 102
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\tests\e2e\global-setup.ts", "TypeScript", 0, 0, 0, 162, 0, 0, 0, 0, 0, 0, 12, 15, 189
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\tests\e2e\global-teardown.ts", "TypeScript", 0, 0, 0, 26, 0, 0, 0, 0, 0, 0, 3, 6, 35
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\tests\e2e\helpers\constants.ts", "TypeScript", 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 6, 6, 37
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\tests\e2e\helpers\db.ts", "TypeScript", 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 3, 4, 24
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\tests\e2e\riot.spec.ts", "TypeScript", 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 7, 11, 45
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\tests\e2e\share.spec.ts", "TypeScript", 0, 0, 0, 52, 0, 0, 0, 0, 0, 0, 8, 24, 84
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\tsconfig.json", "JSON with Comments", 0, 0, 27, 0, 0, 0, 0, 0, 0, 0, 0, 1, 28
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\vercel.json", "JSON", 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 41
+"c:\Users\kaana\OneDrive\Belgeler\kcorrai-coding\lol-ai\vitest.config.ts", "TypeScript", 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 1, 2, 18
+"Total", "-", 16091, 12858, 42, 26718, 190, 19627, 73, 744, 4, 97, 1398, 11631, 89473

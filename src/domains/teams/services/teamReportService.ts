@@ -1,6 +1,6 @@
 import { getAiClient } from "@/lib/ai/client";
 import { getCached, setCached, buildCacheKey } from "@/lib/ai/aiCache";
-import { getTeamDashboard } from "@/domains/teams/services/teamService";
+import { getTeamDashboard } from "@/domains/teams/services/teamDashboardService";
 import { logger } from "@/lib/utils/logger";
 import type { TeamDashboardData, TeamMemberSummary } from "@/domains/teams/types/teams.types";
 

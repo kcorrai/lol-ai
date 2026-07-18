@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
 import { Errors } from "@/lib/api/errors";
-import { getTeamDashboard } from "@/domains/teams/services/teamService";
+import { getTeamDashboard } from "@/domains/teams/services/teamDashboardService";
 
 export const GET = withAuth(async (req: NextRequest, { userId }) => {
   const segments = req.nextUrl.pathname.split("/");
