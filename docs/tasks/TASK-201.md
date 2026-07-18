@@ -19,7 +19,7 @@ React component 200 · Service 250 · API route 80 · Utility 150.
 - [x] teamService.ts (376) → 223; extracted getTeamDashboard to teamDashboardService.ts (159)
 - [x] weeklyEmailRenderer.ts (279) → 147; extracted renderWeeklyEmail to weeklyEmailTemplate.ts (133)
 - [x] draftEvalService.ts (271) → 129; extracted draftTeamEval.ts (121) + draftEval.types.ts (44)
-- [ ] masteryScoreService.ts (268)
+- [x] masteryScoreService.ts (268) → 155; extracted pure math to masteryScoring.ts (128)
 - [ ] improvementPlanService.ts (255)
 - [ ] cardService.ts (252)
 
