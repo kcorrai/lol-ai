@@ -38,7 +38,7 @@ React component 200 · Service 250 · API route 80 · Utility 150.
 - [ ] lib/email/templates/teamSubscriptionNotification.ts (174)
 - [x] lib/ddragon.ts (166) → 75; extracted ddragonRunes.ts (101) + ddragonVersion.ts (4)
 - [x] lib/auth/authorization.ts (159) → 83; extracted planLimits.ts (81)
-- [ ] lib/api/rateLimit.ts (159)
+- [x] lib/api/rateLimit.ts (159) → 71; extracted rateLimitBackends.ts (93)
 - [ ] lib/email/templates/reengagement.ts (156)
 - [ ] lib/email/templates/monthlyMilestone.ts (154)
 
