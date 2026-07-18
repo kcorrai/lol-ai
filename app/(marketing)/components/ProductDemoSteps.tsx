@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Search, Loader2 } from "lucide-react";
+import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { ReportPreview } from "./FeaturePreviews";
 
 // Step 1 — enter your Riot ID
@@ -22,32 +23,55 @@ export function StepSearch() {
   );
 }
 
-// Step 2 — AI scans recent matches
+// Step 2 — AI scans recent matches (realistic match history)
+const SCAN_MATCHES = [
+  { champ: "Yasuo", role: "Mid", win: true, k: 14, d: 3, a: 9, cs: 251 },
+  { champ: "Ahri", role: "Mid", win: true, k: 9, d: 2, a: 16, cs: 214 },
+  { champ: "Zed", role: "Mid", win: false, k: 7, d: 8, a: 5, cs: 223 },
+  { champ: "LeeSin", role: "Jungle", win: true, k: 8, d: 4, a: 18, cs: 168 },
+];
+
 export function StepScan() {
-  const rows = [
-    { c: "#52B788", w: "68%" },
-    { c: "#E63946", w: "82%" },
-    { c: "#C89B3C", w: "74%" },
-    { c: "#52B788", w: "60%" },
-  ];
   return (
     <div className="w-full max-w-md">
-      <div className="mb-3 flex items-center justify-center gap-2 text-sm text-text">
+      <div className="mb-3 flex items-center gap-2 text-sm font-medium text-text">
         <Loader2 className="h-4 w-4 animate-spin text-accent" />
         Analyzing your last 20 ranked matches…
       </div>
-      <div className="space-y-2">
-        {rows.map((r, i) => (
-          <div key={i} className="flex items-center gap-3 rounded-lg border border-border bg-surface p-2">
-            <span className="h-7 w-7 shrink-0 rounded-md" style={{ background: r.c }} />
+      <div className="space-y-1.5">
+        {SCAN_MATCHES.map((m, i) => {
+          const kda = ((m.k + m.a) / Math.max(m.d, 1)).toFixed(1);
+          return (
             <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: r.w }}
-              transition={{ duration: 1, delay: i * 0.15 }}
-              className="h-2 rounded-full bg-accent/40"
-            />
-          </div>
-        ))}
+              key={m.champ}
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.35, delay: i * 0.18 }}
+              className={`flex items-center gap-2.5 rounded-lg border bg-surface p-2 ${m.win ? "border-l-2 border-l-success" : "border-l-2 border-l-danger"} border-border`}
+            >
+              <ChampionIcon name={m.champ} size={30} className="rounded-md" />
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-xs font-semibold text-text">{m.champ}</p>
+                <p className="text-[10px] text-text-muted">{m.role}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs font-semibold text-text">{m.k}/{m.d}/{m.a}</p>
+                <p className="text-[10px] text-text-muted">{kda} KDA · {m.cs} CS</p>
+              </div>
+              <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${m.win ? "bg-success/15 text-success" : "bg-danger/15 text-danger"}`}>
+                {m.win ? "WIN" : "LOSS"}
+              </span>
+            </motion.div>
+          );
+        })}
+      </div>
+      <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
+        <motion.div
+          initial={{ width: "0%" }}
+          animate={{ width: "100%" }}
+          transition={{ duration: 2.4, ease: "easeInOut" }}
+          className="h-full bg-accent"
+        />
       </div>
     </div>
   );
