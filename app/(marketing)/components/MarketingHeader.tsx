@@ -3,9 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Zap, Menu, X } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 export function MarketingHeader() {
   const [open, setOpen] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur">
@@ -30,24 +32,35 @@ export function MarketingHeader() {
 
         {/* Desktop CTAs */}
         <div className="hidden items-center gap-3 md:flex">
-          <Link href="/login" className="text-sm text-text-muted transition-colors hover:text-text">
-            Log In
-          </Link>
-          <Link
-            href="/register"
-            className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-90"
-          >
-            Get Started Free
-          </Link>
+          {isAuthenticated ? (
+            <Link
+              href="/dashboard"
+              className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-90"
+            >
+              Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link href="/login" className="text-sm text-text-muted transition-colors hover:text-text">
+                Log In
+              </Link>
+              <Link
+                href="/register"
+                className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-90"
+              >
+                Get Started Free
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile: CTA + hamburger */}
         <div className="flex items-center gap-2 md:hidden">
           <Link
-            href="/register"
+            href={isAuthenticated ? "/dashboard" : "/register"}
             className="rounded-md bg-accent px-3 py-1.5 text-xs font-semibold text-background transition-opacity hover:opacity-90"
           >
-            Get Started Free
+            {isAuthenticated ? "Dashboard" : "Get Started Free"}
           </Link>
           <button
             onClick={() => setOpen((v) => !v)}
@@ -72,9 +85,15 @@ export function MarketingHeader() {
             <Link href="/pricing" className="text-sm text-text-muted hover:text-text" onClick={() => setOpen(false)}>
               Pricing
             </Link>
-            <Link href="/login" className="text-sm text-text-muted hover:text-text" onClick={() => setOpen(false)}>
-              Log In
-            </Link>
+            {isAuthenticated ? (
+              <Link href="/dashboard" className="text-sm font-semibold text-accent hover:opacity-90" onClick={() => setOpen(false)}>
+                Dashboard
+              </Link>
+            ) : (
+              <Link href="/login" className="text-sm text-text-muted hover:text-text" onClick={() => setOpen(false)}>
+                Log In
+              </Link>
+            )}
           </nav>
         </div>
       )}

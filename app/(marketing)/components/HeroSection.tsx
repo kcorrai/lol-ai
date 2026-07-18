@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { HeroVisual } from "./hero3d/HeroVisual";
+import { StartFreeCta } from "./StartFreeCta";
 import { CountUp } from "@/components/ui/CountUp";
 import { getMetaSnapshot } from "@/domains/meta";
 
@@ -41,12 +42,7 @@ export async function HeroSection() {
               generic Bronze advice. Track your ranked progress and stop being hardstuck.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="/register"
-                className="rounded-md bg-accent px-6 py-3 text-center text-sm font-semibold text-background btn-glow transition-all duration-200"
-              >
-                Get Started Free
-              </Link>
+              <StartFreeCta className="rounded-md bg-accent px-6 py-3 text-center text-sm font-semibold text-background btn-glow transition-all duration-200" />
               <Link
                 href="/tools"
                 className="rounded-md border border-border px-6 py-3 text-center text-sm font-semibold text-text-muted transition-colors hover:border-accent/50 hover:text-text"

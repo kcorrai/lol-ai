@@ -7,6 +7,7 @@ import { FeaturesSection } from "./components/FeaturesSection";
 import { TestimonialsSection } from "./components/TestimonialsSection";
 import { TeamPlanSection } from "./components/TeamPlanSection";
 import { DemoSearchBox } from "@/components/landing/DemoSearchBox";
+import { StartFreeCta } from "./components/StartFreeCta";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -80,12 +81,7 @@ export default function LandingPage() {
             Join the players climbing with AI-powered coaching. Free plan available — no credit card required.
           </p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <Link
-              href="/register"
-              className="rounded-md bg-accent px-8 py-3 text-sm font-semibold text-background transition-opacity hover:opacity-90"
-            >
-              Get Started Free
-            </Link>
+            <StartFreeCta className="rounded-md bg-accent px-8 py-3 text-sm font-semibold text-background transition-opacity hover:opacity-90" />
             <Link
               href="/tools"
               className="rounded-md border border-border px-8 py-3 text-sm font-semibold text-text-muted transition-colors hover:border-accent/50 hover:text-text"
