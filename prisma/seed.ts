@@ -6,10 +6,16 @@ import {
   RankDivision,
   ReportStatus,
 } from "@prisma/client";
+import bcrypt from "bcryptjs";
 import { syncChampions } from "../scripts/syncChampions";
 import { ACHIEVEMENT_CATALOG } from "../src/types/achievement";
 
 const prisma = new PrismaClient();
+
+// Known dev credentials so the seeded test user can log in via the credentials
+// provider. Password hash is stored in Account.access_token per ADR-003.
+const DEV_EMAIL = "dev@lolai.test";
+const DEV_PASSWORD = "test1234";
 
 async function main() {
   console.log("🌱 Seeding development database...");
@@ -20,10 +26,10 @@ async function main() {
 
   // ── Test User ────────────────────────────────────────────────
   const user = await prisma.user.upsert({
-    where: { email: "dev@lolai.test" },
+    where: { email: DEV_EMAIL },
     update: {},
     create: {
-      email: "dev@lolai.test",
+      email: DEV_EMAIL,
       name: "DevPlayer",
       emailVerified: new Date(),
       profile: {
@@ -43,6 +49,26 @@ async function main() {
     },
   });
   console.log(`  ✓ Test user: ${user.email}`);
+
+  // ── Credentials (login password) ─────────────────────────────
+  const passwordHash = await bcrypt.hash(DEV_PASSWORD, 10);
+  await prisma.account.upsert({
+    where: {
+      provider_providerAccountId: {
+        provider: "credentials",
+        providerAccountId: DEV_EMAIL,
+      },
+    },
+    update: { access_token: passwordHash },
+    create: {
+      userId: user.id,
+      type: "credentials",
+      provider: "credentials",
+      providerAccountId: DEV_EMAIL,
+      access_token: passwordHash,
+    },
+  });
+  console.log(`  ✓ Login credentials: ${DEV_EMAIL} / ${DEV_PASSWORD}`);
 
   // ── Riot Account ─────────────────────────────────────────────
   const riotAccount = await prisma.riotAccount.upsert({
@@ -242,7 +268,7 @@ async function main() {
   console.log(`  ✓ ${ACHIEVEMENT_CATALOG.length} achievements seeded`);
 
   console.log("\n✅ Seed complete.");
-  console.log("   User:    dev@lolai.test");
+  console.log(`   Login:   ${DEV_EMAIL} / ${DEV_PASSWORD}`);
   console.log("   Riot ID: DevPlayer#TEST (euw1)");
   console.log("   Matches: 5 ranked games");
 }
