@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/db/prisma";
 import { getEmailClient, EMAIL_FROM } from "@/lib/email/client";
 import { logger } from "@/lib/utils/logger";
-import { buildWeeklyStats, renderWeeklyEmail, getIsoWeekKey } from "./weeklyEmailRenderer";
+import { buildWeeklyStats, getIsoWeekKey } from "./weeklyEmailRenderer";
+import { renderWeeklyEmail } from "./weeklyEmailTemplate";
 
 export { escapeHtml, getIsoWeekKey, lpComposite } from "./weeklyEmailRenderer";
 

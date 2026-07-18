@@ -17,7 +17,7 @@ React component 200 · Service 250 · API route 80 · Utility 150.
       challengeGenerationService.ts (149) + challengeProgressService.ts (123) +
       challengeConstants.ts; nothing imported the monolith.
 - [x] teamService.ts (376) → 223; extracted getTeamDashboard to teamDashboardService.ts (159)
-- [ ] weeklyEmailRenderer.ts (279)
+- [x] weeklyEmailRenderer.ts (279) → 147; extracted renderWeeklyEmail to weeklyEmailTemplate.ts (133)
 - [ ] draftEvalService.ts (271)
 - [ ] masteryScoreService.ts (268)
 - [ ] improvementPlanService.ts (255)
