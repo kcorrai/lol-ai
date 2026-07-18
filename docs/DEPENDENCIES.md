@@ -177,3 +177,15 @@ ADR-009 is superseded.
 **Added in:** TASK-176
 **Purpose:** Lightweight declarative UI animation for the marketing surface.
 **Scope:** marketing components.
+
+### `remotion` + `@remotion/cli` (v4.0.490)
+
+**Added in:** TASK-215
+**Purpose:** Author the "How it works" product-walkthrough video as React
+components and render it to a real `.mp4` **locally** (`npm run render:video`).
+No AWS/Lambda — the license is free for individuals and there is zero runtime
+cost: the rendered file is committed to `public/videos/how-it-works.mp4` and
+served as a static `<video>`.
+**Scope:** build/dev tooling only (`src/remotion/`, `remotion.config.ts`). The
+Remotion runtime is **not** shipped in the Next.js bundle — the app only embeds
+the resulting mp4 via `src/components/ui/DemoVideo.tsx`.

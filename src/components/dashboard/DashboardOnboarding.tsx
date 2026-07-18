@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Sparkles, ClipboardList, MessageCircle, Shield, Swords, X, ArrowRight } from "lucide-react";
+import { DemoVideo } from "@/components/ui/DemoVideo";
 
 const STORAGE_KEY = "lolai_onboarding_v1";
 
@@ -67,16 +68,22 @@ export function DashboardOnboarding() {
           <X className="h-4 w-4" />
         </button>
 
-        {/* Animated accent band */}
-        <div className="relative flex h-24 items-center justify-center overflow-hidden bg-gradient-to-br from-accent/20 via-accent/5 to-transparent">
-          <motion.span
-            animate={{ scale: [1, 1.15, 1], opacity: [0.7, 1, 0.7] }}
-            transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-            className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/15 text-accent ring-1 ring-accent/30"
-          >
-            <Sparkles className="h-6 w-6" />
-          </motion.span>
-        </div>
+        {/* Welcome slide leads with the product walkthrough video; later slides keep the accent band */}
+        {step === 0 ? (
+          <div className="relative overflow-hidden border-b border-border bg-background">
+            <DemoVideo className="aspect-video w-full" />
+          </div>
+        ) : (
+          <div className="relative flex h-24 items-center justify-center overflow-hidden bg-gradient-to-br from-accent/20 via-accent/5 to-transparent">
+            <motion.span
+              animate={{ scale: [1, 1.15, 1], opacity: [0.7, 1, 0.7] }}
+              transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+              className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/15 text-accent ring-1 ring-accent/30"
+            >
+              <Sparkles className="h-6 w-6" />
+            </motion.span>
+          </div>
+        )}
 
         <div className="p-6">
           <AnimatePresence mode="wait">
