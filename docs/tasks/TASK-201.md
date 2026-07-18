@@ -34,7 +34,7 @@ React component 200 · Service 250 · API route 80 · Utility 150.
 - [x] lemonsqueezy/webhook/route.ts (89) → 61; extracted lsWebhookDispatch.ts (38)
 
 ### Utilities (>150)
-- [ ] lib/lemonsqueezy/subscriptionService.ts (277)
+- [x] lib/lemonsqueezy/subscriptionService.ts (277) → 92; extracted lsCheckout.ts (71) + lsWebhookVerify.ts (39) + lsSubscriptionSync.ts (55)
 - [ ] lib/email/templates/teamSubscriptionNotification.ts (174)
 - [ ] lib/ddragon.ts (166)
 - [ ] lib/auth/authorization.ts (159)
