@@ -13,7 +13,7 @@ export function ReportPreview() {
     <div className="overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl">
       {/* Hero with splash */}
       <div className="relative h-32">
-        <Image src={splash("Yasuo")} alt="" fill className="object-cover object-top" />
+        <Image src={splash("Yasuo")} alt="" fill sizes="(max-width: 768px) 100vw, 400px" className="object-cover object-top" />
         <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/50 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 flex items-end gap-6 p-4">
           {[["8", "Matches"], ["Gold II", "Potential"], ["23s", "AI Time"]].map(([v, l]) => (

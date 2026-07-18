@@ -3,6 +3,7 @@ import { HeroSection } from "./components/HeroSection";
 import { MetaSnapshotSection } from "./components/MetaSnapshotSection";
 import { ToolsInActionSection } from "./components/ToolsInActionSection";
 import { HowItWorksSection } from "./components/HowItWorksSection";
+import { ProductDemo } from "./components/ProductDemo";
 import { FeaturesSection } from "./components/FeaturesSection";
 import { TestimonialsSection } from "./components/TestimonialsSection";
 import { TeamPlanSection } from "./components/TeamPlanSection";
@@ -67,6 +68,7 @@ export default function LandingPage() {
       <MetaSnapshotSection />
       <ToolsInActionSection />
       <HowItWorksSection />
+      <ProductDemo />
       <FeaturesSection />
       <TeamPlanSection />
       <TestimonialsSection />
