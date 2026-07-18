@@ -31,7 +31,7 @@ React component 200 · Service 250 · API route 80 · Utility 150.
 - [x] riot/[riotAccountId]/chat/route.ts (127) → 65; extracted coachChatService.ts (71)
 - [x] auth/register/route.ts (105) → 43; extracted registrationService.ts (80)
 - [x] coaching/reports/[reportId]/stream/route.ts (101) → 34; extracted reportStatusStream.ts (73)
-- [ ] lemonsqueezy/webhook/route.ts (89)
+- [x] lemonsqueezy/webhook/route.ts (89) → 61; extracted lsWebhookDispatch.ts (38)
 
 ### Utilities (>150)
 - [ ] lib/lemonsqueezy/subscriptionService.ts (277)
