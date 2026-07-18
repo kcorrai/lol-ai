@@ -4,6 +4,7 @@ import { getMetaSnapshot, formatGamePatch } from "@/domains/meta";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
 import { BuildSearch } from "./BuildSearch";
+import { RelatedTools } from "../RelatedTools";
 
 export const revalidate = 43200;
 
@@ -60,6 +61,8 @@ export default async function BuildsHubPage() {
           </Link>
         ))}
       </div>
+
+      <RelatedTools exclude="/builds" />
     </div>
   );
 }

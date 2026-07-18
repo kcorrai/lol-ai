@@ -5,6 +5,7 @@ import type { CanonicalPosition } from "@/domains/meta";
 import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
 import { TierListView } from "./TierListView";
 import { tierBlurb } from "./tierBlurb";
+import { RelatedTools } from "../../RelatedTools";
 
 export const revalidate = 43200; // 12h ISR
 
@@ -78,6 +79,8 @@ export default async function TierListPage({ searchParams }: PageProps) {
       {list && list.entries.length > 0 && (
         <p className="mt-8 leading-relaxed text-text-muted">{tierBlurb(lane, list, patch)}</p>
       )}
+
+      <RelatedTools exclude="/tools/tier-list" />
     </div>
   );
 }
