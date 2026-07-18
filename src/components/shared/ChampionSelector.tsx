@@ -1,18 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { X, ChevronDown, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
-
-interface Champion {
-  id: number;
-  key: string;
-  name: string;
-  imageUrl: string;
-  roles: string[];
-}
+import { useAllChampions } from "@/hooks/useAllChampions";
 
 export interface ChampionSelectorProps {
   value: string | null;
@@ -30,17 +22,6 @@ const ICON_SIZE: Record<NonNullable<ChampionSelectorProps["size"]>, number> = {
   md: 32,
   lg: 40,
 };
-
-function useAllChampions() {
-  return useQuery<Champion[]>({
-    queryKey: ["champions", "all"],
-    queryFn: () =>
-      fetch("/api/champions/all")
-        .then((r) => r.json())
-        .then((d) => d.data),
-    staleTime: Infinity,
-  });
-}
 
 export function ChampionSelector({
   value,

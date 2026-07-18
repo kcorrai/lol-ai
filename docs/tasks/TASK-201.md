@@ -1,6 +1,6 @@
 # TASK-201: File-size compliance sweep (24 files)
 
-## Status: In Progress
+## Status: Done
 
 ## Goal
 Bring every file over its CLAUDE.md 3.3 size limit back under it by extracting
@@ -44,7 +44,7 @@ React component 200 · Service 250 · API route 80 · Utility 150.
 
 ### Components (>200)
 - [x] layout/TeamSidebar.tsx (221) → 149; extracted TeamSwitcher.tsx (93)
-- [ ] shared/ChampionSelector.tsx (209)
+- [x] shared/ChampionSelector.tsx (209) → 190; extracted useAllChampions hook to src/hooks (22)
 
 ## Note
 Line counts are pre-refactor. Each commit references TASK-201 and checks the box.
