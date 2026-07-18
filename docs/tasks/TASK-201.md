@@ -43,7 +43,7 @@ React component 200 · Service 250 · API route 80 · Utility 150.
 - [x] lib/email/templates/monthlyMilestone.ts (154) → 147 (shared escapeHtml)
 
 ### Components (>200)
-- [ ] layout/TeamSidebar.tsx (221)
+- [x] layout/TeamSidebar.tsx (221) → 149; extracted TeamSwitcher.tsx (93)
 - [ ] shared/ChampionSelector.tsx (209)
 
 ## Note
