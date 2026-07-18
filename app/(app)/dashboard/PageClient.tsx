@@ -33,6 +33,7 @@ import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 import { useSubscription } from "@/hooks/useSubscription";
 import { EmailVerificationBanner } from "@/components/ui/EmailVerificationBanner";
+import { ReferralWidget } from "@/domains/identity/components/ReferralWidget";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -203,6 +204,10 @@ export default function DashboardPage() {
                   <XpLevelWidget />
                   <DailyChallengeWidget />
                 </div>
+              </div>
+              <div>
+                <SectionLabel>Invite Friends</SectionLabel>
+                <ReferralWidget />
               </div>
             </div>
             <div className="space-y-4 lg:col-span-3">

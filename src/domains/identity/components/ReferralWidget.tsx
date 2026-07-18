@@ -1,9 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { Share2 } from "lucide-react";
 import { useReferralStats } from "@/hooks/useReferralStats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+
+const SHARE_TEXT =
+  "I'm climbing with LoL AI Coach — AI coaching on your own ranked games. Sign up with my link and we both get 7 days of Pro free 🎁";
 
 export function ReferralWidget() {
   const [copied, setCopied] = useState(false);
@@ -16,6 +20,14 @@ export function ReferralWidget() {
       : "https://lolaicoach.gg";
 
   const shareUrl = data ? `${appUrl}/register?ref=${data.code}` : "";
+  const enc = encodeURIComponent;
+  const shareTargets = shareUrl
+    ? [
+        { label: "X", href: `https://twitter.com/intent/tweet?text=${enc(SHARE_TEXT)}&url=${enc(shareUrl)}` },
+        { label: "WhatsApp", href: `https://wa.me/?text=${enc(`${SHARE_TEXT} ${shareUrl}`)}` },
+        { label: "Reddit", href: `https://www.reddit.com/submit?url=${enc(shareUrl)}&title=${enc("Free 7-day Pro on LoL AI Coach")}` },
+      ]
+    : [];
 
   async function handleCopy() {
     if (!shareUrl) return;
@@ -23,6 +35,17 @@ export function ReferralWidget() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
+
+  async function handleNativeShare() {
+    if (!shareUrl || typeof navigator === "undefined" || !navigator.share) return;
+    try {
+      await navigator.share({ title: "LoL AI Coach", text: SHARE_TEXT, url: shareUrl });
+    } catch {
+      /* user dismissed the share sheet */
+    }
+  }
+
+  const canNativeShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
 
   return (
     <Card>
@@ -48,6 +71,30 @@ export function ReferralWidget() {
             <Button size="sm" variant="secondary" onClick={handleCopy}>
               {copied ? "Copied!" : "Copy"}
             </Button>
+          </div>
+        )}
+
+        {shareUrl && (
+          <div className="flex flex-wrap gap-2">
+            {canNativeShare && (
+              <button
+                onClick={handleNativeShare}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-accent/40 bg-accent/10 px-3 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-accent/20"
+              >
+                <Share2 className="h-3.5 w-3.5" /> Share
+              </button>
+            )}
+            {shareTargets.map((t) => (
+              <a
+                key={t.label}
+                href={t.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-text-muted transition-colors hover:border-accent/40 hover:text-text"
+              >
+                {t.label}
+              </a>
+            ))}
           </div>
         )}
 
