@@ -13,7 +13,7 @@ export interface PushPayload {
 function getVapidConfig(): { publicKey: string; privateKey: string; subject: string } | null {
   const publicKey = process.env.VAPID_PUBLIC_KEY;
   const privateKey = process.env.VAPID_PRIVATE_KEY;
-  const subject = process.env.VAPID_SUBJECT ?? `mailto:${process.env.RESEND_FROM_EMAIL ?? "noreply@lolaicoach.gg"}`;
+  const subject = process.env.VAPID_SUBJECT ?? "mailto:noreply@lolaicoach.gg";
 
   if (!publicKey || !privateKey) return null;
 

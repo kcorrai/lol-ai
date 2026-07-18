@@ -1,3 +1,5 @@
+// This module is the app's logging service — it is the one intended place where
+// writing to console is correct, so no-console is disabled here only.
 /* eslint-disable no-console */
 import { getRequestId } from "@/lib/context/requestContext";
 
