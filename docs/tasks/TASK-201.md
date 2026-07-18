@@ -35,12 +35,12 @@ React component 200 · Service 250 · API route 80 · Utility 150.
 
 ### Utilities (>150)
 - [x] lib/lemonsqueezy/subscriptionService.ts (277) → 92; extracted lsCheckout.ts (71) + lsWebhookVerify.ts (39) + lsSubscriptionSync.ts (55)
-- [ ] lib/email/templates/teamSubscriptionNotification.ts (174)
+- [x] lib/email/templates/teamSubscriptionNotification.ts (174) → 84 (shared emailShell.ts 58)
 - [x] lib/ddragon.ts (166) → 75; extracted ddragonRunes.ts (101) + ddragonVersion.ts (4)
 - [x] lib/auth/authorization.ts (159) → 83; extracted planLimits.ts (81)
 - [x] lib/api/rateLimit.ts (159) → 71; extracted rateLimitBackends.ts (93)
-- [ ] lib/email/templates/reengagement.ts (156)
-- [ ] lib/email/templates/monthlyMilestone.ts (154)
+- [x] lib/email/templates/reengagement.ts (156) → 105 (shared emailShell)
+- [x] lib/email/templates/monthlyMilestone.ts (154) → 147 (shared escapeHtml)
 
 ### Components (>200)
 - [ ] layout/TeamSidebar.tsx (221)
