@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HeroVisual } from "./hero3d/HeroVisual";
+import { HeroShowcase } from "./HeroShowcase";
 import { StartFreeCta } from "./StartFreeCta";
 import { CountUp } from "@/components/ui/CountUp";
 import { getMetaSnapshot } from "@/domains/meta";
@@ -79,7 +79,7 @@ export async function HeroSection() {
           {/* 3D hextech hero with real splash art */}
           <div className="relative mx-auto w-full max-w-sm md:max-w-none">
             <div className="pointer-events-none absolute -inset-4 rounded-2xl bg-accent/5 blur-2xl" />
-            <HeroVisual />
+            <HeroShowcase />
           </div>
         </div>
       </div>

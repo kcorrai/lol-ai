@@ -163,18 +163,14 @@ This document records every production and development dependency added after th
 
 ---
 
-## 3D Landing Dependencies
+## Landing Dependencies
 
-### `three`, `@react-three/fiber` (v8), `@react-three/drei` (v9)
+### `three`, `@react-three/fiber`, `@react-three/drei` — REMOVED (TASK-210)
 
-**Added in:** TASK-176
-**Purpose:** 3D hextech hero on the landing page — floating real champion splash
-cards with a golden particle field and mouse parallax.
-**Why this, not alternatives:** R3F is the declarative React wrapper for Three.js
-with the richest ecosystem; drei provides `useTexture`/`Float` helpers. Pinned to
-the **v8/v9 line** because R3F v9 requires React 19 and the app is on React 18.
-**Scope:** `app/(marketing)/components/hero3d/` only, lazy-loaded via
-`next/dynamic({ ssr: false })`. See `docs/adr/ADR-009-3d-landing-stack.md`.
+**Removed in:** TASK-210. The 3D hextech hero looked poor and shipped a heavy
+WebGL bundle (`three` + R3F + drei). Replaced with a static `HeroShowcase`
+(champion splash + a floating AI-insight card) — no client 3D, no extra deps.
+ADR-009 is superseded.
 
 ### `framer-motion` (v11)
 
