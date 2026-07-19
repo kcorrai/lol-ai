@@ -29,7 +29,7 @@ export default function MatchDetailPage() {
 
   const durationMin = Math.floor(match.gameDuration / 60);
   const durationSec = match.gameDuration % 60;
-  const userParticipant = match.participants.find((p) => p.riotAccountId === match.userRiotAccountId);
+  const userParticipant = match.participants.find((p) => p.puuid === match.userPuuid);
   const userWon = userParticipant?.won;
 
   return (
@@ -49,12 +49,12 @@ export default function MatchDetailPage() {
       <div className="space-y-4">
         <MatchTeamTable
           participants={match.participants} teamId={100}
-          userRiotAccountId={match.userRiotAccountId}
+          userPuuid={match.userPuuid}
           objectives={match.teamObjectives?.["100"] ?? null}
         />
         <MatchTeamTable
           participants={match.participants} teamId={200}
-          userRiotAccountId={match.userRiotAccountId}
+          userPuuid={match.userPuuid}
           objectives={match.teamObjectives?.["200"] ?? null}
         />
       </div>

@@ -67,6 +67,8 @@ export type MatchDetail = {
   teamObjectives: Record<string, TeamObjectives> | null;
   participants: ParticipantDetail[];
   userRiotAccountId: string | null;
+  /** puuid of the viewing user's participant — used to highlight their row (robust for shared accounts). */
+  userPuuid: string | null;
   aiInsight: AiInsight;
 };
 
@@ -77,7 +79,7 @@ export async function getMatchDetail(
   const [riotAccounts, match] = await Promise.all([
     prisma.riotAccount.findMany({
       where: { userId },
-      select: { id: true, gameName: true, tagLine: true },
+      select: { id: true, puuid: true, gameName: true, tagLine: true },
     }),
     prisma.match.findUnique({
       where: { id: matchDbId },
@@ -87,15 +89,14 @@ export async function getMatchDetail(
 
   if (!match) return null;
 
-  const accountIds = new Set(riotAccounts.map((a) => a.id));
+  // Match participation by puuid, not riotAccountId, so a user who linked the same Riot account as
+  // someone else still sees the match (TASK-228).
+  const accountPuuids = new Set(riotAccounts.map((a) => a.puuid));
 
-  // Only expose matches the user participated in (any of their linked accounts)
-  const userParticipant = match.participants.find(
-    (p) => p.riotAccountId !== null && accountIds.has(p.riotAccountId)
-  );
+  const userParticipant = match.participants.find((p) => accountPuuids.has(p.puuid));
   if (!userParticipant) return null;
 
-  const userAccount = riotAccounts.find((a) => a.id === userParticipant.riotAccountId) ?? riotAccounts[0] ?? null;
+  const userAccount = riotAccounts.find((a) => a.puuid === userParticipant.puuid) ?? riotAccounts[0] ?? null;
 
   // Fetch user's latest rank to enrich their participant row (others don't have stored rank)
   const latestUserRank = userAccount
@@ -115,8 +116,7 @@ export async function getMatchDetail(
     teamTotals.set(p.teamId, t);
   }
 
-  const isUserParticipant = (p: { riotAccountId: string | null }) =>
-    p.riotAccountId !== null && accountIds.has(p.riotAccountId);
+  const isUserParticipant = (p: { puuid: string }) => accountPuuids.has(p.puuid);
 
   const participants: ParticipantDetail[] = match.participants.map((p) => {
     const team = teamTotals.get(p.teamId) ?? { damage: 1, kills: 0 };
@@ -191,6 +191,9 @@ export async function getMatchDetail(
     teamObjectives: (match.teamObjectives as Record<string, TeamObjectives> | null) ?? null,
     participants,
     userRiotAccountId: userAccount?.id ?? null,
+    // Highlight the user's row by puuid — robust even when the shared participant row isn't owned by
+    // this user's account (TASK-228).
+    userPuuid: userParticipant.puuid,
     aiInsight,
   };
 }

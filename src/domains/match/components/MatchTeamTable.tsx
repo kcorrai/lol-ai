@@ -101,11 +101,11 @@ function TeamHeader({ team, won, objectives }: { team: ParticipantDetail[]; won:
 interface TeamTableProps {
   participants: ParticipantDetail[];
   teamId: number;
-  userRiotAccountId: string | null;
+  userPuuid: string | null;
   objectives: TeamObjectives | null;
 }
 
-export function MatchTeamTable({ participants, teamId, userRiotAccountId, objectives }: TeamTableProps) {
+export function MatchTeamTable({ participants, teamId, userPuuid, objectives }: TeamTableProps) {
   const team = participants
     .filter((p) => p.teamId === teamId)
     .sort((a, b) => (POSITION_ORDER[a.position] ?? 5) - (POSITION_ORDER[b.position] ?? 5));
@@ -133,7 +133,7 @@ export function MatchTeamTable({ participants, teamId, userRiotAccountId, object
           </thead>
           <tbody>
             {team.map((p) => {
-              const isUser = p.riotAccountId === userRiotAccountId;
+              const isUser = userPuuid !== null && p.puuid === userPuuid;
               const kp = Math.round(p.killParticipation * 100);
               return (
                 <tr key={p.id} className={`border-b border-border last:border-0 ${isUser ? "bg-accent/10" : "bg-surface"}`}>

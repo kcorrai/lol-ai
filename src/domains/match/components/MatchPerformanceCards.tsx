@@ -10,7 +10,7 @@ interface Props {
 }
 
 export function MatchPerformanceCards({ match }: Props) {
-  const user = match.participants.find((p) => p.riotAccountId === match.userRiotAccountId);
+  const user = match.participants.find((p) => p.puuid === match.userPuuid);
   if (!user) return null;
   const cards = [
     { label: "KDA",        value: fmt(user.kda, 2) },
