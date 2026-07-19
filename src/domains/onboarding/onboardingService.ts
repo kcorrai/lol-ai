@@ -37,3 +37,12 @@ export async function completeOnboarding(userId: string): Promise<OnboardingStat
   });
   return { completed: true, completedAt };
 }
+
+// Clears the forced-onboarding flag so the guided journey can be replayed. Dev-only tooling
+// (TASK-226) — the calling route is guarded out of production.
+export async function resetOnboarding(userId: string): Promise<void> {
+  await prisma.profile.updateMany({
+    where: { userId },
+    data: { onboardingCompletedAt: null },
+  });
+}

@@ -35,6 +35,7 @@ import { useAutoSync } from "@/hooks/useAutoSync";
 import { EmailVerificationBanner } from "@/components/ui/EmailVerificationBanner";
 import { ReferralWidget } from "@/domains/identity/components/ReferralWidget";
 import { ProgressionStrip } from "@/components/dashboard/ProgressionStrip";
+import { DevRestartOnboarding } from "@/components/dashboard/DevRestartOnboarding";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -57,7 +58,14 @@ export default function DashboardPage() {
   // Keep match data current on its own — silently re-sync a stale account on load (TASK-221).
   useAutoSync(primaryId, primaryAccount?.lastSyncedAt);
 
-  if (accountsLoading || !accounts || accounts.length === 0) return <PageSkeleton />;
+  if (accountsLoading || !accounts || accounts.length === 0) {
+    return (
+      <>
+        <PageSkeleton />
+        <DevRestartOnboarding />
+      </>
+    );
+  }
 
   const isPro = sub?.plan === "pro" || sub?.plan === "elite";
 
@@ -67,6 +75,7 @@ export default function DashboardPage() {
         <EmailVerificationBanner />
       </Suspense>
       <TiltBreakModal riotAccountId={primaryId} />
+      <DevRestartOnboarding />
 
       {/* ── Player Header — cinematic banner ──────────────────────────── */}
       {(() => {
