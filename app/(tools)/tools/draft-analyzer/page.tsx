@@ -11,6 +11,7 @@ import {
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
 import { ToolUpgradeNudge } from "../../ToolUpgradeNudge";
+import { PublicOnly } from "@/components/tools/PublicOnly";
 import { DraftBuilder } from "./DraftBuilder";
 import { DraftResults } from "./DraftResults";
 
@@ -82,9 +83,11 @@ export default async function DraftAnalyzerPage({ searchParams }: PageProps) {
       />
 
       <header className="mb-8">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
-          Free Tool · No login required
-        </p>
+        <PublicOnly>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
+            Free Tool · No login required
+          </p>
+        </PublicOnly>
         <h1 className="font-display text-3xl font-black text-text md:text-4xl">Draft Analyzer</h1>
         <p className="mt-2 max-w-2xl text-text-muted">
           Build both team comps and get a stats-based read on damage balance, frontline, scaling,
@@ -115,21 +118,23 @@ export default async function DraftAnalyzerPage({ searchParams }: PageProps) {
 
           <ToolUpgradeNudge message="Go Pro for AI coaching on YOUR games — how your real drafts play out, your worst matchups, and a step-by-step climb plan." />
 
-          <div className="mt-12 rounded-2xl border border-accent/30 bg-accent/5 p-6 text-center">
-            <h2 className="font-display text-xl font-bold text-text">
-              Want a deeper, personalized read on your games?
-            </h2>
-            <p className="mx-auto mt-2 max-w-xl text-sm text-text-muted">
-              This tool is stats-based. Connect your Riot account for an AI coaching report that
-              analyzes your actual drafts, mistakes, and how to climb.
-            </p>
-            <Link
-              href="/register"
-              className="mt-5 inline-block rounded-md bg-accent px-6 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
-            >
-              Get your free AI analysis
-            </Link>
-          </div>
+          <PublicOnly>
+            <div className="mt-12 rounded-2xl border border-accent/30 bg-accent/5 p-6 text-center">
+              <h2 className="font-display text-xl font-bold text-text">
+                Want a deeper, personalized read on your games?
+              </h2>
+              <p className="mx-auto mt-2 max-w-xl text-sm text-text-muted">
+                This tool is stats-based. Connect your Riot account for an AI coaching report that
+                analyzes your actual drafts, mistakes, and how to climb.
+              </p>
+              <Link
+                href="/register"
+                className="mt-5 inline-block rounded-md bg-accent px-6 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
+              >
+                Get your free AI analysis
+              </Link>
+            </div>
+          </PublicOnly>
         </>
       )}
     </div>

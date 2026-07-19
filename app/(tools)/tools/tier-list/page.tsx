@@ -6,6 +6,7 @@ import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
 import { TierListView } from "./TierListView";
 import { tierBlurb } from "./tierBlurb";
 import { RelatedTools } from "../../RelatedTools";
+import { PublicOnly } from "@/components/tools/PublicOnly";
 
 export const revalidate = 43200; // 12h ISR
 
@@ -63,9 +64,11 @@ export default async function TierListPage({ searchParams }: PageProps) {
       />
 
       <header className="mb-6">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
-          Free Tool · No login required
-        </p>
+        <PublicOnly>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
+            Free Tool · No login required
+          </p>
+        </PublicOnly>
         <h1 className="font-display text-3xl font-black text-text md:text-4xl">
           LoL Tier List{patch ? ` — Patch ${patch}` : ""}
         </h1>

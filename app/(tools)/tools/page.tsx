@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Swords, Users, Layers, Trophy, BookOpen, Snowflake, TrendingUp } from "lucide-react";
+import { PublicOnly } from "@/components/tools/PublicOnly";
 
 export const metadata: Metadata = {
   title: "Free LoL Tools — Counters, Matchups, Draft & Tier List | LoL AI Coach",
@@ -72,9 +73,11 @@ export default function ToolsHubPage() {
       />
 
       <header className="mb-10 text-center">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
-          100% Free · No login required
-        </p>
+        <PublicOnly>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
+            100% Free · No login required
+          </p>
+        </PublicOnly>
         <h1 className="font-display text-4xl font-black text-text md:text-5xl">Free LoL Tools</h1>
         <p className="mx-auto mt-3 max-w-2xl text-text-muted">
           Counter picks, matchups, drafts and tier lists — all powered by real ranked data and
@@ -102,21 +105,23 @@ export default function ToolsHubPage() {
         ))}
       </div>
 
-      <div className="mt-12 rounded-2xl border border-accent/30 bg-accent/5 p-6 text-center">
-        <h2 className="font-display text-xl font-bold text-text">
-          Want coaching on your own games?
-        </h2>
-        <p className="mx-auto mt-2 max-w-xl text-sm text-text-muted">
-          Connect your Riot account for a personal AI coaching report — your worst matchups,
-          mistakes, and a plan to climb.
-        </p>
-        <Link
-          href="/register"
-          className="mt-5 inline-block rounded-md bg-accent px-6 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
-        >
-          Get your free AI analysis
-        </Link>
-      </div>
+      <PublicOnly>
+        <div className="mt-12 rounded-2xl border border-accent/30 bg-accent/5 p-6 text-center">
+          <h2 className="font-display text-xl font-bold text-text">
+            Want coaching on your own games?
+          </h2>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-text-muted">
+            Connect your Riot account for a personal AI coaching report — your worst matchups,
+            mistakes, and a plan to climb.
+          </p>
+          <Link
+            href="/register"
+            className="mt-5 inline-block rounded-md bg-accent px-6 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
+          >
+            Get your free AI analysis
+          </Link>
+        </div>
+      </PublicOnly>
     </div>
   );
 }

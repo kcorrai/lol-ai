@@ -6,6 +6,7 @@ import { CounterResults } from "@/domains/meta/components/CounterResults";
 import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
 import { RelatedChampions } from "@/domains/meta/components/RelatedChampions";
 import { PersonalMatchupPanel } from "@/domains/counter/components/PersonalMatchupPanel";
+import { PublicOnly } from "@/components/tools/PublicOnly";
 import { CounterPickerControls } from "./CounterPickerControls";
 
 interface PageProps {
@@ -83,9 +84,11 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
       />
 
       <header className="mb-8">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
-          Free Tool · No login required
-        </p>
+        <PublicOnly>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
+            Free Tool · No login required
+          </p>
+        </PublicOnly>
         <h1 className="font-display text-3xl font-black text-text md:text-4xl">
           Counter Picker
         </h1>
@@ -151,21 +154,23 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
             </Link>
           </div>
 
-          <div className="mt-12 rounded-2xl border border-accent/30 bg-accent/5 p-6 text-center">
-            <h2 className="font-display text-xl font-bold text-text">
-              Want to know why you keep losing this matchup?
-            </h2>
-            <p className="mx-auto mt-2 max-w-xl text-sm text-text-muted">
-              Connect your Riot account and get a personal AI coaching report on your own games —
-              your worst matchups, mistakes, and how to fix them.
-            </p>
-            <Link
-              href="/register"
-              className="mt-5 inline-block rounded-md bg-accent px-6 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
-            >
-              Get your free AI analysis
-            </Link>
-          </div>
+          <PublicOnly>
+            <div className="mt-12 rounded-2xl border border-accent/30 bg-accent/5 p-6 text-center">
+              <h2 className="font-display text-xl font-bold text-text">
+                Want to know why you keep losing this matchup?
+              </h2>
+              <p className="mx-auto mt-2 max-w-xl text-sm text-text-muted">
+                Connect your Riot account and get a personal AI coaching report on your own games —
+                your worst matchups, mistakes, and how to fix them.
+              </p>
+              <Link
+                href="/register"
+                className="mt-5 inline-block rounded-md bg-accent px-6 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
+              >
+                Get your free AI analysis
+              </Link>
+            </div>
+          </PublicOnly>
         </>
       )}
 

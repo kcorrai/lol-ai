@@ -8,6 +8,7 @@ import { MatchupReportCard } from "./MatchupReportCard";
 import { MatchupBuildSummary } from "./MatchupBuildSummary";
 import { loadMatchupExtras } from "./loadMatchupExtras";
 import { ToolUpgradeNudge } from "../../ToolUpgradeNudge";
+import { PublicOnly } from "@/components/tools/PublicOnly";
 
 interface PageProps {
   searchParams: { a?: string; b?: string; role?: string };
@@ -59,9 +60,11 @@ export default async function MatchupPage({ searchParams }: PageProps) {
       />
 
       <header className="mb-8">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
-          Free Tool · No login required
-        </p>
+        <PublicOnly>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
+            Free Tool · No login required
+          </p>
+        </PublicOnly>
         <h1 className="font-display text-3xl font-black text-text md:text-4xl">
           Matchup Analyzer
         </h1>
@@ -122,21 +125,23 @@ export default async function MatchupPage({ searchParams }: PageProps) {
             </Link>
           </div>
 
-          <div className="mt-8 rounded-2xl border border-accent/30 bg-accent/5 p-6 text-center">
-            <h2 className="font-display text-xl font-bold text-text">
-              Struggling with this lane in your own games?
-            </h2>
-            <p className="mx-auto mt-2 max-w-xl text-sm text-text-muted">
-              Connect your Riot account for a personal AI coaching report that breaks down your
-              real matchups, mistakes, and how to climb.
-            </p>
-            <Link
-              href="/register"
-              className="mt-5 inline-block rounded-md bg-accent px-6 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
-            >
-              Get your free AI analysis
-            </Link>
-          </div>
+          <PublicOnly>
+            <div className="mt-8 rounded-2xl border border-accent/30 bg-accent/5 p-6 text-center">
+              <h2 className="font-display text-xl font-bold text-text">
+                Struggling with this lane in your own games?
+              </h2>
+              <p className="mx-auto mt-2 max-w-xl text-sm text-text-muted">
+                Connect your Riot account for a personal AI coaching report that breaks down your
+                real matchups, mistakes, and how to climb.
+              </p>
+              <Link
+                href="/register"
+                className="mt-5 inline-block rounded-md bg-accent px-6 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
+              >
+                Get your free AI analysis
+              </Link>
+            </div>
+          </PublicOnly>
         </>
       )}
     </div>
