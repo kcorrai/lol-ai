@@ -45,7 +45,9 @@ export function AccountConnectionForm() {
   }
 
   return (
-    <Card>
+    // data-tour anchor: the forced first-journey (TASK-217) spotlights this card on its connect
+    // step. Without it the guide overlay can't cut a hole and freezes the page (TASK-220).
+    <Card data-tour="connect-form">
       <CardHeader>
         <CardTitle>Connect Your Riot Account</CardTitle>
         <CardDescription>Enter your Riot ID (GameName#TAG)</CardDescription>

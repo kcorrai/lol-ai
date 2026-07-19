@@ -17,6 +17,22 @@ describe("GUIDE_STEPS", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
+  // Every step target must correspond to a real `data-tour` anchor rendered somewhere in the app.
+  // A step pointing at a non-existent anchor makes the spotlight overlay freeze the whole page
+  // (this list is what caught the missing `connect-form` — TASK-220). Keep in sync with the
+  // `data-tour="..."` attributes in the components.
+  it("only spotlights anchors the app actually renders", () => {
+    const KNOWN_ANCHORS = new Set([
+      "nav-dashboard", "nav-accounts", "nav-reports", "nav-improvement", "nav-badges", "nav-leaderboard",
+      "connect-form", "match-row", "generate-report",
+      "improvement-preview", "badges-preview", "leaderboard-preview",
+    ]);
+    for (const step of GUIDE_STEPS) {
+      if (!step.target) continue;
+      expect(KNOWN_ANCHORS.has(step.target), `${step.id} → data-tour="${step.target}" must exist in the app`).toBe(true);
+    }
+  });
+
   it("gives every route step a target, and every nav route step a goTo safety valve", () => {
     for (const step of GUIDE_STEPS) {
       if (step.advance.type !== "route") continue;

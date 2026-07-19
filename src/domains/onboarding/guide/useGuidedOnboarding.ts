@@ -40,8 +40,12 @@ export interface GuidedOnboardingState {
   index: number;
   total: number;
   rect: SpotRect | null;
+  /** Whether the current step expects to spotlight a target (vs. a centered step). */
+  stepHasTarget: boolean;
   manualAdvance: () => void;
   goTo: (href: string) => void;
+  /** Escape hatch: end the journey so a stuck user is never trapped (TASK-220). */
+  dismiss: () => void;
 }
 
 export function useGuidedOnboarding(userId: string | null): GuidedOnboardingState {
@@ -158,8 +162,21 @@ export function useGuidedOnboarding(userId: string | null): GuidedOnboardingStat
 
   const goTo = useCallback((href: string) => router.push(href), [router]);
 
+  // Escape hatch. State-gated steps (connect/syncing/generate-report) depend on external systems
+  // — a valid Riot ID, an account with ranked games, a working AI provider — any of which can fail
+  // and leave the user with no way forward. Dismissing marks onboarding complete (so it never
+  // re-traps on the next login) and tears down the overlay (TASK-220).
+  const dismiss = useCallback(() => {
+    complete.mutate(undefined, { onSettled: () => setDone(true) });
+    try {
+      localStorage.setItem(storageKey, String(GUIDE_STEPS.length - 1));
+    } catch {
+      /* ignore */
+    }
+  }, [complete, storageKey]);
+
   const active = mounted && !done;
 
   // Keep a stable ref-free return; consumers guard on `active`.
-  return { active, step, index, total: GUIDE_STEPS.length, rect, manualAdvance, goTo };
+  return { active, step, index, total: GUIDE_STEPS.length, rect, stepHasTarget: Boolean(step.target), manualAdvance, goTo, dismiss };
 }

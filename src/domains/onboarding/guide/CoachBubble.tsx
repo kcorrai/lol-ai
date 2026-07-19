@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Bot, ChevronRight, ArrowRight } from "lucide-react";
+import { Bot, ChevronRight, ArrowRight, X } from "lucide-react";
 import { Confetti } from "./Confetti";
 import type { SpotRect } from "./SpotlightOverlay";
 import type { GuideStep } from "./guideSteps";
@@ -40,9 +40,11 @@ interface CoachBubbleProps {
   onManualAdvance: () => void;
   /** Route steps — the "Take me there" safety valve. */
   onGoTo: (href: string) => void;
+  /** Escape hatch — end the journey so a stuck user is never trapped. */
+  onDismiss: () => void;
 }
 
-export function CoachBubble({ step, rect, index, total, onManualAdvance, onGoTo }: CoachBubbleProps): React.JSX.Element {
+export function CoachBubble({ step, rect, index, total, onManualAdvance, onGoTo, onDismiss }: CoachBubbleProps): React.JSX.Element {
   const [typed, setTyped] = useState("");
 
   // Typewriter — reveal the body one char at a time; reset on every step change.
@@ -66,6 +68,18 @@ export function CoachBubble({ step, rect, index, total, onManualAdvance, onGoTo 
       style={{ width: BUBBLE_W, ...bubbleStyle(rect, step.placement) }}
     >
       {step.isFinal && <Confetti />}
+
+      {/* Escape hatch — always available so an external-dependency step (connect / sync / AI) can
+          never permanently trap the user. Hidden on the final celebratory step. */}
+      {!step.isFinal && (
+        <button
+          onClick={onDismiss}
+          className="absolute -right-1 -top-1 flex items-center gap-1 rounded-md px-1.5 py-1 text-[11px] font-medium text-text-muted/60 transition-colors hover:text-text"
+          title="Skip setup and go to the app"
+        >
+          Skip setup <X className="h-3 w-3" />
+        </button>
+      )}
 
       <div className="relative flex items-start gap-3">
         <div className="relative flex h-11 w-11 shrink-0 animate-coach-bounce items-center justify-center rounded-full bg-accent/15 text-accent ring-1 ring-accent/40">

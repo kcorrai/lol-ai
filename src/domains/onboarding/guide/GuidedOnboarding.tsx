@@ -10,7 +10,7 @@ import { useGuidedOnboarding } from "./useGuidedOnboarding";
 // survives navigation; only rendered for users whose onboarding is not yet complete.
 export function GuidedOnboarding({ userId }: { userId: string | null }): React.JSX.Element | null {
   const [container, setContainer] = useState<HTMLElement | null>(null);
-  const { active, step, index, total, rect, manualAdvance, goTo } = useGuidedOnboarding(userId);
+  const { active, step, index, total, rect, stepHasTarget, manualAdvance, goTo, dismiss } = useGuidedOnboarding(userId);
 
   useEffect(() => setContainer(document.body), []);
 
@@ -20,7 +20,7 @@ export function GuidedOnboarding({ userId }: { userId: string | null }): React.J
     // The container itself must not capture pointer events, or it would swallow clicks over the
     // spotlight hole. Its children (dim panels, bubble) opt back in with `pointer-events-auto`.
     <div className="pointer-events-none fixed inset-0 z-[80]">
-      <SpotlightOverlay rect={rect} />
+      <SpotlightOverlay rect={rect} hasTarget={stepHasTarget} />
       <CoachBubble
         step={step}
         rect={rect}
@@ -28,6 +28,7 @@ export function GuidedOnboarding({ userId }: { userId: string | null }): React.J
         total={total}
         onManualAdvance={manualAdvance}
         onGoTo={goTo}
+        onDismiss={dismiss}
       />
     </div>,
     container,

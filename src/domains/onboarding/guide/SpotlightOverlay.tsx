@@ -11,13 +11,19 @@ export interface SpotRect {
 // is *click-through on the target*: four dim panels tile the viewport around the target rect and
 // absorb clicks, while the rect itself is left uncovered so the real element underneath stays
 // interactive. Centered steps (no rect) dim the whole screen.
-export function SpotlightOverlay({ rect }: { rect: SpotRect | null }): React.JSX.Element {
+export function SpotlightOverlay({ rect, hasTarget }: { rect: SpotRect | null; hasTarget: boolean }): React.JSX.Element {
   // `pointer-events-auto` on each panel makes the dimmed areas absorb clicks (so the rest of the app
   // is unusable), while the target rect is left uncovered so clicks pass through to the real element.
-  const dim = "pointer-events-auto fixed bg-black/75 backdrop-blur-[2px] transition-all duration-300";
+  const dimBase = "fixed bg-black/75 backdrop-blur-[2px] transition-all duration-300";
+  const dim = `pointer-events-auto ${dimBase}`;
 
   if (!rect) {
-    return <div className={`${dim} inset-0`} />;
+    // A centered step (no target) intentionally dims and blocks everything. But when a step *expects*
+    // a target and its anchor can't be resolved (missing/renamed/off-screen), a click-blocking panel
+    // would freeze the whole page — so degrade to a non-interactive dim instead of trapping the user
+    // (TASK-220). The coach bubble's "Skip setup" remains available either way.
+    const interactivity = hasTarget ? "pointer-events-none" : "pointer-events-auto";
+    return <div className={`${dimBase} inset-0 ${interactivity}`} />;
   }
 
   const right = rect.left + rect.width;
