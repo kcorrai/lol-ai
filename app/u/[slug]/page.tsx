@@ -5,6 +5,7 @@ import { Shield, Trophy } from "lucide-react";
 import { getPublicProfile } from "@/domains/identity/services/profileService";
 import { PublicProfileHero } from "@/domains/identity/components/PublicProfileHero";
 import { PublicProfileChampionPool } from "@/domains/identity/components/PublicProfileChampionPool";
+import { ProfileOnboarding } from "@/domains/onboarding/guide/ProfileOnboarding";
 
 export const revalidate = 3600;
 
@@ -62,15 +63,17 @@ export default async function PublicProfilePage({ params }: Props) {
       </nav>
 
       <div className="mx-auto max-w-2xl px-4 py-8 space-y-4">
-        <PublicProfileHero
-          displayName={profile.displayName}
-          profileIconId={profile.profileIconId}
-          rank={profile.rank}
-          region={profile.region}
-          joinedAt={profile.joinedAt}
-          featuredChampion={profile.topChampions[0]?.name ?? null}
-          isPrivate={profile.isPrivate}
-        />
+        <div data-tour="profile-hero">
+          <PublicProfileHero
+            displayName={profile.displayName}
+            profileIconId={profile.profileIconId}
+            rank={profile.rank}
+            region={profile.region}
+            joinedAt={profile.joinedAt}
+            featuredChampion={profile.topChampions[0]?.name ?? null}
+            isPrivate={profile.isPrivate}
+          />
+        </div>
 
         {profile.isPrivate && (
           <div className="rounded-2xl border border-border bg-surface p-8 text-center">
@@ -126,6 +129,10 @@ export default async function PublicProfilePage({ params }: Props) {
           </Link>
         </div>
       </div>
+
+      {/* Keeps the forced first-journey running when it sends the user to view their own profile;
+          renders nothing for logged-out visitors or already-onboarded users (TASK-225). */}
+      <ProfileOnboarding />
     </div>
   );
 }

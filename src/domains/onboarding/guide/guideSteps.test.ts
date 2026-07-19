@@ -24,7 +24,7 @@ describe("GUIDE_STEPS", () => {
   it("only spotlights anchors the app actually renders", () => {
     const KNOWN_ANCHORS = new Set([
       "nav-dashboard", "nav-accounts", "nav-reports", "nav-improvement", "nav-badges", "nav-leaderboard",
-      "connect-form", "match-row", "generate-report",
+      "connect-form", "match-row", "generate-report", "my-profile-link", "profile-hero",
       "improvement-preview", "badges-preview", "leaderboard-preview",
     ]);
     for (const step of GUIDE_STEPS) {
@@ -57,6 +57,24 @@ describe("GUIDE_STEPS", () => {
       expect(GUIDE_STEPS[i].target, `${id} targets a *-preview anchor`).toMatch(/-preview$/);
       expect(i, `${id} precedes finish`).toBeLessThan(finish);
     }
+  });
+
+  it("routes through the user's own profile between the match and reports (TASK-225)", () => {
+    const breakdown = GUIDE_STEPS.findIndex((s) => s.id === "match-breakdown");
+    const clickName = GUIDE_STEPS.findIndex((s) => s.id === "click-my-name");
+    const profile = GUIDE_STEPS.findIndex((s) => s.id === "profile-intro");
+    const reports = GUIDE_STEPS.findIndex((s) => s.id === "go-reports");
+    expect(breakdown).toBeLessThan(clickName);
+    expect(clickName).toBeLessThan(profile);
+    expect(profile).toBeLessThan(reports);
+
+    const cn = GUIDE_STEPS[clickName];
+    expect(cn.target).toBe("my-profile-link");
+    expect(cn.advance).toEqual({ type: "route", route: "/u/" });
+
+    const pi = GUIDE_STEPS[profile];
+    expect(pi.target).toBe("profile-hero");
+    expect(pi.advance.type).toBe("manual");
   });
 
   it("forces the account connection before anything else", () => {

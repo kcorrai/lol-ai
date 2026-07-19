@@ -150,6 +150,7 @@ export function MatchTeamTable({ participants, teamId, userRiotAccountId, object
                         {p.gameName && (
                           <Link
                             href={`/u/${`${p.gameName}-${p.tagLine}`.replace(/[^a-zA-Z0-9\-_]/g, "-")}`}
+                            data-tour={isUser ? "my-profile-link" : undefined}
                             className="truncate text-[10px] text-text-muted hover:text-accent hover:underline"
                           >
                             {p.gameName}<span className="text-text-muted/50">#{p.tagLine}</span>
