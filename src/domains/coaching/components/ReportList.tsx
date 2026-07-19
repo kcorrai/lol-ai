@@ -43,15 +43,20 @@ function reportTitle(report: ReportSummary): string {
 function ReportRow({ report }: { report: ReportSummary }) {
   const date = new Date(report.createdAt).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
   const isComplete = report.status === "complete";
+  const isBuilding = report.status === "pending" || report.status === "processing";
   const cfg = TYPE_CONFIG[report.reportType] ?? TYPE_CONFIG.session_review!;
   const Icon = cfg.icon;
 
+  // While the report is building, keep the row glowing (animate-glow-pulse) so the user sees it's
+  // working; completed rows keep the hover-glow + click-through (TASK-232).
   const inner = (
     <div
-      className="group flex items-center gap-3 rounded-xl border border-border bg-surface p-4 transition-all duration-200 hover:border-accent/30"
-      style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)" }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = `0 0 20px ${cfg.glow}, inset 0 1px 0 rgba(255,255,255,0.04)`; }}
-      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.03)"; }}
+      className={`group flex items-center gap-3 rounded-xl border bg-surface p-4 ${
+        isBuilding ? "border-accent/50 animate-glow-pulse" : "border-border transition-all duration-200 hover:border-accent/30"
+      }`}
+      style={isBuilding ? undefined : { boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)" }}
+      onMouseEnter={isBuilding ? undefined : (e) => { (e.currentTarget as HTMLElement).style.boxShadow = `0 0 20px ${cfg.glow}, inset 0 1px 0 rgba(255,255,255,0.04)`; }}
+      onMouseLeave={isBuilding ? undefined : (e) => { (e.currentTarget as HTMLElement).style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.03)"; }}
     >
       <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${cfg.bg}`}>
         <Icon className={`h-5 w-5 ${cfg.color}`} />

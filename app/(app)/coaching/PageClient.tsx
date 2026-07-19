@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Gamepad2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -31,7 +32,11 @@ const UPGRADE_ERROR_CODES = new Set([
 ]);
 
 export default function CoachingPage() {
+  const router = useRouter();
   const [upgradeReason, setUpgradeReason] = useState<string | null>(null);
+  // Track the report the user just generated so we can auto-open it once it finishes (TASK-232).
+  const [pendingReportId, setPendingReportId] = useState<string | null>(null);
+  const autoOpenedRef = useRef<string | null>(null);
   const { data: accounts, isLoading: accountsLoading } = useRiotAccounts();
   const primaryId = accounts?.[0]?.id ?? null;
   const { data: profile, isLoading: profileLoading } = usePerformanceProfile(primaryId);
@@ -50,16 +55,18 @@ export default function CoachingPage() {
     },
   });
 
+  const trackGenerated = { onSuccess: (data: { reportId: string }) => setPendingReportId(data.reportId) };
+
   function handleSessionReview() {
     if (!primaryId || !profile) return;
     const matchIds = profile.recentMatches.slice(0, 5).map((m) => m.matchDbId);
-    generateReport.mutate({ riotAccountId: primaryId, reportType: "session_review", matchIds });
+    generateReport.mutate({ riotAccountId: primaryId, reportType: "session_review", matchIds }, trackGenerated);
   }
 
   function handleClimbRoadmap() {
     if (!primaryId || !profile) return;
     const matchIds = profile.recentMatches.slice(0, 10).map((m) => m.matchDbId);
-    generateReport.mutate({ riotAccountId: primaryId, reportType: "climb_roadmap", matchIds });
+    generateReport.mutate({ riotAccountId: primaryId, reportType: "climb_roadmap", matchIds }, trackGenerated);
   }
 
   function handleAramReview() {
@@ -69,8 +76,20 @@ export default function CoachingPage() {
       .slice(0, 5)
       .map((m) => m.matchDbId);
     if (aramMatchIds.length === 0) return;
-    generateReport.mutate({ riotAccountId: primaryId, reportType: "session_review", matchIds: aramMatchIds });
+    generateReport.mutate({ riotAccountId: primaryId, reportType: "session_review", matchIds: aramMatchIds }, trackGenerated);
   }
+
+  // Auto-open the freshly generated report the moment it finishes (reports poll every 3s).
+  useEffect(() => {
+    if (!pendingReportId || autoOpenedRef.current === pendingReportId) return;
+    const done = reportsData?.pages.some((p) =>
+      p.reports.some((r) => r.reportId === pendingReportId && r.status === "complete"),
+    );
+    if (done) {
+      autoOpenedRef.current = pendingReportId;
+      router.push(`/coaching/${pendingReportId}`);
+    }
+  }, [pendingReportId, reportsData, router]);
 
   const hasAramMatches = (profile?.recentMatches ?? []).some((m) => m.queueType === "ARAM");
 
