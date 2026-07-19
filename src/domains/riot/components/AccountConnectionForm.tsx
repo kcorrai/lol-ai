@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -21,6 +22,7 @@ type FormValues = z.infer<typeof schema>;
 
 export function AccountConnectionForm() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [serverError, setServerError] = useState<string | null>(null);
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormValues>({
@@ -40,6 +42,8 @@ export function AccountConnectionForm() {
       setServerError(json.error?.message ?? "Could not connect account");
       return;
     }
+    // Refetch the accounts list so it shows the new account without a hard refresh (TASK-229).
+    await queryClient.invalidateQueries({ queryKey: ["riot-accounts"] });
     router.push("/dashboard");
     router.refresh();
   }
