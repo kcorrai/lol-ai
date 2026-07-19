@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 import type { QueueType } from "@prisma/client";
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
@@ -10,8 +11,13 @@ export async function refreshChampionStats(
   riotAccountId: string,
   queueType: QueueType = "RANKED_SOLO_5x5"
 ): Promise<void> {
+  // Aggregate from match data by puuid (shared across users who linked this account), but store the
+  // resulting ChampionStat rows per riotAccountId (TASK-228).
+  const puuid = await getAccountPuuid(riotAccountId);
+  if (!puuid) return;
+
   const participants = await prisma.matchParticipant.findMany({
-    where: { riotAccountId, match: { queueType } },
+    where: { puuid, match: { queueType } },
     select: {
       championId: true,
       kills: true,

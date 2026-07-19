@@ -19,12 +19,14 @@ export async function getPlayerPerformanceProfile(
 ): Promise<PlayerPerformanceProfile> {
   const account = await prisma.riotAccount.findUnique({
     where: { id: riotAccountId },
-    select: { id: true },
+    select: { puuid: true },
   });
   if (!account) throw Errors.notFound("Riot account");
 
+  // Query match data by puuid, not riotAccountId, so every user who linked this Riot account sees
+  // the same matches (TASK-228). Same rows for a single-user account.
   const playerMatches = await prisma.matchParticipant.findMany({
-    where: { riotAccountId },
+    where: { puuid: account.puuid },
     include: {
       match: {
         include: { participants: { select: { teamId: true, damageDealt: true, kills: true } } },
@@ -124,7 +126,7 @@ export async function getPlayerPerformanceProfile(
 
   const avgTimeSpentDead =
     (await prisma.matchParticipant.aggregate({
-      where: { riotAccountId },
+      where: { puuid: account.puuid },
       _avg: { timeSpentDead: true },
     }))._avg.timeSpentDead ?? 0;
 
