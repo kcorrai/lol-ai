@@ -31,6 +31,7 @@ import { WeekSummaryWidget } from "@/components/dashboard/WeekSummaryWidget";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useAutoSync } from "@/hooks/useAutoSync";
 import { EmailVerificationBanner } from "@/components/ui/EmailVerificationBanner";
 import { ReferralWidget } from "@/domains/identity/components/ReferralWidget";
 import { ProgressionStrip } from "@/components/dashboard/ProgressionStrip";
@@ -52,6 +53,9 @@ export default function DashboardPage() {
 
   const { data: profile, isLoading: profileLoading, error: profileError } = usePerformanceProfile(primaryId);
   const { data: sub } = useSubscription();
+
+  // Keep match data current on its own — silently re-sync a stale account on load (TASK-221).
+  useAutoSync(primaryId, primaryAccount?.lastSyncedAt);
 
   if (accountsLoading || !accounts || accounts.length === 0) return <PageSkeleton />;
 

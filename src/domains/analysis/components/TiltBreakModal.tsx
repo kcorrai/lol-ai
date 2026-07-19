@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTiltStatus } from "@/hooks/useTiltStatus";
+import { useOnboardingPreview } from "@/domains/onboarding/preview/OnboardingPreviewContext";
 
 const OVERRIDE_KEY = "tilt-break-dismissed-at";
 const COOLDOWN_MS = 2 * 60 * 60 * 1000; // don't re-show for 2 hours after dismissal
@@ -12,6 +13,9 @@ interface TiltBreakModalProps {
 
 export function TiltBreakModal({ riotAccountId }: TiltBreakModalProps) {
   const { data: tilt, isLoading } = useTiltStatus(riotAccountId);
+  // Suppress during the forced first-journey — this full-screen modal would sit over the match row
+  // the tour asks the user to click, blocking it (TASK-221).
+  const { previewActive } = useOnboardingPreview();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -26,7 +30,7 @@ export function TiltBreakModal({ riotAccountId }: TiltBreakModalProps) {
     setVisible(false);
   }
 
-  if (!visible || !tilt) return null;
+  if (previewActive || !visible || !tilt) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
