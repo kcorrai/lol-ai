@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { GUIDE_STEPS, GUIDE_STORAGE_KEY, isGateSatisfied, storageKeyFor, type GuideGates } from "./guideSteps";
 
-const NONE: GuideGates = { hasAccount: false, hasMatches: false, hasCompleteReport: false };
-const ALL: GuideGates = { hasAccount: true, hasMatches: true, hasCompleteReport: true };
+const NONE: GuideGates = { hasAccount: false, hasMatches: false, hasCompleteReport: false, hasPlan: false };
+const ALL: GuideGates = { hasAccount: true, hasMatches: true, hasCompleteReport: true, hasPlan: true };
 
 describe("GUIDE_STEPS", () => {
   it("starts with a welcome and ends with a final step", () => {
@@ -24,7 +24,7 @@ describe("GUIDE_STEPS", () => {
   it("only spotlights anchors the app actually renders", () => {
     const KNOWN_ANCHORS = new Set([
       "nav-dashboard", "nav-accounts", "nav-reports", "nav-improvement", "nav-badges", "nav-leaderboard",
-      "connect-form", "match-row", "generate-report", "my-profile-link",
+      "connect-form", "match-row", "generate-report", "create-plan", "my-profile-link",
       "profile-hero", "profile-stats", "profile-champions", "profile-badges",
       "improvement-preview", "badges-preview", "leaderboard-preview",
     ]);

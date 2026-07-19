@@ -6,6 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 import { useCoachingReports } from "@/hooks/useCoachingReports";
+import { useImprovementPlan } from "@/hooks/useImprovementPlan";
 import { useCompleteOnboarding } from "@/hooks/useCompleteOnboarding";
 import { GUIDE_STEPS, storageKeyFor, type GuideGates, type GuideStep } from "./guideSteps";
 import type { SpotRect } from "./SpotlightOverlay";
@@ -67,14 +68,16 @@ export function useGuidedOnboarding(userId: string | null): GuidedOnboardingStat
   const primaryId = accounts?.[0]?.id ?? null;
   const { data: profile } = usePerformanceProfile(primaryId);
   const { data: reports } = useCoachingReports(primaryId ?? undefined);
+  const { data: plan } = useImprovementPlan(primaryId);
 
   const gates: GuideGates = useMemo(
     () => ({
       hasAccount: (accounts?.length ?? 0) > 0,
       hasMatches: (profile?.recentMatches?.length ?? 0) > 0,
       hasCompleteReport: (reports?.pages ?? []).some((p) => p.reports.some((r) => r.status === "complete")),
+      hasPlan: Boolean(plan),
     }),
-    [accounts, profile, reports],
+    [accounts, profile, reports, plan],
   );
 
   useEffect(() => {
@@ -157,6 +160,7 @@ export function useGuidedOnboarding(userId: string | null): GuidedOnboardingStat
       queryClient.invalidateQueries({ queryKey: ["riot-accounts"] });
       queryClient.invalidateQueries({ queryKey: ["performance-profile"] });
       queryClient.invalidateQueries({ queryKey: ["coaching-reports"] });
+      queryClient.invalidateQueries({ queryKey: ["improvement-plan"] });
     }, 2500);
     return () => window.clearInterval(id);
   }, [mounted, done, step, queryClient]);
@@ -169,6 +173,8 @@ export function useGuidedOnboarding(userId: string | null): GuidedOnboardingStat
       } catch {
         /* ignore */
       }
+      // Drop the user on the dashboard after "Start climbing" (TASK-233).
+      router.push("/dashboard");
       return;
     }
     const nextIndex = Math.min(index + 1, GUIDE_STEPS.length - 1);
@@ -178,7 +184,7 @@ export function useGuidedOnboarding(userId: string | null): GuidedOnboardingStat
     } catch {
       /* ignore */
     }
-  }, [step, index, complete, storageKey]);
+  }, [step, index, complete, storageKey, router]);
 
   const goTo = useCallback((href: string) => router.push(href), [router]);
 

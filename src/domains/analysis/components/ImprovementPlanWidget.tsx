@@ -80,6 +80,7 @@ export function ImprovementPlanWidget({ riotAccountId }: ImprovementPlanWidgetPr
             2-week personalized plan — daily goals created based on your current data.
           </p>
           <button
+            data-tour="create-plan"
             onClick={() => generate.mutate()}
             disabled={generate.isPending}
             className="rounded-xl bg-accent px-6 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90 disabled:opacity-50"

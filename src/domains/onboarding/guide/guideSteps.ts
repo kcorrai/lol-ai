@@ -10,6 +10,7 @@ export interface GuideGates {
   hasAccount: boolean;
   hasMatches: boolean;
   hasCompleteReport: boolean;
+  hasPlan: boolean;
 }
 
 export type GuideAdvance =
@@ -183,6 +184,15 @@ export const GUIDE_STEPS: GuideStep[] = [
     body: "Reports turn into a living plan you work through over time. Click the glowing “Improvement”.",
     advance: { type: "route", route: "/improvement" },
     goTo: "/improvement",
+  },
+  {
+    id: "create-plan",
+    target: "create-plan",
+    placement: "top",
+    padding: 10,
+    title: "Create your first plan",
+    body: "Hit “Create My Plan” — I'll set 2 weeks of daily goals from your own data. Wait here, it takes a few seconds.",
+    advance: { type: "state", gate: "hasPlan" },
   },
   {
     id: "improvement-inside",
