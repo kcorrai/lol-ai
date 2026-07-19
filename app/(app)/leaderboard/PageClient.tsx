@@ -8,6 +8,8 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { Skeleton } from "@/components/ui/skeleton";
 import { rankEmblemUrl, profileIconUrl } from "@/lib/ddragon";
 import { useLeaderboard } from "@/hooks/useLeaderboard";
+import { useOnboardingPreview } from "@/domains/onboarding/preview/OnboardingPreviewContext";
+import { LeaderboardPreview } from "./LeaderboardPreview";
 import { cn } from "@/lib/utils";
 import type { LeaderboardEntry } from "@/domains/analysis/services/leaderboardService";
 
@@ -138,6 +140,7 @@ type Period = "week" | "month";
 export default function LeaderboardPage() {
   const [period, setPeriod] = useState<Period>("week");
   const { data, isLoading } = useLeaderboard(period);
+  const { previewActive } = useOnboardingPreview();
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-6">
@@ -166,13 +169,17 @@ export default function LeaderboardPage() {
       {isLoading ? (
         <SkeletonRows />
       ) : !data || data.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border bg-surface/50 py-16 text-center">
-          <Trophy className="mx-auto mb-3 h-10 w-10 text-text-muted/30" />
-          <p className="text-sm font-medium text-text">Not enough data yet</p>
-          <p className="mt-1 text-xs text-text-muted">
-            Only players who&apos;ve played at least 3 matches and have public profiles are shown.
-          </p>
-        </div>
+        previewActive ? (
+          <LeaderboardPreview />
+        ) : (
+          <div className="rounded-xl border border-dashed border-border bg-surface/50 py-16 text-center">
+            <Trophy className="mx-auto mb-3 h-10 w-10 text-text-muted/30" />
+            <p className="text-sm font-medium text-text">Not enough data yet</p>
+            <p className="mt-1 text-xs text-text-muted">
+              Only players who&apos;ve played at least 3 matches and have public profiles are shown.
+            </p>
+          </div>
+        )
       ) : (
         <div className="space-y-2">
           {data.map((entry, i) => (

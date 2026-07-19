@@ -30,6 +30,15 @@ describe("GUIDE_STEPS", () => {
     }
   });
 
+  it("shows the leaderboard's inside as a manual step before finishing (TASK-219)", () => {
+    const inside = GUIDE_STEPS.findIndex((s) => s.id === "leaderboard-inside");
+    const finish = GUIDE_STEPS.findIndex((s) => s.id === "finish");
+    expect(inside).toBeGreaterThan(-1);
+    expect(GUIDE_STEPS[inside].advance.type).toBe("manual");
+    expect(GUIDE_STEPS[inside].target).toBe("leaderboard-preview");
+    expect(inside).toBeLessThan(finish);
+  });
+
   it("forces the account connection before anything else", () => {
     const accounts = GUIDE_STEPS.findIndex((s) => s.id === "go-accounts");
     const connect = GUIDE_STEPS.findIndex((s) => s.id === "connect");

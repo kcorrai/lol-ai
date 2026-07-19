@@ -7,6 +7,7 @@ import { BottomNav } from "./BottomNav";
 import { TiltAlertBanner } from "./TiltAlertBanner";
 import { AchievementToast } from "@/components/achievements/AchievementToast";
 import { GuidedOnboarding } from "@/domains/onboarding/guide/GuidedOnboarding";
+import { OnboardingPreviewProvider } from "@/domains/onboarding/preview/OnboardingPreviewContext";
 import { useUIStore } from "@/lib/stores/uiStore";
 
 export function AppShell({
@@ -38,7 +39,7 @@ export function AppShell({
           className="flex-1 overflow-y-auto pb-16 md:pb-0"
           style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)", backgroundSize: "64px 64px" }}
         >
-          {children}
+          <OnboardingPreviewProvider active={!onboardingComplete}>{children}</OnboardingPreviewProvider>
         </main>
       </div>
       <AchievementToast />

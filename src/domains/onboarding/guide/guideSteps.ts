@@ -155,6 +155,15 @@ export const GUIDE_STEPS: GuideStep[] = [
     goTo: "/leaderboard",
   },
   {
+    id: "leaderboard-inside",
+    target: "leaderboard-preview",
+    placement: "top",
+    padding: 12,
+    title: "This is the Leaderboard",
+    body: "Fastest climbers, week by week. Make your profile public and play a few ranked games and you'll appear right here — this is a sample of what it looks like.",
+    advance: { type: "manual" },
+  },
+  {
     id: "finish",
     placement: "center",
     title: "You're all set! \u{1F389}",
