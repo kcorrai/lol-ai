@@ -95,6 +95,9 @@ export async function getMatchIds(
   return riotClient.get<string[]>(url, {
     cacheTtl: 60,
     cacheKey: CacheKeys.matchIds(puuid, region),
+    // A transient empty list (new PUUID-only accounts lag in match-v5) must not stick and block
+    // re-sync (TASK-227).
+    noCacheEmptyArray: true,
   });
 }
 

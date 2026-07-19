@@ -11,6 +11,10 @@ type RequestOptions = {
   cacheKey?: string;
   // Skip rate limiter — use only in tests
   skipRateLimit?: boolean;
+  // Don't cache an empty-array result. Used for match-id lists: Riot can transiently return `[]`
+  // (eventual consistency, esp. new PUUID-only accounts) and caching that empty for the TTL would
+  // block a re-sync from ever picking the matches up (TASK-227).
+  noCacheEmptyArray?: boolean;
 };
 
 export class RiotHttpClient {
@@ -29,7 +33,7 @@ export class RiotHttpClient {
   }
 
   async get<T>(url: string, options: RequestOptions = {}): Promise<T> {
-    const { cacheTtl = 0, cacheKey, skipRateLimit = false } = options;
+    const { cacheTtl = 0, cacheKey, skipRateLimit = false, noCacheEmptyArray = false } = options;
     const key = cacheKey ?? url;
 
     // Cache hit — skip rate limiter and network call
@@ -50,7 +54,8 @@ export class RiotHttpClient {
       { maxAttempts: 3, baseDelayMs: 1000, maxDelayMs: 10_000 }
     );
 
-    if (cacheTtl > 0) {
+    const isEmptyArray = Array.isArray(result) && result.length === 0;
+    if (cacheTtl > 0 && !(noCacheEmptyArray && isEmptyArray)) {
       await this.cache.set(key, result, cacheTtl);
     }
 
