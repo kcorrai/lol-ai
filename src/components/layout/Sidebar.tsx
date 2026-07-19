@@ -3,60 +3,35 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import {
-  LayoutDashboard, Gamepad2, LogOut, Zap, CreditCard, ChevronLeft, ChevronRight,
-  UserCircle, Shield, MessageCircle, Star, Users, ClipboardList,
-  TrendingUp, Trophy, Map, Film, Lock, Bot, Sparkles, Medal, CalendarDays,
-} from "lucide-react";
+import { LogOut, Zap, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { cn } from "@/lib/utils";
-
-const NAV_MAIN = [
-  { href: "/dashboard",     icon: LayoutDashboard, label: "Dashboard", tourId: "nav-dashboard" },
-  { href: "/champion-pool", icon: Shield,          label: "Champions", tourId: "nav-champions" },
-  { href: "/coaching",      icon: ClipboardList,   label: "Reports", tourId: "nav-reports" },
-  { href: "/coaching/chat", icon: MessageCircle,   label: "Coach Chat", tourId: "nav-coach-chat" },
-  { href: "/improvement",   icon: TrendingUp,      label: "Improvement", tourId: "nav-improvement" },
-  { href: "/achievements",  icon: Trophy,          label: "Badges", tourId: "nav-badges" },
-  { href: "/leaderboard",  icon: Medal,           label: "Leaderboard", tourId: "nav-leaderboard" },
-  { href: "/milestone",    icon: CalendarDays,    label: "Milestone" },
-  { href: "/analysis",      icon: Map,             label: "Heat Map" },
-  { href: "/recap",         icon: Film,            label: "Season Recap" },
-  { href: "/otp",           icon: Star,            label: "OTP Assistant", tourId: "nav-otp" },
-  { href: "/teams",         icon: Users,           label: "Teams" },
-] as const;
-
-const NAV_SETTINGS = [
-  { href: "/settings/accounts", icon: Gamepad2,   label: "Accounts", tourId: "nav-accounts" },
-  { href: "/settings/billing",  icon: CreditCard, label: "Billing" },
-  { href: "/settings/profile",  icon: UserCircle, label: "Profile", tourId: "nav-profile" },
-  { href: "/settings/privacy",  icon: Lock,       label: "Privacy" },
-  { href: "/settings/discord",  icon: Bot,        label: "Discord", tourId: "nav-discord" },
-] as const;
+import { NAV_SECTIONS, NAV_SETTINGS, ALL_NAV_HREFS } from "./navConfig";
 
 function NavItem({
-  href, icon: Icon, label, collapsed, tourId,
+  href, icon: Icon, label, collapsed, tourId, newTab,
 }: {
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   collapsed: boolean;
   tourId?: string;
+  newTab?: boolean;
 }) {
   const pathname = usePathname();
-  const allHrefs = [...NAV_MAIN, ...NAV_SETTINGS].map((n) => n.href);
   const active =
     pathname === href ||
     (pathname.startsWith(`${href}/`) &&
-      !allHrefs.some((h) => h !== href && h.startsWith(`${href}/`) && pathname.startsWith(h)));
+      !ALL_NAV_HREFS.some((h) => h !== href && h.startsWith(`${href}/`) && pathname.startsWith(h)));
 
   return (
     <Link
       href={href}
       data-tour={tourId}
       title={collapsed ? label : undefined}
+      {...(newTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       className={cn(
         "relative flex items-center rounded-lg py-2 text-sm transition-all duration-150",
         collapsed ? "justify-center px-2" : "gap-3 px-3",
@@ -114,8 +89,12 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto p-2">
-        <SectionLabel label="Play" collapsed={collapsed} />
-        {NAV_MAIN.map((item) => <NavItem key={item.href} {...item} collapsed={collapsed} />)}
+        {NAV_SECTIONS.map((section) => (
+          <div key={section.label}>
+            <SectionLabel label={section.label} collapsed={collapsed} />
+            {section.items.map((item) => <NavItem key={item.href} {...item} collapsed={collapsed} />)}
+          </div>
+        ))}
         <SectionLabel label="Settings" collapsed={collapsed} />
         {NAV_SETTINGS.map((item) => <NavItem key={item.href} {...item} collapsed={collapsed} />)}
       </nav>
