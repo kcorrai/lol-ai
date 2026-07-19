@@ -31,6 +31,9 @@ export interface GuideStep {
   satisfiedGate?: keyof GuideGates;
   /** Route steps: a secondary "Take me there" button so the flow never hard-locks (e.g. off-screen nav on mobile). */
   goTo?: string;
+  /** Manual step whose target section may not exist (conditional UI): auto-advance if it's absent
+   *  instead of showing an empty spotlight (TASK-231). */
+  skipIfMissing?: boolean;
   /** Final step: burst confetti + POST completion. */
   isFinal?: boolean;
 }
@@ -115,13 +118,42 @@ export const GUIDE_STEPS: GuideStep[] = [
     advance: { type: "route", route: "/u/" },
   },
   {
-    id: "profile-intro",
+    id: "profile-hero",
     target: "profile-hero",
     placement: "bottom",
     padding: 12,
     title: "This is your profile",
-    body: "Your rank, top champions and badges on one shareable page. Keep climbing and it updates itself — make it public to show up on the leaderboard.",
+    body: "Your rank, level and main champion, front and center — a public page you can share. Let me walk you through it.",
     advance: { type: "manual" },
+  },
+  {
+    id: "profile-stats",
+    target: "profile-stats",
+    placement: "bottom",
+    padding: 10,
+    title: "Your season at a glance",
+    body: "Total ranked games, average KDA and your win/loss — the quick health check on how your season is going.",
+    advance: { type: "manual" },
+    skipIfMissing: true,
+  },
+  {
+    id: "profile-champions",
+    target: "profile-champions",
+    placement: "top",
+    padding: 10,
+    title: "Your champion pool",
+    body: "Your most-played champions with win rate and KDA on each — where your comfort picks (and your one-tricks) show up.",
+    advance: { type: "manual" },
+  },
+  {
+    id: "profile-badges",
+    target: "profile-badges",
+    placement: "top",
+    padding: 10,
+    title: "Badges you've earned",
+    body: "Milestones and standout performances get pinned here for everyone who visits your profile. Keep playing to unlock more.",
+    advance: { type: "manual" },
+    skipIfMissing: true,
   },
   {
     id: "go-reports",

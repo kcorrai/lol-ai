@@ -85,7 +85,7 @@ export default async function PublicProfilePage({ params }: Props) {
         {!profile.isPrivate && (
           <>
             {(profile.totalGames > 0 || profile.winRate !== null || profile.avgKda !== null) && (
-              <div className="grid grid-cols-3 gap-3">
+              <div data-tour="profile-stats" className="grid grid-cols-3 gap-3">
                 {[
                   { label: "Total Matches", value: profile.totalGames > 0 ? String(profile.totalGames) : "—", sub: profile.winRate !== null ? `${profile.winRate}% WR` : null, subColor: profile.winRate !== null ? wrColor(profile.winRate) : undefined },
                   { label: "Avg KDA", value: profile.avgKda !== null ? String(profile.avgKda) : "—", sub: profile.avgKda !== null ? (profile.avgKda >= 4 ? "Perfect" : profile.avgKda >= 3 ? "Good" : "Average") : null, subColor: profile.avgKda !== null ? kdaColor(profile.avgKda) : undefined },
@@ -100,10 +100,12 @@ export default async function PublicProfilePage({ params }: Props) {
               </div>
             )}
 
-            <PublicProfileChampionPool champions={profile.topChampions} />
+            <div data-tour="profile-champions">
+              <PublicProfileChampionPool champions={profile.topChampions} />
+            </div>
 
             {profile.badges.length > 0 && (
-              <div className="rounded-2xl border border-border bg-surface p-5">
+              <div data-tour="profile-badges" className="rounded-2xl border border-border bg-surface p-5">
                 <div className="mb-4 flex items-center gap-2">
                   <Trophy className="h-3.5 w-3.5 text-text-muted/50" />
                   <h2 className="text-[10px] font-bold uppercase tracking-widest text-text-muted/50">Earned Badges</h2>

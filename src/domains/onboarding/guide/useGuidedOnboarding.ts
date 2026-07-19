@@ -128,6 +128,26 @@ export function useGuidedOnboarding(userId: string | null): GuidedOnboardingStat
     return () => cancelAnimationFrame(raf);
   }, [mounted, done, step]);
 
+  // Auto-advance past a `skipIfMissing` step whose section isn't on the page (conditional UI, e.g. a
+  // profile with no stats/badges yet) so the walkthrough never parks on an empty spotlight (TASK-231).
+  useEffect(() => {
+    if (!mounted || done || !step.skipIfMissing || !step.target) return;
+    const target = step.target;
+    const id = window.setTimeout(() => {
+      if (findTarget(target)) return; // section rendered — keep the step
+      setIndex((i) => {
+        const next = Math.min(i + 1, GUIDE_STEPS.length - 1);
+        try {
+          localStorage.setItem(storageKey, String(next));
+        } catch {
+          /* ignore */
+        }
+        return next;
+      });
+    }, 700);
+    return () => window.clearTimeout(id);
+  }, [mounted, done, step, storageKey]);
+
   // While a step waits on a live gate (connecting, syncing, generating a report), the underlying
   // React Query caches are stale-cached and won't refetch on their own — actively re-poll them so
   // the gate flips as soon as the real work lands.

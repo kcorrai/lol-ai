@@ -24,7 +24,8 @@ describe("GUIDE_STEPS", () => {
   it("only spotlights anchors the app actually renders", () => {
     const KNOWN_ANCHORS = new Set([
       "nav-dashboard", "nav-accounts", "nav-reports", "nav-improvement", "nav-badges", "nav-leaderboard",
-      "connect-form", "match-row", "generate-report", "my-profile-link", "profile-hero",
+      "connect-form", "match-row", "generate-report", "my-profile-link",
+      "profile-hero", "profile-stats", "profile-champions", "profile-badges",
       "improvement-preview", "badges-preview", "leaderboard-preview",
     ]);
     for (const step of GUIDE_STEPS) {
@@ -59,22 +60,33 @@ describe("GUIDE_STEPS", () => {
     }
   });
 
-  it("routes through the user's own profile between the match and reports (TASK-225)", () => {
+  it("walks the whole profile between the match and reports (TASK-225/231)", () => {
     const breakdown = GUIDE_STEPS.findIndex((s) => s.id === "match-breakdown");
     const clickName = GUIDE_STEPS.findIndex((s) => s.id === "click-my-name");
-    const profile = GUIDE_STEPS.findIndex((s) => s.id === "profile-intro");
     const reports = GUIDE_STEPS.findIndex((s) => s.id === "go-reports");
-    expect(breakdown).toBeLessThan(clickName);
-    expect(clickName).toBeLessThan(profile);
-    expect(profile).toBeLessThan(reports);
 
     const cn = GUIDE_STEPS[clickName];
     expect(cn.target).toBe("my-profile-link");
     expect(cn.advance).toEqual({ type: "route", route: "/u/" });
 
-    const pi = GUIDE_STEPS[profile];
-    expect(pi.target).toBe("profile-hero");
-    expect(pi.advance.type).toBe("manual");
+    // The profile walkthrough: hero → stats → champions → badges, all between click-my-name and reports.
+    const walk = ["profile-hero", "profile-stats", "profile-champions", "profile-badges"];
+    let prev = clickName;
+    for (const id of walk) {
+      const i = GUIDE_STEPS.findIndex((s) => s.id === id);
+      expect(i, `${id} exists`).toBeGreaterThan(-1);
+      expect(GUIDE_STEPS[i].advance.type, `${id} manual`).toBe("manual");
+      expect(GUIDE_STEPS[i].target, `${id} targets its section`).toBe(id);
+      expect(i, `${id} in order`).toBeGreaterThan(prev);
+      prev = i;
+    }
+    expect(breakdown).toBeLessThan(clickName);
+    expect(prev).toBeLessThan(reports);
+
+    // Conditional sections auto-skip when absent so the walk never parks on an empty spotlight.
+    for (const id of ["profile-stats", "profile-badges"]) {
+      expect(GUIDE_STEPS[GUIDE_STEPS.findIndex((s) => s.id === id)].skipIfMissing, `${id} skipIfMissing`).toBe(true);
+    }
   });
 
   it("forces the account connection before anything else", () => {
