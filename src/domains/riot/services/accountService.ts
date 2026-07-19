@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
 import { Errors } from "@/lib/api/errors";
-import { assertCanAddRiotAccount, checkIsPro } from "@/lib/auth/authorization";
+import { assertCanAddRiotAccount } from "@/lib/auth/authorization";
 import { backgroundRefresh } from "@/lib/riot/lifecycle";
 import {
   getAccountByRiotId,
@@ -60,16 +60,8 @@ export async function connectAccount(
     throw Errors.conflict("This Riot account is already connected to your profile.");
   }
 
-  // Free plan users cannot link an account already claimed by another user
-  const isPro = await checkIsPro(userId);
-  if (!isPro) {
-    const otherExisting = await prisma.riotAccount.findFirst({
-      where: { puuid: riotAccountDto.puuid, userId: { not: userId } },
-    });
-    if (otherExisting) {
-      throw Errors.conflict("This Riot account is already connected to another user.");
-    }
-  }
+  // A Riot account may be linked by many users (e.g. a player and their fans/analysts coaching off
+  // the same public match history) — no cross-user uniqueness restriction (TASK-222).
 
   // Fetch full summoner data
   const summoner = await getSummonerByPuuid(riotAccountDto.puuid, region);
