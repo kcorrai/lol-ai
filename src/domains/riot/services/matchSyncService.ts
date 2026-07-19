@@ -18,6 +18,42 @@ export type SyncResult = {
   errors: string[];
 };
 
+// Runs syncAccount while managing the account's sync status lifecycle
+// (RUNNING → COMPLETED / FAILED). Shared by the durable Inngest worker and the route's in-process
+// fallback (TASK-223), so both paths report status identically. Rethrows so Inngest can retry.
+export async function runSyncWithStatus(riotAccountId: string, userId: string): Promise<SyncResult> {
+  await prisma.riotAccount.update({
+    where: { id: riotAccountId },
+    data: { syncStatus: "RUNNING", syncStartedAt: new Date(), lastSyncError: null },
+  });
+
+  try {
+    const result = await syncAccount(riotAccountId, true);
+
+    const account = await prisma.riotAccount.update({
+      where: { id: riotAccountId },
+      data: { syncStatus: "COMPLETED", syncCompletedAt: new Date() },
+      select: { isPrimary: true, gameName: true, tagLine: true },
+    });
+
+    if (account.isPrimary) {
+      const { ensureProfileSlug } = await import("@/domains/identity/services/profileService");
+      ensureProfileSlug(userId, account.gameName, account.tagLine).catch(() => undefined);
+    }
+
+    logger.info(`[sync] Completed for ${riotAccountId}: +${result.newMatches} matches`);
+    return result;
+  } catch (err) {
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    logger.error(`[sync] Failed for ${riotAccountId}: ${errorMsg}`);
+    await prisma.riotAccount.update({
+      where: { id: riotAccountId },
+      data: { syncStatus: "FAILED", lastSyncError: errorMsg },
+    });
+    throw err;
+  }
+}
+
 export async function syncAccount(riotAccountId: string, force = false): Promise<SyncResult> {
   let account = await prisma.riotAccount.findUnique({ where: { id: riotAccountId } });
   if (!account) throw Errors.notFound("Riot account");

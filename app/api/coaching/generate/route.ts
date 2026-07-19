@@ -1,6 +1,5 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
-import { prisma } from "@/lib/db/prisma";
 import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
 import { Errors } from "@/lib/api/errors";
@@ -8,7 +7,8 @@ import { assertOwnsRiotAccount, assertCanGenerateReport, getPlanLimits } from "@
 import { buildCoachingInput } from "@/domains/coaching/pipeline/dataPreparator";
 import { createPendingReport } from "@/domains/coaching/services/reportService";
 import { checkRateLimit, rateLimitResponse, addRateLimitHeaders } from "@/lib/api/rateLimit";
-import { inngest } from "@/inngest/client";
+import { dispatchOrRunInProcess } from "@/lib/inngest/dispatch";
+import { runCoachingPipeline } from "@/domains/coaching/pipeline/coachingPipeline";
 import { audit } from "@/lib/audit/auditService";
 
 const generateSchema = z.object({
@@ -24,12 +24,9 @@ const FREE_GENERATE_LIMIT = { limit: 5, windowMs: 3_600_000 };
 const PRO_GENERATE_LIMIT = { limit: 30, windowMs: 3_600_000 };
 
 export const POST = withAuth(async (req: NextRequest, { userId }) => {
-  const emailCheck = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { emailVerified: true },
-  });
-  if (!emailCheck?.emailVerified) throw Errors.emailNotVerified();
-
+  // Email verification is NOT required to generate a report — only email-*delivery* features gate on
+  // it (weekly report emails, activation). Abuse stays bounded by the rate limits + plan caps below
+  // (TASK-224).
   const { reportsPerDay } = await getPlanLimits(userId);
   const rateConfig = reportsPerDay === -1 ? PRO_GENERATE_LIMIT : FREE_GENERATE_LIMIT;
   const rateCheck = await checkRateLimit(`generate:${userId}`, rateConfig);
@@ -55,10 +52,11 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
 
   const reportId = await createPendingReport(riotAccountId, matchIds, reportType, focusArea);
 
-  await inngest.send({
-    name: "coaching/report.requested",
-    data: { reportId, riotAccountId, matchIds, reportType, focusArea },
-  });
+  // Durable via Inngest in production; runs the pipeline in-process if Inngest is unavailable (TASK-223).
+  await dispatchOrRunInProcess(
+    { name: "coaching/report.requested", data: { reportId, riotAccountId, matchIds, reportType, focusArea } },
+    () => runCoachingPipeline(reportId, riotAccountId, matchIds, reportType, focusArea),
+  );
 
   await audit({
     userId,
