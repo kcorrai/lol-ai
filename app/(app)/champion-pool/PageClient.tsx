@@ -138,12 +138,16 @@ export default function ChampionsPage() {
         />
       )}
 
-      {activeTab === "pool" && <ChampionPoolGrid
-        entries={visiblePool}
-        isLoading={poolLoading}
-        riotAccountId={primaryId ?? undefined}
-        onDeepDive={setDeepDiveChampion}
-      />}
+      {activeTab === "pool" && (
+        <div data-tour="champion-pool-grid">
+          <ChampionPoolGrid
+            entries={visiblePool}
+            isLoading={poolLoading}
+            riotAccountId={primaryId ?? undefined}
+            onDeepDive={setDeepDiveChampion}
+          />
+        </div>
+      )}
 
       {/* Pro gate — shown when free user has more champions */}
       {activeTab === "pool" && !isPro && lockedCount > 0 && !poolLoading && (

@@ -15,25 +15,25 @@ import { cn } from "@/lib/utils";
 
 const NAV_MAIN = [
   { href: "/dashboard",     icon: LayoutDashboard, label: "Dashboard", tourId: "nav-dashboard" },
-  { href: "/champion-pool", icon: Shield,          label: "Champions" },
+  { href: "/champion-pool", icon: Shield,          label: "Champions", tourId: "nav-champions" },
   { href: "/coaching",      icon: ClipboardList,   label: "Reports", tourId: "nav-reports" },
-  { href: "/coaching/chat", icon: MessageCircle,   label: "Coach Chat" },
+  { href: "/coaching/chat", icon: MessageCircle,   label: "Coach Chat", tourId: "nav-coach-chat" },
   { href: "/improvement",   icon: TrendingUp,      label: "Improvement", tourId: "nav-improvement" },
   { href: "/achievements",  icon: Trophy,          label: "Badges", tourId: "nav-badges" },
   { href: "/leaderboard",  icon: Medal,           label: "Leaderboard", tourId: "nav-leaderboard" },
   { href: "/milestone",    icon: CalendarDays,    label: "Milestone" },
   { href: "/analysis",      icon: Map,             label: "Heat Map" },
   { href: "/recap",         icon: Film,            label: "Season Recap" },
-  { href: "/otp",           icon: Star,            label: "OTP Assistant" },
+  { href: "/otp",           icon: Star,            label: "OTP Assistant", tourId: "nav-otp" },
   { href: "/teams",         icon: Users,           label: "Teams" },
 ] as const;
 
 const NAV_SETTINGS = [
   { href: "/settings/accounts", icon: Gamepad2,   label: "Accounts", tourId: "nav-accounts" },
   { href: "/settings/billing",  icon: CreditCard, label: "Billing" },
-  { href: "/settings/profile",  icon: UserCircle, label: "Profile" },
+  { href: "/settings/profile",  icon: UserCircle, label: "Profile", tourId: "nav-profile" },
   { href: "/settings/privacy",  icon: Lock,       label: "Privacy" },
-  { href: "/settings/discord",  icon: Bot,        label: "Discord" },
+  { href: "/settings/discord",  icon: Bot,        label: "Discord", tourId: "nav-discord" },
 ] as const;
 
 function NavItem({

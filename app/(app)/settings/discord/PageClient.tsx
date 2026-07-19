@@ -84,6 +84,7 @@ export default function DiscordSettingsPage() {
         )}
         <input
           type="url"
+          data-tour="discord-webhook"
           placeholder="https://discord.com/api/webhooks/..."
           value={webhookUrl}
           onChange={(e) => setWebhookUrl(e.target.value)}

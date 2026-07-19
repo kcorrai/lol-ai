@@ -62,7 +62,7 @@ export function ReferralWidget() {
         {isLoading ? (
           <div className="h-9 w-full animate-pulse rounded-lg bg-surface-2" />
         ) : (
-          <div className="flex gap-2">
+          <div data-tour="invite-friend" className="flex gap-2">
             <input
               readOnly
               value={shareUrl}

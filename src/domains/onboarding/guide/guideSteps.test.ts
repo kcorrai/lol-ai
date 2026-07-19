@@ -24,9 +24,11 @@ describe("GUIDE_STEPS", () => {
   it("only spotlights anchors the app actually renders", () => {
     const KNOWN_ANCHORS = new Set([
       "nav-dashboard", "nav-accounts", "nav-reports", "nav-improvement", "nav-badges", "nav-leaderboard",
+      "nav-champions", "nav-coach-chat", "nav-otp", "nav-profile", "nav-discord",
       "connect-form", "match-row", "generate-report", "create-plan", "my-profile-link",
       "profile-hero", "profile-stats", "profile-champions", "profile-badges",
       "improvement-preview", "badges-preview", "leaderboard-preview",
+      "champion-pool-grid", "chat-input", "otp-recommendations", "invite-friend", "discord-webhook",
     ]);
     for (const step of GUIDE_STEPS) {
       if (!step.target) continue;
