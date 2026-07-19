@@ -31,7 +31,9 @@ export const timelineFetcher = inngest.createFunction(
     // Get ranked matches that haven't had timeline processed yet
     const participants = await prisma.matchParticipant.findMany({
       where: {
-        riotAccountId,
+        // Match data by puuid so a shared account's matches are all processed (TASK-228); death
+        // events stay per-account (each account generates its own).
+        puuid: account.puuid,
         match: { queueType: "RANKED_SOLO_5x5" },
         NOT: {
           match: {

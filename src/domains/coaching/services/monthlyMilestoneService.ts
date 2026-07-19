@@ -3,6 +3,7 @@ import { getEmailClient, EMAIL_FROM } from "@/lib/email/client";
 import { logger } from "@/lib/utils/logger";
 import { buildMonthlyMilestoneEmail } from "@/lib/email/templates/monthlyMilestone";
 import { lpComposite } from "@/domains/coaching/services/weeklyReportService";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 
 function formatRank(tier: string, division: string, lp: number): string {
   if (["MASTER", "GRANDMASTER", "CHALLENGER"].includes(tier)) return `${tier} ${lp} LP`;
@@ -62,9 +63,10 @@ export async function sendMonthlyMilestoneReports(): Promise<{
     if (alreadySent) { skipped++; continue; }
 
     try {
+      const puuid = await getAccountPuuid(account.id);
       // ── This month's games ────────────────────────────────────────
       const thisMonthGames = await prisma.matchParticipant.findMany({
-        where: { riotAccountId: account.id, match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: monthStart } } },
+        where: { puuid: puuid ?? "", match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: monthStart } } },
         select: { won: true, championName: true },
       });
 
@@ -72,7 +74,7 @@ export async function sendMonthlyMilestoneReports(): Promise<{
 
       // ── Prev month games (for comparison) ────────────────────────
       const prevMonthCount = await prisma.matchParticipant.count({
-        where: { riotAccountId: account.id, match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: prevMonthStart, lt: monthStart } } },
+        where: { puuid: puuid ?? "", match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: prevMonthStart, lt: monthStart } } },
       });
 
       // ── Win rate ──────────────────────────────────────────────────

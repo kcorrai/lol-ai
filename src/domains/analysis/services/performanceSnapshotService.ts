@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 
 const SNAPSHOT_WINDOW_DAYS = 7;
 const MIN_GAMES = 5;
@@ -48,12 +49,13 @@ function computeTiltScore(matches: { won: boolean; deaths: number; gameDuration:
 }
 
 export async function computeAndSaveSnapshot(riotAccountId: string): Promise<void> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const periodEnd = new Date();
   const periodStart = new Date(periodEnd.getTime() - SNAPSHOT_WINDOW_DAYS * 24 * 60 * 60 * 1000);
 
   const rows = await prisma.matchParticipant.findMany({
     where: {
-      riotAccountId,
+      puuid: puuid ?? "",
       match: {
         queueType: "RANKED_SOLO_5x5",
         gameStart: { gte: periodStart, lte: periodEnd },

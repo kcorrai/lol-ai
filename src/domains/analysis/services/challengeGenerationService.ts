@@ -5,6 +5,7 @@ import { logger } from "@/lib/utils/logger";
 import type { Challenge } from "@prisma/client";
 import { TEMPLATES, WEEKLY_MULTIPLIER } from "./challengeConstants";
 import type { ChallengeMetric } from "./challengeConstants";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 
 function todayMidnight(): Date {
   const d = new Date();
@@ -27,8 +28,9 @@ function nextMonday(): Date {
 }
 
 async function pickWeakMetric(riotAccountId: string): Promise<ChallengeMetric> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const recent = await prisma.matchParticipant.findMany({
-    where: { riotAccountId, match: { queueType: "RANKED_SOLO_5x5" } },
+    where: { puuid: puuid ?? "", match: { queueType: "RANKED_SOLO_5x5" } },
     select: { csPerMinute: true, deaths: true, visionScore: true, kills: true, assists: true },
     orderBy: { match: { gameStart: "desc" } },
     take: 10,
@@ -54,9 +56,10 @@ async function pickWeakMetric(riotAccountId: string): Promise<ChallengeMetric> {
 }
 
 async function computeTarget(riotAccountId: string, metric: ChallengeMetric): Promise<number> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const template = TEMPLATES[metric];
   const recent = await prisma.matchParticipant.findMany({
-    where: { riotAccountId, match: { queueType: "RANKED_SOLO_5x5" } },
+    where: { puuid: puuid ?? "", match: { queueType: "RANKED_SOLO_5x5" } },
     select: { csPerMinute: true, deaths: true, visionScore: true, kills: true, assists: true },
     orderBy: { match: { gameStart: "desc" } },
     take: 14,

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 
 export interface CounterEntry {
   championName: string;
@@ -20,10 +21,11 @@ export async function getCounterStats(
   riotAccountId: string,
   champion: string
 ): Promise<CounterStats | null> {
+  const puuid = await getAccountPuuid(riotAccountId);
   // Find all ranked matches where the user played this champion
   const userParticipations = await prisma.matchParticipant.findMany({
     where: {
-      riotAccountId,
+      puuid: puuid ?? "",
       championName: champion,
       match: { queueType: "RANKED_SOLO_5x5" },
     },

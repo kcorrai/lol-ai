@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 
 export interface ChampionMonth {
   name: string;
@@ -47,12 +48,13 @@ export async function getMonthlyMilestone(
   year: number,
   month: number
 ): Promise<MonthlyMilestone | null> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const start = new Date(year, month - 1, 1);
   const end = new Date(year, month, 1);
 
   const participants = await prisma.matchParticipant.findMany({
     where: {
-      riotAccountId,
+      puuid: puuid ?? "",
       match: {
         gameStart: { gte: start, lt: end },
         queueType: "RANKED_SOLO_5x5",

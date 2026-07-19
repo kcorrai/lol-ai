@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { getAiClient } from "@/lib/ai/client";
 import { detectDeathCluster } from "@/domains/analysis/calculators/performanceCalculator";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 import type { DeathCluster } from "@/domains/analysis/types/analysis.types";
 
 const SUMMARY_TTL_MS = 7 * 24 * 60 * 60 * 1000;
@@ -61,10 +62,11 @@ export async function getChampionDeepDive(
   riotAccountId: string,
   championName: string
 ): Promise<ChampionDeepDiveResult | null> {
+  const puuid = await getAccountPuuid(riotAccountId);
   // Recent matches for this champion
   const matches = await prisma.matchParticipant.findMany({
     where: {
-      riotAccountId,
+      puuid: puuid ?? "",
       championName,
       match: { queueType: "RANKED_SOLO_5x5" },
     },

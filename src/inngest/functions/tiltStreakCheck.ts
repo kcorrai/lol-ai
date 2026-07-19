@@ -1,5 +1,6 @@
 import { inngest } from "@/inngest/client";
 import { prisma } from "@/lib/db/prisma";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 import { generateTiltRecoveryMessage } from "@/domains/analysis/services/tiltService";
 import { logger } from "@/lib/utils/logger";
 import { sendPushToUser } from "@/lib/push/pushService";
@@ -20,9 +21,10 @@ export const tiltStreakCheck = inngest.createFunction(
   },
   async ({ event }) => {
     const { riotAccountId, userId } = event.data as TiltCheckPayload;
+    const puuid = await getAccountPuuid(riotAccountId);
 
     const recentMatches = await prisma.matchParticipant.findMany({
-      where: { riotAccountId },
+      where: { puuid: puuid ?? "" },
       orderBy: { match: { gameStart: "desc" } },
       take: 5,
       select: {

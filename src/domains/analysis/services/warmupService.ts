@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 
 export type WarmupStatus = "warmed_up" | "no_warmup" | "no_ranked_today";
 
@@ -23,13 +24,14 @@ const MESSAGES: Record<WarmupStatus, (warmupGames: number) => string> = {
 };
 
 export async function getWarmupStatus(riotAccountId: string): Promise<WarmupData> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const todayStart = new Date();
   todayStart.setUTCHours(0, 0, 0, 0);
 
   // All of today's matches ordered oldest first
   const todayMatches = await prisma.matchParticipant.findMany({
     where: {
-      riotAccountId,
+      puuid: puuid ?? "",
       match: { gameStart: { gte: todayStart } },
     },
     orderBy: { match: { gameStart: "asc" } },
@@ -76,7 +78,7 @@ export async function getWarmupStatus(riotAccountId: string): Promise<WarmupData
   // Get all ranked games from the past 30 days grouped by calendar day
   const historicalRanked = await prisma.matchParticipant.findMany({
     where: {
-      riotAccountId,
+      puuid: puuid ?? "",
       match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: thirtyDaysAgo } },
     },
     orderBy: { match: { gameStart: "asc" } },
@@ -85,7 +87,7 @@ export async function getWarmupStatus(riotAccountId: string): Promise<WarmupData
 
   const historicalWarmup = await prisma.matchParticipant.findMany({
     where: {
-      riotAccountId,
+      puuid: puuid ?? "",
       match: {
         queueType: { in: [...WARMUP_QUEUES] },
         gameStart: { gte: thirtyDaysAgo },

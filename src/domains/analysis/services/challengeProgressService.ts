@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
 import { TEMPLATES, XP_PER_LEVEL } from "./challengeConstants";
 import type { ChallengeMetric, ChallengeWithProgress } from "./challengeConstants";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 
 export async function getActiveChallenges(userId: string): Promise<ChallengeWithProgress[]> {
   const now = new Date();
@@ -22,9 +23,10 @@ export async function getActiveChallenges(userId: string): Promise<ChallengeWith
 }
 
 async function computeProgress(c: ChallengeWithProgress, riotAccountId: string): Promise<number> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const metric = c.metric as ChallengeMetric;
   const recentMatches = await prisma.matchParticipant.findMany({
-    where: { riotAccountId, match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: c.validFrom } } },
+    where: { puuid: puuid ?? "", match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: c.validFrom } } },
     select: { csPerMinute: true, deaths: true, visionScore: true, kills: true, assists: true, won: true },
     orderBy: { match: { gameStart: "asc" } },
     take: 20,

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
 import { toJsonInput, fromJsonValue } from "@/types/json";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 import {
   type MasteryTier,
   type MasterySubScores,
@@ -48,9 +49,10 @@ export async function computeChampionMastery(
 
   if (!stat || stat.gamesPlayed < MIN_GAMES) return null;
 
+  const puuid = await getAccountPuuid(riotAccountId);
   const matches = await prisma.matchParticipant.findMany({
     where: {
-      riotAccountId,
+      puuid: puuid ?? "",
       championId,
       match: { queueType: "RANKED_SOLO_5x5" },
     },

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
 import { Errors } from "@/lib/api/errors";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 import type { QueueType } from "@prisma/client";
 
 export interface MasterySubScores {
@@ -66,9 +67,10 @@ export async function getChampionPool(
   });
   if (!account) throw Errors.notFound("Riot account");
 
+  const puuid = await getAccountPuuid(riotAccountId);
   const participants = await prisma.matchParticipant.findMany({
     where: {
-      riotAccountId,
+      puuid: puuid ?? "",
       match: { queueType },
     },
     select: {

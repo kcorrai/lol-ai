@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
 import { getCached, setCached, buildCacheKey } from "@/lib/ai/aiCache";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 import type { Position } from "@prisma/client";
 
 export interface MatchupCell {
@@ -30,6 +31,7 @@ export async function buildMatchupMatrix(
   riotAccountId: string,
   position?: string
 ): Promise<MatchupMatrix> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const cacheKey = buildCacheKey("matchup-matrix", {
     riotAccountId,
     position: position ?? "all",
@@ -40,7 +42,7 @@ export async function buildMatchupMatrix(
   const positionFilter = position ? ({ position: position as Position }) : {};
 
   const userParticipants = await prisma.matchParticipant.findMany({
-    where: { riotAccountId, match: { queueType: "RANKED_SOLO_5x5" }, ...positionFilter },
+    where: { puuid: puuid ?? "", match: { queueType: "RANKED_SOLO_5x5" }, ...positionFilter },
     select: {
       matchId: true,
       teamId: true,

@@ -2,6 +2,7 @@ import { inngest } from "@/inngest/client";
 import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
 import { getPlanLimits } from "@/lib/auth/authorization";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 import { createPendingReport } from "@/domains/coaching/services/reportService";
 
 const MIN_MATCHES = 3;
@@ -66,9 +67,10 @@ export const autoSessionReview = inngest.createFunction(
     }
 
     // ── Fetch 5 most recent ranked match IDs ──────────────────────────────────
+    const puuid = await getAccountPuuid(riotAccountId);
     const participants = await prisma.matchParticipant.findMany({
       where: {
-        riotAccountId,
+        puuid: puuid ?? "",
         match: { queueType: "RANKED_SOLO_5x5" },
       },
       orderBy: { match: { gameStart: "desc" } },

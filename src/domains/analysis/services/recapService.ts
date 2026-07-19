@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db/prisma";
 import { getAiClient } from "@/lib/ai/client";
 import { getCached, setCached, buildCacheKey } from "@/lib/ai/aiCache";
 import { logger } from "@/lib/utils/logger";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 import type { SeasonRecap } from "@prisma/client";
 
 export interface RecapData {
@@ -68,11 +69,12 @@ async function aiSummary(data: Omit<RecapData, "aiSummary">): Promise<string> {
 }
 
 export async function buildRecapData(userId: string, riotAccountId: string): Promise<RecapData> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const label = currentSeasonLabel();
   const start = seasonStart();
 
   const matches = await prisma.matchParticipant.findMany({
-    where: { riotAccountId, match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: start } } },
+    where: { puuid: puuid ?? "", match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: start } } },
     select: { won: true, kills: true, deaths: true, assists: true, championName: true, match: { select: { gameStart: true } } },
     orderBy: { match: { gameStart: "asc" } },
   });

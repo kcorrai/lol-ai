@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
 import { getAiClient } from "@/lib/ai/client";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 
 export type TiltLevel = "focused" | "caution" | "tilting";
 
@@ -20,8 +21,9 @@ const MESSAGES: Record<TiltLevel, string> = {
 };
 
 export async function computeTiltStatus(riotAccountId: string): Promise<TiltStatus | null> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const matches = await prisma.matchParticipant.findMany({
-    where: { riotAccountId },
+    where: { puuid: puuid ?? "" },
     orderBy: { match: { gameStart: "desc" } },
     take: 10,
     select: {

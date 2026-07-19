@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
 import { getCached, setCached, buildCacheKey } from "@/lib/ai/aiCache";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 
 export interface ChampionProComparison {
   championId: number;
@@ -92,9 +93,10 @@ async function getPlayerChampionStats(
   winRate: number;
   gamesPlayed: number;
 } | null> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const rows = await prisma.matchParticipant.findMany({
     where: {
-      riotAccountId,
+      puuid: puuid ?? "",
       championId,
       match: { queueType: "RANKED_SOLO_5x5" },
     },

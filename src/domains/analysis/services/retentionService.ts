@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 
 export interface RetentionSignals {
   lossStreak: number;
@@ -19,6 +20,7 @@ const WIDE_POOL_THRESHOLD = 5;
 export async function computeRetentionSignals(
   riotAccountId: string
 ): Promise<RetentionSignals> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const now = new Date();
   const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
   const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
@@ -26,7 +28,7 @@ export async function computeRetentionSignals(
   // Last 20 ranked games ordered by date
   const recentMatches = await prisma.matchParticipant.findMany({
     where: {
-      riotAccountId,
+      puuid: puuid ?? "",
       match: { queueType: "RANKED_SOLO_5x5" },
     },
     orderBy: { match: { gameStart: "desc" } },
@@ -61,7 +63,7 @@ export async function computeRetentionSignals(
   const thisWeek = recentMatches.filter((m) => m.match.gameStart >= weekAgo);
   const lastWeekData = await prisma.matchParticipant.findMany({
     where: {
-      riotAccountId,
+      puuid: puuid ?? "",
       match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: twoWeeksAgo, lt: weekAgo } },
     },
     select: { csPerMinute: true },

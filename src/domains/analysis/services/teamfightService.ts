@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 
 export interface DeathTimingDistribution {
   early: number;  // 0-15 min
@@ -22,8 +23,9 @@ export async function getTeamfightAnalysis(
   riotAccountId: string,
   matchCount: number = 10
 ): Promise<TeamfightAnalysis> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const recentMatches = await prisma.matchParticipant.findMany({
-    where: { riotAccountId, match: { queueType: "RANKED_SOLO_5x5" } },
+    where: { puuid: puuid ?? "", match: { queueType: "RANKED_SOLO_5x5" } },
     select: { match: { select: { id: true } } },
     orderBy: { match: { gameStart: "desc" } },
     take: matchCount,

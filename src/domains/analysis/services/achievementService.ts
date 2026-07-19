@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
 import { ACHIEVEMENT_CATALOG } from "@/types/achievement";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 
 const TIER_ORDER: Record<string, number> = {
   IRON: 0, BRONZE: 1, SILVER: 2, GOLD: 3, PLATINUM: 4,
@@ -13,8 +14,9 @@ function toAbsLp(tier: string, division: string, lp: number): number {
 }
 
 async function checkCsMachine(riotAccountId: string): Promise<boolean> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const recent = await prisma.matchParticipant.findMany({
-    where: { riotAccountId, match: { queueType: "RANKED_SOLO_5x5" } },
+    where: { puuid: puuid ?? "", match: { queueType: "RANKED_SOLO_5x5" } },
     orderBy: { match: { gameStart: "desc" } },
     take: 3,
     select: { csPerMinute: true },
@@ -23,8 +25,9 @@ async function checkCsMachine(riotAccountId: string): Promise<boolean> {
 }
 
 async function checkDeathless(riotAccountId: string): Promise<boolean> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const recent = await prisma.matchParticipant.findMany({
-    where: { riotAccountId },
+    where: { puuid: puuid ?? "" },
     orderBy: { match: { gameStart: "desc" } },
     take: 5,
     select: { deaths: true },
@@ -46,8 +49,9 @@ async function checkRisingStar(riotAccountId: string): Promise<boolean> {
 }
 
 async function checkOnFire(riotAccountId: string): Promise<boolean> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const recent = await prisma.matchParticipant.findMany({
-    where: { riotAccountId },
+    where: { puuid: puuid ?? "" },
     orderBy: { match: { gameStart: "desc" } },
     take: 5,
     select: { won: true },
@@ -79,8 +83,9 @@ async function checkOtpMaster(riotAccountId: string): Promise<boolean> {
 }
 
 async function checkVisionWard(riotAccountId: string): Promise<boolean> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const recent = await prisma.matchParticipant.findMany({
-    where: { riotAccountId },
+    where: { puuid: puuid ?? "" },
     orderBy: { match: { gameStart: "desc" } },
     take: 3,
     select: { visionScore: true },
@@ -89,8 +94,9 @@ async function checkVisionWard(riotAccountId: string): Promise<boolean> {
 }
 
 async function checkComebackKing(riotAccountId: string): Promise<boolean> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const recent = await prisma.matchParticipant.findMany({
-    where: { riotAccountId },
+    where: { puuid: puuid ?? "" },
     orderBy: { match: { gameStart: "desc" } },
     take: 20,
     select: { won: true },
@@ -113,9 +119,10 @@ async function checkFirstReport(riotAccountId: string): Promise<boolean> {
 }
 
 async function checkWeekWarrior(riotAccountId: string): Promise<boolean> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
   const matches = await prisma.matchParticipant.findMany({
-    where: { riotAccountId, match: { gameStart: { gte: thirtyDaysAgo } } },
+    where: { puuid: puuid ?? "", match: { gameStart: { gte: thirtyDaysAgo } } },
     select: { match: { select: { gameStart: true } } },
     orderBy: { match: { gameStart: "asc" } },
   });

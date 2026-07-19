@@ -3,6 +3,7 @@ import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
 import { Errors } from "@/lib/api/errors";
 import { assertOwnsRiotAccount } from "@/lib/auth/authorization";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 import { prisma } from "@/lib/db/prisma";
 
 // GET /api/riot/[riotAccountId]/champion-matches?champion=Yasuo
@@ -17,9 +18,10 @@ export const GET = withAuth(async (req: NextRequest, { userId }) => {
 
   await assertOwnsRiotAccount(userId, riotAccountId);
 
+  const puuid = await getAccountPuuid(riotAccountId);
   const participants = await prisma.matchParticipant.findMany({
     where: {
-      riotAccountId,
+      puuid: puuid ?? "",
       championName: champion,
       match: { queueType: "RANKED_SOLO_5x5" },
     },

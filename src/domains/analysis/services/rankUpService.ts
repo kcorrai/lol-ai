@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
 import { getCurrentRank } from "@/domains/riot";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 import type { RankUpResult, RankUpLevel, RankUpComponents } from "@/domains/analysis/types/analysis.types";
 
 const LP_GAIN = 20;
@@ -65,13 +66,14 @@ function buildMessage(level: RankUpLevel, estimated: number | null, atRisk: bool
 }
 
 export async function getRankUpProbability(riotAccountId: string): Promise<RankUpResult | null> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const rank = await getCurrentRank(riotAccountId, "RANKED_SOLO_5x5");
   if (!rank) return null;
 
   // Last 20 ranked solo matches for WR / trend / mental
   const recentRanked = await prisma.matchParticipant.findMany({
     where: {
-      riotAccountId,
+      puuid: puuid ?? "",
       match: { queueType: "RANKED_SOLO_5x5" },
     },
     orderBy: { match: { gameStart: "desc" } },

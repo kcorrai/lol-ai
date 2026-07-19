@@ -3,6 +3,7 @@ import type { Prisma } from "@prisma/client";
 import { getAiClient } from "@/lib/ai/client";
 import { getCached, setCached, buildCacheKey } from "@/lib/ai/aiCache";
 import { logger } from "@/lib/utils/logger";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 
 export interface DeathPoint {
   x: number;
@@ -74,12 +75,13 @@ export async function getHeatmapData(
     isPro?: boolean;
   } = {}
 ): Promise<HeatmapData> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const { champion, timeRange, isPro = false } = options;
   const matchCount = isPro ? Math.min(options.matchCount ?? 20, 50) : 10;
 
   // Get the most recent N ranked matches for this account
   const recentMatches = await prisma.matchParticipant.findMany({
-    where: { riotAccountId, match: { queueType: "RANKED_SOLO_5x5" } },
+    where: { puuid: puuid ?? "", match: { queueType: "RANKED_SOLO_5x5" } },
     select: { match: { select: { id: true } } },
     orderBy: { match: { gameStart: "desc" } },
     take: matchCount,

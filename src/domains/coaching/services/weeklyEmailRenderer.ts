@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 import { computeRetentionSignals, NUDGE_MESSAGES } from "@/domains/analysis/services/retentionService";
 
 // ── Pure helpers (exported for testing) ─────────────────────────────────────
@@ -60,10 +61,11 @@ export async function buildWeeklyStats(
 ): Promise<WeeklyStats | null> {
   const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
   const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+  const puuid = await getAccountPuuid(riotAccountId);
 
   const thisWeekParticipants = await prisma.matchParticipant.findMany({
     where: {
-      riotAccountId,
+      puuid: puuid ?? "",
       match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: weekAgo } },
     },
     select: { won: true, csPerMinute: true },
@@ -76,7 +78,7 @@ export async function buildWeeklyStats(
 
   const lastWeekParticipants = await prisma.matchParticipant.findMany({
     where: {
-      riotAccountId,
+      puuid: puuid ?? "",
       match: {
         queueType: "RANKED_SOLO_5x5",
         gameStart: { gte: twoWeeksAgo, lt: weekAgo },

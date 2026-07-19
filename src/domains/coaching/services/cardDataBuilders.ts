@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 import type { WeeklyCardData, MasteryCardData } from "./card.types";
 
 // ── Weekly card data builder ───────────────────────────────────────────────────
@@ -16,9 +17,10 @@ export async function buildWeeklyData(
 
   const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
+  const puuid = await getAccountPuuid(riotAccountId);
   const recentParticipants = await prisma.matchParticipant.findMany({
     where: {
-      riotAccountId,
+      puuid: puuid ?? "",
       match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: since } },
     },
     select: {

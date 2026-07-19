@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
 import { patchNotesUrl } from "@/lib/lolPatch";
+import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 
 const DDRAGON_VERSIONS_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
 const MIN_GAMES_PER_WINDOW = 5;
@@ -54,12 +55,13 @@ export async function getOrCreateCurrentPatch(): Promise<{ version: string; dete
 
 // Returns WR before/after current patch for the user's most-played champions.
 export async function getPatchImpact(riotAccountId: string): Promise<PatchImpactResult> {
+  const puuid = await getAccountPuuid(riotAccountId);
   const patch = await getOrCreateCurrentPatch();
   const patchDate = patch.detectedAt;
 
   // Get top 5 champions by total games
   const allParticipants = await prisma.matchParticipant.findMany({
-    where: { riotAccountId, match: { queueType: "RANKED_SOLO_5x5" } },
+    where: { puuid: puuid ?? "", match: { queueType: "RANKED_SOLO_5x5" } },
     select: { championName: true, won: true, match: { select: { gameStart: true } } },
     orderBy: { match: { gameStart: "desc" } },
     take: 200,
