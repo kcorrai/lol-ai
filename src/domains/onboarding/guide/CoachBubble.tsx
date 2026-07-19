@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Bot, ChevronRight, ArrowRight, X } from "lucide-react";
 import { Confetti } from "./Confetti";
 import type { SpotRect } from "./SpotlightOverlay";
@@ -6,29 +6,59 @@ import type { GuideStep } from "./guideSteps";
 
 const BUBBLE_W = 340;
 const GAP = 18;
+const MARGIN = 12; // keep this far from every viewport edge
 
-// Anchors the coach bubble beside the lit rect (or centers it for target-less steps), clamped
-// inside the viewport. Coordinates are viewport-relative (position: fixed).
-function bubbleStyle(rect: SpotRect | null, placement: GuideStep["placement"]): React.CSSProperties {
+// Anchors the bubble beside the lit rect using its MEASURED size, then clamps it fully into the
+// viewport (flipping top<->bottom / left<->right when the preferred side has no room). Prevents the
+// bubble from spilling off-screen when the target is near an edge (TASK-230). Coordinates are
+// viewport-relative (position: fixed), so no CSS translate is applied.
+function computePosition(
+  rect: SpotRect | null,
+  placement: GuideStep["placement"],
+  w: number,
+  h: number,
+  vw: number,
+  vh: number,
+): { top: number; left: number } {
+  const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(v, Math.max(min, max)));
+
   if (!rect || placement === "center") {
-    return { top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
+    return { top: (vh - h) / 2, left: (vw - w) / 2 };
   }
-  const vw = typeof window !== "undefined" ? window.innerWidth : 1280;
+
   const cx = rect.left + rect.width / 2;
   const cy = rect.top + rect.height / 2;
-  const clampX = (x: number) => Math.max(BUBBLE_W / 2 + 12, Math.min(x, vw - BUBBLE_W / 2 - 12));
+  let top: number;
+  let left: number;
 
   switch (placement) {
-    case "top":
-      return { top: rect.top - GAP, left: clampX(cx), transform: "translate(-50%, -100%)" };
     case "left":
-      return { top: cy, left: rect.left - GAP, transform: "translate(-100%, -50%)" };
+      left = rect.left - GAP - w;
+      if (left < MARGIN) left = rect.left + rect.width + GAP; // flip to right
+      top = cy - h / 2;
+      break;
     case "right":
-      return { top: cy, left: rect.left + rect.width + GAP, transform: "translateY(-50%)" };
+      left = rect.left + rect.width + GAP;
+      if (left + w > vw - MARGIN) left = rect.left - GAP - w; // flip to left
+      top = cy - h / 2;
+      break;
+    case "top":
+      top = rect.top - GAP - h;
+      if (top < MARGIN) top = rect.top + rect.height + GAP; // flip to bottom
+      left = cx - w / 2;
+      break;
     case "bottom":
     default:
-      return { top: rect.top + rect.height + GAP, left: clampX(cx), transform: "translateX(-50%)" };
+      top = rect.top + rect.height + GAP;
+      if (top + h > vh - MARGIN) top = rect.top - GAP - h; // flip to top
+      left = cx - w / 2;
+      break;
   }
+
+  return {
+    left: clamp(left, MARGIN, vw - w - MARGIN),
+    top: clamp(top, MARGIN, vh - h - MARGIN),
+  };
 }
 
 interface CoachBubbleProps {
@@ -46,6 +76,27 @@ interface CoachBubbleProps {
 
 export function CoachBubble({ step, rect, index, total, onManualAdvance, onGoTo, onDismiss }: CoachBubbleProps): React.JSX.Element {
   const [typed, setTyped] = useState("");
+  const bubbleRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+
+  // Reposition from the bubble's real size whenever the target rect, placement or content changes.
+  // A ResizeObserver catches the typewriter growing the bubble; recompute on window resize too.
+  useLayoutEffect(() => {
+    const el = bubbleRef.current;
+    if (!el) return;
+    const recompute = () => {
+      const r = el.getBoundingClientRect();
+      setPos(computePosition(rect, step.placement, r.width, r.height, window.innerWidth, window.innerHeight));
+    };
+    recompute();
+    const ro = new ResizeObserver(recompute);
+    ro.observe(el);
+    window.addEventListener("resize", recompute);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", recompute);
+    };
+  }, [rect, step.placement, step.id, typed]);
 
   // Typewriter — reveal the body one char at a time; reset on every step change.
   useEffect(() => {
@@ -64,8 +115,10 @@ export function CoachBubble({ step, rect, index, total, onManualAdvance, onGoTo,
 
   return (
     <div
+      ref={bubbleRef}
       className="pointer-events-auto fixed z-[81] rounded-2xl border border-accent/30 bg-surface p-4 shadow-2xl"
-      style={{ width: BUBBLE_W, ...bubbleStyle(rect, step.placement) }}
+      // Positioned off-screen until measured (useLayoutEffect sets `pos` before the first paint).
+      style={{ width: BUBBLE_W, top: pos?.top ?? -9999, left: pos?.left ?? -9999 }}
     >
       {step.isFinal && <Confetti />}
 
