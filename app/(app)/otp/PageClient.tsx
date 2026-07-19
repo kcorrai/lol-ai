@@ -11,8 +11,11 @@ import { MatchupTierList } from "@/domains/otp/components/MatchupTierList";
 import { BanPriority } from "@/domains/otp/components/BanPriority";
 import { OtpTips } from "@/domains/otp/components/OtpTips";
 import { OtpSkeleton } from "@/domains/otp/components/OtpSkeleton";
+import { RecommendedOtps } from "@/domains/otp/components/RecommendedOtps";
 import { useOtpAssistant } from "@/hooks/useOtpAssistant";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useRiotAccounts } from "@/hooks/useRiotAccounts";
+import { useOtpRecommendations } from "@/hooks/useOtpRecommendations";
 import { cn } from "@/lib/utils";
 import type { Position } from "@/types/common.types";
 
@@ -30,6 +33,8 @@ export default function OtpPage() {
 
   const { data, isLoading, isError, error } = useOtpAssistant(champion, role);
   const { data: subscription } = useSubscription();
+  const { data: accounts } = useRiotAccounts();
+  const { data: recs } = useOtpRecommendations(accounts?.[0]?.id);
 
   const isPro =
     subscription?.plan === "pro" ||
@@ -43,6 +48,14 @@ export default function OtpPage() {
         title="OTP Assistant"
         subtitle="Everything you need to master a single champion."
       />
+
+      {/* Data-driven picks from the user's own ranked stats (TASK-235) */}
+      {recs?.recommendations && (
+        <RecommendedOtps
+          recommendations={recs.recommendations}
+          onSelect={(champ, pos) => { setChampion(champ); setRole(pos); }}
+        />
+      )}
 
       {/* Inputs */}
       <div className="mb-6 space-y-3">
