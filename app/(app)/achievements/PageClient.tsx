@@ -5,6 +5,8 @@ import Image from "next/image";
 import { Trophy, Lock, Share2 } from "lucide-react";
 import { useAchievements } from "@/hooks/useAchievements";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
+import { useOnboardingPreview } from "@/domains/onboarding/preview/OnboardingPreviewContext";
+import { AchievementsPreview } from "./AchievementsPreview";
 import { championSplashUrl } from "@/lib/ddragon";
 import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { TIER_COLORS, TIER_LABEL } from "@/types/achievement";
@@ -88,6 +90,7 @@ function AchievementCard({
 export default function AchievementsPage() {
   const { data, isLoading } = useAchievements();
   const { data: accounts } = useRiotAccounts();
+  const { previewActive } = useOnboardingPreview();
   const primaryAccount = accounts?.[0];
   const gameName = primaryAccount
     ? `${primaryAccount.gameName}#${primaryAccount.tagLine}`
@@ -119,6 +122,9 @@ export default function AchievementsPage() {
           </div>
         </div>
       </div>
+
+      {/* Onboarding preview — a new user has no earned badges yet, so illustrate the reward. */}
+      {previewActive && earned.length === 0 && <AchievementsPreview />}
 
       {/* Earned section */}
       {earned.length > 0 && (

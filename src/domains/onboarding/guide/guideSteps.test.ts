@@ -30,13 +30,17 @@ describe("GUIDE_STEPS", () => {
     }
   });
 
-  it("shows the leaderboard's inside as a manual step before finishing (TASK-219)", () => {
-    const inside = GUIDE_STEPS.findIndex((s) => s.id === "leaderboard-inside");
+  it("shows each tab's inside as a manual preview step before finishing (TASK-219)", () => {
     const finish = GUIDE_STEPS.findIndex((s) => s.id === "finish");
-    expect(inside).toBeGreaterThan(-1);
-    expect(GUIDE_STEPS[inside].advance.type).toBe("manual");
-    expect(GUIDE_STEPS[inside].target).toBe("leaderboard-preview");
-    expect(inside).toBeLessThan(finish);
+    for (const id of ["improvement-inside", "badges-inside", "leaderboard-inside"]) {
+      const i = GUIDE_STEPS.findIndex((s) => s.id === id);
+      expect(i, `${id} exists`).toBeGreaterThan(-1);
+      // Manual so the user actually looks at the preview instead of auto-advancing past it.
+      expect(GUIDE_STEPS[i].advance.type, `${id} is manual`).toBe("manual");
+      // Spotlights the page's preview anchor.
+      expect(GUIDE_STEPS[i].target, `${id} targets a *-preview anchor`).toMatch(/-preview$/);
+      expect(i, `${id} precedes finish`).toBeLessThan(finish);
+    }
   });
 
   it("forces the account connection before anything else", () => {

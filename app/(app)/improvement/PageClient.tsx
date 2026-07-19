@@ -9,6 +9,8 @@ import { ImprovementPlanWidget } from "@/domains/analysis/components/Improvement
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { useSubscription } from "@/hooks/useSubscription";
 import { usePlanHistory } from "@/hooks/useImprovementPlan";
+import { useOnboardingPreview } from "@/domains/onboarding/preview/OnboardingPreviewContext";
+import { ImprovementHistoryPreview } from "./ImprovementHistoryPreview";
 import type { PlanHistoryEntry } from "@/domains/analysis/services/improvementPlanService";
 import { cn } from "@/lib/utils";
 
@@ -64,6 +66,7 @@ export default function ImprovementPage() {
   const riotAccountId = primaryAccount?.id ?? null;
   const isPro = subscription?.plan === "pro" || subscription?.plan === "elite";
   const { data: history, isLoading: historyLoading } = usePlanHistory(riotAccountId);
+  const { previewActive } = useOnboardingPreview();
 
   if (accountsLoading) return <PageSkeleton />;
 
@@ -120,11 +123,15 @@ export default function ImprovementPage() {
             ))}
           </div>
         ) : historyEntries.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border bg-surface/50 py-12 text-center">
-            <History className="h-8 w-8 text-text-muted/40" />
-            <p className="text-sm font-medium text-text-muted">No completed plans yet</p>
-            <p className="text-xs text-text-muted/60">They will appear here once you complete your active plan.</p>
-          </div>
+          previewActive ? (
+            <ImprovementHistoryPreview />
+          ) : (
+            <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border bg-surface/50 py-12 text-center">
+              <History className="h-8 w-8 text-text-muted/40" />
+              <p className="text-sm font-medium text-text-muted">No completed plans yet</p>
+              <p className="text-xs text-text-muted/60">They will appear here once you complete your active plan.</p>
+            </div>
+          )
         ) : (
           <div className="space-y-4">
             {historyEntries.map((entry) => (

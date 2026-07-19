@@ -135,6 +135,15 @@ export const GUIDE_STEPS: GuideStep[] = [
     goTo: "/improvement",
   },
   {
+    id: "improvement-inside",
+    target: "improvement-preview",
+    placement: "top",
+    padding: 12,
+    title: "A living, scored plan",
+    body: "Each week I set targets from your games and score how you did. Plans stack up over time so you can see the trend — here's a sample of what that looks like.",
+    advance: { type: "manual" },
+  },
+  {
     id: "go-badges",
     target: "nav-badges",
     placement: "right",
@@ -143,6 +152,15 @@ export const GUIDE_STEPS: GuideStep[] = [
     body: "Hit milestones, unlock achievements, keep your streak alive. Click the glowing “Badges”.",
     advance: { type: "route", route: "/achievements" },
     goTo: "/achievements",
+  },
+  {
+    id: "badges-inside",
+    target: "badges-preview",
+    placement: "top",
+    padding: 12,
+    title: "Badges for real milestones",
+    body: "Big plays and streaks unlock badges automatically. You've got none yet — here's a taste of what you'll be chasing.",
+    advance: { type: "manual" },
   },
   {
     id: "go-leaderboard",
