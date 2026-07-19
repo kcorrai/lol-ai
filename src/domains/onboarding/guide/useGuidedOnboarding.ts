@@ -7,7 +7,7 @@ import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 import { useCoachingReports } from "@/hooks/useCoachingReports";
 import { useCompleteOnboarding } from "@/hooks/useCompleteOnboarding";
-import { GUIDE_STEPS, GUIDE_STORAGE_KEY, type GuideGates, type GuideStep } from "./guideSteps";
+import { GUIDE_STEPS, storageKeyFor, type GuideGates, type GuideStep } from "./guideSteps";
 import type { SpotRect } from "./SpotlightOverlay";
 
 // Should the engine roll past this step given the live world? (manual steps never auto-advance.)
@@ -24,9 +24,9 @@ function findTarget(target?: string): HTMLElement | null {
   return els.find((e) => e.offsetParent !== null || e.getBoundingClientRect().width > 0) ?? null;
 }
 
-function readStoredIndex(): number {
+function readStoredIndex(storageKey: string): number {
   try {
-    const raw = localStorage.getItem(GUIDE_STORAGE_KEY);
+    const raw = localStorage.getItem(storageKey);
     const n = raw ? parseInt(raw, 10) : 0;
     return Number.isFinite(n) && n >= 0 && n < GUIDE_STEPS.length ? n : 0;
   } catch {
@@ -44,11 +44,14 @@ export interface GuidedOnboardingState {
   goTo: (href: string) => void;
 }
 
-export function useGuidedOnboarding(): GuidedOnboardingState {
+export function useGuidedOnboarding(userId: string | null): GuidedOnboardingState {
   const pathname = usePathname();
   const router = useRouter();
   const queryClient = useQueryClient();
   const complete = useCompleteOnboarding();
+
+  // Per-user storage key so one account's step progress never bleeds onto another (TASK-218).
+  const storageKey = useMemo(() => storageKeyFor(userId), [userId]);
 
   const [mounted, setMounted] = useState(false);
   const [index, setIndex] = useState(0);
@@ -72,8 +75,8 @@ export function useGuidedOnboarding(): GuidedOnboardingState {
 
   useEffect(() => {
     setMounted(true);
-    setIndex(readStoredIndex());
-  }, []);
+    setIndex(readStoredIndex(storageKey));
+  }, [storageKey]);
 
   // Fast-forward + auto-advance: roll to the first step the user actually has to act on.
   useEffect(() => {
@@ -84,12 +87,12 @@ export function useGuidedOnboarding(): GuidedOnboardingState {
     if (i !== index) {
       setIndex(i);
       try {
-        localStorage.setItem(GUIDE_STORAGE_KEY, String(i));
+        localStorage.setItem(storageKey, String(i));
       } catch {
         /* ignore */
       }
     }
-  }, [mounted, done, index, gates, pathname]);
+  }, [mounted, done, index, gates, pathname, storageKey]);
 
   const step = GUIDE_STEPS[index];
 
@@ -138,7 +141,7 @@ export function useGuidedOnboarding(): GuidedOnboardingState {
     if (step.isFinal) {
       complete.mutate(undefined, { onSettled: () => setDone(true) });
       try {
-        localStorage.setItem(GUIDE_STORAGE_KEY, String(GUIDE_STEPS.length - 1));
+        localStorage.setItem(storageKey, String(GUIDE_STEPS.length - 1));
       } catch {
         /* ignore */
       }
@@ -147,11 +150,11 @@ export function useGuidedOnboarding(): GuidedOnboardingState {
     const nextIndex = Math.min(index + 1, GUIDE_STEPS.length - 1);
     setIndex(nextIndex);
     try {
-      localStorage.setItem(GUIDE_STORAGE_KEY, String(nextIndex));
+      localStorage.setItem(storageKey, String(nextIndex));
     } catch {
       /* ignore */
     }
-  }, [step, index, complete]);
+  }, [step, index, complete, storageKey]);
 
   const goTo = useCallback((href: string) => router.push(href), [router]);
 

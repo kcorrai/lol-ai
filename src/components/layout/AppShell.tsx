@@ -12,9 +12,11 @@ import { useUIStore } from "@/lib/stores/uiStore";
 export function AppShell({
   children,
   onboardingComplete,
+  userId,
 }: {
   children: React.ReactNode;
   onboardingComplete: boolean;
+  userId: string | null;
 }) {
   const sidebarCollapsed = useUIStore((s) => s.sidebarCollapsed);
   const setSidebarCollapsed = useUIStore((s) => s.setSidebarCollapsed);
@@ -41,7 +43,7 @@ export function AppShell({
       </div>
       <AchievementToast />
       <BottomNav />
-      {!onboardingComplete && <GuidedOnboarding />}
+      {!onboardingComplete && <GuidedOnboarding userId={userId} />}
     </div>
   );
 }

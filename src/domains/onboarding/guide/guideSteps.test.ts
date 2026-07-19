@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { GUIDE_STEPS, isGateSatisfied, type GuideGates } from "./guideSteps";
+import { GUIDE_STEPS, GUIDE_STORAGE_KEY, isGateSatisfied, storageKeyFor, type GuideGates } from "./guideSteps";
 
 const NONE: GuideGates = { hasAccount: false, hasMatches: false, hasCompleteReport: false };
 const ALL: GuideGates = { hasAccount: true, hasMatches: true, hasCompleteReport: true };
@@ -36,6 +36,18 @@ describe("GUIDE_STEPS", () => {
     const reports = GUIDE_STEPS.findIndex((s) => s.id === "generate-report");
     expect(accounts).toBeLessThan(connect);
     expect(connect).toBeLessThan(reports);
+  });
+});
+
+describe("storageKeyFor", () => {
+  it("namespaces the step-index key per user so progress never leaks across accounts", () => {
+    expect(storageKeyFor("user-a")).toBe(`${GUIDE_STORAGE_KEY}:user-a`);
+    expect(storageKeyFor("user-a")).not.toBe(storageKeyFor("user-b"));
+  });
+
+  it("falls back to the bare key when no user id is available", () => {
+    expect(storageKeyFor(null)).toBe(GUIDE_STORAGE_KEY);
+    expect(storageKeyFor(undefined)).toBe(GUIDE_STORAGE_KEY);
   });
 });
 

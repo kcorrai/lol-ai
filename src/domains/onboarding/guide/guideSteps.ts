@@ -37,6 +37,13 @@ export interface GuideStep {
 
 export const GUIDE_STORAGE_KEY = "lolai_first_journey_v1";
 
+// Namespace the step-index storage key per user. The completion gate is DB-backed, but the
+// in-progress step index lives in localStorage — a browser-global key would leak one account's
+// progress onto the next account signed in on the same browser (TASK-218).
+export function storageKeyFor(userId: string | null | undefined): string {
+  return userId ? `${GUIDE_STORAGE_KEY}:${userId}` : GUIDE_STORAGE_KEY;
+}
+
 export const GUIDE_STEPS: GuideStep[] = [
   {
     id: "welcome",

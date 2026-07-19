@@ -22,7 +22,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <QueryProvider>
-      <AppShell onboardingComplete={onboardingComplete}>{children}</AppShell>
+      <AppShell onboardingComplete={onboardingComplete} userId={session?.user?.id ?? null}>
+        {children}
+      </AppShell>
     </QueryProvider>
   );
 }

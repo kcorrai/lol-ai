@@ -8,9 +8,9 @@ import { useGuidedOnboarding } from "./useGuidedOnboarding";
 
 // Forced, cross-page "first journey" onboarding (TASK-217). Mounted once at the app shell so it
 // survives navigation; only rendered for users whose onboarding is not yet complete.
-export function GuidedOnboarding(): React.JSX.Element | null {
+export function GuidedOnboarding({ userId }: { userId: string | null }): React.JSX.Element | null {
   const [container, setContainer] = useState<HTMLElement | null>(null);
-  const { active, step, index, total, rect, manualAdvance, goTo } = useGuidedOnboarding();
+  const { active, step, index, total, rect, manualAdvance, goTo } = useGuidedOnboarding(userId);
 
   useEffect(() => setContainer(document.body), []);
 
