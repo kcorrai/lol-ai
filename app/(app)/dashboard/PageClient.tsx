@@ -25,6 +25,7 @@ import { TopChampionsWidget } from "@/domains/analysis/components/TopChampionsWi
 import { RoleDistributionWidget } from "@/domains/analysis/components/RoleDistributionWidget";
 import { HabitDetectionCard } from "@/domains/analysis/components/HabitDetectionWidget";
 import { PatchImpactWidget } from "@/components/dashboard/PatchImpactWidget";
+import { MetaRecommendationsWidget } from "@/components/dashboard/MetaRecommendationsWidget";
 import { DailyChallengeWidget } from "@/components/dashboard/DailyChallengeWidget";
 import { XpLevelWidget } from "@/components/dashboard/XpLevelWidget";
 import { WeekSummaryWidget } from "@/components/dashboard/WeekSummaryWidget";
@@ -202,6 +203,10 @@ export default function DashboardPage() {
               <div>
                 <SectionLabel>Habits</SectionLabel>
                 <HabitDetectionCard riotAccountId={primaryId} />
+              </div>
+              <div>
+                <SectionLabel>This Patch</SectionLabel>
+                <MetaRecommendationsWidget riotAccountId={primaryId} />
               </div>
               <div>
                 <SectionLabel>Patch Impact</SectionLabel>

@@ -539,6 +539,39 @@ Analysis of a player's champion pool health.
 
 ---
 
+### `GET /api/recommendations/champion-meta`
+
+Cross-references the player's champion pool against the current-patch tier lists to produce
+short, patch-aware recommendations for the dashboard "This Patch" widget (TASK-239). Requires
+`riotAccountId` (must be owned by the caller). Auth + IP rate limited.
+
+**Response 200:**
+```json
+{
+  "data": [
+    {
+      "kind": "keep",
+      "championKey": "Ahri",
+      "championName": "Ahri",
+      "position": "MIDDLE",
+      "positionLabel": "Mid",
+      "tier": "S",
+      "winRate": 75,
+      "games": 8,
+      "message": "Ahri is S-tier Mid this patch and you're winning 75% — keep spamming it.",
+      "toolHref": "/tools/tier-list/mid",
+      "toolLabel": "View the Mid tier list"
+    }
+  ]
+}
+```
+
+`kind` is one of `keep` (meta-strong and the user is doing fine), `improve` (meta-strong but the
+user is losing on it — links to the counter picker), or `switch` (weak/slipped tier, with an
+`alternative` suggestion). Returns `[]` when the pool or tier data is unavailable.
+
+---
+
 ## 6. Coaching Endpoints
 
 ### `GET /api/coaching/reports`
