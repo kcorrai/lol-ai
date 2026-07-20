@@ -61,6 +61,23 @@ export async function getAccountByRiotId(
   });
 }
 
+// Reverse lookup of a Riot ID from a puuid. Used by the GDPR right-to-be-forgotten
+// sweep (TASK-287), which needs the *current* name for an account we already know
+// the puuid of — a forgotten account keeps its puuid but is renamed to rtbf<id>.
+export async function getAccountByPuuid(
+  puuid: string,
+  region: string
+): Promise<RiotAccountDTO> {
+  if (process.env.E2E_MOCK === "true") {
+    return { puuid, gameName: "E2EPlayer", tagLine: "E2E" };
+  }
+  const routing = getRouting(region);
+  const url = `https://${routing}.api.riotgames.com/riot/account/v1/accounts/by-puuid/${encodeURIComponent(puuid)}`;
+  // Deliberately uncached: the sweep exists to observe a rename, and a cache hit
+  // would serve exactly the stale name it is looking for.
+  return riotClient.get<RiotAccountDTO>(url, { cacheTtl: 0 });
+}
+
 export async function getSummonerByPuuid(
   puuid: string,
   region: string
