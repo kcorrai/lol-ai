@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
-import { tierLetter, type TierListEntry } from "@/domains/meta";
+// Leaf import, not the domain barrel: this row renders inside a client component, and the barrel
+// reaches server-only modules.
+import { tierLetter } from "@/domains/meta/tierLetter";
+import type { TierListEntry } from "@/domains/meta";
 
 // Compact sample-size label: 1234 → "1.2k", 28 → "28".
 function formatGames(games: number): string {

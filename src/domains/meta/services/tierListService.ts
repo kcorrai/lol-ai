@@ -23,11 +23,9 @@ export interface RoleTierList {
   entries: TierListEntry[]; // sorted best-first
 }
 
-// op.gg tier (1-5) → conventional letter grade.
-const TIER_LETTERS: Record<number, string> = { 1: "S", 2: "A", 3: "B", 4: "C", 5: "D" };
-export function tierLetter(tier: number): string {
-  return TIER_LETTERS[tier] ?? "?";
-}
+// Re-exported so `@/domains/meta` keeps its existing public surface; the implementation lives in
+// a leaf module because client components need it without this file's server-side imports.
+export { tierLetter } from "@/domains/meta/tierLetter";
 
 // Exclude near-zero pick rates so the list reflects the real meta, not off-meta noise.
 const MIN_PICK_RATE = 0.3;
