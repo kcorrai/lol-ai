@@ -4,7 +4,89 @@ This document records every production and development dependency added after th
 
 ---
 
+## Scaffold Dependencies
+
+Arrived with `create-next-app` and `prisma init` rather than being chosen against alternatives.
+Listed for completeness (TASK-275) — where a real decision exists, it lives in an ADR.
+
+| Package | Version | Role |
+|---|---|---|
+| `next` | 14.2.35 | App Router framework. Pinned exactly, not caret-ranged, because the framework major gates the React major (see #12 in the scored backlog). |
+| `react-dom` | ^18.3.1 | Renderer. Held on the React 18 line — ADR-009 pins R3F/drei to React-18-compatible versions. |
+| `prisma` / `@prisma/client` | ^5.22.0 | ORM and generated client. Major version choice recorded in **ADR-001**. |
+| `next-auth` | ^4.24.14 | Session and OAuth. Library choice recorded in **ADR-003**. |
+| `@next-auth/prisma-adapter` | ^1.0.7 | Persists NextAuth sessions and accounts through Prisma, so auth state lives in the same database as everything else rather than a second store. |
+
+---
+
 ## Production Dependencies
+
+### `zod` (v4.x)
+
+**Purpose:** Runtime schema validation — API request bodies, and parsing the op.gg feed.  
+**Why needed:** TypeScript types vanish at runtime, so every trust boundary needs an actual check.
+Used at both: route handlers parse bodies with `safeParse` before anything touches the database, and
+`src/domains/meta/` validates the third-party op.gg payload, which is an undocumented feed that can
+change shape without warning.  
+**Why this, not io-ts/yup/joi:** it infers the TypeScript type from the schema, so the validator and
+the type cannot drift apart — with the alternatives you maintain both and they eventually disagree.
+
+### `react-hook-form` (v7.x) + `@hookform/resolvers` (v5.x)
+
+**Purpose:** Form state and validation wiring.  
+**Why this, not controlled `useState` forms:** it keeps inputs uncontrolled, so typing in one field
+does not re-render the whole form. `@hookform/resolvers` is the adapter that lets the same `zod`
+schema validate a form on the client and the request on the server — one definition, two
+enforcement points.
+
+### `@upstash/redis` (v1.x) + `@upstash/ratelimit` (v2.x)
+
+**Purpose:** The rate-limit backend behind `src/lib/api/rateLimit.ts`.  
+**Why needed:** Vercel functions are short-lived and horizontally scaled, so an in-process counter
+limits one instance rather than one user.  
+**Why this, not node-redis/ioredis:** it speaks HTTP/REST rather than the Redis wire protocol, which
+is what makes it usable from a serverless function without connection pooling. Note the consequence,
+recorded because it has already caused confusion: the `redis` service in `docker-compose.yml` is
+**unusable** by this app — `localhost:6379` speaks the wrong protocol. When the env vars are absent,
+`checkInMemory` takes over as a single-instance fallback.
+
+### `@sentry/nextjs` (v10.x)
+
+**Purpose:** Error and exception tracking across server, edge and client.  
+**Why needed:** `withAuth` reports unhandled route errors here, and `src/lib/db/prisma.ts` tags
+connection-pool exhaustion (`P2024`/`P1001`) specifically — the failure mode that matters most on a
+pooled serverless database and the one least visible in logs.
+
+### `resend` (v6.x)
+
+**Purpose:** Transactional email — verification, weekly reports, activation.  
+**Why this, not SendGrid/SES:** the React Email templating fits how the rest of the app is written,
+and it needs no separate domain-verification infrastructure to start sending.
+
+### `@lemonsqueezy/lemonsqueezy.js` (v4.x)
+
+**Purpose:** Checkout URLs and subscription lookups for the active billing provider.  
+**Why this, not Stripe:** LemonSqueezy acts as merchant of record and handles VAT/sales-tax
+registration, which for a solo-operated product is the entire reason to accept a higher fee. The
+migration is recorded in **ADR-004** / TASK-112, and the last Stripe remnant was removed in
+TASK-276.
+
+### `clsx` (v2.x) + `tailwind-merge` (v3.x) + `class-variance-authority` (v0.7.x)
+
+**Purpose:** The `cn()` helper in `src/lib/utils.ts`, and typed component variants.  
+**Why all three:** they solve three different halves of the same problem. `clsx` joins conditional
+class names; `tailwind-merge` resolves *conflicts* between them, so a `className` prop can actually
+override a component's default (`px-4` passed to a `px-2` button wins instead of both landing in the
+attribute and CSS order deciding); `class-variance-authority` turns variant props into class sets
+with real types, which is what `button.tsx` and `badge.tsx` are built on. Adopted together, and only
+meaningful together.
+
+### `lucide-react` (v1.x)
+
+**Purpose:** Icon set.  
+**Why this, not react-icons:** icons are individual named exports, so only the ones actually
+imported reach the bundle. `react-icons` ships whole families and relies on tree-shaking working
+perfectly to avoid shipping thousands of unused components.
 
 ### `recharts` (v2.x)
 
@@ -139,6 +221,24 @@ defect rather than a nit.
 making background content inert are individually small and collectively easy to get subtly wrong;
 the failure mode is silent and only affects keyboard and screen-reader users. Same family as
 `@radix-ui/react-slot`, already a dependency, so no new vendor.
+
+---
+
+## Toolchain
+
+Compiler, linter, formatter, styling pipeline and type stubs. These came with the scaffold or are
+the unremarkable companion of something that did; none was chosen against a real alternative, so
+they get a line rather than a rationale (TASK-275).
+
+| Package | Role |
+|---|---|
+| `typescript` | Compiler. `strict: true`, no weakening flags. |
+| `eslint` + `eslint-config-next` | Linting, Next.js rule set. |
+| `@typescript-eslint/parser` + `@typescript-eslint/eslint-plugin` | Lets ESLint understand TypeScript syntax and type-aware rules. |
+| `prettier` + `prettier-plugin-tailwindcss` | Formatting; the plugin sorts Tailwind classes so class order stops appearing in diffs. |
+| `tailwindcss` + `postcss` + `autoprefixer` | The styling pipeline. CLAUDE.md §3.2 mandates Tailwind utilities, so this is load-bearing rather than optional. |
+| `@playwright/test` | E2E runner. Excluded from vitest in `vitest.config.ts` — the two runners both define `test`/`expect` and would otherwise collide. |
+| `@types/node`, `@types/react`, `@types/react-dom`, `@types/bcryptjs` | Type stubs for untyped or partially typed packages. |
 
 ---
 
