@@ -1,28 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
 import { prisma } from "@/lib/db/prisma";
+import { apiError, apiSuccess } from "@/lib/api/response";
+import { logger } from "@/lib/utils/logger";
+
+// Grants the paid `team` plan, so it accepts two callers: an ADMIN_EMAIL session, or the scheduler
+// holding CRON_SECRET. It cannot go through `withAdminAuth`, which only knows the session path —
+// hence the local check rather than the shared wrapper.
+const bodySchema = z.object({ email: z.string().email().optional() });
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   const cronSecret = process.env.CRON_SECRET;
   const authHeader = req.headers.get("authorization");
-  const isCronAuth = cronSecret && authHeader === `Bearer ${cronSecret}`;
+  const isCronAuth = Boolean(cronSecret) && authHeader === `Bearer ${cronSecret}`;
 
   const session = isCronAuth ? null : await getServerSession(authOptions);
 
   if (!isCronAuth) {
     const adminEmail = process.env.ADMIN_EMAIL;
     if (!session?.user?.email || !adminEmail || session.user.email !== adminEmail) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      return apiError("FORBIDDEN", "Admin access required", 403);
     }
   }
 
-  const body = await req.json() as { email?: string };
-  const targetEmail = body.email ?? session?.user?.email;
-
-  if (!targetEmail) {
-    return NextResponse.json({ error: "email required" }, { status: 400 });
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    // Was unguarded — a malformed body threw straight out of the handler.
+    return apiError("VALIDATION_ERROR", "Invalid JSON body", 422);
   }
+
+  const parsed = bodySchema.safeParse(body);
+  if (!parsed.success) return apiError("VALIDATION_ERROR", parsed.error.issues[0].message, 422);
+
+  const targetEmail = parsed.data.email ?? session?.user?.email;
+  if (!targetEmail) return apiError("VALIDATION_ERROR", "email required", 422);
 
   try {
     const user = await prisma.user.findUnique({
@@ -30,9 +45,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       select: { id: true },
     });
 
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
+    if (!user) return apiError("RESOURCE_NOT_FOUND", "User not found", 404);
 
     await prisma.subscription.upsert({
       where: { userId: user.id },
@@ -40,9 +53,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       create: { userId: user.id, plan: "team", status: "active" },
     });
 
-    return NextResponse.json({ ok: true, email: targetEmail, plan: "team" });
+    return apiSuccess({ email: targetEmail, plan: "team" });
   } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ error: message }, { status: 500 });
+    // Was returned to the caller verbatim, which leaks database internals on an unexpected failure.
+    logger.error("[promote-team] Failed to grant the team plan", err);
+    return apiError("INTERNAL_ERROR", "An unexpected error occurred", 500);
   }
 }
