@@ -535,3 +535,33 @@ Append-only immutable event log. See ADR-004.
 - `INDEX (action, created_at DESC)`
 
 **Retention:** 2 years minimum. Archive to cold storage after 2 years.
+
+---
+
+## 7. Duo Partners (TASK-244)
+
+### `duo_partners`
+
+The teammate a player has marked as their duo. Detection itself needs no table — it is derived
+from `match_participants` (same match, same `team_id`) — so this stores only the explicit choice.
+
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `riotAccountId` | `uuid` | NOT NULL, FK → riot_accounts.id CASCADE |
+| `puuid` | `text` | NOT NULL |
+| `gameName` | `text` | NOT NULL |
+| `tagLine` | `text` | NOT NULL |
+| `isActive` | `boolean` | NOT NULL, default `true` |
+| `createdAt` | `timestamptz` | NOT NULL |
+| `updatedAt` | `timestamptz` | NOT NULL |
+
+**Indexes:**
+- `UNIQUE (riotAccountId, puuid)`
+- `INDEX (riotAccountId, isActive)`
+
+**Notes:**
+- `gameName`/`tagLine` are denormalised on purpose: a partner must still render after a Riot ID
+  change, or once they fall outside the 200-match scan window.
+- Only one row per account is `isActive`. Deselecting sets `isActive=false` instead of deleting,
+  so switching back to a previous duo keeps its history.

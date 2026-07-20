@@ -1082,3 +1082,77 @@ Accepts a team invite. The authenticated user joins the team with the role encod
 | `TEAM_PLAN_REQUIRED` | 403 | Team plan subscription required |
 | `INVITE_EXPIRED` | 409 | Invite token has expired |
 | `INVITE_ALREADY_USED` | 409 | Invite token already consumed |
+
+---
+
+### `GET /api/duo/candidates`
+
+The players the caller queues with most, ranked by games on the **same team** across their last
+200 synced matches (TASK-244). `matchParticipant` stores all ten players per match, so opponents
+are in that data too — they are excluded by comparing team ids per match. Players below 3 shared
+games are dropped as autofill randoms. Requires `riotAccountId` (must be owned by the caller).
+
+**Response 200:**
+```json
+{
+  "data": [
+    {
+      "puuid": "lIfyZTv0...",
+      "gameName": "DuoPartner",
+      "tagLine": "TR1",
+      "games": 42,
+      "wins": 25,
+      "winRate": 60,
+      "lastPlayedAt": "2026-07-19T18:22:00.000Z"
+    }
+  ]
+}
+```
+
+---
+
+### `GET|POST|DELETE /api/duo`
+
+The caller's selected duo partner (TASK-244). `GET` returns the active duo with its shared record
+recomputed from current match data, or `null`. `POST` sets it, accepting either `puuid` (picked
+from the candidate list) or `riotId` (`Name#TAG`, typed by the player). `DELETE` clears it.
+
+A partner must appear in the caller's own match history — we hold no stats for anyone else, so an
+arbitrary name is rejected rather than producing an empty chart.
+
+**POST body:**
+```json
+{ "riotAccountId": "uuid", "puuid": "lIfyZTv0..." }
+```
+```json
+{ "riotAccountId": "uuid", "riotId": "DuoPartner#TR1" }
+```
+
+**Response 200:** the active duo, same shape as a candidate.
+
+---
+
+### `GET /api/analysis/daily-momentum`
+
+Per-day performance series for the dashboard momentum chart (TASK-245). Returns one point per day
+over the requested window for the caller, and — when a duo is set — the duo's series over the
+games they shared. Query: `riotAccountId` (owned by the caller), optional `days` (default 30).
+
+**Response 200:**
+```json
+{
+  "data": {
+    "days": 30,
+    "self": [
+      { "date": "2026-07-19", "games": 4, "wins": 3, "winRate": 75, "kda": 3.4, "csPerMin": 7.1, "visionScore": 24 }
+    ],
+    "duo": {
+      "gameName": "DuoPartner",
+      "tagLine": "TR1",
+      "points": [
+        { "date": "2026-07-19", "games": 3, "wins": 3, "winRate": 100, "kda": 4.1, "csPerMin": 6.2, "visionScore": 31 }
+      ]
+    }
+  }
+}
+```

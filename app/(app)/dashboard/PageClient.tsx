@@ -38,6 +38,7 @@ import { ReferralWidget } from "@/domains/identity/components/ReferralWidget";
 import { ProgressionStrip } from "@/components/dashboard/ProgressionStrip";
 import { DevRestartOnboarding } from "@/components/dashboard/DevRestartOnboarding";
 import { ConnectAccountPrompt } from "@/components/dashboard/ConnectAccountPrompt";
+import { DuoWidget } from "@/components/dashboard/DuoWidget";
 import { resolveDashboardView } from "@/components/dashboard/dashboardView";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -208,6 +209,10 @@ export default function DashboardPage() {
               <div>
                 <SectionLabel>Habits</SectionLabel>
                 <HabitDetectionCard riotAccountId={primaryId} />
+              </div>
+              <div>
+                <SectionLabel>Duo</SectionLabel>
+                <DuoWidget riotAccountId={primaryId} />
               </div>
               <div>
                 <SectionLabel>This Patch</SectionLabel>

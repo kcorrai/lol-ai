@@ -276,10 +276,31 @@ model RiotAccount {
   improvementPlans     ImprovementPlan[]
   habits               PlayerHabit[]
   deathEvents          MatchDeathEvent[]
+  duoPartners          DuoPartner[]
 
   @@unique([userId, puuid])
   @@index([userId])
   @@map("riot_accounts")
+}
+
+// A teammate the player marks as their duo. Identified by puuid, but gameName/tagLine are stored
+// alongside so the partner still renders if they change their Riot ID or leave the match window.
+// Rows are kept after deselection (isActive=false) so switching back doesn't lose the history.
+model DuoPartner {
+  id            String   @id @default(uuid()) @db.Uuid
+  riotAccountId String   @db.Uuid
+  puuid         String
+  gameName      String
+  tagLine       String
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  riotAccount RiotAccount @relation(fields: [riotAccountId], references: [id], onDelete: Cascade)
+
+  @@unique([riotAccountId, puuid])
+  @@index([riotAccountId, isActive])
+  @@map("duo_partners")
 }
 
 // ============================================================
