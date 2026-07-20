@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { assignLanes, SMITE_SPELL_ID, type LaneFrequency, type LiveParticipant } from "./liveDraft";
+import {
+  assignLanes,
+  findMatchup,
+  SMITE_SPELL_ID,
+  type LaneFrequency,
+  type LiveDraftTeams,
+  type LiveParticipant,
+} from "./liveDraft";
 import type { CanonicalPosition } from "@/domains/meta/types";
 
 const FLASH = 4;
@@ -94,5 +101,42 @@ describe("assignLanes", () => {
 
   it("returns empty teams for a game with no participants", () => {
     expect(assignLanes([], STANDARD, KEYS)).toEqual({ blue: {}, red: {} });
+  });
+});
+
+const DRAFT: LiveDraftTeams = {
+  blue: { TOP: "Garen", JUNGLE: "LeeSin", MIDDLE: "Ahri", BOTTOM: "Jinx", UTILITY: "Thresh" },
+  red: { TOP: "Darius", JUNGLE: "Vi", MIDDLE: "Sylas", BOTTOM: "Caitlyn", UTILITY: "Lulu" },
+};
+
+describe("findMatchup", () => {
+  it("pairs the player against the enemy in their own lane", () => {
+    expect(findMatchup(DRAFT, "blue", "Ahri")).toEqual({
+      champion: "Ahri",
+      opponent: "Sylas",
+      position: "MIDDLE",
+    });
+  });
+
+  it("works from the red side", () => {
+    expect(findMatchup(DRAFT, "red", "Darius")).toEqual({
+      champion: "Darius",
+      opponent: "Garen",
+      position: "TOP",
+    });
+  });
+
+  it("returns null when nobody opposes the player's lane", () => {
+    const halfDraft: LiveDraftTeams = { blue: { MIDDLE: "Ahri" }, red: { TOP: "Darius" } };
+
+    expect(findMatchup(halfDraft, "blue", "Ahri")).toBeNull();
+  });
+
+  it("returns null when the player's champion was never placed", () => {
+    expect(findMatchup(DRAFT, "blue", "Zed")).toBeNull();
+  });
+
+  it("returns null when the player's champion is unknown", () => {
+    expect(findMatchup(DRAFT, "blue", undefined)).toBeNull();
   });
 });

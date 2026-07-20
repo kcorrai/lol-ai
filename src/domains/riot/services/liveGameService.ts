@@ -1,7 +1,13 @@
 import { prisma } from "@/lib/db/prisma";
 import { getMetaSnapshot } from "@/domains/meta";
 import { getActiveGame } from "@/domains/riot/services/riotApiClient";
-import { assignLanes, type LaneFrequency, type LiveDraftTeams } from "@/domains/riot/services/liveDraft";
+import {
+  assignLanes,
+  findMatchup,
+  type LaneFrequency,
+  type LiveDraftTeams,
+  type LiveMatchup,
+} from "@/domains/riot/services/liveDraft";
 
 export interface LiveDraft {
   inGame: true;
@@ -10,6 +16,15 @@ export interface LiveDraft {
   draft: LiveDraftTeams;
   /** The side the player themselves is on, so the UI can say which team is theirs. */
   yourSide: "blue" | "red";
+  /**
+   * The player's own champion and the enemy sharing their inferred lane — enough to open the
+   * matchup analyzer. Null when the lane couldn't be worked out or nobody opposes it.
+   *
+   * This leans harder on the lane inference than `draft` does: a mis-assigned lane there is one
+   * champion in the wrong row, but here it picks the wrong opponent and the whole answer changes.
+   * Callers should let the player correct it.
+   */
+  yourMatchup: LiveMatchup | null;
 }
 
 export type LiveGameResult = LiveDraft | { inGame: false };
@@ -45,12 +60,16 @@ export async function getLiveDraft(riotAccountId: string): Promise<LiveGameResul
   }
 
   const self = game.participants.find((p) => p.puuid === account.puuid);
+  const draft = assignLanes(game.participants, laneFrequency, championKeys);
+  const yourSide = self?.teamId === 200 ? "red" : "blue";
 
   return {
     inGame: true,
     gameMode: game.gameMode,
     gameLength: game.gameLength,
-    draft: assignLanes(game.participants, laneFrequency, championKeys),
-    yourSide: self?.teamId === 200 ? "red" : "blue",
+    draft,
+    yourSide,
+    yourMatchup: findMatchup(draft, yourSide, self && championKeys.get(self.championId)),
   };
 }
+

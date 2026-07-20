@@ -1187,10 +1187,16 @@ This is the *live* game, not champion select — spectator only sees a match onc
     "draft": {
       "blue": { "TOP": "Garen", "JUNGLE": "LeeSin", "MIDDLE": "Ahri", "BOTTOM": "Jinx", "UTILITY": "Thresh" },
       "red": { "TOP": "Darius", "JUNGLE": "Vi", "MIDDLE": "Sylas", "BOTTOM": "Caitlyn", "UTILITY": "Lulu" }
-    }
+    },
+    "yourMatchup": { "champion": "Ahri", "opponent": "Sylas", "position": "MIDDLE" }
   }
 }
 ```
+
+`yourMatchup` is the caller's own champion against the enemy in their inferred lane, ready for
+`/tools/matchup`. It is null when the lane is unopposed or the champion couldn't be placed. It
+depends on the lane inference more than `draft` does — a wrong lane there is one champion in the
+wrong row, here it names the wrong opponent — so consumers must let the player correct it.
 
 **Response 200 (not in a game):**
 ```json

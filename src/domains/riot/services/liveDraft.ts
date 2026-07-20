@@ -21,6 +21,39 @@ export interface LiveDraftTeams {
   red: Partial<Record<CanonicalPosition, string>>;
 }
 
+export interface LiveMatchup {
+  champion: string;
+  opponent: string;
+  position: CanonicalPosition;
+}
+
+/**
+ * The player's own lane matchup: their champion against whoever the other team put in the same
+ * inferred lane.
+ *
+ * This trusts the lane inference more than the draft view does. A mis-assigned lane there is one
+ * champion in the wrong row; here it names the wrong opponent and the entire answer changes — so
+ * callers must let the player correct it rather than presenting it as certain.
+ *
+ * Returns null when the player's champion couldn't be placed or nobody opposes their lane.
+ */
+export function findMatchup(
+  draft: LiveDraftTeams,
+  yourSide: "blue" | "red",
+  yourChampion: string | undefined,
+): LiveMatchup | null {
+  if (!yourChampion) return null;
+
+  const own = yourSide === "blue" ? draft.blue : draft.red;
+  const enemy = yourSide === "blue" ? draft.red : draft.blue;
+
+  const position = (Object.keys(own) as CanonicalPosition[]).find((p) => own[p] === yourChampion);
+  if (!position) return null;
+
+  const opponent = enemy[position];
+  return opponent ? { champion: yourChampion, opponent, position } : null;
+}
+
 /**
  * Guesses each player's lane from a live game.
  *

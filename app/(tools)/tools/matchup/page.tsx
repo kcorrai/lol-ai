@@ -9,6 +9,7 @@ import { MatchupBuildSummary } from "./MatchupBuildSummary";
 import { loadMatchupExtras } from "./loadMatchupExtras";
 import { ToolUpgradeNudge } from "../../ToolUpgradeNudge";
 import { PublicOnly } from "@/components/tools/PublicOnly";
+import { LiveGameButton } from "@/components/tools/LiveGameButton";
 
 interface PageProps {
   searchParams: { a?: string; b?: string; role?: string };
@@ -72,6 +73,8 @@ export default async function MatchupPage({ searchParams }: PageProps) {
           Compare two champions head-to-head and see who wins the lane, by real ranked win rate.
         </p>
       </header>
+
+      <LiveGameButton mode="matchup" />
 
       <div className="mb-10 rounded-2xl border border-border bg-surface/60 p-5">
         <MatchupControls
