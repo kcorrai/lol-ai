@@ -71,8 +71,10 @@ export default function ImprovementPage() {
   if (accountsLoading) return <PageSkeleton />;
 
   if (!primaryAccount) {
+    // Same container as the loaded page — otherwise the header hugs the far left
+    // while the empty state centres itself against the full viewport width.
     return (
-      <div className="space-y-6">
+      <div className="mx-auto max-w-2xl space-y-10 px-4 py-8">
         <PageHeader title="Improvement Tracking" subtitle="Set your goals, track your progress." />
         <EmptyState
           title="Riot account not connected"
