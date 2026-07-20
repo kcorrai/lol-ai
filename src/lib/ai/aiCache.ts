@@ -2,15 +2,21 @@ import { createHash } from "crypto";
 import { prisma } from "@/lib/db/prisma";
 
 export async function getCached(cacheKey: string): Promise<unknown | null> {
-  const entry = await prisma.aiCache.findUnique({ where: { cacheKey } });
+  // Projected: the row also carries id/type/hitCount/createdAt, and `content`
+  // here can be a multi-hundred-KB meta snapshot. Every byte crosses the network
+  // from Neon, so only the two fields the caller needs are selected (TASK-282).
+  const entry = await prisma.aiCache.findUnique({
+    where: { cacheKey },
+    select: { content: true, expiresAt: true },
+  });
   if (!entry) return null;
   if (entry.expiresAt < new Date()) return null;
 
-  // Fire-and-forget hit count increment
-  prisma.aiCache
-    .update({ where: { cacheKey }, data: { hitCount: { increment: 1 } } })
-    .catch(() => undefined);
-
+  // Deliberately no hitCount increment. It used to fire on every read, which
+  // turned each cache *hit* into an extra write round trip — the exact opposite
+  // of what a cache is for, and a meaningful slice of the egress that exhausted
+  // the Neon transfer quota. incrementHit() remains for callers that genuinely
+  // want the telemetry.
   return entry.content;
 }
 

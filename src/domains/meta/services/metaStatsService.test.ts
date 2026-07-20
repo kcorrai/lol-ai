@@ -14,7 +14,7 @@ vi.mock("@/lib/utils/logger", () => ({
   logger: { warn: vi.fn(), info: vi.fn(), error: vi.fn(), debug: vi.fn() },
 }));
 
-import { getMetaSnapshot, findChampionStats } from "./metaStatsService";
+import { getMetaSnapshot, findChampionStats, __clearSnapshotMemo } from "./metaStatsService";
 import { getCached, setCached } from "@/lib/ai/aiCache";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { getLatestDdragonVersion } from "@/lib/ddragon";
@@ -73,6 +73,10 @@ function mockFetchOk(body: unknown): void {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  // The snapshot memo added in TASK-282 is process-global, so without this a
+  // value cached by one test satisfies the next and the fetch assertions below
+  // become meaningless.
+  __clearSnapshotMemo();
   mockFetchAllChampions.mockResolvedValue(DDRAGON_CHAMPIONS);
   mockGetVersion.mockResolvedValue("16.13.1");
   mockSetCached.mockResolvedValue(undefined);
@@ -123,6 +127,51 @@ describe("getMetaSnapshot — happy path", () => {
     expect(snapshot).toBe(cached);
     expect(global.fetch).not.toHaveBeenCalled();
     expect(mockSetCached).not.toHaveBeenCalled();
+  });
+
+  // The point of TASK-282. A single page render calls getMetaSnapshot more than
+  // once (getPopularChampions calls it again for the related-links row), and
+  // ~739 ISR pages revalidate on a 12h cycle — so an unmemoized read sent the
+  // same ~200KB blob across the network tens of thousands of times a month.
+  it("reads the cache row once across repeated calls", async () => {
+    mockGetCached.mockResolvedValue({ patch: "16.13", fetchedAt: "x", champions: [] });
+
+    await getMetaSnapshot();
+    await getMetaSnapshot();
+    await getMetaSnapshot();
+
+    expect(mockGetCached).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps separate memo entries per mode and tier", async () => {
+    mockGetCached.mockResolvedValue({ patch: "16.13", fetchedAt: "x", champions: [] });
+
+    await getMetaSnapshot({ mode: "ranked" });
+    await getMetaSnapshot({ mode: "aram" });
+    await getMetaSnapshot({ mode: "ranked" });
+
+    // One read per distinct variant, not one per call.
+    expect(mockGetCached).toHaveBeenCalledTimes(2);
+  });
+
+  // A null means the feed was down AND no last-good row existed. Holding that
+  // for the full window would keep serving empty pages after the feed recovered,
+  // so failures get a much shorter memo than successes.
+  it("does not memoize a failed snapshot for the full window", async () => {
+    mockGetCached.mockResolvedValue(null);
+    global.fetch = vi.fn().mockRejectedValue(new Error("feed down")) as unknown as typeof fetch;
+
+    const first = await getMetaSnapshot();
+    expect(first).toBeNull();
+
+    const realNow = Date.now();
+    vi.spyOn(Date, "now").mockReturnValue(realNow + 60_000);
+
+    mockGetCached.mockResolvedValue({ patch: "16.14", fetchedAt: "y", champions: [] });
+    const second = await getMetaSnapshot();
+
+    expect(second).not.toBeNull();
+    vi.mocked(Date.now).mockRestore();
   });
 });
 

@@ -57,18 +57,35 @@ describe("getCached", () => {
     expect(result).toEqual(content);
   });
 
-  it("triggers hit count increment on cache hit", async () => {
+  // Inverted in TASK-282. A hitCount bump on every read turned each cache HIT
+  // into an extra write round trip to Neon — the opposite of what a cache is
+  // for, and a real slice of the transfer that exhausted the 5GB allowance.
+  it("does not write on a cache hit", async () => {
     mockPrisma.aiCache.findUnique.mockResolvedValue({
-      cacheKey: "valid-key",
       content: { x: 1 },
       expiresAt: futureDate,
     });
+
     await getCached("valid-key");
-    // Fire-and-forget — give it a tick
     await new Promise((r) => setTimeout(r, 0));
-    expect(mockPrisma.aiCache.update).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { cacheKey: "valid-key" } })
-    );
+
+    expect(mockPrisma.aiCache.update).not.toHaveBeenCalled();
+  });
+
+  // The row carries id/type/hitCount/createdAt alongside a content blob that can
+  // be hundreds of KB. Every unselected byte crosses the network from Neon.
+  it("selects only the fields it uses", async () => {
+    mockPrisma.aiCache.findUnique.mockResolvedValue({
+      content: { x: 1 },
+      expiresAt: futureDate,
+    });
+
+    await getCached("valid-key");
+
+    expect(mockPrisma.aiCache.findUnique).toHaveBeenCalledWith({
+      where: { cacheKey: "valid-key" },
+      select: { content: true, expiresAt: true },
+    });
   });
 });
 

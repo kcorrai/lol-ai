@@ -162,9 +162,54 @@ async function fetchAndBuildSnapshot(opts: Required<SnapshotOpts>): Promise<Meta
 // Returns the meta snapshot for a mode/rank bracket, or the last-good fallback, or
 // null if the feed is down and nothing was ever cached. Defaults to ranked at
 // op.gg's default bracket (emerald+).
+// Process-level memo in front of the aiCache row (TASK-282).
+//
+// The snapshot is a single ~200KB blob and getMetaSnapshot had no memoization at
+// all: every call was a full-blob read from Neon. A single page render calls it
+// more than once (getPopularChampions calls it again for the related-links row),
+// and ~739 statically generated pages revalidate on a 12h ISR cycle — so the
+// same blob was crossing the network tens of thousands of times a month. That is
+// what exhausted the 5GB transfer allowance.
+//
+// A warm serverless instance now serves repeat calls from memory. The TTL is far
+// shorter than the 12h DB cache, so data freshness is unchanged in practice —
+// this only collapses the burst of identical reads that one revalidation wave
+// produces. Each instance holds at most a handful of variants.
+const MEMO_TTL_MS = 5 * 60 * 1000;
+
+const snapshotMemo = new Map<string, { value: MetaSnapshot | null; expiresAt: number }>();
+
 export async function getMetaSnapshot(opts: SnapshotOpts = {}): Promise<MetaSnapshot | null> {
   const resolved = { mode: opts.mode ?? "ranked", tier: opts.tier } as Required<SnapshotOpts>;
   const variant = `${resolved.mode}:${resolved.tier ?? "default"}`;
+
+  const memoized = snapshotMemo.get(variant);
+  if (memoized && memoized.expiresAt > Date.now()) return memoized.value;
+
+  const snapshot = await loadSnapshot(resolved, variant);
+
+  // A null result is memoized too, but only briefly — see rememberFor below.
+  snapshotMemo.set(variant, {
+    value: snapshot,
+    expiresAt: Date.now() + rememberFor(snapshot),
+  });
+
+  return snapshot;
+}
+
+// A successful snapshot is held for the full window. A null one means the feed
+// was down AND no last-good row existed; caching that for five minutes would
+// keep serving empty pages long after the feed recovered, so it is held for a
+// fraction of the time — long enough to absorb a revalidation burst, short
+// enough to recover quickly.
+function rememberFor(snapshot: MetaSnapshot | null): number {
+  return snapshot ? MEMO_TTL_MS : 30_000;
+}
+
+async function loadSnapshot(
+  resolved: Required<SnapshotOpts>,
+  variant: string
+): Promise<MetaSnapshot | null> {
   const freshKey = `meta:snapshot:${variant}:fresh`;
   const lastGoodKey = `meta:snapshot:${variant}:last-good`;
 
@@ -181,6 +226,12 @@ export async function getMetaSnapshot(opts: SnapshotOpts = {}): Promise<MetaSnap
     const lastGood = (await getCached(lastGoodKey).catch(() => null)) as MetaSnapshot | null;
     return lastGood ?? null;
   }
+}
+
+// Test seam — the memo is process-global, so suites that assert on fetch counts
+// need a way to start clean without reaching into module internals.
+export function __clearSnapshotMemo(): void {
+  snapshotMemo.clear();
 }
 
 // Most-picked champions this patch, for related-links rows. Optionally excludes
