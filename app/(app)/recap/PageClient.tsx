@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { ChevronRight, Copy, Check, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { ChevronRight, Copy, Check, Loader2, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { buildRecapSlides, TOTAL_SLIDES } from "@/domains/analysis/components/recap/recapSlides";
 import { useGenerateRecap } from "@/hooks/useRecap";
@@ -25,7 +26,7 @@ export default function RecapPage() {
   const [slide, setSlide] = useState(0);
   const [recap, setRecap] = useState<{ data: RecapData; shareToken: string } | null>(null);
   const [copied, setCopied] = useState(false);
-  const { data: accounts } = useRiotAccounts();
+  const { data: accounts, isLoading: accountsLoading } = useRiotAccounts();
   const { mutate: generate, isPending, error } = useGenerateRecap();
   const primaryAccount = accounts?.[0];
 
@@ -58,6 +59,32 @@ export default function RecapPage() {
 
   const gameName = primaryAccount ? `${primaryAccount.gameName}#${primaryAccount.tagLine}` : "Summoner";
   const contents = recap ? buildRecapSlides(recap.data, gameName, slide) : [];
+
+  // Without an account the recap is never requested, so `recap` and `error` both stay
+  // null — the spinner below would run forever. Ask for the account instead.
+  if (!accountsLoading && !primaryAccount) {
+    return (
+      <div className="flex h-screen items-center justify-center px-4">
+        <div className="w-full max-w-md rounded-2xl border border-border bg-surface p-10 text-center">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10">
+            <Trophy className="h-6 w-6 text-accent" />
+          </div>
+          <h1 className="mt-5 font-display text-2xl font-bold text-text">
+            Connect your Riot account
+          </h1>
+          <p className="mx-auto mt-2 max-w-sm text-sm text-text-muted">
+            Your season recap is built from your ranked games. Link your Riot ID and we&apos;ll put
+            it together — it needs at least 5 ranked matches.
+          </p>
+          <div className="mt-8">
+            <Link href="/settings/accounts">
+              <Button size="lg">Connect Riot Account</Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (isPending || (!recap && !error)) {
     return (
