@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db/prisma";
 import { Errors } from "@/lib/api/errors";
 import { assertCanAddRiotAccount } from "@/lib/auth/authorization";
 import { backgroundRefresh } from "@/lib/riot/lifecycle";
+import { withUserLock } from "@/lib/db/userLock";
 import {
   getAccountByRiotId,
   getSummonerByPuuid,
@@ -66,26 +67,30 @@ export async function connectAccount(
   // Fetch full summoner data
   const summoner = await getSummonerByPuuid(riotAccountDto.puuid, region);
 
-  const isPrimary =
-    (await prisma.riotAccount.count({ where: { userId } })) === 0;
+  // "First account becomes primary" is a check-then-write: counting and creating separately lets two
+  // concurrent connects both see zero and both claim primary, which the rest of the app assumes
+  // cannot happen. Both statements run under the same per-user lock (TASK-267).
+  const account = await withUserLock(userId, async (tx) => {
+    const isPrimary = (await tx.riotAccount.count({ where: { userId } })) === 0;
 
-  const account = await prisma.riotAccount.create({
-    data: {
-      userId,
-      puuid: riotAccountDto.puuid,
-      summonerId: summoner.id,
-      accountId: summoner.accountId,
-      gameName: riotAccountDto.gameName,
-      tagLine: riotAccountDto.tagLine,
-      summonerLevel: summoner.summonerLevel,
-      profileIconId: summoner.profileIconId,
-      region,
-      isPrimary,
-    },
+    return tx.riotAccount.create({
+      data: {
+        userId,
+        puuid: riotAccountDto.puuid,
+        summonerId: summoner.id,
+        accountId: summoner.accountId,
+        gameName: riotAccountDto.gameName,
+        tagLine: riotAccountDto.tagLine,
+        summonerLevel: summoner.summonerLevel,
+        profileIconId: summoner.profileIconId,
+        region,
+        isPrimary,
+      },
+    });
   });
 
   // Set profile slug from first primary account (non-blocking)
-  if (isPrimary) {
+  if (account.isPrimary) {
     const { ensureProfileSlug } = await import("@/domains/identity/services/profileService");
     ensureProfileSlug(userId, account.gameName, account.tagLine).catch(() => undefined);
   }

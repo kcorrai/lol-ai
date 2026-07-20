@@ -189,4 +189,30 @@ describe("assertCanGenerateReport", () => {
       })
     );
   });
+
+  /**
+   * The quota is only actually enforceable when the count runs on the same transaction client as
+   * the insert (TASK-267). If this function ignored the client it is handed and kept using the
+   * singleton, the count would sit outside the transaction and the lock would protect nothing —
+   * with no visible difference in any other test.
+   */
+  describe("when handed a transaction client", () => {
+    it("counts on that client, not the singleton", async () => {
+      onPlan(null);
+      const tx = { coachingReport: { count: vi.fn().mockResolvedValue(0) } };
+      vi.mocked(prisma.coachingReport.count).mockReset();
+
+      await assertCanGenerateReport(userId, tx as never);
+
+      expect(tx.coachingReport.count).toHaveBeenCalledTimes(2); // monthly, then daily
+      expect(prisma.coachingReport.count).not.toHaveBeenCalled();
+    });
+
+    it("still throws at the cap when counting through it", async () => {
+      onPlan(null);
+      const tx = { coachingReport: { count: vi.fn().mockResolvedValue(3) } };
+
+      await expect(assertCanGenerateReport(userId, tx as never)).rejects.toThrow();
+    });
+  });
 });

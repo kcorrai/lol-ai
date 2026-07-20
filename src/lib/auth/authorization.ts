@@ -1,6 +1,10 @@
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { Errors } from "@/lib/api/errors";
 import { getPlanLimits } from "@/lib/auth/planLimits";
+
+/** Either the singleton client or a transaction client, so checks can run inside a transaction. */
+type Db = Prisma.TransactionClient | typeof prisma;
 
 export { PLAN_LIMITS, getPlanLimits } from "@/lib/auth/planLimits";
 export type { PlanLimits } from "@/lib/auth/planLimits";
@@ -46,7 +50,12 @@ export async function checkIsPro(userId: string): Promise<boolean> {
 
 // ── Report limits ────────────────────────────────────────────────────────────
 
-export async function assertCanGenerateReport(userId: string): Promise<void> {
+/**
+ * Pass `db` a transaction client to make this check authoritative: on its own it is a
+ * check-then-write race, because the caller inserts the report as a separate statement. The
+ * quota only actually holds when this runs inside `withUserLock` alongside the insert (TASK-267).
+ */
+export async function assertCanGenerateReport(userId: string, db: Db = prisma): Promise<void> {
   const limits = await getPlanLimits(userId);
 
   // Monthly cap
@@ -54,7 +63,7 @@ export async function assertCanGenerateReport(userId: string): Promise<void> {
     const monthStart = new Date();
     monthStart.setDate(monthStart.getDate() - 30);
 
-    const monthCount = await prisma.coachingReport.count({
+    const monthCount = await db.coachingReport.count({
       where: {
         riotAccount: { userId },
         createdAt: { gte: monthStart },
@@ -70,7 +79,7 @@ export async function assertCanGenerateReport(userId: string): Promise<void> {
     const todayStart = new Date();
     todayStart.setUTCHours(0, 0, 0, 0);
 
-    const todayCount = await prisma.coachingReport.count({
+    const todayCount = await db.coachingReport.count({
       where: {
         riotAccount: { userId },
         createdAt: { gte: todayStart },

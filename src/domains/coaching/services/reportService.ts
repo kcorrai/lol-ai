@@ -1,7 +1,10 @@
 import { randomBytes } from "crypto";
 import { prisma } from "@/lib/db/prisma";
 import { Errors } from "@/lib/api/errors";
-import type { ReportType } from "@prisma/client";
+import type { Prisma, ReportType } from "@prisma/client";
+
+/** Either the singleton client or a transaction client. */
+type Db = Prisma.TransactionClient | typeof prisma;
 
 export type ReportSummary = {
   reportId: string;
@@ -19,9 +22,12 @@ export async function createPendingReport(
   riotAccountId: string,
   matchIds: string[],
   reportType: ReportType,
-  focusArea?: string
+  focusArea?: string,
+  // Callers enforcing the report quota must pass the transaction client from `withUserLock` so the
+  // count and this insert are atomic (TASK-267).
+  db: Db = prisma
 ): Promise<string> {
-  const report = await prisma.coachingReport.create({
+  const report = await db.coachingReport.create({
     data: {
       riotAccountId,
       reportType,

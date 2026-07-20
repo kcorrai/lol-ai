@@ -8,6 +8,7 @@ import { buildCoachingInput } from "@/domains/coaching/pipeline/dataPreparator";
 import { createPendingReport } from "@/domains/coaching/services/reportService";
 import { checkRateLimit, rateLimitResponse, addRateLimitHeaders } from "@/lib/api/rateLimit";
 import { dispatchOrRunInProcess } from "@/lib/inngest/dispatch";
+import { withUserLock } from "@/lib/db/userLock";
 import { runCoachingPipeline } from "@/domains/coaching/pipeline/coachingPipeline";
 import { audit } from "@/lib/audit/auditService";
 
@@ -45,12 +46,22 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   const { riotAccountId, reportType, matchIds, focusArea } = parsed.data;
 
   await assertOwnsRiotAccount(userId, riotAccountId);
+
+  // Cheap advisory check — rejects an over-quota user before the expensive preparation below.
+  // Not authoritative: the binding check runs under the lock next to the insert.
   await assertCanGenerateReport(userId);
 
-  // Validate data is ready before creating the DB record
+  // Validate data is ready before creating the DB record. Deliberately outside the lock — it is the
+  // slow part, and holding the advisory lock across it would serialize a user's requests for its
+  // whole duration.
   await buildCoachingInput(riotAccountId, matchIds, focusArea);
 
-  const reportId = await createPendingReport(riotAccountId, matchIds, reportType, focusArea);
+  // Count and insert atomically, so concurrent requests cannot each pass a stale count and every
+  // one of them bill an LLM call (TASK-267).
+  const reportId = await withUserLock(userId, async (tx) => {
+    await assertCanGenerateReport(userId, tx);
+    return createPendingReport(riotAccountId, matchIds, reportType, focusArea, tx);
+  });
 
   // Durable via Inngest in production; runs the pipeline in-process if Inngest is unavailable (TASK-223).
   await dispatchOrRunInProcess(
