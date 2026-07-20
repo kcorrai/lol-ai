@@ -93,7 +93,14 @@ export async function buildAccountPreview(
     aiInsight: buildRuleBasedInsight(gameName, soloEntry, recentMatches, topChampions),
   };
 
-  await setCached(cacheKey, "preview", result, 1); // 1 day TTL
+  // The payload is already complete here, so a cache-write failure must not
+  // discard it — mirrors the guard on the read above. Neon being unreachable
+  // used to turn a fully served preview into a 500 (TASK-285).
+  try {
+    await setCached(cacheKey, "preview", result, 1); // 1 day TTL
+  } catch {
+    // Cache unavailable — serve the freshly built result anyway
+  }
   return result;
 }
 
