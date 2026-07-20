@@ -37,6 +37,8 @@ import { EmailVerificationBanner } from "@/components/ui/EmailVerificationBanner
 import { ReferralWidget } from "@/domains/identity/components/ReferralWidget";
 import { ProgressionStrip } from "@/components/dashboard/ProgressionStrip";
 import { DevRestartOnboarding } from "@/components/dashboard/DevRestartOnboarding";
+import { ConnectAccountPrompt } from "@/components/dashboard/ConnectAccountPrompt";
+import { resolveDashboardView } from "@/components/dashboard/dashboardView";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -59,10 +61,13 @@ export default function DashboardPage() {
   // Keep match data current on its own — silently re-sync a stale account on load (TASK-221).
   useAutoSync(primaryId, primaryAccount?.lastSyncedAt);
 
-  if (accountsLoading || !accounts || accounts.length === 0) {
+  const view = resolveDashboardView(accountsLoading, accounts?.length ?? 0);
+
+  // `!accounts` is unreachable once the view is "ready" — it narrows the type for the render below.
+  if (view !== "ready" || !accounts) {
     return (
       <>
-        <PageSkeleton />
+        {view === "loading" ? <PageSkeleton /> : <ConnectAccountPrompt />}
         <DevRestartOnboarding />
       </>
     );
