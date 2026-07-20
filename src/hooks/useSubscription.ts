@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { apiFetch } from "@/lib/api/fetcher";
-import type { SubscriptionInfo } from "@/lib/stripe/subscriptionService";
+import type { SubscriptionInfo } from "@/lib/subscription/subscriptionService";
 
 export function useSubscription() {
   const { status } = useSession();

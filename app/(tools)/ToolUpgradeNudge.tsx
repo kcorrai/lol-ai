@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Sparkles } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { apiFetch } from "@/lib/api/fetcher";
-import type { SubscriptionInfo } from "@/lib/stripe/subscriptionService";
+import type { SubscriptionInfo } from "@/lib/subscription/subscriptionService";
 
 // Contextual upgrade prompt shown ONLY to logged-in free-plan users on the public
 // tools. Logged-out visitors already get the register CTA; Pro users see nothing.
