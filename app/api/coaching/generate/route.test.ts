@@ -7,8 +7,9 @@ vi.mock("@/lib/auth/authorization", () => ({
   assertCanGenerateReport: vi.fn(),
   getPlanLimits: vi.fn(),
 }));
-vi.mock("@/lib/db/userLock", () => ({ withUserLock: vi.fn() }));
-vi.mock("@/domains/coaching/services/reportService", () => ({ createPendingReport: vi.fn() }));
+vi.mock("@/domains/coaching/services/reportService", () => ({
+  createPendingReportWithinQuota: vi.fn(),
+}));
 vi.mock("@/domains/coaching/pipeline/dataPreparator", () => ({ buildCoachingInput: vi.fn() }));
 vi.mock("@/domains/coaching/pipeline/coachingPipeline", () => ({ runCoachingPipeline: vi.fn() }));
 vi.mock("@/lib/inngest/dispatch", () => ({ dispatchOrRunInProcess: vi.fn() }));
@@ -19,8 +20,7 @@ vi.mock("@/lib/api/rateLimit", async (importOriginal) => ({
 }));
 
 import { assertCanGenerateReport, getPlanLimits } from "@/lib/auth/authorization";
-import { withUserLock } from "@/lib/db/userLock";
-import { createPendingReport } from "@/domains/coaching/services/reportService";
+import { createPendingReportWithinQuota } from "@/domains/coaching/services/reportService";
 import { buildCoachingInput } from "@/domains/coaching/pipeline/dataPreparator";
 import { checkRateLimit } from "@/lib/api/rateLimit";
 import { audit } from "@/lib/audit/auditService";
@@ -47,11 +47,9 @@ beforeEach(() => {
   authenticateAs({ id: USER_ID, email: "player@example.com" });
   vi.mocked(getPlanLimits).mockResolvedValue({ reportsPerDay: 1 } as never);
   vi.mocked(checkRateLimit).mockResolvedValue({ allowed: true, limit: 5, remaining: 4 } as never);
-  vi.mocked(createPendingReport).mockResolvedValue("report-1");
+  vi.mocked(createPendingReportWithinQuota).mockResolvedValue("report-1");
   // The route calls .catch() on this — resetAllMocks strips the resolved value, so restore it here.
   vi.mocked(audit).mockResolvedValue(undefined);
-  // Stand-in transaction client; the real one comes from Prisma.
-  vi.mocked(withUserLock).mockImplementation(async (_userId, fn) => fn({} as never));
 });
 
 describe("POST /api/coaching/generate", () => {
@@ -69,57 +67,55 @@ describe("POST /api/coaching/generate", () => {
     const res = await generate();
 
     expect(res.status).toBe(401);
-    expect(createPendingReport).not.toHaveBeenCalled();
+    expect(createPendingReportWithinQuota).not.toHaveBeenCalled();
   });
 
   /**
-   * The quota is the only ceiling on per-user AI spend, and each report is a paid LLM call. The
-   * count and the insert must be atomic, otherwise concurrent requests each pass a stale count.
+   * The route delegates rather than orchestrating: quota enforcement and the insert are one
+   * operation inside the service, so the handler cannot accidentally create a report without the
+   * quota check (CLAUDE.md §2.2). Atomicity itself is covered in reportService.test.ts.
    */
-  it("counts and inserts inside the same locked transaction", async () => {
+  it("delegates creation to the quota-enforcing service", async () => {
     await generate();
 
-    expect(withUserLock).toHaveBeenCalledOnce();
-    expect(vi.mocked(withUserLock).mock.calls[0][0]).toBe(USER_ID);
-
-    // Both the authoritative check and the insert received a transaction client, not the default.
-    const tx = vi.mocked(assertCanGenerateReport).mock.calls.at(-1)?.[1];
-    expect(tx).toBeDefined();
-    expect(vi.mocked(createPendingReport).mock.calls[0][4]).toBe(tx);
+    expect(createPendingReportWithinQuota).toHaveBeenCalledWith(
+      USER_ID,
+      VALID_BODY.riotAccountId,
+      VALID_BODY.matchIds,
+      VALID_BODY.reportType,
+      undefined
+    );
   });
 
-  it("does not insert when the quota check inside the lock rejects", async () => {
-    // Passes the cheap pre-check, fails the authoritative one — the race this task closes.
-    vi.mocked(assertCanGenerateReport)
-      .mockResolvedValueOnce(undefined)
-      .mockRejectedValueOnce(Errors.dailyReportLimitReached());
+  it("surfaces a quota rejection raised inside the service", async () => {
+    vi.mocked(createPendingReportWithinQuota).mockRejectedValue(Errors.dailyReportLimitReached());
 
     const res = await generate();
 
     const { status, error } = await readApiResponse(res);
     expect(status).toBe(429);
     expect(error?.code).toBe("DAILY_REPORT_LIMIT_REACHED");
-    expect(createPendingReport).not.toHaveBeenCalled();
   });
 
-  // Preparation is the slow part; holding the advisory lock across it would serialize a user's
-  // requests for its whole duration.
-  it("prepares the coaching input before taking the lock", async () => {
+  // Preparation is the slow part; it must finish before the service takes the per-user lock, or the
+  // lock would be held across it and serialize that user's requests for its whole duration.
+  it("prepares the coaching input before creating the report", async () => {
     const order: string[] = [];
     vi.mocked(buildCoachingInput).mockImplementation(async () => {
       order.push("prepare");
       return {} as never;
     });
-    vi.mocked(withUserLock).mockImplementation(async (_userId, fn) => {
-      order.push("lock");
-      return fn({} as never);
+    vi.mocked(createPendingReportWithinQuota).mockImplementation(async () => {
+      order.push("create");
+      return "report-1";
     });
 
     await generate();
 
-    expect(order).toEqual(["prepare", "lock"]);
+    expect(order).toEqual(["prepare", "create"]);
   });
 
+  // The cheap pre-check exists so an over-quota user never pays for the expensive preparation.
   it("rejects over-quota users before doing the expensive preparation", async () => {
     vi.mocked(assertCanGenerateReport).mockRejectedValue(Errors.reportLimitReached());
 
@@ -127,7 +123,7 @@ describe("POST /api/coaching/generate", () => {
 
     expect(res.status).toBe(403);
     expect(buildCoachingInput).not.toHaveBeenCalled();
-    expect(withUserLock).not.toHaveBeenCalled();
+    expect(createPendingReportWithinQuota).not.toHaveBeenCalled();
   });
 
   it("rejects a body that fails schema validation", async () => {
@@ -136,7 +132,7 @@ describe("POST /api/coaching/generate", () => {
     const { status, error } = await readApiResponse(res);
     expect(status).toBe(422);
     expect(error?.code).toBe("VALIDATION_ERROR");
-    expect(createPendingReport).not.toHaveBeenCalled();
+    expect(createPendingReportWithinQuota).not.toHaveBeenCalled();
   });
 
   it("returns 429 when the hourly rate limit is exhausted", async () => {
@@ -150,6 +146,6 @@ describe("POST /api/coaching/generate", () => {
     const res = await generate();
 
     expect(res.status).toBe(429);
-    expect(createPendingReport).not.toHaveBeenCalled();
+    expect(createPendingReportWithinQuota).not.toHaveBeenCalled();
   });
 });

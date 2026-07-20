@@ -5,10 +5,9 @@ import { apiSuccess } from "@/lib/api/response";
 import { Errors } from "@/lib/api/errors";
 import { assertOwnsRiotAccount, assertCanGenerateReport, getPlanLimits } from "@/lib/auth/authorization";
 import { buildCoachingInput } from "@/domains/coaching/pipeline/dataPreparator";
-import { createPendingReport } from "@/domains/coaching/services/reportService";
+import { createPendingReportWithinQuota } from "@/domains/coaching/services/reportService";
 import { checkRateLimit, rateLimitResponse, addRateLimitHeaders } from "@/lib/api/rateLimit";
 import { dispatchOrRunInProcess } from "@/lib/inngest/dispatch";
-import { withUserLock } from "@/lib/db/userLock";
 import { runCoachingPipeline } from "@/domains/coaching/pipeline/coachingPipeline";
 import { audit } from "@/lib/audit/auditService";
 
@@ -56,12 +55,10 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   // whole duration.
   await buildCoachingInput(riotAccountId, matchIds, focusArea);
 
-  // Count and insert atomically, so concurrent requests cannot each pass a stale count and every
-  // one of them bill an LLM call (TASK-267).
-  const reportId = await withUserLock(userId, async (tx) => {
-    await assertCanGenerateReport(userId, tx);
-    return createPendingReport(riotAccountId, matchIds, reportType, focusArea, tx);
-  });
+  // Re-checks the quota and inserts atomically — see createPendingReportWithinQuota (TASK-267).
+  const reportId = await createPendingReportWithinQuota(
+    userId, riotAccountId, matchIds, reportType, focusArea
+  );
 
   // Durable via Inngest in production; runs the pipeline in-process if Inngest is unavailable (TASK-223).
   await dispatchOrRunInProcess(

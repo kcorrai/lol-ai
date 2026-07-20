@@ -1,6 +1,8 @@
 import { randomBytes } from "crypto";
 import { prisma } from "@/lib/db/prisma";
+import { withUserLock } from "@/lib/db/userLock";
 import { Errors } from "@/lib/api/errors";
+import { assertCanGenerateReport } from "@/lib/auth/authorization";
 import type { Prisma, ReportType } from "@prisma/client";
 
 /** Either the singleton client or a transaction client. */
@@ -38,6 +40,30 @@ export async function createPendingReport(
     select: { id: true },
   });
   return report.id;
+}
+
+/**
+ * Creates a pending report only if the user's plan quota still allows one, counting and inserting
+ * atomically so concurrent requests cannot each pass a stale count (TASK-267).
+ *
+ * This lives here rather than in the route handler because it is the rule "a report may only exist
+ * if quota permits it" — business logic, which route handlers are not allowed to carry
+ * (CLAUDE.md §2.2). Callers get quota enforcement by construction instead of having to remember to
+ * take the lock.
+ *
+ * Throws the same `ApiError`s as `assertCanGenerateReport`.
+ */
+export async function createPendingReportWithinQuota(
+  userId: string,
+  riotAccountId: string,
+  matchIds: string[],
+  reportType: ReportType,
+  focusArea?: string
+): Promise<string> {
+  return withUserLock(userId, async (tx) => {
+    await assertCanGenerateReport(userId, tx);
+    return createPendingReport(riotAccountId, matchIds, reportType, focusArea, tx);
+  });
 }
 
 export async function getReport(reportId: string, userId: string) {
