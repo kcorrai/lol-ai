@@ -63,6 +63,33 @@ async function sendDiscordWeeklySummaries(): Promise<void> {
     },
   });
 
+  // One query for every subscriber's week-ago rank instead of one per subscriber inside the loop.
+  //
+  // The window is bounded on both sides: without a lower bound this returned the most recent
+  // snapshot at *any* point before last week, so a player who stopped recording games had their
+  // "weekly" delta computed against a months-old row. Two weeks is the widest span for which the
+  // answer is still meaningfully "a week ago".
+  const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
+  const accountIds = integrations
+    .map((i) => i.user.riotAccounts[0]?.id)
+    .filter((id): id is string => Boolean(id));
+
+  const priorRanks = await prisma.rankedHistory.findMany({
+    where: {
+      riotAccountId: { in: accountIds },
+      queueType: "RANKED_SOLO_5x5",
+      recordedAt: { gte: twoWeeksAgo, lte: weekAgo },
+    },
+    orderBy: { recordedAt: "desc" },
+    select: { riotAccountId: true, tier: true, division: true, lp: true },
+  });
+
+  // Ordered newest first, so the first row seen for an account is the one nearest to a week ago.
+  const rankByAccount = new Map<string, (typeof priorRanks)[number]>();
+  for (const row of priorRanks) {
+    if (!rankByAccount.has(row.riotAccountId)) rankByAccount.set(row.riotAccountId, row);
+  }
+
   for (const integration of integrations) {
     const account = integration.user.riotAccounts[0];
     if (!account || account.matchParticipants.length === 0) continue;
@@ -73,11 +100,7 @@ async function sendDiscordWeeklySummaries(): Promise<void> {
 
     // LP delta — compare current with week-ago snapshot (best effort)
     const currentLp = account.rankedHistory[0];
-    const weekAgoRank = await prisma.rankedHistory.findFirst({
-      where: { riotAccountId: account.id, queueType: "RANKED_SOLO_5x5", recordedAt: { lte: weekAgo } },
-      orderBy: { recordedAt: "desc" },
-      select: { tier: true, division: true, lp: true },
-    });
+    const weekAgoRank = rankByAccount.get(account.id);
 
     const TIER_ORDER: Record<string, number> = {
       IRON: 0, BRONZE: 1, SILVER: 2, GOLD: 3, PLATINUM: 4,
