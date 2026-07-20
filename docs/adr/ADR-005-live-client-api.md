@@ -92,3 +92,30 @@ The Live Client API is technically viable and Riot ToS compliant. Real-time coac
 - Requires users to install a separate app → higher friction vs. web-only
 - Electron app adds a new platform to maintain (Windows focus initially, macOS later)
 - Companion app version must stay compatible with League client updates
+
+---
+
+## Addendum (2026-07-20, TASK-249): the post-lock path was taken
+
+This ADR's decision is unchanged — champion select still needs a companion app — but it framed the
+problem as all-or-nothing, and part of it turned out to be reachable from the server.
+
+**What changed.** `GET /lol/spectator/v5/active-games/by-summoner/{puuid}` returns the full
+participant list — both teams' champions, summoner spells and runes — for a game already in
+progress. It is a normal server-side Riot API call on our existing key (probed: 404 when idle, not
+403). TASK-249 uses it to prefill the draft analyzer from the player's live match.
+
+**What it does not solve.** Spectator only sees a game once it has **started**. During champion
+select there is nothing to query: that state lives in the LCU API on the player's own machine,
+behind the same localhost barrier this ADR describes. Draft-time advice — the moment it would
+actually be most useful — still requires the companion app.
+
+**Consequences for the deferred work.** The companion app remains the only route to champ select
+and to real-time in-game coaching. Its value is now marginally lower for the "what am I up
+against" use case, since players can get a comp read once loading screen hits, and correspondingly
+concentrated on the two things only it can do: advice *during* picks and bans, and live in-game
+events.
+
+**Caveat carried forward.** Spectator counts against the Riot key's rate limit, so it is wired to
+an explicit button press and never polled. A production key would be a prerequisite for anything
+more frequent.

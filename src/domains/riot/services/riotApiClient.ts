@@ -172,3 +172,48 @@ export async function getRankedEntriesByPuuidDirect(
     return [];
   }
 }
+
+export interface ActiveGameParticipantDTO {
+  puuid: string;
+  teamId: number;
+  championId: number;
+  spell1Id: number;
+  spell2Id: number;
+}
+
+export interface ActiveGameDTO {
+  gameId: number;
+  gameMode: string;
+  gameQueueConfigId?: number;
+  gameLength: number;
+  participants: ActiveGameParticipantDTO[];
+}
+
+/**
+ * The game this player is in right now, or null when they aren't in one.
+ *
+ * Riot answers "not in a game" with a 404, which the client turns into a thrown RIOT_NOT_FOUND —
+ * so the absence of a game arrives here as an exception and has to be translated back into a
+ * value. 404 is not retryable, so this costs exactly one call against the rate limit.
+ *
+ * Note this is the *live* game, not champion select: spectator only sees a game once it has
+ * started. Champion select lives behind the localhost-only LCU API (see ADR-005).
+ */
+export async function getActiveGame(
+  puuid: string,
+  region: string
+): Promise<ActiveGameDTO | null> {
+  const url = `https://${region}.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/${puuid}`;
+  try {
+    return await riotClient.get<ActiveGameDTO>(url, {
+      // Short TTL: a draft doesn't change mid-game, but the player may press the button twice.
+      cacheTtl: 60,
+      cacheKey: `active-game:${puuid}`,
+    });
+  } catch (err) {
+    const status = (err as { statusCode?: number; status?: number }).statusCode
+      ?? (err as { status?: number }).status;
+    if (status === 404) return null;
+    throw err;
+  }
+}

@@ -1156,3 +1156,43 @@ games they shared. Query: `riotAccountId` (owned by the caller), optional `days`
   }
 }
 ```
+
+---
+
+### `GET /api/riot/live-game`
+
+The caller's current game, shaped for the draft analyzer (TASK-249). Requires `riotAccountId`
+(owned by the caller). Auth + IP rate limited, deliberately tightly (30 / 10 min): every call hits
+the Riot API, so the UI fires it on a button press and never polls.
+
+Riot answers "not in a game" with a 404; that is translated to `{ "inGame": false }` rather than
+surfaced as an error.
+
+**Lanes are inferred, not reported.** The Spectator API returns champions and summoner spells but
+no positions. Smite decides the jungler; everyone else takes their most-played lane this patch,
+assigned by how concentrated the champion is in it. The UI presents the result as a starting point
+the player can correct.
+
+This is the *live* game, not champion select — spectator only sees a match once it has started
+(see ADR-005).
+
+**Response 200 (in a game):**
+```json
+{
+  "data": {
+    "inGame": true,
+    "gameMode": "CLASSIC",
+    "gameLength": 412,
+    "yourSide": "blue",
+    "draft": {
+      "blue": { "TOP": "Garen", "JUNGLE": "LeeSin", "MIDDLE": "Ahri", "BOTTOM": "Jinx", "UTILITY": "Thresh" },
+      "red": { "TOP": "Darius", "JUNGLE": "Vi", "MIDDLE": "Sylas", "BOTTOM": "Caitlyn", "UTILITY": "Lulu" }
+    }
+  }
+}
+```
+
+**Response 200 (not in a game):**
+```json
+{ "data": { "inGame": false } }
+```

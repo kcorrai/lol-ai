@@ -13,6 +13,7 @@ import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
 import { ToolUpgradeNudge } from "../../ToolUpgradeNudge";
 import { PublicOnly } from "@/components/tools/PublicOnly";
 import { DraftBuilder } from "./DraftBuilder";
+import { LiveGameButton } from "./LiveGameButton";
 import { DraftResults } from "./DraftResults";
 
 interface PageProps {
@@ -96,6 +97,7 @@ export default async function DraftAnalyzerPage({ searchParams }: PageProps) {
       </header>
 
       <div className="mb-10">
+        <LiveGameButton />
         <DraftBuilder champions={championOptions} blue={blueSlots} red={redSlots} />
       </div>
 
