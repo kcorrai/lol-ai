@@ -30,11 +30,22 @@ pages they can inspect by hand. Production is currently broken on two counts:
 
 **Do not apply until a reviewer can load the site and use it.** See TASK-290.
 
-### B2. Domain verification
+### B2. Domain verification — and there is no custom domain
 
-Riot issues a string that must be served at a path on the domain you own
-(`riot.txt`). No such file exists in `public/` yet — the content is supplied
-during the application, so this is a step to perform, not something to pre-create.
+Riot issues a string that must be served at a path on **a domain you own**
+(`riot.txt`). Two problems:
+
+- No such file exists in `public/` yet. The content is supplied during the
+  application, so this is a step to perform, not something to pre-create.
+- **The project has no custom domain.** It serves only `lol-ai-three.vercel.app`
+  and two `*-kcorrais-projects.vercel.app` aliases. `vercel.app` is not ours, so
+  a domain-ownership check against it is questionable. Riot's public docs do not
+  say whether a platform subdomain is accepted.
+
+Treat buying a custom domain as a likely prerequisite. It interacts with **D1**:
+if the product is renamed away from "LoL", buy the domain for the new name rather
+than paying twice.
+
 An unverified domain means the application cannot be processed at all.
 
 ---
