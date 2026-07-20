@@ -23,6 +23,7 @@ export default defineConfig({
         // Files where coverage was built deliberately and a drop means a real defence was removed.
         // These are all at 100% today (TASK-263/265/266/267/276), so anything less is a regression
         // rather than a shortfall — which is why they are pinned per file instead of per directory.
+        "src/lib/api/withAdminAuth.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
         "src/lib/auth/authorization.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
         "src/lib/auth/planLimits.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
         "src/lib/auth/totpService.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
