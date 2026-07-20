@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
-import { tierLetter, type MetaMover } from "@/domains/meta";
+import { tierLetter } from "@/domains/meta/tierLetter";
+import type { MetaMover } from "@/domains/meta";
 
 interface MoverListProps {
   title: string;
@@ -37,38 +38,51 @@ export function MoverList({ title, movers, direction }: MoverListProps) {
           {movers.map((m) => {
             const letter = tierLetter(m.tier);
             return (
+              // Two rows, not one: name + delta + WR/PR/BR + games + a counters link never fit
+              // across ~420px, so the delta badge used to land on top of longer champion names.
               <li
                 key={m.championKey}
-                className="flex items-center gap-2.5 rounded-lg border border-border/60 bg-surface px-3 py-2"
+                className="rounded-lg border border-border/60 bg-surface px-3 py-2"
               >
-                <span
-                  className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded border text-[10px] font-bold ${
-                    TIER_COLORS[letter] ?? "border-border text-text-muted"
-                  }`}
-                >
-                  {letter}
-                </span>
-                <Link href={`/builds/${m.championKey}`} className="flex items-center gap-2 hover:text-accent">
-                  <ChampionIcon name={m.championKey} size={30} />
-                  <span className="text-sm font-medium text-text">{m.name}</span>
-                </Link>
-                <span className={`text-xs font-semibold ${up ? "text-success" : "text-danger"}`}>
-                  {up ? "▲" : "▼"}
-                  {Math.abs(m.delta)}
-                </span>
-                <span className="ml-auto text-right text-xs text-text-muted">
-                  <span className={`font-semibold ${m.winRate >= 50 ? "text-success" : "text-text"}`}>
-                    {m.winRate.toFixed(1)}%
-                  </span>{" "}
-                  WR · {m.pickRate.toFixed(1)}% PR · {m.banRate.toFixed(1)}% BR
-                  {m.games > 0 && <span className="text-text-muted/60"> · {formatGames(m.games)} games</span>}
-                </span>
-                <Link
-                  href={`/counters/${m.championKey}`}
-                  className="text-xs text-text-muted underline-offset-2 hover:text-accent hover:underline"
-                >
-                  counters
-                </Link>
+                <div className="flex items-center gap-2.5">
+                  <span
+                    className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded border text-[10px] font-bold ${
+                      TIER_COLORS[letter] ?? "border-border text-text-muted"
+                    }`}
+                  >
+                    {letter}
+                  </span>
+                  <Link
+                    href={`/builds/${m.championKey}`}
+                    className="flex min-w-0 flex-1 items-center gap-2 hover:text-accent"
+                  >
+                    <ChampionIcon name={m.championKey} size={30} className="shrink-0" />
+                    <span className="truncate text-sm font-medium text-text">{m.name}</span>
+                  </Link>
+                  <span
+                    className={`shrink-0 text-sm font-bold ${up ? "text-success" : "text-danger"}`}
+                  >
+                    {up ? "▲" : "▼"}
+                    {Math.abs(m.delta)}
+                  </span>
+                </div>
+                <div className="mt-1.5 flex items-center justify-between gap-2 pl-[30px] text-xs text-text-muted">
+                  <span className="min-w-0 truncate">
+                    <span className={`font-semibold ${m.winRate >= 50 ? "text-success" : "text-text"}`}>
+                      {m.winRate.toFixed(1)}%
+                    </span>{" "}
+                    WR · {m.pickRate.toFixed(1)}% PR · {m.banRate.toFixed(1)}% BR
+                    {m.games > 0 && (
+                      <span className="text-text-muted/60"> · {formatGames(m.games)} games</span>
+                    )}
+                  </span>
+                  <Link
+                    href={`/counters/${m.championKey}`}
+                    className="shrink-0 underline-offset-2 hover:text-accent hover:underline"
+                  >
+                    counters
+                  </Link>
+                </div>
               </li>
             );
           })}

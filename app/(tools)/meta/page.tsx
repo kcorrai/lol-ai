@@ -5,6 +5,8 @@ import { patchNotesUrl } from "@/lib/lolPatch";
 import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
 import { DataFreshness } from "@/domains/meta/components/DataFreshness";
 import { MoverList } from "./MoverList";
+import { MetaHero } from "./MetaHero";
+import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { metaSummary, metaFaq } from "./metaReportText";
 
 export const revalidate = 43200; // 12h ISR
@@ -32,6 +34,10 @@ export default async function MetaReportPage() {
       </div>
     );
   }
+
+  // Ability clips are keyed by Riot's numeric champion id, which MetaMover doesn't carry.
+  const champions = await fetchAllChampions();
+  const numericKeys = new Map(champions.map((c) => [c.id, c.key]));
 
   const patch = formatGamePatch(report.patch);
   const summary = metaSummary(report, patch);
@@ -105,12 +111,28 @@ export default async function MetaReportPage() {
         </a>
       </div>
 
-      <p className="mb-8 leading-relaxed text-text-muted">{summary}</p>
+      <div className="mb-8" />
+
+      <MetaHero
+        climber={report.climbers[0]}
+        faller={report.fallers[0]}
+        numericKeys={numericKeys}
+      />
 
       <div className="grid gap-4 md:grid-cols-2">
         <MoverList title="Biggest Winners" movers={report.climbers} direction="up" />
         <MoverList title="Biggest Losers" movers={report.fallers} direction="down" />
       </div>
+
+      {/* Kept in the HTML for search (TASK-186 added it for Google's scaled-content rules), but
+          folded away — it was the first thing on the page and nobody read it. */}
+      <details className="group mt-6 rounded-2xl border border-border bg-surface/60 p-4">
+        <summary className="cursor-pointer list-none text-sm font-semibold text-text marker:hidden">
+          <span className="text-accent group-open:hidden">Read the full patch breakdown →</span>
+          <span className="hidden text-accent group-open:inline">Hide the full breakdown ↑</span>
+        </summary>
+        <p className="mt-3 leading-relaxed text-text-muted">{summary}</p>
+      </details>
 
       <p className="mt-4 text-xs leading-relaxed text-text-muted/70">
         How this is calculated: movement is the change in a champion&apos;s overall op.gg rank versus
