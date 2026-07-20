@@ -102,5 +102,6 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
 
-      - name: Run tests
-        run: npm test
+      # Coverage thresholds live in vitest.config.ts; this fails the build when they are not met.
+      - name: Run tests with coverage
+        run: npm run test:coverage

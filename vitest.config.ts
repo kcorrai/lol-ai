@@ -12,6 +12,24 @@ export default defineConfig({
       // describe a subset of the application rather than the application.
       include: ["src/**/*.{ts,tsx}", "app/**/*.{ts,tsx}"],
       exclude: ["**/*.test.{ts,tsx}", "src/types/**", "src/test/**", "**/*.d.ts"],
+      thresholds: {
+        // A ratchet, not a target. Set just under the measured 18% so CI catches coverage going
+        // *backwards* without pretending the current number is acceptable. Raise it as it climbs.
+        statements: 17,
+        branches: 13,
+        functions: 14,
+        lines: 17,
+
+        // Files where coverage was built deliberately and a drop means a real defence was removed.
+        // These are all at 100% today (TASK-263/265/266/267/276), so anything less is a regression
+        // rather than a shortfall — which is why they are pinned per file instead of per directory.
+        "src/lib/auth/authorization.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
+        "src/lib/auth/planLimits.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
+        "src/lib/auth/totpService.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
+        "src/lib/db/userLock.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
+        "src/lib/lemonsqueezy/lsWebhookVerify.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
+        "src/lib/subscription/subscriptionService.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
+      },
     },
     projects: [
       {
