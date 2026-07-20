@@ -149,6 +149,43 @@ This document records every production and development dependency added after th
 **Purpose:** Resolves `@/*` TypeScript path aliases in Vitest (which uses Vite under the hood).  
 **Why needed:** Without this, Vitest cannot resolve `@/lib/...` imports in test files.
 
+### `jsdom` (v29.x)
+
+**Added in:** TASK-261  
+**Purpose:** DOM implementation for the `dom` Vitest project, so `.test.tsx` files can render
+components.  
+**Why needed:** `vitest.config.ts` ran a single `environment: "node"` project, which meant component
+tests could not run at all — the repo had 0 `.test.tsx` files as a direct consequence. The node
+project keeps `environment: "node"`, so the 590 existing tests pay nothing for this.  
+**Why this, not happy-dom:** happy-dom is faster but implements less of the spec; accessibility
+assertions (roles, focus, ARIA) are the main reason we want component tests here (TASK-259/271), and
+that is exactly where the gaps show up.
+
+### `@testing-library/react` + `@testing-library/dom` (v16.x / v10.x)
+
+**Added in:** TASK-261  
+**Purpose:** Render components and query the resulting DOM.  
+**Why this, not enzyme/react-test-renderer:** queries are role- and text-based, so tests assert what
+a user (and a screen reader) perceives rather than the component's internal tree. That makes them
+survive refactors and doubles as accessibility pressure. `@testing-library/dom` is a peer dependency
+of the React package and is declared explicitly rather than relied on transitively.
+
+### `@testing-library/jest-dom` (v6.x)
+
+**Added in:** TASK-261  
+**Purpose:** DOM matchers (`toBeInTheDocument`, `toBeDisabled`, `toHaveAccessibleName`).  
+**Why needed:** Without it, assertions degrade to manual attribute checks that pass for the wrong
+reasons — e.g. `disabled` present on a wrapper rather than the button. Imported via the
+`/vitest` entry point in `vitest.setup.ts`, which registers against `expect` from vitest.
+
+### `@testing-library/user-event` (v14.x)
+
+**Added in:** TASK-261  
+**Purpose:** Simulate real user interaction (click, type, tab).  
+**Why this, not `fireEvent`:** `fireEvent.click` dispatches a single event and will happily "click" a
+disabled button. `user-event` reproduces the full browser sequence, so a test that asserts a disabled
+control ignores input is actually testing that.
+
 ---
 
 ## External Data Sources (no npm package)
