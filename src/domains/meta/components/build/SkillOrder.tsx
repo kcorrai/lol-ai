@@ -1,3 +1,4 @@
+import { completeSkillOrder } from "@/domains/meta/services/skillOrder";
 import type { ChampionBuild } from "@/domains/meta";
 
 const ABILITIES = ["Q", "W", "E", "R"] as const;
@@ -10,6 +11,9 @@ const ABILITY_COLOR: Record<string, string> = {
 
 export function SkillOrder({ build }: { build: Pick<ChampionBuild, "skillOrder" | "skillMaxOrder"> }) {
   if (build.skillOrder.length === 0) return null;
+
+  // Idempotent: covers builds cached (up to 30 days) before the service completed the order.
+  const levels = completeSkillOrder(build.skillOrder, build.skillMaxOrder);
 
   return (
     <div className="rounded-2xl border border-border bg-surface/60 p-5">
@@ -29,7 +33,7 @@ export function SkillOrder({ build }: { build: Pick<ChampionBuild, "skillOrder" 
             {ABILITIES.map((ability) => (
               <tr key={ability}>
                 <td className="pr-2 text-sm font-bold text-text-muted">{ability}</td>
-                {build.skillOrder.map((skill, level) => (
+                {levels.map((skill, level) => (
                   <td key={level}>
                     <div
                       className={`flex h-6 w-6 items-center justify-center rounded text-[10px] font-bold text-white ${

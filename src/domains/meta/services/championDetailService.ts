@@ -13,6 +13,7 @@ import {
   type SnapshotMode,
   type SnapshotTier,
 } from "@/domains/meta/services/opggShared";
+import { completeSkillOrder } from "@/domains/meta/services/skillOrder";
 import type {
   BuildItemSet,
   CanonicalPosition,
@@ -90,7 +91,11 @@ function buildFromDetail(
     coreItems: data.core_items[0] ? toItemSet(data.core_items[0]) : null,
     boots: data.boots[0] ? toItemSet(data.boots[0]) : null,
     lateItemOptions: data.last_items.slice(0, 5).map(toItemSet),
-    skillOrder: data.skills[0]?.order ?? [],
+    // op.gg stops at level 15; the remaining points follow from the levelling rules.
+    skillOrder: completeSkillOrder(
+      data.skills[0]?.order ?? [],
+      data.skill_masteries[0]?.ids ?? [],
+    ),
     skillMaxOrder: data.skill_masteries[0]?.ids ?? [],
     gameLengths: data.game_lengths.map((g) => ({
       minutes: g.game_length,

@@ -40,7 +40,14 @@ const DETAIL_BODY = {
       { ids: [3089], play: 400, win: 220 },
       { ids: [3135], play: 300, win: 150 },
     ],
-    skills: [{ order: ["W", "Q", "E", "Q", "Q"], play: 600, win: 330 }],
+    // op.gg returns exactly 15 levels; the service completes the rest (see skillOrder.ts).
+    skills: [
+      {
+        order: ["W", "Q", "E", "Q", "Q", "R", "Q", "W", "Q", "W", "R", "W", "W", "E", "E"],
+        play: 600,
+        win: 330,
+      },
+    ],
     skill_masteries: [{ ids: ["Q", "W", "E"], play: 700, win: 400 }],
     game_lengths: [
       { game_length: 0, rate: 0.49 },
@@ -83,7 +90,10 @@ describe("getChampionDetail", () => {
     expect(b.coreItems?.ids).toEqual([3118, 4645, 3157]);
     expect(b.boots?.ids).toEqual([3020]);
     expect(b.lateItemOptions).toHaveLength(2);
-    expect(b.skillOrder).toEqual(["W", "Q", "E", "Q", "Q"]);
+    // 15 levels in, 18 out — the last R at 16, then the two E points still owed.
+    expect(b.skillOrder).toEqual([
+      "W", "Q", "E", "Q", "Q", "R", "Q", "W", "Q", "W", "R", "W", "W", "E", "E", "R", "E", "E",
+    ]);
     expect(b.skillMaxOrder).toEqual(["Q", "W", "E"]);
     expect(b.gameLengths).toEqual([
       { minutes: 0, winRate: 49 },

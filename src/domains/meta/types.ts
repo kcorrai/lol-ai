@@ -80,7 +80,7 @@ export interface ChampionBuild {
   coreItems: BuildItemSet | null;
   boots: BuildItemSet | null;
   lateItemOptions: BuildItemSet[]; // top single-item options for later slots
-  skillOrder: string[]; // 15-level order, e.g. ["W","Q","E",...]
+  skillOrder: string[]; // full 18-level order, e.g. ["W","Q","E",...] (op.gg gives 15; see skillOrder.ts)
   skillMaxOrder: string[]; // ability max priority, e.g. ["Q","W","E"]
   gameLengths: GameLengthPoint[];
   trend: PatchTrendPoint[];
