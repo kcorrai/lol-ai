@@ -53,7 +53,7 @@ export function AchievementToast() {
       <button
         onClick={dismiss}
         className="shrink-0 rounded p-0.5 text-text-muted transition-colors hover:text-text"
-        aria-label="Kapat"
+        aria-label="Close"
       >
         <X className="h-4 w-4" />
       </button>
