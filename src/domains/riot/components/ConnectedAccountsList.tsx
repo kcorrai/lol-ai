@@ -83,8 +83,19 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
           Sync failed — try again with &quot;Sync Now&quot;.
         </p>
       ) : null}
+      {/*
+        A rejected mutation used to render nothing at all: the user pressed Confirm and the row
+        simply did not change. role="status" because the message appears well away from the button
+        that was pressed.
+      */}
       {sync.isError && sync.variables === id && (
-        <p className="text-xs text-danger">{sync.error.message}</p>
+        <p role="status" className="text-xs text-danger">{sync.error.message}</p>
+      )}
+      {setPrimary.isError && (
+        <p role="status" className="text-xs text-danger">{setPrimary.error.message}</p>
+      )}
+      {disconnect.isError && (
+        <p role="status" className="text-xs text-danger">{disconnect.error.message}</p>
       )}
 
       <div className="flex gap-2 flex-wrap">
