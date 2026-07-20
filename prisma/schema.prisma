@@ -730,9 +730,13 @@ model SeasonRecap {
 // ============================================================
 
 model WebhookEvent {
-  id          String   @id @default(uuid()) @db.Uuid
-  eventKey    String   @unique
-  processedAt DateTime @default(now())
+  id       String @id @default(uuid()) @db.Uuid
+  eventKey String @unique
+  // Null means "claimed but not finished" — the row is inserted before the
+  // handler runs (so concurrent deliveries dedupe) and stamped afterwards. A
+  // crashed or failed attempt leaves it null, which lets the retry reprocess
+  // instead of being swallowed as a duplicate. See TASK-270.
+  processedAt DateTime?
 
   @@index([processedAt(sort: Desc)])
   @@map("webhook_events")

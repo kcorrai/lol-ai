@@ -2,7 +2,9 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createHmac, timingSafeEqual } from "crypto";
 
 vi.mock("@/lib/db/prisma", () => ({
-  prisma: { webhookEvent: { create: vi.fn() } },
+  prisma: {
+    webhookEvent: { create: vi.fn(), findUnique: vi.fn(), update: vi.fn() },
+  },
 }));
 
 // Spied so the constant-time guarantee is assertable. Every other behaviour in
@@ -16,7 +18,8 @@ vi.mock("crypto", async (importOriginal) => {
 import {
   verifyLsWebhookSignature,
   buildEventKey,
-  checkAndRecordEvent,
+  claimWebhookEvent,
+  markWebhookEventProcessed,
 } from "./lsWebhookVerify";
 import { prisma } from "@/lib/db/prisma";
 import type { LsSubscriptionAttributes } from "@/lib/lemonsqueezy/types";
@@ -149,21 +152,59 @@ describe("buildEventKey", () => {
   });
 });
 
-describe("checkAndRecordEvent", () => {
+describe("claimWebhookEvent", () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it("reports a first-seen event as not duplicate and records it", async () => {
+  it("claims a first-seen event, leaving it unstamped", async () => {
     vi.mocked(prisma.webhookEvent.create).mockResolvedValue({} as never);
 
-    await expect(checkAndRecordEvent("evt-1")).resolves.toBe(false);
-    expect(prisma.webhookEvent.create).toHaveBeenCalledWith({ data: { eventKey: "evt-1" } });
+    await expect(claimWebhookEvent("evt-1")).resolves.toBe(true);
+    expect(prisma.webhookEvent.create).toHaveBeenCalledWith({
+      data: { eventKey: "evt-1", processedAt: null },
+    });
   });
 
-  // The unique constraint is what makes this atomic under concurrent deliveries —
-  // the insert failing IS the duplicate signal.
-  it("reports a repeat delivery as duplicate when the insert violates the constraint", async () => {
+  // The unique constraint is the lock: under concurrent deliveries exactly one
+  // insert wins, and the loser must not run the handler in parallel.
+  it("refuses a concurrent delivery whose insert lost the race", async () => {
     vi.mocked(prisma.webhookEvent.create).mockRejectedValue(new Error("Unique constraint failed"));
+    vi.mocked(prisma.webhookEvent.findUnique).mockResolvedValue({
+      processedAt: new Date(),
+    } as never);
 
-    await expect(checkAndRecordEvent("evt-1")).resolves.toBe(true);
+    await expect(claimWebhookEvent("evt-1")).resolves.toBe(false);
+  });
+
+  // The bug this task fixes. Previously the key was written before dispatch, so a
+  // failed handler made every retry look like a duplicate and the paid
+  // subscription was silently never applied. An unstamped row now means the
+  // previous attempt did not finish, so the retry is allowed to run it again.
+  it("re-claims an event whose previous attempt failed before finishing", async () => {
+    vi.mocked(prisma.webhookEvent.create).mockRejectedValue(new Error("Unique constraint failed"));
+    vi.mocked(prisma.webhookEvent.findUnique).mockResolvedValue({ processedAt: null } as never);
+
+    await expect(claimWebhookEvent("evt-1")).resolves.toBe(true);
+  });
+
+  it("refuses when the row vanished between insert and lookup", async () => {
+    vi.mocked(prisma.webhookEvent.create).mockRejectedValue(new Error("Unique constraint failed"));
+    vi.mocked(prisma.webhookEvent.findUnique).mockResolvedValue(null as never);
+
+    await expect(claimWebhookEvent("evt-1")).resolves.toBe(false);
+  });
+});
+
+describe("markWebhookEventProcessed", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("stamps the claimed event so later deliveries count as duplicates", async () => {
+    vi.mocked(prisma.webhookEvent.update).mockResolvedValue({} as never);
+
+    await markWebhookEventProcessed("evt-1");
+
+    expect(prisma.webhookEvent.update).toHaveBeenCalledWith({
+      where: { eventKey: "evt-1" },
+      data: { processedAt: expect.any(Date) },
+    });
   });
 });

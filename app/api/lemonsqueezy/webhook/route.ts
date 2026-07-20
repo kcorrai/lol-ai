@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { logger } from "@/lib/utils/logger";
 import {
   verifyLsWebhookSignature,
-  checkAndRecordEvent,
+  claimWebhookEvent,
+  markWebhookEventProcessed,
   buildEventKey,
 } from "@/lib/lemonsqueezy/subscriptionService";
 import { dispatchLsWebhookEvent } from "@/lib/lemonsqueezy/lsWebhookDispatch";
@@ -38,9 +39,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "Missing event_name" }, { status: 400 });
   }
 
-  // Idempotency check — skip duplicate deliveries (LS retries on 5xx)
+  // Claim the event. The unique constraint on eventKey means a concurrent
+  // duplicate delivery loses the race and is skipped here.
   const eventKey = buildEventKey(eventName, payload.data.id, payload.data.attributes);
-  if (await checkAndRecordEvent(eventKey)) {
+  if (!(await claimWebhookEvent(eventKey))) {
     logger.info("[ls/webhook] Duplicate event — already processed", { eventKey });
     return NextResponse.json({ received: true, duplicate: true });
   }
@@ -51,11 +53,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     await dispatchLsWebhookEvent(eventName, payload);
   } catch (err) {
     logger.error("[ls/webhook] Handler failed", { event: eventName, err });
-    // Return 500 so LS retries — the idempotency key is already written, so the
-    // next delivery is a duplicate and returns 200 without re-processing. This is
-    // intentional: we'd rather lose an event than double-process.
+    // 500 so LemonSqueezy retries. The claim is left unstamped, so the retry
+    // reclaims it and runs the handler again rather than being swallowed as a
+    // duplicate — previously a transient failure here silently dropped a paid
+    // subscription forever (TASK-270).
     return NextResponse.json({ error: "Handler failed" }, { status: 500 });
   }
+
+  // Only now does a later delivery of this event count as a duplicate.
+  await markWebhookEventProcessed(eventKey);
 
   return NextResponse.json({ received: true });
 }

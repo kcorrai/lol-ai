@@ -9,7 +9,8 @@ export { createLsCheckoutUrl, createLsTeamCheckoutUrl } from "@/lib/lemonsqueezy
 export {
   verifyLsWebhookSignature,
   buildEventKey,
-  checkAndRecordEvent,
+  claimWebhookEvent,
+  markWebhookEventProcessed,
 } from "@/lib/lemonsqueezy/lsWebhookVerify";
 
 // ── Event handlers ───────────────────────────────────────────────────────────
