@@ -11,7 +11,7 @@ export default defineConfig({
       // `app/` and `.tsx` were previously outside the denominator, which made the reported number
       // describe a subset of the application rather than the application.
       include: ["src/**/*.{ts,tsx}", "app/**/*.{ts,tsx}"],
-      exclude: ["**/*.test.{ts,tsx}", "src/types/**", "**/*.d.ts"],
+      exclude: ["**/*.test.{ts,tsx}", "src/types/**", "src/test/**", "**/*.d.ts"],
     },
     projects: [
       {
