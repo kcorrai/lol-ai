@@ -127,6 +127,21 @@ This document records every production and development dependency added after th
 
 ---
 
+### `@radix-ui/react-dialog` (v1.x)
+
+**Added in:** TASK-271  
+**Purpose:** Accessible dialog primitive behind `ConfirmDialog` and `UpgradeModal`.  
+**Why needed:** Both were plain `<div>` overlays with no `role`, no `aria-*`, no Escape handler and
+no focus management — focus stayed on the trigger *behind* the overlay and tabbing walked into the
+still-interactive page underneath. `ConfirmDialog` guards destructive actions, so that is a real
+defect rather than a nit.  
+**Why this, not hand-rolled:** focus trapping, focus restoration, `aria-modal`, scroll locking and
+making background content inert are individually small and collectively easy to get subtly wrong;
+the failure mode is silent and only affects keyboard and screen-reader users. Same family as
+`@radix-ui/react-slot`, already a dependency, so no new vendor.
+
+---
+
 ## Development Dependencies
 
 ### `vitest` (v4.x)

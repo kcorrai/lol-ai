@@ -1,5 +1,6 @@
 "use client";
 
+import * as Dialog from "@radix-ui/react-dialog";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Zap, X, CheckCircle2 } from "lucide-react";
@@ -58,48 +59,53 @@ export function UpgradeModal({ open, onClose, reason }: UpgradeModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <div className="relative w-full max-w-md rounded-2xl border border-accent/30 bg-surface p-6 shadow-2xl">
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 text-text-muted hover:text-text transition-colors"
-        >
-          <X className="h-4 w-4" />
-        </button>
+    <Dialog.Root open onOpenChange={(next) => { if (!next) onClose(); }}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60" />
+        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-accent/30 bg-surface p-6 shadow-2xl">
+          {/* Was a bare <div> backdrop with an onClick — dismissal was mouse-only. */}
+          <Dialog.Close
+            aria-label="Close"
+            className="absolute right-4 top-4 text-text-muted hover:text-text transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </Dialog.Close>
 
-        <div className="mb-4 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10">
-            <Zap className="h-5 w-5 text-accent" />
+          <div className="mb-4 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10">
+              <Zap className="h-5 w-5 text-accent" />
+            </div>
+            <div>
+              <Dialog.Title className="text-lg font-bold text-text">{copy.title}</Dialog.Title>
+              <Dialog.Description className="text-xs text-text-muted">
+                {copy.subtitle}
+              </Dialog.Description>
+            </div>
           </div>
-          <div>
-            <h2 className="text-lg font-bold text-text">{copy.title}</h2>
-            <p className="text-xs text-text-muted">{copy.subtitle}</p>
+
+          <ul className="mb-6 space-y-2">
+            {PRO_FEATURES.map((feat) => (
+              <li key={feat} className="flex items-center gap-2 text-sm text-text-muted">
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-accent" />
+                {feat}
+              </li>
+            ))}
+          </ul>
+
+          <div className="mb-4 rounded-xl border border-border bg-background px-4 py-3 text-center">
+            <span className="text-2xl font-black text-text">₺199</span>
+            <span className="text-sm text-text-muted"> / month</span>
           </div>
-        </div>
 
-        <ul className="mb-6 space-y-2">
-          {PRO_FEATURES.map((feat) => (
-            <li key={feat} className="flex items-center gap-2 text-sm text-text-muted">
-              <CheckCircle2 className="h-4 w-4 shrink-0 text-accent" />
-              {feat}
-            </li>
-          ))}
-        </ul>
-
-        <div className="mb-4 rounded-xl border border-border bg-background px-4 py-3 text-center">
-          <span className="text-2xl font-black text-text">₺199</span>
-          <span className="text-sm text-text-muted"> / month</span>
-        </div>
-
-        <Button
-          className="w-full"
-          onClick={handleUpgrade}
-          disabled={checkout.isPending}
-        >
-          {checkout.isPending ? "Redirecting..." : session ? "Upgrade to Pro →" : "Get Started Free →"}
-        </Button>
-      </div>
-    </div>
+          <Button
+            className="w-full"
+            onClick={handleUpgrade}
+            disabled={checkout.isPending}
+          >
+            {checkout.isPending ? "Redirecting..." : session ? "Upgrade to Pro →" : "Get Started Free →"}
+          </Button>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
