@@ -1,3 +1,4 @@
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
 import { TEMPLATES, XP_PER_LEVEL } from "./challengeConstants";
@@ -63,15 +64,21 @@ async function computeProgress(c: ChallengeWithProgress, riotAccountId: string):
   return Math.min(satisfying / template.matchCount, 1.0);
 }
 
-async function awardXp(userId: string, amount: number): Promise<void> {
-  const user = await prisma.user.update({
+// Takes the transaction client so the increment and the level update cannot land separately —
+// a failure between them would leave XP granted at a stale level.
+async function awardXp(
+  tx: Prisma.TransactionClient,
+  userId: string,
+  amount: number
+): Promise<void> {
+  const user = await tx.user.update({
     where: { id: userId },
     data: { xp: { increment: amount } },
     select: { xp: true, level: true },
   });
   const newLevel = Math.floor(user.xp / XP_PER_LEVEL) + 1;
   if (newLevel !== user.level) {
-    await prisma.user.update({ where: { id: userId }, data: { level: newLevel } });
+    await tx.user.update({ where: { id: userId }, data: { level: newLevel } });
     logger.info(`[challenges] User ${userId} leveled up to ${newLevel}`);
   }
 }
@@ -85,13 +92,22 @@ export async function checkAndUpdateChallengeProgress(userId: string, riotAccoun
     const newProgress = await computeProgress(c, riotAccountId);
     const completed = newProgress >= 1.0;
 
-    await prisma.userChallenge.update({
-      where: { userId_challengeId: { userId, challengeId: c.id } },
-      data: { progress: newProgress, completed, completedAt: completed ? new Date() : null },
+    // Marking the challenge complete and granting its reward must be atomic. Separately, a failed
+    // XP write left the challenge permanently complete with the reward never granted — silent, and
+    // unrecoverable without manual repair.
+    //
+    // One transaction per challenge rather than one around the loop: a failure here should not roll
+    // back the challenges already processed in this run.
+    await prisma.$transaction(async (tx) => {
+      await tx.userChallenge.update({
+        where: { userId_challengeId: { userId, challengeId: c.id } },
+        data: { progress: newProgress, completed, completedAt: completed ? new Date() : null },
+      });
+
+      if (completed) await awardXp(tx, userId, c.xpReward);
     });
 
     if (completed) {
-      await awardXp(userId, c.xpReward);
       logger.info(`[challenges] User ${userId} completed challenge ${c.id} (+${c.xpReward} XP)`);
     }
   }

@@ -119,22 +119,26 @@ export async function disconnectAccount(
   });
   if (!account) throw Errors.notFound("Riot account");
 
-  // Hard delete the account — match data is preserved via cascade null on participants
-  await prisma.riotAccount.delete({ where: { id: riotAccountId } });
+  // Delete and promote must be atomic. Separately, a failed promotion left the user with no primary
+  // account at all — a state the rest of the app assumes cannot happen (TASK-269).
+  await prisma.$transaction(async (tx) => {
+    // Hard delete the account — match data is preserved via cascade null on participants
+    await tx.riotAccount.delete({ where: { id: riotAccountId } });
 
-  // If the deleted account was primary, promote another one
-  if (account.isPrimary) {
-    const next = await prisma.riotAccount.findFirst({
+    // If the deleted account was primary, promote another one
+    if (!account.isPrimary) return;
+
+    const next = await tx.riotAccount.findFirst({
       where: { userId },
       orderBy: { createdAt: "asc" },
     });
     if (next) {
-      await prisma.riotAccount.update({
+      await tx.riotAccount.update({
         where: { id: next.id },
         data: { isPrimary: true },
       });
     }
-  }
+  });
 }
 
 export async function setPrimaryAccount(
