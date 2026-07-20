@@ -28,12 +28,25 @@ export async function getLatestDdragonVersion(): Promise<string> {
   }
 }
 
+// Data Dragon ids are not derivable from display names. Apostrophe champions are
+// the worst offenders: Riot lowercases the letter after the apostrophe for some
+// (Kai'Sa → Kaisa) and keeps it for others (Kog'Maw → KogMaw), with no rule that
+// separates the two. All eight are listed here — including the ones that already
+// survive the fallback regex — so editing that regex cannot silently break them.
 const CHAMPION_KEY_OVERRIDES: Record<string, string> = {
   Wukong: "MonkeyKing",
   "Nunu & Willump": "Nunu",
   "Renata Glasc": "Renata",
   Fiddlesticks: "Fiddlesticks",
   LeBlanc: "Leblanc",
+  "Bel'Veth": "Belveth",
+  "Cho'Gath": "Chogath",
+  "Kai'Sa": "Kaisa",
+  "Kha'Zix": "Khazix",
+  "Vel'Koz": "Velkoz",
+  "Kog'Maw": "KogMaw",
+  "Rek'Sai": "RekSai",
+  "K'Sante": "KSante",
 };
 
 export function normalizeChampionKey(name: string): string {
