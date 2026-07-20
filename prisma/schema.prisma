@@ -378,6 +378,9 @@ model MatchParticipant {
   @@index([matchId])
   @@index([riotAccountId, matchId])
   @@index([riotAccountId, championId])
+  // riotAccountId is null for the nine participants that are not a connected
+  // account, so opponent- and pre-link lookups must go through puuid instead.
+  @@index([puuid])
   @@map("match_participants")
 }
 
