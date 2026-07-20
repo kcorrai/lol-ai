@@ -39,6 +39,7 @@ import { ProgressionStrip } from "@/components/dashboard/ProgressionStrip";
 import { DevRestartOnboarding } from "@/components/dashboard/DevRestartOnboarding";
 import { ConnectAccountPrompt } from "@/components/dashboard/ConnectAccountPrompt";
 import { DuoWidget } from "@/components/dashboard/DuoWidget";
+import { DailyMomentumChart } from "@/components/dashboard/DailyMomentumChart";
 import { resolveDashboardView } from "@/components/dashboard/dashboardView";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -236,6 +237,7 @@ export default function DashboardPage() {
             </div>
             <div className="space-y-4 lg:col-span-3">
               <LastGameInsightCard match={profile?.recentMatches[0]} isLoading={profileLoading} />
+              <DailyMomentumChart riotAccountId={primaryId} />
               <ImprovementPlanWidget riotAccountId={primaryId} />
               <WinrateTrendWidget matches={profile?.recentMatches} isLoading={profileLoading} />
               <PerformanceTrendChart matches={profile?.recentMatches} isLoading={profileLoading} />
