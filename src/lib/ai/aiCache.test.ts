@@ -6,18 +6,34 @@ vi.mock("@/lib/db/prisma", () => ({
       findUnique: vi.fn(),
       upsert: vi.fn(),
       update: vi.fn(),
+      deleteMany: vi.fn(),
     },
   },
 }));
 
-import { getCached, setCached, buildCacheKey, incrementHit } from "./aiCache";
+// Mocked explicitly rather than left to an unconfigured environment: if
+// KV_REST_API_* ever leaked into the test env, the real module would reach a live
+// Upstash instance and these assertions would start describing the network.
+vi.mock("@/lib/cache/redisCache", () => ({
+  redisCacheGet: vi.fn(),
+  redisCacheSet: vi.fn(),
+  redisCacheDelete: vi.fn(),
+}));
+
+import { getCached, setCached, deleteCached, buildCacheKey, incrementHit } from "./aiCache";
 import { prisma } from "@/lib/db/prisma";
+import { redisCacheGet, redisCacheSet, redisCacheDelete } from "@/lib/cache/redisCache";
+
+const mockRedisGet = redisCacheGet as unknown as ReturnType<typeof vi.fn>;
+const mockRedisSet = redisCacheSet as unknown as ReturnType<typeof vi.fn>;
+const mockRedisDelete = redisCacheDelete as unknown as ReturnType<typeof vi.fn>;
 
 const mockPrisma = prisma as unknown as {
   aiCache: {
     findUnique: ReturnType<typeof vi.fn>;
     upsert: ReturnType<typeof vi.fn>;
     update: ReturnType<typeof vi.fn>;
+    deleteMany: ReturnType<typeof vi.fn>;
   };
 };
 
@@ -27,6 +43,12 @@ const pastDate = new Date(Date.now() - 1000);
 beforeEach(() => {
   vi.clearAllMocks();
   mockPrisma.aiCache.update.mockResolvedValue({});
+  mockPrisma.aiCache.deleteMany.mockResolvedValue({});
+  // Default to Redis being unavailable, so the existing suite keeps describing
+  // the Postgres path exactly as it did before TASK-293. Routing tests opt in.
+  mockRedisGet.mockResolvedValue(null);
+  mockRedisSet.mockResolvedValue(false);
+  mockRedisDelete.mockResolvedValue(undefined);
 });
 
 describe("getCached", () => {
@@ -101,8 +123,7 @@ describe("setCached", () => {
     expect(call.create.type).toBe("counter");
 
     const expiresAt: Date = call.create.expiresAt;
-    const diffDays =
-      (expiresAt.getTime() - before.getTime()) / (1000 * 60 * 60 * 24);
+    const diffDays = (expiresAt.getTime() - before.getTime()) / (1000 * 60 * 60 * 24);
     expect(diffDays).toBeGreaterThanOrEqual(13.9);
     expect(expiresAt.getTime()).toBeLessThanOrEqual(
       after.getTime() + 1000 * 60 * 60 * 24 * 14 + 1000
@@ -149,5 +170,74 @@ describe("incrementHit", () => {
       where: { cacheKey: "some-key" },
       data: { hitCount: { increment: 1 } },
     });
+  });
+});
+
+// TASK-293. ai_cache was 76% of the database and all of it regenerable, so cache
+// entries now live in Redis and only durability fallbacks stay in Postgres.
+describe("storage routing", () => {
+  it("sends a cache-lifetime entry to Redis and not to Postgres", async () => {
+    mockRedisSet.mockResolvedValue(true);
+
+    await setCached("key", "matchup-guide", { a: 1 }, 7);
+
+    expect(mockRedisSet).toHaveBeenCalledWith("key", { a: 1 }, 7 * 86400);
+    // The second half of the assertion is the one that matters: writing to both
+    // would put back exactly the transfer this change removes.
+    expect(mockPrisma.aiCache.upsert).not.toHaveBeenCalled();
+  });
+
+  it("keeps a durability fallback in Postgres and not in Redis", async () => {
+    mockRedisSet.mockResolvedValue(true);
+
+    // SNAPSHOT_TTL_DAYS — the `:last-good` rows, read precisely when op.gg is
+    // down. Redis evicts under memory pressure; that is the wrong place for the
+    // copy that exists to survive an outage.
+    await setCached("snapshot:last-good", "meta-snapshot", { a: 1 }, 365);
+
+    expect(mockRedisSet).not.toHaveBeenCalled();
+    expect(mockPrisma.aiCache.upsert).toHaveBeenCalled();
+  });
+
+  it("converts sub-day TTLs to seconds", async () => {
+    mockRedisSet.mockResolvedValue(true);
+
+    await setCached("key", "personal-matchups", { a: 1 }, 0.042);
+
+    expect(mockRedisSet).toHaveBeenCalledWith("key", { a: 1 }, expect.closeTo(3628.8, 1));
+  });
+
+  it("falls back to Postgres when Redis refuses the write", async () => {
+    mockRedisSet.mockResolvedValue(false);
+
+    await setCached("key", "preview", { a: 1 }, 1);
+
+    expect(mockPrisma.aiCache.upsert).toHaveBeenCalled();
+  });
+
+  it("reads from Redis without touching Postgres on a hit", async () => {
+    mockRedisGet.mockResolvedValue({ cached: true });
+
+    expect(await getCached("key")).toEqual({ cached: true });
+    expect(mockPrisma.aiCache.findUnique).not.toHaveBeenCalled();
+  });
+
+  // Entries written before TASK-293 are still in Postgres and there is no
+  // backfill, so a Redis miss has to keep reaching the database.
+  it("still reads a pre-existing Postgres entry on a Redis miss", async () => {
+    mockRedisGet.mockResolvedValue(null);
+    mockPrisma.aiCache.findUnique.mockResolvedValue({
+      content: { legacy: true },
+      expiresAt: futureDate,
+    });
+
+    expect(await getCached("key")).toEqual({ legacy: true });
+  });
+
+  it("deletes from both stores", async () => {
+    await deleteCached("key");
+
+    expect(mockRedisDelete).toHaveBeenCalledWith("key");
+    expect(mockPrisma.aiCache.deleteMany).toHaveBeenCalled();
   });
 });
