@@ -59,6 +59,10 @@ Steps that cannot be automated — verify before/after each production deploy.
 ### Neon PostgreSQL
 
 - [ ] Run migrations: `npx prisma migrate deploy`
+- [ ] Add the production connection string as the `PRODUCTION_DATABASE_URL`
+      repository secret (GitHub → Settings → Secrets → Actions). Until this
+      exists, `.github/workflows/migrate.yml` skips itself with a warning and
+      every migration has to be applied by hand.
 - [ ] Create read replica branch in Neon Console → Branches → Add Branch (read replica)
 - [ ] Copy read-replica connection string to `DATABASE_READONLY_URL`
 
@@ -71,7 +75,17 @@ Steps that cannot be automated — verify before/after each production deploy.
 
 ## Every Deploy
 
+**The build no longer applies migrations** (ADR-012). `vercel.json` runs only
+`prisma generate && next build`, so a deploy succeeds whether or not the schema
+is current — which means an unmigrated schema now surfaces as a runtime error
+rather than a failed build. If the push contains anything under
+`prisma/migrations/`, confirm it was applied.
+
 - [ ] `git push origin main` — Vercel auto-deploys
+- [ ] If the push added migrations: check the **Migrate Production** workflow run.
+      If it skipped (no `PRODUCTION_DATABASE_URL` secret), apply them yourself:
+      `DATABASE_URL="<production url>" npx prisma migrate deploy`
+- [ ] Confirm nothing is pending: `DATABASE_URL="<production url>" npx prisma migrate status`
 - [ ] Check Vercel deployment logs for build errors
 - [ ] Run health check: `curl https://lolaicoach.gg/api/health`
   - Expected: `{"status":"ok","services":{"database":{"ok":true},"redis":{"ok":true}}}`

@@ -1,0 +1,71 @@
+name: Migrate Production
+
+# Schema migration is a release step, not a build step — see ADR-012. The Vercel
+# build no longer opens a database connection, so this workflow is what actually
+# applies migrations to production.
+#
+# It runs concurrently with the Vercel build triggered by the same push, so
+# ordering between new code and new schema is NOT guaranteed. Migrations must
+# therefore be backward-compatible with the currently deployed code: expand
+# first, contract in a later release.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "prisma/migrations/**"
+      - ".github/workflows/migrate.yml"
+  workflow_dispatch:
+
+# Never let two migration runs overlap; the later push wins and the earlier one
+# is not cancelled mid-migration.
+concurrency:
+  group: migrate-production
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    name: prisma migrate deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # The secrets context is not available to job-level `if:`, so the skip is
+      # decided here and every later step gates on it. This lets the workflow be
+      # merged before the secret exists without turning main red.
+      - name: Check for database credentials
+        id: creds
+        env:
+          PRODUCTION_DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+        run: |
+          if [ -z "$PRODUCTION_DATABASE_URL" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::PRODUCTION_DATABASE_URL is not set — migrations were NOT applied. Run 'npm run db:migrate' manually against production (docs/DEPLOYMENT_CHECKLIST.md)."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Node.js
+        if: steps.creds.outputs.configured == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        if: steps.creds.outputs.configured == 'true'
+        run: npm ci
+
+      # Prints what would be applied before applying it, so the run log records
+      # the pending set even when the deploy step later fails.
+      - name: Show migration status
+        if: steps.creds.outputs.configured == 'true'
+        env:
+          DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+        run: npx prisma migrate status || true
+
+      - name: Apply migrations
+        if: steps.creds.outputs.configured == 'true'
+        env:
+          DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+        run: npx prisma migrate deploy

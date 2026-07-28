@@ -44,9 +44,18 @@ fails. Set this before deploying or production dies on cold start.
 
 ### 3. Wait for Neon, or upgrade *(blocked until ~1 Aug, or a paid plan)*
 
-`build` is `prisma migrate deploy && prisma generate && next build`, so the build
+~~`build` is `prisma migrate deploy && prisma generate && next build`, so the build
 opens a database connection. **While the quota is exhausted the build itself can
-fail** — this is not merely a runtime concern.
+fail** — this is not merely a runtime concern.~~
+
+**Superseded by TASK-291 / ADR-012 (2026-07-28).** The build no longer runs
+migrations — it is `prisma generate && next build` — so an unreachable database
+no longer fails the deploy on its own account. Migrations are now a separate
+release step (`.github/workflows/migrate.yml`, or `npm run db:migrate` by hand).
+
+The database is still needed to *migrate*, so step 4's outstanding migrations
+remain blocked until Neon is reachable. What changed is that the application
+code can now ship without waiting for that.
 
 Options: wait for the reset, or move to Neon's Launch plan (usage-based, ~$15/mo).
 Owner previously said "I'll buy it when we launch".
@@ -59,12 +68,20 @@ write-on-read) is committed but has never been deployed.
 
 `git push origin main` — 35 commits unpushed at time of writing.
 
-**Four migrations have never been applied to production:** `add_duo_partner`,
-`add_match_participant_puuid_index`, `webhook_event_processed_nullable`,
-`20260720000003`. All four applied cleanly against local Postgres, so they are
-expected to succeed, but they run as part of the build against a live database.
-Verify the applied set once Neon is reachable — it could not be checked while the
-database is down. TASK-287 needed no migration.
+**Three migrations have never been applied to production:**
+`20260720000001_add_duo_partner`,
+`20260720000002_add_match_participant_puuid_index`,
+`20260720000003_webhook_event_processed_nullable`. All three applied cleanly
+against local Postgres, so they are expected to succeed. Verify the applied set
+once Neon is reachable — it could not be checked while the database is down.
+TASK-287 needed no migration.
+
+*(This previously read "four", listing `webhook_event_processed_nullable` and
+`20260720000003` separately. They are the same migration directory.)*
+
+Since TASK-291 these run outside the build, so **the deploy will no longer tell
+you if they failed** — check the Migrate Production workflow, or run
+`npx prisma migrate status` against production.
 
 ### 5. Verify before applying to Riot
 
