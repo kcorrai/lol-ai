@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { z } from "zod";
 import { getCached, setCached } from "@/lib/ai/aiCache";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
@@ -103,9 +104,7 @@ function buildSnapshot(
     const ddragon = championIndex.get(raw.id);
     if (!ddragon) continue; // unknown/new champion not yet in Data Dragon
 
-    const positions = raw.positions
-      .map(mapPosition)
-      .filter((p): p is PositionStats => p !== null);
+    const positions = raw.positions.map(mapPosition).filter((p): p is PositionStats => p !== null);
 
     champions.push({
       championId: raw.id,
@@ -179,6 +178,39 @@ const MEMO_TTL_MS = 5 * 60 * 1000;
 
 const snapshotMemo = new Map<string, { value: MetaSnapshot | null; expiresAt: number }>();
 
+// The memo above only helps an instance that is already warm, and a revalidation
+// wave across 739 pages lands on instances that are each cold with respect to it
+// — every one of them pays the full 107.8KB read again. This second level is the
+// Next.js Data Cache: shared between instances and persisted, so the blob crosses
+// the Neon wire once per window rather than once per instance (TASK-292, ADR-013).
+//
+// An hour cannot serve anything staler than the row already is: FRESH_TTL_DAYS is
+// 0.5, so the underlying aiCache row is only replaced every twelve hours.
+const SHARED_TTL_SECONDS = 60 * 60;
+
+// unstable_cache stores whatever the callback resolves with, null included, but
+// it does not store rejections. A null means the feed was down AND no last-good
+// row existed; persisting that across every instance for an hour would keep
+// serving empty pages long after the feed recovered — the opposite of what
+// rememberFor() is careful to avoid. Throwing keeps it out of the shared cache
+// while still being a valid result to the caller, which converts it back below.
+// The sentinel never leaves this module.
+class NoSnapshotAvailable extends Error {}
+
+const loadSnapshotShared = unstable_cache(
+  async (
+    mode: SnapshotMode,
+    tier: SnapshotTier | undefined,
+    variant: string
+  ): Promise<MetaSnapshot> => {
+    const snapshot = await loadSnapshot({ mode, tier } as Required<SnapshotOpts>, variant);
+    if (!snapshot) throw new NoSnapshotAvailable();
+    return snapshot;
+  },
+  ["meta-snapshot"],
+  { revalidate: SHARED_TTL_SECONDS, tags: [CACHE_TYPE] }
+);
+
 export async function getMetaSnapshot(opts: SnapshotOpts = {}): Promise<MetaSnapshot | null> {
   const resolved = { mode: opts.mode ?? "ranked", tier: opts.tier } as Required<SnapshotOpts>;
   const variant = `${resolved.mode}:${resolved.tier ?? "default"}`;
@@ -186,7 +218,13 @@ export async function getMetaSnapshot(opts: SnapshotOpts = {}): Promise<MetaSnap
   const memoized = snapshotMemo.get(variant);
   if (memoized && memoized.expiresAt > Date.now()) return memoized.value;
 
-  const snapshot = await loadSnapshot(resolved, variant);
+  let snapshot: MetaSnapshot | null;
+  try {
+    snapshot = await loadSnapshotShared(resolved.mode, resolved.tier, variant);
+  } catch (err) {
+    if (!(err instanceof NoSnapshotAvailable)) throw err;
+    snapshot = null;
+  }
 
   // A null result is memoized too, but only briefly — see rememberFor below.
   snapshotMemo.set(variant, {

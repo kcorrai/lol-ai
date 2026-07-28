@@ -1,5 +1,22 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
+// Stands in for the Next.js Data Cache (TASK-292). It models the one property the
+// production code depends on: resolved values are stored, rejections are not.
+// A pass-through mock would make the shared-cache tests below vacuous — they
+// would pass just as well against code that never cached anything.
+const { sharedStore } = vi.hoisted(() => ({ sharedStore: new Map<string, unknown>() }));
+vi.mock("next/cache", () => ({
+  unstable_cache:
+    (fn: (...args: unknown[]) => Promise<unknown>) =>
+    async (...args: unknown[]) => {
+      const key = JSON.stringify(args);
+      if (sharedStore.has(key)) return sharedStore.get(key);
+      const value = await fn(...args); // a rejection escapes without being stored
+      sharedStore.set(key, value);
+      return value;
+    },
+}));
+
 vi.mock("@/lib/ai/aiCache", () => ({
   getCached: vi.fn(),
   setCached: vi.fn(),
@@ -35,7 +52,13 @@ const OPGG_SAMPLE = {
   data: [
     {
       id: 103,
-      average_stats: { play: 3_500_000, win_rate: 0.517, pick_rate: 0.087, ban_rate: 0.069, tier: 1 },
+      average_stats: {
+        play: 3_500_000,
+        win_rate: 0.517,
+        pick_rate: 0.087,
+        ban_rate: 0.069,
+        tier: 1,
+      },
       positions: [
         {
           name: "MID",
@@ -75,8 +98,10 @@ beforeEach(() => {
   vi.clearAllMocks();
   // The snapshot memo added in TASK-282 is process-global, so without this a
   // value cached by one test satisfies the next and the fetch assertions below
-  // become meaningless.
+  // become meaningless. The shared cache added in TASK-292 outlives tests for
+  // the same reason and has to be cleared alongside it.
   __clearSnapshotMemo();
+  sharedStore.clear();
   mockFetchAllChampions.mockResolvedValue(DDRAGON_CHAMPIONS);
   mockGetVersion.mockResolvedValue("16.13.1");
   mockSetCached.mockResolvedValue(undefined);
@@ -172,6 +197,62 @@ describe("getMetaSnapshot — happy path", () => {
 
     expect(second).not.toBeNull();
     vi.mocked(Date.now).mockRestore();
+  });
+});
+
+// The process memo only helps an instance that is already warm. These cover the
+// shared level underneath it (TASK-292), which is what a cold instance hits.
+// Clearing only the memo is how a cold instance is simulated: same shared cache,
+// no local state.
+describe("getMetaSnapshot — shared cache", () => {
+  it("serves a cold instance without reading the row again", async () => {
+    mockGetCached.mockResolvedValue({ patch: "16.13", fetchedAt: "x", champions: [] });
+
+    const first = await getMetaSnapshot();
+    __clearSnapshotMemo();
+    const second = await getMetaSnapshot();
+
+    expect(second).toEqual(first);
+    expect(mockGetCached).toHaveBeenCalledTimes(1);
+  });
+
+  it("still separates variants in the shared layer", async () => {
+    mockGetCached.mockResolvedValue({ patch: "16.13", fetchedAt: "x", champions: [] });
+
+    await getMetaSnapshot({ mode: "ranked" });
+    await getMetaSnapshot({ mode: "aram" });
+    __clearSnapshotMemo();
+    await getMetaSnapshot({ mode: "ranked" });
+    await getMetaSnapshot({ mode: "aram" });
+
+    expect(mockGetCached).toHaveBeenCalledTimes(2);
+  });
+
+  // The guarantee that makes the hour-long shared TTL safe. Without the sentinel
+  // throw, a single null would be shared to every instance for an hour and the
+  // whole site would serve empty meta pages long after op.gg recovered — a much
+  // worse outage than the one it is caching around.
+  it("does not share a null result", async () => {
+    mockGetCached.mockResolvedValue(null);
+    global.fetch = vi.fn().mockRejectedValue(new Error("feed down")) as unknown as typeof fetch;
+
+    expect(await getMetaSnapshot()).toBeNull();
+    __clearSnapshotMemo();
+    expect(await getMetaSnapshot()).toBeNull();
+
+    // Reached the loader both times: the failure was never stored.
+    expect(mockGetCached).toHaveBeenCalledTimes(4); // fresh + last-good, per attempt
+  });
+
+  it("recovers immediately once the feed returns", async () => {
+    mockGetCached.mockResolvedValue(null);
+    global.fetch = vi.fn().mockRejectedValue(new Error("feed down")) as unknown as typeof fetch;
+    expect(await getMetaSnapshot()).toBeNull();
+
+    __clearSnapshotMemo();
+    mockGetCached.mockResolvedValue({ patch: "16.14", fetchedAt: "y", champions: [] });
+
+    expect(await getMetaSnapshot()).not.toBeNull();
   });
 });
 
