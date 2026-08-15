@@ -6,6 +6,7 @@ import {
   getTeam,
   getTeams,
   getTeamMatches,
+  getTeamPlayerEntries,
   indexableTeams,
   isThinTeam,
   recentForm,
@@ -118,8 +119,14 @@ export default async function TeamPage({ params }: PageProps): Promise<React.Rea
   const team = await getTeam(params.slug);
   if (!team) notFound();
 
-  const matches = await getTeamMatches(team);
+  const [matches, playerEntries] = await Promise.all([
+    getTeamMatches(team),
+    getTeamPlayerEntries(team.id),
+  ]);
   const form = recentForm(team, matches.results).slice(0, 5);
+  const playerHref = new Map(
+    playerEntries.map((entry) => [entry.player.id, `/esports/players/${entry.slug}`])
+  );
   const starters = team.players.filter((player) => player.role !== null);
   const others = team.players.filter((player) => player.role === null);
 
@@ -148,7 +155,7 @@ export default async function TeamPage({ params }: PageProps): Promise<React.Rea
           </h2>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {starters.map((player) => (
-              <RosterCard key={player.id} player={player} />
+              <RosterCard key={player.id} player={player} href={playerHref.get(player.id)} />
             ))}
           </div>
 
@@ -157,7 +164,7 @@ export default async function TeamPage({ params }: PageProps): Promise<React.Rea
               <h3 className="hud-label mb-2 mt-5">Substitutes &amp; staff</h3>
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {others.map((player) => (
-                  <RosterCard key={player.id} player={player} />
+                  <RosterCard key={player.id} player={player} href={playerHref.get(player.id)} />
                 ))}
               </div>
             </>

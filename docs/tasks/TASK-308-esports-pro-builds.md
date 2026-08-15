@@ -39,6 +39,9 @@ own ranked build page and two from the product.
   - Champions with no pro games this split: honest empty state, `noindex, follow`,
     still linking to the ranked build page.
 - `generateStaticParams` for champions with pro games; others render on demand.
+- **Retarget the existing links.** The draft panel (TASK-303) and the player
+  champion pool (TASK-302) currently link champions to `/champions/[name]`,
+  because this page did not exist yet. Point them here once it does.
 
 ## Acceptance Criteria
 

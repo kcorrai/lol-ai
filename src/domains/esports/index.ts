@@ -12,6 +12,15 @@ export { getStandings, primaryTable } from "@/domains/esports/services/standings
 export { getMatch, defaultGame } from "@/domains/esports/services/matchService";
 export { getGameStats } from "@/domains/esports/services/gameStatsService";
 export {
+  getPlayer,
+  getPlayerIndex,
+  getPlayerGames,
+  getTeamPlayerEntries,
+  buildPlayerIndex,
+  playerSlug,
+  championPool,
+} from "@/domains/esports/services/playerService";
+export {
   getUpcoming,
   getCompleted,
   getLiveEvents,
@@ -20,6 +29,9 @@ export type { ScheduleQuery } from "@/domains/esports/services/scheduleService";
 export { httpsAsset } from "@/domains/esports/services/esportsApi";
 export type {
   BracketMatch,
+  PlayerChampionStat,
+  PlayerEntry,
+  PlayerGame,
   GameParticipant,
   GameStats,
   GameTeamStats,

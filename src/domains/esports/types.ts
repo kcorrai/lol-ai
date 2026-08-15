@@ -131,6 +131,34 @@ export interface MatchDetail {
   games: MatchGameRef[];
 }
 
+export interface PlayerEntry {
+  /** URL slug: the handle, suffixed with the team code only when it collides. */
+  slug: string;
+  player: EsportsPlayer;
+  team: EsportsTeam;
+}
+
+export interface PlayerGame {
+  matchId: string;
+  gameId: string;
+  gameNumber: number;
+  playerId: string | null;
+  handle: string;
+  championId: string;
+  kills: number;
+  deaths: number;
+  assists: number;
+  creepScore: number;
+}
+
+export interface PlayerChampionStat {
+  championId: string;
+  games: number;
+  kills: number;
+  deaths: number;
+  assists: number;
+}
+
 export type PlayerRole = "top" | "jungle" | "mid" | "bottom" | "support";
 export type TeamStatus = "active" | "archived";
 
