@@ -3,8 +3,32 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api/fetcher";
 import type { ActiveDuo, DuoCandidate } from "@/domains/analysis/services/duoService";
+import type { DuoSynergyResponse } from "@/domains/analysis/services/duoSynergyService";
+import type { DuoQuestsResponse } from "@/domains/analysis/services/duoQuestService";
 
 const HALF_HOUR = 30 * 60 * 1000;
+
+/** This week's duo quests. Null when the player has not marked a duo. */
+export function useDuoQuests(riotAccountId: string | null | undefined) {
+  return useQuery<DuoQuestsResponse | null>({
+    queryKey: ["duo-quests", riotAccountId],
+    queryFn: () => apiFetch(`/api/duo/quests?riotAccountId=${riotAccountId}`),
+    enabled: !!riotAccountId,
+    // Shorter than the rest: this read is also what advances progress and pays XP, so a stale
+    // half hour would mean a completed quest sitting unpaid on screen.
+    staleTime: 5 * 60_000,
+  });
+}
+
+/** Everything the duo panel renders. Null when the player has not marked a duo. */
+export function useDuoSynergy(riotAccountId: string | null | undefined) {
+  return useQuery<DuoSynergyResponse | null>({
+    queryKey: ["duo-synergy", riotAccountId],
+    queryFn: () => apiFetch(`/api/duo/synergy?riotAccountId=${riotAccountId}`),
+    enabled: !!riotAccountId,
+    staleTime: HALF_HOUR,
+  });
+}
 
 export function useDuo(riotAccountId: string | null | undefined) {
   return useQuery<ActiveDuo | null>({
@@ -47,11 +71,14 @@ export function useClearDuo(riotAccountId: string | null | undefined) {
   });
 }
 
-// The momentum chart reads the duo too, so it has to refetch alongside the duo itself.
+// The momentum chart and the synergy panel both read the duo, so they have to refetch alongside
+// the duo itself — otherwise switching partner leaves the panel describing the old one.
 function invalidateDuo(
   queryClient: ReturnType<typeof useQueryClient>,
   riotAccountId: string | null | undefined,
 ) {
   queryClient.invalidateQueries({ queryKey: ["duo", riotAccountId] });
+  queryClient.invalidateQueries({ queryKey: ["duo-synergy", riotAccountId] });
+  queryClient.invalidateQueries({ queryKey: ["duo-quests", riotAccountId] });
   queryClient.invalidateQueries({ queryKey: ["daily-momentum", riotAccountId] });
 }

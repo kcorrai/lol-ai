@@ -21,6 +21,18 @@ export interface ActiveDuo {
 const MATCH_WINDOW = 200;
 const CANDIDATE_LIMIT = 8;
 
+/**
+ * Every participant row that is this account.
+ *
+ * Both halves are needed. `riotAccountId` is null on rows synced before the account was linked,
+ * so puuid alone is what finds those — but a PUUID can also change (Riot reissues them), leaving
+ * older rows linked to the account under a PUUID it no longer has. On real data that was five
+ * matches in a hundred silently missing from every duo figure.
+ */
+export function ownParticipantWhere(riotAccountId: string, puuid: string) {
+  return { OR: [{ riotAccountId }, { puuid }] };
+}
+
 const PARTICIPANT_FIELDS = {
   matchId: true,
   teamId: true,
@@ -44,8 +56,8 @@ async function scanTeammates(
   if (!puuid) return [];
 
   const rows = await prisma.matchParticipant.findMany({
-    where: { puuid },
-    select: { matchId: true, teamId: true, match: { select: { gameStart: true } } },
+    where: ownParticipantWhere(riotAccountId, puuid),
+    select: { matchId: true, teamId: true, puuid: true, match: { select: { gameStart: true } } },
     orderBy: { match: { gameStart: "desc" } },
     take: MATCH_WINDOW,
   });
@@ -57,10 +69,16 @@ async function scanTeammates(
     gameStart: r.match.gameStart,
   }));
 
+  // Every PUUID this account has answered to, which is more than one once Riot has reissued it.
+  // Excluding by this list rather than by `NOT (riotAccountId = … OR puuid = …)`: the other nine
+  // participants have a null `riotAccountId`, and in SQL `NOT (NULL OR false)` is NULL, so that
+  // form quietly excluded every teammate and returned nobody.
+  const ownPuuids = [...new Set(rows.map((r) => r.puuid))];
+
   const others = await prisma.matchParticipant.findMany({
     where: {
       matchId: { in: own.map((m) => m.matchId) },
-      puuid: opts.partnerPuuid ? opts.partnerPuuid : { not: puuid },
+      ...(opts.partnerPuuid ? { puuid: opts.partnerPuuid } : { puuid: { notIn: ownPuuids } }),
     },
     select: PARTICIPANT_FIELDS,
   });
