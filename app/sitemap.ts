@@ -23,6 +23,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/tools/counter-picker`, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE_URL}/tools/matchup`, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE_URL}/tools/draft-analyzer`, changeFrequency: "weekly", priority: 0.7 },
+    // The create page only. Individual rooms are private scrim links and carry
+    // `robots: noindex`, so they are deliberately absent.
+    { url: `${BASE_URL}/draft`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${BASE_URL}/tools/tier-list`, lastModified: dataLastMod, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE_URL}/builds`, lastModified: dataLastMod, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE_URL}/aram/tier-list`, lastModified: dataLastMod, changeFrequency: "daily", priority: 0.8 },

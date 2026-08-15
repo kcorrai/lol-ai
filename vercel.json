@@ -17,6 +17,10 @@
     {
       "path": "/api/cron/monthly-milestone",
       "schedule": "0 9 1 * *"
+    },
+    {
+      "path": "/api/cron/cleanup-drafts",
+      "schedule": "0 4 * * *"
     }
   ],
   "env": {

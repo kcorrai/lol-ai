@@ -1324,6 +1324,35 @@ a patch. Rate limited `30 / min` per IP.
 }
 ```
 
+### `GET /api/draft/counters?keys=Ahri,Zed`
+
+Head-to-head win rates for the champions already locked in a draft. Shipping the
+whole matrix would be roughly 170 x 170 numbers; the room only ever needs the ten
+rows belonging to champions on the board, so this is called once per lock — at
+most ten times in a game, never on the clock. Capped at ten keys.
+
+`vs[opponent]` is the subject champion's win rate against that opponent, keyed by
+lowercase Data Dragon id. A champion with no matchup sample is absent rather than
+recorded as 50%.
+
+```json
+{ "data": { "ahri": { "lane": "MIDDLE", "vs": { "zed": 47.2, "yasuo": 51.1 } } } }
+```
+
+Cached `public, s-maxage=3600`. Rate limited `60 / min` per IP.
+
+### `GET /api/draft/[code]/summary?game=N`
+
+The verdict for a **finished** game: both comps keyed by lane, plus the output of
+the same `evaluateDraft` the standalone analyser uses. Answers `404` while a game
+is still running, which is what makes it safe to cache — a live draft's comps
+never leave the room.
+
+Lanes are inferred from the picks (a draft never states them), least-flexible
+champion first so a one-lane pick is never stranded.
+
+Cached `public, s-maxage=300`. Rate limited `30 / min` per IP.
+
 ### `POST /api/draft/[code]/ready`
 
 `{ "token": "…", "gameNumber": 1, "ready": true }` — the draft starts the moment

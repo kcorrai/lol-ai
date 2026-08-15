@@ -423,3 +423,33 @@ Follow pro teams and get notified before they play, through the existing push, D
 **User Benefit:** A reason to hold an account between coaching sessions.  
 **Difficulty:** Medium  
 **Dependencies:** Schema approval (TASK-313), notification preferences
+
+---
+
+### F-038 — Live Draft Room (shipped: TASK-297 … TASK-306)
+
+A public, login-free tournament pick/ban room. One link runs a whole best-of-five:
+the standard 20-step sequence, per-turn timers, drafter and spectator seats, and
+fearless lockouts carried across every game of the series.
+
+**What it does that the reference tool (drafter.lol) does not:**
+
+- **Live draft intelligence.** While it is your turn, your side sees the
+  champions worth taking ranked from this patch's own win rates and matchup data,
+  each with its reasons — "52.1% Top · +2.4 into their picks · adds the frontline
+  you are missing". Bans are ranked the same way, against what the enemy needs.
+- **A comp readout that updates as you draft** — damage split, frontline, engage
+  — using the same arithmetic as the post-draft evaluation, so the live view and
+  the verdict cannot disagree.
+- **Lane edges as matchups form**, from real head-to-head win rates.
+- **A real verdict at the end**, not a screenshot: the finished comps flow into
+  the existing `evaluateDraft` and out to `/tools/draft-analyzer`.
+- **Unavailable champions stay visible with a reason** — "taken this game" reads
+  differently from "used earlier in the series", and in a fearless Bo5 that
+  difference is the strategy.
+- **Three labelled share links** rather than one, so nobody joins the wrong side.
+
+**User Benefit:** The tool a scrim already needs, with the data the team would
+otherwise have open in three other tabs.
+**Difficulty:** Large
+**Dependencies:** Meta snapshot (F-008), counter data, Upstash Redis

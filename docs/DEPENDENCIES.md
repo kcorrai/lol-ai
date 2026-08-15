@@ -329,3 +329,27 @@ ADR-009 is superseded.
 **Added in:** TASK-176
 **Purpose:** Lightweight declarative UI animation for the marketing surface.
 **Scope:** marketing components.
+
+---
+
+## Live Draft Room (TASK-297 … TASK-306)
+
+**No new runtime dependency.** The whole feature is built on what was already
+here:
+
+| Need | Used |
+|---|---|
+| Persistence | Prisma / Neon Postgres |
+| Read model, so polls do not hit Postgres | `@upstash/redis`, via `src/lib/cache/redisCache` |
+| Rate limiting the first public write endpoints | `@upstash/ratelimit`, via `src/lib/api/rateLimit` |
+| Client state and polling | `@tanstack/react-query` |
+| Validation | `zod` |
+| Icons | `lucide-react` |
+| Champion portraits | Data Dragon, already fetched |
+| Win rates, matchups, the draft verdict | `src/domains/meta`, already in place |
+
+The one thing that *was* considered and rejected is a WebSocket transport —
+`socket.io`, Pusher or Ably. ADR-016 records why: Next.js on Vercel has no
+long-lived process to hold socket state, Upstash's REST client cannot subscribe,
+and a version-stamped read model with a locally derived clock gets the latency
+that actually matters (the countdown) to zero without any of it.

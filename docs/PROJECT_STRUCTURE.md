@@ -407,6 +407,52 @@ tests/
 
 ---
 
+## `src/domains/draft/` (TASK-297 … TASK-306)
+
+```
+src/domains/draft/
+├── index.ts                    → client-safe public API (the engine)
+├── server.ts                   → server-only public API (the services)
+├── draftCatalog.types.ts       → champion catalogue shipped to the room
+├── engine/                     → pure: no Prisma, no fetch, no React
+│   ├── draft.types.ts
+│   ├── sequence.ts             → the frozen 20-step tournament order
+│   ├── lockouts.ts             → fearless / team-fearless carry-over
+│   ├── legality.ts             → why a champion cannot be taken
+│   ├── reducer.ts              → action, undo, timeout
+│   ├── lobby.ts                → ready check, side swap, result
+│   ├── series.ts               → score and progress
+│   ├── stateUtils.ts
+│   └── timing.ts               → turn deadlines, `now` always injected
+├── advice/                     → pure scoring, runs on the client
+│   ├── advice.types.ts
+│   ├── teamProfile.ts          → lane inference, damage split, frontline
+│   ├── draftAdviceScoring.ts   → the four score components
+│   ├── draftAdvice.ts          → ranked suggestions for the current turn
+│   └── laneEdges.ts
+├── services/                   → server only
+│   ├── draftSeriesService.ts   → the public service API
+│   ├── draftRepository.ts      → Prisma, and the version guard
+│   ├── draftStateCache.ts      → the Redis read model (ADR-016)
+│   ├── draftCatalogService.ts
+│   ├── draftCountersService.ts
+│   ├── draftSummaryService.ts
+│   ├── draftChampionPool.ts
+│   ├── draftTokens.ts
+│   └── draftRecord.ts
+└── components/                 → the room
+```
+
+**Why two entry points.** `index.ts` is imported by client components; a single
+barrel would drag Prisma and the Redis client into the browser bundle behind the
+engine. Server code imports `@/domains/draft/server`.
+
+**Why the engine is pure.** The server write and the client's optimistic echo run
+the *same* reducer (ADR-016), so they cannot disagree about what a draft looks
+like. Nothing in `engine/` reads the clock; `now` is always an argument.
+
+---
+
 ## Layer Dependency Rules (Summary)
 
 ```
