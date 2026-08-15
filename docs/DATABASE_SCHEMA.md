@@ -699,3 +699,43 @@ participants of every match) and by account connection; nothing else populates i
 - `gameName`/`tagLine` go stale when a player renames. Sync rewrites the row the next time it
   sees them, so the index self-heals for active players.
 - Nothing prunes this table. If that ever changes, evict on `lastSeenAt`, never on `seenCount`.
+
+---
+
+## 10. Duo Quests (TASK-313)
+
+### `duo_quests`
+
+One pair's progress against one weekly goal. **Which** quests run in a week is not stored — it is
+a pure function of the week number (`duoQuestCatalog.questsForWeek`), so this table holds only
+progress and whether the XP has been paid.
+
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `riotAccountId` | `uuid` | NOT NULL, FK → riot_accounts.id CASCADE |
+| `partnerPuuid` | `text` | NOT NULL |
+| `key` | `text` | NOT NULL — catalogue key, e.g. `wins_together` |
+| `target` | `integer` | NOT NULL |
+| `progress` | `integer` | NOT NULL, default `0` |
+| `completed` | `boolean` | NOT NULL, default `false` |
+| `completedAt` | `timestamptz` | nullable |
+| `xpReward` | `integer` | NOT NULL |
+| `periodStart` | `timestamptz` | NOT NULL — Monday 00:00 UTC |
+| `periodEnd` | `timestamptz` | NOT NULL |
+| `createdAt` / `updatedAt` | `timestamptz` | NOT NULL |
+
+**Indexes:**
+- `UNIQUE (riotAccountId, partnerPuuid, key, periodStart)`
+- `INDEX (riotAccountId, periodStart)`
+
+**Notes:**
+- The unique index is load-bearing, not defensive. Quests are generated on read, so it is what
+  stops a second page load creating a duplicate row or paying the XP twice.
+- `progress` is the value in the quest's own unit (games, wins, kills), capped at `target` — not a
+  0–1 fraction. The panel renders "3 / 5", which a fraction would have to be multiplied back out
+  to produce.
+- `target` and `xpReward` are denormalised copies of the catalogue entry, so a past week's row
+  still reads correctly after the catalogue changes.
+- `partnerPuuid` is part of the key: switching duo mid-week starts a fresh set rather than
+  inheriting the previous partner's progress.
