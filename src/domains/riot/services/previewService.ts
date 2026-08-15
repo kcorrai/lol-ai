@@ -1,7 +1,7 @@
 import {
   getAccountByRiotId,
   getSummonerByPuuid,
-  getRankedEntriesForPuuid,
+  getRankedEntriesByPuuidDirect,
   getMatchIds,
   getMatch,
 } from "@/domains/riot/services/riotApiClient";
@@ -28,7 +28,7 @@ export async function buildAccountPreview(
   const account = await getAccountByRiotId(gameName, tagLine, region);
   const [summoner, rankedEntries, matchIds] = await Promise.all([
     getSummonerByPuuid(account.puuid, region),
-    getRankedEntriesForPuuid(account.puuid, region),
+    getRankedEntriesByPuuidDirect(account.puuid, region),
     getMatchIds(account.puuid, region, 5),
   ]);
 

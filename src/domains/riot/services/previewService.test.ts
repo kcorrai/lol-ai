@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("@/domains/riot/services/riotApiClient", () => ({
   getAccountByRiotId: vi.fn(),
   getSummonerByPuuid: vi.fn(),
-  getRankedEntriesForPuuid: vi.fn(),
+  getRankedEntriesByPuuidDirect: vi.fn(),
   getMatchIds: vi.fn(),
   getMatch: vi.fn(),
 }));
@@ -16,7 +16,7 @@ vi.mock("@/lib/ai/aiCache", async (importOriginal) => ({
 import {
   getAccountByRiotId,
   getSummonerByPuuid,
-  getRankedEntriesForPuuid,
+  getRankedEntriesByPuuidDirect,
   getMatchIds,
   getMatch,
 } from "@/domains/riot/services/riotApiClient";
@@ -56,7 +56,7 @@ beforeEach(() => {
     summonerLevel: 250,
     profileIconId: 42,
   } as never);
-  vi.mocked(getRankedEntriesForPuuid).mockResolvedValue([] as never);
+  vi.mocked(getRankedEntriesByPuuidDirect).mockResolvedValue([] as never);
   vi.mocked(getMatchIds).mockResolvedValue(["M1"] as never);
   vi.mocked(getMatch).mockResolvedValue(match() as never);
 });

@@ -144,24 +144,13 @@ export async function getRankedEntries(
   });
 }
 
-// Convenience wrapper: resolves summonerId via PUUID then fetches ranked entries.
-// Returns empty array on any failure — some accounts have no rank or use the new
-// PUUID-only system that doesn't expose a summonerId.
-export async function getRankedEntriesForPuuid(
-  puuid: string,
-  region: string
-): Promise<RankedEntryDTO[]> {
-  try {
-    const summoner = await getSummonerByPuuid(puuid, region);
-    if (!summoner.id) return [];
-    return await getRankedEntries(summoner.id, region);
-  } catch {
-    return [];
-  }
-}
-
 // Rank lookup by PUUID: tries the v4 by-puuid endpoint first; falls back to
 // resolving summonerId via PUUID then calling the by-summoner endpoint.
+//
+// Use this and never the by-summoner route on its own: Summoner-v4 no longer
+// returns the encrypted `id` field (the response is puuid, profileIconId,
+// revisionDate, summonerLevel), so a summonerId-only lookup silently yields no
+// entries and every player renders as unranked.
 export async function getRankedEntriesByPuuidDirect(
   puuid: string,
   region: string

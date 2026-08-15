@@ -3,7 +3,6 @@ import { logger } from "@/lib/utils/logger";
 import { inngest } from "@/inngest/client";
 import {
   getMatch,
-  getRankedEntries,
   getRankedEntriesByPuuidDirect,
   getSummonerByPuuid,
 } from "@/domains/riot/services/riotApiClient";
@@ -84,9 +83,16 @@ export async function syncRankedSnapshot(
   }
 
   try {
-    const entries = currentAccount.summonerId
-      ? await getRankedEntries(currentAccount.summonerId, currentAccount.region)
-      : await getRankedEntriesByPuuidDirect(currentAccount.puuid, currentAccount.region);
+    // Always by-puuid, never the stored summonerId. Riot now answers
+    // league-v4/entries/by-summoner with 403 Forbidden, so preferring a stored id
+    // meant every account that had one — i.e. every account synced before Riot
+    // dropped the field — silently stopped producing ranked snapshots.
+    // getRankedEntriesByPuuidDirect still falls back to by-summoner internally if
+    // the by-puuid call ever fails, so nothing is lost by skipping the branch.
+    const entries = await getRankedEntriesByPuuidDirect(
+      currentAccount.puuid,
+      currentAccount.region
+    );
     logger.info(`[sync] getRankedEntries returned ${entries.length} entries: ${JSON.stringify(entries.map(e => ({ q: e.queueType, tier: e.tier, rank: e.rank })))}`);
 
     for (const entry of entries) {

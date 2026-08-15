@@ -1,7 +1,7 @@
 import {
   getAccountByRiotId,
   getSummonerByPuuid,
-  getRankedEntriesForPuuid,
+  getRankedEntriesByPuuidDirect,
   getMatchIds,
   getMatch,
   VALID_REGIONS,
@@ -29,7 +29,7 @@ export async function fetchPublicSummonerData(
     const account = await getAccountByRiotId(gameName, tagLine, region);
     const [summoner, rankedEntries, matchIds] = await Promise.all([
       getSummonerByPuuid(account.puuid, region),
-      getRankedEntriesForPuuid(account.puuid, region),
+      getRankedEntriesByPuuidDirect(account.puuid, region),
       getMatchIds(account.puuid, region, 5),
     ]);
 
