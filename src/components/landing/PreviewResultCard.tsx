@@ -3,34 +3,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { profileIconUrl, championIconUrl, rankEmblemUrl } from "@/lib/ddragon";
+import { tierColorClass, tierLabel } from "@/lib/riot/rankDisplay";
 import type { PreviewResponse } from "@/types/preview";
-
-// Rank crest colours are game data, not brand — see tailwind.config.ts `rank.*`.
-const TIER_COLORS: Record<string, string> = {
-  IRON: "text-rank-iron",
-  BRONZE: "text-rank-bronze",
-  SILVER: "text-rank-silver",
-  GOLD: "text-rank-gold",
-  PLATINUM: "text-rank-platinum",
-  EMERALD: "text-rank-emerald",
-  DIAMOND: "text-rank-diamond",
-  MASTER: "text-rank-master",
-  GRANDMASTER: "text-rank-grandmaster",
-  CHALLENGER: "text-rank-challenger",
-};
-
-const TIER_LABELS: Record<string, string> = {
-  IRON: "Iron",
-  BRONZE: "Bronze",
-  SILVER: "Silver",
-  GOLD: "Gold",
-  PLATINUM: "Platinum",
-  EMERALD: "Emerald",
-  DIAMOND: "Diamond",
-  MASTER: "Master",
-  GRANDMASTER: "Grandmaster",
-  CHALLENGER: "Challenger",
-};
 
 interface Props {
   data: PreviewResponse;
@@ -72,14 +46,14 @@ export function PreviewResultCard({ data }: Props) {
           <div className="ml-auto flex items-center gap-2.5">
             <Image
               src={rankEmblemUrl(rank.tier)}
-              alt={`${TIER_LABELS[rank.tier] ?? rank.tier} emblem`}
+              alt={`${tierLabel(rank.tier)} emblem`}
               width={32}
               height={32}
               unoptimized
               className="h-8 w-8 shrink-0"
             />
-            <div className={`text-right text-sm font-bold ${TIER_COLORS[rank.tier] ?? "text-text"}`}>
-              {TIER_LABELS[rank.tier] ?? rank.tier} {rank.division}
+            <div className={`text-right text-sm font-bold ${tierColorClass(rank.tier)}`}>
+              {tierLabel(rank.tier)} {rank.division}
               <p className="text-xs font-normal text-text-muted">{rank.lp} LP</p>
             </div>
           </div>

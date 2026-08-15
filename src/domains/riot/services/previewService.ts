@@ -8,6 +8,15 @@ import {
 import { getCached, setCached, buildCacheKey } from "@/lib/ai/aiCache";
 import type { PreviewMatch, PreviewChampion, PreviewResponse } from "@/types/preview";
 
+/**
+ * How many recent matches the preview carries.
+ *
+ * Ten rather than five since TASK-310: this payload is no longer only the landing teaser, it is
+ * also the public profile page, and five games is too thin to read a champion pool or a role
+ * split off. Each one is a Riot call on a cache miss, which the one-day cache below absorbs.
+ */
+const MATCH_DEPTH = 10;
+
 // Builds the free public account preview: recent ranked form + top champions +
 // a rule-based coaching blurb. Caches the result for a day. Throws on Riot
 // errors so the route can map them to status codes.
@@ -16,7 +25,14 @@ export async function buildAccountPreview(
   tagLine: string,
   region: string
 ): Promise<PreviewResponse> {
-  const cacheKey = buildCacheKey("preview", { gameName, tagLine, region });
+  // The depth is part of the key: without it, raising it would keep serving day-old five-match
+  // payloads to a page that says it shows ten.
+  const cacheKey = buildCacheKey("preview", {
+    gameName,
+    tagLine,
+    region,
+    depth: String(MATCH_DEPTH),
+  });
 
   try {
     const cached = await getCached(cacheKey);
@@ -29,13 +45,13 @@ export async function buildAccountPreview(
   const [summoner, rankedEntries, matchIds] = await Promise.all([
     getSummonerByPuuid(account.puuid, region),
     getRankedEntriesByPuuidDirect(account.puuid, region),
-    getMatchIds(account.puuid, region, 5),
+    getMatchIds(account.puuid, region, MATCH_DEPTH),
   ]);
 
   const soloEntry = rankedEntries.find((e) => e.queueType === "RANKED_SOLO_5x5") ?? null;
 
   const matchDTOs = await Promise.all(
-    matchIds.slice(0, 5).map((id) => getMatch(id, region).catch(() => null))
+    matchIds.slice(0, MATCH_DEPTH).map((id) => getMatch(id, region).catch(() => null))
   );
 
   const recentMatches: PreviewMatch[] = matchDTOs
