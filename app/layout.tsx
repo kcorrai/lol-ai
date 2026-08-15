@@ -1,20 +1,30 @@
 import type { Metadata } from "next";
-import { Inter, Rajdhani } from "next/font/google";
+import { Orbitron, Chakra_Petch, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { AuthProvider } from "@/lib/auth/provider";
 import { PostHogProvider } from "@/lib/analytics/PostHogProvider";
 import "@/styles/globals.css";
 
-const inter = Inter({
+// LaneIQ sets three families (ADR-015): Orbitron for display, Chakra Petch for
+// UI and body, JetBrains Mono for every numeral, label and timestamp.
+const orbitron = Orbitron({
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ["400", "700", "800", "900"],
+  variable: "--font-orbitron",
   display: "swap",
 });
 
-const rajdhani = Rajdhani({
+const chakraPetch = Chakra_Petch({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-rajdhani",
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-chakra",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-jetbrains",
   display: "swap",
 });
 
@@ -57,7 +67,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={`${inter.variable} ${rajdhani.variable} font-sans`}>
+      <body
+        className={`${orbitron.variable} ${chakraPetch.variable} ${jetbrainsMono.variable} font-sans`}
+      >
           <PostHogProvider>
           <AuthProvider>{children}</AuthProvider>
         </PostHogProvider>
