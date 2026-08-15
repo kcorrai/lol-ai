@@ -2,20 +2,21 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { profileIconUrl, championIconUrl } from "@/lib/ddragon";
+import { profileIconUrl, championIconUrl, rankEmblemUrl } from "@/lib/ddragon";
 import type { PreviewResponse } from "@/types/preview";
 
+// Rank crest colours are game data, not brand — see tailwind.config.ts `rank.*`.
 const TIER_COLORS: Record<string, string> = {
-  IRON: "text-gray-400",
-  BRONZE: "text-orange-700",
-  SILVER: "text-slate-400",
-  GOLD: "text-yellow-500",
-  PLATINUM: "text-teal-400",
-  EMERALD: "text-emerald-400",
-  DIAMOND: "text-blue-400",
-  MASTER: "text-purple-400",
-  GRANDMASTER: "text-red-500",
-  CHALLENGER: "text-yellow-300",
+  IRON: "text-rank-iron",
+  BRONZE: "text-rank-bronze",
+  SILVER: "text-rank-silver",
+  GOLD: "text-rank-gold",
+  PLATINUM: "text-rank-platinum",
+  EMERALD: "text-rank-emerald",
+  DIAMOND: "text-rank-diamond",
+  MASTER: "text-rank-master",
+  GRANDMASTER: "text-rank-grandmaster",
+  CHALLENGER: "text-rank-challenger",
 };
 
 const TIER_LABELS: Record<string, string> = {
@@ -39,7 +40,14 @@ export function PreviewResultCard({ data }: Props) {
   const { summoner, rank, recentMatches, topChampions, aiInsight } = data;
   const wins = recentMatches.filter(m => m.win).length;
   const totalGames = recentMatches.length;
-  const wr = totalGames > 0 ? Math.round((wins / totalGames) * 100) : 0;
+  const recentWr = totalGames > 0 ? Math.round((wins / totalGames) * 100) : 0;
+
+  // The headline win rate is the season's, not the last five games'. Five games is
+  // noise — one win swings it 20 points — and the tile beside it already shows the
+  // season record, so a recent-form number here read as a contradiction.
+  const seasonGames = rank ? rank.wins + rank.losses : 0;
+  const seasonWr = seasonGames > 0 ? Math.round((rank!.wins / seasonGames) * 100) : null;
+  const shownWr = seasonWr ?? recentWr;
 
   return (
     <div className="mt-6 overflow-hidden rounded-xl border border-border bg-surface shadow-lg">
@@ -61,9 +69,19 @@ export function PreviewResultCard({ data }: Props) {
           <p className="text-xs text-text-muted">Level {summoner.summonerLevel}</p>
         </div>
         {rank && (
-          <div className={`ml-auto text-right text-sm font-bold ${TIER_COLORS[rank.tier] ?? "text-text"}`}>
-            {TIER_LABELS[rank.tier] ?? rank.tier} {rank.division}
-            <p className="text-xs font-normal text-text-muted">{rank.lp} LP</p>
+          <div className="ml-auto flex items-center gap-2.5">
+            <Image
+              src={rankEmblemUrl(rank.tier)}
+              alt={`${TIER_LABELS[rank.tier] ?? rank.tier} emblem`}
+              width={32}
+              height={32}
+              unoptimized
+              className="h-8 w-8 shrink-0"
+            />
+            <div className={`text-right text-sm font-bold ${TIER_COLORS[rank.tier] ?? "text-text"}`}>
+              {TIER_LABELS[rank.tier] ?? rank.tier} {rank.division}
+              <p className="text-xs font-normal text-text-muted">{rank.lp} LP</p>
+            </div>
           </div>
         )}
         {!rank && (
@@ -77,7 +95,11 @@ export function PreviewResultCard({ data }: Props) {
         {/* Stats row */}
         <div className="grid grid-cols-3 gap-3">
           <Stat label="Recent Matches" value={`${wins}W / ${totalGames - wins}L`} />
-          <Stat label="Win Rate" value={`${wr}%`} highlight={wr >= 50} />
+          <Stat
+            label={seasonWr !== null ? "Win Rate (Season)" : `Win Rate (Last ${totalGames})`}
+            value={`${shownWr}%`}
+            highlight={shownWr >= 50}
+          />
           <Stat
             label={rank ? "Ranked (Season)" : "Ranked"}
             value={rank ? `${rank.wins}W / ${rank.losses}L` : "—"}

@@ -11,10 +11,12 @@ interface Props {
   params: { region: string; gameName: string; tagLine: string };
 }
 
+// Rank crest colours are game data, not brand — they stay off the accent ladder
+// and match the `rank.*` scale in tailwind.config.ts.
 const TIER_COLORS: Record<string, string> = {
-  IRON: "#4a4a5a", BRONZE: "#a05336", SILVER: "#a8b8c8",
-  GOLD: "#c89b3c", PLATINUM: "#3cba8c", EMERALD: "#00be93",
-  DIAMOND: "#576bce", MASTER: "#9e4fc6", GRANDMASTER: "#e84057", CHALLENGER: "#f4c874",
+  IRON: "#8C8C8C", BRONZE: "#CD7F32", SILVER: "#C0C0C0",
+  GOLD: "#FFC24B", PLATINUM: "#00C0A0", EMERALD: "#50C878",
+  DIAMOND: "#B9F2FF", MASTER: "#9B59B6", GRANDMASTER: "#E74C3C", CHALLENGER: "#F1C40F",
 };
 
 const POSITION_LABELS: Record<string, string> = {
@@ -108,9 +110,6 @@ export default async function SummonerPage({ params }: Props) {
 
     return (
       <div className="min-h-screen bg-background">
-        <div className="border-b border-white/5 px-6 py-3">
-          <Link href="/" className="font-display text-base font-bold text-accent hover:opacity-80">LoL AI Coach</Link>
-        </div>
         <div className="flex min-h-[70vh] flex-col items-center justify-center px-6 text-center">
           <p className="mb-3 text-5xl font-bold text-text-muted/20">🔍</p>
           <h1 className="mb-2 text-xl font-bold text-text">{displayName} not found</h1>
@@ -128,7 +127,7 @@ export default async function SummonerPage({ params }: Props) {
   const { summoner, rank, recentMatches, topChampions } = result.data;
   const iconUrl = profileIconUrl(summoner.profileIconId);
   const rankEmblem = rank ? rankEmblemUrl(rank.tier) : null;
-  const tierColor = rank ? (TIER_COLORS[rank.tier] ?? "#a5b4fc") : null;
+  const tierColor = rank ? (TIER_COLORS[rank.tier] ?? "#A7BCB5") : null;
   const totalRanked = rank ? rank.wins + rank.losses : 0;
   const winRate = totalRanked > 0 ? Math.round((rank!.wins / totalRanked) * 100) : null;
   const featuredChamp = topChampions[0]?.championName ?? null;
@@ -157,12 +156,9 @@ export default async function SummonerPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      {/* Brand bar */}
-      <div className="border-b border-white/5 px-6 py-3">
-        <Link href="/" className="font-display text-base font-bold text-accent hover:opacity-80">
-          LoL AI Coach
-        </Link>
-      </div>
+      {/* No brand bar here — this route sits under app/(marketing), whose layout
+          already renders MarketingHeader. A local one stacked a second wordmark
+          directly beneath the real nav. */}
 
       <div className="mx-auto max-w-3xl px-4 py-8 space-y-4">
 
@@ -180,7 +176,7 @@ export default async function SummonerPage({ params }: Props) {
             <div className="flex items-center gap-4">
               <div className="relative shrink-0">
                 <Image src={iconUrl} alt={summoner.gameName} width={64} height={64} unoptimized
-                  className="rounded-full border-2 border-accent/40 shadow-[0_0_16px_rgba(200,155,60,0.2)]" />
+                  className="rounded-full border-2 border-accent/40 shadow-[0_0_16px_rgba(198,255,61,0.2)]" />
                 <span className="absolute -bottom-1 -right-1 rounded-full bg-surface px-1.5 py-0.5 text-[10px] font-bold text-text-muted ring-1 ring-border">
                   {summoner.summonerLevel}
                 </span>
@@ -196,7 +192,7 @@ export default async function SummonerPage({ params }: Props) {
                     {rankEmblem && (
                       <Image src={rankEmblem} alt={rank.tier} width={20} height={20} unoptimized />
                     )}
-                    <span className="text-sm font-semibold" style={{ color: tierColor ?? "#a5b4fc" }}>
+                    <span className="text-sm font-semibold" style={{ color: tierColor ?? "#A7BCB5" }}>
                       {rank.tier.charAt(0)}{rank.tier.slice(1).toLowerCase()} {rank.division} · {rank.lp} LP
                     </span>
                     {winRate !== null && (
@@ -234,11 +230,11 @@ export default async function SummonerPage({ params }: Props) {
                     </div>
                     <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface-2">
                       <div className="h-full rounded-full"
-                        style={{ width: `${c.winRate}%`, background: c.winRate >= 55 ? "#4ade80" : c.winRate >= 50 ? "#c89b3c" : "#f87171" }} />
+                        style={{ width: `${c.winRate}%`, background: c.winRate >= 55 ? "#C6FF3D" : c.winRate >= 50 ? "#C6FF3D" : "#f87171" }} />
                     </div>
                   </div>
                   <span className="shrink-0 text-xs font-semibold"
-                    style={{ color: c.winRate >= 55 ? "#4ade80" : c.winRate >= 50 ? "#c89b3c" : "#f87171" }}>
+                    style={{ color: c.winRate >= 55 ? "#C6FF3D" : c.winRate >= 50 ? "#C6FF3D" : "#f87171" }}>
                     {c.winRate}%
                   </span>
                 </div>
@@ -280,7 +276,7 @@ export default async function SummonerPage({ params }: Props) {
 
         {/* CTA */}
         <div className="rounded-2xl border border-accent/30 p-5 text-center"
-          style={{ background: "linear-gradient(135deg, rgba(200,155,60,0.08) 0%, rgba(88,70,180,0.06) 100%)" }}>
+          style={{ background: "linear-gradient(135deg, rgba(198,255,61,0.08) 0%, rgba(198,255,61,0) 100%)" }}>
           <p className="mb-1 text-sm font-semibold text-text">
             Get AI coach analysis for {summoner.gameName}
           </p>

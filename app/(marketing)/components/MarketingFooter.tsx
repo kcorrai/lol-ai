@@ -1,83 +1,92 @@
 import Link from "next/link";
-import { Zap } from "lucide-react";
-import { getPopularChampions, ALL_POSITIONS, POSITION_LABELS, POSITION_SLUG } from "@/domains/meta";
+import {
+  getPopularChampions,
+  getMetaSnapshot,
+  formatGamePatch,
+  ALL_POSITIONS,
+  POSITION_LABELS,
+  POSITION_SLUG,
+} from "@/domains/meta";
+import { DDRAGON_VERSION } from "@/lib/ddragon";
+import { Wordmark } from "./laneiq/Wordmark";
 
 interface FooterLink {
   href: string;
   label: string;
 }
 
-function LinkColumn({ title, links }: { title: string; links: FooterLink[] }) {
+function LinkColumn({ title, links }: { title: string; links: FooterLink[] }): React.ReactElement {
   return (
     <div>
-      <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-text">{title}</h3>
-      <ul className="space-y-2">
+      <p className="hud-label mb-2.5">{title}</p>
+      <div className="grid gap-1.5">
         {links.map((l) => (
-          <li key={l.href}>
-            <Link href={l.href} className="text-sm text-text-muted transition-colors hover:text-text">
-              {l.label}
-            </Link>
-          </li>
+          <Link
+            key={l.href}
+            href={l.href}
+            className="text-[13.5px] text-text-body transition-colors hover:text-text"
+          >
+            {l.label}
+          </Link>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
 
-export async function MarketingFooter() {
-  const popular = await getPopularChampions(6);
+export async function MarketingFooter(): Promise<React.ReactElement> {
+  const [popular, snapshot] = await Promise.all([getPopularChampions(5), getMetaSnapshot()]);
 
   const tierLists: FooterLink[] = [
     ...ALL_POSITIONS.map((pos) => ({
       href: `/tools/tier-list/${POSITION_SLUG[pos]}`,
-      label: `${POSITION_LABELS[pos]} Tier List`,
+      label: POSITION_LABELS[pos],
     })),
-    { href: "/aram/tier-list", label: "ARAM Tier List" },
+    { href: "/aram/tier-list", label: "ARAM" },
   ];
 
   const tools: FooterLink[] = [
-    { href: "/builds", label: "Champion Builds" },
-    { href: "/tools/counter-picker", label: "Counter Picker" },
-    { href: "/tools/matchup", label: "Matchup Analyzer" },
-    { href: "/tools/draft-analyzer", label: "Draft Analyzer" },
-    { href: "/meta", label: "Patch Meta Report" },
+    { href: "/tools/counter-picker", label: "Counter picker" },
+    { href: "/tools/draft-analyzer", label: "Draft analyzer" },
+    { href: "/builds", label: "Builds" },
+    { href: "/meta", label: "Meta report" },
+    { href: "/tools/matchup", label: "Matchup analyzer" },
   ];
 
   const popularBuilds: FooterLink[] = popular.map((c) => ({
     href: `/builds/${c.key}`,
-    label: `${c.name} Build`,
+    label: c.name,
   }));
 
   const company: FooterLink[] = [
     { href: "/pricing", label: "Pricing" },
     { href: "/privacy", label: "Privacy" },
     { href: "/terms", label: "Terms" },
-    { href: "/login", label: "Login" },
+    { href: "/login", label: "Log in" },
     { href: "/register", label: "Sign up" },
   ];
 
   return (
-    <footer className="border-t border-border bg-surface">
-      <div className="mx-auto max-w-7xl px-6 py-12">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-          <LinkColumn title="Tier Lists" links={tierLists} />
-          <LinkColumn title="Free Tools" links={tools} />
-          {popularBuilds.length > 0 && <LinkColumn title="Popular This Patch" links={popularBuilds} />}
+    <footer className="border-t border-border bg-surface-dark px-5 pb-8 pt-11 md:px-8">
+      <div className="mx-auto max-w-[1240px]">
+        <div className="grid grid-cols-2 gap-7 md:grid-cols-[1.2fr_repeat(4,1fr)]">
+          <div className="col-span-2 md:col-span-1">
+            <Wordmark size={16} />
+          </div>
+          <LinkColumn title="Tier lists" links={tierLists} />
+          <LinkColumn title="Tools" links={tools} />
+          {popularBuilds.length > 0 && <LinkColumn title="Popular" links={popularBuilds} />}
           <LinkColumn title="Company" links={company} />
         </div>
 
-        <div className="mt-10 flex items-center gap-2 border-t border-border pt-6">
-          <Zap className="h-4 w-4 text-accent" />
-          <span className="font-display text-sm font-bold text-text">LoL AI Coach</span>
-        </div>
-
-        <div className="mt-4 text-center md:text-left">
-          <p className="text-xs text-text-muted">
-            LoL AI Coach isn&apos;t endorsed by Riot Games and doesn&apos;t reflect the views or
-            opinions of Riot Games or anyone officially involved in producing or managing Riot Games
-            properties. League of Legends &copy; Riot Games, Inc.
-          </p>
-          <p className="mt-2 text-xs text-text-muted">© {new Date().getFullYear()} LoL AI Coach</p>
+        <div className="mt-8 flex flex-wrap justify-between gap-5 border-t border-border pt-[18px] font-mono text-[10.5px] uppercase tracking-[0.12em] text-text-faint">
+          <span className="max-w-[78ch]">
+            Not endorsed by Riot Games. League of Legends &copy; Riot Games, Inc.
+          </span>
+          <span>
+            {snapshot ? `Patch ${formatGamePatch(snapshot.patch)} · ` : ""}
+            Data Dragon {DDRAGON_VERSION}
+          </span>
         </div>
       </div>
     </footer>

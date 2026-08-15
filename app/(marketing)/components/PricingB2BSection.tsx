@@ -1,18 +1,22 @@
+import { BarChart3, Mail, Trophy } from "lucide-react";
+
+// Lucide at stroke 1.75, never emoji (ADR-015) — the rest of the marketing site
+// already uses it, so emoji here read as a different hand.
 const B2B_FEATURES = [
   {
     title: "Bulk Member Analysis",
     description: "Coach dashboard: see all players' ranks, 7-day WR, KDA, and CS stats on one screen.",
-    icon: "📊",
+    icon: BarChart3,
   },
   {
     title: "Weekly Team Report",
     description: "Auto email every Monday: who's hot, who's struggling, which player needs coaching.",
-    icon: "📬",
+    icon: Mail,
   },
   {
     title: "Multi-Team Support",
     description: "Create up to 5 teams. Manage different school leagues, age groups separately.",
-    icon: "🏆",
+    icon: Trophy,
   },
 ];
 
@@ -32,7 +36,7 @@ export function PricingB2BSection() {
       <div className="grid gap-6 md:grid-cols-3">
         {B2B_FEATURES.map((item) => (
           <div key={item.title} className="rounded-xl border border-border bg-surface p-5 space-y-3">
-            <span className="text-2xl">{item.icon}</span>
+            <item.icon className="h-6 w-6 text-accent" strokeWidth={1.75} />
             <p className="font-semibold text-text">{item.title}</p>
             <p className="text-sm text-text-muted">{item.description}</p>
           </div>

@@ -59,9 +59,12 @@ export function championIconUrl(championName: string): string {
   return `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/img/champion/${key}.png`;
 }
 
-export function championSplashUrl(championName: string): string {
+// `skinNum` is Data Dragon's skin index for the champion: 0 is the base splash and
+// the rest come from the champion's `skins[]`. Defaults to base so existing callers
+// are unaffected.
+export function championSplashUrl(championName: string, skinNum = 0): string {
   const key = normalizeChampionKey(championName);
-  return `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${key}_0.jpg`;
+  return `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${key}_${skinNum}.jpg`;
 }
 
 export function championLoadingUrl(championName: string): string {

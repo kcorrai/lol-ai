@@ -2,100 +2,93 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Zap, Menu, X } from "lucide-react";
+import { LayoutDashboard, Menu, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { Wordmark } from "./laneiq/Wordmark";
 
-export function MarketingHeader() {
+const NAV: ReadonlyArray<{ href: string; label: string }> = [
+  { href: "/tools", label: "Tools" },
+  { href: "/tools/tier-list", label: "Tier list" },
+  { href: "/champions", label: "Champions" },
+  { href: "/pricing", label: "Pricing" },
+];
+
+const NAV_LINK =
+  "font-mono text-[11px] uppercase tracking-label text-text-muted transition-colors hover:text-text";
+
+// The header's one accent-filled control, rationed to whichever action matters
+// most to the visitor: sign up when signed out, go to the dashboard when signed in.
+const HEADER_CTA =
+  "tag-cut flex h-8 items-center gap-1.5 bg-accent px-4 font-display text-[11px] font-bold uppercase tracking-[0.1em] text-background transition-colors hover:bg-acid-400 active:bg-acid-600";
+
+export function MarketingHeader(): React.ReactElement {
   const [open, setOpen] = useState(false);
   const { isAuthenticated } = useAuth();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-        <Link href="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
-          <Zap className="h-5 w-5 text-accent" />
-          <span className="font-display text-base font-bold text-text">LoL AI Coach</span>
+    <header className="sticky top-0 z-50 border-b border-border bg-[var(--surface-glass)] backdrop-blur-[14px]">
+      <div className="mx-auto flex h-[62px] max-w-[1240px] items-center gap-7 px-5 md:px-8">
+        <Link href="/" onClick={() => setOpen(false)}>
+          <Wordmark />
         </Link>
 
-        {/* Desktop nav */}
-        <nav className="hidden items-center gap-8 md:flex">
-          <Link href="/tools" className="text-sm text-text-muted transition-colors hover:text-text">
-            Free Tools
-          </Link>
-          <Link href="/champions" className="text-sm text-text-muted transition-colors hover:text-text">
-            Champions
-          </Link>
-          <Link href="/pricing" className="text-sm text-text-muted transition-colors hover:text-text">
-            Pricing
-          </Link>
+        <nav className="hidden items-center gap-[22px] md:flex">
+          {NAV.map((item) => (
+            <Link key={item.href} href={item.href} className={NAV_LINK}>
+              {item.label}
+            </Link>
+          ))}
         </nav>
 
-        {/* Desktop CTAs */}
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="ml-auto hidden items-center gap-4 md:flex">
           {isAuthenticated ? (
-            <Link
-              href="/dashboard"
-              className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-90"
-            >
+            <Link href="/dashboard" className={HEADER_CTA}>
+              <LayoutDashboard className="h-3.5 w-3.5" strokeWidth={1.75} />
               Dashboard
             </Link>
           ) : (
             <>
-              <Link href="/login" className="text-sm text-text-muted transition-colors hover:text-text">
-                Log In
+              <Link href="/login" className={NAV_LINK}>
+                Log in
               </Link>
-              <Link
-                href="/register"
-                className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-90"
-              >
-                Get Started Free
+              <Link href="/register" className={HEADER_CTA}>
+                Start free
               </Link>
             </>
           )}
         </div>
 
-        {/* Mobile: CTA + hamburger */}
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="ml-auto flex items-center gap-2 md:hidden">
           <Link
             href={isAuthenticated ? "/dashboard" : "/register"}
-            className="rounded-md bg-accent px-3 py-1.5 text-xs font-semibold text-background transition-opacity hover:opacity-90"
+            className="tag-cut flex h-8 items-center bg-accent px-3 font-display text-[10px] font-bold uppercase tracking-[0.1em] text-background"
           >
-            {isAuthenticated ? "Dashboard" : "Get Started Free"}
+            {isAuthenticated ? "Dashboard" : "Start free"}
           </Link>
           <button
             onClick={() => setOpen((v) => !v)}
-            aria-label="Open menu"
-            className="rounded-md p-2 text-text-muted hover:text-text"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            className="p-2 text-text-muted transition-transform hover:text-text active:scale-95"
           >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {open ? <X className="h-5 w-5" strokeWidth={1.75} /> : <Menu className="h-5 w-5" strokeWidth={1.75} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile dropdown */}
       {open && (
-        <div className="border-t border-border bg-background px-6 py-4 md:hidden">
-          <nav className="flex flex-col gap-4">
-            <Link href="/tools" className="text-sm text-text-muted hover:text-text" onClick={() => setOpen(false)}>
-              Free Tools
+        <nav className="flex flex-col gap-4 border-t border-border bg-background px-5 py-4 md:hidden">
+          {NAV.map((item) => (
+            <Link key={item.href} href={item.href} className={NAV_LINK} onClick={() => setOpen(false)}>
+              {item.label}
             </Link>
-            <Link href="/champions" className="text-sm text-text-muted hover:text-text" onClick={() => setOpen(false)}>
-              Champions
+          ))}
+          {!isAuthenticated && (
+            <Link href="/login" className={NAV_LINK} onClick={() => setOpen(false)}>
+              Log in
             </Link>
-            <Link href="/pricing" className="text-sm text-text-muted hover:text-text" onClick={() => setOpen(false)}>
-              Pricing
-            </Link>
-            {isAuthenticated ? (
-              <Link href="/dashboard" className="text-sm font-semibold text-accent hover:opacity-90" onClick={() => setOpen(false)}>
-                Dashboard
-              </Link>
-            ) : (
-              <Link href="/login" className="text-sm text-text-muted hover:text-text" onClick={() => setOpen(false)}>
-                Log In
-              </Link>
-            )}
-          </nav>
-        </div>
+          )}
+        </nav>
       )}
     </header>
   );

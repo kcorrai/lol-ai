@@ -36,6 +36,14 @@ const nextConfig = {
         hostname: "raw.communitydragon.org",
         pathname: "/latest/**",
       },
+      {
+        // Legends of Runeterra Data Dragon — the only Riot CDN that serves wide,
+        // full-resolution poro illustrations (League's own CDN tops out at 128–300px
+        // profile icons for them).
+        protocol: "https",
+        hostname: "dd.b.pvp.net",
+        pathname: "/latest/**",
+      },
     ],
   },
   async redirects() {
