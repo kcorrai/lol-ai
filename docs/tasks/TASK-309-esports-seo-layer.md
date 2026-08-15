@@ -21,8 +21,10 @@ the section's URLs enter the sitemap.
   across pages: `SportsEvent` (matches, tournaments), `SportsTeam` (teams),
   `Person` (players), `ItemList` (standings, champion tables, rosters),
   `BreadcrumbList` (everywhere).
-- **Breadcrumbs** — a visible trail on every page mirroring the path, matching
-  the `ToolBreadcrumb` pattern the tools already use.
+- **Breadcrumbs** — a visible trail on every page mirroring the path. The
+  section ships `EsportsBreadcrumb` (TASK-299) and the free tools have a
+  near-identical `ToolBreadcrumb`; consolidate the two into one shared primitive
+  under `src/components/` and move both callers onto it.
 - **Dynamic OG cards** — `opengraph-image.tsx` for matches ("T1 vs Gen.G · LCK"),
   teams, players and champion-in-pro-play pages, built on `renderOgImage`.
   Text-only, per the existing helper's constraint.
