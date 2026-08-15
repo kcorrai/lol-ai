@@ -57,7 +57,7 @@ describe("applyAction", () => {
 describe("applyUndo", () => {
   it("steps back one action and returns the champion to the pool", () => {
     const after = play(started(makeSeries()), ["Ahri", "Akali"]);
-    const undone = applyUndo(after, 1, LATER);
+    const undone = applyUndo(after, 1, "RED", LATER);
     expect(undone.ok).toBe(true);
     if (!undone.ok) return;
 
@@ -72,13 +72,26 @@ describe("applyUndo", () => {
 
   it("reopens a completed draft", () => {
     const done = play(started(makeSeries()), POOL);
-    const undone = applyUndo(done, 1, LATER);
+    const undone = applyUndo(done, 1, "RED", LATER);
     expect(undone.ok).toBe(true);
     if (undone.ok) expect(gameOf(undone.series).phase).toBe("IN_PROGRESS");
   });
 
+  it("refuses to rewind the other side's action", () => {
+    // Blue banned at step 0, so it is red's turn — but the last action is blue's.
+    const after = play(started(makeSeries()), ["Ahri"]);
+    expect(applyUndo(after, 1, "RED", LATER)).toEqual({ ok: false, reason: "not-your-turn" });
+    expect(applyUndo(after, 1, "BLUE", LATER).ok).toBe(true);
+  });
+
+  it("closes its own window once the opponent has acted", () => {
+    const after = play(started(makeSeries()), ["Ahri", "Akali"]);
+    // Blue could undo a moment ago; red's ban has moved the window on.
+    expect(applyUndo(after, 1, "BLUE", LATER)).toEqual({ ok: false, reason: "not-your-turn" });
+  });
+
   it("is a no-op before the first action", () => {
-    expect(applyUndo(started(makeSeries()), 1, LATER)).toEqual({
+    expect(applyUndo(started(makeSeries()), 1, "BLUE", LATER)).toEqual({
       ok: false,
       reason: "nothing-to-undo",
     });

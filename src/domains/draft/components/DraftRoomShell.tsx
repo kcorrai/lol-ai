@@ -9,6 +9,8 @@ import { useDraftToken } from "@/hooks/useDraftToken";
 import { DraftBoard } from "./DraftBoard";
 import { JoinDraftPanel } from "./JoinDraftPanel";
 import { ReadyCheck } from "./ReadyCheck";
+import { TurnClock } from "./TurnClock";
+import { UndoButton } from "./UndoButton";
 
 interface Props {
   code: string;
@@ -24,7 +26,7 @@ export function DraftRoomShell({ code }: Props): React.ReactElement {
   const params = useSearchParams();
   const gameNumber = Math.max(1, Number(params.get("game") ?? "1") || 1);
   const { token, ready } = useDraftToken(code);
-  const { data, isLoading, error } = useDraftSync(code, gameNumber, token);
+  const { data, isLoading, error, skewMs } = useDraftSync(code, gameNumber, token);
   const { data: catalog } = useDraftCatalog();
   const actions = useDraftActions(code, gameNumber, token);
 
@@ -85,6 +87,19 @@ export function DraftRoomShell({ code }: Props): React.ReactElement {
           catalog={catalog}
           onLock={actions.lock}
           pending={actions.pending}
+          clock={
+            game && (
+              <>
+                <UndoButton
+                  game={game}
+                  role={role}
+                  onUndo={actions.undo}
+                  pending={actions.pending}
+                />
+                <TurnClock state={state} game={game} skewMs={skewMs} />
+              </>
+            )
+          }
         />
       ) : (
         <p className="p-8 text-center text-[13px] text-text-muted">Loading champions…</p>

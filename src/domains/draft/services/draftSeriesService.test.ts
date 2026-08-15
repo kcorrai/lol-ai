@@ -144,12 +144,21 @@ describe("draft lifecycle", () => {
     expect(gameOf().winnerSide).toBe("BLUE");
   });
 
-  it("undoes the last action", async () => {
+  it("lets a drafter take back their own last action", async () => {
+    await readyBoth();
+    await playAll(POOL.slice(0, 3));
+    // Steps 0-2 are blue, red, blue — the last action is blue's.
+    const result = await undoAction(store.state.code, 1, BLUE_TOKEN);
+    expect(result.ok).toBe(true);
+    expect(gameOf().actions).toHaveLength(2);
+  });
+
+  it("refuses to let a drafter rewind the other side's action", async () => {
     await readyBoth();
     await playAll(POOL.slice(0, 3));
     const result = await undoAction(store.state.code, 1, RED_TOKEN);
-    expect(result.ok).toBe(true);
-    expect(gameOf().actions).toHaveLength(2);
+    expect(result).toMatchObject({ ok: false, status: 409, reason: "not-your-turn" });
+    expect(gameOf().actions).toHaveLength(3);
   });
 
   it("seats a team on blue before the ready check but not after", async () => {

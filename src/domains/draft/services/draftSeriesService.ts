@@ -186,8 +186,8 @@ export async function undoAction(
   token: string
 ): Promise<ServiceResult> {
   const nowIso = new Date().toISOString();
-  return transition(code, gameNumber, token, true, (series) =>
-    applyUndo(series, gameNumber, nowIso)
+  return transition(code, gameNumber, token, true, (series, side) =>
+    applyUndo(series, gameNumber, side, nowIso)
   );
 }
 
