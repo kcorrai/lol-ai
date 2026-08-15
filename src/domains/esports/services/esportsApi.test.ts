@@ -1,0 +1,144 @@
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { z } from "zod";
+
+vi.mock("@/lib/ai/aiCache", () => ({
+  getCached: vi.fn(),
+  setCached: vi.fn(),
+}));
+vi.mock("@/lib/utils/logger", () => ({
+  logger: { warn: vi.fn(), info: vi.fn(), error: vi.fn(), debug: vi.fn() },
+}));
+
+import { cachedResource, esportsFetch, httpsAsset, TTL } from "./esportsApi";
+import { getCached, setCached } from "@/lib/ai/aiCache";
+
+const mockGetCached = getCached as unknown as ReturnType<typeof vi.fn>;
+const mockSetCached = setCached as unknown as ReturnType<typeof vi.fn>;
+
+const Schema = z.object({ value: z.number() });
+
+function jsonResponse(body: unknown, ok = true, status = 200): Response {
+  return { ok, status, json: async () => body } as unknown as Response;
+}
+
+function resource(fetcher: () => Promise<Response>) {
+  return cachedResource({
+    key: "widget",
+    type: "esports-test",
+    ttlDays: TTL.schedule,
+    schema: Schema,
+    fetcher,
+    map: (raw) => raw.value * 2,
+  });
+}
+
+describe("cachedResource", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockGetCached.mockResolvedValue(null);
+    mockSetCached.mockResolvedValue(undefined);
+  });
+
+  it("serves the fresh entry without touching the feed", async () => {
+    mockGetCached.mockImplementation(async (key: string) =>
+      key === "esports:widget:fresh" ? 42 : null
+    );
+    const fetcher = vi.fn();
+
+    expect(await resource(fetcher)).toBe(42);
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+
+  it("fetches, maps and writes both the fresh and last-good entries", async () => {
+    const fetcher = vi.fn().mockResolvedValue(jsonResponse({ value: 21 }));
+
+    expect(await resource(fetcher)).toBe(42);
+
+    const written = mockSetCached.mock.calls.map((call) => [call[0], call[2], call[3]]);
+    expect(written).toEqual([
+      ["esports:widget:fresh", 42, TTL.schedule],
+      // The last-good copy is the whole point of the pattern: it outlives every
+      // fresh window so an outage has something to serve.
+      ["esports:widget:last-good", 42, 365],
+    ]);
+  });
+
+  it("falls back to last-good when the payload no longer matches the schema", async () => {
+    mockGetCached.mockImplementation(async (key: string) =>
+      key === "esports:widget:last-good" ? 99 : null
+    );
+    const fetcher = vi.fn().mockResolvedValue(jsonResponse({ value: "not a number" }));
+
+    expect(await resource(fetcher)).toBe(99);
+    // A shape change must never be written over the good copy.
+    expect(mockSetCached).not.toHaveBeenCalled();
+  });
+
+  it("falls back to last-good on a network error", async () => {
+    mockGetCached.mockImplementation(async (key: string) =>
+      key === "esports:widget:last-good" ? 7 : null
+    );
+    const fetcher = vi.fn().mockRejectedValue(new Error("ECONNRESET"));
+
+    expect(await resource(fetcher)).toBe(7);
+  });
+
+  it("falls back to last-good on a non-OK response", async () => {
+    mockGetCached.mockImplementation(async (key: string) =>
+      key === "esports:widget:last-good" ? 5 : null
+    );
+    const fetcher = vi.fn().mockResolvedValue(jsonResponse({ value: 1 }, false, 503));
+
+    expect(await resource(fetcher)).toBe(5);
+  });
+
+  it("returns null when the feed is down and nothing was ever cached", async () => {
+    const fetcher = vi.fn().mockRejectedValue(new Error("down"));
+
+    // Null, not a throw: a page with no esports data is an empty state, not a 500.
+    expect(await resource(fetcher)).toBeNull();
+  });
+
+  it("still returns the value when writing the cache fails", async () => {
+    mockSetCached.mockRejectedValue(new Error("redis unavailable"));
+    const fetcher = vi.fn().mockResolvedValue(jsonResponse({ value: 10 }));
+
+    expect(await resource(fetcher)).toBe(20);
+  });
+});
+
+describe("esportsFetch", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("sends the api key and hl, and skips the Next fetch cache", async () => {
+    const spy = vi.fn().mockResolvedValue(jsonResponse({}));
+    global.fetch = spy as unknown as typeof fetch;
+
+    await esportsFetch("getSchedule", { params: { leagueId: "123", pageToken: undefined } });
+
+    const [url, init] = spy.mock.calls[0] as [string, RequestInit];
+    expect(url).toContain("https://esports-api.lolesports.com/persisted/gw/getSchedule");
+    expect(url).toContain("hl=en-US");
+    expect(url).toContain("leagueId=123");
+    // An undefined param is omitted rather than serialised as "undefined".
+    expect(url).not.toContain("pageToken");
+    expect((init.headers as Record<string, string>)["x-api-key"]).toBeTruthy();
+    expect(init.cache).toBe("no-store");
+  });
+});
+
+describe("httpsAsset", () => {
+  it("upgrades the feed's http asset URLs so the CSP does not block them", () => {
+    expect(httpsAsset("http://static.lolesports.com/teams/x.png")).toBe(
+      "https://static.lolesports.com/teams/x.png"
+    );
+  });
+
+  it("leaves https URLs alone and maps absent ones to null", () => {
+    expect(httpsAsset("https://static.lolesports.com/x.png")).toBe(
+      "https://static.lolesports.com/x.png"
+    );
+    expect(httpsAsset(null)).toBeNull();
+    expect(httpsAsset(undefined)).toBeNull();
+  });
+});

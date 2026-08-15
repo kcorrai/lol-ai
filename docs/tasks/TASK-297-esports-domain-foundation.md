@@ -1,7 +1,7 @@
 # TASK-297 — Esports domain foundation: API client, leagues, schedule
 
 **Phase:** 6 — Esports & Audience Growth
-**Status:** Planned
+**Status:** Done
 **Estimated Effort:** 1 day
 **Depends on:** —
 **Decisions:** [ADR-016](../adr/ADR-016-esports-data-source.md)
@@ -43,13 +43,30 @@ the public web-client key, not a secret, and that it is server-side only.
 
 ## Acceptance Criteria
 
-- [ ] `getLeagues()`, `getTournamentsForLeague()`, `getUpcoming()`,
+- [x] `getLeagues()`, `getTournamentsForLeague()`, `getUpcoming()`,
       `getCompleted()`, `getLiveEvents()` return mapped domain types
-- [ ] Every response is Zod-parsed; an unexpected shape falls back to last-good
+- [x] Every response is Zod-parsed; an unexpected shape falls back to last-good
       and logs, and never throws to the caller
-- [ ] A network failure with no last-good returns `null`/`[]`, not an exception
-- [ ] TTLs match the ADR-016 table
-- [ ] Unit tests (mocked fetch): happy path, malformed payload → last-good,
+- [x] A network failure with no last-good returns `null`/`[]`, not an exception
+- [x] TTLs match the ADR-016 table
+- [x] Unit tests (mocked fetch): happy path, malformed payload → last-good,
       network error → last-good, cold cache + error → empty
-- [ ] No file over 250 lines; no `any`; `tsc --noEmit`, lint and tests pass
-- [ ] `.env.example` documents `LOLESPORTS_API_KEY`
+- [x] No file over 250 lines; no `any`; `tsc --noEmit`, lint and tests pass
+- [x] `.env.example` documents `LOLESPORTS_API_KEY`
+
+## Notes from the build
+
+- **Two event shapes, one schema.** `getSchedule` returns a lean event (no event
+  id, no league id, teams without id or slug) while `getLive` returns a rich one.
+  `eventMapper.ts` holds the tolerant schema both use; team slugs stay `null`
+  rather than being invented, and TASK-301 resolves them through the team index.
+- **Unrenderable entries are skipped, not guessed at** — non-match entries, events
+  with no match payload, and unrecognised states. Printing "final" over a game
+  still being played is worse than omitting the row.
+- **Paging is capped** at the current window plus two, and only pages at all when
+  the requested limit exceeds one window. A league mid-split costs one request.
+- `cache: "no-store"` on the underlying fetch: our cache layer is the single
+  authority on freshness, so the Next fetch cache does not hold a second copy on
+  a different clock.
+- Verified against live payloads (45 leagues, 34 LEC tournaments, 80 schedule
+  events, 2 live events): all parse, all map, no `http://` asset survives.
