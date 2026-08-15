@@ -13,6 +13,7 @@ import { WeekSummaryWidget } from "@/components/dashboard/WeekSummaryWidget";
 import { DailyMomentumChart } from "@/components/dashboard/DailyMomentumChart";
 import { DuoWidget } from "@/components/dashboard/DuoWidget";
 import { DevRestartOnboarding } from "@/components/dashboard/DevRestartOnboarding";
+import { ClaimAccountOnArrival } from "@/components/dashboard/ClaimAccountOnArrival";
 import { resolveDashboardView } from "@/components/dashboard/dashboardView";
 import { DashboardHeader } from "@/components/dashboard/laneiq/DashboardHeader";
 import { ReadinessVerdict } from "@/components/dashboard/laneiq/ReadinessVerdict";
@@ -62,7 +63,12 @@ export default function DashboardPage(): React.ReactElement {
   // `!accounts` is unreachable once the view is "ready" — it narrows the type below.
   if (view !== "ready" || !accounts) {
     return (
-      <div className="mx-auto max-w-[1240px] p-6">
+      <div className="mx-auto flex max-w-[1240px] flex-col gap-4 p-6">
+        {/* Mounted before the account exists on purpose: an arriving claim is precisely the case
+            where there is nothing to show yet. */}
+        <Suspense fallback={null}>
+          <ClaimAccountOnArrival />
+        </Suspense>
         {view === "loading" ? <DashboardSkeleton /> : <NoAccountState />}
         <DevRestartOnboarding />
       </div>
@@ -74,6 +80,9 @@ export default function DashboardPage(): React.ReactElement {
 
   return (
     <div className="mx-auto flex max-w-[1240px] flex-col gap-5 p-5 md:p-6">
+      <Suspense fallback={null}>
+        <ClaimAccountOnArrival />
+      </Suspense>
       <Suspense fallback={null}>
         <EmailVerificationBanner />
       </Suspense>

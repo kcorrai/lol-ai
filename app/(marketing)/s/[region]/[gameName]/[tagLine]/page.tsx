@@ -9,6 +9,7 @@ import { ProfileChampions } from "../../../components/ProfileChampions";
 import { ProfileRoles } from "../../../components/ProfileRoles";
 import { ProfileMatches } from "../../../components/ProfileMatches";
 import { ProfileNotFound } from "../../../components/ProfileNotFound";
+import { ClaimProfileButton } from "../../../components/ClaimProfileButton";
 
 export const dynamic = "force-dynamic";
 
@@ -153,16 +154,21 @@ export default async function SummonerPage({ params }: Props): Promise<React.Rea
         <p className="font-display text-lg font-bold uppercase text-text">
           Where {summoner.gameName} is losing games
         </p>
-        <p className="mx-auto mt-1.5 max-w-[420px] text-sm text-text-muted">
+        <p className="mx-auto mt-1.5 max-w-[440px] text-sm text-text-muted">
           The full report reads twenty games, not ten, and tells you which habit is costing you
-          the most LP.
+          the most LP. Claiming this profile is the whole setup — the Riot ID is already known.
         </p>
-        <Link
-          href="/register?ref=summoner"
-          className="tag-cut mt-5 inline-flex h-11 items-center gap-2 bg-accent px-6 font-display text-xs font-bold uppercase tracking-[0.1em] text-background transition-colors hover:bg-acid-400"
-        >
-          Get the free AI report →
-        </Link>
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+          <ClaimProfileButton
+            target={{ region, gameName: summoner.gameName, tagLine: summoner.tagLine }}
+          />
+          <Link
+            href="/register?ref=summoner"
+            className="font-mono text-[11px] uppercase tracking-label text-text-muted transition-colors hover:text-text"
+          >
+            Not me — just sign up →
+          </Link>
+        </div>
       </section>
     </div>
   );
