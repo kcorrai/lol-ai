@@ -304,6 +304,34 @@ model DuoPartner {
   @@map("duo_partners")
 }
 
+// Every Riot ID we have ever seen, so search can autocomplete.
+//
+// Riot exposes no name-search endpoint — account-v1 needs an exact gameName *and* tagLine — so
+// an index of our own is the only way to suggest anything while a player types. The rows come
+// free: each synced match carries ten players, nine of whom are nobody's connected account.
+// See ADR-017.
+model PlayerIndex {
+  puuid         String   @id
+  gameName      String
+  tagLine       String
+  region        String
+  // Lowercased gameName, stored rather than computed: prefix search needs a case-insensitive
+  // column of its own, because `ILIKE 'x%'` cannot use a btree index and `LIKE 'x%'` against
+  // text_pattern_ops can.
+  searchKey     String
+  profileIconId Int?
+  summonerLevel Int?
+  // How many synced matches this player has turned up in. A name seen in fifty of our matches
+  // is a likelier target than one seen once, which is the whole ranking signal.
+  seenCount     Int      @default(0)
+  lastSeenAt    DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([searchKey(ops: raw("text_pattern_ops"))])
+  @@index([region, searchKey(ops: raw("text_pattern_ops"))])
+  @@map("player_index")
+}
+
 // ============================================================
 // MATCH DATA
 // ============================================================

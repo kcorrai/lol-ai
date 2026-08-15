@@ -9,6 +9,8 @@ import {
   VALID_REGIONS,
 } from "@/domains/riot/services/riotApiClient";
 import { syncAccount } from "@/domains/riot/services/matchSyncService";
+import { indexPlayers } from "@/domains/riot/services/playerIndexService";
+import { sanitizeRiotIdPart } from "@/lib/riot/riotId";
 import type { ApiError } from "@/lib/api/errors";
 
 export type ConnectedAccount = {
@@ -21,12 +23,6 @@ export type ConnectedAccount = {
   isPrimary: boolean;
   lastSyncedAt: Date | null;
 };
-
-// Strip Unicode directional formatting characters that some browsers inject
-// into form inputs (e.g. U+2066 LTR Isolate added by Turkish locale in Opera/Chrome)
-function sanitizeRiotIdPart(s: string): string {
-  return s.replace(/[⁦-⁩‎‏‪-‮]/g, "").trim();
-}
 
 export async function connectAccount(
   userId: string,
@@ -94,6 +90,20 @@ export async function connectAccount(
     const { ensureProfileSlug } = await import("@/domains/identity/services/profileService");
     ensureProfileSlug(userId, account.gameName, account.tagLine).catch(() => undefined);
   }
+
+  // A connected account is searchable immediately, rather than only once its first sync has put
+  // it in someone's match history. This row also carries a level and icon, which participant rows
+  // do not (TASK-308).
+  indexPlayers([
+    {
+      puuid: account.puuid,
+      gameName: account.gameName,
+      tagLine: account.tagLine,
+      region: account.region,
+      profileIconId: account.profileIconId,
+      summonerLevel: account.summonerLevel,
+    },
+  ]).catch(() => undefined);
 
   // Kick off initial sync without blocking the response
   backgroundRefresh(() => syncAccount(account.id).then(() => undefined));

@@ -661,3 +661,41 @@ is what makes undo a one-row delete.
   landing two champions on one turn.
 - `championKey` stores the Data Dragon id (`"Ahri"`, `"MonkeyKing"`). Comparison
   is case-insensitive throughout, via `normaliseKey` in the draft engine.
+
+---
+
+## 9. Player Search Index (TASK-308)
+
+### `player_index`
+
+Every Riot ID we have ever seen, so search can autocomplete by prefix. Riot exposes no
+name-search endpoint, so this table is the only thing that makes a suggestion list possible —
+see [ADR-017](./adr/ADR-017-player-search-index.md). Rows are written by match sync (all ten
+participants of every match) and by account connection; nothing else populates it.
+
+| Column | Type | Constraints |
+|---|---|---|
+| `puuid` | `text` | PK |
+| `gameName` | `text` | NOT NULL |
+| `tagLine` | `text` | NOT NULL |
+| `region` | `text` | NOT NULL — platform id, e.g. `euw1` |
+| `searchKey` | `text` | NOT NULL — lowercased `gameName` |
+| `profileIconId` | `integer` | nullable — only connected accounts carry one |
+| `summonerLevel` | `integer` | nullable — as above |
+| `seenCount` | `integer` | NOT NULL, default `0` |
+| `lastSeenAt` | `timestamptz` | NOT NULL, default `now()` |
+| `updatedAt` | `timestamptz` | NOT NULL |
+
+**Indexes:**
+- `INDEX (searchKey text_pattern_ops)`
+- `INDEX (region, searchKey text_pattern_ops)`
+
+**Notes:**
+- `text_pattern_ops` is not decoration. Under the default collation a btree index cannot serve
+  `LIKE 'fak%'`, and `ILIKE` can never use one — so the lowercased column plus this operator
+  class is what keeps autocomplete off a sequential scan.
+- `seenCount` counts **appearances**, not sync runs: a player in thirty of your matches is
+  incremented by thirty. It is the autocomplete ordering signal.
+- `gameName`/`tagLine` go stale when a player renames. Sync rewrites the row the next time it
+  sees them, so the index self-heals for active players.
+- Nothing prunes this table. If that ever changes, evict on `lastSeenAt`, never on `seenCount`.
