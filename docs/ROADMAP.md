@@ -231,6 +231,53 @@
 
 ---
 
+## Phase 5.5 — Removing the Front Door (shipped)
+
+**Theme:** Stop asking for anything before showing something.
+
+Acquisition was gated on a player knowing their exact Riot ID and platform before
+the product would show them a single number. Competing sites autocomplete a
+partial name and open a profile on click; the gap was never the login, it was the
+search box.
+
+| Deliverable | Task | Status |
+|---|---|---|
+| Player search index built from synced match participants | TASK-308 | ✅ Done |
+| Public search API + autocomplete bar in both shells | TASK-309 | ✅ Done |
+| Public profile rebuilt on LaneIQ, cached, deepened to ten matches | TASK-310 | ✅ Done |
+| One-click "this is me" claim, straight from profile to dashboard | TASK-311 | ✅ Done |
+
+**What it changed.** A visitor goes from landing page to a full profile in one
+keystroke sequence and one click, signed out. Signing up is now optional and, when
+taken, carries the Riot ID with it — `/settings/accounts` is off the path.
+
+**What to watch.** The index only knows players who have shared a match with one
+of our users, so autocomplete coverage compounds with usage and is thin on servers
+we have not touched. The exact-Riot-ID fallback keeps that a degradation rather
+than a dead end. See [ADR-017](./adr/ADR-017-player-search-index.md).
+
+---
+
+## Phase 5.6 — The Duo Panel (shipped)
+
+**Theme:** Most ranked players climb with someone. Have an opinion about them.
+
+| Deliverable | Task | Status |
+|---|---|---|
+| Duo synergy: together vs apart, pairings, form shift | TASK-312 | ✅ Done |
+| Weekly duo quests, deterministic, XP on completion | TASK-313 | ✅ Done |
+| The duo rail on the dashboard | TASK-314 | ✅ Done |
+
+**What it changed.** The dashboard has a second unit of analysis. The duo widget
+that showed a name and a win rate is now a column that says whether that person is
+worth queueing with, why, and what the two of them should pick.
+
+**What to watch.** Quests are a fixed catalogue on purpose — per-pair AI
+generation would scale spend with pairs rather than players. If the catalogue
+starts feeling repetitive, grow the catalogue before reaching for a model.
+
+---
+
 ## Phase 6 — Esports & Audience Growth
 
 **Theme:** Own esports search intent, and hand that audience to the product.
