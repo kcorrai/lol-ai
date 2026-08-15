@@ -10,6 +10,9 @@ export type DraftGamePhase = "LOBBY" | "IN_PROGRESS" | "COMPLETE";
 /** Which team (1 or 2) occupies a side. Sides swap between games of a series. */
 export type TeamNumber = 1 | 2;
 
+/** What the person looking at the room may do. Resolved from their token. */
+export type ViewerRole = DraftSide | "SPECTATOR";
+
 export interface DraftStep {
   index: number;
   side: DraftSide;

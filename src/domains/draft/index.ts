@@ -24,6 +24,7 @@ export type {
   TeamNumber,
   TransitionReason,
   TransitionResult,
+  ViewerRole,
 } from "@/domains/draft/engine/draft.types";
 export type { SeriesLockouts } from "@/domains/draft/engine/lockouts";
 export type { SeriesStatus } from "@/domains/draft/engine/series";
