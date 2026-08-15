@@ -1,17 +1,11 @@
 import type { DraftGameState, DraftSeriesState, TeamNumber } from "./draft.types";
 
-export function findGame(
-  series: DraftSeriesState,
-  gameNumber: number
-): DraftGameState | null {
+export function findGame(series: DraftSeriesState, gameNumber: number): DraftGameState | null {
   return series.games.find((g) => g.gameNumber === gameNumber) ?? null;
 }
 
 /** Returns a new series with `next` swapped in for the game of the same number. */
-export function replaceGame(
-  series: DraftSeriesState,
-  next: DraftGameState
-): DraftSeriesState {
+export function replaceGame(series: DraftSeriesState, next: DraftGameState): DraftSeriesState {
   return {
     ...series,
     games: series.games.map((g) => (g.gameNumber === next.gameNumber ? next : g)),

@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
+import { makeDraftChampion } from "@/test/draftFixtures";
 import type { LegalityReason } from "@/domains/draft";
 import type { DraftChampion } from "@/domains/draft/draftCatalog.types";
 import { ChampionGrid } from "./ChampionGrid";
@@ -10,7 +11,7 @@ vi.mock("@/components/ui/ChampionIcon", () => ({
 }));
 
 function champion(key: string, name: string, lanes: DraftChampion["lanes"]): DraftChampion {
-  return { key, name, lanes, winRate: 50, pickRate: 5, banRate: 1 };
+  return makeDraftChampion(key, name, { lanes });
 }
 
 const ROSTER = [

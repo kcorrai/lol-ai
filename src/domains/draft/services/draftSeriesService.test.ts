@@ -3,7 +3,11 @@ import { POOL } from "@/test/draftFixtures";
 import { normaliseKey } from "@/domains/draft/engine/draft.types";
 import { createGames, replaceGame } from "@/domains/draft/engine/stateUtils";
 import { sideToAct } from "@/domains/draft/engine/sequence";
-import type { DraftGameState, DraftSeriesState, SeriesMode } from "@/domains/draft/engine/draft.types";
+import type {
+  DraftGameState,
+  DraftSeriesState,
+  SeriesMode,
+} from "@/domains/draft/engine/draft.types";
 import type { DraftSeriesRecord } from "./draftRecord";
 
 vi.mock("./draftRepository", () => {

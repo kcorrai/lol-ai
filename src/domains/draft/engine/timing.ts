@@ -14,10 +14,7 @@ function isTimed(series: DraftSeriesState, game: DraftGameState): boolean {
 }
 
 /** Epoch ms the current turn expires, or null when the turn cannot expire. */
-export function turnDeadlineMs(
-  series: DraftSeriesState,
-  game: DraftGameState
-): number | null {
+export function turnDeadlineMs(series: DraftSeriesState, game: DraftGameState): number | null {
   if (!isTimed(series, game) || !game.turnStartedAt) return null;
   return Date.parse(game.turnStartedAt) + series.timerSeconds * 1000;
 }
@@ -33,11 +30,7 @@ export function remainingMs(
   return Math.max(0, deadline - nowMs);
 }
 
-export function hasExpired(
-  series: DraftSeriesState,
-  game: DraftGameState,
-  nowMs: number
-): boolean {
+export function hasExpired(series: DraftSeriesState, game: DraftGameState, nowMs: number): boolean {
   const deadline = turnDeadlineMs(series, game);
   return deadline !== null && nowMs >= deadline;
 }
