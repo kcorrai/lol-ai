@@ -7,7 +7,7 @@ function DamageBar({ ad, ap }: { ad: number; ap: number }) {
   return (
     <div className="flex h-2 overflow-hidden rounded-full bg-surface-2">
       <div className="bg-danger" style={{ width: `${ad}%` }} title={`AD ${ad}%`} />
-      <div className="bg-sky-400" style={{ width: `${ap}%` }} title={`AP ${ap}%`} />
+      <div className="bg-info" style={{ width: `${ap}%` }} title={`AP ${ap}%`} />
     </div>
   );
 }
@@ -59,7 +59,7 @@ function TeamCard({ team, label, accent }: { team: TeamEval; label: string; acce
 
 function LaneEdgeRow({ edge }: { edge: LaneEdge }) {
   const color =
-    edge.favored === "blue" ? "text-sky-400" : edge.favored === "red" ? "text-danger" : "text-text-muted";
+    edge.favored === "blue" ? "text-info" : edge.favored === "red" ? "text-danger" : "text-text-muted";
   return (
     <li className="flex items-center gap-3 rounded-lg border border-border bg-surface px-3 py-2">
       <span className="w-16 shrink-0 text-xs font-semibold text-text-muted">
@@ -84,7 +84,7 @@ export function DraftResults({ evaluation }: { evaluation: DraftEvaluation }) {
       </div>
 
       <div className="grid gap-5 md:grid-cols-2">
-        <TeamCard team={evaluation.blue} label="Blue Team" accent="text-sky-400" />
+        <TeamCard team={evaluation.blue} label="Blue Team" accent="text-info" />
         <TeamCard team={evaluation.red} label="Red Team" accent="text-danger" />
       </div>
 
@@ -97,7 +97,7 @@ export function DraftResults({ evaluation }: { evaluation: DraftEvaluation }) {
           <div className="grid gap-5 md:grid-cols-2">
             {evaluation.blue.gameLengthCurve.length > 0 && (
               <div>
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-sky-400">Blue Team</p>
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-info">Blue Team</p>
                 <GameLengthCurve points={evaluation.blue.gameLengthCurve} />
               </div>
             )}

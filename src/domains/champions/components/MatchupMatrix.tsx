@@ -75,7 +75,7 @@ export function MatchupMatrix({ riotAccountId }: Props) {
       <div className="mb-3 flex flex-wrap items-center gap-3 text-[10px] text-text-muted">
         <span className="flex items-center gap-1"><span className="inline-block h-3 w-3 rounded bg-success/40" />≥60%</span>
         <span className="flex items-center gap-1"><span className="inline-block h-3 w-3 rounded bg-success/20" />50-59%</span>
-        <span className="flex items-center gap-1"><span className="inline-block h-3 w-3 rounded bg-yellow-500/20" />45-49%</span>
+        <span className="flex items-center gap-1"><span className="inline-block h-3 w-3 rounded bg-warning/20" />45-49%</span>
         <span className="flex items-center gap-1"><span className="inline-block h-3 w-3 rounded bg-danger/20" />40-44%</span>
         <span className="flex items-center gap-1"><span className="inline-block h-3 w-3 rounded bg-danger/40" />&lt;40%</span>
         <span className="flex items-center gap-1"><span className="inline-block h-3 w-3 rounded bg-surface-2" />{"<3 games"}</span>

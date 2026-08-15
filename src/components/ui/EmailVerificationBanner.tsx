@@ -61,16 +61,16 @@ export function EmailVerificationBanner() {
   }
 
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 text-sm">
-      <MailWarning className="h-4 w-4 shrink-0 text-yellow-400" />
-      <p className="flex-1 text-yellow-200">
+    <div className="flex items-center gap-3 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3 text-sm">
+      <MailWarning className="h-4 w-4 shrink-0 text-warning" />
+      <p className="flex-1 text-warning">
         <span className="font-medium">Your email is not verified.</span>{" "}
         AI report generation is disabled — check your inbox.
       </p>
       <Button
         size="sm"
         variant="ghost"
-        className="h-7 gap-1.5 text-yellow-300 hover:text-yellow-100 hover:bg-yellow-500/20 disabled:opacity-50"
+        className="h-7 gap-1.5 text-warning hover:text-warning hover:bg-warning/20 disabled:opacity-50"
         onClick={handleResend}
         disabled={sending || cooldownSecs > 0}
       >
@@ -80,7 +80,7 @@ export function EmailVerificationBanner() {
       <button
         aria-label="Close"
         onClick={() => setDismissed(true)}
-        className="text-yellow-500/60 hover:text-yellow-300 transition-colors"
+        className="text-warning/60 hover:text-warning transition-colors"
       >
         <X className="h-4 w-4" />
       </button>

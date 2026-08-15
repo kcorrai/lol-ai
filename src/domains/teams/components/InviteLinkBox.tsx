@@ -27,7 +27,7 @@ export function InviteLinkBox({ teamId }: Props) {
   return (
     <div className="rounded-xl border border-border bg-surface p-4 space-y-3">
       <div className="flex items-center gap-2">
-        <Link2 className="h-4 w-4 text-blue-400" />
+        <Link2 className="h-4 w-4 text-info" />
         <p className="text-sm font-bold text-text">Shareable Invite Link</p>
       </div>
 

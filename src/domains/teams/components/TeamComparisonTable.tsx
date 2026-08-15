@@ -40,8 +40,8 @@ function sortMembers(members: TeamMemberSummary[], key: SortKey, dir: SortDir): 
 function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
   if (!active) return <ChevronsUpDown className="inline ml-1 h-3 w-3 opacity-40" />;
   return dir === "desc"
-    ? <ChevronDown className="inline ml-1 h-3 w-3 text-blue-400" />
-    : <ChevronUp className="inline ml-1 h-3 w-3 text-blue-400" />;
+    ? <ChevronDown className="inline ml-1 h-3 w-3 text-info" />
+    : <ChevronUp className="inline ml-1 h-3 w-3 text-info" />;
 }
 
 interface TeamComparisonTableProps {
@@ -83,7 +83,7 @@ export function TeamComparisonTable({ teamId }: TeamComparisonTableProps) {
         {RANGES.map((r) => (
           <button key={r.value} onClick={() => setRange(r.value)}
             className={cn("rounded-lg px-3 py-1 text-xs font-semibold transition-colors",
-              range === r.value ? "bg-blue-500/20 text-blue-400" : "text-text-muted hover:bg-white/5 hover:text-text")}>
+              range === r.value ? "bg-info/20 text-info" : "text-text-muted hover:bg-white/5 hover:text-text")}>
             {r.label}
           </button>
         ))}

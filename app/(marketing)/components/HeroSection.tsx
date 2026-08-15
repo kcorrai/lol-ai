@@ -34,7 +34,7 @@ export async function HeroSection() {
             </div>
             <h1 className="font-display text-4xl font-bold leading-tight text-text md:text-5xl lg:text-6xl">
               Your Personal{" "}
-              <span className="text-accent" style={{ textShadow: "0 0 40px rgba(200,155,60,0.35)" }}>AI Coach</span>{" "}
+              <span className="text-accent" style={{ textShadow: "0 0 40px rgba(198,255,61,0.35)" }}>AI Coach</span>{" "}
               for League
             </h1>
             <p className="text-lg leading-relaxed text-text-muted">

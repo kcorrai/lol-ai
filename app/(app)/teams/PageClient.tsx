@@ -11,8 +11,8 @@ import type { TeamSummary, TeamRole } from "@/domains/teams/types/teams.types";
 const ROLE_LABELS: Record<TeamRole, string> = { OWNER: "Owner", COACH: "Coach", PLAYER: "Player" };
 const ROLE_ICONS: Record<TeamRole, typeof Crown> = { OWNER: Crown, COACH: Shield, PLAYER: Swords };
 const ROLE_STYLES: Record<TeamRole, string> = {
-  OWNER: "text-yellow-400 border-yellow-400/40 bg-yellow-400/10",
-  COACH: "text-purple-400 border-purple-400/40 bg-purple-400/10",
+  OWNER: "text-warning border-warning/40 bg-warning/10",
+  COACH: "text-accent border-accent/40 bg-accent/10",
   PLAYER: "text-text-muted border-border bg-surface-3",
 };
 

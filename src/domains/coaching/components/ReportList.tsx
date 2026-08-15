@@ -22,7 +22,7 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 const TYPE_CONFIG: Record<string, { icon: React.ElementType; color: string; bg: string; glow: string }> = {
-  session_review: { icon: BarChart2,  color: "text-accent",  bg: "bg-accent/15",  glow: "rgba(200,155,60,0.12)" },
+  session_review: { icon: BarChart2,  color: "text-accent",  bg: "bg-accent/15",  glow: "rgba(198,255,61,0.12)" },
   champion_focus: { icon: Swords,     color: "text-warning", bg: "bg-warning/15", glow: "rgba(234,179,8,0.10)" },
   climb_roadmap:  { icon: TrendingUp, color: "text-success", bg: "bg-success/15", glow: "rgba(74,222,128,0.10)" },
 };

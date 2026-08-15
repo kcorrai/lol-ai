@@ -45,12 +45,12 @@ export function MatchupReportCard({ report }: { report: MatchupReport }) {
       {hasData && (
         <div className="mt-5">
           <div className="flex h-3 overflow-hidden rounded-full">
-            <div className="bg-sky-500" style={{ width: `${aWin}%` }} />
-            <div className="bg-rose-500" style={{ width: `${bWin}%` }} />
+            <div className="bg-info" style={{ width: `${aWin}%` }} />
+            <div className="bg-danger" style={{ width: `${bWin}%` }} />
           </div>
           <div className="mt-1 flex justify-between text-[11px] font-semibold">
-            <span className="text-sky-400">{report.championA.name} {aWin.toFixed(1)}%</span>
-            <span className="text-rose-400">{bWin.toFixed(1)}% {report.championB.name}</span>
+            <span className="text-info">{report.championA.name} {aWin.toFixed(1)}%</span>
+            <span className="text-danger">{bWin.toFixed(1)}% {report.championB.name}</span>
           </div>
         </div>
       )}

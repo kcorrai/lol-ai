@@ -47,11 +47,11 @@ export function RoleBasedTeamPicker({
 }: RoleBasedTeamPickerProps) {
   const borderClass =
     teamColor === "blue"
-      ? "border-blue-500/30 bg-blue-500/5"
-      : "border-red-500/30 bg-red-500/5";
+      ? "border-info/30 bg-info/5"
+      : "border-danger/30 bg-danger/5";
 
   const labelClass =
-    teamColor === "blue" ? "text-blue-400" : "text-red-400";
+    teamColor === "blue" ? "text-info" : "text-danger";
 
   const selectedInThisPicker = Object.values(value).filter(Boolean) as string[];
 

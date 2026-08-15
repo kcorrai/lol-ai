@@ -19,10 +19,10 @@ export function ImprovementGoalRow({ goal }: Props) {
     : "❌";
 
   const barColor = goal.achieved
-    ? "bg-green-500"
+    ? "bg-accent"
     : goal.progress > 0.5
-    ? "bg-blue-500"
-    : "bg-red-500/70";
+    ? "bg-info"
+    : "bg-danger/70";
 
   return (
     <div className="flex items-center gap-3 py-2">
@@ -30,14 +30,14 @@ export function ImprovementGoalRow({ goal }: Props) {
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-sm font-medium text-slate-200">{goal.label}</span>
-          <span className="text-xs text-slate-400 shrink-0 ml-2">
+          <span className="text-sm font-medium text-text">{goal.label}</span>
+          <span className="text-xs text-text-body shrink-0 ml-2">
             {goal.baseline}
             {goal.unit} {directionLabel} {goal.goal}
             {goal.unit}
           </span>
         </div>
-        <div className="h-1.5 rounded-full bg-slate-700 overflow-hidden">
+        <div className="h-1.5 rounded-full bg-surface-dark overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-500 ${barColor}`}
             style={{ width: `${pct}%` }}
@@ -45,7 +45,7 @@ export function ImprovementGoalRow({ goal }: Props) {
         </div>
       </div>
 
-      <span className="text-sm font-semibold text-slate-300 w-16 text-right shrink-0">
+      <span className="text-sm font-semibold text-text w-16 text-right shrink-0">
         {goal.current}
         {goal.unit}
       </span>

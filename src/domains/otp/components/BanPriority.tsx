@@ -9,9 +9,9 @@ interface BanPriorityProps {
 }
 
 const PRIORITY_STYLES: Record<1 | 2 | 3, string> = {
-  1: "bg-red-500/15 text-red-400 border-red-500/30",
-  2: "bg-orange-500/15 text-orange-400 border-orange-500/30",
-  3: "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
+  1: "bg-danger/15 text-danger border-danger/30",
+  2: "bg-warning/15 text-warning border-warning/30",
+  3: "bg-warning/15 text-warning border-warning/30",
 };
 
 export function BanPriority({ bans }: BanPriorityProps) {

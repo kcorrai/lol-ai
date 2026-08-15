@@ -15,11 +15,11 @@ const PLAYSTYLE_LABELS: Record<PlaystyleType, string> = {
 };
 
 const PLAYSTYLE_STYLES: Record<PlaystyleType, string> = {
-  aggressive: "bg-red-500/15 text-red-400",
-  farming: "bg-green-500/15 text-green-400",
-  supportive: "bg-blue-500/15 text-blue-400",
+  aggressive: "bg-danger/15 text-danger",
+  farming: "bg-accent/15 text-accent",
+  supportive: "bg-info/15 text-info",
   balanced: "bg-border/40 text-text-muted",
-  passive: "bg-yellow-500/15 text-yellow-500",
+  passive: "bg-warning/15 text-warning",
 };
 
 interface RecentMatchesSummaryCardProps {
@@ -73,11 +73,11 @@ export function RecentMatchesSummaryCard({ profile, isLoading }: RecentMatchesSu
 
       <div className="space-y-1.5">
         <div className="flex items-start gap-1.5 text-sm">
-          <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-green-400" />
+          <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" />
           <span className="text-text-muted">Strength: <span className="text-text">{profile.strongestArea}</span></span>
         </div>
         <div className="flex items-start gap-1.5 text-sm">
-          <Zap className="mt-0.5 h-3.5 w-3.5 shrink-0 text-yellow-500" />
+          <Zap className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" />
           <span className="text-text-muted">Growth Area: <span className="text-text">{profile.weakestArea}</span></span>
         </div>
       </div>
@@ -89,7 +89,7 @@ function StatItem({ label, value, highlight = false }: { label: string; value: s
   return (
     <div className="rounded-lg bg-surface-2 px-4 py-3">
       <p className="mb-1 text-xs text-text-muted">{label}</p>
-      <p className={cn("text-2xl font-bold", highlight ? "text-green-400" : "text-text")}>{value}</p>
+      <p className={cn("text-2xl font-bold", highlight ? "text-accent" : "text-text")}>{value}</p>
     </div>
   );
 }

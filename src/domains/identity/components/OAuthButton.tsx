@@ -27,7 +27,7 @@ export function OAuthButton({ provider, callbackUrl = "/dashboard" }: OAuthButto
       className="w-full"
       onClick={() => signIn(provider, { callbackUrl })}
     >
-      <span className="mr-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-white text-xs font-bold text-gray-800">
+      <span className="mr-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-white text-xs font-bold text-text-muted">
         {config.icon}
       </span>
       {config.label}

@@ -33,16 +33,16 @@ export async function GET(
           flexDirection: "column",
           width: "100%",
           height: "100%",
-          background: "linear-gradient(135deg, #0f0f14 0%, #1a1a2e 100%)",
+          background: "linear-gradient(135deg, #0C1110 0%, #17201F 100%)",
           padding: 60,
           fontFamily: "sans-serif",
-          color: "#e2e8f0",
+          color: "#E9F5EE",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 32 }}>
           <div
             style={{
-              background: "#6366f1",
+              background: "#C6FF3D",
               borderRadius: 8,
               padding: "4px 12px",
               fontSize: 14,
@@ -57,16 +57,16 @@ export async function GET(
         <div style={{ fontSize: 52, fontWeight: 900, lineHeight: 1.1, marginBottom: 16 }}>
           {name}
         </div>
-        <div style={{ fontSize: 28, color: "#a5b4fc", marginBottom: 8 }}>
+        <div style={{ fontSize: 28, color: "#A7BCB5", marginBottom: 8 }}>
           {rankStr} {wr ? `· ${wr}` : ""}
         </div>
         {topChamp && (
-          <div style={{ fontSize: 20, color: "#94a3b8", marginBottom: 8 }}>
+          <div style={{ fontSize: 20, color: "#A7BCB5", marginBottom: 8 }}>
             En iyi: {topChamp}
           </div>
         )}
         {badgeCount > 0 && (
-          <div style={{ fontSize: 18, color: "#94a3b8" }}>
+          <div style={{ fontSize: 18, color: "#A7BCB5" }}>
             {badgeCount} badges earned
           </div>
         )}
@@ -74,7 +74,7 @@ export async function GET(
           style={{
             marginTop: "auto",
             fontSize: 16,
-            color: "#6366f1",
+            color: "#C6FF3D",
             fontWeight: 600,
           }}
         >

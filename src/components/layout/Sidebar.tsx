@@ -75,7 +75,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         "sticky top-0 hidden h-screen shrink-0 flex-col border-r border-white/5 transition-[width] duration-200 md:flex",
         collapsed ? "w-16" : "w-56"
       )}
-      style={{ background: "linear-gradient(180deg, #08091280 0%, #07090F 100%)", backdropFilter: "blur(12px)" }}
+      style={{ background: "linear-gradient(180deg, #08091280 0%, #050706 100%)", backdropFilter: "blur(12px)" }}
     >
       {/* Brand */}
       <div className={cn("flex h-14 items-center border-b border-white/5", collapsed ? "justify-center px-2" : "gap-2 px-4")}>
@@ -101,7 +101,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
       {/* Pro upgrade banner */}
       {!isPro && !collapsed && (
-        <div className="mx-2 mb-2 rounded-xl border border-accent/25 p-3" style={{ background: "linear-gradient(135deg, rgba(200,155,60,0.12) 0%, rgba(200,155,60,0.04) 100%)" }}>
+        <div className="mx-2 mb-2 rounded-xl border border-accent/25 p-3" style={{ background: "linear-gradient(135deg, rgba(198,255,61,0.12) 0%, rgba(198,255,61,0.04) 100%)" }}>
           <div className="mb-1 flex items-center gap-1.5">
             <Sparkles className="h-3.5 w-3.5 text-accent" />
             <p className="text-xs font-bold text-accent">Upgrade to Pro</p>

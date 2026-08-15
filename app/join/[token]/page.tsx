@@ -53,8 +53,8 @@ export default function JoinPage() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm rounded-2xl border border-border bg-surface p-8 text-center space-y-6">
         <div className="flex justify-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/15 ring-1 ring-blue-500/30">
-            <Shield className="h-7 w-7 text-blue-400" />
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-info/15 ring-1 ring-info/30">
+            <Shield className="h-7 w-7 text-info" />
           </div>
         </div>
 

@@ -21,14 +21,14 @@ export function renderOgImage({ title, subtitle, badge }: OgOptions): ImageRespo
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          background: "linear-gradient(135deg, #0A0E1A 0%, #12182B 100%)",
+          background: "linear-gradient(135deg, #080B0A 0%, #111817 100%)",
           padding: "72px",
           fontFamily: "sans-serif",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <div style={{ width: "18px", height: "18px", borderRadius: "4px", background: "#C89B3C" }} />
-          <div style={{ fontSize: "30px", fontWeight: 700, color: "#F5F5F5" }}>LoL AI Coach</div>
+          <div style={{ width: "18px", height: "18px", borderRadius: "4px", background: "#C6FF3D" }} />
+          <div style={{ fontSize: "30px", fontWeight: 700, color: "#E9F5EE" }}>LoL AI Coach</div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -39,8 +39,8 @@ export function renderOgImage({ title, subtitle, badge }: OgOptions): ImageRespo
                 alignSelf: "flex-start",
                 padding: "8px 20px",
                 borderRadius: "999px",
-                border: "1px solid rgba(200,155,60,0.5)",
-                color: "#C89B3C",
+                border: "1px solid rgba(198,255,61,0.5)",
+                color: "#C6FF3D",
                 fontSize: "26px",
                 fontWeight: 600,
               }}
@@ -48,13 +48,13 @@ export function renderOgImage({ title, subtitle, badge }: OgOptions): ImageRespo
               {badge}
             </div>
           ) : null}
-          <div style={{ fontSize: "84px", fontWeight: 800, color: "#F5F5F5", lineHeight: 1.05 }}>
+          <div style={{ fontSize: "84px", fontWeight: 800, color: "#E9F5EE", lineHeight: 1.05 }}>
             {title}
           </div>
-          <div style={{ fontSize: "34px", color: "#9AA4B2", maxWidth: "900px" }}>{subtitle}</div>
+          <div style={{ fontSize: "34px", color: "#A7BCB5", maxWidth: "900px" }}>{subtitle}</div>
         </div>
 
-        <div style={{ fontSize: "24px", color: "#6B7480" }}>Free · Updated every patch · No login</div>
+        <div style={{ fontSize: "24px", color: "#6C817B" }}>Free · Updated every patch · No login</div>
       </div>
     ),
     { ...OG_SIZE }

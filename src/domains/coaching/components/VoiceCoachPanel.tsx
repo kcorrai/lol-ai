@@ -87,7 +87,7 @@ export function VoiceCoachPanel({ riotAccountId, onClose }: Props) {
               ? "scale-110 bg-danger shadow-[0_0_20px_rgba(239,68,68,0.5)]"
               : busy
               ? "cursor-not-allowed bg-surface-2"
-              : "bg-accent shadow-[0_0_16px_rgba(200,155,60,0.3)] hover:bg-accent/90",
+              : "bg-accent shadow-[0_0_16px_rgba(198,255,61,0.3)] hover:bg-accent/90",
           ].join(" ")}
         >
           {isTranscribing || isStreaming ? (

@@ -81,17 +81,17 @@ export function buildReengagementEmail(data: ReengagementEmailData): { subject: 
       ? `${safeUrl}/champions`
       : `${safeUrl}/dashboard`;
 
-  const contentHtml = `<h1 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#C89B3C;">
+  const contentHtml = `<h1 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#C6FF3D;">
                 ${escapeHtml(copy.headline)}
               </h1>
-              <p style="margin:0 0 28px;font-size:14px;line-height:1.7;color:#A0AEC0;">
+              <p style="margin:0 0 28px;font-size:14px;line-height:1.7;color:#A7BCB5;">
                 ${escapeHtml(copy.body)}
               </p>
               <table cellpadding="0" cellspacing="0">
                 <tr>
-                  <td style="border-radius:8px;background:#C89B3C;">
+                  <td style="border-radius:8px;background:#C6FF3D;">
                     <a href="${ctaHref}"
-                       style="display:inline-block;padding:12px 28px;font-size:14px;font-weight:600;color:#0A0E1A;text-decoration:none;border-radius:8px;">
+                       style="display:inline-block;padding:12px 28px;font-size:14px;font-weight:600;color:#080B0A;text-decoration:none;border-radius:8px;">
                       ${escapeHtml(copy.cta)} →
                     </a>
                   </td>

@@ -39,11 +39,11 @@ export function TestimonialsSection() {
             <div
               key={label}
               className="gaming-card rounded-xl p-5 text-center transition-all duration-200 hover:border-accent/25"
-              style={{ boxShadow: "0 0 24px rgba(200,155,60,0.05), inset 0 1px 0 rgba(255,255,255,0.04)" }}
+              style={{ boxShadow: "0 0 24px rgba(198,255,61,0.05), inset 0 1px 0 rgba(255,255,255,0.04)" }}
             >
               <div
                 className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10"
-                style={{ boxShadow: "0 0 20px rgba(200,155,60,0.15)" }}
+                style={{ boxShadow: "0 0 20px rgba(198,255,61,0.15)" }}
               >
                 <Icon className="h-5 w-5 text-accent" />
               </div>

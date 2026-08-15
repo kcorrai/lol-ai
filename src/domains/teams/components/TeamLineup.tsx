@@ -93,7 +93,7 @@ export function TeamLineup({ teamId, members, canManage }: Props) {
               <select
                 value={lineup[pos.key] ?? ""}
                 onChange={(e) => assign(pos.key, e.target.value || null)}
-                className="shrink-0 rounded-lg border border-border bg-surface-2 px-2 py-1 text-xs text-text focus:outline-none focus:ring-1 focus:ring-blue-500/40"
+                className="shrink-0 rounded-lg border border-border bg-surface-2 px-2 py-1 text-xs text-text focus:outline-none focus:ring-1 focus:ring-info/40"
               >
                 <option value="">— Select —</option>
                 {available.map((m) => (

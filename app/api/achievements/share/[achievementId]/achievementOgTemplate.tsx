@@ -20,7 +20,7 @@ export function AchievementOgCard({
         justifyContent: "center",
         width: "800px",
         height: "420px",
-        background: "#0A0E1A",
+        background: "#080B0A",
         fontFamily: "system-ui, sans-serif",
         gap: "0px",
       }}
@@ -70,7 +70,7 @@ export function AchievementOgCard({
         style={{
           fontSize: "36px",
           fontWeight: 800,
-          color: "#E8F0FF",
+          color: "#E9F5EE",
           marginBottom: "10px",
           textAlign: "center",
         }}
@@ -82,7 +82,7 @@ export function AchievementOgCard({
       <div
         style={{
           fontSize: "16px",
-          color: "#8899BB",
+          color: "#6C817B",
           marginBottom: "24px",
           textAlign: "center",
           maxWidth: "480px",
@@ -97,14 +97,14 @@ export function AchievementOgCard({
           display: "flex",
           alignItems: "center",
           gap: "8px",
-          background: "#0F1629",
-          border: "1px solid #2A3550",
+          background: "#0C1110",
+          border: "1px solid #20302D",
           borderRadius: "8px",
           padding: "8px 20px",
         }}
       >
-        <span style={{ color: "#8899BB", fontSize: "13px" }}>Kazanan:</span>
-        <span style={{ color: "#E8F0FF", fontSize: "15px", fontWeight: 600 }}>{gameName}</span>
+        <span style={{ color: "#6C817B", fontSize: "13px" }}>Kazanan:</span>
+        <span style={{ color: "#E9F5EE", fontSize: "15px", fontWeight: 600 }}>{gameName}</span>
       </div>
 
       {/* Footer */}
@@ -117,7 +117,7 @@ export function AchievementOgCard({
           gap: "6px",
         }}
       >
-        <span style={{ color: "#4A5568", fontSize: "12px" }}>lolaicoach.gg</span>
+        <span style={{ color: "#485954", fontSize: "12px" }}>lolaicoach.gg</span>
       </div>
     </div>
   );

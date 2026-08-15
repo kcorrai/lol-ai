@@ -14,12 +14,12 @@ import { cn } from "@/lib/utils";
 
 function ProgressBar({ score }: { score: number }) {
   const pct = Math.min(100, Math.max(0, score));
-  const color = pct >= 67 ? "bg-green-500" : pct >= 34 ? "bg-yellow-500" : "bg-red-500";
+  const color = pct >= 67 ? "bg-accent" : pct >= 34 ? "bg-warning" : "bg-danger";
   return (
     <div className="space-y-1">
       <div className="flex justify-between text-xs text-text-muted">
         <span>Progress to Goal</span>
-        <span className={cn(pct >= 67 ? "text-green-400" : pct >= 34 ? "text-yellow-500" : "text-red-400")}>
+        <span className={cn(pct >= 67 ? "text-accent" : pct >= 34 ? "text-warning" : "text-danger")}>
           {pct}%
         </span>
       </div>

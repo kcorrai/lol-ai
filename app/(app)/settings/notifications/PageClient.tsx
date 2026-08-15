@@ -44,7 +44,7 @@ export default function NotificationsSettingsPage() {
         )}
 
         {isDenied && (
-          <p className="rounded-lg bg-yellow-500/10 px-4 py-3 text-sm text-yellow-400">
+          <p className="rounded-lg bg-warning/10 px-4 py-3 text-sm text-warning">
             Notifications are blocked. Allow notifications for this site in your browser settings.
           </p>
         )}
@@ -56,7 +56,7 @@ export default function NotificationsSettingsPage() {
               disabled={isLoading}
               className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors disabled:opacity-50 ${
                 isEnabled
-                  ? "bg-surface-2 text-text hover:bg-red-500/10 hover:text-red-400"
+                  ? "bg-surface-2 text-text hover:bg-danger/10 hover:text-danger"
                   : "bg-accent text-background hover:bg-accent/90"
               }`}
             >
@@ -74,8 +74,8 @@ export default function NotificationsSettingsPage() {
             </button>
 
             {isEnabled && (
-              <span className="flex items-center gap-1.5 text-xs text-green-400">
-                <span className="h-2 w-2 rounded-full bg-green-400" />
+              <span className="flex items-center gap-1.5 text-xs text-accent">
+                <span className="h-2 w-2 rounded-full bg-accent" />
                 Active
               </span>
             )}

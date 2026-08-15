@@ -167,7 +167,7 @@ export default function FeatureFlagsAdminPage() {
                     </button>
                     <button
                       onClick={() => remove(flag.id)}
-                      className="text-red-400 hover:text-red-300"
+                      className="text-danger hover:text-danger"
                       title="Delete"
                     >
                       <Trash2 className="h-4 w-4" />

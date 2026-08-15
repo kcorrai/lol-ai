@@ -21,11 +21,11 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 const ROLE_COLORS: Record<string, string> = {
-  TOP: "bg-orange-500",
-  JUNGLE: "bg-green-600",
-  MIDDLE: "bg-blue-500",
-  BOTTOM: "bg-yellow-500",
-  UTILITY: "bg-purple-500",
+  TOP: "bg-warning",
+  JUNGLE: "bg-accent",
+  MIDDLE: "bg-info",
+  BOTTOM: "bg-warning",
+  UTILITY: "bg-accent",
 };
 
 function RoleIcon({ position }: { position: string }) {

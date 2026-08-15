@@ -1,5 +1,5 @@
 // CSS-only confetti burst rendered on mount — shared by the guided-onboarding finale.
-const COLORS = ["#C89B3C", "#4ADE80", "#60A5FA", "#F472B6", "#A78BFA"];
+const COLORS = ["#C6FF3D", "#C6FF3D", "#60A5FA", "#F472B6", "#A78BFA"];
 
 export function Confetti(): React.JSX.Element {
   const pieces = Array.from({ length: 24 }, (_, i) => i);

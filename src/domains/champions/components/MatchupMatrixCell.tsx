@@ -12,7 +12,7 @@ function cellColor(wr: number, games: number): string {
   if (games < 3) return "bg-surface-2 text-text-muted";
   if (wr >= 60) return "bg-success/40 text-success";
   if (wr >= 50) return "bg-success/20 text-success";
-  if (wr >= 45) return "bg-yellow-500/20 text-yellow-400";
+  if (wr >= 45) return "bg-warning/20 text-warning";
   if (wr >= 40) return "bg-danger/20 text-danger";
   return "bg-danger/40 text-danger";
 }

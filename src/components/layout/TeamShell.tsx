@@ -27,7 +27,7 @@ export function TeamShell({ children }: { children: React.ReactNode }) {
           className="flex-1 overflow-y-auto pb-16 md:pb-0"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(59,130,246,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.015) 1px, transparent 1px)",
+              "linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px)",
             backgroundSize: "64px 64px",
           }}
         >

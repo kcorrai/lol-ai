@@ -13,11 +13,13 @@ import { LeaderboardPreview } from "./LeaderboardPreview";
 import { cn } from "@/lib/utils";
 import type { LeaderboardEntry } from "@/domains/analysis/services/leaderboardService";
 
+// Rank crest colours are game data, not brand — they use the dedicated `rank.*`
+// scale rather than raw Tailwind palette, which the token layer never reaches.
 const TIER_COLORS: Record<string, string> = {
-  IRON: "text-gray-400", BRONZE: "text-amber-700", SILVER: "text-gray-300",
-  GOLD: "text-yellow-400", PLATINUM: "text-teal-400", EMERALD: "text-emerald-400",
-  DIAMOND: "text-blue-400", MASTER: "text-purple-400",
-  GRANDMASTER: "text-red-400", CHALLENGER: "text-yellow-300",
+  IRON: "text-rank-iron", BRONZE: "text-rank-bronze", SILVER: "text-rank-silver",
+  GOLD: "text-rank-gold", PLATINUM: "text-rank-platinum", EMERALD: "text-rank-emerald",
+  DIAMOND: "text-rank-diamond", MASTER: "text-rank-master",
+  GRANDMASTER: "text-rank-grandmaster", CHALLENGER: "text-rank-challenger",
 };
 
 const RANK_MEDALS = ["🥇", "🥈", "🥉"];

@@ -5,11 +5,13 @@ import { ReportPreview, CounterPreview, ChampionPreview } from "./FeaturePreview
 
 // ── Side feature cards ───────────────────────────────────────────────────────
 
+// One accent, rationed (ADR-015). Feature icons are decoration, not data, so they
+// all take the accent — a rainbow of support hues here would read as a second brand.
 const SIDE_FEATURES = [
-  { icon: Trophy, title: "Ranked Progress", desc: "LP history, win rate trends, tilt detection — before it becomes a loss streak.", color: "text-warning", bg: "bg-warning/10" },
+  { icon: Trophy, title: "Ranked Progress", desc: "LP history, win rate trends, tilt detection — before it becomes a loss streak.", color: "text-accent", bg: "bg-accent/10" },
   { icon: MessageCircle, title: "AI Coach Chat", desc: "Ask anything. Backed by your real match data, not generic wiki answers.", color: "text-accent", bg: "bg-accent/10" },
-  { icon: Shield, title: "Mental & Tilt Guard", desc: "Session readiness score. Know when to queue and when to stop.", color: "text-danger", bg: "bg-danger/10" },
-  { icon: BarChart2, title: "Match Deep Dive", desc: "Full 10-player scoreboard — damage, vision, objectives, runes.", color: "text-success", bg: "bg-success/10" },
+  { icon: Shield, title: "Mental & Tilt Guard", desc: "Session readiness score. Know when to queue and when to stop.", color: "text-accent", bg: "bg-accent/10" },
+  { icon: BarChart2, title: "Match Deep Dive", desc: "Full 10-player scoreboard — damage, vision, objectives, runes.", color: "text-accent", bg: "bg-accent/10" },
   { icon: TrendingUp, title: "Climb Roadmap", desc: "AI-built path from your current rank to the next. Step by step.", color: "text-accent", bg: "bg-accent/10" },
 ];
 
@@ -29,7 +31,7 @@ export function FeaturesSection() {
           <p className="mb-2 text-xs font-semibold uppercase tracking-[0.15em] text-accent/70">Full Arsenal</p>
           <h2 className="font-display text-3xl font-bold text-text md:text-4xl">
             Everything You Need to{" "}
-            <span className="text-accent" style={{ textShadow: "0 0 30px rgba(200,155,60,0.3)" }}>Climb</span>
+            <span className="text-accent" style={{ textShadow: "0 0 30px rgba(198,255,61,0.3)" }}>Climb</span>
           </h2>
           <p className="mt-3 text-text-muted">From pre-game draft to post-game analysis — every phase covered.</p>
         </div>
@@ -50,7 +52,7 @@ export function FeaturesSection() {
 
           {/* Counter Pick — spans 1 col */}
           <div className="flex flex-col gap-3">
-            <div className="rounded-xl border border-teal-500/30 bg-teal-500/5 px-3 py-1.5 text-xs font-semibold text-teal-400 self-start">
+            <div className="rounded-xl border border-info/30 bg-info/5 px-3 py-1.5 text-xs font-semibold text-info self-start">
               Counter Pick Generator
             </div>
             <h3 className="font-display text-xl font-bold text-text">Pick the right champion every game</h3>
@@ -63,7 +65,7 @@ export function FeaturesSection() {
           {/* Champion Analytics + side features — spans 1 col */}
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
-              <div className="rounded-xl border border-warning/30 bg-warning/5 px-3 py-1.5 text-xs font-semibold text-warning self-start">
+              <div className="rounded-xl border border-accent/30 bg-accent/5 px-3 py-1.5 text-xs font-semibold text-accent self-start">
                 Champion Pool Analytics
               </div>
               <h3 className="font-display text-xl font-bold text-text">Know what to play — and what to bench</h3>

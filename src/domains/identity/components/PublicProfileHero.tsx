@@ -4,7 +4,7 @@ import { profileIconUrl, rankEmblemUrl, championSplashUrl } from "@/lib/ddragon"
 
 const TIER_COLORS: Record<string, string> = {
   IRON: "#4a4a5a", BRONZE: "#a05336", SILVER: "#a8b8c8",
-  GOLD: "#c89b3c", PLATINUM: "#3cba8c", EMERALD: "#00be93",
+  GOLD: "#C6FF3D", PLATINUM: "#3cba8c", EMERALD: "#00be93",
   DIAMOND: "#576bce", MASTER: "#9e4fc6", GRANDMASTER: "#e84057", CHALLENGER: "#f4c874",
 };
 
@@ -42,7 +42,7 @@ export function PublicProfileHero({ displayName, profileIconId, rank, region, jo
   const iconUrl = profileIconId ? profileIconUrl(profileIconId) : null;
   const splashUrl = featuredChampion ? championSplashUrl(featuredChampion) : null;
   const rankEmblem = rank ? rankEmblemUrl(rank.tier) : null;
-  const tierColor = rank ? (TIER_COLORS[rank.tier] ?? "#a5b4fc") : null;
+  const tierColor = rank ? (TIER_COLORS[rank.tier] ?? "#A7BCB5") : null;
   const tierGlow = rank ? (TIER_GLOW[rank.tier] ?? null) : null;
   const isApex = rank && ["MASTER", "GRANDMASTER", "CHALLENGER"].includes(rank.tier);
   const regionFlag = region ? (REGION_FLAGS[region] ?? null) : null;
@@ -64,7 +64,7 @@ export function PublicProfileHero({ displayName, profileIconId, rank, region, jo
 
       <div className="relative flex items-end gap-5 p-6 pb-5">
         <div className="relative shrink-0">
-          <div className="h-20 w-20 overflow-hidden rounded-full border-2" style={{ borderColor: tierColor ?? "#a5b4fc" }}>
+          <div className="h-20 w-20 overflow-hidden rounded-full border-2" style={{ borderColor: tierColor ?? "#A7BCB5" }}>
             {iconUrl ? (
               <Image src={iconUrl} alt={displayName} width={80} height={80} unoptimized className="object-cover" />
             ) : (
@@ -83,7 +83,7 @@ export function PublicProfileHero({ displayName, profileIconId, rank, region, jo
             <h1 className="font-display text-2xl font-bold leading-tight text-white drop-shadow-md">{displayName}</h1>
             {regionFlag && <span className="text-lg leading-none" title={region ?? ""}>{regionFlag}</span>}
             {rank?.hotStreak && (
-              <span className="flex items-center gap-1 rounded-full border border-orange-400/40 bg-orange-400/10 px-2 py-0.5 text-[10px] font-bold text-orange-400">
+              <span className="flex items-center gap-1 rounded-full border border-warning/40 bg-warning/10 px-2 py-0.5 text-[10px] font-bold text-warning">
                 <Flame className="h-3 w-3" /> HOT STREAK
               </span>
             )}
@@ -93,9 +93,9 @@ export function PublicProfileHero({ displayName, profileIconId, rank, region, jo
             <div className="mt-1.5 flex flex-wrap items-center gap-2">
               <span
                 className="inline-flex items-center gap-1.5 rounded-full px-3 py-0.5 text-sm font-bold"
-                style={{ background: `${tierColor}20`, color: tierColor ?? "#a5b4fc", border: `1px solid ${tierColor}40` }}
+                style={{ background: `${tierColor}20`, color: tierColor ?? "#A7BCB5", border: `1px solid ${tierColor}40` }}
               >
-                {isApex && <span className="h-1.5 w-1.5 animate-pulse rounded-full" style={{ background: tierColor ?? "#a5b4fc" }} />}
+                {isApex && <span className="h-1.5 w-1.5 animate-pulse rounded-full" style={{ background: tierColor ?? "#A7BCB5" }} />}
                 {TIER_LABELS[rank.tier] ?? rank.tier}
                 {!isApex && ` ${rank.division}`}
                 {" · "}{rank.lp} LP

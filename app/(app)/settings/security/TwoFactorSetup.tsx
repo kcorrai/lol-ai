@@ -84,7 +84,7 @@ export function TwoFactorSetup() {
   return (
     <>
       {error && (
-        <p className="rounded-lg bg-red-500/10 px-4 py-2.5 text-sm text-red-400">{error}</p>
+        <p className="rounded-lg bg-danger/10 px-4 py-2.5 text-sm text-danger">{error}</p>
       )}
 
       {step === "idle" && (
@@ -145,7 +145,7 @@ export function TwoFactorSetup() {
                   {showCodes ? code : "••••••••"}
                 </span>
                 <button onClick={() => copyCode(code, i)} className="ml-2 text-text-muted hover:text-text">
-                  {copiedIndex === i ? <Check className="h-3.5 w-3.5 text-green-400" /> : <Copy className="h-3.5 w-3.5" />}
+                  {copiedIndex === i ? <Check className="h-3.5 w-3.5 text-accent" /> : <Copy className="h-3.5 w-3.5" />}
                 </button>
               </div>
             ))}
@@ -183,21 +183,21 @@ export function TwoFactorSetup() {
       )}
 
       {step === "enabled" && (
-        <div className="rounded-xl border border-green-500/20 bg-surface p-5 space-y-3">
+        <div className="rounded-xl border border-accent/20 bg-surface p-5 space-y-3">
           <div className="flex items-center gap-3">
-            <ShieldCheck className="h-6 w-6 text-green-400" />
-            <p className="text-sm font-semibold text-green-400">2FA Enabled</p>
+            <ShieldCheck className="h-6 w-6 text-accent" />
+            <p className="text-sm font-semibold text-accent">2FA Enabled</p>
           </div>
           <p className="text-xs text-text-muted">Your account is now protected with two-factor authentication.</p>
-          <button onClick={() => setStep("disable")} className="text-xs text-red-400 hover:underline">
+          <button onClick={() => setStep("disable")} className="text-xs text-danger hover:underline">
             Disable 2FA
           </button>
         </div>
       )}
 
       {step === "disable" && (
-        <div className="rounded-xl border border-red-500/20 bg-surface p-5 space-y-4">
-          <p className="text-sm font-semibold text-red-400">Disable 2FA</p>
+        <div className="rounded-xl border border-danger/20 bg-surface p-5 space-y-4">
+          <p className="text-sm font-semibold text-danger">Disable 2FA</p>
           <p className="text-xs text-text-muted">
             You can disable it by entering the code from your authenticator app.
           </p>
@@ -208,13 +208,13 @@ export function TwoFactorSetup() {
             value={disableToken}
             onChange={(e) => setDisableToken(e.target.value.replace(/\D/g, ""))}
             placeholder="000000"
-            className="w-full rounded-lg border border-border bg-surface-2 px-4 py-3 text-center font-mono text-xl tracking-[0.4em] text-text placeholder-text-muted focus:border-red-500 focus:outline-none"
+            className="w-full rounded-lg border border-border bg-surface-2 px-4 py-3 text-center font-mono text-xl tracking-[0.4em] text-text placeholder-text-muted focus:border-danger focus:outline-none"
           />
           <div className="flex gap-2">
             <button
               onClick={disable}
               disabled={loading || disableToken.length !== 6}
-              className="flex-1 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+              className="flex-1 rounded-lg bg-danger px-4 py-2.5 text-sm font-semibold text-white hover:bg-danger disabled:opacity-50"
             >
               {loading ? "Processing…" : "Disable"}
             </button>

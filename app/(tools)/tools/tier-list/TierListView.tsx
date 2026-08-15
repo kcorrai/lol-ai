@@ -76,7 +76,7 @@ export function TierListView({ position, list, activeTier }: TierListViewProps) 
 
       {list && list.entries.length > 0 &&
         list.entries.filter((e) => e.lowConfidence).length > list.entries.length / 2 && (
-          <p className="mb-4 rounded-lg border border-amber-400/30 bg-amber-400/5 px-3 py-2 text-xs text-amber-300/90">
+          <p className="mb-4 rounded-lg border border-warning/30 bg-warning/5 px-3 py-2 text-xs text-warning/90">
             This bracket has a small sample this patch, so tiers below are low-confidence and ordered by
             games played. Broader brackets give more reliable rankings.
           </p>

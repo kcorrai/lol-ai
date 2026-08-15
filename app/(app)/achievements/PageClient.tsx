@@ -43,7 +43,7 @@ function AchievementCard({
         style={
           earned
             ? { background: `${tierColor}22`, border: `2px solid ${tierColor}` }
-            : { background: "transparent", border: "2px solid #2A3550" }
+            : { background: "transparent", border: "2px solid #20302D" }
         }
       >
         {earned ? achievement.iconSlug : <Lock className="h-6 w-6 text-text-muted" />}
@@ -55,7 +55,7 @@ function AchievementCard({
         style={
           earned
             ? { background: `${tierColor}22`, color: tierColor }
-            : { background: "#1A2138", color: "#4A5568" }
+            : { background: "#17201F", color: "#485954" }
         }
       >
         {TIER_LABEL[achievement.tier]}

@@ -80,7 +80,7 @@ export default function DiscordSettingsPage() {
       <div className="space-y-3 rounded-xl border border-border bg-surface p-4">
         <h2 className="text-sm font-semibold text-text">Webhook URL</h2>
         {data?.hasWebhook && (
-          <p className="text-xs text-green-400">✓ Webhook registered (URL hidden)</p>
+          <p className="text-xs text-accent">✓ Webhook registered (URL hidden)</p>
         )}
         <input
           type="url"
@@ -133,7 +133,7 @@ export default function DiscordSettingsPage() {
         <button
           onClick={() => del.mutate()}
           disabled={!data?.hasWebhook || del.isPending}
-          className="flex items-center gap-2 rounded-lg border border-red-500/30 bg-surface px-4 py-2 text-sm font-semibold text-danger disabled:opacity-50 hover:bg-danger/5"
+          className="flex items-center gap-2 rounded-lg border border-danger/30 bg-surface px-4 py-2 text-sm font-semibold text-danger disabled:opacity-50 hover:bg-danger/5"
         >
           <Trash2 className="h-4 w-4" />
           Remove

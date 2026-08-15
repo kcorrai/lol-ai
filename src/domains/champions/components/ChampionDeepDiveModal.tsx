@@ -14,7 +14,7 @@ const DEATH_TIMING_LABEL: Record<DeathCluster, string> = {
 const DEATH_TIMING_COLOR: Record<DeathCluster, string> = {
   early_game: "bg-warning/15 text-warning",
   mid_game:   "bg-danger/15 text-danger",
-  late_game:  "bg-purple-500/15 text-purple-400",
+  late_game:  "bg-accent/15 text-accent",
   spread:     "bg-border text-text-muted",
 };
 

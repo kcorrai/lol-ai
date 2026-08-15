@@ -11,11 +11,11 @@ function formatGames(games: number): string {
 }
 
 const TIER_COLORS: Record<string, string> = {
-  S: "bg-amber-400/20 text-amber-300 border-amber-400/40",
-  A: "bg-emerald-400/15 text-emerald-300 border-emerald-400/30",
-  B: "bg-sky-400/15 text-sky-300 border-sky-400/30",
-  C: "bg-slate-400/15 text-slate-300 border-slate-400/30",
-  D: "bg-rose-400/10 text-rose-300 border-rose-400/30",
+  S: "bg-warning/20 text-warning border-warning/40",
+  A: "bg-accent/15 text-accent border-accent/30",
+  B: "bg-info/15 text-info border-info/30",
+  C: "bg-surface/15 text-text border-line-2/30",
+  D: "bg-danger/10 text-danger border-danger/30",
 };
 
 interface TierRowProps {
@@ -62,7 +62,7 @@ export function TierRow({
           <span className="flex flex-col leading-tight">
             <span className="text-sm font-medium text-text">{entry.name}</span>
             {entry.games > 0 && (
-              <span className={`text-[10px] ${entry.lowConfidence ? "text-amber-400/70" : "text-text-muted/60"}`}>
+              <span className={`text-[10px] ${entry.lowConfidence ? "text-warning/70" : "text-text-muted/60"}`}>
                 {formatGames(entry.games)} games{entry.lowConfidence ? " · low confidence" : ""}
               </span>
             )}

@@ -24,7 +24,7 @@ export function XpLevelWidget() {
       <div className="flex items-center justify-between">
         <span className="text-sm font-semibold text-text">Level {level}</span>
         {streak > 0 && (
-          <span className="inline-flex items-center gap-1 text-xs font-semibold text-orange-400">
+          <span className="inline-flex items-center gap-1 text-xs font-semibold text-warning">
             <Flame className="h-3.5 w-3.5" /> {streak} day streak
           </span>
         )}

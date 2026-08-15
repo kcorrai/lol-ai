@@ -46,7 +46,7 @@ function Cell({ value, variant }: { value: CellValue; variant: "free" | "pro" | 
     return value ? (
       <Check className={cn(
         "mx-auto h-4 w-4",
-        variant === "pro" ? "text-accent" : variant === "team" ? "text-warning" : "text-success"
+        variant === "pro" ? "text-accent" : variant === "team" ? "text-accent" : "text-success"
       )} />
     ) : (
       <X className="mx-auto h-4 w-4 text-text-muted/30" />
@@ -55,7 +55,7 @@ function Cell({ value, variant }: { value: CellValue; variant: "free" | "pro" | 
   return (
     <span className={cn(
       "text-sm",
-      variant === "pro" ? "font-medium text-accent" : variant === "team" ? "font-medium text-warning" : "text-text-muted"
+      variant === "pro" ? "font-medium text-accent" : variant === "team" ? "font-medium text-accent" : "text-text-muted"
     )}>
       {value}
     </span>
@@ -73,7 +73,7 @@ export function PricingComparisonTable() {
             <th className="px-4 py-4 text-sm font-medium text-text-muted">Feature</th>
             <th className="px-4 py-4 text-center text-sm font-bold text-text">Free</th>
             <th className="px-4 py-4 text-center text-sm font-bold text-accent">Pro</th>
-            <th className="px-4 py-4 text-center text-sm font-bold text-warning">Team</th>
+            <th className="px-4 py-4 text-center text-sm font-bold text-accent">Team</th>
           </tr>
         </thead>
         <tbody>

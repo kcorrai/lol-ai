@@ -9,13 +9,13 @@ import type { TeamMemberSummary } from "@/domains/teams/types/teams.types";
 
 const ROLE_LABELS: Record<string, string> = { OWNER: "Owner", COACH: "Coach", PLAYER: "Player" };
 const ROLE_STYLES: Record<string, string> = {
-  OWNER: "border-yellow-400/50 bg-yellow-400/10 text-yellow-300",
-  COACH: "border-purple-400/50 bg-purple-400/10 text-purple-300",
+  OWNER: "border-warning/50 bg-warning/10 text-warning",
+  COACH: "border-accent/50 bg-accent/10 text-accent",
   PLAYER: "border-border bg-surface-3 text-text-muted",
 };
 const TIER_COLORS: Record<string, string> = {
   IRON: "#6b6b7d", BRONZE: "#a05336", SILVER: "#a8b8c8",
-  GOLD: "#c89b3c", PLATINUM: "#3cba8c", EMERALD: "#00be93",
+  GOLD: "#C6FF3D", PLATINUM: "#3cba8c", EMERALD: "#00be93",
   DIAMOND: "#576bce", MASTER: "#9e4fc6", GRANDMASTER: "#e84057", CHALLENGER: "#f4c874",
 };
 const TIER_EN: Record<string, string> = {
@@ -35,7 +35,7 @@ interface Props {
 export function TeamMemberCard({ member, canManage, onRemove, onRoleChange }: Props) {
   const [roleMenuOpen, setRoleMenuOpen] = useState(false);
 
-  const tierColor = member.rank ? (TIER_COLORS[member.rank.tier] ?? "#a5b4fc") : null;
+  const tierColor = member.rank ? (TIER_COLORS[member.rank.tier] ?? "#A7BCB5") : null;
   const tierName = member.rank ? (TIER_EN[member.rank.tier] ?? member.rank.tier) : null;
   const wrColor =
     member.winRate7d === null ? "text-text-muted"
@@ -56,7 +56,7 @@ export function TeamMemberCard({ member, canManage, onRemove, onRoleChange }: Pr
         style={{
           borderColor: tierColor ?? "#3f3f4e",
           background: `${tierColor ?? "#3f3f4e"}1a`,
-          color: tierColor ?? "#a5b4fc",
+          color: tierColor ?? "#A7BCB5",
         }}
       >
         {member.gameName.charAt(0).toUpperCase()}
@@ -66,7 +66,7 @@ export function TeamMemberCard({ member, canManage, onRemove, onRoleChange }: Pr
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
           {member.profileSlug ? (
-            <Link href={`/u/${member.profileSlug}`} className="text-sm font-semibold text-text hover:text-blue-400 transition-colors">
+            <Link href={`/u/${member.profileSlug}`} className="text-sm font-semibold text-text hover:text-info transition-colors">
               {member.gameName}
               <span className="ml-1 text-xs font-normal text-text-muted">#{member.tagLine}</span>
             </Link>
@@ -111,7 +111,7 @@ export function TeamMemberCard({ member, canManage, onRemove, onRoleChange }: Pr
         {/* Rank + WR */}
         <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs">
           {member.rank && tierName && (
-            <span className="font-semibold" style={{ color: tierColor ?? "#a5b4fc" }}>
+            <span className="font-semibold" style={{ color: tierColor ?? "#A7BCB5" }}>
               {tierName} {member.rank.division} · {member.rank.lp} LP
             </span>
           )}

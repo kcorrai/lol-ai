@@ -36,8 +36,8 @@ export function TeamSwitcher({ collapsed }: { collapsed: boolean }) {
       ref={dropdownRef}
       className={cn("relative flex h-14 items-center border-b border-white/5", collapsed ? "justify-center px-2" : "gap-2 px-4")}
     >
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-500/15 ring-1 ring-blue-500/30">
-        <Shield className="h-4 w-4 text-blue-400" />
+      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-info/15 ring-1 ring-info/30">
+        <Shield className="h-4 w-4 text-info" />
       </div>
       {!collapsed && (
         <div
@@ -49,7 +49,7 @@ export function TeamSwitcher({ collapsed }: { collapsed: boolean }) {
           ) : (
             <div className="flex items-center gap-1">
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[10px] font-bold uppercase tracking-[0.1em] text-blue-400/70">Team Mode</p>
+                <p className="truncate text-[10px] font-bold uppercase tracking-[0.1em] text-info/70">Team Mode</p>
                 <p className="truncate text-sm font-bold text-text">{currentTeam?.name ?? "Team"}</p>
               </div>
               {hasMultipleTeams && (
@@ -72,10 +72,10 @@ export function TeamSwitcher({ collapsed }: { collapsed: boolean }) {
               }}
               className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-white/5"
             >
-              <span className={cn("flex-1 truncate", t.id === teamId ? "font-semibold text-blue-400" : "text-text")}>
+              <span className={cn("flex-1 truncate", t.id === teamId ? "font-semibold text-info" : "text-text")}>
                 {t.name}
               </span>
-              {t.id === teamId && <Check className="h-3.5 w-3.5 shrink-0 text-blue-400" />}
+              {t.id === teamId && <Check className="h-3.5 w-3.5 shrink-0 text-info" />}
             </button>
           ))}
           <div className="mx-2 my-1 border-t border-white/5" />

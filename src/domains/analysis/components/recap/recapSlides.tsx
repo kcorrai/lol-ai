@@ -41,7 +41,7 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
       <div className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">{data.seasonLabel} · Season Recap</p>
         <h1 className="mt-3 font-display text-5xl font-black text-text"
-          style={{ textShadow: "0 0 40px rgba(200,155,60,0.35)" }}>
+          style={{ textShadow: "0 0 40px rgba(198,255,61,0.35)" }}>
           {displayName}
         </h1>
         <p className="mt-4 text-base text-text-muted">Your season&apos;s story begins here.</p>
@@ -125,7 +125,7 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
             style={{
               transform: i === 0 ? "scale(1.12)" : "scale(0.9)",
               opacity: i === 0 ? 1 : 0.7,
-              boxShadow: i === 0 ? "0 0 28px rgba(200,155,60,0.15), inset 0 1px 0 rgba(255,255,255,0.06)" : undefined,
+              boxShadow: i === 0 ? "0 0 28px rgba(198,255,61,0.15), inset 0 1px 0 rgba(255,255,255,0.06)" : undefined,
             }}
           >
             <Image src={championIconUrl(c.name)} alt={c.name} width={56} height={56}
@@ -162,7 +162,7 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
           <div className="flex flex-col items-center gap-2">
             <p className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">Now</p>
             <p className="font-display text-2xl font-bold text-accent"
-              style={{ textShadow: "0 0 20px rgba(200,155,60,0.35)" }}>
+              style={{ textShadow: "0 0 20px rgba(198,255,61,0.35)" }}>
               {data.endRank}
             </p>
           </div>
@@ -208,12 +208,12 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
       </div>
       <div className="relative flex flex-col items-center gap-5">
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-accent/30 bg-accent/10"
-          style={{ boxShadow: "0 0 24px rgba(200,155,60,0.2)" }}>
+          style={{ boxShadow: "0 0 24px rgba(198,255,61,0.2)" }}>
           <MessageCircle className="h-6 w-6 text-accent" />
         </div>
         <p className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">AI Coach Feedback</p>
         <div className="gaming-card max-w-xs rounded-2xl p-5 text-left"
-          style={{ boxShadow: "0 0 30px rgba(200,155,60,0.08), inset 0 1px 0 rgba(255,255,255,0.05)" }}>
+          style={{ boxShadow: "0 0 30px rgba(198,255,61,0.08), inset 0 1px 0 rgba(255,255,255,0.05)" }}>
           <p className="mb-2 font-display text-3xl text-accent/60">&ldquo;</p>
           <p className="text-sm leading-relaxed text-text-muted">{data.aiSummary}</p>
           <p className="mt-2 text-right font-display text-3xl text-accent/60">&rdquo;</p>
@@ -234,7 +234,7 @@ export function buildRecapSlides(data: RecapData, gameName: string, active: numb
       <div className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.15em] text-text-muted/60">Next Goal</p>
         <p className="mt-4 font-display text-4xl font-black text-accent"
-          style={{ textShadow: "0 0 40px rgba(200,155,60,0.5)" }}>
+          style={{ textShadow: "0 0 40px rgba(198,255,61,0.5)" }}>
           {data.nextGoal ?? `Higher than ${data.endRank}`}
         </p>
         <p className="mt-4 text-base text-text-muted">Ready?</p>

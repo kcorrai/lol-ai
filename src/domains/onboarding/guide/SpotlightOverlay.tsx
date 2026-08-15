@@ -40,7 +40,7 @@ export function SpotlightOverlay({ rect, hasTarget }: { rect: SpotRect | null; h
       {/* Glowing ring hugging the lit element (never blocks its clicks). */}
       <div
         className="pointer-events-none fixed rounded-xl ring-2 ring-accent/80 animate-glow-pulse transition-all duration-300"
-        style={{ top: rect.top, left: rect.left, width: rect.width, height: rect.height, boxShadow: "0 0 0 3px rgba(200,155,60,0.25), 0 0 22px 4px rgba(200,155,60,0.35)" }}
+        style={{ top: rect.top, left: rect.left, width: rect.width, height: rect.height, boxShadow: "0 0 0 3px rgba(198,255,61,0.25), 0 0 22px 4px rgba(198,255,61,0.35)" }}
       />
 
       {/* Nudge chevron pointing at the target. */}
@@ -49,7 +49,7 @@ export function SpotlightOverlay({ rect, hasTarget }: { rect: SpotRect | null; h
         style={{ top: rect.top + rect.height / 2 - 12, left: rect.left }}
         aria-hidden
       >
-        <ChevronRight className="h-6 w-6 drop-shadow-[0_0_6px_rgba(200,155,60,0.9)]" />
+        <ChevronRight className="h-6 w-6 drop-shadow-[0_0_6px_rgba(198,255,61,0.9)]" />
       </div>
     </>
   );

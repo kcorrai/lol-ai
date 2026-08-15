@@ -63,7 +63,7 @@ export const teamWeeklyReport = inngest.createFunction(
       if (rows.length === 0) continue;
 
       const tableRows = rows
-        .map((r) => `<tr><td style="padding:4px 12px">${r.gameName}</td><td style="padding:4px 12px;text-align:center">${r.games}</td><td style="padding:4px 12px;text-align:center;font-weight:600;color:${r.winRate >= 55 ? "#4ade80" : r.winRate < 45 ? "#f87171" : "#d1d5db"}">${r.winRate}%</td><td style="padding:4px 12px;text-align:center">${r.avgKDA}</td></tr>`)
+        .map((r) => `<tr><td style="padding:4px 12px">${r.gameName}</td><td style="padding:4px 12px;text-align:center">${r.games}</td><td style="padding:4px 12px;text-align:center;font-weight:600;color:${r.winRate >= 55 ? "#C6FF3D" : r.winRate < 45 ? "#f87171" : "#d1d5db"}">${r.winRate}%</td><td style="padding:4px 12px;text-align:center">${r.avgKDA}</td></tr>`)
         .join("");
 
       const html = `

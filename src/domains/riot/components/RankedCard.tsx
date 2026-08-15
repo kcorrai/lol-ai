@@ -22,16 +22,16 @@ const TIER_COLOR: Record<string, string> = {
 };
 
 const TIER_BG: Record<string, string> = {
-  IRON: "bg-stone-800",
-  BRONZE: "bg-amber-900",
-  SILVER: "bg-slate-700",
-  GOLD: "bg-yellow-900",
-  PLATINUM: "bg-teal-900",
-  EMERALD: "bg-emerald-900",
-  DIAMOND: "bg-blue-900",
-  MASTER: "bg-purple-900",
-  GRANDMASTER: "bg-red-900",
-  CHALLENGER: "bg-yellow-900",
+  IRON: "bg-surface-dark",
+  BRONZE: "bg-warning",
+  SILVER: "bg-surface-dark",
+  GOLD: "bg-warning",
+  PLATINUM: "bg-info",
+  EMERALD: "bg-accent",
+  DIAMOND: "bg-info",
+  MASTER: "bg-accent",
+  GRANDMASTER: "bg-danger",
+  CHALLENGER: "bg-warning",
 };
 
 // Apex tiers have no divisions in Riot's ranking system

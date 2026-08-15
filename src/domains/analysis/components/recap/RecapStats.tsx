@@ -41,7 +41,7 @@ function StatCard({ stat, active }: { stat: Stat; active: boolean }) {
   return (
     <div
       className="gaming-card flex flex-col items-center gap-2 rounded-2xl p-4"
-      style={{ boxShadow: "0 0 20px rgba(200,155,60,0.06), inset 0 1px 0 rgba(255,255,255,0.04)" }}
+      style={{ boxShadow: "0 0 20px rgba(198,255,61,0.06), inset 0 1px 0 rgba(255,255,255,0.04)" }}
     >
       {Icon && (
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/5">

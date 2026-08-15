@@ -12,8 +12,8 @@ interface Props {
 const TIER_CLASS: Record<string, string> = {
   S: "bg-accent/15 text-accent",
   A: "bg-success/15 text-success",
-  B: "bg-sky-500/15 text-sky-400",
-  C: "bg-orange-500/15 text-orange-400",
+  B: "bg-info/15 text-info",
+  C: "bg-warning/15 text-warning",
   D: "bg-danger/15 text-danger",
 };
 

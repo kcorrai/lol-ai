@@ -66,7 +66,7 @@ export function ActiveSessionsList() {
         <button
           onClick={revokeAllSessions}
           disabled={revoking === "all"}
-          className="flex items-center gap-1.5 rounded-lg bg-red-600/10 px-3 py-1.5 text-xs font-semibold text-red-400 hover:bg-red-600/20 disabled:opacity-50"
+          className="flex items-center gap-1.5 rounded-lg bg-danger/10 px-3 py-1.5 text-xs font-semibold text-danger hover:bg-danger/20 disabled:opacity-50"
         >
           <LogOut className="h-3.5 w-3.5" />
           Log Out of All Devices
@@ -102,7 +102,7 @@ export function ActiveSessionsList() {
                   <button
                     onClick={() => revokeSession(s.id)}
                     disabled={revoking === s.id}
-                    className="shrink-0 rounded-lg bg-surface-2 px-2.5 py-1.5 text-xs text-red-400 hover:bg-red-600/10 disabled:opacity-50"
+                    className="shrink-0 rounded-lg bg-surface-2 px-2.5 py-1.5 text-xs text-danger hover:bg-danger/10 disabled:opacity-50"
                   >
                     Log Out
                   </button>

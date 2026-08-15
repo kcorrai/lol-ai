@@ -34,7 +34,7 @@ export default function TeamReportPage() {
 
       {!isLoading && !report && (
         <div className="flex flex-col items-center gap-4 rounded-xl border border-dashed border-border py-16 text-center">
-          <Sparkles className="h-10 w-10 text-blue-400/50" />
+          <Sparkles className="h-10 w-10 text-info/50" />
           <div>
             <p className="font-semibold text-text">No report generated yet</p>
             <p className="mt-1 text-sm text-text-muted">

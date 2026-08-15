@@ -40,7 +40,7 @@ export function RecapChampion({ championName, games, winRate, kda }: Props) {
         <p className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">Season Star</p>
         <h2
           className="font-display text-5xl font-black text-text"
-          style={{ textShadow: "0 0 40px rgba(200,155,60,0.4)" }}
+          style={{ textShadow: "0 0 40px rgba(198,255,61,0.4)" }}
         >
           {championName}
         </h2>

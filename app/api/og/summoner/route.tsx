@@ -4,9 +4,9 @@ import { NextRequest } from "next/server";
 export const runtime = "nodejs";
 
 const TIER_COLORS: Record<string, string> = {
-  IRON: "#4a4a5a", BRONZE: "#a05336", SILVER: "#a8b8c8",
-  GOLD: "#c89b3c", PLATINUM: "#3cba8c", EMERALD: "#00be93",
-  DIAMOND: "#576bce", MASTER: "#9e4fc6", GRANDMASTER: "#e84057", CHALLENGER: "#f4c874",
+  IRON: "#8C8C8C", BRONZE: "#CD7F32", SILVER: "#C0C0C0",
+  GOLD: "#FFC24B", PLATINUM: "#00C0A0", EMERALD: "#50C878",
+  DIAMOND: "#B9F2FF", MASTER: "#9B59B6", GRANDMASTER: "#E74C3C", CHALLENGER: "#F1C40F",
 };
 
 // GET /api/og/summoner?name=Faker%23KR1&region=KR&rank=CHALLENGER+I&wr=63&champ=Leblanc
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest): Promise<Response> {
   const champ = searchParams.get("champ") ?? "";
   const tier = searchParams.get("tier") ?? "";
 
-  const tierColor = TIER_COLORS[tier.toUpperCase()] ?? "#a5b4fc";
+  const tierColor = TIER_COLORS[tier.toUpperCase()] ?? "#A7BCB5";
 
   return new ImageResponse(
     (
@@ -29,16 +29,16 @@ export async function GET(req: NextRequest): Promise<Response> {
           flexDirection: "column",
           width: "100%",
           height: "100%",
-          background: "linear-gradient(135deg, #0f0f14 0%, #1a1a2e 100%)",
+          background: "linear-gradient(135deg, #0C1110 0%, #17201F 100%)",
           padding: 60,
           fontFamily: "sans-serif",
-          color: "#e2e8f0",
+          color: "#E9F5EE",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 32 }}>
           <div
             style={{
-              background: "#6366f1",
+              background: "#C6FF3D",
               borderRadius: 8,
               padding: "4px 12px",
               fontSize: 14,
@@ -50,7 +50,7 @@ export async function GET(req: NextRequest): Promise<Response> {
             LoL AI Coach
           </div>
           {region && (
-            <div style={{ fontSize: 14, color: "#94a3b8", letterSpacing: 2 }}>
+            <div style={{ fontSize: 14, color: "#A7BCB5", letterSpacing: 2 }}>
               {region.toUpperCase()}
             </div>
           )}
@@ -62,7 +62,7 @@ export async function GET(req: NextRequest): Promise<Response> {
           {rank} {wr ? `· ${wr}% WR` : ""}
         </div>
         {champ && (
-          <div style={{ fontSize: 20, color: "#94a3b8" }}>
+          <div style={{ fontSize: 20, color: "#A7BCB5" }}>
             Most played: {champ}
           </div>
         )}
@@ -70,7 +70,7 @@ export async function GET(req: NextRequest): Promise<Response> {
           style={{
             marginTop: "auto",
             fontSize: 16,
-            color: "#6366f1",
+            color: "#C6FF3D",
             fontWeight: 600,
           }}
         >

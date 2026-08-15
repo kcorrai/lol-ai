@@ -42,7 +42,7 @@ export function DraftBuilder({ champions, blue, red }: Props) {
     <div className="grid gap-6 md:grid-cols-2">
       {(["blue", "red"] as const).map((side) => {
         const team = side === "blue" ? blue : red;
-        const accent = side === "blue" ? "text-sky-400" : "text-danger";
+        const accent = side === "blue" ? "text-info" : "text-danger";
         return (
           <div key={side} className="rounded-2xl border border-border bg-surface/60 p-4">
             <h2 className={`mb-3 font-display text-sm font-bold uppercase tracking-wide ${accent}`}>

@@ -148,7 +148,7 @@ export default async function ChampionDetailPage({ params }: Props) {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-accent/30 p-6 text-center" style={{ background: "linear-gradient(135deg, rgba(200,155,60,0.08) 0%, rgba(88,70,180,0.06) 100%)" }}>
+          <div className="rounded-2xl border border-accent/30 p-6 text-center" style={{ background: "linear-gradient(135deg, rgba(198,255,61,0.08) 0%, rgba(198,255,61,0) 100%)" }}>
             <p className="mb-1 text-sm font-semibold text-text">Want to climb with {champ.name}?</p>
             <p className="mb-4 text-xs text-text-muted">Your AI coach analyzes your games — start free</p>
             <Link href="/register" className="inline-flex items-center gap-2 rounded-xl bg-accent px-6 py-2.5 text-sm font-bold text-background transition-opacity hover:opacity-90">Get Started Free →</Link>

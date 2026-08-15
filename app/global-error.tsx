@@ -17,7 +17,7 @@ export default function GlobalError({ error, reset }: Props) {
 
   return (
     <html lang="en" className="dark">
-      <body style={{ background: "#0A0E1A", color: "#E8F0FF", fontFamily: "system-ui, sans-serif" }}>
+      <body style={{ background: "#080B0A", color: "#E9F5EE", fontFamily: "system-ui, sans-serif" }}>
         <div
           style={{
             display: "flex",
@@ -29,19 +29,19 @@ export default function GlobalError({ error, reset }: Props) {
             padding: "1.5rem",
           }}
         >
-          <p style={{ fontSize: "4rem", fontWeight: "bold", color: "#C89B3C" }}>!</p>
+          <p style={{ fontSize: "4rem", fontWeight: "bold", color: "#C6FF3D" }}>!</p>
           <h1 style={{ fontSize: "1.5rem", fontWeight: "bold", marginTop: "1rem" }}>
             Something went wrong
           </h1>
-          <p style={{ color: "#8899BB", marginTop: "0.75rem", maxWidth: "24rem" }}>
+          <p style={{ color: "#6C817B", marginTop: "0.75rem", maxWidth: "24rem" }}>
             An unexpected error occurred. Please try again.
           </p>
           <button
             onClick={reset}
             style={{
               marginTop: "2rem",
-              background: "#C89B3C",
-              color: "#0A0E1A",
+              background: "#C6FF3D",
+              color: "#080B0A",
               border: "none",
               borderRadius: "0.5rem",
               padding: "0.625rem 1.25rem",
@@ -52,7 +52,7 @@ export default function GlobalError({ error, reset }: Props) {
             Try Again
           </button>
           {error.digest && (
-            <p style={{ marginTop: "1.5rem", fontSize: "0.75rem", color: "#8899BB" }}>
+            <p style={{ marginTop: "1.5rem", fontSize: "0.75rem", color: "#6C817B" }}>
               Error ID: {error.digest}
             </p>
           )}

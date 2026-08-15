@@ -19,7 +19,7 @@ const METRICS: { key: MomentumMetric; label: string; unit?: string; domain?: [nu
   { key: "winRate", label: "Win rate", unit: "%", domain: [0, 100] },
 ];
 
-const SELF_COLOR = "#c89b3c";
+const SELF_COLOR = "#C6FF3D";
 const DUO_COLOR = "#3b82f6";
 
 const formatDate = (d: string): string =>

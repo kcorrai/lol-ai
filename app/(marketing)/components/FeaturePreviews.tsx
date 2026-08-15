@@ -97,8 +97,8 @@ export function CounterPreview() {
           </div>
         ))}
       </div>
-      <div className="mx-4 mb-4 rounded-lg border border-teal-500/30 bg-teal-500/5 p-2.5">
-        <p className="mb-1 text-[9px] font-bold uppercase tracking-wider text-teal-400">AI Tip</p>
+      <div className="mx-4 mb-4 rounded-lg border border-info/30 bg-info/5 p-2.5">
+        <p className="mb-1 text-[9px] font-bold uppercase tracking-wider text-info">AI Tip</p>
         <p className="text-[11px] text-text-muted">Trade when Wind Wall is on cooldown — Malphite has no projectiles to block</p>
       </div>
     </div>

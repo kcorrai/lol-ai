@@ -20,7 +20,7 @@ export function OtpTips({ powerSpikes, laneStrategies, hiddenMechanics, isPro }:
         <div className="space-y-2">
           {powerSpikes.map((spike, i) => (
             <div key={i} className="flex items-start gap-2">
-              <Zap className="mt-0.5 h-4 w-4 shrink-0 text-yellow-400" />
+              <Zap className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
               <div>
                 <span className="text-sm font-medium text-text">{spike.trigger}</span>
                 <span className="mx-1.5 text-text-muted">→</span>
@@ -57,7 +57,7 @@ export function OtpTips({ powerSpikes, laneStrategies, hiddenMechanics, isPro }:
         <ul className="space-y-1.5">
           {hiddenMechanics.map((mechanic, i) => (
             <li key={i} className="flex items-start gap-2 text-sm text-text-muted">
-              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-400" />
+              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
               {mechanic}
             </li>
           ))}

@@ -94,8 +94,8 @@ export function MatchupBuildSummary({
   return (
     <div className="mt-6 space-y-5">
       <div className="grid gap-4 md:grid-cols-2">
-        <SideBuild name={nameA} side={extras.a} accent="text-sky-400" />
-        <SideBuild name={nameB} side={extras.b} accent="text-rose-400" />
+        <SideBuild name={nameA} side={extras.a} accent="text-info" />
+        <SideBuild name={nameB} side={extras.b} accent="text-danger" />
       </div>
       <MatchupCurveCompare nameA={nameA} nameB={nameB} curveA={extras.a.curve} curveB={extras.b.curve} />
     </div>

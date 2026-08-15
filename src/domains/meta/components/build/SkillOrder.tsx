@@ -3,10 +3,10 @@ import type { ChampionBuild } from "@/domains/meta";
 
 const ABILITIES = ["Q", "W", "E", "R"] as const;
 const ABILITY_COLOR: Record<string, string> = {
-  Q: "bg-sky-500/80",
-  W: "bg-emerald-500/80",
-  E: "bg-amber-500/80",
-  R: "bg-rose-500/80",
+  Q: "bg-info/80",
+  W: "bg-accent/80",
+  E: "bg-warning/80",
+  R: "bg-danger/80",
 };
 
 export function SkillOrder({ build }: { build: Pick<ChampionBuild, "skillOrder" | "skillMaxOrder"> }) {

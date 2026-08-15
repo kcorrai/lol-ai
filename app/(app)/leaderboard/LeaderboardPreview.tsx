@@ -23,11 +23,11 @@ interface PreviewEntry {
 }
 
 const MOCK_ENTRIES: PreviewEntry[] = [
-  { rank: 1, name: "Faker", tier: "Challenger", tierColor: "text-yellow-300", lp: 1240, wins: 143, losses: 71, winRate: 67, lpGained: 96 },
-  { rank: 2, name: "Chovy", tier: "Grandmaster", tierColor: "text-red-400", lp: 843, wins: 121, losses: 74, winRate: 62, lpGained: 74 },
-  { rank: 3, name: "Caps", tier: "Master", tierColor: "text-purple-400", lp: 412, wins: 98, losses: 66, winRate: 60, lpGained: 61 },
-  { rank: 4, name: "DevPlayer", tier: "Diamond IV", tierColor: "text-blue-400", lp: 58, wins: 71, losses: 55, winRate: 56, lpGained: 45 },
-  { rank: 5, name: "You", tier: "Gold II", tierColor: "text-yellow-400", lp: 71, wins: 34, losses: 28, winRate: 55, lpGained: 38, isYou: true },
+  { rank: 1, name: "Faker", tier: "Challenger", tierColor: "text-warning", lp: 1240, wins: 143, losses: 71, winRate: 67, lpGained: 96 },
+  { rank: 2, name: "Chovy", tier: "Grandmaster", tierColor: "text-danger", lp: 843, wins: 121, losses: 74, winRate: 62, lpGained: 74 },
+  { rank: 3, name: "Caps", tier: "Master", tierColor: "text-accent", lp: 412, wins: 98, losses: 66, winRate: 60, lpGained: 61 },
+  { rank: 4, name: "DevPlayer", tier: "Diamond IV", tierColor: "text-info", lp: 58, wins: 71, losses: 55, winRate: 56, lpGained: 45 },
+  { rank: 5, name: "You", tier: "Gold II", tierColor: "text-warning", lp: 71, wins: 34, losses: 28, winRate: 55, lpGained: 38, isYou: true },
 ];
 
 const RANK_MEDALS = ["🥇", "🥈", "🥉"];

@@ -78,7 +78,7 @@ export default async function AnalyticsPage({
         <div className="space-y-3">
           {funnelSteps.map((step, i) => {
             const pct = Math.round((step.count / funnelMax) * 100);
-            const colors = ["bg-accent", "bg-blue-500", "bg-purple-500", "bg-success"];
+            const colors = ["bg-accent", "bg-info", "bg-accent", "bg-success"];
             return (
               <div key={step.label} className="flex items-center gap-4">
                 <p className="w-28 shrink-0 text-xs text-text-muted">{step.label}</p>

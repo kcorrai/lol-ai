@@ -8,15 +8,15 @@ interface MetaRatingProps {
 }
 
 function scoreColor(score: number): string {
-  if (score >= 8) return "bg-green-500";
-  if (score >= 5) return "bg-yellow-500";
-  return "bg-red-500";
+  if (score >= 8) return "bg-accent";
+  if (score >= 5) return "bg-warning";
+  return "bg-danger";
 }
 
 function scoreTextColor(score: number): string {
-  if (score >= 8) return "text-green-400";
-  if (score >= 5) return "text-yellow-400";
-  return "text-red-400";
+  if (score >= 8) return "text-accent";
+  if (score >= 5) return "text-warning";
+  return "text-danger";
 }
 
 export function MetaRating({ rating }: MetaRatingProps) {
@@ -31,10 +31,10 @@ export function MetaRating({ rating }: MetaRatingProps) {
             className={cn(
               "rounded-full border px-2.5 py-0.5 text-xs font-medium",
               rating.score >= 8
-                ? "border-green-500/30 bg-green-500/10 text-green-400"
+                ? "border-accent/30 bg-accent/10 text-accent"
                 : rating.score >= 5
-                  ? "border-yellow-500/30 bg-yellow-500/10 text-yellow-400"
-                  : "border-red-500/30 bg-red-500/10 text-red-400"
+                  ? "border-warning/30 bg-warning/10 text-warning"
+                  : "border-danger/30 bg-danger/10 text-danger"
             )}
           >
             {rating.assessment}

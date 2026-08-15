@@ -47,8 +47,8 @@ export function TeamReportCard({ report, onRegenerate, isRegenerating, isCoach }
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="mb-1 flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-blue-400" />
-            <p className="text-xs font-bold uppercase tracking-wider text-blue-400">Team AI Report</p>
+            <Sparkles className="h-4 w-4 text-info" />
+            <p className="text-xs font-bold uppercase tracking-wider text-info">Team AI Report</p>
           </div>
           <p className="text-xs text-text-muted">Generated on {generatedAt}</p>
         </div>
@@ -62,7 +62,7 @@ export function TeamReportCard({ report, onRegenerate, isRegenerating, isCoach }
       </div>
 
       {/* Overview */}
-      <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4">
+      <div className="rounded-xl border border-info/20 bg-info/5 p-4">
         <p className="text-sm leading-relaxed text-text">{report.overview}</p>
       </div>
 
@@ -97,7 +97,7 @@ export function TeamReportCard({ report, onRegenerate, isRegenerating, isCoach }
       </div>
 
       {/* Recommendations */}
-      <Section icon={Lightbulb} title="Recommendations" items={report.recommendations} color="text-blue-400" />
+      <Section icon={Lightbulb} title="Recommendations" items={report.recommendations} color="text-info" />
 
       {/* Member Highlights */}
       {report.memberHighlights.length > 0 && (

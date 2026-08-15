@@ -50,7 +50,7 @@ export function TeamSettingsForm({ teamId, initialName }: TeamSettingsFormProps)
           value={name}
           onChange={(e) => setName(e.target.value)}
           maxLength={50}
-          className="w-full rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm text-text placeholder:text-text-muted/50 focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/20"
+          className="w-full rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm text-text placeholder:text-text-muted/50 focus:border-info/50 focus:outline-none focus:ring-1 focus:ring-info/20"
         />
       </div>
 

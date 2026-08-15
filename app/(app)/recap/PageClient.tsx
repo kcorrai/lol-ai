@@ -115,7 +115,7 @@ export default function RecapPage() {
       {/* Slide area */}
       <div className="flex flex-1 flex-col items-center justify-center gap-8 px-4 py-6">
         <div className="relative h-[420px] w-full max-w-lg rounded-2xl overflow-hidden border border-border/40"
-          style={{ boxShadow: "0 0 60px rgba(88,70,180,0.1), 0 30px 60px rgba(0,0,0,0.4)" }}>
+          style={{ boxShadow: "0 0 60px rgba(198,255,61,0.10), 0 30px 60px rgba(0,0,0,0.4)" }}>
           {contents}
         </div>
 

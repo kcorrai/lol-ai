@@ -21,7 +21,7 @@ export function ReportOgCard({ report }: { report: PublicReport }) {
         flexDirection: "column",
         width: "1200px",
         height: "630px",
-        background: "#0A0E1A",
+        background: "#080B0A",
         padding: "52px 64px",
         fontFamily: "system-ui, sans-serif",
       }}
@@ -30,8 +30,8 @@ export function ReportOgCard({ report }: { report: PublicReport }) {
       <div style={{ display: "flex", alignItems: "center", marginBottom: "24px" }}>
         <div
           style={{
-            background: "#C89B3C",
-            color: "#0A0E1A",
+            background: "#C6FF3D",
+            color: "#080B0A",
             fontSize: "12px",
             fontWeight: 700,
             padding: "4px 12px",
@@ -43,19 +43,19 @@ export function ReportOgCard({ report }: { report: PublicReport }) {
         >
           LoL AI Coach
         </div>
-        <span style={{ color: "#8899BB", fontSize: "13px" }}>{reportLabel}</span>
+        <span style={{ color: "#6C817B", fontSize: "13px" }}>{reportLabel}</span>
       </div>
 
       {/* Player name + tag */}
       <div style={{ display: "flex", alignItems: "baseline", gap: "12px", marginBottom: "12px" }}>
-        <span style={{ fontSize: "44px", fontWeight: 800, color: "#E8F0FF" }}>
+        <span style={{ fontSize: "44px", fontWeight: 800, color: "#E9F5EE" }}>
           {report.gameName}
         </span>
         <span
           style={{
             fontSize: "14px",
-            color: "#8899BB",
-            background: "#1A2138",
+            color: "#6C817B",
+            background: "#17201F",
             padding: "4px 10px",
             borderRadius: "6px",
           }}
@@ -69,9 +69,9 @@ export function ReportOgCard({ report }: { report: PublicReport }) {
         {report.rankDisplay && (
           <div
             style={{
-              background: "#C89B3C18",
-              border: "1px solid #C89B3C50",
-              color: "#C89B3C",
+              background: "#C6FF3D18",
+              border: "1px solid #C6FF3D50",
+              color: "#C6FF3D",
               fontSize: "13px",
               fontWeight: 600,
               padding: "5px 14px",
@@ -84,9 +84,9 @@ export function ReportOgCard({ report }: { report: PublicReport }) {
         {report.topChampionName && (
           <div
             style={{
-              background: "#1A2138",
-              border: "1px solid #2A3550",
-              color: "#8899BB",
+              background: "#17201F",
+              border: "1px solid #20302D",
+              color: "#6C817B",
               fontSize: "13px",
               padding: "5px 14px",
               borderRadius: "6px",
@@ -104,8 +104,8 @@ export function ReportOgCard({ report }: { report: PublicReport }) {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          background: "#0F1629",
-          border: "1px solid #2A3550",
+          background: "#0C1110",
+          border: "1px solid #20302D",
           borderRadius: "12px",
           padding: "28px 36px",
         }}
@@ -116,7 +116,7 @@ export function ReportOgCard({ report }: { report: PublicReport }) {
             fontWeight: 700,
             letterSpacing: "0.12em",
             textTransform: "uppercase",
-            color: "#C89B3C",
+            color: "#C6FF3D",
             marginBottom: "12px",
           }}
         >
@@ -126,7 +126,7 @@ export function ReportOgCard({ report }: { report: PublicReport }) {
           style={{
             fontSize: "20px",
             lineHeight: "1.5",
-            color: "#E8F0FF",
+            color: "#E9F5EE",
             fontStyle: "italic",
           }}
         >
@@ -143,11 +143,11 @@ export function ReportOgCard({ report }: { report: PublicReport }) {
           marginTop: "22px",
         }}
       >
-        <span style={{ fontSize: "14px", color: "#8899BB" }}>lolaicoach.gg</span>
+        <span style={{ fontSize: "14px", color: "#6C817B" }}>lolaicoach.gg</span>
         <div
           style={{
-            background: "#C89B3C",
-            color: "#0A0E1A",
+            background: "#C6FF3D",
+            color: "#080B0A",
             fontSize: "14px",
             fontWeight: 700,
             padding: "10px 20px",

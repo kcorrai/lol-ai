@@ -21,10 +21,10 @@ const POSITION_ORDER: Record<string, number> = {
 };
 
 const RANK_TIER_COLOR: Record<string, string> = {
-  IRON: "text-gray-400", BRONZE: "text-amber-700", SILVER: "text-gray-300",
-  GOLD: "text-yellow-400", PLATINUM: "text-teal-400", EMERALD: "text-emerald-400",
-  DIAMOND: "text-blue-400", MASTER: "text-purple-400", GRANDMASTER: "text-purple-400",
-  CHALLENGER: "text-purple-400",
+  IRON: "text-text-body", BRONZE: "text-warning", SILVER: "text-text",
+  GOLD: "text-warning", PLATINUM: "text-info", EMERALD: "text-accent",
+  DIAMOND: "text-info", MASTER: "text-accent", GRANDMASTER: "text-accent",
+  CHALLENGER: "text-accent",
 };
 
 function RankBadge({ tier, division, lp }: { tier: string | null; division: string | null; lp: number | null }) {

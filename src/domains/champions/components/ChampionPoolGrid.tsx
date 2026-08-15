@@ -11,8 +11,8 @@ import { cn } from "@/lib/utils";
 
 function masteryColor(score: number): string {
   if (score >= 75) return "bg-accent";
-  if (score >= 50) return "bg-blue-400";
-  if (score >= 30) return "bg-yellow-400";
+  if (score >= 50) return "bg-info";
+  if (score >= 30) return "bg-warning";
   return "bg-text-muted/40";
 }
 
@@ -57,7 +57,7 @@ function ChampionCard({
   onDeepDive?: (name: string) => void;
 }) {
   const splashUrl = championLoadingUrl(entry.championName);
-  const glowColor = entry.isBest ? "rgba(200,155,60,0.18)" : "rgba(88,70,180,0.10)";
+  const glowColor = entry.isBest ? "rgba(198,255,61,0.18)" : "rgba(46,67,64,0.45)";
 
   return (
     <div

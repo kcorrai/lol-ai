@@ -10,14 +10,14 @@ function formatMasteryPoints(pts: number): string {
 }
 
 function kdaColor(kda: number): string {
-  if (kda >= 4) return "#4ade80";
-  if (kda >= 3) return "#c89b3c";
+  if (kda >= 4) return "#C6FF3D";
+  if (kda >= 3) return "#C6FF3D";
   return "#f87171";
 }
 
 function wrColor(wr: number): string {
-  if (wr >= 55) return "#4ade80";
-  if (wr >= 50) return "#c89b3c";
+  if (wr >= 55) return "#C6FF3D";
+  if (wr >= 50) return "#C6FF3D";
   return "#f87171";
 }
 
@@ -57,7 +57,7 @@ export function PublicProfileChampionPool({ champions }: Props) {
                   className="rounded-lg border border-white/10"
                 />
                 {c.masteryLevel !== null && c.masteryLevel >= 7 && (
-                  <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full border border-yellow-400/40 bg-yellow-400/20 text-[8px] font-bold text-yellow-300">
+                  <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full border border-warning/40 bg-warning/20 text-[8px] font-bold text-warning">
                     M{c.masteryLevel}
                   </span>
                 )}
@@ -78,7 +78,7 @@ export function PublicProfileChampionPool({ champions }: Props) {
                   </span>
                   <span className="font-medium">{c.avgCsPerMinute} CS/min</span>
                   {c.masteryPoints !== null && (
-                    <span className="ml-auto text-yellow-400/60">{formatMasteryPoints(c.masteryPoints)} p</span>
+                    <span className="ml-auto text-warning/60">{formatMasteryPoints(c.masteryPoints)} p</span>
                   )}
                 </div>
               </div>

@@ -16,21 +16,21 @@ const TIER_LABELS: Record<string, string> = {
 };
 
 const BADGE_STYLES: Record<string, string> = {
-  legendary: "border-yellow-400/50 bg-yellow-400/10 text-yellow-300",
-  epic:       "border-purple-400/50 bg-purple-400/10 text-purple-300",
-  rare:       "border-blue-400/50 bg-blue-400/10 text-blue-300",
+  legendary: "border-warning/50 bg-warning/10 text-warning",
+  epic:       "border-accent/50 bg-accent/10 text-accent",
+  rare:       "border-info/50 bg-info/10 text-info",
   common:     "border-border bg-surface-2 text-text-muted",
 };
 
 function wrColor(wr: number): string {
-  if (wr >= 55) return "#4ade80";
-  if (wr >= 50) return "#c89b3c";
+  if (wr >= 55) return "#C6FF3D";
+  if (wr >= 50) return "#C6FF3D";
   return "#f87171";
 }
 
 function kdaColor(kda: number): string {
-  if (kda >= 4) return "#4ade80";
-  if (kda >= 3) return "#c89b3c";
+  if (kda >= 4) return "#C6FF3D";
+  if (kda >= 3) return "#C6FF3D";
   return "#f87171";
 }
 
@@ -123,7 +123,7 @@ export default async function PublicProfilePage({ params }: Props) {
           </>
         )}
 
-        <div className="rounded-2xl border border-accent/25 p-6 text-center" style={{ background: "linear-gradient(135deg, rgba(200,155,60,0.08) 0%, rgba(88,70,180,0.06) 100%)" }}>
+        <div className="rounded-2xl border border-accent/25 p-6 text-center" style={{ background: "linear-gradient(135deg, rgba(198,255,61,0.08) 0%, rgba(198,255,61,0) 100%)" }}>
           <p className="mb-1 text-sm font-semibold text-text">Analyze with your AI coach</p>
           <p className="mb-4 text-xs text-text-muted">Start free — no credit card required</p>
           <Link href="/register" className="inline-flex items-center gap-2 rounded-xl bg-accent px-6 py-2.5 text-sm font-bold text-background transition-opacity hover:opacity-90">

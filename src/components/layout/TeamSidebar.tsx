@@ -43,14 +43,14 @@ function NavItem({
         "relative flex items-center rounded-lg py-2 text-sm transition-all duration-150",
         collapsed ? "justify-center px-2" : "gap-3 px-3",
         active
-          ? "bg-gradient-to-r from-blue-500/20 via-blue-500/10 to-transparent font-semibold text-blue-400"
+          ? "bg-gradient-to-r from-info/20 via-info/10 to-transparent font-semibold text-info"
           : "text-text-muted hover:bg-white/5 hover:text-text"
       )}
     >
       {active && (
-        <span className="absolute left-0 top-1 h-[calc(100%-8px)] w-0.5 rounded-full bg-blue-400" />
+        <span className="absolute left-0 top-1 h-[calc(100%-8px)] w-0.5 rounded-full bg-info" />
       )}
-      <Icon className={cn("h-4 w-4 shrink-0", active ? "text-blue-400" : "")} />
+      <Icon className={cn("h-4 w-4 shrink-0", active ? "text-info" : "")} />
       {!collapsed && <span>{label}</span>}
     </Link>
   );
@@ -81,7 +81,7 @@ export function TeamSidebar({ collapsed, onToggle }: TeamSidebarProps) {
         "sticky top-0 hidden h-screen shrink-0 flex-col border-r border-white/5 transition-[width] duration-200 md:flex",
         collapsed ? "w-16" : "w-56"
       )}
-      style={{ background: "linear-gradient(180deg, #08091280 0%, #07090F 100%)", backdropFilter: "blur(12px)" }}
+      style={{ background: "linear-gradient(180deg, #08091280 0%, #050706 100%)", backdropFilter: "blur(12px)" }}
     >
       {/* Header / team switcher */}
       <TeamSwitcher collapsed={collapsed} />

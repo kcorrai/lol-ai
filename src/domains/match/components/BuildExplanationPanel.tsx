@@ -29,7 +29,7 @@ function ItemRow({ item, itemId }: { item: ItemExplanation; itemId: number }) {
           <span className="text-sm font-semibold text-text">{item.itemName}</span>
           <p className="text-xs leading-relaxed text-text-muted">{item.reasoning}</p>
           {item.betterAlternative && (
-            <p className="text-xs font-medium text-yellow-400">→ Alternatif: {item.betterAlternative}</p>
+            <p className="text-xs font-medium text-warning">→ Alternatif: {item.betterAlternative}</p>
           )}
           <p className="text-xs italic text-text-muted/60">{item.whenToChoose}</p>
         </div>
@@ -94,8 +94,8 @@ export function BuildExplanationPanel({ matchId, puuid, isPro, itemIds = [] }: B
               </div>
               <p className="text-sm italic text-text-muted">{data.buildPath}</p>
               {data.biggestMistake && (
-                <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3">
-                  <p className="text-xs font-semibold text-red-400">Biggest Mistake</p>
+                <div className="rounded-lg border border-danger/30 bg-danger/10 px-4 py-3">
+                  <p className="text-xs font-semibold text-danger">Biggest Mistake</p>
                   <p className="text-sm text-text-muted">{data.biggestMistake}</p>
                 </div>
               )}
