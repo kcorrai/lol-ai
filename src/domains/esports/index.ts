@@ -9,6 +9,8 @@ export {
   pickCurrentTournament,
 } from "@/domains/esports/services/leagueService";
 export { getStandings, primaryTable } from "@/domains/esports/services/standingsService";
+export { getMatch, defaultGame } from "@/domains/esports/services/matchService";
+export { getGameStats } from "@/domains/esports/services/gameStatsService";
 export {
   getUpcoming,
   getCompleted,
@@ -18,6 +20,11 @@ export type { ScheduleQuery } from "@/domains/esports/services/scheduleService";
 export { httpsAsset } from "@/domains/esports/services/esportsApi";
 export type {
   BracketMatch,
+  GameParticipant,
+  GameStats,
+  GameTeamStats,
+  MatchDetail,
+  MatchGameRef,
   EsportsPlayer,
   EsportsTeam,
   PlayerRole,

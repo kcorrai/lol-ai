@@ -58,6 +58,79 @@ export interface EsportsEventLeague {
   image: string | null;
 }
 
+export interface GameParticipant {
+  /** 1-5 blue, 6-10 red. */
+  participantId: number;
+  playerId: string | null;
+  /** Handle with the team prefix stripped: "PerfecT", not "KT PerfecT". */
+  handle: string;
+  fullHandle: string;
+  /** Data Dragon champion id, e.g. "MissFortune". */
+  championId: string;
+  role: PlayerRole | null;
+  level: number;
+  kills: number;
+  deaths: number;
+  assists: number;
+  creepScore: number;
+  gold: number;
+  /** Fractions 0-1, or null when the details feed has no data for this game. */
+  killParticipation: number | null;
+  damageShare: number | null;
+  wardsPlaced: number | null;
+  items: number[];
+  runes: { primaryStyle: number; secondaryStyle: number; perks: number[] } | null;
+}
+
+export interface GameTeamStats {
+  side: "blue" | "red";
+  teamId: string | null;
+  gold: number;
+  kills: number;
+  towers: number;
+  inhibitors: number;
+  barons: number;
+  /** Dragon types taken, in order: "ocean", "infernal", … */
+  dragons: string[];
+  participants: GameParticipant[];
+}
+
+export interface GameStats {
+  gameId: string;
+  /** Two-part patch, e.g. "15.20". */
+  patch: string;
+  finished: boolean;
+  lastFrameAt: string;
+  blue: GameTeamStats;
+  red: GameTeamStats;
+}
+
+export interface MatchGameRef {
+  number: number;
+  id: string;
+  /** "completed", "inProgress", "unstarted", "unneeded". */
+  state: string;
+  /** Team id → side, when the feed has decided sides. */
+  blueTeamId: string | null;
+  redTeamId: string | null;
+  hasVod: boolean;
+}
+
+export interface MatchDetail {
+  matchId: string;
+  bestOf: number | null;
+  league: { id: string | null; slug: string | null; name: string; image: string | null };
+  tournamentId: string | null;
+  teams: {
+    id: string;
+    name: string;
+    code: string;
+    image: string | null;
+    gameWins: number;
+  }[];
+  games: MatchGameRef[];
+}
+
 export type PlayerRole = "top" | "jungle" | "mid" | "bottom" | "support";
 export type TeamStatus = "active" | "archived";
 

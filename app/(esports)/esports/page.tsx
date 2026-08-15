@@ -47,7 +47,12 @@ function MatchList({ events }: { events: EsportsEvent[] }): React.ReactElement {
   return (
     <div className="grid gap-2">
       {events.map((event) => (
-        <MatchRow key={event.matchId} event={event} withDate />
+        <MatchRow
+          key={event.matchId}
+          event={event}
+          href={`/esports/matches/${event.matchId}`}
+          withDate
+        />
       ))}
     </div>
   );

@@ -172,7 +172,13 @@ export default async function TeamPage({ params }: PageProps): Promise<React.Rea
           </h2>
           <div className="grid gap-2">
             {matches.upcoming.map((event) => (
-              <MatchRow key={event.matchId} event={event} showLeague={false} withDate />
+              <MatchRow
+                key={event.matchId}
+                event={event}
+                href={`/esports/matches/${event.matchId}`}
+                showLeague={false}
+                withDate
+              />
             ))}
           </div>
         </section>
@@ -185,7 +191,13 @@ export default async function TeamPage({ params }: PageProps): Promise<React.Rea
           </h2>
           <div className="grid gap-2">
             {matches.results.map((event) => (
-              <MatchRow key={event.matchId} event={event} showLeague={false} withDate />
+              <MatchRow
+                key={event.matchId}
+                event={event}
+                href={`/esports/matches/${event.matchId}`}
+                showLeague={false}
+                withDate
+              />
             ))}
           </div>
         </section>
