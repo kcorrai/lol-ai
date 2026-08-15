@@ -12,7 +12,7 @@ function timeLeft(until: Date): string {
 }
 
 export function DailyChallengeWidget() {
-  const { data, isLoading } = useChallenges();
+  const { data, isLoading, isError } = useChallenges();
 
   if (isLoading) {
     return (
@@ -23,10 +23,14 @@ export function DailyChallengeWidget() {
   const daily = data?.challenges.find((c) => c.type === "daily");
   const weekly = data?.challenges.find((c) => c.type === "weekly");
 
+  // Having no challenges is a real state, not a slow one. It used to render
+  // "Loading challenges for today…" forever, which reads as a hang.
   if (!daily && !weekly) {
     return (
       <div className="rounded-xl border border-border bg-surface p-4 text-sm text-text-muted">
-        Loading challenges for today...
+        {isError
+          ? "Challenges could not be loaded. They will reappear on the next refresh."
+          : "No challenge assigned yet. A new one is issued each day you play."}
       </div>
     );
   }
@@ -92,12 +96,12 @@ function ChallengeRow({
     <div className="space-y-1.5">
       <div className="flex items-center justify-between gap-2">
         <span className="text-[10px] font-semibold uppercase tracking-widest text-accent">{label}</span>
-        {completed && <span className="text-[10px] font-bold text-green-400">✓ Completed</span>}
+        {completed && <span className="text-[10px] font-bold text-accent">✓ Completed</span>}
       </div>
       <p className="text-sm text-text">{description}</p>
       <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
         <div
-          className={`h-full rounded-full transition-all duration-700 ${completed ? "bg-green-400" : "bg-accent"}`}
+          className={`h-full rounded-full transition-all duration-700 ${completed ? "bg-accent" : "bg-accent"}`}
           style={{ width: `${pct}%` }}
         />
       </div>

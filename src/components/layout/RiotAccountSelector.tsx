@@ -47,8 +47,15 @@ export function RiotAccountSelector() {
         setOpen(false);
       }
     }
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
     document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("keydown", handleKey);
+    };
   }, []);
 
   if (accounts.length === 0) return null;
@@ -70,57 +77,78 @@ export function RiotAccountSelector() {
 
   return (
     <div className="relative" ref={ref}>
+      {/* Chamfered chip, never a native <select> — the OS dropdown paints a white
+          panel with a blue highlight that no stylesheet reaches (ADR-015). */}
       <button
         onClick={() => setOpen((o) => !o)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
         className={cn(
-          "flex items-center gap-2 rounded-md border border-border px-3 py-1.5 text-sm",
-          "text-text transition-colors hover:bg-surface-2"
+          "tag-cut flex min-w-0 items-center gap-2.5 border py-1 pl-1.5 pr-2.5 transition-colors",
+          open ? "border-accent bg-surface-2" : "border-line-2 bg-surface-dark hover:bg-surface-2"
         )}
       >
-        <SummonerAvatar iconId={active.profileIconId} size={20} />
-        <span className="font-medium">
-          {active.gameName}
-          <span className="text-text-muted">#{active.tagLine}</span>
+        <SummonerAvatar iconId={active.profileIconId} size={24} />
+        <span className="grid min-w-0 gap-px text-left">
+          <span className="truncate text-[13px] leading-tight text-text">
+            {active.gameName}
+            <span className="text-text-muted">#{active.tagLine}</span>
+          </span>
+          <span className="font-mono text-[10px] tracking-[0.12em] text-text-muted">
+            {active.region.toUpperCase()} · LV {active.summonerLevel}
+          </span>
         </span>
-        <ChevronDown className={cn("h-3.5 w-3.5 text-text-muted transition-transform", open && "rotate-180")} />
+        <ChevronDown
+          className={cn("h-3.5 w-3.5 shrink-0 text-text-muted transition-transform", open && "rotate-180")}
+          strokeWidth={1.75}
+        />
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full z-50 mt-1 w-52 overflow-hidden rounded-md border border-border bg-surface shadow-lg">
-          <div className="p-1">
-            {accounts.map((account) => (
+        <div
+          role="listbox"
+          className="notch absolute right-0 top-full z-50 mt-1.5 w-64 border border-line-2 bg-surface-2 p-1.5 shadow-[0_12px_32px_rgba(0,0,0,.55)]"
+        >
+          {accounts.map((account) => {
+            const isActive = account.id === activeId;
+            return (
               <button
                 key={account.id}
+                role="option"
+                aria-selected={isActive}
                 onClick={() => {
                   setActiveId(account.id);
                   setOpen(false);
                 }}
                 className={cn(
-                  "flex w-full items-center gap-2 rounded px-2 py-1.5 text-sm transition-colors",
-                  account.id === activeId
-                    ? "bg-accent/10 text-accent"
-                    : "text-text-muted hover:bg-surface-2 hover:text-text"
+                  "flex w-full items-center gap-2.5 px-2 py-2 text-left transition-colors",
+                  isActive ? "bg-accent/10" : "hover:bg-surface"
                 )}
               >
-                <SummonerAvatar iconId={account.profileIconId} size={16} />
-                <span className="truncate">
-                  {account.gameName}#{account.tagLine}
+                <SummonerAvatar iconId={account.profileIconId} size={22} />
+                <span className="grid min-w-0 flex-1 gap-px">
+                  <span className={cn("truncate text-[13px]", isActive ? "text-accent" : "text-text")}>
+                    {account.gameName}#{account.tagLine}
+                  </span>
+                  <span className="font-mono text-[10px] tracking-[0.12em] text-text-muted">
+                    {account.region.toUpperCase()} · LV {account.summonerLevel}
+                    {account.isPrimary && " · PRIMARY"}
+                  </span>
                 </span>
-                {account.isPrimary && (
-                  <span className="ml-auto shrink-0 text-xs text-text-muted">primary</span>
-                )}
+                {isActive && <span className="shrink-0 font-mono text-[11px] text-accent">✓</span>}
               </button>
-            ))}
-          </div>
-          <div className="border-t border-border p-1">
+            );
+          })}
+
+          <div className="mt-1.5 border-t border-border pt-1.5">
             <button
               onClick={() => { handleSync(); setOpen(false); }}
               disabled={isSyncing}
-              className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-sm text-text-muted transition-colors hover:bg-surface-2 hover:text-text disabled:opacity-50"
+              className="flex w-full items-center gap-2 px-2 py-1.5 font-mono text-[10.5px] uppercase tracking-label text-text-muted transition-colors hover:bg-surface hover:text-text disabled:opacity-50"
             >
-              <RefreshCw className={cn("h-3.5 w-3.5", isSyncing && "animate-spin")} />
-              {isSyncing ? "Yenileniyor…" : "Veriyi Yenile"}
-              {syncMsg && <span className="ml-auto text-xs text-accent">{syncMsg}</span>}
+              <RefreshCw className={cn("h-3.5 w-3.5", isSyncing && "animate-spin")} strokeWidth={1.75} />
+              {isSyncing ? "Refreshing…" : "Refresh data"}
+              {syncMsg && <span className="ml-auto normal-case tracking-normal text-accent">{syncMsg}</span>}
             </button>
           </div>
         </div>

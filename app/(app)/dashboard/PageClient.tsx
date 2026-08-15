@@ -1,63 +1,57 @@
 "use client";
 
-import { Suspense, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { MessageCircle } from "lucide-react";
-import { profileIconUrl, championSplashUrl } from "@/lib/ddragon";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { EmptyState } from "@/components/ui/empty-state";
-import { PageSkeleton } from "@/components/layout/PageSkeleton";
-import { PerformanceSummaryCards } from "@/domains/analysis/components/PerformanceSummaryCards";
-import { RecentMatchesSummaryCard } from "@/domains/analysis/components/RecentMatchesSummaryCard";
-import { PerformanceTrendChart } from "@/domains/analysis/components/PerformanceTrendChart";
+import { Suspense } from "react";
 import { RecentMatchList } from "@/domains/analysis/components/RecentMatchList";
-import { TiltWidget } from "@/domains/analysis/components/TiltWidget";
-import { TiltBreakModal } from "@/domains/analysis/components/TiltBreakModal";
-import { WarmupWidget } from "@/domains/analysis/components/WarmupWidget";
-import { SessionReadinessWidget } from "@/domains/analysis/components/SessionReadinessWidget";
-import { TodaysFocusCard } from "@/domains/analysis/components/TodaysFocusCard";
-import { LastGameInsightCard } from "@/domains/analysis/components/LastGameInsightCard";
-import { ImprovementPlanWidget } from "@/domains/analysis/components/ImprovementPlanWidget";
 import { WinrateTrendWidget } from "@/domains/analysis/components/WinrateTrendWidget";
-import { TopChampionsWidget } from "@/domains/analysis/components/TopChampionsWidget";
-import { RoleDistributionWidget } from "@/domains/analysis/components/RoleDistributionWidget";
+import { PerformanceTrendChart } from "@/domains/analysis/components/PerformanceTrendChart";
+import { ImprovementPlanWidget } from "@/domains/analysis/components/ImprovementPlanWidget";
 import { HabitDetectionCard } from "@/domains/analysis/components/HabitDetectionWidget";
+import { TiltBreakModal } from "@/domains/analysis/components/TiltBreakModal";
 import { PatchImpactWidget } from "@/components/dashboard/PatchImpactWidget";
 import { MetaRecommendationsWidget } from "@/components/dashboard/MetaRecommendationsWidget";
-import { DailyChallengeWidget } from "@/components/dashboard/DailyChallengeWidget";
-import { XpLevelWidget } from "@/components/dashboard/XpLevelWidget";
 import { WeekSummaryWidget } from "@/components/dashboard/WeekSummaryWidget";
+import { DailyMomentumChart } from "@/components/dashboard/DailyMomentumChart";
+import { DuoWidget } from "@/components/dashboard/DuoWidget";
+import { DevRestartOnboarding } from "@/components/dashboard/DevRestartOnboarding";
+import { resolveDashboardView } from "@/components/dashboard/dashboardView";
+import { DashboardHeader } from "@/components/dashboard/laneiq/DashboardHeader";
+import { ReadinessVerdict } from "@/components/dashboard/laneiq/ReadinessVerdict";
+import { FocusColumn } from "@/components/dashboard/laneiq/FocusColumn";
+import { LastGameColumn } from "@/components/dashboard/laneiq/LastGameColumn";
+import { AnalysisDeltas } from "@/components/dashboard/laneiq/AnalysisDeltas";
+import { PlaystyleProfile } from "@/components/dashboard/laneiq/PlaystyleProfile";
+import { ChampionPoolPanel } from "@/components/dashboard/laneiq/ChampionPoolPanel";
+import { EngagementStrip } from "@/components/dashboard/laneiq/EngagementStrip";
+import { HudPanel, HudRule } from "@/components/dashboard/laneiq/HudPanel";
+import {
+  DashboardSkeleton,
+  NoAccountState,
+  SyncErrorState,
+  SyncingState,
+} from "@/components/dashboard/laneiq/DashboardStates";
+import { EmailVerificationBanner } from "@/components/ui/EmailVerificationBanner";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useAutoSync } from "@/hooks/useAutoSync";
-import { EmailVerificationBanner } from "@/components/ui/EmailVerificationBanner";
-import { ReferralWidget } from "@/domains/identity/components/ReferralWidget";
-import { ProgressionStrip } from "@/components/dashboard/ProgressionStrip";
-import { DevRestartOnboarding } from "@/components/dashboard/DevRestartOnboarding";
-import { ConnectAccountPrompt } from "@/components/dashboard/ConnectAccountPrompt";
-import { DuoWidget } from "@/components/dashboard/DuoWidget";
-import { DailyMomentumChart } from "@/components/dashboard/DailyMomentumChart";
-import { resolveDashboardView } from "@/components/dashboard/dashboardView";
+import { useUIStore } from "@/lib/stores/uiStore";
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="mb-3 text-xs font-medium uppercase tracking-widest text-text-muted">
-      {children}
-    </p>
-  );
-}
-
-export default function DashboardPage() {
+export default function DashboardPage(): React.ReactElement {
   const { data: accounts, isLoading: accountsLoading } = useRiotAccounts();
-  const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
 
-  const primaryId = selectedAccountId ?? accounts?.[0]?.id ?? null;
+  // The account switcher lives in the app shell's top bar and writes to the UI
+  // store. Reading it here is what makes switching accounts up there actually
+  // change the dashboard — a second, locally-stated switcher did not.
+  const activeAccountId = useUIStore((s) => s.activeRiotAccountId);
+
+  const primaryId = activeAccountId ?? accounts?.[0]?.id ?? null;
   const primaryAccount = accounts?.find((a) => a.id === primaryId);
 
-  const { data: profile, isLoading: profileLoading, error: profileError } = usePerformanceProfile(primaryId);
+  const {
+    data: profile,
+    isLoading: profileLoading,
+    error: profileError,
+  } = usePerformanceProfile(primaryId);
   const { data: sub } = useSubscription();
 
   // Keep match data current on its own — silently re-sync a stale account on load (TASK-221).
@@ -65,190 +59,80 @@ export default function DashboardPage() {
 
   const view = resolveDashboardView(accountsLoading, accounts?.length ?? 0);
 
-  // `!accounts` is unreachable once the view is "ready" — it narrows the type for the render below.
+  // `!accounts` is unreachable once the view is "ready" — it narrows the type below.
   if (view !== "ready" || !accounts) {
     return (
-      <>
-        {view === "loading" ? <PageSkeleton /> : <ConnectAccountPrompt />}
+      <div className="mx-auto max-w-[1240px] p-6">
+        {view === "loading" ? <DashboardSkeleton /> : <NoAccountState />}
         <DevRestartOnboarding />
-      </>
+      </div>
     );
   }
 
   const isPro = sub?.plan === "pro" || sub?.plan === "elite";
+  const hasMatches = (profile?.recentMatches?.length ?? 0) > 0;
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 p-6">
+    <div className="mx-auto flex max-w-[1240px] flex-col gap-5 p-5 md:p-6">
       <Suspense fallback={null}>
         <EmailVerificationBanner />
       </Suspense>
       <TiltBreakModal riotAccountId={primaryId} />
       <DevRestartOnboarding />
 
-      {/* ── Player Header — cinematic banner ──────────────────────────── */}
-      {(() => {
-        const featuredChamp = profile?.recentMatches?.[0]?.champion ?? null;
-        return (
-          <div className="relative overflow-hidden rounded-2xl border border-border">
-            {featuredChamp && (
-              <>
-                <Image fill alt="" aria-hidden src={championSplashUrl(featuredChamp)}
-                  className="object-cover object-[60%_15%] opacity-[0.18]"
-                  style={{ filter: "blur(2px) saturate(0.55)" }} />
-                <div className="absolute inset-0 bg-gradient-to-r from-surface/95 via-surface/75 to-transparent" />
-              </>
-            )}
-            <div className="relative flex flex-wrap items-center justify-between gap-4 p-5">
-              <div className="flex items-center gap-4">
-                {primaryAccount && (
-                  <div className="relative shrink-0">
-                    <Image src={profileIconUrl(primaryAccount.profileIconId)} alt={primaryAccount.gameName}
-                      width={72} height={72} unoptimized
-                      className="rounded-full border-2 border-accent/30 shadow-[0_0_16px_rgba(200,155,60,0.25)]" />
-                    <span className="absolute -bottom-1 -right-1 rounded-full bg-surface px-1.5 py-0.5 text-[10px] font-bold text-text-muted ring-1 ring-border">
-                      {primaryAccount.summonerLevel}
-                    </span>
-                  </div>
-                )}
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h1 className="font-display text-2xl font-bold text-text">
-                      {primaryAccount
-                        ? <>{primaryAccount.gameName}<span className="text-text-muted/70">#{primaryAccount.tagLine}</span></>
-                        : "Dashboard"}
-                    </h1>
-                    <Badge variant={isPro ? "success" : "secondary"} className="text-xs">{isPro ? "Pro" : "Free"}</Badge>
-                  </div>
-                  {primaryAccount && (
-                    <p className="text-sm text-text-muted">
-                      {primaryAccount.region.toUpperCase()}
-                      {accounts.length > 1 && (
-                        <select className="ml-2 rounded border border-border bg-surface px-1.5 py-0.5 text-xs text-text"
-                          value={primaryId ?? ""} onChange={(e) => setSelectedAccountId(e.target.value)}>
-                          {accounts.map((a) => (
-                            <option key={a.id} value={a.id}>{a.gameName}#{a.tagLine}</option>
-                          ))}
-                        </select>
-                      )}
-                    </p>
-                  )}
-                </div>
-              </div>
-              <Link href="/coaching/chat" data-tour="ask-coach">
-                <Button size="sm" className="gap-1.5"><MessageCircle className="h-4 w-4" />Ask Your Coach</Button>
-              </Link>
-            </div>
-          </div>
-        );
-      })()}
-
-      {/* ── Player progression (level · XP · streak) ─────────────────── */}
-      <ProgressionStrip summonerLevel={primaryAccount?.summonerLevel} isPro={isPro} />
+      <DashboardHeader account={primaryAccount} isPro={isPro} />
 
       {profileError ? (
-        <EmptyState
-          title="No match data yet"
-          description="Sync your Riot account to load match history and get coaching suggestions."
-          action={<Link href="/settings/accounts"><Button variant="secondary" size="sm">Sync Account</Button></Link>}
-        />
-      ) : !profileLoading && (!profile?.recentMatches || profile.recentMatches.length === 0) ? (
-        <div className="rounded-2xl border border-border bg-surface p-10 text-center space-y-5">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10 mx-auto">
-            <span className="text-2xl">⚡</span>
-          </div>
-          <div>
-            <h2 className="font-display text-xl font-bold text-text">Your match data is being synced</h2>
-            <p className="mt-2 text-sm text-text-muted max-w-sm mx-auto">
-              Your Riot account is connected. Your match history is being prepared in the background — this may take a few minutes.
-              You don&apos;t need to wait, you can get your first AI report now.
-            </p>
-          </div>
-          <div className="flex flex-col items-center gap-3">
-            <Link href="/coaching">
-              <Button size="lg" className="gap-2">
-                Get My First Report →
-              </Button>
-            </Link>
-            <Link href="/settings/accounts" className="text-xs text-text-muted hover:text-text transition-colors">
-              Manual sync
-            </Link>
-          </div>
-        </div>
+        <SyncErrorState />
+      ) : profileLoading ? (
+        <DashboardSkeleton />
+      ) : !hasMatches ? (
+        <SyncingState gameName={primaryAccount?.gameName} />
       ) : (
         <>
-          {/* ── Top summary ────────────────────────────────────────────── */}
-          <PerformanceSummaryCards profile={profile} isLoading={profileLoading} />
-          <RecentMatchesSummaryCard profile={profile} isLoading={profileLoading} />
-
-          {/* ── This Week Summary ──────────────────────────────────────── */}
-          <WeekSummaryWidget matches={profile?.recentMatches} isLoading={profileLoading} />
-
-          {/* ── Today's Brief ──────────────────────────────────────────── */}
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-            <TodaysFocusCard riotAccountId={primaryId} />
-            <SessionReadinessWidget riotAccountId={primaryId} />
-          </div>
-
-          {/* ── Main 2-column layout ───────────────────────────────────── */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-            <div className="space-y-4 lg:col-span-2">
-              <div>
-                <SectionLabel>Top Champions</SectionLabel>
-                <TopChampionsWidget matches={profile?.recentMatches} isLoading={profileLoading} />
-              </div>
-              <div>
-                <SectionLabel>Roles</SectionLabel>
-                <RoleDistributionWidget matches={profile?.recentMatches} isLoading={profileLoading} />
-              </div>
-              <div>
-                <SectionLabel>Mental State</SectionLabel>
-                <div className="space-y-3">
-                  <TiltWidget riotAccountId={primaryId} />
-                  <WarmupWidget riotAccountId={primaryId} />
-                </div>
-              </div>
-              <div>
-                <SectionLabel>Habits</SectionLabel>
-                <HabitDetectionCard riotAccountId={primaryId} />
-              </div>
-              <div>
-                <SectionLabel>Duo</SectionLabel>
-                <DuoWidget riotAccountId={primaryId} />
-              </div>
-              <div>
-                <SectionLabel>This Patch</SectionLabel>
-                <MetaRecommendationsWidget riotAccountId={primaryId} />
-              </div>
-              <div>
-                <SectionLabel>Patch Impact</SectionLabel>
-                <PatchImpactWidget riotAccountId={primaryId} />
-              </div>
-              <div data-tour="daily-tasks">
-                <SectionLabel>Daily Tasks</SectionLabel>
-                <div className="space-y-3">
-                  <XpLevelWidget />
-                  <DailyChallengeWidget />
-                </div>
-              </div>
-              <div>
-                <SectionLabel>Invite Friends</SectionLabel>
-                <ReferralWidget />
-              </div>
+          {/* ── Layer 1 · Decision ─────────────────────────────────────── */}
+          <HudPanel className="notch-lg">
+            <div className="grid grid-cols-1 items-stretch lg:grid-cols-[300px_1fr_1fr]">
+              <ReadinessVerdict riotAccountId={primaryId} />
+              <FocusColumn riotAccountId={primaryId} profile={profile} />
+              <LastGameColumn match={profile?.recentMatches[0]} isLoading={profileLoading} />
             </div>
-            <div className="space-y-4 lg:col-span-3">
-              <LastGameInsightCard match={profile?.recentMatches[0]} isLoading={profileLoading} />
+          </HudPanel>
+
+          {/* ── Layer 2 · Analysis ─────────────────────────────────────── */}
+          <HudRule label="// Analysis · last 20 games" />
+
+          <AnalysisDeltas profile={profile} isLoading={profileLoading} />
+
+          <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.5fr_1fr]">
+            <div className="grid gap-4">
               <DailyMomentumChart riotAccountId={primaryId} />
-              <ImprovementPlanWidget riotAccountId={primaryId} />
-              <WinrateTrendWidget matches={profile?.recentMatches} isLoading={profileLoading} />
               <PerformanceTrendChart matches={profile?.recentMatches} isLoading={profileLoading} />
+              <WinrateTrendWidget matches={profile?.recentMatches} isLoading={profileLoading} />
+            </div>
+            <PlaystyleProfile profile={profile} isLoading={profileLoading} />
+          </div>
+
+          <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.5fr_1fr]">
+            <ImprovementPlanWidget riotAccountId={primaryId} />
+            <div className="grid gap-4">
+              <WeekSummaryWidget matches={profile?.recentMatches} isLoading={profileLoading} />
+              <PatchImpactWidget riotAccountId={primaryId} />
+              <MetaRecommendationsWidget riotAccountId={primaryId} />
             </div>
           </div>
 
-          {/* ── Recent Matches ─────────────────────────────────────────── */}
-          <section>
-            <SectionLabel>Recent Matches</SectionLabel>
-            <RecentMatchList matches={profile?.recentMatches} isLoading={profileLoading} />
-          </section>
+          <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.4fr_1fr_1fr]">
+            <ChampionPoolPanel matches={profile?.recentMatches} isLoading={profileLoading} />
+            <HabitDetectionCard riotAccountId={primaryId} />
+            <DuoWidget riotAccountId={primaryId} />
+          </div>
+
+          {/* ── Layer 3 · Archive ──────────────────────────────────────── */}
+          <HudRule label="// Match log" />
+          <RecentMatchList matches={profile?.recentMatches} isLoading={profileLoading} />
+
+          <EngagementStrip />
         </>
       )}
     </div>

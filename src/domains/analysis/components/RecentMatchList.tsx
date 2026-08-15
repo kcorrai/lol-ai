@@ -95,9 +95,9 @@ function MatchRow({ match, isFirst }: { match: MatchPerformance; isFirst?: boole
         <p>{match.visionScore} vision · {match.gameDurationMinutes}m</p>
         {match.teamObjectives && (
           <p className="text-text-muted/70">
-            <span className="text-blue-400">D</span>:{match.teamObjectives.dragons}{" "}
-            <span className="text-purple-400">B</span>:{match.teamObjectives.barons}{" "}
-            <span className="text-yellow-500">T</span>:{match.teamObjectives.towers}
+            <span className="text-info">D</span>:{match.teamObjectives.dragons}{" "}
+            <span className="text-accent">B</span>:{match.teamObjectives.barons}{" "}
+            <span className="text-warning">T</span>:{match.teamObjectives.towers}
           </p>
         )}
         <p className="mt-0.5 text-text-muted/70">{timeAgo(match.gameStart)}</p>
@@ -169,15 +169,32 @@ export function RecentMatchList({ matches, isLoading }: Props) {
           ))}
         </div>
 
-        {/* Champion filter */}
-        <select
-          value={champFilter}
-          onChange={(e) => setChampFilter(e.target.value)}
-          className="rounded-md border border-border bg-surface px-2.5 py-1.5 text-xs text-text"
-        >
-          <option value="">All Champions</option>
-          {champions.map((c) => <option key={c} value={c}>{c}</option>)}
-        </select>
+        {/* Champion filter — chips, not a native <select>: the OS popup paints a
+            white panel with a blue highlight that no stylesheet can reach, and 20
+            games rarely span more than a handful of champions anyway. */}
+        <div className="flex flex-wrap items-center gap-1">
+          <button
+            onClick={() => setChampFilter("")}
+            className={`rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
+              !champFilter ? "bg-accent/20 text-accent" : "bg-surface-2 text-text-muted hover:text-text"
+            }`}
+          >
+            All Champions
+          </button>
+          {champions.map((c) => (
+            <button
+              key={c}
+              onClick={() => setChampFilter(champFilter === c ? "" : c)}
+              className={`rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                champFilter === c
+                  ? "bg-accent/20 text-accent"
+                  : "bg-surface-2 text-text-muted hover:text-text"
+              }`}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
 
         {/* Win/Loss filter */}
         <div className="flex items-center rounded-md border border-border bg-surface overflow-hidden text-xs">
