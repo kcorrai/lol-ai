@@ -6,8 +6,14 @@ const isDev = process.env.NODE_ENV === "development";
 
 const CSP = [
   "default-src 'self'",
-  // Dev mode needs unsafe-eval for Next.js HMR/Fast Refresh runtime
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  // Dev mode needs unsafe-eval for Next.js HMR/Fast Refresh runtime, and
+  // @vercel/analytics loads its debug script cross-origin from
+  // va.vercel-scripts.com when NODE_ENV is development. Production serves the
+  // same script from the same origin (/_vercel/insights/script.js), so the host
+  // is allowed in dev only and the production policy is unchanged. Without it
+  // every page logs a CSP violation, which is exactly the noise that hides a
+  // real error.
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval' https://va.vercel-scripts.com" : ""}`,
   // Tailwind inline styles + Google Fonts stylesheets
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   // Google Fonts files
