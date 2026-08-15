@@ -48,10 +48,14 @@ const nextConfig = {
   },
   async redirects() {
     // Old authed tool routes are now public keyword URLs under /tools.
+    //
+    // `/draft` used to be in this list, pointing at /tools/draft-analyzer. It is
+    // now the live draft room's own page (TASK-307), and a redirect wins over a
+    // page — so the entry had to go or the room was unreachable. The analyser
+    // keeps /tools/draft-analyzer, which is where every internal link points.
     return [
       { source: "/counter", destination: "/tools/counter-picker", permanent: true },
       { source: "/matchup", destination: "/tools/matchup", permanent: true },
-      { source: "/draft", destination: "/tools/draft-analyzer", permanent: true },
     ];
   },
   async headers() {
