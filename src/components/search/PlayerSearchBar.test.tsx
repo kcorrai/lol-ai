@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -41,6 +41,19 @@ describe("PlayerSearchBar", () => {
 
     expect(screen.getByText("Faker")).toBeInTheDocument();
     expect(screen.getByText("Chovy")).toBeInTheDocument();
+  });
+
+  it("exposes each hit as an option the listbox owns", async () => {
+    hits([FAKER, CHOVY]);
+    const user = userEvent.setup();
+    render(<PlayerSearchBar />);
+
+    await user.type(screen.getByRole("combobox"), "ch");
+
+    // Nesting the options inside per-section sub-lists hid every one of them from the
+    // accessibility tree, so this asserts on the role rather than on the text.
+    const options = within(screen.getByRole("listbox")).getAllByRole("option");
+    expect(options.map((o) => o.getAttribute("aria-label"))).toEqual(["Faker#KR1", "Chovy#KR2"]);
   });
 
   it("walks the list with arrow keys and opens the highlighted player on Enter", async () => {

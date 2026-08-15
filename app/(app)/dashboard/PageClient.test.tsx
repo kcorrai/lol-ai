@@ -34,6 +34,11 @@ vi.mock("@/components/dashboard/DuoWidget", () => ({
 vi.mock("@/components/dashboard/DevRestartOnboarding", () => ({
   DevRestartOnboarding: () => <div data-testid="DevRestartOnboarding" />,
 }));
+// Reads the app router, which is not mounted here. Its own behaviour is covered by
+// ClaimAccountOnArrival.test.tsx.
+vi.mock("@/components/dashboard/ClaimAccountOnArrival", () => ({
+  ClaimAccountOnArrival: () => <div data-testid="ClaimAccountOnArrival" />,
+}));
 vi.mock("@/components/dashboard/laneiq/EngagementStrip", () => ({
   EngagementStrip: () => <div data-testid="EngagementStrip" />,
 }));

@@ -9,6 +9,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { claimQuery, parseClaim } from "@/lib/riot/claim";
 import { OAuthButton } from "./OAuthButton";
 
 const registerSchema = z
@@ -29,6 +30,7 @@ export function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const refCode = searchParams.get("ref")?.toUpperCase() ?? null;
+  const claimed = parseClaim(searchParams);
   const [serverError, setServerError] = useState<string | null>(null);
 
   const {
@@ -60,7 +62,12 @@ export function RegisterForm() {
       return;
     }
 
-    router.push("/login?registered=1&callbackUrl=%2Fdashboard");
+    // A claim rides through sign-in on the callback URL, so a player who arrived from "this is
+    // me" on a public profile lands on a dashboard that is already connecting their account —
+    // rather than on /settings/accounts, retyping the Riot ID they just searched for.
+    const claim = parseClaim(searchParams);
+    const destination = claim ? `/dashboard?${claimQuery(claim)}` : "/dashboard";
+    router.push(`/login?registered=1&callbackUrl=${encodeURIComponent(destination)}`);
   }
 
   return (
@@ -68,9 +75,11 @@ export function RegisterForm() {
       <CardHeader className="space-y-1">
         <CardTitle>Create Account</CardTitle>
         <CardDescription>
-          {refCode
-            ? `Referral code active: ${refCode} — You both get 7 days of Pro!`
-            : "Free — no credit card required"}
+          {claimed
+            ? `${claimed.gameName}#${claimed.tagLine} connects automatically once you're in — nothing else to fill in.`
+            : refCode
+              ? `Referral code active: ${refCode} — You both get 7 days of Pro!`
+              : "Free — no credit card required"}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
