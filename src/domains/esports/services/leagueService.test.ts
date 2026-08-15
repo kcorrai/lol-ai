@@ -8,7 +8,12 @@ vi.mock("@/lib/utils/logger", () => ({
   logger: { warn: vi.fn(), info: vi.fn(), error: vi.fn(), debug: vi.fn() },
 }));
 
-import { getLeagues, getLeague, getTournamentsForLeague } from "./leagueService";
+import {
+  getLeagues,
+  getLeague,
+  getTournamentsForLeague,
+  pickCurrentTournament,
+} from "./leagueService";
 
 function league(
   slug: string,
@@ -148,5 +153,41 @@ describe("getTournamentsForLeague", () => {
     global.fetch = vi.fn().mockRejectedValue(new Error("down")) as unknown as typeof fetch;
 
     expect(await getTournamentsForLeague("id-lec")).toEqual([]);
+  });
+});
+
+describe("pickCurrentTournament", () => {
+  const tournaments = [
+    { id: "t3", slug: "s3", startDate: "2026-07-23", endDate: "2026-09-20", leagueId: "l" },
+    { id: "t2", slug: "s2", startDate: "2026-03-27", endDate: "2026-06-07", leagueId: "l" },
+    { id: "t1", slug: "s1", startDate: "2026-01-16", endDate: "2026-03-01", leagueId: "l" },
+  ];
+
+  it("picks the split running today", () => {
+    expect(pickCurrentTournament(tournaments, new Date("2026-08-15T12:00:00Z"))?.id).toBe("t3");
+  });
+
+  it("falls back to the most recent split that has started", () => {
+    // Between splits: the summer one has ended, the next has not been published.
+    expect(pickCurrentTournament(tournaments, new Date("2026-06-20T12:00:00Z"))?.id).toBe("t2");
+  });
+
+  it("does not lead with a split that has not begun", () => {
+    const withNextYear = [
+      { id: "t4", slug: "s4", startDate: "2027-01-15", endDate: "2027-03-01", leagueId: "l" },
+      ...tournaments,
+    ];
+    expect(pickCurrentTournament(withNextYear, new Date("2026-08-15T12:00:00Z"))?.id).toBe("t3");
+  });
+
+  it("falls back to the newest entry when nothing has started yet", () => {
+    const future = [
+      { id: "t4", slug: "s4", startDate: "2027-01-15", endDate: null, leagueId: "l" },
+    ];
+    expect(pickCurrentTournament(future, new Date("2026-08-15T12:00:00Z"))?.id).toBe("t4");
+  });
+
+  it("returns null for a league with no tournaments", () => {
+    expect(pickCurrentTournament([], new Date("2026-08-15T12:00:00Z"))).toBeNull();
   });
 });

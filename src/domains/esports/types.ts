@@ -58,6 +58,49 @@ export interface EsportsEventLeague {
   image: string | null;
 }
 
+/** A team as standings and rosters refer to it: identity only, no result. */
+export interface EsportsTeamRef {
+  id: string;
+  slug: string | null;
+  name: string;
+  code: string;
+  image: string | null;
+}
+
+export interface StandingsRow {
+  /** The feed's ordinal. Tied teams share one, so ranks can repeat. */
+  rank: number;
+  tied: boolean;
+  team: EsportsTeamRef;
+  wins: number;
+  losses: number;
+  /** Percentage to one decimal, or null when the team has not played yet. */
+  winRate: number | null;
+}
+
+export interface BracketTeam extends EsportsTeamRef {
+  /** False for a slot whose team the bracket has not decided yet. */
+  decided: boolean;
+  gameWins: number;
+  outcome: MatchOutcome | null;
+}
+
+export interface BracketMatch {
+  matchId: string;
+  state: string;
+  /** Feeder matches, for wiring the bracket up (TASK-306). */
+  previousMatchIds: string[];
+  teams: BracketTeam[];
+}
+
+/**
+ * One section of a tournament. Round-robin splits publish a ranked table; swiss
+ * and knockout stages publish only their matches.
+ */
+export type StandingsStage =
+  | { kind: "table"; stageName: string; sectionName: string; rows: StandingsRow[] }
+  | { kind: "bracket"; stageName: string; sectionName: string; matches: BracketMatch[] };
+
 export interface EsportsEvent {
   /** The match id. `getSchedule` has no separate event id, so this is the key. */
   matchId: string;
