@@ -13,6 +13,7 @@
 | Phase 3 | Advanced Analysis | Months 7–12 | F-017 through F-022 |
 | Phase 4 | Scale & Expansion | Year 2 Q1–Q2 | Infrastructure, mobile, multi-server |
 | Phase 5 | AI Platform | Year 2 Q3–Year 3 | F-023 through F-026 + new bets |
+| Phase 6 | Esports & Audience Growth | Parallel track | F-030 through F-037 |
 
 ---
 
@@ -227,6 +228,53 @@
 | Replay parsing technical complexity | Investigate open-source parsers (lol-parser) early |
 | AI cost at scale for conversational features | Implement strict conversation limits, smart caching |
 | Expanding too early to VALORANT | Only expand after LoL platform reaches $50K MRR |
+
+---
+
+## Phase 6 — Esports & Audience Growth
+
+**Theme:** Own esports search intent, and hand that audience to the product.
+
+**Duration:** Parallel track — it depends on none of Phases 3–5 and blocks none of
+them. Spine (TASK-297 → TASK-304) is roughly two weeks of focused work.
+
+Full plan: [ESPORTS_PLAN.md](./ESPORTS_PLAN.md).
+
+### Goals
+
+- A free, public, crawlable esports section under `/esports`.
+- Rank for schedule, standings, roster, results and pro-build queries.
+- Convert that traffic into the champion cluster and then into accounts.
+- Run at zero marginal cost per view — cached feeds, no AI in the read path.
+
+### Deliverables
+
+| Deliverable | Notes |
+|---|---|
+| Esports domain + hub | `src/domains/esports/`, ISR over a cached feed (ADR-016) |
+| Schedule, live scores | One polled endpoint; polls only while something is live |
+| Leagues, standings, brackets | Normalised across round-robin, swiss and knockout |
+| Teams, players | Rosters, form, champion pools |
+| Match pages | Drafts, scoreboards, item/rune builds, gold curves |
+| Pro meta + pro builds | Pick/ban aggregation, champion-in-pro-play pages |
+| SEO layer | JSON-LD, OG cards, sitemap, canonical/noindex discipline (ADR-017) |
+| Cross-linking + You vs the Pros | The funnel from esports into the product |
+
+### Key Risks
+
+| Risk | Mitigation |
+|---|---|
+| Unofficial feed changes or blocks us | Zod boundary + never-expiring last-good snapshots; pages degrade rather than 500 |
+| Thin generated pages get filtered | No-content pages are `noindex` and out of the sitemap |
+| Traffic arrives but never converts | Cross-linking and "You vs the pros" are scoped tasks, not afterthoughts |
+| Section becomes a maintenance tax | Stateless by design; no esports data in Postgres before TASK-313 is approved |
+
+### Success Metrics at End of Phase 6
+
+- Esports section indexed with no thin-page filtering, and ranking for at least
+  one league's standings and one team's roster query.
+- Measurable click-through from esports pages into `/builds` and `/champions`.
+- Zero increase in per-view cost: no AI call and no database write in the read path.
 
 ---
 
