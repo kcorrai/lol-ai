@@ -5,6 +5,7 @@ import type { EsportsEvent } from "@/domains/esports";
 import { MatchRow } from "@/domains/esports/components/MatchRow";
 import { LeagueGrid } from "@/domains/esports/components/LeagueGrid";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
+import { LiveMatches } from "@/domains/esports/components/LiveMatches";
 import { PublicOnly } from "@/components/tools/PublicOnly";
 
 // Five minutes. The hub's job is "what is on right now", and the live block is
@@ -47,7 +48,12 @@ function MatchList({ events }: { events: EsportsEvent[] }): React.ReactElement {
   return (
     <div className="grid gap-2">
       {events.map((event) => (
-        <MatchRow key={event.matchId} event={event} withDate />
+        <MatchRow
+          key={event.matchId}
+          event={event}
+          href={`/esports/matches/${event.matchId}`}
+          withDate
+        />
       ))}
     </div>
   );
@@ -99,9 +105,9 @@ export default async function EsportsHubPage(): Promise<React.ReactElement> {
       ) : (
         <>
           {live.length > 0 && (
-            <Section title="Live now" aside={`${live.length} in progress`}>
-              <MatchList events={live} />
-            </Section>
+            <section className="mt-10 first:mt-0">
+              <LiveMatches initialEvents={live} />
+            </section>
           )}
 
           <Section
