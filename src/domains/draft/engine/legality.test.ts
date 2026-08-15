@@ -22,10 +22,26 @@ describe("legality", () => {
   it("refuses to act once the draft is finished", () => {
     const series = started(makeSeries());
     const done = play(series, [
-      "Aatrox", "Ahri", "Akali", "Alistar", "Amumu", "Anivia",
-      "Annie", "Ashe", "Azir", "Bard", "Braum", "Caitlyn",
-      "Camille", "Darius", "Diana", "Draven", "Ekko", "Elise",
-      "Ezreal", "Fiora",
+      "Aatrox",
+      "Ahri",
+      "Akali",
+      "Alistar",
+      "Amumu",
+      "Anivia",
+      "Annie",
+      "Ashe",
+      "Azir",
+      "Bard",
+      "Braum",
+      "Caitlyn",
+      "Camille",
+      "Darius",
+      "Diana",
+      "Draven",
+      "Ekko",
+      "Elise",
+      "Ezreal",
+      "Fiora",
     ]);
     expect(done.games[0].phase).toBe("COMPLETE");
     expectDenied(canSelect(done, 1, "BLUE", "Garen"), "draft-not-running");
@@ -79,7 +95,13 @@ describe("legality", () => {
               phase: "COMPLETE" as const,
               step: 20,
               actions: [
-                { step: 6, side: "BLUE" as const, kind: "PICK" as const, championKey: "Ahri", timedOut: false },
+                {
+                  step: 6,
+                  side: "BLUE" as const,
+                  kind: "PICK" as const,
+                  championKey: "Ahri",
+                  timedOut: false,
+                },
               ],
             }
           : g

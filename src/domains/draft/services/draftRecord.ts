@@ -15,4 +15,3 @@ export interface DraftSeriesRecord {
   /** gameNumber → primary key, so a transition knows which row to update. */
   gameIds: Record<number, string>;
 }
-

@@ -12,10 +12,26 @@ import type { DraftActionKind, DraftSide } from "./draft.types";
 // The literal order from docs/DRAFT_ROOM.md §2, written out by hand so the test
 // fails if the generated table ever drifts from the spec.
 const EXPECTED: ReadonlyArray<`${DraftSide}-${DraftActionKind}`> = [
-  "BLUE-BAN", "RED-BAN", "BLUE-BAN", "RED-BAN", "BLUE-BAN", "RED-BAN",
-  "BLUE-PICK", "RED-PICK", "RED-PICK", "BLUE-PICK", "BLUE-PICK", "RED-PICK",
-  "RED-BAN", "BLUE-BAN", "RED-BAN", "BLUE-BAN",
-  "RED-PICK", "BLUE-PICK", "BLUE-PICK", "RED-PICK",
+  "BLUE-BAN",
+  "RED-BAN",
+  "BLUE-BAN",
+  "RED-BAN",
+  "BLUE-BAN",
+  "RED-BAN",
+  "BLUE-PICK",
+  "RED-PICK",
+  "RED-PICK",
+  "BLUE-PICK",
+  "BLUE-PICK",
+  "RED-PICK",
+  "RED-BAN",
+  "BLUE-BAN",
+  "RED-BAN",
+  "BLUE-BAN",
+  "RED-PICK",
+  "BLUE-PICK",
+  "BLUE-PICK",
+  "RED-PICK",
 ];
 
 describe("draft sequence", () => {

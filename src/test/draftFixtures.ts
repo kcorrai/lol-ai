@@ -3,6 +3,7 @@ import type {
   DraftSeriesState,
   SeriesMode,
 } from "@/domains/draft/engine/draft.types";
+import type { DraftChampion } from "@/domains/draft/draftCatalog.types";
 import { applyAction } from "@/domains/draft/engine/reducer";
 import { sideToAct } from "@/domains/draft/engine/sequence";
 import { createGames } from "@/domains/draft/engine/stateUtils";
@@ -72,3 +73,23 @@ export const POOL: readonly string[] = [
   "Braum", "Caitlyn", "Camille", "Darius", "Diana",
   "Draven", "Ekko", "Elise", "Ezreal", "Fiora",
 ];
+
+/** A catalogue entry with sane defaults; override only what the test is about. */
+export function makeDraftChampion(
+  key: string,
+  name: string,
+  overrides: Partial<DraftChampion> = {}
+): DraftChampion {
+  return {
+    key,
+    name,
+    lanes: ["MIDDLE"],
+    winRate: 50,
+    pickRate: 5,
+    banRate: 2,
+    tags: ["Mage"],
+    attack: 3,
+    magic: 8,
+    ...overrides,
+  };
+}

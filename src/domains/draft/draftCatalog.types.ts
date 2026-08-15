@@ -10,6 +10,13 @@ export interface DraftChampion {
   winRate: number;
   pickRate: number;
   banRate: number;
+  /** Data Dragon class tags — "Mage", "Tank", "Marksman"… */
+  tags: string[];
+  /** Data Dragon's 0–10 damage profile, the same inputs `draftTeamEval` uses
+   *  server-side. Carried here so the comp readout can be recomputed after every
+   *  lock without a request. */
+  attack: number;
+  magic: number;
 }
 
 /**

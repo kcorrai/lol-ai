@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
+  Target,
   Swords,
   Users,
   Layers,
@@ -20,6 +21,13 @@ export const metadata: Metadata = {
 };
 
 const TOOLS = [
+  {
+    href: "/draft",
+    title: "Draft Room",
+    description:
+      "Run a full pick/ban with your team. Fearless series in one link, with live advice on the turn in front of you.",
+    Icon: Target,
+  },
   {
     href: "/tools/counter-picker",
     title: "Counter Picker",

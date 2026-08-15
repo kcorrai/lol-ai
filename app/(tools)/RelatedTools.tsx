@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 const TOOLS = [
+  { href: "/draft", label: "Draft Room" },
   { href: "/tools/counter-picker", label: "Counter Picker" },
   { href: "/tools/matchup", label: "Matchup Analyzer" },
   { href: "/tools/draft-analyzer", label: "Draft Analyzer" },

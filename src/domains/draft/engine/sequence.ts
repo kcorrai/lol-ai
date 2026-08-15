@@ -4,10 +4,26 @@ import type { DraftActionKind, DraftSide, DraftStep } from "./draft.types";
 // compact table so the shape stays readable; the slot numbers are derived rather
 // than hand-written, which is where transcription bugs live.
 const ORDER: ReadonlyArray<readonly [DraftSide, DraftActionKind]> = [
-  ["BLUE", "BAN"], ["RED", "BAN"], ["BLUE", "BAN"], ["RED", "BAN"], ["BLUE", "BAN"], ["RED", "BAN"],
-  ["BLUE", "PICK"], ["RED", "PICK"], ["RED", "PICK"], ["BLUE", "PICK"], ["BLUE", "PICK"], ["RED", "PICK"],
-  ["RED", "BAN"], ["BLUE", "BAN"], ["RED", "BAN"], ["BLUE", "BAN"],
-  ["RED", "PICK"], ["BLUE", "PICK"], ["BLUE", "PICK"], ["RED", "PICK"],
+  ["BLUE", "BAN"],
+  ["RED", "BAN"],
+  ["BLUE", "BAN"],
+  ["RED", "BAN"],
+  ["BLUE", "BAN"],
+  ["RED", "BAN"],
+  ["BLUE", "PICK"],
+  ["RED", "PICK"],
+  ["RED", "PICK"],
+  ["BLUE", "PICK"],
+  ["BLUE", "PICK"],
+  ["RED", "PICK"],
+  ["RED", "BAN"],
+  ["BLUE", "BAN"],
+  ["RED", "BAN"],
+  ["BLUE", "BAN"],
+  ["RED", "PICK"],
+  ["BLUE", "PICK"],
+  ["BLUE", "PICK"],
+  ["RED", "PICK"],
 ];
 
 function buildSequence(): readonly DraftStep[] {

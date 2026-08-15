@@ -1,9 +1,4 @@
-import type {
-  DraftGameState,
-  DraftSeriesState,
-  DraftSide,
-  TransitionResult,
-} from "./draft.types";
+import type { DraftGameState, DraftSeriesState, DraftSide, TransitionResult } from "./draft.types";
 import { canSelect } from "./legality";
 import { isComplete, stepAt } from "./sequence";
 import { findGame, replaceGame } from "./stateUtils";

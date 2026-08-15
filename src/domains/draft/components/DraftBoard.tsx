@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { sideToAct, unavailableReason } from "@/domains/draft";
 import type { DraftSeriesState, LegalityReason, ViewerRole } from "@/domains/draft";
 import type { DraftCatalog } from "@/domains/draft/draftCatalog.types";
@@ -14,6 +14,8 @@ interface Props {
   gameNumber: number;
   role: ViewerRole;
   catalog: DraftCatalog;
+  selected: string | null;
+  onSelect: (championKey: string | null) => void;
   onLock: (championKey: string | null) => void;
   pending: boolean;
   children?: React.ReactNode;
@@ -25,37 +27,33 @@ export function DraftBoard({
   gameNumber,
   role,
   catalog,
+  selected,
+  onSelect,
   onLock,
   pending,
   children,
   clock,
 }: Props): React.ReactElement | null {
-  const [selected, setSelected] = useState<string | null>(null);
   const game = state.games.find((g) => g.gameNumber === gameNumber);
 
   // Availability is shown from the acting side's point of view, so a spectator
   // sees the same board the drafter is looking at rather than a third version.
   const viewSide = game ? (sideToAct(game.step) ?? "BLUE") : "BLUE";
-  const knownKeys = new Set(catalog.champions.map((c) => c.key.toLowerCase()));
 
   const reasonFor = useCallback(
-    (key: string): LegalityReason | null =>
-      unavailableReason(state, gameNumber, viewSide, key, knownKeys),
-    // `knownKeys` is derived from the catalogue, which is fetched once per room.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    (key: string): LegalityReason | null => unavailableReason(state, gameNumber, viewSide, key),
     [state, gameNumber, viewSide]
   );
 
   const commit = useCallback(() => {
     if (!selected) return;
     onLock(selected);
-    setSelected(null);
-  }, [onLock, selected]);
+    onSelect(null);
+  }, [onLock, onSelect, selected]);
 
   if (!game) return null;
 
-  const step = sideToAct(game.step);
-  const isMyTurn = game.phase === "IN_PROGRESS" && step === role;
+  const isMyTurn = game.phase === "IN_PROGRESS" && sideToAct(game.step) === role;
 
   return (
     <div className="flex flex-col gap-4">
@@ -69,7 +67,7 @@ export function DraftBoard({
         onCommit={commit}
         onPassBan={() => {
           onLock(null);
-          setSelected(null);
+          onSelect(null);
         }}
         pending={pending}
       >
@@ -89,7 +87,7 @@ export function DraftBoard({
             champions={catalog.champions}
             reasonFor={reasonFor}
             selected={selected}
-            onSelect={setSelected}
+            onSelect={onSelect}
             onCommit={commit}
             interactive={isMyTurn}
           />

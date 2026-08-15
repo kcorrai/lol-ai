@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { makeDraftChampion } from "@/test/draftFixtures";
 import type { DraftChampion } from "@/domains/draft/draftCatalog.types";
 import { filterChampions, matchesQuery, normalise } from "./championSearch";
 
@@ -7,7 +8,7 @@ function champion(
   name: string,
   lanes: DraftChampion["lanes"] = ["MIDDLE"]
 ): DraftChampion {
-  return { key, name, lanes, winRate: 50, pickRate: 5, banRate: 2 };
+  return makeDraftChampion(key, name, { lanes });
 }
 
 const ROSTER: DraftChampion[] = [

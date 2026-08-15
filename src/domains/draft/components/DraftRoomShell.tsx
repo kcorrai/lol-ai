@@ -1,14 +1,23 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { HudPanel, HudRule } from "@/components/dashboard/laneiq/HudPanel";
+import { buildDraftAdvice } from "@/domains/draft/advice/draftAdvice";
+import { computeLaneEdges } from "@/domains/draft/advice/laneEdges";
 import { useDraftActions } from "@/hooks/useDraftActions";
 import { useDraftCatalog } from "@/hooks/useDraftCatalog";
+import { useDraftCounters } from "@/hooks/useDraftCounters";
+import { useDraftSummary } from "@/hooks/useDraftSummary";
 import { useDraftSync } from "@/hooks/useDraftSync";
 import { useDraftToken } from "@/hooks/useDraftToken";
+import { DraftAdvicePanel } from "./DraftAdvicePanel";
 import { DraftBoard } from "./DraftBoard";
+import { DraftSummary } from "./DraftSummary";
 import { JoinDraftPanel } from "./JoinDraftPanel";
+import { LaneEdges } from "./LaneEdges";
 import { ReadyCheck } from "./ReadyCheck";
+import { SeriesOverview } from "./SeriesOverview";
 import { TurnClock } from "./TurnClock";
 import { UndoButton } from "./UndoButton";
 
@@ -29,12 +38,41 @@ export function DraftRoomShell({ code }: Props): React.ReactElement {
   const { data, isLoading, error, skewMs } = useDraftSync(code, gameNumber, token);
   const { data: catalog } = useDraftCatalog();
   const actions = useDraftActions(code, gameNumber, token);
+  const [selected, setSelected] = useState<string | null>(null);
+
+  const state = data?.state;
+  const role = data?.role ?? "SPECTATOR";
+  const game = state?.games.find((g) => g.gameNumber === gameNumber);
+
+  // Only picks matter for matchups, and there are never more than ten.
+  const pickKeys = useMemo(
+    () =>
+      (game?.actions ?? [])
+        .filter((a) => a.kind === "PICK" && a.championKey)
+        .map((a) => a.championKey as string),
+    [game?.actions]
+  );
+  const { data: counters } = useDraftCounters(pickKeys);
+  const { data: summary } = useDraftSummary(code, gameNumber, game?.phase === "COMPLETE");
+
+  const advice = useMemo(
+    () =>
+      state && catalog && role !== "SPECTATOR"
+        ? buildDraftAdvice(state, gameNumber, role, catalog, counters ?? {})
+        : null,
+    [state, catalog, role, gameNumber, counters]
+  );
+
+  const laneEdges = useMemo(
+    () => (state && catalog ? computeLaneEdges(state, gameNumber, catalog, counters ?? {}) : []),
+    [state, catalog, gameNumber, counters]
+  );
 
   if (!ready || isLoading) {
     return <p className="p-8 text-center text-[13px] text-text-muted">Opening the room…</p>;
   }
 
-  if (error || !data) {
+  if (error || !state) {
     return (
       <div className="p-8 text-center">
         <p className="text-[14px] font-semibold text-text">This draft is not available.</p>
@@ -45,8 +83,7 @@ export function DraftRoomShell({ code }: Props): React.ReactElement {
     );
   }
 
-  const { state, role } = data;
-  const game = state.games.find((g) => g.gameNumber === gameNumber);
+  const liveAndMine = role !== "SPECTATOR" && game?.phase === "IN_PROGRESS";
 
   return (
     <div className="container mx-auto max-w-7xl px-4 py-8">
@@ -85,6 +122,8 @@ export function DraftRoomShell({ code }: Props): React.ReactElement {
           gameNumber={gameNumber}
           role={role}
           catalog={catalog}
+          selected={selected}
+          onSelect={setSelected}
           onLock={actions.lock}
           pending={actions.pending}
           clock={
@@ -100,7 +139,34 @@ export function DraftRoomShell({ code }: Props): React.ReactElement {
               </>
             )
           }
-        />
+        >
+          <DraftAdvicePanel
+            advice={advice}
+            patch={catalog.patch}
+            onSelect={setSelected}
+            visible={Boolean(liveAndMine)}
+          />
+          {game?.phase === "COMPLETE" && (
+            <DraftSummary
+              state={state}
+              game={game}
+              role={role}
+              summary={summary}
+              laneEdges={laneEdges}
+              onSetWinner={actions.setWinner}
+              pending={actions.pending}
+            />
+          )}
+          <SeriesOverview state={state} gameNumber={gameNumber} />
+          {liveAndMine && laneEdges.length > 0 && (
+            <HudPanel className="p-4">
+              <HudRule label="LANE EDGES" />
+              <div className="mt-3">
+                <LaneEdges edges={laneEdges} />
+              </div>
+            </HudPanel>
+          )}
+        </DraftBoard>
       ) : (
         <p className="p-8 text-center text-[13px] text-text-muted">Loading champions…</p>
       )}
