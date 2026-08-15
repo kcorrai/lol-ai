@@ -330,3 +330,96 @@ Extend the platform to VALORANT, TFT, or other titles with dedicated coaching pi
 **User Benefit:** Serve the broader competitive gaming audience.  
 **Difficulty:** Very High  
 **Dependencies:** Title-specific data pipelines, champion/agent databases, position-agnostic AI prompts
+
+---
+
+## Esports Features
+
+A public, free, crawlable esports section. Acquisition-first: esports intent is a
+large recurring demand pool the coaching product does not otherwise reach, and the
+pro-play pages hand that audience directly to the champion and build pages.
+
+Plan: [ESPORTS_PLAN.md](./ESPORTS_PLAN.md). Decisions:
+[ADR-016](./adr/ADR-016-esports-data-source.md) (data source),
+[ADR-017](./adr/ADR-017-esports-url-structure.md) (URLs and indexation).
+Tasks: TASK-297 → TASK-314.
+
+---
+
+### F-030 — Esports Schedule & Live Scores
+
+Hub, full calendar and a live scoreboard for every league Riot publishes. Server-cached, with one polled endpoint for live state.
+
+**User Benefit:** Know what is on, right now, without leaving the site.  
+**Difficulty:** Medium  
+**Dependencies:** LoL Esports feed (ADR-016)
+
+---
+
+### F-031 — Leagues, Standings & Brackets
+
+League hubs and tournament pages with normalised standings tables and elimination brackets across formats.
+
+**User Benefit:** The season's state at a glance, per region.  
+**Difficulty:** Medium  
+**Dependencies:** F-030, standings normalisation across formats
+
+---
+
+### F-032 — Teams & Player Profiles
+
+A page per pro team (roster, form, next match, results) and per player (role, team, champion pool, recent games).
+
+**User Benefit:** Answers the most-searched esports entities directly.  
+**Difficulty:** Medium  
+**Dependencies:** F-030
+
+---
+
+### F-033 — Match Pages with Drafts & Scoreboards
+
+Per-series pages with per-game drafts, full scoreboards, item and rune builds, gold curves and objectives, from the livestats feed.
+
+**User Benefit:** Post-match detail that schedule aggregators do not carry.  
+**Difficulty:** High  
+**Dependencies:** F-030, livestats feed coverage
+
+---
+
+### F-034 — Pro Meta & Pro Builds
+
+Pick/ban/presence/win-rate tables per tournament, and a champion-in-pro-play page with the builds and runes pros actually finish with.
+
+**User Benefit:** "What are the pros playing, and how do they build it."  
+**Difficulty:** High  
+**Dependencies:** F-033, aggregation over completed games
+
+---
+
+### F-035 — You vs the Pros
+
+Compare a player's own stats on a champion against the pro aggregate, from the pro-play page. The section's conversion step.
+
+**User Benefit:** Turns esports curiosity into a read on your own play.  
+**Difficulty:** Medium  
+**Dependencies:** F-034, existing pro comparison service (F-017)
+
+---
+
+### F-036 — AI Match Previews & Recaps
+
+Generated-once, permanently cached written previews and recaps on tier-1 matches, grounded strictly in data we hold.
+
+**User Benefit:** Original written analysis on pages that would otherwise be tables.  
+**Difficulty:** Medium  
+**Dependencies:** F-033, AI pipeline, hard cost gate
+
+---
+
+### F-037 — Follow Teams & Match Reminders
+
+Follow pro teams and get notified before they play, through the existing push, Discord and email channels.
+
+**User Benefit:** A reason to hold an account between coaching sessions.  
+**Difficulty:** Medium  
+**Dependencies:** Schema approval (TASK-313), notification preferences
