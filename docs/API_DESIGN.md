@@ -1202,3 +1202,128 @@ wrong row, here it names the wrong opponent — so consumers must let the player
 ```json
 { "data": { "inGame": false } }
 ```
+
+---
+
+## Live Draft Room (TASK-300)
+
+Seven public, login-free endpoints behind the draft room. See `docs/DRAFT_ROOM.md`
+for the feature and ADR-016 for why `GET` is polled rather than streamed.
+
+**Authorisation is by capability token, not by session.** A series mints
+`blueToken` and `redToken`; whoever presents one may act for that side. Everyone
+else is a spectator. `GET` resolves the caller's role from the token and returns
+that role — it never returns either token, so a screenshot of a poll response
+cannot hand anyone a drafter seat.
+
+Every response carries `Cache-Control: no-store`. Freshness is the whole point.
+
+**Rate limits (per IP):** create `5 / 10 min` · mutations `60 / min` ·
+`GET` `240 / min` (the 1 Hz poll plus headroom for a few tabs behind one NAT).
+
+**Status codes:** `422` failed validation · `403` no drafter token · `404` unknown
+code or game · `409` the engine refused, with the reason verbatim in
+`error.message` (`not-your-turn`, `already-used`, `series-locked`, `disabled`,
+`unknown-champion`, `draft-not-running`, `not-in-lobby`, `nothing-to-undo`,
+`not-complete`, `version-conflict`).
+
+A `version-conflict` means someone else advanced the game first. The client
+resolves it by re-reading, not by retrying the write.
+
+### `POST /api/draft`
+
+Creates a series and all its games. No auth; a signed-in creator is recorded so
+the series can be listed on their profile later, but a session is never required.
+
+**Body** (every field optional, defaults shown):
+```json
+{
+  "team1Name": "Team 1",
+  "team2Name": "Team 2",
+  "mode": "NORMAL",
+  "gameCount": 1,
+  "timerSeconds": 30,
+  "disabledChampions": []
+}
+```
+`mode` is `NORMAL` | `FEARLESS` | `TEAM_FEARLESS`. `gameCount` is 1–5.
+`timerSeconds` is `0` (untimed) or 15–120.
+
+**Response 201:**
+```json
+{ "data": { "code": "gk4mp2rn", "blueToken": "…32 hex…", "redToken": "…32 hex…" } }
+```
+
+### `GET /api/draft/[code]?game=N&token=T`
+
+The poll target. `game` defaults to 1; `token` may be omitted to read as a
+spectator.
+
+**This read can write.** An expired turn is settled here, which is what lets a
+lapsed turn resolve with neither drafter at their keyboard (ADR-016 §6).
+
+**Response 200:**
+```json
+{
+  "data": {
+    "role": "BLUE",
+    "state": {
+      "code": "gk4mp2rn",
+      "team1Name": "Team 1",
+      "team2Name": "Team 2",
+      "mode": "FEARLESS",
+      "gameCount": 3,
+      "timerSeconds": 30,
+      "disabledChampions": [],
+      "games": [
+        {
+          "gameNumber": 1,
+          "blueTeam": 1,
+          "phase": "IN_PROGRESS",
+          "step": 7,
+          "blueReady": true,
+          "redReady": true,
+          "turnStartedAt": "2026-08-15T12:00:00.000Z",
+          "winnerSide": null,
+          "version": 8,
+          "actions": [
+            { "step": 0, "side": "BLUE", "kind": "BAN", "championKey": "Ahri", "timedOut": false }
+          ]
+        }
+      ]
+    }
+  }
+}
+```
+
+Clients re-render only when `state.games[n].version` changes, and derive the
+countdown locally from `turnStartedAt + timerSeconds` rather than polling for it.
+
+### `POST /api/draft/[code]/ready`
+
+`{ "token": "…", "gameNumber": 1, "ready": true }` — the draft starts the moment
+both sides are ready.
+
+### `POST /api/draft/[code]/action`
+
+`{ "token": "…", "gameNumber": 1, "championKey": "Ahri" }` — locks the current
+ban or pick. `championKey: null` passes a ban; on a pick step it is rejected.
+
+### `POST /api/draft/[code]/undo`
+
+`{ "token": "…", "gameNumber": 1 }` — steps back one action and hands the turn
+back. The champion returns to the pool.
+
+### `POST /api/draft/[code]/result`
+
+`{ "token": "…", "gameNumber": 1, "winnerSide": "BLUE" }` — records the winner of
+a completed game. Idempotent.
+
+### `POST /api/draft/[code]/side`
+
+`{ "token": "…", "gameNumber": 2, "blueTeam": 2 }` — seats a team on blue before
+the ready check. Blue always acts first in the sequence, so this is how "first
+selection" is expressed.
+
+All five mutations answer with the same envelope as `GET`: the new state plus the
+caller's role.
