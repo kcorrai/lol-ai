@@ -1,6 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Swords, Users, Layers, Trophy, BookOpen, Snowflake, TrendingUp } from "lucide-react";
+import {
+  Swords,
+  Users,
+  Layers,
+  Trophy,
+  BookOpen,
+  Snowflake,
+  TrendingUp,
+  Radio,
+} from "lucide-react";
 import { PublicOnly } from "@/components/tools/PublicOnly";
 
 export const metadata: Metadata = {
@@ -52,6 +61,13 @@ const TOOLS = [
     title: "Patch Meta Report",
     description: "The biggest winners and losers of the current patch, updated automatically.",
     Icon: TrendingUp,
+  },
+  {
+    href: "/esports",
+    title: "Esports",
+    description:
+      "Live scores, schedule and results from every pro league, plus what the pros pick.",
+    Icon: Radio,
   },
 ];
 
