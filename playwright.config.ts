@@ -51,6 +51,14 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
 
+    // The draft room is public too, and deliberately runs with no auth state:
+    // two strangers sharing a link is exactly the case it has to survive.
+    {
+      name: "draft",
+      testMatch: /draft-room\.spec\.ts$/,
+      use: { ...devices["Desktop Chrome"] },
+    },
+
     // Smoke tests requiring authentication — depend on setup project
     {
       name: "smoke",

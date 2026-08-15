@@ -30,7 +30,10 @@ const STATUS_CODES: Record<number, string> = {
  *  string through so the room can show a real message rather than "failed". */
 export function serviceResponse(result: ServiceResult): NextResponse {
   const res = result.ok
-    ? apiSuccess({ state: result.state, role: result.role })
+    ? // `serverTime` lets the client correct for clock skew before deriving the
+      // countdown from `turnStartedAt`. Without it a machine running 30 seconds
+      // fast shows every turn as already expired (ADR-016 §4).
+      apiSuccess({ state: result.state, role: result.role, serverTime: new Date().toISOString() })
     : apiError(STATUS_CODES[result.status] ?? "INTERNAL_ERROR", result.reason, result.status);
   res.headers.set("Cache-Control", NO_STORE);
   return res;

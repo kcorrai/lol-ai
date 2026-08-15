@@ -58,15 +58,24 @@ export function applyAction(
  * Step back exactly one action and hand the turn back to whoever made it. The
  * champion returns to the pool because `championsUsedInGame` is derived from the
  * action list — there is no second place to keep it in sync.
+ *
+ * Only the side that made the last action may undo it. That needs no consent
+ * flow and no extra state, and it closes its own window: the moment the opponent
+ * locks, the last action is theirs and yours is out of reach. You can take back
+ * your own mistake; you can never rewind the enemy's pick.
  */
 export function applyUndo(
   series: DraftSeriesState,
   gameNumber: number,
+  side: DraftSide,
   nowIso: string
 ): TransitionResult {
   const game = findGame(series, gameNumber);
   if (!game) return { ok: false, reason: "unknown-game" };
   if (game.actions.length === 0) return { ok: false, reason: "nothing-to-undo" };
+  if (game.actions[game.actions.length - 1]!.side !== side) {
+    return { ok: false, reason: "not-your-turn" };
+  }
 
   const next: DraftGameState = {
     ...game,

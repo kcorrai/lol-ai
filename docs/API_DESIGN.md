@@ -1299,6 +1299,31 @@ lapsed turn resolve with neither drafter at their keyboard (ADR-016 §6).
 Clients re-render only when `state.games[n].version` changes, and derive the
 countdown locally from `turnStartedAt + timerSeconds` rather than polling for it.
 
+### `GET /api/draft/champions`
+
+The champion catalogue for a room: name, the lanes each champion is actually
+played in this patch, and their win/pick/ban rates. Fetched once when a room
+opens and held for the whole series, which is what keeps a live draft free of
+per-turn requests — the lane filter and the advice panel both read this payload.
+
+Lanes come from the patch's play data, not from Data Dragon's `tags`; those are
+class labels (Mage, Tank), not positions. A champion is listed in its main lane
+plus any lane seeing at least a fifth of that lane's games.
+
+Cached `public, s-maxage=3600, stale-while-revalidate=86400` — it only changes on
+a patch. Rate limited `30 / min` per IP.
+
+```json
+{
+  "data": {
+    "patch": "16.16",
+    "champions": [
+      { "key": "Ahri", "name": "Ahri", "lanes": ["MIDDLE"], "winRate": 51.2, "pickRate": 8.4, "banRate": 3.1 }
+    ]
+  }
+}
+```
+
 ### `POST /api/draft/[code]/ready`
 
 `{ "token": "…", "gameNumber": 1, "ready": true }` — the draft starts the moment
