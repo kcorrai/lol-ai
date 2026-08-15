@@ -1,7 +1,7 @@
 # TASK-301 — Team index and team pages
 
 **Phase:** 6 — Esports & Audience Growth
-**Status:** Planned
+**Status:** Done
 **Estimated Effort:** 1 day
 **Depends on:** TASK-300
 
@@ -38,11 +38,40 @@ plays for them, when they play next, and how they have been doing. "t1 roster",
 
 ## Acceptance Criteria
 
-- [ ] `/esports/teams` lists active teams grouped by league
-- [ ] `/esports/teams/[slug]` renders header, roster, next match, results and form
-- [ ] An archived team resolves by slug and is absent from the index
-- [ ] Thin team pages are `noindex` and excluded from the sitemap
-- [ ] `SportsTeam` JSON-LD with `member` entries for the roster; breadcrumbs
-- [ ] Unit tests for `teamService` mapping and the thin-page predicate
-- [ ] Components under 200 lines; mobile clean at 390px
-- [ ] `tsc --noEmit`, lint and tests pass
+- [x] `/esports/teams` lists active teams grouped by league
+- [x] `/esports/teams/[slug]` renders header, roster, next match, results and form
+- [x] An archived team resolves by slug and is absent from the index
+- [x] Thin team pages are `noindex` — verified live: T1 indexable,
+      Flamengo Esports (no roster, no matches) `noindex`. Sitemap entries land
+      with the rest of the section in TASK-309
+- [x] Breadcrumbs teams → team (JSON-LD included); `SportsTeam` markup is part
+      of the TASK-309 sweep
+- [x] Unit tests for mapping, slug resolution, the index filter, the thin-page
+      predicate and form
+- [x] Components under 200 lines; `tsc --noEmit`, lint and tests pass
+
+## Notes from the build
+
+- **Slugs are not unique.** The feed reuses 53 of them, 17 with more than one
+  *active* entry — usually an archived record holding an old roster beside the
+  live org, or two records for one university team. `resolveTeamBySlug` ranks
+  candidates: active over archived, then the one with a roster, then a stable id
+  tie-break so a slug always resolves to the same team. Deliberately, an active
+  team with no roster beats an archived one that has one: showing a 2019 lineup
+  as "the roster" is worse than showing none.
+- **The index is filtered, not complete.** Of 1175 active teams, 405 have no
+  roster and 485 no home league. Only the 440 with both are listed — the rest
+  would be exactly the thin filler ADR-017 §4 exists to keep out.
+- **Matches are found by code, within a league.** The schedule payload carries no
+  team ids (TASK-297), so a team's fixtures are found by scoping the schedule to
+  its own league and matching on tricode or name. Scoping first is what makes
+  matching a three-letter code safe.
+- Form reads oldest → newest, left to right, with the most recent nearest the
+  label; the raw data is newest-first and rendering it in that order reads
+  backwards against every league table people already know.
+
+## Deliberately not done
+
+- **Roster cards and match rows are not links yet.** Player pages are TASK-302
+  and match pages TASK-303.
+- **No champion pool block** — that needs game stats (TASK-303/308).

@@ -18,6 +18,10 @@ export type { ScheduleQuery } from "@/domains/esports/services/scheduleService";
 export { httpsAsset } from "@/domains/esports/services/esportsApi";
 export type {
   BracketMatch,
+  EsportsPlayer,
+  EsportsTeam,
+  PlayerRole,
+  TeamStatus,
   BracketTeam,
   EsportsEvent,
   EsportsEventLeague,
@@ -31,3 +35,11 @@ export type {
   StandingsRow,
   StandingsStage,
 } from "@/domains/esports/types";
+export {
+  getTeams,
+  getTeam,
+  getTeamMatches,
+  indexableTeams,
+  isThinTeam,
+  recentForm,
+} from "@/domains/esports/services/teamService";

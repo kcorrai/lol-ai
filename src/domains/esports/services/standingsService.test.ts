@@ -35,13 +35,11 @@ function response(stages: unknown[]): unknown {
 }
 
 function mockFeed(body: unknown): void {
-  global.fetch = vi
-    .fn()
-    .mockResolvedValue({
-      ok: true,
-      status: 200,
-      json: async () => body,
-    }) as unknown as typeof fetch;
+  global.fetch = vi.fn().mockResolvedValue({
+    ok: true,
+    status: 200,
+    json: async () => body,
+  }) as unknown as typeof fetch;
 }
 
 describe("getStandings — ranked stages", () => {
