@@ -12,8 +12,9 @@ const CSP = [
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   // Google Fonts files
   "font-src 'self' data: https://fonts.gstatic.com",
-  // Champion/item images via Data Dragon + rank emblems via Community Dragon
-  "img-src 'self' data: blob: https://ddragon.leagueoflegends.com https://raw.communitydragon.org",
+  // Champion/item images via Data Dragon + rank emblems via Community Dragon +
+  // team/league/player logos for the esports section (ADR-016)
+  "img-src 'self' data: blob: https://ddragon.leagueoflegends.com https://raw.communitydragon.org https://static.lolesports.com https://lolstatic-a.akamaihd.net",
   // Official champion ability preview videos (Riot CloudFront)
   "media-src 'self' https://d28xe8vt774jo5.cloudfront.net",
   // Same-origin API calls + DDragon JSON data + Sentry error reporting
@@ -35,6 +36,19 @@ const nextConfig = {
         protocol: "https",
         hostname: "raw.communitydragon.org",
         pathname: "/latest/**",
+      },
+      {
+        // Esports team, league and player logos. The feed publishes some of
+        // these over http; every URL is upgraded before it reaches an <Image>.
+        protocol: "https",
+        hostname: "static.lolesports.com",
+        pathname: "/**",
+      },
+      {
+        // The same assets are served from Riot's Akamai host on older records.
+        protocol: "https",
+        hostname: "lolstatic-a.akamaihd.net",
+        pathname: "/**",
       },
       {
         // Legends of Runeterra Data Dragon — the only Riot CDN that serves wide,

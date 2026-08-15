@@ -1,7 +1,26 @@
 import {
-  LayoutDashboard, Gamepad2, CreditCard, UserCircle, Shield, MessageCircle, Star,
-  Users, ClipboardList, TrendingUp, Trophy, Map, Film, Lock, Bot, Medal, CalendarDays,
-  Swords, Layers, BookOpen, Snowflake,
+  LayoutDashboard,
+  Gamepad2,
+  CreditCard,
+  UserCircle,
+  Shield,
+  MessageCircle,
+  Star,
+  Users,
+  ClipboardList,
+  TrendingUp,
+  Trophy,
+  Map,
+  Film,
+  Lock,
+  Bot,
+  Medal,
+  CalendarDays,
+  Swords,
+  Layers,
+  BookOpen,
+  Snowflake,
+  Radio,
 } from "lucide-react";
 
 export interface NavItemConfig {
@@ -32,49 +51,58 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     label: "Coaching",
     items: [
-      { href: "/coaching",      icon: ClipboardList, label: "Reports", tourId: "nav-reports" },
-      { href: "/coaching/chat", icon: MessageCircle, label: "Coach Chat", tourId: "nav-coach-chat" },
-      { href: "/improvement",   icon: TrendingUp,    label: "Improvement", tourId: "nav-improvement" },
-      { href: "/otp",           icon: Star,          label: "OTP Assistant", tourId: "nav-otp" },
+      { href: "/coaching", icon: ClipboardList, label: "Reports", tourId: "nav-reports" },
+      {
+        href: "/coaching/chat",
+        icon: MessageCircle,
+        label: "Coach Chat",
+        tourId: "nav-coach-chat",
+      },
+      { href: "/improvement", icon: TrendingUp, label: "Improvement", tourId: "nav-improvement" },
+      { href: "/otp", icon: Star, label: "OTP Assistant", tourId: "nav-otp" },
     ],
   },
   {
     label: "My Performance",
     items: [
-      { href: "/champion-pool", icon: Shield,       label: "Champions", tourId: "nav-champions" },
-      { href: "/analysis",      icon: Map,          label: "Heat Map" },
-      { href: "/recap",         icon: Film,         label: "Season Recap" },
-      { href: "/milestone",     icon: CalendarDays, label: "Milestone" },
+      { href: "/champion-pool", icon: Shield, label: "Champions", tourId: "nav-champions" },
+      { href: "/analysis", icon: Map, label: "Heat Map" },
+      { href: "/recap", icon: Film, label: "Season Recap" },
+      { href: "/milestone", icon: CalendarDays, label: "Milestone" },
     ],
   },
   {
     label: "Compete",
     items: [
-      { href: "/leaderboard",  icon: Medal,  label: "Leaderboard", tourId: "nav-leaderboard" },
+      { href: "/leaderboard", icon: Medal, label: "Leaderboard", tourId: "nav-leaderboard" },
       { href: "/achievements", icon: Trophy, label: "Badges", tourId: "nav-badges" },
-      { href: "/teams",        icon: Users,  label: "Teams" },
+      { href: "/teams", icon: Users, label: "Teams" },
     ],
   },
   {
     label: "Free Tools",
     items: [
-      { href: "/tools/counter-picker", icon: Swords,    label: "Counter Picker", tourId: "nav-tools" },
-      { href: "/tools/matchup",        icon: Users,     label: "Matchup Analyzer" },
-      { href: "/tools/draft-analyzer", icon: Layers,    label: "Draft Analyzer" },
-      { href: "/tools/tier-list",      icon: Trophy,    label: "Tier List" },
-      { href: "/builds",               icon: BookOpen,  label: "Champion Builds" },
-      { href: "/aram/tier-list",       icon: Snowflake, label: "ARAM Tier List" },
-      { href: "/meta",                 icon: TrendingUp, label: "Patch Meta" },
+      { href: "/tools/counter-picker", icon: Swords, label: "Counter Picker", tourId: "nav-tools" },
+      { href: "/tools/matchup", icon: Users, label: "Matchup Analyzer" },
+      { href: "/tools/draft-analyzer", icon: Layers, label: "Draft Analyzer" },
+      { href: "/tools/tier-list", icon: Trophy, label: "Tier List" },
+      { href: "/builds", icon: BookOpen, label: "Champion Builds" },
+      { href: "/aram/tier-list", icon: Snowflake, label: "ARAM Tier List" },
+      { href: "/meta", icon: TrendingUp, label: "Patch Meta" },
     ],
+  },
+  {
+    label: "Esports",
+    items: [{ href: "/esports", icon: Radio, label: "Live & Schedule" }],
   },
 ];
 
 export const NAV_SETTINGS: NavItemConfig[] = [
-  { href: "/settings/accounts", icon: Gamepad2,   label: "Accounts", tourId: "nav-accounts" },
-  { href: "/settings/billing",  icon: CreditCard, label: "Billing" },
-  { href: "/settings/profile",  icon: UserCircle, label: "Profile", tourId: "nav-profile" },
-  { href: "/settings/privacy",  icon: Lock,       label: "Privacy" },
-  { href: "/settings/discord",  icon: Bot,        label: "Discord", tourId: "nav-discord" },
+  { href: "/settings/accounts", icon: Gamepad2, label: "Accounts", tourId: "nav-accounts" },
+  { href: "/settings/billing", icon: CreditCard, label: "Billing" },
+  { href: "/settings/profile", icon: UserCircle, label: "Profile", tourId: "nav-profile" },
+  { href: "/settings/privacy", icon: Lock, label: "Privacy" },
+  { href: "/settings/discord", icon: Bot, label: "Discord", tourId: "nav-discord" },
 ];
 
 // Every navigable href, used for longest-prefix active-state disambiguation.

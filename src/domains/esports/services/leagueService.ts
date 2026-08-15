@@ -137,3 +137,36 @@ export async function getTournamentsForLeague(leagueId: string): Promise<Esports
   });
   return tournaments ?? [];
 }
+
+/**
+ * The split a league hub should lead with: the one running today, or failing
+ * that the most recent one to have started.
+ *
+ * Not simply "the newest": next year's split is often published months early,
+ * and leading with a tournament that has not begun would show an empty table
+ * while the split people are actually watching sits a click away.
+ */
+export function pickCurrentTournament(
+  tournaments: EsportsTournament[],
+  now: Date
+): EsportsTournament | null {
+  if (tournaments.length === 0) return null;
+
+  const today = now.toISOString().slice(0, 10);
+
+  const running = tournaments.find(
+    (t) => t.startDate && t.startDate <= today && (!t.endDate || t.endDate >= today)
+  );
+  if (running) return running;
+
+  // Sorted newest first, so the first already-started split is the latest one.
+  return tournaments.find((t) => t.startDate && t.startDate <= today) ?? tournaments[0];
+}
+
+/** `pickCurrentTournament` over a league's cached tournament list. */
+export async function getCurrentTournament(
+  leagueId: string,
+  now: Date = new Date()
+): Promise<EsportsTournament | null> {
+  return pickCurrentTournament(await getTournamentsForLeague(leagueId), now);
+}

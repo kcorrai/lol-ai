@@ -9,6 +9,7 @@ import {
   BookOpen,
   Snowflake,
   TrendingUp,
+  Radio,
 } from "lucide-react";
 import { PublicOnly } from "@/components/tools/PublicOnly";
 
@@ -68,6 +69,13 @@ const TOOLS = [
     title: "Patch Meta Report",
     description: "The biggest winners and losers of the current patch, updated automatically.",
     Icon: TrendingUp,
+  },
+  {
+    href: "/esports",
+    title: "Esports",
+    description:
+      "Live scores, schedule and results from every pro league, plus what the pros pick.",
+    Icon: Radio,
   },
 ];
 

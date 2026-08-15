@@ -11,6 +11,7 @@ const NAV: ReadonlyArray<{ href: string; label: string }> = [
   { href: "/tools", label: "Tools" },
   { href: "/tools/tier-list", label: "Tier list" },
   { href: "/champions", label: "Champions" },
+  { href: "/esports", label: "Esports" },
   { href: "/pricing", label: "Pricing" },
 ];
 

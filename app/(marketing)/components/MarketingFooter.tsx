@@ -51,6 +51,7 @@ export async function MarketingFooter(): Promise<React.ReactElement> {
     { href: "/builds", label: "Builds" },
     { href: "/meta", label: "Meta report" },
     { href: "/tools/matchup", label: "Matchup analyzer" },
+    { href: "/esports", label: "Esports" },
   ];
 
   const popularBuilds: FooterLink[] = popular.map((c) => ({
