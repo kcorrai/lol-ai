@@ -7,9 +7,9 @@ import { z } from "zod";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Mail } from "lucide-react";
+import { AuthPanel, AuthTabs, AuthError, AuthNotice } from "./AuthPanel";
+import { AuthField, AuthInput, PasswordField, AuthSubmit } from "./AuthControls";
 import { OAuthButton } from "./OAuthButton";
 
 const loginSchema = z.object({
@@ -19,7 +19,7 @@ const loginSchema = z.object({
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
-export function LoginForm() {
+export function LoginForm(): React.ReactElement {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -54,93 +54,55 @@ export function LoginForm() {
   }
 
   return (
-    <Card>
-      <CardHeader className="space-y-1">
-        <CardTitle>Log in</CardTitle>
-        <CardDescription>Enter your email and password to continue</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {justRegistered && (
-          <p className="rounded-md border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
-            Account created! Log in to get started.
-          </p>
-        )}
+    <AuthPanel
+      kicker="Session"
+      heading="Log in"
+      subheading="Your reports and plan are where you left them."
+      tabs={<AuthTabs active="login" />}
+    >
+      <div className="space-y-4">
+        {justRegistered && <AuthNotice>Account created — log in to get started.</AuthNotice>}
         {justReset && (
-          <p className="rounded-md border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
-            Password updated successfully. Log in with your new password.
-          </p>
+          <AuthNotice>Password updated. Log in with your new password.</AuthNotice>
         )}
 
         <OAuthButton provider="google" />
 
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-border" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-surface px-2 text-text-muted">Or continue with email</span>
-          </div>
-        </div>
-
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-1">
-            <label htmlFor="email" className="text-sm text-text-muted">
-              Email
-            </label>
-            <Input
+          <AuthField label="Email" htmlFor="email" error={errors.email?.message}>
+            <AuthInput
               id="email"
               type="email"
-              placeholder="player@example.com"
+              icon={Mail}
+              placeholder="you@example.com"
               autoComplete="email"
               {...register("email")}
             />
-            {errors.email && (
-              <p className="text-xs text-danger">{errors.email.message}</p>
-            )}
-          </div>
+          </AuthField>
 
-          <div className="space-y-1">
-            <div className="flex items-center justify-between">
-              <label htmlFor="password" className="text-sm text-text-muted">
-                Password
-              </label>
-              <Link
-                href="/forgot-password"
-                className="text-xs text-text-muted hover:text-accent hover:underline"
-              >
-                Forgot password?
-              </Link>
-            </div>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              autoComplete="current-password"
-              {...register("password")}
-            />
-            {errors.password && (
-              <p className="text-xs text-danger">{errors.password.message}</p>
-            )}
-          </div>
+          <PasswordField
+            id="password"
+            label="Password"
+            placeholder="••••••••"
+            autoComplete="current-password"
+            error={errors.password?.message}
+            {...register("password")}
+          />
 
-          {serverError && (
-            <p className="rounded-md border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">
-              {serverError}
-            </p>
-          )}
+          {serverError && <AuthError>{serverError}</AuthError>}
 
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Logging in…" : "Log in"}
-          </Button>
+          <AuthSubmit pending={isSubmitting}>{isSubmitting ? "Logging in" : "Log in"}</AuthSubmit>
         </form>
 
-        <p className="text-center text-sm text-text-muted">
-          Don&apos;t have an account?{" "}
-          <Link href="/register" className="text-accent hover:underline">
-            Create for free
+        <div className="flex justify-between gap-3 font-mono text-[10.5px] uppercase tracking-[0.14em]">
+          <Link href="/forgot-password" className="text-accent hover:text-acid-400">
+            Forgot password
           </Link>
-        </p>
-      </CardContent>
-    </Card>
+          <Link href="/register" className="text-text-muted hover:text-accent">
+            Create account
+          </Link>
+        </div>
+      </div>
+    </AuthPanel>
   );
 }

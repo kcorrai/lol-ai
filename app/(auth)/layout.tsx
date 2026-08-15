@@ -1,11 +1,33 @@
+import Link from "next/link";
+import { AuthArt } from "./components/AuthArt";
+import { Wordmark } from "../(marketing)/components/laneiq/Wordmark";
+
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen flex-col items-center bg-background px-4 pb-8 pt-16 sm:pt-24">
-      <div className="mb-8 text-center">
-        <p className="font-display text-3xl font-bold text-accent">LoL AI Coach</p>
-        <p className="mt-1 text-sm text-text-muted">AI-Powered LoL Coach</p>
+    <div className="grid min-h-screen lg:grid-cols-[1.08fr_1fr]">
+      <AuthArt />
+
+      <div className="flex items-center justify-center px-5 py-12 sm:px-10">
+        <div className="w-full max-w-[432px]">
+          {/* The art panel is the brand on a wide screen. Below it, this is. */}
+          <div className="mb-8 flex items-center gap-3.5 lg:hidden">
+            <Wordmark size={17} />
+            <span className="h-4 w-px bg-line-2" />
+            <span className="font-mono text-[10px] uppercase tracking-label text-text-muted">
+              Ranked review
+            </span>
+          </div>
+
+          {children}
+
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 font-mono text-[9.5px] uppercase tracking-[0.1em] text-text-faint">
+            <span>Free tools stay open · no account needed</span>
+            <Link href="/tools/tier-list" className="text-text-muted hover:text-accent">
+              Browse tier list &rarr;
+            </Link>
+          </div>
+        </div>
       </div>
-      <div className="w-full max-w-sm">{children}</div>
     </div>
   );
 }
