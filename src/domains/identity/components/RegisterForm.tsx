@@ -6,10 +6,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Mail, UserRound } from "lucide-react";
 import { claimQuery, parseClaim } from "@/lib/riot/claim";
+import { AuthPanel, AuthTabs, AuthError } from "./AuthPanel";
+import {
+  AuthField,
+  AuthInput,
+  AuthCheckbox,
+  PasswordField,
+  PasswordMeter,
+  AuthSubmit,
+} from "./AuthControls";
 import { OAuthButton } from "./OAuthButton";
 
 const registerSchema = z
@@ -26,20 +33,24 @@ const registerSchema = z
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
-export function RegisterForm() {
+export function RegisterForm(): React.ReactElement {
   const router = useRouter();
   const searchParams = useSearchParams();
   const refCode = searchParams.get("ref")?.toUpperCase() ?? null;
   const claimed = parseClaim(searchParams);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const {
     register,
+    watch,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
   });
+
+  const password = watch("password") ?? "";
 
   async function onSubmit(values: RegisterFormValues) {
     setServerError(null);
@@ -70,107 +81,91 @@ export function RegisterForm() {
     router.push(`/login?registered=1&callbackUrl=${encodeURIComponent(destination)}`);
   }
 
-  return (
-    <Card>
-      <CardHeader className="space-y-1">
-        <CardTitle>Create Account</CardTitle>
-        <CardDescription>
-          {claimed
-            ? `${claimed.gameName}#${claimed.tagLine} connects automatically once you're in — nothing else to fill in.`
-            : refCode
-              ? `Referral code active: ${refCode} — You both get 7 days of Pro!`
-              : "Free — no credit card required"}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <OAuthButton provider="google" />
+  const subheading = claimed
+    ? `${claimed.gameName}#${claimed.tagLine} connects automatically once you're in — nothing else to fill in.`
+    : refCode
+      ? `Referral code active: ${refCode} — you both get 7 days of Pro.`
+      : "Connect a Riot ID after sign-up and your first report lands in about 90 seconds.";
 
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-border" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-surface px-2 text-text-muted">Or sign up with email</span>
-          </div>
-        </div>
+  return (
+    <AuthPanel
+      kicker="New account"
+      heading="Create account"
+      subheading={subheading}
+      badge="Free while in beta"
+      tabs={<AuthTabs active="signup" />}
+    >
+      <div className="space-y-4">
+        <OAuthButton provider="google" dividerLabel="or with email" />
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-1">
-            <label htmlFor="name" className="text-sm text-text-muted">
-              Display Name
-            </label>
-            <Input
+          <AuthField label="Display name" htmlFor="name" error={errors.name?.message}>
+            <AuthInput
               id="name"
               type="text"
+              icon={UserRound}
               placeholder="PlayerName"
               autoComplete="name"
               {...register("name")}
             />
-            {errors.name && <p className="text-xs text-danger">{errors.name.message}</p>}
-          </div>
+          </AuthField>
 
-          <div className="space-y-1">
-            <label htmlFor="email" className="text-sm text-text-muted">
-              Email
-            </label>
-            <Input
+          <AuthField label="Email" htmlFor="email" error={errors.email?.message}>
+            <AuthInput
               id="email"
               type="email"
-              placeholder="player@example.com"
+              icon={Mail}
+              placeholder="you@example.com"
               autoComplete="email"
               {...register("email")}
             />
-            {errors.email && <p className="text-xs text-danger">{errors.email.message}</p>}
-          </div>
+          </AuthField>
 
-          <div className="space-y-1">
-            <label htmlFor="password" className="text-sm text-text-muted">
-              Password
-            </label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="At least 8 characters"
-              autoComplete="new-password"
-              {...register("password")}
-            />
-            {errors.password && <p className="text-xs text-danger">{errors.password.message}</p>}
-          </div>
+          <PasswordField
+            id="password"
+            label="Password"
+            placeholder="8+ characters"
+            autoComplete="new-password"
+            error={errors.password?.message}
+            {...register("password")}
+          />
 
-          <div className="space-y-1">
-            <label htmlFor="confirmPassword" className="text-sm text-text-muted">
-              Confirm Password
-            </label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              placeholder="••••••••"
-              autoComplete="new-password"
-              {...register("confirmPassword")}
-            />
-            {errors.confirmPassword && (
-              <p className="text-xs text-danger">{errors.confirmPassword.message}</p>
-            )}
-          </div>
+          <PasswordMeter password={password} />
 
-          {serverError && (
-            <p className="rounded-md border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">
-              {serverError}
-            </p>
-          )}
+          <PasswordField
+            id="confirmPassword"
+            label="Confirm password"
+            placeholder="••••••••"
+            autoComplete="new-password"
+            error={errors.confirmPassword?.message}
+            {...register("confirmPassword")}
+          />
 
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Creating account…" : "Create Account"}
-          </Button>
+          <AuthCheckbox id="terms" checked={acceptedTerms} onChange={setAcceptedTerms}>
+            I agree to the{" "}
+            <Link href="/terms" className="text-accent hover:text-acid-400">
+              terms
+            </Link>{" "}
+            and{" "}
+            <Link href="/privacy" className="text-accent hover:text-acid-400">
+              privacy policy
+            </Link>
+          </AuthCheckbox>
+
+          {serverError && <AuthError>{serverError}</AuthError>}
+
+          <AuthSubmit pending={isSubmitting} disabled={!acceptedTerms}>
+            {isSubmitting ? "Creating account" : "Create account"}
+          </AuthSubmit>
         </form>
 
-        <p className="text-center text-sm text-text-muted">
+        <p className="text-center font-mono text-[10.5px] uppercase tracking-[0.14em] text-text-muted">
           Already have an account?{" "}
-          <Link href="/login" className="text-accent hover:underline">
+          <Link href="/login" className="text-accent hover:text-acid-400">
             Log in
           </Link>
         </p>
-      </CardContent>
-    </Card>
+      </div>
+    </AuthPanel>
   );
 }

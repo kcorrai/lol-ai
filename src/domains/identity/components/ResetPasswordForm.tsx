@@ -6,9 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { AuthPanel, AuthError } from "./AuthPanel";
+import { PasswordField, PasswordMeter, AuthSubmit } from "./AuthControls";
 
 const schema = z
   .object({
@@ -21,7 +20,7 @@ const schema = z
   });
 type FormValues = z.infer<typeof schema>;
 
-export function ResetPasswordForm() {
+export function ResetPasswordForm(): React.ReactElement {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token") ?? "";
@@ -29,27 +28,12 @@ export function ResetPasswordForm() {
 
   const {
     register,
+    watch,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
-  if (!token) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Invalid link</CardTitle>
-          <CardDescription>
-            This password reset link is missing or malformed.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Link href="/forgot-password" className="text-sm text-accent hover:underline">
-            Request a new reset link
-          </Link>
-        </CardContent>
-      </Card>
-    );
-  }
+  const password = watch("password") ?? "";
 
   async function onSubmit(values: FormValues) {
     setServerError(null);
@@ -77,65 +61,62 @@ export function ResetPasswordForm() {
     }
   }
 
+  if (!token) {
+    return (
+      <AuthPanel
+        kicker="Dead link"
+        heading="Invalid link"
+        subheading="This password reset link is missing or malformed."
+      >
+        <Link
+          href="/forgot-password"
+          className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-accent hover:text-acid-400"
+        >
+          Request a new reset link &rarr;
+        </Link>
+      </AuthPanel>
+    );
+  }
+
   return (
-    <Card>
-      <CardHeader className="space-y-1">
-        <CardTitle>Set new password</CardTitle>
-        <CardDescription>
-          Choose a new password for your account. Must be at least 8 characters.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-1">
-            <label htmlFor="password" className="text-sm text-text-muted">
-              New password
-            </label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              autoComplete="new-password"
-              {...register("password")}
-            />
-            {errors.password && (
-              <p className="text-xs text-danger">{errors.password.message}</p>
-            )}
-          </div>
+    <AuthPanel
+      kicker="Password reset"
+      heading="Set new password"
+      subheading="Choose a new password for your account. At least 8 characters."
+    >
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <PasswordField
+          id="password"
+          label="New password"
+          placeholder="8+ characters"
+          autoComplete="new-password"
+          error={errors.password?.message}
+          {...register("password")}
+        />
 
-          <div className="space-y-1">
-            <label htmlFor="confirmPassword" className="text-sm text-text-muted">
-              Confirm new password
-            </label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              placeholder="••••••••"
-              autoComplete="new-password"
-              {...register("confirmPassword")}
-            />
-            {errors.confirmPassword && (
-              <p className="text-xs text-danger">{errors.confirmPassword.message}</p>
-            )}
-          </div>
+        <PasswordMeter password={password} />
 
-          {serverError && (
-            <p className="rounded-md border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">
-              {serverError}
-            </p>
-          )}
+        <PasswordField
+          id="confirmPassword"
+          label="Confirm new password"
+          placeholder="••••••••"
+          autoComplete="new-password"
+          error={errors.confirmPassword?.message}
+          {...register("confirmPassword")}
+        />
 
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Updating password…" : "Update password"}
-          </Button>
-        </form>
+        {serverError && <AuthError>{serverError}</AuthError>}
 
-        <p className="text-center text-sm text-text-muted">
-          <Link href="/forgot-password" className="text-accent hover:underline">
+        <AuthSubmit pending={isSubmitting}>
+          {isSubmitting ? "Updating password" : "Update password"}
+        </AuthSubmit>
+
+        <p className="text-center font-mono text-[10.5px] uppercase tracking-[0.14em]">
+          <Link href="/forgot-password" className="text-text-muted hover:text-accent">
             Request a new reset link
           </Link>
         </p>
-      </CardContent>
-    </Card>
+      </form>
+    </AuthPanel>
   );
 }

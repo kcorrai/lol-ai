@@ -5,16 +5,16 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Mail, MailCheck } from "lucide-react";
+import { AuthPanel, AuthError } from "@/domains/identity/components/AuthPanel";
+import { AuthField, AuthInput, AuthSubmit } from "@/domains/identity/components/AuthControls";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email address"),
 });
 type FormValues = z.infer<typeof schema>;
 
-export function ForgotPasswordForm() {
+export function ForgotPasswordForm(): React.ReactElement {
   const [sent, setSent] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -41,66 +41,66 @@ export function ForgotPasswordForm() {
 
   if (sent) {
     return (
-      <Card>
-        <CardHeader className="space-y-1">
-          <CardTitle>Check your email</CardTitle>
-          <CardDescription>
-            If there&apos;s an account associated with this address, we&apos;ve sent a password reset link. It will expire in 1 hour.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Link href="/login" className="text-sm text-accent hover:underline">
-            ← Back to login
+      <AuthPanel
+        kicker="Check your email"
+        heading="Link sent"
+        subheading="One email, one link, one hour."
+      >
+        <div className="space-y-4">
+          <p className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-label text-accent">
+            <MailCheck className="h-5 w-5" strokeWidth={1.75} />
+            {"// Link sent"}
+          </p>
+          <p className="text-sm text-text-body">
+            If there&apos;s an account on this address, the reset link is on its way. It expires in
+            one hour — look in spam before requesting another.
+          </p>
+          <Link
+            href="/login"
+            className="tag-cut flex h-10 w-full items-center justify-center border border-line-2 bg-surface-2 font-display text-xs font-bold uppercase tracking-[0.1em] text-text transition-colors duration-150 hover:border-accent hover:bg-ink-500"
+          >
+            Back to log in
           </Link>
-        </CardContent>
-      </Card>
+        </div>
+      </AuthPanel>
     );
   }
 
   return (
-    <Card>
-      <CardHeader className="space-y-1">
-        <CardTitle>Forgot Password</CardTitle>
-        <CardDescription>
-          Enter your email address and we&apos;ll send you a password reset link.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-1">
-            <label htmlFor="email" className="text-sm text-text-muted">
-              Email
-            </label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="player@example.com"
-              autoComplete="email"
-              {...register("email")}
-            />
-            {errors.email && (
-              <p className="text-xs text-danger">{errors.email.message}</p>
-            )}
-          </div>
+    <AuthPanel
+      kicker="Password reset"
+      heading="Reset password"
+      subheading="Enter the email on your account and we send a reset link."
+    >
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <AuthField
+          label="Email"
+          htmlFor="email"
+          hint="We send one link. It expires in one hour."
+          error={errors.email?.message}
+        >
+          <AuthInput
+            id="email"
+            type="email"
+            icon={Mail}
+            placeholder="you@example.com"
+            autoComplete="email"
+            {...register("email")}
+          />
+        </AuthField>
 
-          {serverError && (
-            <p className="rounded-md border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">
-              {serverError}
-            </p>
-          )}
+        {serverError && <AuthError>{serverError}</AuthError>}
 
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Sending…" : "Send reset link"}
-          </Button>
-        </form>
+        <AuthSubmit pending={isSubmitting}>
+          {isSubmitting ? "Sending" : "Send reset link"}
+        </AuthSubmit>
 
-        <p className="text-center text-sm text-text-muted">
-          Remember it?{" "}
-          <Link href="/login" className="text-accent hover:underline">
-            Log in
+        <p className="text-center font-mono text-[10.5px] uppercase tracking-[0.14em]">
+          <Link href="/login" className="text-text-muted hover:text-accent">
+            Back to log in
           </Link>
         </p>
-      </CardContent>
-    </Card>
+      </form>
+    </AuthPanel>
   );
 }

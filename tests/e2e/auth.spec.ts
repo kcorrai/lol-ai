@@ -15,6 +15,8 @@ test.describe("Authentication", () => {
     await page.fill("#email", uniqueEmail);
     await page.fill("#password", "ValidPass123!");
     await page.fill("#confirmPassword", "ValidPass123!");
+    // Sign-up gates its submit on the terms checkbox (TASK-315).
+    await page.check("#terms");
     await page.click('button[type="submit"]');
 
     // After registration, redirected to login with success param
@@ -29,6 +31,7 @@ test.describe("Authentication", () => {
     await page.fill("#email", E2E_USER.email);
     await page.fill("#password", E2E_USER.password);
     await page.fill("#confirmPassword", E2E_USER.password);
+    await page.check("#terms");
     await page.click('button[type="submit"]');
 
     // Error message visible (email already taken)
