@@ -565,3 +565,99 @@ from `match_participants` (same match, same `team_id`) — so this stores only t
   change, or once they fall outside the 200-match scan window.
 - Only one row per account is `isActive`. Deselecting sets `isActive=false` instead of deleting,
   so switching back to a previous duo keeps its history.
+
+---
+
+## 8. Live Draft Room (TASK-298)
+
+Three tables behind the public pick/ban room. See `docs/DRAFT_ROOM.md` for the
+feature and ADR-016 for why reads are served from Redis rather than from here.
+
+**Enums:**
+
+- `DraftSeriesMode` — `NORMAL`, `FEARLESS`, `TEAM_FEARLESS`
+- `DraftSideEnum` — `BLUE`, `RED`
+- `DraftGamePhase` — `LOBBY`, `IN_PROGRESS`, `COMPLETE`
+- `DraftActionKind` — `BAN`, `PICK`
+
+### `draft_series`
+
+One best-of-N. The link people share is built from `code`.
+
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `code` | `text` | NOT NULL, UNIQUE — 8 URL-safe chars, public |
+| `blueToken` | `text` | NOT NULL, UNIQUE — capability token, 32 chars |
+| `redToken` | `text` | NOT NULL, UNIQUE — capability token, 32 chars |
+| `team1Name` | `text` | NOT NULL |
+| `team2Name` | `text` | NOT NULL |
+| `mode` | `DraftSeriesMode` | NOT NULL, default `NORMAL` |
+| `gameCount` | `integer` | NOT NULL, default `1` (1–5) |
+| `timerSeconds` | `integer` | NOT NULL, default `30`; `0` = untimed |
+| `disabledChampions` | `text[]` | default `{}` |
+| `createdById` | `uuid` | nullable, FK → users.id SET NULL |
+| `createdAt` | `timestamptz` | NOT NULL |
+| `expiresAt` | `timestamptz` | NOT NULL |
+
+**Indexes:** `UNIQUE (code)`, `UNIQUE (blueToken)`, `UNIQUE (redToken)`,
+`INDEX (expiresAt)`, `INDEX (createdById)`
+
+**Notes:**
+- All three secrets come from `crypto.randomBytes`, never `Math.random`.
+- `createdById` is nullable because the room is login-free by design; an
+  anonymous series is the primary path, not a degraded one.
+- `expiresAt` is creation + 7 days and drives the cleanup sweep.
+
+### `draft_games`
+
+One game of the series. Sides swap down the series, so `blueTeam` — not the row
+order — says who is on blue.
+
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `seriesId` | `uuid` | NOT NULL, FK → draft_series.id CASCADE |
+| `gameNumber` | `integer` | NOT NULL |
+| `blueTeam` | `integer` | NOT NULL, default `1` — `1` or `2` |
+| `phase` | `DraftGamePhase` | NOT NULL, default `LOBBY` |
+| `step` | `integer` | NOT NULL, default `0` — next step index, 0–20 |
+| `blueReady` | `boolean` | NOT NULL, default `false` |
+| `redReady` | `boolean` | NOT NULL, default `false` |
+| `turnStartedAt` | `timestamptz` | nullable |
+| `winnerSide` | `DraftSideEnum` | nullable |
+| `version` | `integer` | NOT NULL, default `0` |
+
+**Indexes:** `UNIQUE (seriesId, gameNumber)`, `INDEX (seriesId)`
+
+**Notes:**
+- `version` is both the optimistic-concurrency guard and the polling change
+  detector. It is bumped inside the same transaction as the write it describes,
+  so two simultaneous locks cannot both win.
+- `turnStartedAt` is the only clock the server publishes; every countdown is
+  derived from it client-side (ADR-016).
+
+### `draft_actions`
+
+One ban or pick. The action list is the single source of truth for what is
+available — there is no second "used champions" column to fall out of sync, which
+is what makes undo a one-row delete.
+
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `gameId` | `uuid` | NOT NULL, FK → draft_games.id CASCADE |
+| `step` | `integer` | NOT NULL — 0–19, position in the sequence |
+| `side` | `DraftSideEnum` | NOT NULL |
+| `kind` | `DraftActionKind` | NOT NULL |
+| `championKey` | `text` | nullable — null = passed ban, or an expired ban turn |
+| `timedOut` | `boolean` | NOT NULL, default `false` |
+| `createdAt` | `timestamptz` | NOT NULL |
+
+**Indexes:** `UNIQUE (gameId, step)`, `INDEX (gameId)`
+
+**Notes:**
+- `UNIQUE (gameId, step)` is the last line of defence against a double-submit
+  landing two champions on one turn.
+- `championKey` stores the Data Dragon id (`"Ahri"`, `"MonkeyKing"`). Comparison
+  is case-insensitive throughout, via `normaliseKey` in the draft engine.

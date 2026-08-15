@@ -148,6 +148,7 @@ model User {
   teamMemberships     TeamMember[]
   auditLogs           AuditLog[]
   pushSubscriptions   PushSubscription[]
+  draftSeries         DraftSeries[]
 
   @@map("users")
 }
@@ -1010,4 +1011,99 @@ model UserSession {
 
   @@index([userId])
   @@map("user_sessions")
+}
+
+// ============================================================
+// LIVE DRAFT ROOM (TASK-298 — see docs/DRAFT_ROOM.md, ADR-016)
+// ============================================================
+
+enum DraftSeriesMode {
+  NORMAL
+  FEARLESS
+  TEAM_FEARLESS
+}
+
+enum DraftSideEnum {
+  BLUE
+  RED
+}
+
+enum DraftGamePhase {
+  LOBBY
+  IN_PROGRESS
+  COMPLETE
+}
+
+enum DraftActionKind {
+  BAN
+  PICK
+}
+
+// A whole best-of-N. One link covers the series; `code` is the public part of
+// that link and grants spectator access on its own.
+model DraftSeries {
+  id                String          @id @default(uuid()) @db.Uuid
+  code              String          @unique // 8 URL-safe chars, crypto.randomBytes
+  // Capability tokens. Whoever holds one may draft for that side; they are never
+  // returned to a viewer who does not already present one.
+  blueToken         String          @unique
+  redToken          String          @unique
+  team1Name         String
+  team2Name         String
+  mode              DraftSeriesMode @default(NORMAL)
+  gameCount         Int             @default(1)
+  timerSeconds      Int             @default(30) // 0 = untimed
+  disabledChampions String[]        @default([])
+  // Nullable on purpose — the draft room is login-free, and an anonymous series
+  // is the primary path rather than a fallback.
+  createdById       String?         @db.Uuid
+  createdAt         DateTime        @default(now())
+  expiresAt         DateTime
+
+  createdBy User?       @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  games     DraftGame[]
+
+  @@index([expiresAt])
+  @@index([createdById])
+  @@map("draft_series")
+}
+
+model DraftGame {
+  id            String         @id @default(uuid()) @db.Uuid
+  seriesId      String         @db.Uuid
+  gameNumber    Int
+  blueTeam      Int            @default(1) // 1 or 2 — sides swap down the series
+  phase         DraftGamePhase @default(LOBBY)
+  step          Int            @default(0) // next step index, 0–20
+  blueReady     Boolean        @default(false)
+  redReady      Boolean        @default(false)
+  turnStartedAt DateTime?
+  winnerSide    DraftSideEnum?
+  // Optimistic-concurrency guard and polling change detector (ADR-016). Bumped
+  // inside the same transaction as the write it describes.
+  version       Int            @default(0)
+
+  series  DraftSeries   @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  actions DraftAction[]
+
+  @@unique([seriesId, gameNumber])
+  @@index([seriesId])
+  @@map("draft_games")
+}
+
+model DraftAction {
+  id          String          @id @default(uuid()) @db.Uuid
+  gameId      String          @db.Uuid
+  step        Int
+  side        DraftSideEnum
+  kind        DraftActionKind
+  championKey String? // null = a passed ban, or a ban whose turn expired
+  timedOut    Boolean         @default(false)
+  createdAt   DateTime        @default(now())
+
+  game DraftGame @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@unique([gameId, step])
+  @@index([gameId])
+  @@map("draft_actions")
 }
