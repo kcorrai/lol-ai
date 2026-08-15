@@ -6,6 +6,7 @@ import { getMatch, defaultGame, getGameStats } from "@/domains/esports";
 import type { GameTeamStats, MatchDetail, MatchGameRef } from "@/domains/esports";
 import { DraftPanel } from "@/domains/esports/components/DraftPanel";
 import { Scoreboard } from "@/domains/esports/components/Scoreboard";
+import { LiveGameStats } from "@/domains/esports/components/LiveGameStats";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
 
@@ -192,17 +193,25 @@ export default async function MatchPage({
         </p>
       )}
 
-      {stats && game && (
+      {stats && game && !stats.finished && (
+        // A game still being played refreshes itself; a finished one is static
+        // and stays a server component.
+        <LiveGameStats
+          gameId={game.id}
+          initial={stats}
+          blueName={sideName(match, game, stats.blue)}
+          redName={sideName(match, game, stats.red)}
+        />
+      )}
+
+      {stats && game && stats.finished && (
         <>
           <section>
             <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
               <h2 className="font-display text-xl font-extrabold uppercase text-text md:text-2xl">
                 Draft
               </h2>
-              <span className="hud-label">
-                {stats.patch ? `Patch ${stats.patch}` : ""}
-                {!stats.finished ? " · In progress" : ""}
-              </span>
+              <span className="hud-label">{stats.patch ? `Patch ${stats.patch}` : ""}</span>
             </div>
             <DraftPanel
               blue={stats.blue}

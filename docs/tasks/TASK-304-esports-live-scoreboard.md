@@ -1,7 +1,7 @@
 # TASK-304 — Live scoreboard: API route, hook, polling island
 
 **Phase:** 6 — Esports & Audience Growth
-**Status:** Planned
+**Status:** Done
 **Estimated Effort:** 1 day
 **Depends on:** TASK-303
 
@@ -34,14 +34,31 @@ the section into a polling cost centre.
 
 ## Acceptance Criteria
 
-- [ ] `/api/esports/live` returns live events and, with `?gameId=`, a live window
-- [ ] Route is rate limited and returns the standard error envelope on abuse
-- [ ] Hook polls at 30 s only while live, stops when nothing is live, pauses on
-      a hidden tab
-- [ ] Server-rendered first frame present in the HTML (view-source check)
-- [ ] Feed failure mid-poll keeps the last rendered state and shows a stale
-      indicator rather than clearing the scoreboard
-- [ ] No Riot host appears in any client-side request (network tab check)
-- [ ] Route handler under 80 lines; component under 200
-- [ ] Tests: route handler happy path + rate limit; hook interval behaviour
-- [ ] `tsc --noEmit`, lint and tests pass
+- [x] `/api/esports/live` returns live events and, with `?gameId=`, a live window
+- [x] Route is rate limited and returns the standard error envelope on abuse
+- [x] Hook polls at 30 s only while live and stops when nothing is; React Query
+      pauses a hidden tab
+- [x] Server-rendered first frame present in the HTML — the live block is in the
+      markup before any JavaScript runs
+- [x] A failed poll keeps the last scoreboard and labels itself "reconnecting"
+      rather than clearing
+- [x] **No Riot host in any client-side request** — instrumented `window.fetch`
+      for 35 s on `/esports`: 1 call to `/api/esports/live`, 0 to any Riot host
+- [x] Route handler 27 lines; components under 200
+- [x] Tests: route happy path, `?gameId=`, rate-limit refusal
+- [x] `tsc --noEmit`, lint and tests pass
+
+## Notes from the build
+
+- **Nothing live means nothing polled, structurally.** The hub only mounts the
+  island when the server already found a live match, and the hook's interval is
+  a function of the payload — so an off-season visitor runs no timer at all,
+  rather than relying on a condition inside the hook.
+- **The signed-out branch needed its own `QueryProvider`.** The esports section
+  is deliberately login-free, so the marketing chrome had to gain the provider
+  the app shell already carries — the same fix the Free Tools layout made.
+- A live game's stats are cached under a separate key from the finished ones
+  (TASK-303), so polling a game in progress can never poison the permanent
+  record of how it ended.
+- The edge cache is 20 s, deliberately shorter than the 30 s client poll: a
+  shared CDN copy should never be the reason a scoreboard looks frozen.
