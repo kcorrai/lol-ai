@@ -7,7 +7,10 @@ import { logger } from "@/lib/utils/logger";
 
 export const dynamic = "force-dynamic";
 
-const PREVIEW_RATE_LIMIT = { limit: 10, windowMs: 60 * 60 * 1000 }; // 10/hour
+// Was 10/hour, which was a hard stop after ten looks in a product whose premise is that looking
+// is free. `buildAccountPreview` caches each target for a day, so a repeat is nearly free and the
+// limit only needs to stop someone walking the whole player base (TASK-310).
+const PREVIEW_RATE_LIMIT = { limit: 60, windowMs: 10 * 60 * 1000 }; // 60 per 10 min
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const rl = await checkRateLimit(`preview:${getIp(req)}`, PREVIEW_RATE_LIMIT);
