@@ -8,6 +8,7 @@ import { getMatchIds, getMatch } from "@/domains/riot/services/riotApiClient";
 import { mapMatch } from "@/domains/riot/mappers/matchMapper";
 import { refreshChampionStats } from "@/domains/champions/services/championCacheService";
 import { getPlanLimits } from "@/lib/auth/authorization";
+import { indexPlayers, type IndexablePlayer } from "@/domains/riot/services/playerIndexService";
 import { enrichParticipantRanks, syncRankedSnapshot } from "@/domains/riot/services/matchSyncRankedService";
 export { backfillMatchNicknames } from "@/domains/riot/services/matchSyncRankedService";
 
@@ -79,6 +80,11 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   let skipped = 0;
   const errors: string[] = [];
 
+  // Every match carries ten Riot IDs, nine of them nobody's connected account. Collected across
+  // the whole run and written once at the end, they are what makes player search able to
+  // autocomplete without a Riot endpoint that can do it (TASK-308).
+  const seenPlayers: IndexablePlayer[] = [];
+
   for (const riotMatchId of newMatchIds) {
     try {
       const dto = await getMatch(riotMatchId, account.region);
@@ -92,6 +98,15 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
         await tx.matchParticipant.createMany({ data: mapped.participants });
       });
 
+      for (const p of mapped.participants) {
+        seenPlayers.push({
+          puuid: p.puuid,
+          gameName: p.gameName ?? null,
+          tagLine: p.tagLine ?? null,
+          region: account.region,
+        });
+      }
+
       if (mapped.match.queueType === "RANKED_SOLO_5x5") {
         const puuids = mapped.participants.map((p) => p.puuid);
         enrichParticipantRanks(matchDbId, puuids, account.region).catch((err) =>
@@ -104,6 +119,11 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
       logger.warn(`[sync] Failed for match ${riotMatchId}: ${msg}`);
       errors.push(`${riotMatchId}: ${msg}`);
     }
+  }
+
+  if (seenPlayers.length > 0) {
+    const indexed = await indexPlayers(seenPlayers);
+    logger.info(`[sync] Indexed ${indexed} players for search`);
   }
 
   // Link existing matches to our user's participant
