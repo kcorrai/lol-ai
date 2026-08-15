@@ -1381,3 +1381,46 @@ selection" is expressed.
 
 All five mutations answer with the same envelope as `GET`: the new state plus the
 caller's role.
+
+---
+
+## Player Search (TASK-309)
+
+### `GET /api/public/search`
+
+Autocomplete over the player index (`player_index`, see
+[ADR-017](./adr/ADR-017-player-search-index.md)). **No auth** — a visitor must be able to find
+a player before they have an account, which is the point of the whole flow.
+
+| Param | Required | Notes |
+|---|---|---|
+| `q` | yes | `Name` or `Name#TAG`, 1–64 chars. Fewer than 2 name characters returns an empty list rather than the whole index. |
+| `region` | no | Platform id (`euw1`, `tr1`, …). Omit to search every platform. |
+| `limit` | no | 1–20, default 8. |
+
+```json
+{
+  "data": {
+    "players": [
+      {
+        "puuid": "…",
+        "gameName": "kaanproak0",
+        "tagLine": "TR1",
+        "region": "tr1",
+        "profileIconId": 4361,
+        "summonerLevel": 142
+      }
+    ]
+  }
+}
+```
+
+**Notes:**
+- Rate limit is **150/min per IP**, far above the rest of the public surface: it answers from our
+  own database on keystrokes, with no Riot call behind it. Throttling it like
+  `/api/public/preview` would make autocomplete stop mid-word.
+- `Cache-Control: private, max-age=15`. Private because a shared cache would hand one visitor
+  another's freshly-typed query.
+- `seenCount` and `lastSeenAt` rank the results server-side and are **not** in the response.
+- A failing index answers `200` with an empty list, not a `500`. The client can still fall back to
+  resolving an exact Riot ID against Riot, and a dead index must not break the search box.

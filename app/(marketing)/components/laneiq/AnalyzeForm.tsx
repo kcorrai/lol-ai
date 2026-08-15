@@ -1,23 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, UserRound } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { PreviewResponse } from "@/types/preview";
 import { PreviewResultCard } from "@/components/landing/PreviewResultCard";
-
-const REGIONS: ReadonlyArray<{ value: string; label: string }> = [
-  { value: "tr1", label: "TR" },
-  { value: "euw1", label: "EUW" },
-  { value: "eun1", label: "EUNE" },
-  { value: "na1", label: "NA" },
-  { value: "kr", label: "KR" },
-  { value: "br1", label: "BR" },
-  { value: "la1", label: "LAN" },
-  { value: "la2", label: "LAS" },
-  { value: "oc1", label: "OCE" },
-  { value: "ru", label: "RU" },
-  { value: "jp1", label: "JP" },
-];
+import { PlayerSearchBar } from "@/components/search/PlayerSearchBar";
+import { DEFAULT_REGION } from "@/lib/riot/regions";
 
 // Shown one at a time while the request is in flight. The work is real, but it
 // finishes faster than a player can read four lines — so these advance on a timer
@@ -29,11 +17,11 @@ const STEPS: readonly string[] = [
   "Writing the verdict…",
 ];
 
-const IDLE_STATUS = "No login · read-only · first report in ~90s";
+const IDLE_STATUS = "No login · read-only · pick a name or hit Analyze";
 
 export function AnalyzeForm(): React.ReactElement {
   const [input, setInput] = useState("");
-  const [region, setRegion] = useState("tr1");
+  const [region, setRegion] = useState(DEFAULT_REGION);
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -86,41 +74,26 @@ export function AnalyzeForm(): React.ReactElement {
 
   return (
     <div>
+      {/* The box suggests real accounts as you type and goes straight to a profile when one is
+          picked — that path needs no login and no report. The Analyze button beside it is the
+          other path: the inline AI preview for whatever Riot ID is in the box. */}
       <form
         onSubmit={handleSubmit}
-        className="grid max-w-[540px] grid-cols-1 gap-2.5 sm:grid-cols-[1fr_110px_auto]"
+        className="grid max-w-[540px] grid-cols-1 gap-2.5 sm:grid-cols-[1fr_auto]"
       >
-        <div className="flex h-11 items-center border border-border bg-surface-dark well focus-within:border-accent">
-          <UserRound className="ml-3 h-4 w-4 shrink-0 text-text-muted" strokeWidth={1.75} />
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="GameName#TAG"
-            autoComplete="off"
-            spellCheck={false}
-            aria-label="Riot ID"
-            className="h-full flex-1 bg-transparent px-2.5 text-sm text-text placeholder-text-muted outline-none"
-          />
-        </div>
-
-        <select
-          value={region}
-          onChange={(e) => setRegion(e.target.value)}
-          aria-label="Region"
-          className="h-11 border border-border bg-surface-dark px-3 font-mono text-xs uppercase tracking-label text-text-body outline-none focus:border-accent"
-        >
-          {REGIONS.map((r) => (
-            <option key={r.value} value={r.value}>
-              {r.label}
-            </option>
-          ))}
-        </select>
+        <PlayerSearchBar
+          size="lg"
+          placeholder="GameName#TAG"
+          query={input}
+          onQueryChange={setInput}
+          region={region}
+          onRegionChange={setRegion}
+        />
 
         <button
           type="submit"
           disabled={loading || !input.trim()}
-          className="tag-cut flex h-11 items-center justify-center gap-2 bg-accent px-6 font-display text-xs font-bold uppercase tracking-[0.1em] text-background transition-colors duration-150 hover:bg-acid-400 active:translate-y-px active:bg-acid-600 disabled:bg-line-2 disabled:text-text-faint"
+          className="tag-cut flex h-12 items-center justify-center gap-2 bg-accent px-6 font-display text-xs font-bold uppercase tracking-[0.1em] text-background transition-colors duration-150 hover:bg-acid-400 active:translate-y-px active:bg-acid-600 disabled:bg-line-2 disabled:text-text-faint"
         >
           {loading ? "Analyzing" : "Analyze"}
           <ArrowRight className="h-4 w-4" strokeWidth={1.75} />
