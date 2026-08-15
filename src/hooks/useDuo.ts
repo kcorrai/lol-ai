@@ -4,8 +4,21 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api/fetcher";
 import type { ActiveDuo, DuoCandidate } from "@/domains/analysis/services/duoService";
 import type { DuoSynergyResponse } from "@/domains/analysis/services/duoSynergyService";
+import type { DuoQuestsResponse } from "@/domains/analysis/services/duoQuestService";
 
 const HALF_HOUR = 30 * 60 * 1000;
+
+/** This week's duo quests. Null when the player has not marked a duo. */
+export function useDuoQuests(riotAccountId: string | null | undefined) {
+  return useQuery<DuoQuestsResponse | null>({
+    queryKey: ["duo-quests", riotAccountId],
+    queryFn: () => apiFetch(`/api/duo/quests?riotAccountId=${riotAccountId}`),
+    enabled: !!riotAccountId,
+    // Shorter than the rest: this read is also what advances progress and pays XP, so a stale
+    // half hour would mean a completed quest sitting unpaid on screen.
+    staleTime: 5 * 60_000,
+  });
+}
 
 /** Everything the duo panel renders. Null when the player has not marked a duo. */
 export function useDuoSynergy(riotAccountId: string | null | undefined) {

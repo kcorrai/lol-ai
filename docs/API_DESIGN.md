@@ -1424,3 +1424,64 @@ a player before they have an account, which is the point of the whole flow.
 - `seenCount` and `lastSeenAt` rank the results server-side and are **not** in the response.
 - A failing index answers `200` with an empty list, not a `500`. The client can still fall back to
   resolving an exact Riot ID against Riot, and a dead index must not break the search box.
+
+---
+
+## Duo Panel (TASK-312, TASK-313)
+
+Both require a session and ownership of the account. Both answer `null` when the player has not
+marked a duo — the panel renders its picker for that, so it is a state rather than an error.
+
+### `GET /api/duo/synergy?riotAccountId=`
+
+The pair's record together against the same player's record apart, plus champion pairings, role
+pairings, per-game averages in each case, and the last five shared games.
+
+```json
+{
+  "data": {
+    "partner": { "gameName": "C0marKopter", "tagLine": "TR1", "games": 73, "winRate": 51 },
+    "hasEnoughData": true,
+    "together": { "games": 73, "wins": 37, "winRate": 51 },
+    "apart":    { "games": 32, "wins": 22, "winRate": 69 },
+    "synergyDelta": -18,
+    "streak": -2,
+    "championPairs": [{ "ownChampion": "Alistar", "partnerChampion": "Caitlyn", "games": 9, "winRate": 78 }],
+    "rolePairs":     [{ "ownPosition": "UTILITY", "partnerPosition": "BOTTOM", "games": 25, "winRate": 52 }],
+    "averagesTogether": { "kda": 3.63, "deaths": 5.8, "visionScore": 24.3, "csPerMinute": 4.3 },
+    "averagesApart":    { "kda": 5.88, "deaths": 3.4, "visionScore": 18.4, "csPerMinute": 7.0 },
+    "recentShared": []
+  }
+}
+```
+
+- `hasEnoughData` is false below five shared games. Clients **must not** print the figures when it
+  is false: at four games one result moves the win rate 25 points.
+- `synergyDelta` is `null`, not `0`, when either side has no games. Never having played apart is
+  not the same as no difference.
+
+### `GET /api/duo/quests?riotAccountId=`
+
+This week's three duo quests with progress. Rate limit 60/hour.
+
+```json
+{
+  "data": {
+    "partner": { "gameName": "C0marKopter", "tagLine": "TR1" },
+    "weekStart": "2026-08-10T00:00:00.000Z",
+    "weekEnd": "2026-08-17T00:00:00.000Z",
+    "quests": [
+      { "key": "wins_together", "label": "Carry each other",
+        "detail": "Win 3 games together this week",
+        "progress": 3, "target": 3, "completed": true, "xpReward": 80,
+        "periodEnd": "2026-08-17T00:00:00.000Z" }
+    ],
+    "xpAwarded": 80
+  }
+}
+```
+
+- **This GET writes.** It generates the week's rows, recomputes progress and pays XP for quests
+  that have just completed. That is safe because the quest set is a pure function of the week and
+  the unique index makes the write idempotent — `xpAwarded` is non-zero only on the read that
+  actually completes a quest, and `0` on every read after.

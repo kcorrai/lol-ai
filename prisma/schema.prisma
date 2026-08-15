@@ -278,6 +278,7 @@ model RiotAccount {
   habits               PlayerHabit[]
   deathEvents          MatchDeathEvent[]
   duoPartners          DuoPartner[]
+  duoQuests            DuoQuest[]
 
   @@unique([userId, puuid])
   @@index([userId])
@@ -302,6 +303,35 @@ model DuoPartner {
   @@unique([riotAccountId, puuid])
   @@index([riotAccountId, isActive])
   @@map("duo_partners")
+}
+
+// A weekly goal for one pair. Which quests run in a week is derived from the week number
+// (duoQuestCatalog), so nothing about the definition is stored — only this pair's progress
+// against it, and whether the XP has already been paid out.
+model DuoQuest {
+  id            String    @id @default(uuid()) @db.Uuid
+  riotAccountId String    @db.Uuid
+  partnerPuuid  String
+  key           String
+  target        Int
+  // The current value in the quest's own unit (games, wins, kills), not a fraction: the panel
+  // shows "3 / 5", and a fraction would have to be multiplied back out to say that.
+  progress      Int       @default(0)
+  completed     Boolean   @default(false)
+  completedAt   DateTime?
+  xpReward      Int
+  periodStart   DateTime
+  periodEnd     DateTime
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  riotAccount RiotAccount @relation(fields: [riotAccountId], references: [id], onDelete: Cascade)
+
+  // One row per pair per quest per week. This is also what makes generation idempotent: reading
+  // the panel twice cannot create a second copy or pay the XP twice.
+  @@unique([riotAccountId, partnerPuuid, key, periodStart])
+  @@index([riotAccountId, periodStart])
+  @@map("duo_quests")
 }
 
 // Every Riot ID we have ever seen, so search can autocomplete.
