@@ -41,7 +41,11 @@ export function ScheduleDays({
           </h3>
           <div className="grid gap-2">
             {group.events.map((event) => (
-              <MatchRow key={event.matchId} event={event} />
+              <MatchRow
+                key={event.matchId}
+                event={event}
+                href={`/esports/matches/${event.matchId}`}
+              />
             ))}
           </div>
         </section>

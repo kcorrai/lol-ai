@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { EsportsPlayer, PlayerRole } from "@/domains/esports/types";
 
 const ROLE_LABEL: Record<PlayerRole, string> = {
@@ -9,13 +10,20 @@ const ROLE_LABEL: Record<PlayerRole, string> = {
   support: "Support",
 };
 
-/**
- * One player. Not a link yet — player pages land in TASK-302, and the handle is
- * the thing readers scan for, so it leads.
- */
-export function RosterCard({ player }: { player: EsportsPlayer }): React.ReactElement {
-  return (
-    <article className="gaming-card notch-sm flex items-center gap-3 px-3 py-2.5">
+/** One player. Links to their page when the caller resolved a slug for them. */
+export function RosterCard({
+  player,
+  href,
+}: {
+  player: EsportsPlayer;
+  href?: string;
+}): React.ReactElement {
+  const className = `gaming-card notch-sm flex items-center gap-3 px-3 py-2.5${
+    href ? " transition-colors hover:border-line-2" : ""
+  }`;
+
+  const body = (
+    <>
       {player.image ? (
         <Image
           src={player.image}
@@ -38,6 +46,14 @@ export function RosterCard({ player }: { player: EsportsPlayer }): React.ReactEl
           {player.fullName ? ` · ${player.fullName}` : ""}
         </p>
       </div>
-    </article>
+    </>
+  );
+
+  if (!href) return <article className={className}>{body}</article>;
+
+  return (
+    <Link href={href} className={className}>
+      {body}
+    </Link>
   );
 }

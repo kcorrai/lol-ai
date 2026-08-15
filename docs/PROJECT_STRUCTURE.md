@@ -269,6 +269,18 @@ src/components/
 │   ├── PageHeader.tsx
 │   └── MobileNav.tsx
 │
+├── search/                     → Player search, mounted in both shells (TASK-309)
+│   ├── PlayerSearchBar.tsx     → Input, keyboard handling, selection
+│   ├── SearchDropdown.tsx      → The panel; options are flat so the listbox owns them
+│   ├── RegionPicker.tsx        → Chamfered chip, never a native <select> (ADR-015)
+│   ├── usePlayerSearch.ts      → Debounced fetch; not TanStack Query, nothing to share
+│   ├── buildSearchRows.ts      → Pure: what the panel shows, in keyboard order
+│   └── searchTypes.ts
+│
+├── dashboard/
+│   └── laneiq/
+│       └── duo/                → The duo rail (TASK-314), one file per section
+│
 ├── feedback/                   → Loading, error, empty states
 │   ├── LoadingSpinner.tsx
 │   ├── ErrorBoundary.tsx
@@ -313,7 +325,15 @@ src/lib/
 │   └── redis.ts                → Redis client singleton
 │
 ├── riot/
-│   └── rateLimit.ts            → Riot API rate limiter
+│   ├── rateLimit.ts            → Riot API rate limiter
+│   ├── riotId.ts               → Riot ID sanitising and search-query parsing
+│   ├── regions.ts              → Platform list, shared by every region control
+│   ├── rankDisplay.ts          → Tier colours and labels (game data, off the accent ladder)
+│   └── claim.ts                → Carrying "this profile is mine" through sign-up
+│
+├── stores/                     → Zustand, client-only UI state
+│   ├── uiStore.ts
+│   └── searchStore.ts          → Recent and favourite players, persisted per browser
 │
 ├── lemonsqueezy/
 │   └── client.ts               → LemonSqueezy client (active payment provider)

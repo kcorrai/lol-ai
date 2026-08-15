@@ -453,3 +453,63 @@ fearless lockouts carried across every game of the series.
 otherwise have open in three other tabs.
 **Difficulty:** Large
 **Dependencies:** Meta snapshot (F-008), counter data, Upstash Redis
+
+---
+
+### F-039 — Player Search (shipped: TASK-308 … TASK-311)
+
+Type part of a Riot ID anywhere on the site, get real accounts back while typing,
+click one, land on a full profile. No login, no account linking, no waiting.
+
+**Why it needed building at all:** Riot exposes no name-search endpoint —
+`account-v1` resolves only a complete, exactly-spelled `gameName` **and**
+`tagLine`. Autocomplete is therefore impossible against Riot for anyone. What
+made it possible for us is that every synced match already stores all ten
+participants, nine of whom are nobody's connected account: the index is a
+by-product of syncs we already run, and it grows every time anyone uses the
+product. See [ADR-017](./adr/ADR-017-player-search-index.md).
+
+**What it does:**
+
+- **Suggests as you type**, with the section layout players already know —
+  players, recent, favourites — and full keyboard control.
+- **Never dead-ends.** A complete `Name#TAG` the index has never seen still gets
+  a row, and the profile page resolves it against Riot itself.
+- **Remembers without an account.** Recent and favourite players live in the
+  browser, so a signed-out visitor keeps their shortcuts.
+- **Ends in a profile worth reading** — rank, ten matches, champion pool, role
+  split, and a rule-based read, all with no login.
+- **Turns a reader into a user in one click.** "This is me" connects the account
+  straight from the profile, carrying the Riot ID through sign-up when signed
+  out, so `/settings/accounts` is out of the path entirely.
+
+**User Benefit:** The thing that made the friction real — needing to know your
+exact Riot ID and region before the product would show you anything — is gone.
+**Difficulty:** Medium
+**Dependencies:** Match sync (F-002), public preview (F-008)
+
+---
+
+### F-040 — Duo Panel (shipped: TASK-312 … TASK-314)
+
+A column of the dashboard about the person you queue with, rather than about you.
+
+**What it does:**
+
+- **Answers the only question that matters about a duo:** your win rate together
+  against your win rate in the same window without them, as one signed number.
+- **Explains the number.** How your own KDA, deaths, vision and CS/min change
+  with them in the game — a partner who halves your CS is a different problem
+  from one who gets you killed.
+- **Names the combinations that work** — champion pairings by win rate, and the
+  role pairings you actually queue.
+- **Sets three goals a week for the pair**, from a fixed catalogue that rotates
+  by week number, with XP on completion. No AI call: duo quests are per pair, so
+  generating them would scale spend with pairs rather than players.
+- **Refuses to invent a verdict.** Below five shared games it says why instead of
+  printing a number, and the supporting sections hide with it.
+
+**User Benefit:** Most ranked players climb with someone. Nothing else in the
+product had an opinion about that person.
+**Difficulty:** Medium
+**Dependencies:** Duo detection (TASK-244), match participants for all ten players
