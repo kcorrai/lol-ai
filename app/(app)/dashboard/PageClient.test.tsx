@@ -28,8 +28,8 @@ vi.mock("@/components/dashboard/MetaRecommendationsWidget", () => ({
 vi.mock("@/components/dashboard/WeekSummaryWidget", () => ({
   WeekSummaryWidget: () => <div data-testid="WeekSummaryWidget" />,
 }));
-vi.mock("@/components/dashboard/DuoWidget", () => ({
-  DuoWidget: () => <div data-testid="DuoWidget" />,
+vi.mock("@/components/dashboard/laneiq/duo/DuoPanel", () => ({
+  DuoPanel: () => <div data-testid="DuoPanel" />,
 }));
 vi.mock("@/components/dashboard/DevRestartOnboarding", () => ({
   DevRestartOnboarding: () => <div data-testid="DevRestartOnboarding" />,
