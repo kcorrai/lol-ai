@@ -225,7 +225,9 @@ describe("POST /api/draft/[code]/action", () => {
 describe("the remaining mutations delegate to the service", () => {
   it("ready", async () => {
     await readyRoute(
-      routeRequest(`/api/draft/${CODE}/ready`, { body: { token: TOKEN, gameNumber: 2, ready: true } }),
+      routeRequest(`/api/draft/${CODE}/ready`, {
+        body: { token: TOKEN, gameNumber: 2, ready: true },
+      }),
       params
     );
     expect(draft.setReady).toHaveBeenCalledWith(CODE, 2, TOKEN, true);

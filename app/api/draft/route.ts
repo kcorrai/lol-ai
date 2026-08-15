@@ -14,9 +14,7 @@ const createBody = z.object({
   gameCount: z.number().int().min(1).max(5).default(1),
   // 0 is untimed; anything else must leave a usable turn. 15 s is the floor
   // because below it the poll interval starts to matter.
-  timerSeconds: z
-    .union([z.literal(0), z.number().int().min(15).max(120)])
-    .default(30),
+  timerSeconds: z.union([z.literal(0), z.number().int().min(15).max(120)]).default(30),
   disabledChampions: z.array(z.string().trim().min(1).max(40)).max(60).default([]),
 });
 

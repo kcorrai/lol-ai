@@ -8,13 +8,16 @@ import { computeLaneEdges } from "@/domains/draft/advice/laneEdges";
 import { useDraftActions } from "@/hooks/useDraftActions";
 import { useDraftCatalog } from "@/hooks/useDraftCatalog";
 import { useDraftCounters } from "@/hooks/useDraftCounters";
+import { useDraftSummary } from "@/hooks/useDraftSummary";
 import { useDraftSync } from "@/hooks/useDraftSync";
 import { useDraftToken } from "@/hooks/useDraftToken";
 import { DraftAdvicePanel } from "./DraftAdvicePanel";
 import { DraftBoard } from "./DraftBoard";
+import { DraftSummary } from "./DraftSummary";
 import { JoinDraftPanel } from "./JoinDraftPanel";
 import { LaneEdges } from "./LaneEdges";
 import { ReadyCheck } from "./ReadyCheck";
+import { SeriesOverview } from "./SeriesOverview";
 import { TurnClock } from "./TurnClock";
 import { UndoButton } from "./UndoButton";
 
@@ -50,6 +53,7 @@ export function DraftRoomShell({ code }: Props): React.ReactElement {
     [game?.actions]
   );
   const { data: counters } = useDraftCounters(pickKeys);
+  const { data: summary } = useDraftSummary(code, gameNumber, game?.phase === "COMPLETE");
 
   const advice = useMemo(
     () =>
@@ -142,6 +146,18 @@ export function DraftRoomShell({ code }: Props): React.ReactElement {
             onSelect={setSelected}
             visible={Boolean(liveAndMine)}
           />
+          {game?.phase === "COMPLETE" && (
+            <DraftSummary
+              state={state}
+              game={game}
+              role={role}
+              summary={summary}
+              laneEdges={laneEdges}
+              onSetWinner={actions.setWinner}
+              pending={actions.pending}
+            />
+          )}
+          <SeriesOverview state={state} gameNumber={gameNumber} />
           {liveAndMine && laneEdges.length > 0 && (
             <HudPanel className="p-4">
               <HudRule label="LANE EDGES" />
