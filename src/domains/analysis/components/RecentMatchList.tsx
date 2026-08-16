@@ -77,6 +77,8 @@ function MatchRow({ match, isFirst }: { match: MatchPerformance; isFirst?: boole
           {match.runeSecondaryPath && runePathIconUrl(match.runeSecondaryPath) && <Image src={runePathIconUrl(match.runeSecondaryPath)} alt="rune-path" width={20} height={20} unoptimized className="rounded-full opacity-70" />}
         </div>
       </div>
+      {/* Identity stays pinned to the champion icon; KDA, stats and items split the rest of the
+          row evenly. The log runs full-bleed now, so fixed widths clumped it all to the left. */}
       <div className="w-28 shrink-0">
         <p className="text-sm font-semibold text-text">{match.champion}</p>
         <p className="text-xs text-text-muted">{ROLE_SHORT[match.position] ?? match.position}</p>
@@ -84,13 +86,13 @@ function MatchRow({ match, isFirst }: { match: MatchPerformance; isFirst?: boole
           {match.won ? "Victory" : "Defeat"}
         </Badge>
       </div>
-      <div className="w-24 shrink-0 text-center">
+      <div className="w-24 shrink-0 text-center lg:w-auto lg:flex-1">
         <p className="text-sm font-semibold text-text">
           {match.kills}/<span className="text-danger">{match.deaths}</span>/{match.assists}
         </p>
         <p className={`text-xs font-medium ${kdaColor}`}>{kda} KDA</p>
       </div>
-      <div className="hidden w-28 shrink-0 text-xs text-text-muted sm:block">
+      <div className="hidden w-28 shrink-0 text-xs text-text-muted sm:block lg:w-auto lg:flex-1">
         <p>{match.csPerMinute.toFixed(1)} CS/min</p>
         <p>{match.visionScore} vision · {match.gameDurationMinutes}m</p>
         {match.teamObjectives && (
@@ -102,8 +104,10 @@ function MatchRow({ match, isFirst }: { match: MatchPerformance; isFirst?: boole
         )}
         <p className="mt-0.5 text-text-muted/70">{timeAgo(match.gameStart)}</p>
       </div>
+      {/* Items anchor to the trailing edge so the row reads as full at any width — the log spans
+          the whole page now, and left-hugging items left a long dead strip after the stats. */}
       {match.itemIds?.length > 0 && (
-        <div className="hidden flex-1 flex-wrap gap-0.5 lg:flex">
+        <div className="hidden flex-1 flex-wrap justify-end gap-0.5 lg:flex">
           {match.itemIds.slice(0, 6).map((id, i) => <ItemIcon key={i} itemId={id} size={24} />)}
         </div>
       )}
