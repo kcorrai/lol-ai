@@ -202,9 +202,9 @@ describe("getGameStats", () => {
     await getGameStats("g1", { completed: false, now: NOW });
     const liveKeys = mockSetCached.mock.calls.map((c) => [c[0], c[3]]);
 
-    expect(completedKeys[0]).toEqual(["esports:game:g1:fresh", 30]);
+    expect(completedKeys[0]).toEqual(["esports:game:g1:v2:fresh", 30]);
     // A mid-game snapshot must never be served later as the final result.
-    expect(liveKeys[0][0]).toBe("esports:game:g1:live:fresh");
+    expect(liveKeys[0][0]).toBe("esports:game:g1:live:v2:fresh");
     expect(liveKeys[0][1]).toBeLessThan(1);
   });
 
@@ -246,7 +246,9 @@ describe("getGameStats", () => {
 
     // A game's first frame is immutable the moment it exists, so a live game
     // must not re-fetch it on every thirty-second poll.
-    const start = mockSetCached.mock.calls.find((call) => call[0] === "esports:game:g1:start:fresh");
+    const start = mockSetCached.mock.calls.find(
+      (call) => call[0] === "esports:game:g1:start:v2:fresh"
+    );
     expect(start?.[3]).toBe(30);
   });
 
@@ -315,5 +317,17 @@ describe("getGameStats", () => {
     global.fetch = vi.fn().mockRejectedValue(new Error("down")) as unknown as typeof fetch;
 
     expect(await getGameStats("g1", { completed: true, now: NOW })).toBeNull();
+  });
+
+  it("writes under a version-scoped key so an older shape is never read back", async () => {
+    mockFeed();
+    await getGameStats("g1", { completed: true, now: NOW });
+
+    // The bug this guards: the mapper runs the payload through Zod, which drops
+    // keys the schema does not name, and a completed game is cached for thirty
+    // days. Adding the end-game stat line therefore left every already-cached
+    // game rendering a sheet of zeros until the key moved with the shape.
+    const keys = mockSetCached.mock.calls.map((call) => call[0] as string);
+    expect(keys.every((key) => key.includes(":v2:"))).toBe(true);
   });
 });

@@ -106,10 +106,34 @@ export function livestatsFetch(path: string, options: FetchOptions = {}): Promis
  * to the last-good copy, because a stale pro strip beside a ranked build is
  * still useful and its absence is the only alternative.
  */
-export async function cachedValue<TValue>(key: string): Promise<TValue | null> {
-  const fresh = (await getCached(`esports:${key}:fresh`).catch(() => null)) as TValue | null;
+export async function cachedValue<TValue>(key: string, version = 1): Promise<TValue | null> {
+  const scoped = cacheKey(key, version);
+  const fresh = (await getCached(`${scoped}:fresh`).catch(() => null)) as TValue | null;
   if (fresh !== null) return fresh;
-  return (await getCached(`esports:${key}:last-good`).catch(() => null)) as TValue | null;
+  return (await getCached(`${scoped}:last-good`).catch(() => null)) as TValue | null;
+}
+
+/**
+ * The cache key for a resource, scoped to the shape it was written in.
+ *
+ * **This is not decoration — it is what stops a deploy serving mangled data.**
+ * Both helpers below cache the *mapped* value, and every mapper here runs the
+ * payload through Zod first, which strips keys the schema does not name. A copy
+ * written before a field was added to a schema therefore has that field missing
+ * forever, and a completed game's stats are cached for thirty days.
+ *
+ * That is not theoretical: adding the end-game stat line to the details schema
+ * made every already-cached game render a stat sheet of zeros, because the
+ * cached copy predated the fields and no amount of correct mapping code could
+ * recover them. Caught in a browser against a live cache.
+ *
+ * So whenever a schema or a mapped shape in this domain gains a field, bump that
+ * resource's version. Old entries are then simply unread and expire on their own.
+ * Version 1 is written bare so the many resources that never changed shape keep
+ * the keys they already have.
+ */
+export function cacheKey(key: string, version: number): string {
+  return version <= 1 ? `esports:${key}` : `esports:${key}:v${version}`;
 }
 
 interface CachedComputationOptions<TValue> {
@@ -117,6 +141,8 @@ interface CachedComputationOptions<TValue> {
   type: string;
   ttlDays: number;
   compute: () => Promise<TValue>;
+  /** Bump when the computed shape gains a field. See `cacheKey`. */
+  version?: number;
   /**
    * Rebuild even when the cached copy is still fresh.
    *
@@ -140,8 +166,9 @@ interface CachedComputationOptions<TValue> {
 export async function cachedComputation<TValue>(
   options: CachedComputationOptions<TValue>
 ): Promise<TValue | null> {
-  const freshKey = `esports:${options.key}:fresh`;
-  const lastGoodKey = `esports:${options.key}:last-good`;
+  const scoped = cacheKey(options.key, options.version ?? 1);
+  const freshKey = `${scoped}:fresh`;
+  const lastGoodKey = `${scoped}:last-good`;
 
   if (!options.force) {
     const fresh = (await getCached(freshKey).catch(() => null)) as TValue | null;
@@ -172,6 +199,8 @@ interface CachedResourceOptions<TRaw, TValue> {
   schema: z.ZodType<TRaw>;
   fetcher: () => Promise<Response>;
   map: (raw: TRaw) => TValue;
+  /** Bump when the schema or the mapped shape gains a field. See `cacheKey`. */
+  version?: number;
   /** Refetch even when the cached copy is still fresh. Set by the warm job only. */
   force?: boolean;
 }
@@ -190,8 +219,9 @@ interface CachedResourceOptions<TRaw, TValue> {
 export async function cachedResource<TRaw, TValue>(
   options: CachedResourceOptions<TRaw, TValue>
 ): Promise<TValue | null> {
-  const freshKey = `esports:${options.key}:fresh`;
-  const lastGoodKey = `esports:${options.key}:last-good`;
+  const scoped = cacheKey(options.key, options.version ?? 1);
+  const freshKey = `${scoped}:fresh`;
+  const lastGoodKey = `${scoped}:last-good`;
 
   if (!options.force) {
     const fresh = (await getCached(freshKey).catch(() => null)) as TValue | null;

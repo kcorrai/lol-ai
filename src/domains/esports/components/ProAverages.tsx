@@ -21,8 +21,15 @@ interface Stat {
   note?: string;
 }
 
+/**
+ * Grouped with a comma, always.
+ *
+ * A bare `toLocaleString()` follows the *server's* locale, and these pages are
+ * server-rendered and cached — so a host set to a European locale ships 16,320
+ * gold to every reader as "16.320", which reads as sixteen. Caught in a browser.
+ */
 function integer(value: number | null): string {
-  return value === null ? "—" : Math.round(value).toLocaleString();
+  return value === null ? "—" : Math.round(value).toLocaleString("en-US");
 }
 
 function rate(value: number | null, digits = 1): string {
