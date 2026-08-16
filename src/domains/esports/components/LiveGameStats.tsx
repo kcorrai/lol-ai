@@ -3,6 +3,7 @@
 import { useLiveGame } from "@/hooks/useLiveEsports";
 import { DraftPanel } from "@/domains/esports/components/DraftPanel";
 import { Scoreboard } from "@/domains/esports/components/Scoreboard";
+import { formatDuration } from "@/domains/esports/duration";
 import type { GameStats } from "@/domains/esports/types";
 
 interface LiveGameStatsProps {
@@ -47,10 +48,25 @@ export function LiveGameStats({
       </section>
 
       <section className="mt-12">
-        <h2 className="mb-3 font-display text-xl font-extrabold uppercase text-text md:text-2xl">
-          Scoreboard
-        </h2>
-        <Scoreboard blue={stats.blue} red={stats.red} blueName={blueName} redName={redName} />
+        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+          <h2 className="font-display text-xl font-extrabold uppercase text-text md:text-2xl">
+            Scoreboard
+          </h2>
+          {/* Elapsed rather than final while the game is on, so the per-minute
+              columns beside it are read against the clock they were taken at. */}
+          {stats.durationSeconds !== null && (
+            <span className="hud-label">
+              {formatDuration(stats.durationSeconds)} {stats.finished ? "game" : "elapsed"}
+            </span>
+          )}
+        </div>
+        <Scoreboard
+          blue={stats.blue}
+          red={stats.red}
+          blueName={blueName}
+          redName={redName}
+          durationSeconds={stats.durationSeconds}
+        />
       </section>
     </>
   );

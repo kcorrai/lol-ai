@@ -9,7 +9,7 @@ import type { ProChampionAverages } from "@/domains/esports/types";
  */
 export const MIN_PLAYER_GAMES = 3;
 
-export type MetricFormat = "ratio" | "integer" | "percent";
+export type MetricFormat = "ratio" | "integer" | "percent" | "rate";
 
 export interface PlayerChampionAverages {
   games: number;
@@ -19,6 +19,10 @@ export interface PlayerChampionAverages {
   creepScore: number | null;
   gold: number | null;
   wardsPlaced: number | null;
+  /** Mean length of the player's games on the champion, in seconds. */
+  gameLengthSeconds: number | null;
+  creepScorePerMin: number | null;
+  goldPerMin: number | null;
 }
 
 export interface ComparisonRow {
@@ -50,12 +54,16 @@ interface Metric {
 /**
  * What the two sides can honestly be compared on.
  *
- * Shorter than it should be, and the reason is the feed. Neither esports
- * endpoint publishes a game's duration, so there is no pro CS/min or gold/min
- * to compare against — only per-game totals. Vision score exists on our side
- * and not on Riot's esports side; kill participation and damage share exist on
- * theirs and not in what we store. What is left is what both sides actually
- * measure.
+ * CS/min and gold/min used to be missing here, because neither esports endpoint
+ * publishes a game's length. It is now derived from the feed's own opening and
+ * closing frames (`duration.ts`), so the two rates are real measurements on both
+ * sides and the rows are back. A game the feed published no opening window for
+ * still has no length, and the row drops out for that champion rather than being
+ * computed against an assumed one.
+ *
+ * Still genuinely absent: vision score exists on our side and not on Riot's
+ * esports side, and kill participation and damage share exist on theirs and not
+ * in what we store.
  */
 const METRICS: Metric[] = [
   {
@@ -87,6 +95,18 @@ const METRICS: Metric[] = [
     atOrAbove: "Your farm on this champion is at pro volume.",
   },
   {
+    // The rate rather than the total, because it is the one the two sides can be
+    // compared on without game length getting in the way: pro games run long, so
+    // a per-game CS gap can be entirely an artefact of a shorter solo queue game.
+    key: "creepScorePerMin",
+    label: "CS per minute",
+    format: "rate",
+    pro: (pro) => pro.creepScorePerMin,
+    you: (you) => you.creepScorePerMin,
+    below: "Pros farm faster on this champion, minute for minute — the gap the per-game figure hides.",
+    atOrAbove: "Minute for minute, you farm this champion as fast as the pros do.",
+  },
+  {
     key: "gold",
     label: "Gold per game",
     format: "integer",
@@ -94,6 +114,15 @@ const METRICS: Metric[] = [
     you: (you) => you.gold,
     below: "Less gold per game, which usually follows the CS gap rather than causing it.",
     atOrAbove: "You are ending games with as much gold as pros do on this champion.",
+  },
+  {
+    key: "goldPerMin",
+    label: "Gold per minute",
+    format: "integer",
+    pro: (pro) => pro.goldPerMin,
+    you: (you) => you.goldPerMin,
+    below: "Income per minute trails pro play — usually farm and objectives rather than kills.",
+    atOrAbove: "Your income rate on this champion matches pro play.",
   },
   {
     key: "wardsPlaced",
@@ -166,5 +195,9 @@ export function formatMetric(value: number, format: MetricFormat): string {
       return `${Math.round(value)}%`;
     case "integer":
       return String(Math.round(value));
+    // A CS/min of 8 and one of 8.4 are a real difference to a reader working on
+    // farm, and rounding to a whole number would hide it.
+    case "rate":
+      return value.toFixed(1);
   }
 }

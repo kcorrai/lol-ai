@@ -24,6 +24,8 @@ function participant(
     killParticipation: null,
     damageShare: null,
     wardsPlaced: null,
+    wardsDestroyed: null,
+    finalStats: null,
     items: [],
     runes: null,
     abilities: [],
@@ -71,7 +73,9 @@ function game(spec: GameSpec): GameStats {
     gameId: "g-1",
     patch: spec.patch ?? "15.20",
     finished: spec.finished ?? true,
+    firstFrameAt: "2026-08-16T09:30:00Z",
     lastFrameAt: spec.lastFrameAt ?? "2026-08-16T10:00:00Z",
+    durationSeconds: 1800,
     blue: side("blue", spec.blue, outcome === "undecided" ? tied : blueObjectives),
     red: side("red", spec.red, outcome === "undecided" ? tied : redObjectives),
   };

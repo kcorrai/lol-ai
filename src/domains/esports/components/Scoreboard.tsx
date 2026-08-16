@@ -1,12 +1,26 @@
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { ItemIcon } from "@/components/ui/ItemIcon";
+import { perMinute } from "@/domains/esports/duration";
 import type { GameTeamStats } from "@/domains/esports/types";
 
 function pct(fraction: number | null): string {
   return fraction === null ? "—" : `${Math.round(fraction * 100)}%`;
 }
 
-function SideTable({ team, name }: { team: GameTeamStats; name: string }): React.ReactElement {
+function rate(value: number | null, digits = 1): string {
+  return value === null ? "—" : value.toFixed(digits);
+}
+
+function SideTable({
+  team,
+  name,
+  durationSeconds,
+}: {
+  team: GameTeamStats;
+  name: string;
+  /** Null when the feed published no opening frame; every rate column dashes out. */
+  durationSeconds: number | null;
+}): React.ReactElement {
   return (
     <div>
       <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
@@ -29,7 +43,7 @@ function SideTable({ team, name }: { team: GameTeamStats; name: string }): React
 
       {/* Its own scroll container so a wide scoreboard never widens the page. */}
       <div className="gaming-card notch-sm overflow-x-auto">
-        <table className="w-full min-w-[34rem] border-collapse text-sm">
+        <table className="w-full min-w-[44rem] border-collapse text-sm">
           <thead>
             <tr className="border-b border-border text-left">
               <th scope="col" className="hud-label px-2 py-2 font-normal">
@@ -42,10 +56,19 @@ function SideTable({ team, name }: { team: GameTeamStats; name: string }): React
                 CS
               </th>
               <th scope="col" className="hud-label px-2 py-2 text-right font-normal">
+                CS/m
+              </th>
+              <th scope="col" className="hud-label px-2 py-2 text-right font-normal">
                 Gold
               </th>
               <th scope="col" className="hud-label px-2 py-2 text-right font-normal">
+                G/m
+              </th>
+              <th scope="col" className="hud-label px-2 py-2 text-right font-normal">
                 KP
+              </th>
+              <th scope="col" className="hud-label px-2 py-2 text-right font-normal">
+                Vision
               </th>
               <th scope="col" className="hud-label px-2 py-2 text-right font-normal">
                 DMG
@@ -75,11 +98,24 @@ function SideTable({ team, name }: { team: GameTeamStats; name: string }): React
                   {p.kills}/{p.deaths}/{p.assists}
                 </td>
                 <td className="px-2 py-2 text-right font-mono text-text-body">{p.creepScore}</td>
+                <td className="px-2 py-2 text-right font-mono text-text-muted">
+                  {rate(perMinute(p.creepScore, durationSeconds))}
+                </td>
                 <td className="px-2 py-2 text-right font-mono text-text-body">
                   {(p.gold / 1000).toFixed(1)}k
                 </td>
                 <td className="px-2 py-2 text-right font-mono text-text-muted">
+                  {rate(perMinute(p.gold, durationSeconds), 0)}
+                </td>
+                <td className="px-2 py-2 text-right font-mono text-text-muted">
                   {pct(p.killParticipation)}
+                </td>
+                {/* Wards placed and killed, the only two vision figures either
+                    feed publishes. Neither is a vision score. */}
+                <td className="whitespace-nowrap px-2 py-2 text-right font-mono text-text-muted">
+                  {p.wardsPlaced ?? "—"}
+                  <span className="text-text-faint"> / </span>
+                  {p.wardsDestroyed ?? "—"}
                 </td>
                 <td className="px-2 py-2 text-right font-mono text-text-muted">
                   {pct(p.damageShare)}
@@ -110,16 +146,18 @@ export function Scoreboard({
   red,
   blueName,
   redName,
+  durationSeconds = null,
 }: {
   blue: GameTeamStats;
   red: GameTeamStats;
   blueName: string;
   redName: string;
+  durationSeconds?: number | null;
 }): React.ReactElement {
   return (
     <div className="grid gap-6">
-      <SideTable team={blue} name={blueName} />
-      <SideTable team={red} name={redName} />
+      <SideTable team={blue} name={blueName} durationSeconds={durationSeconds} />
+      <SideTable team={red} name={redName} durationSeconds={durationSeconds} />
     </div>
   );
 }
