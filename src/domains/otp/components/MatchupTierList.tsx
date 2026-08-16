@@ -10,9 +10,9 @@ interface MatchupTierListProps {
 }
 
 const TIER_CONFIG = {
-  easy: { label: "Kolay", border: "border-accent/40", text: "text-accent" },
-  medium: { label: "Orta", border: "border-warning/40", text: "text-warning" },
-  hard: { label: "Zor", border: "border-danger/40", text: "text-danger" },
+  easy: { label: "Easy", border: "border-accent/40", text: "text-accent" },
+  medium: { label: "Even", border: "border-warning/40", text: "text-warning" },
+  hard: { label: "Hard", border: "border-danger/40", text: "text-danger" },
 } as const;
 
 function MatchupCard({ entry, tier }: { entry: OtpMatchupEntry; tier: keyof typeof TIER_CONFIG }) {

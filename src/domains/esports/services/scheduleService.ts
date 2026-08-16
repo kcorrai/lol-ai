@@ -101,6 +101,26 @@ export async function getCompleted({ leagueId, limit = 20 }: ScheduleQuery = {})
     .slice(0, limit);
 }
 
+/** How wide a net `getEventStartTime` casts. Two windows in each direction. */
+const START_TIME_LOOKUP_LIMIT = 200;
+
+/**
+ * Kickoff for one match, or null.
+ *
+ * `getEventDetails` publishes no start time (see `matchService`), so a match
+ * page resolves it from the schedule windows — already cached, because the hub
+ * and the league pages read the same ones. Outside that window the answer is
+ * null and the page states what it can prove instead of inventing a date.
+ */
+export async function getEventStartTime(matchId: string): Promise<string | null> {
+  const [upcoming, completed] = await Promise.all([
+    getUpcoming({ limit: START_TIME_LOOKUP_LIMIT }),
+    getCompleted({ limit: START_TIME_LOOKUP_LIMIT }),
+  ]);
+  const event = [...upcoming, ...completed].find((entry) => entry.matchId === matchId);
+  return event?.startTime ?? null;
+}
+
 /**
  * What is being played right now, from the feed's own live endpoint rather than
  * filtered out of the schedule — it is the only source that stays current within

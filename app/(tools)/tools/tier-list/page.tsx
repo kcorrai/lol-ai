@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { permanentRedirect } from "next/navigation";
 import { getTierList, parsePosition, POSITION_SLUG, formatGamePatch } from "@/domains/meta";
 import type { CanonicalPosition } from "@/domains/meta";
-import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
+import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { TierListView } from "./TierListView";
 import { tierBlurb } from "./tierBlurb";
 import { RelatedTools } from "../../RelatedTools";
@@ -56,7 +56,7 @@ export default async function TierListPage({ searchParams }: PageProps) {
         />
       )}
 
-      <ToolBreadcrumb
+      <Breadcrumb
         items={[
           { name: "Free Tools", href: "/tools" },
           { name: "Tier List", href: "/tools/tier-list" },

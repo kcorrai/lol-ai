@@ -6,6 +6,7 @@ import { ScheduleDays } from "@/domains/esports/components/ScheduleDays";
 import { LeagueChips } from "@/domains/esports/components/LeagueChips";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
+import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
 
 export const revalidate = 900; // 15 min — matches the schedule's fresh window.
 
@@ -44,25 +45,18 @@ export default async function EsportsSchedulePage(): Promise<React.ReactElement>
 
   const featured = leagues.filter((league) => league.displayStatus !== "hidden").slice(0, 14);
 
-  const itemListJsonLd = fixtures.length > 0 && {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Upcoming LoL esports matches",
-    itemListElement: fixtures.slice(0, 30).map((event, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      name: `${event.teams[0]?.name ?? "TBD"} vs ${event.teams[1]?.name ?? "TBD"} — ${event.league.name}`,
-    })),
-  };
-
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 md:py-14">
-      {itemListJsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
-        />
-      )}
+      <EsportsJsonLd
+        schema={{
+          kind: "list",
+          name: "Upcoming LoL esports matches",
+          items: fixtures.slice(0, 30).map((event) => ({
+            name: `${event.teams[0]?.name ?? "TBD"} vs ${event.teams[1]?.name ?? "TBD"} — ${event.league.name}`,
+            href: `/esports/matches/${event.matchId}`,
+          })),
+        }}
+      />
 
       <EsportsBreadcrumb items={[{ name: "Schedule", href: "/esports/schedule" }]} />
 

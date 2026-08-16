@@ -9,7 +9,7 @@ import {
   type DraftTeam,
 } from "@/domains/meta";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
-import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
+import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { ToolUpgradeNudge } from "../../ToolUpgradeNudge";
 import { PublicOnly } from "@/components/tools/PublicOnly";
 import { DraftBuilder } from "./DraftBuilder";
@@ -76,7 +76,7 @@ export default async function DraftAnalyzerPage({ searchParams }: PageProps) {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-14">
-      <ToolBreadcrumb
+      <Breadcrumb
         items={[
           { name: "Free Tools", href: "/tools" },
           { name: "Draft Analyzer", href: "/tools/draft-analyzer" },

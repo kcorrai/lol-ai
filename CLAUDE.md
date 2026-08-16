@@ -8,7 +8,7 @@ This file defines the rules for AI-assisted development on this project. Every r
 
 1. **Architecture first.** No code is written that is not consistent with `docs/ARCHITECTURE.md`. When in doubt, read the architecture doc.
 2. **Small, focused changes.** Every PR/commit does exactly one thing. No bundled refactors with feature work.
-3. **No code without a task.** Every change must trace back to a task in `docs/tasks/`. No improvised features.
+3. **No code without a task.** Every change must trace back to a card on the project board. No improvised features. The `docs/tasks/` markdown files are historical — read them for context on past work, but do not add new ones.
 4. **Tests are not optional.** No feature is complete without its test.
 5. **Documentation is part of the deliverable.** Code that ships without updated docs is not done.
 

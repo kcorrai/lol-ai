@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getMetaReport, formatGamePatch } from "@/domains/meta";
 import { patchNotesUrl } from "@/lib/lolPatch";
-import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
+import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { DataFreshness } from "@/domains/meta/components/DataFreshness";
 import { MoverList } from "./MoverList";
 import { MetaHero } from "./MetaHero";
@@ -81,7 +81,7 @@ export default async function MetaReportPage() {
         <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
       ))}
 
-      <ToolBreadcrumb
+      <Breadcrumb
         items={[
           { name: "Free Tools", href: "/tools" },
           { name: "Meta Report", href: "/meta" },

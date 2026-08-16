@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getAramTierList, formatGamePatch } from "@/domains/meta";
-import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
+import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { DataFreshness } from "@/domains/meta/components/DataFreshness";
 import { SortableTierTable } from "../../tools/tier-list/SortableTierTable";
 
@@ -41,7 +41,7 @@ export default async function AramTierListPage() {
         />
       )}
 
-      <ToolBreadcrumb
+      <Breadcrumb
         items={[
           { name: "Free Tools", href: "/tools" },
           { name: "ARAM Tier List", href: "/aram/tier-list" },

@@ -2,13 +2,20 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getMatch, defaultGame, getGameStats } from "@/domains/esports";
+import {
+  getMatch,
+  defaultGame,
+  getGameStats,
+  getEventStartTime,
+  teamSlugsById,
+} from "@/domains/esports";
 import type { GameTeamStats, MatchDetail, MatchGameRef } from "@/domains/esports";
 import { DraftPanel } from "@/domains/esports/components/DraftPanel";
 import { Scoreboard } from "@/domains/esports/components/Scoreboard";
 import { LiveGameStats } from "@/domains/esports/components/LiveGameStats";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
+import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
 
 // An hour for the series shell. Completed game stats behind it are immutable and
 // cached for a month; a live game refreshes on its own thirty-second window.
@@ -80,18 +87,39 @@ function GameSwitcher({
   );
 }
 
-function SeriesHeader({ match }: { match: MatchDetail }): React.ReactElement {
+function SeriesHeader({
+  match,
+  teamSlugs,
+}: {
+  match: MatchDetail;
+  teamSlugs: Map<string, string>;
+}): React.ReactElement {
   const [home, away] = match.teams;
 
   return (
     <header className="mb-6">
       <p className="hud-label mb-2">
-        {match.league.name}
+        {match.league.slug ? (
+          <Link href={`/esports/leagues/${match.league.slug}`} className="hover:text-accent">
+            {match.league.name}
+          </Link>
+        ) : (
+          match.league.name
+        )}
         {match.bestOf ? ` · Bo${match.bestOf}` : ""}
       </p>
       <div className="flex items-center justify-between gap-4">
-        {[home, away].map((team, index) =>
-          team ? (
+        {[home, away].map((team, index) => {
+          if (!team) {
+            return (
+              <span key={index} className="hud-label flex-1">
+                TBD
+              </span>
+            );
+          }
+
+          const slug = teamSlugs.get(team.id);
+          return (
             <div
               key={team.id}
               className={`flex min-w-0 flex-1 items-center gap-3 ${index === 1 ? "flex-row-reverse text-right" : ""}`}
@@ -108,15 +136,17 @@ function SeriesHeader({ match }: { match: MatchDetail }): React.ReactElement {
                 />
               )}
               <h1 className="min-w-0 truncate font-display text-xl font-black uppercase text-text md:text-2xl">
-                {team.name}
+                {slug ? (
+                  <Link href={`/esports/teams/${slug}`} className="hover:text-accent">
+                    {team.name}
+                  </Link>
+                ) : (
+                  team.name
+                )}
               </h1>
             </div>
-          ) : (
-            <span key={index} className="hud-label flex-1">
-              TBD
-            </span>
-          )
-        )}
+          );
+        })}
         <span className="shrink-0 font-mono text-2xl font-bold text-text">
           {home?.gameWins ?? 0}
           <span className="mx-1.5 text-text-faint">–</span>
@@ -160,12 +190,16 @@ export default async function MatchPage({
     : null;
   const game = requested ?? defaultGame(match);
 
-  const stats = game
-    ? await getGameStats(game.id, { completed: game.state === "completed" })
-    : null;
+  const [stats, startTime, teamSlugs] = await Promise.all([
+    game ? getGameStats(game.id, { completed: game.state === "completed" }) : null,
+    getEventStartTime(match.matchId),
+    teamSlugsById(match.teams.map((team) => team.id)),
+  ]);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 md:py-14">
+      <EsportsJsonLd schema={{ kind: "match", match, startTime }} />
+
       <EsportsBreadcrumb
         items={[
           ...(match.league.slug
@@ -175,7 +209,7 @@ export default async function MatchPage({
         ]}
       />
 
-      <SeriesHeader match={match} />
+      <SeriesHeader match={match} teamSlugs={teamSlugs} />
       {game && <GameSwitcher match={match} activeId={game.id} />}
 
       {!game && (

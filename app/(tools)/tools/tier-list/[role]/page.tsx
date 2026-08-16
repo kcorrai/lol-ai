@@ -9,7 +9,7 @@ import {
   ALL_POSITIONS,
   formatGamePatch,
 } from "@/domains/meta";
-import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
+import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { TierListView } from "../TierListView";
 import { tierBlurb } from "../tierBlurb";
 import { PublicOnly } from "@/components/tools/PublicOnly";
@@ -75,7 +75,7 @@ export default async function RoleTierListPage({ params, searchParams }: PagePro
         />
       )}
 
-      <ToolBreadcrumb
+      <Breadcrumb
         items={[
           { name: "Free Tools", href: "/tools" },
           { name: "Tier List", href: "/tools/tier-list" },

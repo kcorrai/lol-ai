@@ -1,14 +1,16 @@
 import type { MetadataRoute } from "next";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { getMatchupPairs, getMetaSnapshot, ALL_POSITIONS, POSITION_SLUG } from "@/domains/meta";
+import { esportsSitemapEntries } from "@/domains/esports";
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [champions, matchupPairs, snapshot] = await Promise.all([
+  const [champions, matchupPairs, snapshot, esports] = await Promise.all([
     fetchAllChampions(),
     getMatchupPairs(1500),
     getMetaSnapshot(),
+    esportsSitemapEntries(),
   ]);
 
   // Real last-modified for data pages: when the meta snapshot was last fetched.
@@ -20,9 +22,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/champions`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${BASE_URL}/tools`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${BASE_URL}/meta`, lastModified: dataLastMod, changeFrequency: "daily", priority: 0.8 },
-    // The rest of the esports URLs (leagues, teams, players, matches) enter the
-    // sitemap in TASK-309, filtered by the has-content rule in ADR-017 §4.
-    { url: `${BASE_URL}/esports`, changeFrequency: "hourly", priority: 0.9 },
     { url: `${BASE_URL}/tools/counter-picker`, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE_URL}/tools/matchup`, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE_URL}/tools/draft-analyzer`, changeFrequency: "weekly", priority: 0.7 },
@@ -89,6 +88,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
+  // Computed from the cached esports indexes and already filtered by the
+  // has-content rule (ADR-017 §4), so it is mapped rather than re-decided here.
+  const esportsRoutes: MetadataRoute.Sitemap = esports.map((entry) => ({
+    url: `${BASE_URL}${entry.path}`,
+    lastModified: entry.lastModified,
+    changeFrequency: entry.changeFrequency,
+    priority: entry.priority,
+  }));
+
   return [
     ...staticRoutes,
     ...championRoutes,
@@ -96,5 +104,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...buildRoutes,
     ...aramBuildRoutes,
     ...matchupRoutes,
+    ...esportsRoutes,
   ];
 }

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getCounterData, getPopularChampions, parsePosition, parseTier, POSITION_LABELS, formatGamePatch } from "@/domains/meta";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { CounterResults } from "@/domains/meta/components/CounterResults";
-import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
+import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { RelatedChampions } from "@/domains/meta/components/RelatedChampions";
 import { PersonalMatchupPanel } from "@/domains/counter/components/PersonalMatchupPanel";
 import { PublicOnly } from "@/components/tools/PublicOnly";
@@ -76,7 +76,7 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
-      <ToolBreadcrumb
+      <Breadcrumb
         items={[
           { name: "Free Tools", href: "/tools" },
           { name: "Counter Picker", href: "/tools/counter-picker" },

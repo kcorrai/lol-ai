@@ -6,6 +6,7 @@ import { MatchRow } from "@/domains/esports/components/MatchRow";
 import { LeagueGrid } from "@/domains/esports/components/LeagueGrid";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { LiveMatches } from "@/domains/esports/components/LiveMatches";
+import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
 import { PublicOnly } from "@/components/tools/PublicOnly";
 
 // Five minutes. The hub's job is "what is on right now", and the live block is
@@ -77,6 +78,19 @@ export default async function EsportsHubPage(): Promise<React.ReactElement> {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 md:py-14">
+      {/* The hub is the root of the trail, so it carries no breadcrumb — the
+          leagues it fronts are what it has to describe. */}
+      <EsportsJsonLd
+        schema={{
+          kind: "list",
+          name: "League of Legends esports leagues",
+          items: featured.slice(0, FEATURED_LEAGUES).map((league) => ({
+            name: league.name,
+            href: `/esports/leagues/${league.slug}`,
+          })),
+        }}
+      />
+
       <header className="mb-8">
         <PublicOnly>
           <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">

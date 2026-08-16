@@ -150,6 +150,22 @@ export function indexableTeams(teams: EsportsTeam[]): EsportsTeam[] {
     .sort((a, b) => a.name.localeCompare(b.name));
 }
 
+/**
+ * Team slugs by feed id, for pages that carry ids but need URLs.
+ *
+ * `getEventDetails` gives a match its teams as id/name/code with no slug, so a
+ * match page cannot link to the two teams it is about without this — and those
+ * are the most natural links on the page.
+ */
+export async function teamSlugsById(ids: string[]): Promise<Map<string, string>> {
+  const wanted = new Set(ids);
+  const slugs = new Map<string, string>();
+  for (const team of await getTeams()) {
+    if (wanted.has(team.id)) slugs.set(team.id, team.slug);
+  }
+  return slugs;
+}
+
 /** True when a team page would have nothing on it worth indexing. */
 export function isThinTeam(team: EsportsTeam, matches: EsportsEvent[]): boolean {
   return team.players.length === 0 && matches.length === 0;
