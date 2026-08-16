@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { vodLink, vodLinks, streamLink, streamLinks } from "./watch";
+import {
+  archiveLink,
+  inferVodProvider,
+  streamLink,
+  streamLinks,
+  vodLink,
+  vodLinks,
+} from "./watch";
 import type { EventStream, GameVod } from "./types";
 
 function vod(over: Partial<GameVod> = {}): GameVod {
@@ -96,5 +103,46 @@ describe("ordering and duplicates", () => {
   it("returns nothing when there is nothing to watch", () => {
     expect(vodLinks([])).toEqual([]);
     expect(streamLinks([])).toEqual([]);
+  });
+});
+
+describe("inferVodProvider", () => {
+  it("recognises a YouTube id", () => {
+    expect(inferVodProvider("adBJ3Auz7VQ")).toBe("youtube");
+    expect(inferVodProvider("bQ2c75kKpHU")).toBe("youtube");
+    // Underscores and hyphens are in YouTube's alphabet.
+    expect(inferVodProvider("a_BJ3-uz7VQ")).toBe("youtube");
+  });
+
+  it("refuses to name a platform for an all-digit id", () => {
+    // The trap this exists for. A numeric id looks like Twitch and often is
+    // not: checking 174 archived VODs against the per-match feed that does
+    // publish a provider, 16 were afreecatv, whose ids are numeric too.
+    expect(inferVodProvider("2845212286")).toBeNull();
+    expect(inferVodProvider("202892313")).toBeNull();
+  });
+
+  it("refuses anything that is not eleven characters", () => {
+    expect(inferVodProvider("short")).toBeNull();
+    expect(inferVodProvider("waytoolongtobeayoutubeid")).toBeNull();
+    expect(inferVodProvider("")).toBeNull();
+  });
+});
+
+describe("archiveLink", () => {
+  it("opens a YouTube recording at the game rather than the broadcast", () => {
+    expect(archiveLink("adBJ3Auz7VQ", 2328000)).toBe(
+      "https://www.youtube.com/watch?v=adBJ3Auz7VQ&t=2328s"
+    );
+  });
+
+  it("links the plain video when the feed publishes no offset", () => {
+    expect(archiveLink("adBJ3Auz7VQ", null)).toBe("https://www.youtube.com/watch?v=adBJ3Auz7VQ");
+  });
+
+  it("has no link for an id whose platform cannot be named", () => {
+    // Guessing twitch.tv/videos/202892313 here would be a dead link to a
+    // recording that lives on afreecatv.
+    expect(archiveLink("202892313", 0)).toBeNull();
   });
 });

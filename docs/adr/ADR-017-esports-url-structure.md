@@ -26,6 +26,7 @@ leaves the root namespace free.
 ```
 /esports                              Hub: live now, today, leagues
 /esports/schedule                     All matches (?league= filter, ?date= paging)
+/esports/vods                         Recorded series, game by game (?league= filter)
 /esports/leagues                      League index
 /esports/leagues/[slug]               League hub: standings + schedule + teams
 /esports/tournaments/[slug]           Tournament: bracket, standings, champion meta

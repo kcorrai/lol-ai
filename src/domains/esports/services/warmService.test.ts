@@ -9,6 +9,7 @@ const getUpcoming = vi.fn<(query?: unknown) => Promise<unknown[]>>();
 const getCompleted = vi.fn<(query?: unknown) => Promise<unknown[]>>();
 const getProSample = vi.fn<(query?: unknown) => Promise<unknown>>();
 const getTeams = vi.fn<() => Promise<unknown[]>>();
+const getVodArchive = vi.fn<(options?: unknown) => Promise<unknown[]>>();
 const getLeagues = vi.fn<() => Promise<unknown[]>>();
 const getCurrentTournament = vi.fn<(id: string) => Promise<unknown>>();
 const getStandings = vi.fn<(id: string, force?: boolean) => Promise<unknown[]>>();
@@ -22,6 +23,9 @@ vi.mock("@/domains/esports/services/proSampleService", () => ({
   getProSample: (query?: unknown) => getProSample(query),
 }));
 vi.mock("@/domains/esports/services/teamService", () => ({ getTeams: () => getTeams() }));
+vi.mock("@/domains/esports/services/vodArchiveService", () => ({
+  getVodArchive: (options?: unknown) => getVodArchive(options),
+}));
 vi.mock("@/domains/esports/services/standingsService", () => ({
   getStandings: (id: string, force?: boolean) => getStandings(id, force),
 }));
@@ -48,6 +52,7 @@ beforeEach(() => {
   getCompleted.mockResolvedValue([]);
   getProSample.mockResolvedValue(null);
   getTeams.mockResolvedValue([]);
+  getVodArchive.mockResolvedValue([]);
   getLeagues.mockResolvedValue([]);
 });
 
@@ -84,10 +89,11 @@ describe("warmEsports", () => {
   });
 
   it("keeps going down the list when a cheap task still fits after an expensive skip", async () => {
-    // 5 covers live, schedule and teams, but never the pro sample or standings.
-    const report = await warmEsports({ budget: 5 });
+    // 6 covers live, schedule, vods and teams, but never the pro sample or
+    // standings — and teams sits after both of those in the list.
+    const report = await warmEsports({ budget: 6 });
 
-    expect(report.warmed).toEqual(["live", "schedule", "teams"]);
+    expect(report.warmed).toEqual(["live", "schedule", "vods", "teams"]);
     expect(report.skipped).toEqual(["pro-sample", "standings"]);
   });
 
@@ -116,6 +122,7 @@ describe("warmEsports", () => {
     getCompleted.mockRejectedValue(new Error("down"));
     getProSample.mockRejectedValue(new Error("down"));
     getTeams.mockRejectedValue(new Error("down"));
+    getVodArchive.mockRejectedValue(new Error("down"));
     getLeagues.mockRejectedValue(new Error("down"));
 
     const report = await warmEsports({ budget: FULL_COST });
