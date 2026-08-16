@@ -107,6 +107,33 @@ export interface GameStats {
   red: GameTeamStats;
 }
 
+/**
+ * A recorded broadcast of one game.
+ *
+ * `startMillis` is where this game begins inside the series VOD — the feed
+ * publishes one video per series and marks each game's offset in it.
+ */
+export interface GameVod {
+  /** "youtube" or "twitch" as published; anything else is dropped when linking. */
+  provider: string;
+  /** Video id for YouTube, video id for a Twitch VOD. */
+  parameter: string;
+  locale: string;
+  /** The language written for a reader: "English", "Türkçe". */
+  language: string;
+  /** Milliseconds into the video, or null when this locale's copy has no offset. */
+  startMillis: number | null;
+}
+
+/** A live broadcast of a match, in one language. */
+export interface EventStream {
+  provider: string;
+  /** Channel name for Twitch, video id for YouTube. */
+  parameter: string;
+  locale: string;
+  language: string;
+}
+
 export interface MatchGameRef {
   number: number;
   id: string;
@@ -116,6 +143,7 @@ export interface MatchGameRef {
   blueTeamId: string | null;
   redTeamId: string | null;
   hasVod: boolean;
+  vods: GameVod[];
 }
 
 export interface MatchDetail {

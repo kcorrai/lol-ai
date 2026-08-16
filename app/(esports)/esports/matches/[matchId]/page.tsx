@@ -16,6 +16,8 @@ import { LiveGameStats } from "@/domains/esports/components/LiveGameStats";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
 import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
+import { WatchLinks } from "@/domains/esports/components/WatchLinks";
+import { vodLinks } from "@/domains/esports/watch";
 
 // An hour for the series shell. Completed game stats behind it are immutable and
 // cached for a month; a live game refreshes on its own thirty-second window.
@@ -211,6 +213,15 @@ export default async function MatchPage({
 
       <SeriesHeader match={match} teamSlugs={teamSlugs} />
       {game && <GameSwitcher match={match} activeId={game.id} />}
+
+      {game && (
+        // Per game, not per series: the feed marks where each game starts inside
+        // the series video, so this opens on the game being read about rather
+        // than at the beginning of a six-hour broadcast.
+        <div className="mb-6">
+          <WatchLinks links={vodLinks(game.vods)} label={`Watch game ${game.number}`} />
+        </div>
+      )}
 
       {!game && (
         <p className="gaming-card notch-sm px-4 py-5 text-sm text-text-muted">
