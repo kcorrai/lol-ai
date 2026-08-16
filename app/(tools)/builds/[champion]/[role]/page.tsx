@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { parsePosition, POSITION_LABELS } from "@/domains/meta";
 import { BuildView } from "@/domains/meta/components/build/BuildView";
+import { ProPlayStrip } from "@/domains/esports/components/ProPlayStrip";
 import { loadBuildData } from "@/domains/meta/components/build/loadBuildData";
 
 export const revalidate = 43200; // 12h ISR
@@ -35,5 +36,12 @@ export default async function ChampionRoleBuildPage({ params }: PageProps) {
   if (!position) notFound();
   const data = await loadBuildData(params.champion, position);
   if (!data) notFound();
-  return <BuildView {...data} />;
+  return (
+    <>
+      <BuildView {...data} />
+      <div className="mx-auto max-w-5xl px-4 pb-12">
+        <ProPlayStrip championId={data.championKey} name={data.name} />
+      </div>
+    </>
+  );
 }

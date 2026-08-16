@@ -3,6 +3,8 @@ export { connectAccount, disconnectAccount, listAccounts } from "@/domains/riot/
 export { syncAccount, backfillMatchNicknames } from "@/domains/riot/services/matchSyncService";
 export { getCurrentRank, getLpHistory, getLastRankedSnapshot } from "@/domains/riot/services/rankedService";
 export { getAccountPuuid } from "@/domains/riot/services/accountLookup";
+export { buildAccountPreview } from "@/domains/riot/services/previewService";
+export { VALID_REGIONS } from "@/domains/riot/services/riotApiClient";
 export { indexPlayers, searchPlayers } from "@/domains/riot/services/playerIndexService";
 export type { IndexablePlayer, IndexedPlayer } from "@/domains/riot/services/playerIndexService";
 export type { ConnectedAccount } from "@/domains/riot/services/accountService";

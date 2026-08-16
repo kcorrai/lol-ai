@@ -80,6 +80,8 @@ export interface GameParticipant {
   wardsPlaced: number | null;
   items: number[];
   runes: { primaryStyle: number; secondaryStyle: number; perks: number[] } | null;
+  /** Skill levelling order, in the order taken: ["Q","W","E","Q",…]. Empty when unpublished. */
+  abilities: string[];
 }
 
 export interface GameTeamStats {
@@ -276,4 +278,89 @@ export interface ProMeta {
   thinSample: boolean;
   /** Most-picked first. */
   champions: ProChampionStat[];
+}
+
+/** One finished game as it enters an aggregate, with the context `GameStats` alone lacks. */
+export interface SampledGame {
+  matchId: string;
+  gameNumber: number;
+  leagueName: string;
+  blueTeamName: string | null;
+  redTeamName: string | null;
+  stats: GameStats;
+}
+
+export interface ItemFrequency {
+  itemId: number;
+  games: number;
+}
+
+export interface RuneVariant {
+  primaryStyle: number;
+  secondaryStyle: number;
+  /** Keystone first, then the rest of the page as the feed ordered it. */
+  perks: number[];
+  games: number;
+  wins: number;
+}
+
+export interface ProGameAppearance {
+  matchId: string;
+  gameNumber: number;
+  leagueName: string;
+  handle: string;
+  teamName: string | null;
+  opponentName: string | null;
+  kills: number;
+  deaths: number;
+  assists: number;
+  creepScore: number;
+  items: number[];
+  won: boolean | null;
+}
+
+export interface ProPlayerOnChampion {
+  handle: string;
+  teamName: string | null;
+  games: number;
+  wins: number;
+}
+
+/**
+ * Per-game averages for a champion in pro play.
+ *
+ * Totals per game, never per minute: neither feed publishes a game's duration
+ * (the window carries the final frame and no length), so a per-minute figure
+ * would be invented. Whoever reads these has to be told they are per game.
+ */
+export interface ProChampionAverages {
+  kills: number;
+  deaths: number;
+  assists: number;
+  /** (kills + assists) / max(deaths, 1). */
+  kda: number;
+  creepScore: number;
+  gold: number;
+  /** Null when the details feed published none of it for this champion's games. */
+  wardsPlaced: number | null;
+  killParticipation: number | null;
+  damageShare: number | null;
+  winRate: number;
+}
+
+/** How pros actually finished a champion, over a sample of games. */
+export interface ProChampionBuild {
+  championId: string;
+  games: number;
+  wins: number;
+  averages: ProChampionAverages;
+  /** Most-finished items first. Trinkets and consumables excluded. */
+  items: ItemFrequency[];
+  /** Most-run rune pages first. */
+  runes: RuneVariant[];
+  /** The most common levelling order, truncated to the first levels that agree. */
+  skillOrder: string[];
+  skillOrderGames: number;
+  topPlayers: ProPlayerOnChampion[];
+  recentGames: ProGameAppearance[];
 }

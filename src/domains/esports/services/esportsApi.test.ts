@@ -9,7 +9,7 @@ vi.mock("@/lib/utils/logger", () => ({
   logger: { warn: vi.fn(), info: vi.fn(), error: vi.fn(), debug: vi.fn() },
 }));
 
-import { cachedResource, esportsFetch, httpsAsset, TTL } from "./esportsApi";
+import { cachedComputation, cachedResource, cachedValue, esportsFetch, httpsAsset, TTL } from "./esportsApi";
 import { getCached, setCached } from "@/lib/ai/aiCache";
 
 const mockGetCached = getCached as unknown as ReturnType<typeof vi.fn>;
@@ -140,5 +140,105 @@ describe("httpsAsset", () => {
     );
     expect(httpsAsset(null)).toBeNull();
     expect(httpsAsset(undefined)).toBeNull();
+  });
+});
+
+describe("cachedComputation", () => {
+  // One in-memory store standing in for the two-tier cache, so a value written
+  // by one helper and read by another have to agree about the key.
+  const store = new Map<string, unknown>();
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    store.clear();
+    mockGetCached.mockImplementation(async (key: string) =>
+      store.has(key) ? store.get(key) : null
+    );
+    mockSetCached.mockImplementation(async (key: string, _type: string, content: unknown) => {
+      store.set(key, content);
+    });
+  });
+
+  function computation(compute: () => Promise<unknown>, key = "pro-sample:all") {
+    return cachedComputation({ key, type: "esports-test", ttlDays: TTL.standings, compute });
+  }
+
+  it("computes once, then serves the cached value", async () => {
+    const compute = vi.fn(async () => ({ answer: 42 }));
+
+    expect(await computation(compute)).toEqual({ answer: 42 });
+    expect(await computation(compute)).toEqual({ answer: 42 });
+    expect(compute).toHaveBeenCalledTimes(1);
+  });
+
+  it("serves the last good value when a rebuild throws", async () => {
+    await computation(async () => ({ answer: 42 }));
+    store.delete("esports:pro-sample:all:fresh");
+
+    const result = await computation(async () => {
+      throw new Error("feed is down");
+    });
+
+    // Hundreds of feed reads go into this; a transient failure part-way must
+    // not replace a good aggregate with nothing.
+    expect(result).toEqual({ answer: 42 });
+  });
+
+  it("returns null when it has never succeeded", async () => {
+    const result = await computation(async () => {
+      throw new Error("feed is down");
+    });
+
+    expect(result).toBeNull();
+  });
+});
+
+describe("cachedValue", () => {
+  const store = new Map<string, unknown>();
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    store.clear();
+    mockGetCached.mockImplementation(async (key: string) =>
+      store.has(key) ? store.get(key) : null
+    );
+    mockSetCached.mockImplementation(async (key: string, _type: string, content: unknown) => {
+      store.set(key, content);
+    });
+  });
+
+  /**
+   * The failure this guards is silent. `cachedValue` builds its keys separately
+   * from `cachedComputation`, so a rename on either side leaves every cache-only
+   * reader missing forever — and the only symptom would be a pro strip that
+   * never appears on any build page (TASK-310).
+   */
+  it("reads exactly what cachedComputation writes", async () => {
+    await cachedComputation({
+      key: "pro-sample:all",
+      type: "esports-test",
+      ttlDays: TTL.standings,
+      compute: async () => ({ answer: 42 }),
+    });
+
+    expect(await cachedValue("pro-sample:all")).toEqual({ answer: 42 });
+  });
+
+  it("falls through to the last-good copy once the fresh one expires", async () => {
+    await cachedComputation({
+      key: "pro-sample:all",
+      type: "esports-test",
+      ttlDays: TTL.standings,
+      compute: async () => ({ answer: 42 }),
+    });
+    store.delete("esports:pro-sample:all:fresh");
+
+    expect(await cachedValue("pro-sample:all")).toEqual({ answer: 42 });
+  });
+
+  it("returns null rather than producing a value", async () => {
+    expect(await cachedValue("pro-sample:all")).toBeNull();
+    // A cache-only read must never fill the cache — that is the whole point.
+    expect(mockSetCached).not.toHaveBeenCalled();
   });
 });

@@ -26,6 +26,7 @@ function participant(
     wardsPlaced: null,
     items: [],
     runes: null,
+    abilities: [],
   };
 }
 

@@ -90,6 +90,9 @@ const DetailsParticipantSchema = z.object({
       perks: z.array(z.number()).nullish(),
     })
     .nullish(),
+  // Skill levelling order, in order taken: ["Q","W","E","Q",…]. The only place
+  // either feed publishes it.
+  abilities: z.array(z.string()).nullish(),
 });
 
 const DetailsSchema = z.object({
@@ -147,6 +150,9 @@ function buildTeam(
             perks: detail.perkMetadata.perks ?? [],
           }
         : null,
+      // Only "Q"/"W"/"E"/"R" mean anything here; anything else the feed invents
+      // is dropped rather than rendered as a skill.
+      abilities: (detail?.abilities ?? []).filter((key) => ["Q", "W", "E", "R"].includes(key)),
     };
   });
 

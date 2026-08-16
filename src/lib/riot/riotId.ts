@@ -46,3 +46,24 @@ export function parseSearchQuery(raw: string): SearchQuery | null {
 
   return { name, tag: rawTag.length > 0 ? rawTag : null };
 }
+
+/**
+ * A complete Riot ID, or null.
+ *
+ * Distinct from `parseSearchQuery` on purpose: that one reads a half-typed
+ * prefix and is happy without a tag, because a search box should return
+ * something while you type. This one is for a form that has to resolve one
+ * exact account, so both halves are required and neither is lowercased —
+ * `account-v1` matches on the name as it was typed.
+ */
+export function splitRiotId(raw: string): { gameName: string; tagLine: string } | null {
+  const clean = sanitizeRiotIdPart(raw);
+  const hashAt = clean.indexOf("#");
+  if (hashAt === -1) return null;
+
+  const gameName = clean.slice(0, hashAt).trim();
+  const tagLine = clean.slice(hashAt + 1).trim();
+  if (!gameName || !tagLine) return null;
+
+  return { gameName, tagLine };
+}

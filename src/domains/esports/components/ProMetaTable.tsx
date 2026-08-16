@@ -61,11 +61,11 @@ export function ProMetaTable({
               <td className="px-3 py-2">
                 <span className="flex min-w-0 items-center gap-2">
                   <ChampionIcon name={champion.championId} size={24} />
-                  {/* The Data Dragon id verbatim — that is the canonical form
-                      `/builds` publishes, so this link lands on it rather than
-                      on a redirect. */}
+                  {/* The Data Dragon id verbatim, which is the slug convention
+                      both clusters share (ADR-017 §2) — so this link, and the
+                      `/builds` link on the page it opens, are mechanical. */}
                   <Link
-                    href={`/builds/${champion.championId}`}
+                    href={`/esports/champions/${champion.championId}`}
                     className="truncate font-display font-bold uppercase text-text hover:text-accent"
                   >
                     {champion.championId}
