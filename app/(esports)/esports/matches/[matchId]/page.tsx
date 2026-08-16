@@ -19,6 +19,7 @@ import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrum
 import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
 import { WatchLinks } from "@/domains/esports/components/WatchLinks";
 import { vodLinks, streamLinks } from "@/domains/esports/watch";
+import { formatDuration } from "@/domains/esports/duration";
 
 // An hour for the series shell. Completed game stats behind it are immutable and
 // cached for a month; a live game refreshes on its own thirty-second window.
@@ -277,14 +278,20 @@ export default async function MatchPage({
           </section>
 
           <section className="mt-12">
-            <h2 className="mb-3 font-display text-xl font-extrabold uppercase text-text md:text-2xl">
-              Scoreboard
-            </h2>
+            <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+              <h2 className="font-display text-xl font-extrabold uppercase text-text md:text-2xl">
+                Scoreboard
+              </h2>
+              {stats.durationSeconds !== null && (
+                <span className="hud-label">{formatDuration(stats.durationSeconds)} game</span>
+              )}
+            </div>
             <Scoreboard
               blue={stats.blue}
               red={stats.red}
               blueName={sideName(match, game, stats.blue)}
               redName={sideName(match, game, stats.red)}
+              durationSeconds={stats.durationSeconds}
             />
           </section>
         </>

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
 import { buildAccountPreview, getAccountPuuid } from "@/domains/riot";
+import { meanDuration, perMinute } from "@/domains/esports/duration";
 import type { PlayerChampionAverages } from "@/domains/esports/comparison";
 
 /** How far back a player's own games are read. The same window the profile uses. */
@@ -7,6 +8,13 @@ const GAMES_TO_READ = 20;
 
 function kdaOf(kills: number, deaths: number, assists: number): number {
   return (kills + assists) / Math.max(deaths, 1);
+}
+
+/** Mean of the readings that exist, or null when none do. */
+function meanOfPresent(values: (number | null)[]): number | null {
+  const present = values.filter((value): value is number => value !== null);
+  if (present.length === 0) return null;
+  return present.reduce((sum, value) => sum + value, 0) / present.length;
 }
 
 /**
@@ -37,6 +45,10 @@ export async function championAveragesFromDb(
       goldEarned: true,
       wardsPlaced: true,
       won: true,
+      // The pro side's game length is derived from the livestats frames; ours has
+      // been sitting in the match row all along, which is what makes the two
+      // per-minute rows comparable at all.
+      match: { select: { gameDuration: true } },
     },
     orderBy: { match: { gameStart: "desc" } },
     take: GAMES_TO_READ,
@@ -47,6 +59,12 @@ export async function championAveragesFromDb(
   const mean = (pick: (row: (typeof rows)[number]) => number): number =>
     rows.reduce((sum, row) => sum + pick(row), 0) / rows.length;
 
+  // Averaged over the per-game rates, matching how the pro side computes them —
+  // one reading per game, so a long game does not count for more than a short one.
+  const durations = rows.map((row) => row.match?.gameDuration ?? null);
+  const rate = (pick: (row: (typeof rows)[number]) => number): number | null =>
+    meanOfPresent(rows.map((row, index) => perMinute(pick(row), durations[index])));
+
   return {
     games: rows.length,
     kda: mean((row) => kdaOf(row.kills, row.deaths, row.assists)),
@@ -54,6 +72,9 @@ export async function championAveragesFromDb(
     creepScore: mean((row) => row.cs),
     gold: mean((row) => row.goldEarned),
     wardsPlaced: mean((row) => row.wardsPlaced),
+    gameLengthSeconds: meanDuration(durations),
+    creepScorePerMin: rate((row) => row.cs),
+    goldPerMin: rate((row) => row.goldEarned),
   };
 }
 
@@ -85,5 +106,10 @@ export async function championAveragesFromRiotId(
     creepScore: null,
     gold: null,
     wardsPlaced: null,
+    // The preview carries no game length either, so the two per-minute rows are
+    // among the ones connecting an account adds.
+    gameLengthSeconds: null,
+    creepScorePerMin: null,
+    goldPerMin: null,
   };
 }

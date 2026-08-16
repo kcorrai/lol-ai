@@ -1,3 +1,4 @@
+import { meanDuration, perMinute } from "@/domains/esports/duration";
 import { gameWinner } from "@/domains/esports/gameOutcome";
 import type {
   GameParticipant,
@@ -248,6 +249,15 @@ function averages(entries: Appearance[]): ProChampionAverages {
   const assists = mean((p) => p.assists);
   const decided = entries.filter((entry) => entry.won !== null);
 
+  // Averaged over the per-game rates rather than dividing the mean total by the
+  // mean length: a 20-minute stomp and a 45-minute grind contribute one reading
+  // each that way, which is how a farm figure is read, instead of the long game
+  // quietly counting more than twice as much as the short one.
+  const rate = (pick: (p: GameParticipant) => number): number | null =>
+    meanOf(
+      entries.map((entry) => perMinute(pick(entry.participant), entry.game.stats.durationSeconds))
+    );
+
   return {
     kills,
     deaths,
@@ -255,7 +265,11 @@ function averages(entries: Appearance[]): ProChampionAverages {
     kda: (kills + assists) / Math.max(deaths, 1),
     creepScore: mean((p) => p.creepScore),
     gold: mean((p) => p.gold),
+    gameLengthSeconds: meanDuration(entries.map((entry) => entry.game.stats.durationSeconds)),
+    creepScorePerMin: rate((p) => p.creepScore),
+    goldPerMin: rate((p) => p.gold),
     wardsPlaced: meanOf(players.map((p) => p.wardsPlaced)),
+    wardsDestroyed: meanOf(players.map((p) => p.wardsDestroyed)),
     killParticipation: meanOf(players.map((p) => p.killParticipation)),
     damageShare: meanOf(players.map((p) => p.damageShare)),
     winRate:

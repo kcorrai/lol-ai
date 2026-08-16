@@ -16,10 +16,12 @@ const CACHE_TYPE = "esports-pro-meta";
  * How many finished series the sample walks.
  *
  * This is the cost knob for the whole pro-play cluster. Each series costs one
- * match lookup and each game inside it two livestats reads, so 24 series is
- * roughly 150 feed requests to build from nothing. Every one of those reads is
- * cached for a month and shared with the match pages, so the second scope over
- * the same league is nearly free; it is the first, cold build this bounds.
+ * match lookup and each game inside it three livestats reads — the closing
+ * window, the details frame, and the opening window a game's length is derived
+ * from — so 24 series is roughly 220 feed requests to build from nothing. Every
+ * one of those reads is cached for a month and shared with the match pages, so
+ * the second scope over the same league is nearly free; it is the first, cold
+ * build this bounds.
  */
 const SERIES_PER_LEAGUE = 24;
 const SERIES_ALL_LEAGUES = 30;
