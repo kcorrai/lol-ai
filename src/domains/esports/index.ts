@@ -24,8 +24,12 @@ export {
   getUpcoming,
   getCompleted,
   getLiveEvents,
+  getEventStartTime,
 } from "@/domains/esports/services/scheduleService";
 export type { ScheduleQuery } from "@/domains/esports/services/scheduleService";
+export { esportsSitemapEntries } from "@/domains/esports/services/sitemapService";
+export type { EsportsSitemapEntry } from "@/domains/esports/services/sitemapService";
+export { ROLE_LABEL, roleLabel } from "@/domains/esports/roles";
 export { httpsAsset } from "@/domains/esports/services/esportsApi";
 export type {
   BracketMatch,
@@ -61,4 +65,5 @@ export {
   indexableTeams,
   isThinTeam,
   recentForm,
+  teamSlugsById,
 } from "@/domains/esports/services/teamService";

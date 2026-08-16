@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getMetaSnapshot, formatGamePatch } from "@/domains/meta";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
-import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
+import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { BuildSearch } from "./BuildSearch";
 import { RelatedTools } from "../RelatedTools";
 
@@ -28,7 +28,7 @@ export default async function BuildsHubPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-14">
-      <ToolBreadcrumb items={[{ name: "Free Tools", href: "/tools" }, { name: "Builds", href: "/builds" }]} />
+      <Breadcrumb items={[{ name: "Free Tools", href: "/tools" }, { name: "Builds", href: "/builds" }]} />
 
       <header className="mb-8">
         <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">

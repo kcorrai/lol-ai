@@ -5,6 +5,7 @@ import { getTeams, indexableTeams } from "@/domains/esports";
 import type { EsportsTeam } from "@/domains/esports";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
+import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
 
 export const revalidate = 86400; // Rosters change between splits, not daily.
 
@@ -58,10 +59,22 @@ function TeamTile({ team }: { team: EsportsTeam }): React.ReactElement {
 }
 
 export default async function EsportsTeamsPage(): Promise<React.ReactElement> {
-  const groups = groupByLeague(indexableTeams(await getTeams()));
+  const listed = indexableTeams(await getTeams());
+  const groups = groupByLeague(listed);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 md:py-14">
+      <EsportsJsonLd
+        schema={{
+          kind: "list",
+          name: "League of Legends pro teams",
+          items: listed.map((team) => ({
+            name: team.name,
+            href: `/esports/teams/${team.slug}`,
+          })),
+        }}
+      />
+
       <EsportsBreadcrumb items={[{ name: "Teams", href: "/esports/teams" }]} />
 
       <header className="mb-8">

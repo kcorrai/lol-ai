@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
-import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
+import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { MatchupCurveCompare } from "@/domains/meta/components/MatchupCurveCompare";
 import { DataFreshness } from "@/domains/meta/components/DataFreshness";
 import type { MatchupPageData } from "./loadMatchupData";
@@ -67,7 +67,7 @@ export function MatchupPageView({ d }: { d: MatchupPageData }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
 
-      <ToolBreadcrumb
+      <Breadcrumb
         items={[
           { name: "Free Tools", href: "/tools" },
           { name: "Matchups", href: "/tools/matchup" },

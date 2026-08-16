@@ -6,7 +6,7 @@ import { POSITION_LABELS, POSITION_SLUG } from "@/domains/meta";
 import type { CanonicalPosition, ChampionBuild, PositionStats, SnapshotMode } from "@/domains/meta";
 import type { ItemInfo } from "@/lib/ddragon/itemsData";
 import type { RuneInfo } from "@/lib/ddragon/runesData";
-import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
+import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { DataFreshness } from "@/domains/meta/components/DataFreshness";
 import { Stat, BuildLink } from "./BuildViewParts";
 import { RunePanel } from "./RunePanel";
@@ -73,7 +73,7 @@ export function BuildView(d: BuildViewData) {
         <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
       ))}
 
-      <ToolBreadcrumb items={crumbs} />
+      <Breadcrumb items={crumbs} />
 
       {/* Hero */}
       <div className="relative mb-6 overflow-hidden rounded-2xl border border-border">
