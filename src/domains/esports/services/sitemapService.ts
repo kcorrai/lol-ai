@@ -30,6 +30,7 @@ const MATCH_WINDOW = 200;
 const SECTION_ROOTS: EsportsSitemapEntry[] = [
   { path: "/esports", changeFrequency: "hourly", priority: 0.9 },
   { path: "/esports/schedule", changeFrequency: "hourly", priority: 0.9 },
+  { path: "/esports/vods", changeFrequency: "hourly", priority: 0.8 },
   { path: "/esports/leagues", changeFrequency: "weekly", priority: 0.7 },
   { path: "/esports/teams", changeFrequency: "weekly", priority: 0.7 },
   { path: "/esports/champions", changeFrequency: "daily", priority: 0.8 },

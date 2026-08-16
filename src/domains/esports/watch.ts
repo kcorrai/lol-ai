@@ -91,6 +91,39 @@ export function streamLink(stream: EventStream): WatchLink | null {
   };
 }
 
+/**
+ * Which platform a bare video id belongs to — YouTube, or nothing we can say.
+ *
+ * The VOD archive endpoint publishes an id with no provider beside it, unlike
+ * every other endpoint. A YouTube id is recoverable: eleven characters of
+ * base64url with at least one that is not a digit. A numeric id is **not**, and
+ * the temptation to call it Twitch is exactly the trap this function exists to
+ * refuse — checking 174 archived VODs against the per-match feed that does
+ * publish a provider, 16 of them were `afreecatv`, whose ids are all-digits too.
+ * Linking those to twitch.tv/videos would be 16 dead links.
+ *
+ * So a numeric id gets null, and the caller sends the reader to the match page,
+ * which fetches the provider properly.
+ */
+export function inferVodProvider(parameter: string): "youtube" | null {
+  return /^[A-Za-z0-9_-]{11}$/.test(parameter) && !/^\d+$/.test(parameter) ? "youtube" : null;
+}
+
+/**
+ * A watch URL for an archived game, or null when the id does not say enough.
+ *
+ * Deep-linked by the same offset the per-match VODs use, so it opens on the
+ * game rather than at the start of a six-hour broadcast.
+ */
+export function archiveLink(videoId: string, startMillis: number | null): string | null {
+  if (inferVodProvider(videoId) !== "youtube") return null;
+
+  const seconds = startMillis !== null ? Math.floor(startMillis / 1000) : 0;
+  return seconds > 0
+    ? `https://www.youtube.com/watch?v=${videoId}&t=${seconds}s`
+    : `https://www.youtube.com/watch?v=${videoId}`;
+}
+
 export function vodLinks(vods: GameVod[]): WatchLink[] {
   return dedupe(vods.map(vodLink).filter((link): link is WatchLink => link !== null)).sort(
     byLanguage

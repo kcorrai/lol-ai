@@ -201,6 +201,35 @@ export interface GameVod {
   startMillis: number | null;
 }
 
+/** One game in the VOD archive, with the offset it sits at in the series video. */
+export interface ArchivedGame {
+  id: string;
+  number: number;
+  /** Distinct video ids for this game, in the order the feed listed them. */
+  videoIds: string[];
+  /** Milliseconds into the series video, or null when no copy carries an offset. */
+  startMillis: number | null;
+  /** Broadcast segment length in seconds — draft and post-game included, so longer than the game. */
+  segmentSeconds: number | null;
+}
+
+/**
+ * A completed series with recorded games, as the VOD endpoint publishes it.
+ *
+ * Leaner than `EsportsEvent` on purpose, and in one way poorer: this endpoint
+ * publishes a video id with **no provider and no locale**, unlike the per-match
+ * feed. See `inferVodProvider` for what can and cannot be recovered from an id.
+ */
+export interface VodSeries {
+  matchId: string;
+  startTime: string;
+  leagueName: string;
+  blockName: string | null;
+  bestOf: number | null;
+  teams: { name: string; code: string; image: string | null; gameWins: number }[];
+  games: ArchivedGame[];
+}
+
 /** A live broadcast of a match, in one language. */
 export interface EventStream {
   provider: string;

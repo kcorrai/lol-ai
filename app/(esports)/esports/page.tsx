@@ -179,7 +179,9 @@ export default async function EsportsHubPage(): Promise<React.ReactElement> {
 
             {results.length > 0 && (
               <section className="min-w-0">
-                <SectionHead title="Latest results" href="/esports/schedule" linkLabel="All results →" />
+                {/* Results and recordings are the same question asked twice —
+                    what happened, and can I watch it. */}
+                <SectionHead title="Latest results" href="/esports/vods" linkLabel="Watch VODs →" />
                 <HubResults events={results} />
               </section>
             )}

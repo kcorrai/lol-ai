@@ -34,7 +34,15 @@ export { gameWinner } from "@/domains/esports/gameOutcome";
 export { elapsedSeconds, formatDuration, meanDuration, perMinute } from "@/domains/esports/duration";
 export { bracketLayout, bracketWinner } from "@/domains/esports/bracket";
 export type { BracketLayout, BracketRound } from "@/domains/esports/bracket";
-export { vodLink, vodLinks, streamLink, streamLinks } from "@/domains/esports/watch";
+export {
+  vodLink,
+  vodLinks,
+  streamLink,
+  streamLinks,
+  archiveLink,
+  inferVodProvider,
+} from "@/domains/esports/watch";
+export { getVodArchive, archiveLeagues } from "@/domains/esports/services/vodArchiveService";
 export type { WatchLink } from "@/domains/esports/watch";
 export {
   getPlayer,
@@ -57,9 +65,11 @@ export type { EsportsSitemapEntry } from "@/domains/esports/services/sitemapServ
 export { ROLE_LABEL, roleLabel } from "@/domains/esports/roles";
 export { httpsAsset } from "@/domains/esports/services/esportsApi";
 export type {
+  ArchivedGame,
   BracketMatch,
   FinalStatLine,
   GameVod,
+  VodSeries,
   EventStream,
   ProChampionStat,
   ProChampionBuild,

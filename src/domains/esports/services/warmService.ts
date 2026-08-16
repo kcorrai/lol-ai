@@ -4,6 +4,7 @@ import { getStandings } from "@/domains/esports/services/standingsService";
 import { getLiveEvents, getUpcoming, getCompleted } from "@/domains/esports/services/scheduleService";
 import { getProSample } from "@/domains/esports/services/proSampleService";
 import { getTeams } from "@/domains/esports/services/teamService";
+import { getVodArchive } from "@/domains/esports/services/vodArchiveService";
 
 /**
  * A unit of warming, with what it is expected to cost.
@@ -40,12 +41,14 @@ const STANDINGS_LEAGUES = 6;
  *
  * 1. **Live and the schedule window** — cheapest and most time-sensitive; every
  *    page in the section reads one of them.
- * 2. **The pro sample** — by far the most expensive thing in the section
- *    (roughly 150 feed reads) and the one that gates a visible feature: the
- *    `ProPlayStrip` on build and champion pages reads cache-only, so while this
- *    is cold the strip renders nowhere at all.
- * 3. **Standings** for the leagues people actually watch.
- * 4. **Teams and rosters** — a day-long TTL, so this is a backstop rather than a
+ * 2. **The VOD archive** — one request for every recorded series across every
+ *    league, so it is nearly free and gates a whole page.
+ * 3. **The pro sample** — by far the most expensive thing in the section
+ *    (roughly 220 feed reads now that each game also yields its length) and the
+ *    one that gates a visible feature: the `ProPlayStrip` on build and champion
+ *    pages reads cache-only, so while this is cold the strip renders nowhere.
+ * 4. **Standings** for the leagues people actually watch.
+ * 5. **Teams and rosters** — a day-long TTL, so this is a backstop rather than a
  *    refresh.
  */
 export function warmTasks(): WarmTask[] {
@@ -66,8 +69,17 @@ export function warmTasks(): WarmTask[] {
       },
     },
     {
+      // One request for the whole archive, and it sits third only because the
+      // two above it are on shorter clocks.
+      name: "vods",
+      cost: 1,
+      run: async () => {
+        await getVodArchive({ force: true });
+      },
+    },
+    {
       name: "pro-sample",
-      cost: 150,
+      cost: 220,
       run: async () => {
         await getProSample({ force: true });
       },
