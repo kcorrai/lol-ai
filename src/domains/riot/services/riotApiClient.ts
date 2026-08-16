@@ -31,6 +31,19 @@ export function getRouting(region: string): string {
 
 export const VALID_REGIONS = Object.keys(ROUTING) as string[];
 
+/**
+ * Cheapest authenticated call Riot offers — used as a preflight by unattended jobs.
+ *
+ * Unlike the lookups below, this one throws. Those soft-fail to an empty result on purpose, because
+ * "no data" and "call failed" are the same shape for a player who simply has no rank; a batch job
+ * cannot tell an expired key from an idle ladder that way, and would report a clean run while
+ * recording nothing (TASK: rank sweep).
+ */
+export async function assertRiotApiReachable(region = "euw1"): Promise<void> {
+  const url = `https://${region}.api.riotgames.com/lol/status/v4/platform-data`;
+  await riotClient.get<unknown>(url, { cacheTtl: 60, cacheKey: `riot:status:${region}` });
+}
+
 export async function getMatchTimeline(
   matchId: string,
   region: string
