@@ -2,6 +2,7 @@ import { z } from "zod";
 import { elapsedSeconds } from "@/domains/esports/duration";
 import { cachedResource, livestatsFetch, TTL } from "@/domains/esports/services/esportsApi";
 import type {
+  FinalStatLine,
   GameParticipant,
   GameStats,
   GameTeamStats,
@@ -83,6 +84,15 @@ const DetailsParticipantSchema = z.object({
   championDamageShare: z.number().nullish(),
   wardsPlaced: z.number().nullish(),
   wardsDestroyed: z.number().nullish(),
+  // The end-game stat line. `criticalChance` and `tenacity` are published
+  // alongside these and are zero for every participant in every game sampled,
+  // so they are not read — see `FinalStatLine`.
+  attackDamage: z.number().nullish(),
+  abilityPower: z.number().nullish(),
+  armor: z.number().nullish(),
+  magicResistance: z.number().nullish(),
+  attackSpeed: z.number().nullish(),
+  lifeSteal: z.number().nullish(),
   items: z.array(z.number()).nullish(),
   perkMetadata: z
     .object({
@@ -118,6 +128,29 @@ function parseRole(raw: string | null | undefined): PlayerRole | null {
   return ROLES.includes(role) ? (role as PlayerRole) : null;
 }
 
+/**
+ * The stat line a player finished on, or null when the game has no details.
+ *
+ * Every one of these is a resistance or a damage figure that is legitimately
+ * zero for some builds — a tank's ability power, a bruiser's life steal — so
+ * "nothing published" cannot be inferred from the values. The presence of the
+ * details record itself is the test, and a missing one gives null.
+ */
+function finalStatLine(
+  detail: z.infer<typeof DetailsParticipantSchema> | undefined
+): FinalStatLine | null {
+  if (!detail) return null;
+
+  return {
+    attackDamage: detail.attackDamage ?? 0,
+    abilityPower: detail.abilityPower ?? 0,
+    armor: detail.armor ?? 0,
+    magicResistance: detail.magicResistance ?? 0,
+    attackSpeed: detail.attackSpeed ?? 0,
+    lifeSteal: detail.lifeSteal ?? 0,
+  };
+}
+
 function buildTeam(
   side: "blue" | "red",
   metadata: z.infer<typeof TeamMetadataSchema>,
@@ -148,6 +181,7 @@ function buildTeam(
       damageShare: detail?.championDamageShare ?? null,
       wardsPlaced: detail?.wardsPlaced ?? null,
       wardsDestroyed: detail?.wardsDestroyed ?? null,
+      finalStats: finalStatLine(detail),
       // Zeros are empty slots, not items.
       items: (detail?.items ?? []).filter((id) => id > 0),
       runes: detail?.perkMetadata

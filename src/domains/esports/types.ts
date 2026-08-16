@@ -58,6 +58,30 @@ export interface EsportsEventLeague {
   image: string | null;
 }
 
+/**
+ * The stat line a player finished the game on.
+ *
+ * The details feed publishes eight of these and fills six. `criticalChance` and
+ * `tenacity` came back zero for **100 of 100** participants sampled across ten
+ * games in five leagues — the fields exist and are never populated — so they are
+ * not mapped, rather than rendered as a nought every ADC would read as wrong.
+ *
+ * `attackSpeed` is published relative to the champion's base, not as attacks per
+ * second: read as an absolute it puts players above the game's own 2.5 cap,
+ * and read as a percentage of base every sampled value lands where it should.
+ * It is carried through as the feed's own number and labelled as a percentage.
+ */
+export interface FinalStatLine {
+  attackDamage: number;
+  abilityPower: number;
+  armor: number;
+  magicResistance: number;
+  /** Percentage of the champion's base attack speed. */
+  attackSpeed: number;
+  /** Percentage. Zero for four players in five — few pro builds carry it. */
+  lifeSteal: number;
+}
+
 export interface GameParticipant {
   /** 1-5 blue, 6-10 red. */
   participantId: number;
@@ -79,6 +103,8 @@ export interface GameParticipant {
   damageShare: number | null;
   wardsPlaced: number | null;
   wardsDestroyed: number | null;
+  /** Null when the details feed published nothing for this game. */
+  finalStats: FinalStatLine | null;
   items: number[];
   runes: { primaryStyle: number; secondaryStyle: number; perks: number[] } | null;
   /** Skill levelling order, in the order taken: ["Q","W","E","Q",…]. Empty when unpublished. */

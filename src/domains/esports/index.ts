@@ -55,6 +55,7 @@ export { ROLE_LABEL, roleLabel } from "@/domains/esports/roles";
 export { httpsAsset } from "@/domains/esports/services/esportsApi";
 export type {
   BracketMatch,
+  FinalStatLine,
   GameVod,
   EventStream,
   ProChampionStat,

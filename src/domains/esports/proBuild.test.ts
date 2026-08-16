@@ -43,6 +43,7 @@ function participant(spec: PlayerSpec, participantId: number): GameParticipant {
     damageShare: null,
     wardsPlaced: null,
     wardsDestroyed: null,
+    finalStats: null,
     items: spec.items ?? [],
     runes: spec.perks ?? null,
     abilities: spec.abilities ?? [],

@@ -13,6 +13,7 @@ import {
 import type { GameTeamStats, MatchDetail, MatchGameRef } from "@/domains/esports";
 import { DraftPanel } from "@/domains/esports/components/DraftPanel";
 import { Scoreboard } from "@/domains/esports/components/Scoreboard";
+import { StatSheet, hasFinalStats } from "@/domains/esports/components/StatSheet";
 import { LiveGameStats } from "@/domains/esports/components/LiveGameStats";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
@@ -294,6 +295,24 @@ export default async function MatchPage({
               durationSeconds={stats.durationSeconds}
             />
           </section>
+
+          {/* What they were holding, as opposed to what they did with it. */}
+          {hasFinalStats(stats.blue, stats.red) && (
+            <section className="mt-12">
+              <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+                <h2 className="font-display text-xl font-extrabold uppercase text-text md:text-2xl">
+                  Final stats
+                </h2>
+                <span className="hud-label">Attack speed and life steal are percentages</span>
+              </div>
+              <StatSheet
+                blue={stats.blue}
+                red={stats.red}
+                blueName={sideName(match, game, stats.blue)}
+                redName={sideName(match, game, stats.red)}
+              />
+            </section>
+          )}
         </>
       )}
 
