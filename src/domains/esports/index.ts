@@ -31,6 +31,8 @@ export type { BuildItemCatalogue, BuildItemFacts } from "@/domains/esports/proBu
 export { sortChampions, parseProMetaSort, PRO_META_SORTS } from "@/domains/esports/proMetaSort";
 export type { ProMetaSort } from "@/domains/esports/proMetaSort";
 export { gameWinner } from "@/domains/esports/gameOutcome";
+export { headToHead } from "@/domains/esports/headToHead";
+export type { HeadToHeadMeeting, HeadToHeadRecord, TeamKey } from "@/domains/esports/headToHead";
 export { elapsedSeconds, formatDuration, meanDuration, perMinute } from "@/domains/esports/duration";
 export { bracketLayout, bracketWinner } from "@/domains/esports/bracket";
 export type { BracketLayout, BracketRound } from "@/domains/esports/bracket";
