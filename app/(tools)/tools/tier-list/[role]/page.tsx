@@ -67,7 +67,7 @@ export default async function RoleTierListPage({ params, searchParams }: PagePro
   };
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-14">
+    <div className="mx-auto max-w-[1240px] px-5 py-12 md:px-8">
       {itemListJsonLd && (
         <script
           type="application/ld+json"
@@ -83,21 +83,20 @@ export default async function RoleTierListPage({ params, searchParams }: PagePro
         ]}
       />
 
-      <header className="mb-6">
-        <PublicOnly>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
-            Free Tool · No login required
-          </p>
-        </PublicOnly>
-        <h1 className="font-display text-3xl font-black text-text md:text-4xl">
-          LoL {lane} Tier List{patch ? ` — Patch ${patch}` : ""}
-        </h1>
-        <p className="mt-2 text-text-muted">
-          The strongest {lane} champions this patch, ranked by real win rate with patch movement.
+      <PublicOnly>
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-accent">
+          Free Tool · No login required
         </p>
-      </header>
+      </PublicOnly>
 
-      <TierListView position={position} list={list} activeTier={tier} />
+      <TierListView
+        mode="ranked"
+        position={position}
+        list={list}
+        activeTier={tier}
+        title={`LoL ${lane} tier list${patch ? ` — patch ${patch}` : ""}`}
+        subtitle={`The strongest ${lane} champions this patch, ranked by real win rate with patch movement.`}
+      />
 
       {list && list.entries.length > 0 && (
         <p className="mt-8 leading-relaxed text-text-muted">{tierBlurb(lane, list, patch)}</p>
