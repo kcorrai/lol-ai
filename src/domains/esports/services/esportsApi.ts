@@ -117,6 +117,15 @@ interface CachedComputationOptions<TValue> {
   type: string;
   ttlDays: number;
   compute: () => Promise<TValue>;
+  /**
+   * Rebuild even when the cached copy is still fresh.
+   *
+   * Only the warm job sets this, and without it warming cannot do its job: a
+   * reader-driven cache can only ever be filled *after* it expires, so the first
+   * visitor past each expiry pays the rebuild. Refreshing early is the whole
+   * point of warming (TASK-305).
+   */
+  force?: boolean;
 }
 
 /**
@@ -134,8 +143,10 @@ export async function cachedComputation<TValue>(
   const freshKey = `esports:${options.key}:fresh`;
   const lastGoodKey = `esports:${options.key}:last-good`;
 
-  const fresh = (await getCached(freshKey).catch(() => null)) as TValue | null;
-  if (fresh !== null) return fresh;
+  if (!options.force) {
+    const fresh = (await getCached(freshKey).catch(() => null)) as TValue | null;
+    if (fresh !== null) return fresh;
+  }
 
   try {
     const value = await options.compute();
@@ -161,6 +172,8 @@ interface CachedResourceOptions<TRaw, TValue> {
   schema: z.ZodType<TRaw>;
   fetcher: () => Promise<Response>;
   map: (raw: TRaw) => TValue;
+  /** Refetch even when the cached copy is still fresh. Set by the warm job only. */
+  force?: boolean;
 }
 
 /**
@@ -180,8 +193,10 @@ export async function cachedResource<TRaw, TValue>(
   const freshKey = `esports:${options.key}:fresh`;
   const lastGoodKey = `esports:${options.key}:last-good`;
 
-  const fresh = (await getCached(freshKey).catch(() => null)) as TValue | null;
-  if (fresh !== null) return fresh;
+  if (!options.force) {
+    const fresh = (await getCached(freshKey).catch(() => null)) as TValue | null;
+    if (fresh !== null) return fresh;
+  }
 
   try {
     const response = await options.fetcher();

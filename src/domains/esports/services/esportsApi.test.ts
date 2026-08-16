@@ -242,3 +242,80 @@ describe("cachedValue", () => {
     expect(mockSetCached).not.toHaveBeenCalled();
   });
 });
+
+describe("forced refresh", () => {
+  const store = new Map<string, unknown>();
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    store.clear();
+    mockGetCached.mockImplementation(async (key: string) =>
+      store.has(key) ? store.get(key) : null
+    );
+    mockSetCached.mockImplementation(async (key: string, _type: string, content: unknown) => {
+      store.set(key, content);
+    });
+  });
+
+  /**
+   * Why this matters: without `force`, a warm job can only ever fill a cache
+   * entry that has *already* expired — which means the first reader past each
+   * expiry still pays the rebuild, and warming buys nothing (TASK-305).
+   */
+  it("rebuilds a computation that is still fresh", async () => {
+    const compute = vi.fn(async () => ({ answer: 1 }));
+    const options = { key: "warm-me", type: "esports-test", ttlDays: TTL.standings, compute };
+
+    await cachedComputation(options);
+    expect(compute).toHaveBeenCalledTimes(1);
+
+    // Without force this is served from cache and the counter stays at one.
+    await cachedComputation(options);
+    expect(compute).toHaveBeenCalledTimes(1);
+
+    await cachedComputation({ ...options, force: true });
+    expect(compute).toHaveBeenCalledTimes(2);
+  });
+
+  it("refetches a resource that is still fresh", async () => {
+    const fetcher = vi.fn().mockResolvedValue(jsonResponse({ value: 21 }));
+    const options = {
+      key: "widget",
+      type: "esports-test",
+      ttlDays: TTL.schedule,
+      schema: Schema,
+      fetcher,
+      map: (raw: { value: number }) => raw.value * 2,
+    };
+
+    await cachedResource(options);
+    await cachedResource(options);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+
+    await cachedResource({ ...options, force: true });
+    expect(fetcher).toHaveBeenCalledTimes(2);
+  });
+
+  it("leaves the good copy in place when a forced rebuild fails", async () => {
+    await cachedComputation({
+      key: "warm-me",
+      type: "esports-test",
+      ttlDays: TTL.standings,
+      compute: async () => ({ answer: 42 }),
+    });
+
+    const result = await cachedComputation({
+      key: "warm-me",
+      type: "esports-test",
+      ttlDays: TTL.standings,
+      force: true,
+      compute: async () => {
+        throw new Error("feed is down");
+      },
+    });
+
+    // A warm run that fails must never be worse than not running.
+    expect(result).toEqual({ answer: 42 });
+    expect(store.get("esports:warm-me:last-good")).toEqual({ answer: 42 });
+  });
+});

@@ -7,6 +7,7 @@ import { sendRankChangeEmail } from "@/inngest/functions/sendRankChangeEmail";
 import { sendWeeklyReportEmails } from "@/inngest/functions/sendWeeklyReportEmails";
 import { tiltStreakCheck } from "@/inngest/functions/tiltStreakCheck";
 import { patchVersionPoller } from "@/inngest/functions/patchVersionPoller";
+import { warmEsportsCache } from "@/inngest/functions/warmEsportsCache";
 import { achievementChecker } from "@/inngest/functions/achievementChecker";
 import { timelineFetcher } from "@/inngest/functions/timelineFetcher";
 import { dailyChallengeGenerator, weeklyChallengeGenerator } from "@/inngest/functions/challengeGenerator";
@@ -27,5 +28,5 @@ import { rtbfComplianceChecker } from "@/inngest/functions/rtbfComplianceChecker
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
-  functions: [runCoachingJob, matchSyncWorker, autoSessionReview, sendRankChangeEmail, sendWeeklyReportEmails, tiltStreakCheck, patchVersionPoller, achievementChecker, timelineFetcher, dailyChallengeGenerator, weeklyChallengeGenerator, challengeProgressChecker, sendReengagementEmails, sendActivationEmail, sendReportReadyEmail, teamInviteEmail, teamSubscriptionCancelledNotification, teamSubscriptionExpiredNotification, gdprErasure, gdprExport, performanceSnapshotWorker, planExpiryChecker, planRenewalWorker, referralReward, teamWeeklyReport, cartAbandonmentReminder, rtbfComplianceChecker],
+  functions: [runCoachingJob, matchSyncWorker, autoSessionReview, sendRankChangeEmail, sendWeeklyReportEmails, tiltStreakCheck, patchVersionPoller, achievementChecker, timelineFetcher, dailyChallengeGenerator, weeklyChallengeGenerator, challengeProgressChecker, sendReengagementEmails, sendActivationEmail, sendReportReadyEmail, teamInviteEmail, teamSubscriptionCancelledNotification, teamSubscriptionExpiredNotification, gdprErasure, gdprExport, performanceSnapshotWorker, planExpiryChecker, planRenewalWorker, referralReward, teamWeeklyReport, cartAbandonmentReminder, rtbfComplianceChecker, warmEsportsCache],
 });

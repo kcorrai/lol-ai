@@ -111,6 +111,8 @@ export interface ProSample {
 export interface ProSampleQuery {
   /** Feed league id. Omitted aggregates every league in the recent window. */
   leagueId?: string;
+  /** Rebuild even while the cached sample is fresh. The warm job only. */
+  force?: boolean;
 }
 
 /**
@@ -133,6 +135,7 @@ export interface ProSampleQuery {
  */
 export const getProSample = perRequest(async function getProSample({
   leagueId,
+  force,
 }: ProSampleQuery = {}): Promise<ProSample | null> {
   const series = leagueId ? SERIES_PER_LEAGUE : SERIES_ALL_LEAGUES;
 
@@ -140,6 +143,7 @@ export const getProSample = perRequest(async function getProSample({
     key: `pro-sample:${leagueId ?? "all"}`,
     type: CACHE_TYPE,
     ttlDays: TTL.standings,
+    force,
     compute: async (): Promise<ProSample> => {
       const [games, items] = await Promise.all([
         collectSample(leagueId, series),
