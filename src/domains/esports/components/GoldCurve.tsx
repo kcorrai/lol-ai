@@ -29,6 +29,13 @@ interface Point {
   diff: number;
 }
 
+/** "12:00 — blue +3,400", as one string. */
+function pointLabel(point: Point): string {
+  if (point.diff === 0) return `${sampleClock(point.seconds)} — level`;
+  const side = point.diff > 0 ? "blue" : "red";
+  return `${sampleClock(point.seconds)} — ${side} +${Math.abs(point.diff).toLocaleString("en-US")}`;
+}
+
 function plot(timeline: GameTimeline): { points: Point[]; scale: number; span: number } {
   const span = Math.max(...timeline.samples.map((sample) => sample.seconds), 1);
   const scale = Math.max(
@@ -94,7 +101,7 @@ export function GoldCurve({ timeline }: { timeline: GameTimeline }): React.React
             <g key={at}>
               <line x1={x} y1={PAD_Y} x2={x} y2={HEIGHT - PAD_Y} stroke="#20302D" strokeWidth="1" />
               <text x={x + 4} y={HEIGHT - 2} fill="#485954" fontSize="10" fontFamily="monospace">
-                {at / 60}m
+                {`${at / 60}m`}
               </text>
             </g>
           );
@@ -117,12 +124,10 @@ export function GoldCurve({ timeline }: { timeline: GameTimeline }): React.React
 
         {points.map((point) => (
           <circle key={point.seconds} cx={point.x} cy={point.y} r="2.5" fill="#E9F5EE">
-            <title>
-              {sampleClock(point.seconds)} —{" "}
-              {point.diff === 0
-                ? "level"
-                : `${point.diff > 0 ? "blue" : "red"} +${Math.abs(point.diff).toLocaleString("en-US")}`}
-            </title>
+            {/* One string, not an interpolation split across children: the
+                browser parses a <title>'s content as raw text and merges the
+                nodes, so a multi-child title hydrates as a mismatch. */}
+            <title>{pointLabel(point)}</title>
           </circle>
         ))}
       </svg>
