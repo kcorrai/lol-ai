@@ -158,8 +158,12 @@ function mapStandings(parsed: z.infer<typeof StandingsResponseSchema>): Standing
  * Every stage of a tournament, normalised into tables and brackets. Returns an
  * empty list when the tournament has no published standings yet.
  */
-export async function getStandings(tournamentId: string): Promise<StandingsStage[]> {
+export async function getStandings(
+  tournamentId: string,
+  force?: boolean
+): Promise<StandingsStage[]> {
   const stages = await cachedResource({
+    force,
     key: `standings:${tournamentId}`,
     type: CACHE_TYPE,
     ttlDays: TTL.standings,

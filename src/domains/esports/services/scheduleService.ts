@@ -25,9 +25,11 @@ interface SchedulePage {
 
 async function fetchSchedulePage(
   leagueId: string | undefined,
-  pageToken: string | undefined
+  pageToken: string | undefined,
+  force?: boolean
 ): Promise<SchedulePage | null> {
   return cachedResource({
+    force,
     key: `schedule:${leagueId ?? "all"}:${pageToken ?? "current"}`,
     type: CACHE_TYPE,
     ttlDays: TTL.schedule,
@@ -49,16 +51,17 @@ async function fetchSchedulePage(
 async function collectWindow(
   leagueId: string | undefined,
   direction: "older" | "newer",
-  extraPages: number
+  extraPages: number,
+  force?: boolean
 ): Promise<EsportsEvent[]> {
-  const first = await fetchSchedulePage(leagueId, undefined);
+  const first = await fetchSchedulePage(leagueId, undefined, force);
   if (!first) return [];
 
   const pages: EsportsEvent[][] = [first.events];
   let token = direction === "older" ? first.older : first.newer;
 
   for (let i = 0; i < Math.min(extraPages, MAX_EXTRA_PAGES) && token; i += 1) {
-    const page: SchedulePage | null = await fetchSchedulePage(leagueId, token);
+    const page: SchedulePage | null = await fetchSchedulePage(leagueId, token, force);
     if (!page) break;
     pages.push(page.events);
     token = direction === "older" ? page.older : page.newer;
@@ -76,6 +79,8 @@ export interface ScheduleQuery {
   /** Feed league id. Omitted means every league. */
   leagueId?: string;
   limit?: number;
+  /** Refetch even while the window is fresh. The warm job only. */
+  force?: boolean;
 }
 
 /**
@@ -83,18 +88,18 @@ export interface ScheduleQuery {
  * and sort first — from a reader's point of view "what is on now" and "what is on
  * next" are the same question.
  */
-export async function getUpcoming({ leagueId, limit = 20 }: ScheduleQuery = {}): Promise<
+export async function getUpcoming({ leagueId, limit = 20, force }: ScheduleQuery = {}): Promise<
   EsportsEvent[]
 > {
-  const events = await collectWindow(leagueId, "newer", extraPagesFor(limit));
+  const events = await collectWindow(leagueId, "newer", extraPagesFor(limit), force);
   return events.filter((event) => event.state !== "completed").slice(0, limit);
 }
 
 /** Finished matches, most recent first. */
-export async function getCompleted({ leagueId, limit = 20 }: ScheduleQuery = {}): Promise<
+export async function getCompleted({ leagueId, limit = 20, force }: ScheduleQuery = {}): Promise<
   EsportsEvent[]
 > {
-  const events = await collectWindow(leagueId, "older", extraPagesFor(limit));
+  const events = await collectWindow(leagueId, "older", extraPagesFor(limit), force);
   return events
     .filter((event) => event.state === "completed")
     .reverse()
@@ -126,8 +131,9 @@ export async function getEventStartTime(matchId: string): Promise<string | null>
  * filtered out of the schedule — it is the only source that stays current within
  * a game, and it carries team ids and slugs the schedule payload omits.
  */
-export async function getLiveEvents(): Promise<EsportsEvent[]> {
+export async function getLiveEvents(force?: boolean): Promise<EsportsEvent[]> {
   const events = await cachedResource({
+    force,
     key: "live",
     type: CACHE_TYPE,
     ttlDays: TTL.live,
