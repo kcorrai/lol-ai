@@ -9,6 +9,8 @@ import { readDraftLinks, type DraftLinks } from "./draftLinkStore";
 interface Props {
   state: DraftSeriesState;
   role: ViewerRole;
+  /** The game being watched — a seat changes side between games, not team. */
+  gameNumber: number;
 }
 
 function sideLabel(state: DraftSeriesState, role: ViewerRole, gameNumber: number): string {
@@ -25,15 +27,13 @@ function sideLabel(state: DraftSeriesState, role: ViewerRole, gameNumber: number
  * person who made the draft; there is no request flow, because a capability you
  * can ask for is not a capability.
  */
-export function JoinDraftPanel({ state, role }: Props): React.ReactElement {
+export function JoinDraftPanel({ state, role, gameNumber }: Props): React.ReactElement {
   const [links, setLinks] = useState<DraftLinks | null>(null);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     setLinks(readDraftLinks(state.code));
   }, [state.code]);
-
-  const activeGame = state.games.find((g) => g.phase !== "COMPLETE") ?? state.games[0];
 
   async function copySpectatorLink(): Promise<void> {
     await navigator.clipboard.writeText(`${window.location.origin}/draft/${state.code}`);
@@ -54,7 +54,7 @@ export function JoinDraftPanel({ state, role }: Props): React.ReactElement {
         )}
         <div>
           <p className="text-[14px] font-semibold text-text">
-            {sideLabel(state, role, activeGame?.gameNumber ?? 1)}
+            {sideLabel(state, role, gameNumber)}
           </p>
           <p className="text-[12px] text-text-muted">
             {role === "SPECTATOR"

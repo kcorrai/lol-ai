@@ -6,6 +6,7 @@ import { sideToAct } from "@/domains/draft/engine/sequence";
 import type {
   DraftGameState,
   DraftSeriesState,
+  DraftSide,
   SeriesMode,
 } from "@/domains/draft/engine/draft.types";
 import type { DraftSeriesRecord } from "./draftRecord";
@@ -80,6 +81,17 @@ function gameOf(gameNumber = 1): DraftGameState {
   return game;
 }
 
+/** A seat belongs to a team, so which token holds a side depends on the game. */
+function tokenOnSide(side: DraftSide, gameNumber = 1): string {
+  return gameOf(gameNumber).blueTeam === 1
+    ? side === "BLUE"
+      ? BLUE_TOKEN
+      : RED_TOKEN
+    : side === "BLUE"
+      ? RED_TOKEN
+      : BLUE_TOKEN;
+}
+
 async function readyBoth(gameNumber = 1): Promise<void> {
   await setReady(store.state.code, gameNumber, BLUE_TOKEN, true);
   await setReady(store.state.code, gameNumber, RED_TOKEN, true);
@@ -90,8 +102,12 @@ async function playAll(keys: readonly string[], gameNumber = 1): Promise<void> {
   for (const key of keys) {
     const side = sideToAct(gameOf(gameNumber).step);
     if (!side) throw new Error("draft already complete");
-    const token = side === "BLUE" ? BLUE_TOKEN : RED_TOKEN;
-    const result = await submitAction(store.state.code, gameNumber, token, key);
+    const result = await submitAction(
+      store.state.code,
+      gameNumber,
+      tokenOnSide(side, gameNumber),
+      key
+    );
     if (!result.ok) throw new Error(`rejected: ${result.reason}`);
   }
 }
@@ -120,11 +136,21 @@ beforeEach(() => {
 describe("resolveViewer", () => {
   it("maps each token to its side and everything else to spectator", () => {
     const record = makeRecord();
-    expect(resolveViewer(record, BLUE_TOKEN)).toBe("BLUE");
-    expect(resolveViewer(record, RED_TOKEN)).toBe("RED");
-    expect(resolveViewer(record, "not-a-token")).toBe("SPECTATOR");
-    expect(resolveViewer(record, null)).toBe("SPECTATOR");
-    expect(resolveViewer(record, undefined)).toBe("SPECTATOR");
+    const game = record.state.games[0]!;
+    expect(resolveViewer(record, BLUE_TOKEN, game)).toBe("BLUE");
+    expect(resolveViewer(record, RED_TOKEN, game)).toBe("RED");
+    expect(resolveViewer(record, "not-a-token", game)).toBe("SPECTATOR");
+    expect(resolveViewer(record, null, game)).toBe("SPECTATOR");
+    expect(resolveViewer(record, undefined, game)).toBe("SPECTATOR");
+  });
+
+  it("follows a seat's team onto the other side when the sides swap", () => {
+    const record = makeRecord("NORMAL", 2);
+    // Game 2 seats team 2 on blue, so the first team's seat drafts red there.
+    const gameTwo = record.state.games[1]!;
+    expect(gameTwo.blueTeam).toBe(2);
+    expect(resolveViewer(record, BLUE_TOKEN, gameTwo)).toBe("RED");
+    expect(resolveViewer(record, RED_TOKEN, gameTwo)).toBe("BLUE");
   });
 });
 
@@ -240,12 +266,48 @@ describe("fearless series", () => {
     expect(pickedInGameOne).toHaveLength(10);
 
     await readyBoth(2);
-    const result = await submitAction(store.state.code, 2, BLUE_TOKEN, pickedInGameOne[0]!);
+    // Sides alternate, so game 2's first action belongs to the second team's seat.
+    const first = tokenOnSide("BLUE", 2);
+    const result = await submitAction(store.state.code, 2, first, pickedInGameOne[0]!);
     expect(result).toMatchObject({ ok: false, status: 409, reason: "series-locked" });
 
     // A champion only *banned* in game 1 is available again.
     const bannedInGameOne = gameOf(1).actions.find((a) => a.kind === "BAN")?.championKey;
-    expect((await submitAction(store.state.code, 2, BLUE_TOKEN, bannedInGameOne!)).ok).toBe(true);
+    expect((await submitAction(store.state.code, 2, first, bannedInGameOne!)).ok).toBe(true);
+  });
+});
+
+describe("seats across a series", () => {
+  it("keeps a seat with its team when the sides alternate", async () => {
+    store = makeRecord("NORMAL", 2);
+    // Game 1: the first team's seat is blue and acts first.
+    const one = await getSeriesForGame(store.state.code, 1, BLUE_TOKEN);
+    expect(one.ok && one.role).toBe("BLUE");
+
+    // Game 2: the same seat is red, and blue's opening ban is not its turn.
+    const two = await getSeriesForGame(store.state.code, 2, BLUE_TOKEN);
+    expect(two.ok && two.role).toBe("RED");
+
+    await readyBoth(2);
+    const outOfTurn = await submitAction(store.state.code, 2, BLUE_TOKEN, "Ahri");
+    expect(outOfTurn).toMatchObject({ ok: false, status: 409, reason: "not-your-turn" });
+    expect((await submitAction(store.state.code, 2, RED_TOKEN, "Ahri")).ok).toBe(true);
+  });
+
+  it("reports the side a swap just moved the caller to, not the one they left", async () => {
+    const result = await setBlueTeam(store.state.code, 1, BLUE_TOKEN, 2);
+    expect(result.ok && result.role).toBe("RED");
+  });
+
+  it("carries a ready flag with the team through a side swap", async () => {
+    await setReady(store.state.code, 1, BLUE_TOKEN, true);
+    expect(gameOf().blueReady).toBe(true);
+
+    // The first team moves to red; its ready must move with it, and the game
+    // must not start off the back of a ready the second team never gave.
+    expect((await setBlueTeam(store.state.code, 1, BLUE_TOKEN, 2)).ok).toBe(true);
+    expect(gameOf()).toMatchObject({ blueTeam: 2, blueReady: false, redReady: true });
+    expect(gameOf().phase).toBe("LOBBY");
   });
 });
 

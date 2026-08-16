@@ -42,10 +42,33 @@ export type ServiceResult =
   | { ok: true; state: DraftSeriesState; role: ViewerRole }
   | { ok: false; status: number; reason: string };
 
-export function resolveViewer(record: DraftSeriesRecord, token?: string | null): ViewerRole {
-  if (tokensMatch(token, record.blueToken)) return "BLUE";
-  if (tokensMatch(token, record.redToken)) return "RED";
-  return "SPECTATOR";
+/**
+ * Which team's seat a token opens, or null for a spectator.
+ *
+ * A seat belongs to a *team*, not to a side. The two tokens are still named for
+ * the side each team starts on in game 1, because that is what the columns are
+ * called, but sides alternate through a series (§3) and the coach who was sent
+ * the first team's link must keep drafting for the first team in every game.
+ */
+export function resolveSeat(record: DraftSeriesRecord, token?: string | null): TeamNumber | null {
+  if (tokensMatch(token, record.blueToken)) return 1;
+  if (tokensMatch(token, record.redToken)) return 2;
+  return null;
+}
+
+/** The side a seat is sitting on in one particular game. */
+export function seatRole(seat: TeamNumber | null, game: DraftGameState): ViewerRole {
+  if (seat === null) return "SPECTATOR";
+  return game.blueTeam === seat ? "BLUE" : "RED";
+}
+
+/** The side a token's team is sitting on in one particular game. */
+export function resolveViewer(
+  record: DraftSeriesRecord,
+  token: string | null | undefined,
+  game: DraftGameState
+): ViewerRole {
+  return seatRole(resolveSeat(record, token), game);
 }
 
 async function loadRecord(code: string): Promise<DraftSeriesRecord | null> {
@@ -84,8 +107,12 @@ async function transition(
   const record = await loadRecord(code);
   if (!record) return { ok: false, status: 404, reason: "not-found" };
 
-  const role = resolveViewer(record, token);
-  if (requireDrafter && role === "SPECTATOR") {
+  // Holding a seat is a property of the series, so it is checked before the game
+  // is looked up. Which *side* that seat is on is a property of the game, so it
+  // is resolved twice: once against the board being acted on, and once against
+  // the board that comes out — a side swap changes the answer within one request.
+  const seat = resolveSeat(record, token);
+  if (requireDrafter && seat === null) {
     return { ok: false, status: 403, reason: "not-a-drafter" };
   }
 
@@ -98,7 +125,8 @@ async function transition(
   const settled = resolveTimeout(record.state, gameNumber, nowIso, pool.ranked);
   const base = settled.ok ? settled.series : record.state;
 
-  const result = run(base, role === "SPECTATOR" ? "BLUE" : role);
+  const actingSide = seatRole(seat, findGame(base, gameNumber) ?? prevGame);
+  const result = run(base, actingSide === "SPECTATOR" ? "BLUE" : actingSide);
   const finalState = result.ok ? result.series : base;
   const changed = (settled.ok && settled.changed) || (result.ok && result.changed);
 
@@ -106,7 +134,8 @@ async function transition(
   if (persisted) return persisted;
 
   if (!result.ok) return { ok: false, status: 409, reason: result.reason };
-  return { ok: true, state: finalState, role };
+  const finalGame = findGame(finalState, gameNumber) ?? prevGame;
+  return { ok: true, state: finalState, role: seatRole(seat, finalGame) };
 }
 
 /** Returns a failure to short-circuit on, or null when the write went through. */
