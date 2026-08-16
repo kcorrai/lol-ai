@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getMatchupData, parsePosition, POSITION_LABELS, formatGamePatch } from "@/domains/meta";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
-import { ToolBreadcrumb } from "@/domains/meta/components/ToolBreadcrumb";
+import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { MatchupControls } from "./MatchupControls";
 import { MatchupReportCard } from "./MatchupReportCard";
 import { MatchupBuildSummary } from "./MatchupBuildSummary";
@@ -53,7 +53,7 @@ export default async function MatchupPage({ searchParams }: PageProps) {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-14">
-      <ToolBreadcrumb
+      <Breadcrumb
         items={[
           { name: "Free Tools", href: "/tools" },
           { name: "Matchup Analyzer", href: "/tools/matchup" },

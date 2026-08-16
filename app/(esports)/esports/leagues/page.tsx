@@ -4,6 +4,7 @@ import type { EsportsLeague } from "@/domains/esports";
 import { LeagueGrid } from "@/domains/esports/components/LeagueGrid";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
+import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
 
 export const revalidate = 86400; // Leagues change at most between splits.
 
@@ -47,6 +48,17 @@ export default async function EsportsLeaguesPage(): Promise<React.ReactElement> 
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 md:py-14">
+      <EsportsJsonLd
+        schema={{
+          kind: "list",
+          name: "League of Legends esports leagues",
+          items: leagues.map((league) => ({
+            name: league.name,
+            href: `/esports/leagues/${league.slug}`,
+          })),
+        }}
+      />
+
       <EsportsBreadcrumb items={[{ name: "Leagues", href: "/esports/leagues" }]} />
 
       <header className="mb-8">

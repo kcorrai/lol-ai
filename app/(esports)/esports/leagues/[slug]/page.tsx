@@ -16,6 +16,7 @@ import { MatchRow } from "@/domains/esports/components/MatchRow";
 import { StandingsTable } from "@/domains/esports/components/StandingsTable";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
+import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
 
 export const revalidate = 3600; // Standings move after each match day.
 
@@ -119,6 +120,17 @@ export default async function LeaguePage({ params }: PageProps): Promise<React.R
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 md:py-14">
+      <EsportsJsonLd
+        schema={{
+          kind: "list",
+          name: `${league.name} standings`,
+          items: (table?.rows ?? []).map((row) => ({
+            name: row.team.name,
+            href: row.team.slug ? `/esports/teams/${row.team.slug}` : undefined,
+          })),
+        }}
+      />
+
       <EsportsBreadcrumb
         items={[
           { name: "Leagues", href: "/esports/leagues" },

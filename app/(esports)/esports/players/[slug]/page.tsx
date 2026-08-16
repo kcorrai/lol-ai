@@ -2,11 +2,18 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPlayer, getPlayerGames, getTeamPlayerEntries, championPool } from "@/domains/esports";
+import {
+  getPlayer,
+  getPlayerGames,
+  getTeamPlayerEntries,
+  championPool,
+  roleLabel,
+} from "@/domains/esports";
 import type { PlayerEntry, PlayerGame } from "@/domains/esports";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
+import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
 
 export const revalidate = 86400;
 
@@ -14,28 +21,30 @@ interface PageProps {
   params: { slug: string };
 }
 
-const ROLE_LABEL: Record<string, string> = {
-  top: "Top laner",
-  jungle: "Jungler",
-  mid: "Mid laner",
-  bottom: "Bot laner",
-  support: "Support",
-};
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const entry = await getPlayer(params.slug);
   if (!entry) return { title: "Player not found" };
 
   const { player, team } = entry;
-  const role = player.role ? ROLE_LABEL[player.role] : "Player";
+  const role = roleLabel(player.role) ?? "Player";
+  // The games walk is the same one the page body runs, and everything under it
+  // is cached per match and per game — so asking twice costs cache reads, not
+  // feed requests. It is the only way to know whether this page has anything on
+  // it, and a page with nothing stays out of the index (ADR-017 §4).
+  const games = await getPlayerGames(entry);
 
   return {
     title: `${player.handle} — ${team.name} ${player.role ?? ""} Stats & Champions`.replace(
       /\s+/g,
       " "
     ),
-    description: `${player.handle}${player.fullName ? ` (${player.fullName})` : ""}, ${role} for ${team.name}: champion pool, recent games and team.`,
+    description: `${player.handle}${player.fullName ? ` (${player.fullName})` : ""}, ${role} for ${team.name}: ${
+      games.length > 0
+        ? `champion pool from ${games.length} recorded ${games.length === 1 ? "game" : "games"}, recent games and team.`
+        : "team, role and roster."
+    }`,
     alternates: { canonical: `/esports/players/${entry.slug}` },
+    robots: games.length === 0 ? { index: false, follow: true } : undefined,
   };
 }
 
@@ -69,7 +78,7 @@ function PlayerHeader({ entry }: { entry: PlayerEntry }): React.ReactElement {
         </h1>
         <p className="mt-1 text-sm text-text-body">
           {player.fullName ? `${player.fullName} · ` : ""}
-          {player.role ? ROLE_LABEL[player.role] : "Substitute / staff"}
+          {roleLabel(player.role) ?? "Substitute / staff"}
         </p>
         <p className="mt-1 font-mono text-[11px] uppercase tracking-label text-text-muted">
           <Link href={`/esports/teams/${team.slug}`} className="hover:text-accent">
@@ -123,6 +132,8 @@ export default async function PlayerPage({ params }: PageProps): Promise<React.R
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 md:py-14">
+      <EsportsJsonLd schema={{ kind: "player", entry }} />
+
       <EsportsBreadcrumb
         items={[
           { name: "Teams", href: "/esports/teams" },

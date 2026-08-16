@@ -7,6 +7,7 @@ import {
   getTeams,
   getTeamMatches,
   getTeamPlayerEntries,
+  getLeagues,
   indexableTeams,
   isThinTeam,
   recentForm,
@@ -16,6 +17,7 @@ import { MatchRow } from "@/domains/esports/components/MatchRow";
 import { RosterCard } from "@/domains/esports/components/RosterCard";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
+import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
 
 export const revalidate = 86400;
 
@@ -119,10 +121,16 @@ export default async function TeamPage({ params }: PageProps): Promise<React.Rea
   const team = await getTeam(params.slug);
   if (!team) notFound();
 
-  const [matches, playerEntries] = await Promise.all([
+  const [matches, playerEntries, leagues] = await Promise.all([
     getTeamMatches(team),
     getTeamPlayerEntries(team.id),
+    getLeagues(),
   ]);
+  // The team payload names its league but does not slug it, so the link up to
+  // the league hub is resolved the same way `getTeamMatches` resolves fixtures.
+  const leagueSlug = team.league
+    ? leagues.find((league) => league.name.toLowerCase() === team.league?.name.toLowerCase())?.slug
+    : undefined;
   const form = recentForm(team, matches.results).slice(0, 5);
   const playerHref = new Map(
     playerEntries.map((entry) => [entry.player.id, `/esports/players/${entry.slug}`])
@@ -132,6 +140,8 @@ export default async function TeamPage({ params }: PageProps): Promise<React.Rea
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 md:py-14">
+      <EsportsJsonLd schema={{ kind: "team", team, roster: playerEntries }} />
+
       <EsportsBreadcrumb
         items={[
           { name: "Teams", href: "/esports/teams" },
@@ -222,8 +232,15 @@ export default async function TeamPage({ params }: PageProps): Promise<React.Rea
       {team.league && (
         <p className="mt-12 text-sm text-text-muted">
           See the full {team.league.name} standings and schedule on the{" "}
-          <Link href="/esports/leagues" className="text-accent hover:underline">
-            league pages
+          <Link
+            href={leagueSlug ? `/esports/leagues/${leagueSlug}` : "/esports/leagues"}
+            className="text-accent hover:underline"
+          >
+            {leagueSlug ? `${team.league.name} page` : "league pages"}
+          </Link>
+          , or what is on next across every league in the{" "}
+          <Link href="/esports/schedule" className="text-accent hover:underline">
+            esports schedule
           </Link>
           .
         </p>
