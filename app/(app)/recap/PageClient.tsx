@@ -1,29 +1,23 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { ChevronRight, Copy, Check, Loader2, Trophy } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Loader2, Share2, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { buildRecapSlides, TOTAL_SLIDES } from "@/domains/analysis/components/recap/recapSlides";
+import { buildRecapChapters } from "@/domains/analysis/components/recap/recapChapters";
+import { RecapStage } from "@/domains/analysis/components/recap/RecapStage";
+import { championSplashUrl } from "@/lib/ddragon";
 import { useGenerateRecap } from "@/hooks/useRecap";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import type { RecapData } from "@/domains/analysis/services/recapService";
 
-function ProgressBar({ current, total }: { current: number; total: number }) {
-  return (
-    <div className="flex gap-1">
-      {Array.from({ length: total }).map((_, i) => (
-        <div
-          key={i}
-          className={`h-1 flex-1 rounded-full transition-all duration-300 ${i <= current ? "bg-accent" : "bg-border"}`}
-        />
-      ))}
-    </div>
-  );
-}
+// A wheel gesture fires dozens of events; one chapter per gesture, not per event.
+const WHEEL_COOLDOWN_MS = 700;
+const WHEEL_THRESHOLD = 24;
 
-export default function RecapPage() {
-  const [slide, setSlide] = useState(0);
+export default function RecapPage(): React.ReactElement {
+  const [index, setIndex] = useState(0);
   const [recap, setRecap] = useState<{ data: RecapData; shareToken: string } | null>(null);
   const [copied, setCopied] = useState(false);
   const { data: accounts, isLoading: accountsLoading } = useRiotAccounts();
@@ -38,35 +32,62 @@ export default function RecapPage() {
     );
   }, [primaryAccount, generate]);
 
-  const prev = useCallback(() => setSlide((s) => Math.max(0, s - 1)), []);
-  const next = useCallback(() => setSlide((s) => Math.min(TOTAL_SLIDES - 1, s + 1)), []);
+  const gameName = primaryAccount
+    ? `${primaryAccount.gameName}#${primaryAccount.tagLine}`
+    : "Summoner";
+  const chapters = useMemo(
+    () => (recap ? buildRecapChapters(recap.data, gameName) : []),
+    [recap, gameName]
+  );
+  const total = chapters.length;
+
+  const prev = useCallback(() => setIndex((i) => Math.max(0, i - 1)), []);
+  const next = useCallback(() => setIndex((i) => Math.min(total - 1, i + 1)), [total]);
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight") next();
-      if (e.key === "ArrowLeft") prev();
+    if (total === 0) return;
+    const onKey = (e: KeyboardEvent): void => {
+      if (e.key === "ArrowRight" || e.key === " ") {
+        e.preventDefault();
+        next();
+      }
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        prev();
+      }
     };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [next, prev]);
+    let last = 0;
+    const onWheel = (e: WheelEvent): void => {
+      const now = Date.now();
+      if (now - last < WHEEL_COOLDOWN_MS || Math.abs(e.deltaY) < WHEEL_THRESHOLD) return;
+      last = now;
+      if (e.deltaY > 0) next();
+      else prev();
+    };
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("wheel", onWheel, { passive: true });
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("wheel", onWheel);
+    };
+  }, [next, prev, total]);
 
-  async function copyLink() {
+  const copyLink = useCallback(async (): Promise<void> => {
     if (!recap) return;
-    await navigator.clipboard.writeText(`${window.location.origin}/recap/share/${recap.shareToken}`);
+    await navigator.clipboard.writeText(
+      `${window.location.origin}/recap/share/${recap.shareToken}`
+    );
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  }
+  }, [recap]);
 
-  const gameName = primaryAccount ? `${primaryAccount.gameName}#${primaryAccount.tagLine}` : "Summoner";
-  const contents = recap ? buildRecapSlides(recap.data, gameName, slide) : [];
-
-  // Without an account the recap is never requested, so `recap` and `error` both stay
-  // null — the spinner below would run forever. Ask for the account instead.
+  // Without an account the recap is never requested, so `recap` and `error` both stay null —
+  // the spinner below would run forever. Ask for the account instead.
   if (!accountsLoading && !primaryAccount) {
     return (
       <div className="flex h-screen items-center justify-center px-4">
-        <div className="w-full max-w-md rounded-2xl border border-border bg-surface p-10 text-center">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10">
+        <div className="notch w-full max-w-md border border-border bg-surface p-10 text-center">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center bg-accent/10">
             <Trophy className="h-6 w-6 text-accent" />
           </div>
           <h1 className="mt-5 font-display text-2xl font-bold text-text">
@@ -91,55 +112,131 @@ export default function RecapPage() {
       <div className="flex h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="h-8 w-8 animate-spin text-accent" />
-          <p className="text-sm text-text-muted">Preparing season recap…</p>
+          <p className="hud-label">Preparing season recap…</p>
         </div>
       </div>
     );
   }
 
-  if (error || !recap) {
+  if (error || !recap || total === 0) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <p className="text-sm text-danger">Recap failed to load. At least 5 ranked matches required.</p>
+      <div className="flex h-screen items-center justify-center px-4">
+        <p className="text-sm text-danger">
+          Recap failed to load. At least 5 ranked matches required.
+        </p>
       </div>
     );
   }
+
+  const chapter = chapters[index];
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden">
-      {/* Progress bar */}
-      <div className="shrink-0 px-6 pt-4">
-        <ProgressBar current={slide} total={TOTAL_SLIDES} />
+    // The deck fills the viewport under the app shell's 3.5rem top bar. A plain `h-screen` here
+    // would push the shell past the viewport and put a scrollbar on a page that never scrolls.
+    <div className="relative flex h-[calc(100dvh-3.5rem)] min-h-[560px] flex-col overflow-hidden bg-background">
+      {/* Art is bound to the chapter, so the ground moves with the story. */}
+      <Image
+        key={chapter.art}
+        src={championSplashUrl(chapter.art)}
+        alt=""
+        aria-hidden
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover object-[62%_22%] opacity-40 [filter:grayscale(0.3)_contrast(1.08)]"
+        unoptimized
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-surface-dark from-[22%] via-[rgba(6,10,9,0.62)] via-[62%] to-[rgba(6,10,9,0.30)]" />
+      <div className="bg-scanline absolute inset-0" />
+      <div className="bg-hero-fade absolute inset-0" />
+
+      <div className="relative flex gap-1.5 px-5 pt-3.5 md:px-8">
+        {chapters.map((c, i) => (
+          <button
+            key={c.id}
+            type="button"
+            onClick={() => setIndex(i)}
+            title={c.kicker}
+            aria-label={`Go to ${c.kicker}`}
+            aria-current={i === index ? "step" : undefined}
+            className="h-[3px] flex-1 bg-surface-2"
+          >
+            <span
+              className={`block h-[3px] transition-[width] duration-500 ${i <= index ? "bg-accent" : ""} ${i === index ? "glow-accent-soft" : ""}`}
+              style={{ width: i <= index ? "100%" : "0%" }}
+            />
+          </button>
+        ))}
       </div>
 
-      {/* Slide area */}
-      <div className="flex flex-1 flex-col items-center justify-center gap-8 px-4 py-6">
-        <div className="relative h-[420px] w-full max-w-lg rounded-2xl overflow-hidden border border-border/40"
-          style={{ boxShadow: "0 0 60px rgba(198,255,61,0.10), 0 30px 60px rgba(0,0,0,0.4)" }}>
-          {contents}
+      <div className="relative flex flex-wrap items-center gap-3 px-5 pt-3.5 md:px-8">
+        <span className="font-display text-[15px] font-extrabold uppercase tracking-[0.06em] text-text">
+          LOL AI <span className="text-accent">COACH</span>
+        </span>
+        <span className="h-3.5 w-px bg-line-2" />
+        <span className="hud-label truncate text-[10.5px]">
+          {recap.data.seasonLabel} · season recap · {gameName}
+        </span>
+        <span className="ml-auto font-mono text-[10.5px] uppercase tracking-label text-text-faint">
+          {index + 1} / {total}
+        </span>
+      </div>
+
+      <div className="relative flex min-h-0 flex-1 items-center overflow-y-auto py-4">
+        <RecapStage key={chapter.id} chapter={chapter} onShare={copyLink} copied={copied} />
+      </div>
+
+      <div className="relative flex flex-wrap items-center gap-3 px-5 pb-5 md:px-8">
+        <button
+          type="button"
+          onClick={prev}
+          disabled={index === 0}
+          className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-label text-text-body transition-colors hover:text-text disabled:opacity-30"
+        >
+          <ArrowLeft aria-hidden className="h-3.5 w-3.5" />
+          Back
+        </button>
+
+        <div className="hidden items-center gap-3.5 overflow-hidden lg:flex">
+          {chapters.map((c, i) => (
+            <button
+              key={c.id}
+              type="button"
+              onClick={() => setIndex(i)}
+              className={`border-b py-1 font-mono text-[10px] uppercase tracking-label transition-colors ${
+                i === index
+                  ? "border-accent text-accent"
+                  : "border-transparent text-text-faint hover:text-text-body"
+              }`}
+            >
+              {c.kicker}
+            </button>
+          ))}
         </div>
 
-        {/* Navigation */}
-        <div className="flex flex-col items-center gap-3">
-          <div className="flex items-center gap-3">
-            <Button variant="secondary" size="sm" onClick={copyLink}>
-              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-              <span className="ml-1">{copied ? "Copied!" : "Share"}</span>
-            </Button>
-            {slide < TOTAL_SLIDES - 1 ? (
-              <Button size="sm" onClick={next} className="gap-1 font-semibold">
-                Continue <ChevronRight className="h-4 w-4" />
-              </Button>
-            ) : (
-              <Button size="sm" onClick={() => setSlide(0)}>Return to Start</Button>
-            )}
-          </div>
+        <div className="ml-auto flex items-center gap-3">
+          <span className="hidden font-mono text-[10px] uppercase tracking-label text-text-faint sm:inline">
+            ← → or scroll
+          </span>
           <button
-            onClick={prev}
-            disabled={slide === 0}
-            className="text-xs text-text-muted disabled:opacity-30 hover:text-text"
+            type="button"
+            onClick={copyLink}
+            className="notch-sm flex h-[34px] items-center gap-1.5 border border-border bg-surface px-3.5 font-mono text-[11px] uppercase tracking-label text-text transition-colors hover:border-accent/50"
           >
-            ← Back
+            {copied ? (
+              <Check aria-hidden className="h-3.5 w-3.5" />
+            ) : (
+              <Share2 aria-hidden className="h-3.5 w-3.5" />
+            )}
+            {copied ? "Copied" : "Share"}
+          </button>
+          <button
+            type="button"
+            onClick={() => (index === total - 1 ? setIndex(0) : next())}
+            className="notch-sm flex h-[34px] items-center gap-1.5 bg-accent px-3.5 font-mono text-[11px] font-bold uppercase tracking-label text-background transition-opacity hover:opacity-90"
+          >
+            {index === total - 1 ? "Restart" : "Continue"}
+            <ArrowRight aria-hidden className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>
