@@ -124,34 +124,32 @@ export default function DashboardPage(): React.ReactElement {
 
               <AnalysisDeltas profile={profile} isLoading={profileLoading} />
 
+              {/* One two-column flow, not a stack of row-grids. Widgets differ wildly in height,
+                  so a per-row grid parked the short side on a void until the tall side caught up —
+                  three of them down the page. Two continuous columns let each side keep packing,
+                  which leaves a single ragged edge at the bottom instead.
+                  Two columns, not three: the duo widget that used to sit here is the rail now. */}
               <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.5fr_1fr]">
-                <div className="grid gap-4">
+                <div className="flex min-w-0 flex-col gap-4">
                   <DailyMomentumChart riotAccountId={primaryId} />
                   <PerformanceTrendChart
                     matches={profile?.recentMatches}
                     isLoading={profileLoading}
                   />
+                  <ImprovementPlanWidget riotAccountId={primaryId} />
+                  <ChampionPoolPanel matches={profile?.recentMatches} isLoading={profileLoading} />
+                </div>
+                <div className="flex min-w-0 flex-col gap-4">
+                  <PlaystyleProfile profile={profile} isLoading={profileLoading} />
                   <WinrateTrendWidget
                     matches={profile?.recentMatches}
                     isLoading={profileLoading}
                   />
-                </div>
-                <PlaystyleProfile profile={profile} isLoading={profileLoading} />
-              </div>
-
-              <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.5fr_1fr]">
-                <ImprovementPlanWidget riotAccountId={primaryId} />
-                <div className="grid gap-4">
                   <WeekSummaryWidget matches={profile?.recentMatches} isLoading={profileLoading} />
                   <PatchImpactWidget riotAccountId={primaryId} />
                   <MetaRecommendationsWidget riotAccountId={primaryId} />
+                  <HabitDetectionCard riotAccountId={primaryId} />
                 </div>
-              </div>
-
-              {/* Two columns, not three: the duo widget that used to sit here is the rail now. */}
-              <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.4fr_1fr]">
-                <ChampionPoolPanel matches={profile?.recentMatches} isLoading={profileLoading} />
-                <HabitDetectionCard riotAccountId={primaryId} />
               </div>
 
               {/* ── Layer 3 · Archive ────────────────────────────────── */}
