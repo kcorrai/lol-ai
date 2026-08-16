@@ -34,8 +34,8 @@ export function ChampionAbilities({ abilities }: { abilities: AbilityView[] }) {
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-surface p-4 sm:p-6">
-      <h2 className="mb-4 text-xs font-bold uppercase tracking-widest text-text-muted">Abilities</h2>
+    <div className="notch min-w-0 border border-border bg-surface p-4 sm:p-6">
+      <h2 className="hud-label mb-4 text-[10.5px]">{"// Abilities"}</h2>
 
       {/* Slot selector */}
       <div className="mb-5 flex flex-wrap gap-2">

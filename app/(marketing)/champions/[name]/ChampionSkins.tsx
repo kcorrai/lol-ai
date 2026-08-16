@@ -14,9 +14,9 @@ export function ChampionSkins({
   if (skins.length <= 1) return null;
 
   return (
-    <div className="rounded-2xl border border-border bg-surface p-4 sm:p-6">
+    <div className="notch min-w-0 border border-border bg-surface p-4 sm:p-6">
       <div className="mb-4 flex items-baseline justify-between">
-        <h2 className="text-xs font-bold uppercase tracking-widest text-text-muted">Skins</h2>
+        <h2 className="hud-label text-[10.5px]">{"// Skins"}</h2>
         <span className="text-xs text-text-muted/60">{skins.length} total</span>
       </div>
 
