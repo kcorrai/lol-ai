@@ -104,7 +104,7 @@ function ChampionPool({ games }: { games: PlayerGame[] }): React.ReactElement {
           <ChampionIcon name={champion.championId} size={32} />
           <div className="min-w-0">
             <Link
-              href={`/champions/${champion.championId}`}
+              href={`/esports/champions/${champion.championId}`}
               className="block truncate font-display text-sm font-bold uppercase text-text hover:text-accent"
             >
               {champion.championId}

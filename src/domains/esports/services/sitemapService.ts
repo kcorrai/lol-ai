@@ -3,6 +3,7 @@ import { getLeagues, prominentLeagues } from "@/domains/esports/services/leagueS
 import { getTeams, indexableTeams } from "@/domains/esports/services/teamService";
 import { getPlayerIndex } from "@/domains/esports/services/playerService";
 import { getUpcoming, getCompleted } from "@/domains/esports/services/scheduleService";
+import { getProChampionIds } from "@/domains/esports/services/proMetaService";
 import type { EsportsLeague, EsportsTeam, PlayerEntry } from "@/domains/esports/types";
 
 /** Deliberately not Next's `MetadataRoute` — the domain does not know about the app shell. */
@@ -85,12 +86,15 @@ function publishablePlayers(index: PlayerEntry[], leagueNames: Set<string>): Pla
  * cached indexes rather than enumerated (ADR-017 §4).
  */
 export async function esportsSitemapEntries(): Promise<EsportsSitemapEntry[]> {
-  const [leagues, teams, players, upcoming, completed] = await Promise.all([
+  const [leagues, teams, players, upcoming, completed, proChampions] = await Promise.all([
     getLeagues(),
     getTeams(),
     getPlayerIndex(),
     getUpcoming({ limit: MATCH_WINDOW }),
     getCompleted({ limit: MATCH_WINDOW }),
+    // Champions nobody has picked have an honest empty page, and the page marks
+    // itself `noindex` — so only the ones with games belong in the file.
+    getProChampionIds(),
   ]);
 
   const published = publishableLeagues(leagues);
@@ -116,6 +120,11 @@ export async function esportsSitemapEntries(): Promise<EsportsSitemapEntry[]> {
       path: `/esports/players/${entry.slug}`,
       changeFrequency: "weekly" as const,
       priority: 0.5,
+    })),
+    ...proChampions.map((championId) => ({
+      path: `/esports/champions/${championId}`,
+      changeFrequency: "daily" as const,
+      priority: 0.7,
     })),
     ...upcoming.map((event) => ({
       path: `/esports/matches/${event.matchId}`,
@@ -145,12 +154,14 @@ export async function esportsSitemapEntries(): Promise<EsportsSitemapEntry[]> {
     leagues: published.length,
     teams: teamList.length,
     players: playerList.length,
+    champions: proChampions.length,
     matches:
       deduped.length -
       SECTION_ROOTS.length -
       published.length -
       teamList.length -
-      playerList.length,
+      playerList.length -
+      proChampions.length,
   });
 
   return deduped;

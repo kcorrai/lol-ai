@@ -12,9 +12,14 @@ export {
 export { getStandings, primaryTable } from "@/domains/esports/services/standingsService";
 export { getMatch, defaultGame } from "@/domains/esports/services/matchService";
 export { getGameStats } from "@/domains/esports/services/gameStatsService";
-export { getProMeta } from "@/domains/esports/services/proMetaService";
-export type { ProMetaQuery } from "@/domains/esports/services/proMetaService";
+export {
+  getProMeta,
+  getProBuild,
+  getProChampionIds,
+} from "@/domains/esports/services/proMetaService";
+export type { ProMetaQuery, ProBuildResult } from "@/domains/esports/services/proMetaService";
 export { aggregateProMeta, MIN_MEANINGFUL_GAMES } from "@/domains/esports/proMeta";
+export { aggregateProBuilds, MIN_BUILD_ITEM_GOLD } from "@/domains/esports/proBuild";
 export { sortChampions, parseProMetaSort, PRO_META_SORTS } from "@/domains/esports/proMetaSort";
 export type { ProMetaSort } from "@/domains/esports/proMetaSort";
 export { gameWinner } from "@/domains/esports/gameOutcome";
@@ -41,6 +46,12 @@ export { httpsAsset } from "@/domains/esports/services/esportsApi";
 export type {
   BracketMatch,
   ProChampionStat,
+  ProChampionBuild,
+  ProGameAppearance,
+  ProPlayerOnChampion,
+  ItemFrequency,
+  RuneVariant,
+  SampledGame,
   ProMeta,
   PlayerChampionStat,
   PlayerEntry,

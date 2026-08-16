@@ -25,7 +25,7 @@ function SidePicks({ team, label }: { team: GameTeamStats; label: string }): Rea
             <ChampionIcon name={participant.championId} size={28} />
             <span className="min-w-0">
               <Link
-                href={`/champions/${participant.championId}`}
+                href={`/esports/champions/${participant.championId}`}
                 className="block truncate text-sm text-text hover:text-accent"
               >
                 {participant.championId}
