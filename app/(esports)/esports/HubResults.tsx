@@ -3,7 +3,7 @@ import { MatchTime } from "@/domains/esports/components/MatchTime";
 import { TeamBadge } from "@/domains/esports/components/TeamBadge";
 import type { EsportsEvent } from "@/domains/esports";
 
-const ROW_COLUMNS = "minmax(96px,116px) minmax(0,1fr) 92px minmax(0,1fr) 76px";
+const ROW_COLUMNS = "minmax(96px,116px) minmax(0,1fr) 92px minmax(0,1fr) 96px";
 
 /** Finished series, most recent first. */
 export function HubResults({ events }: { events: EsportsEvent[] }): React.ReactElement {
@@ -45,7 +45,9 @@ export function HubResults({ events }: { events: EsportsEvent[] }): React.ReactE
               <span className="hud-label">TBD</span>
             )}
             <span className="text-right font-mono text-[10px] uppercase tracking-label text-accent">
-              Draft →
+              {/* A recorded series says so, since watching it is the other
+                  reason to open a result. */}
+              {event.hasVod ? "Draft · VOD →" : "Draft →"}
             </span>
           </Link>
         );

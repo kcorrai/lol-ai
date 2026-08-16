@@ -56,7 +56,15 @@ function StateLabel({
     );
   }
   if (event.state === "completed") {
-    return <span className="hud-label">Final</span>;
+    return (
+      <span className="hud-label">
+        Final
+        {/* The feed flags a recorded series and the row was throwing it away.
+            Not a link: the row already goes to the match page, which carries
+            the real per-game VOD links with their offsets. */}
+        {event.hasVod && <span className="ml-1.5 text-accent">VOD</span>}
+      </span>
+    );
   }
   return (
     <MatchTime
