@@ -1,4 +1,4 @@
-import { getProSample } from "@/domains/esports/services/proSampleService";
+import { getProSample, getCachedProSample } from "@/domains/esports/services/proSampleService";
 import type { ProSampleQuery } from "@/domains/esports/services/proSampleService";
 import type { ProChampionBuild, ProMeta } from "@/domains/esports/types";
 
@@ -42,4 +42,22 @@ export async function getProBuild(
 export async function getProChampionIds(query: ProMetaQuery = {}): Promise<string[]> {
   const sample = await getProSample(query);
   return sample ? Object.keys(sample.builds).sort() : [];
+}
+
+/**
+ * What pro play has to say about one champion, but only if it is already known.
+ *
+ * The champion cluster's entry point (TASK-310). Returns null on a cold cache
+ * rather than filling it, so a ranked build page never pays for a pro strip.
+ */
+export async function getCachedProBuild(championId: string): Promise<ProBuildResult | null> {
+  const sample = await getCachedProSample();
+  if (!sample) return null;
+
+  const key = Object.keys(sample.builds).find(
+    (candidate) => candidate.toLowerCase() === championId.toLowerCase()
+  );
+  if (!key) return null;
+
+  return { build: sample.builds[key], meta: sample.meta };
 }

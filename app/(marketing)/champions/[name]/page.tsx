@@ -7,6 +7,7 @@ import { normalizeChampionKey, getLatestDdragonVersion } from "@/lib/ddragon";
 import { ChampionAbilities } from "./ChampionAbilities";
 import { ChampionSkins } from "./ChampionSkins";
 import { buildAbilityViews } from "./abilityViews";
+import { ProPlayStrip } from "@/domains/esports/components/ProPlayStrip";
 
 export const revalidate = 86400;
 
@@ -108,6 +109,10 @@ export default async function ChampionDetailPage({ params }: Props) {
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <ChampionAbilities abilities={abilities} />
+          {/* Renders nothing unless the pro sample is already warm and has this
+              champion in it, so an overview page never waits on the esports
+              feed (TASK-310). */}
+          <ProPlayStrip championId={key} name={champ.name} />
           <ChampionSkins championKey={key} championName={champ.name} skins={champ.skins ?? []} />
 
           <div className="rounded-2xl border border-border bg-surface p-6">

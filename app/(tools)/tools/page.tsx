@@ -77,6 +77,13 @@ const TOOLS = [
       "Live scores, schedule and results from every pro league, plus what the pros pick.",
     Icon: Radio,
   },
+  {
+    href: "/esports/champions",
+    title: "Pro Champion Meta",
+    description:
+      "What pro teams are actually picking right now, with pick rates, win rates and their builds.",
+    Icon: Swords,
+  },
 ];
 
 export default function ToolsHubPage() {

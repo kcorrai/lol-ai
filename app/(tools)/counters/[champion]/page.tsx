@@ -17,6 +17,7 @@ import { CounterResults } from "@/domains/meta/components/CounterResults";
 import { RelatedChampions } from "@/domains/meta/components/RelatedChampions";
 import { DataFreshness } from "@/domains/meta/components/DataFreshness";
 import { CounterInsights } from "./CounterInsights";
+import { ProPlayStrip } from "@/domains/esports/components/ProPlayStrip";
 import { fetchAllChampions, fetchChampionDetail } from "@/lib/ddragon/championsData";
 import { championSplashUrl } from "@/lib/ddragon";
 
@@ -216,6 +217,12 @@ export default async function ChampionCountersPage({ params, searchParams }: Pag
           enemyTips={detail.enemytips}
         />
       )}
+
+      {/* One line only: this page is about who beats whom, and the pro angle is
+          a pointer, not a section. */}
+      <div className="mt-12">
+        <ProPlayStrip championId={detail.id} name={detail.name} variant="line" />
+      </div>
 
       {/* Internal links */}
       <div className="mt-12 flex flex-wrap gap-3 text-sm">

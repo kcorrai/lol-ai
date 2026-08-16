@@ -1,5 +1,5 @@
 import { cache } from "react";
-import { cachedComputation, TTL } from "@/domains/esports/services/esportsApi";
+import { cachedComputation, cachedValue, TTL } from "@/domains/esports/services/esportsApi";
 import { getCompleted } from "@/domains/esports/services/scheduleService";
 import { getMatch } from "@/domains/esports/services/matchService";
 import { getGameStats } from "@/domains/esports/services/gameStatsService";
@@ -161,4 +161,16 @@ export const getProSample = cache(async function getProSample({
       };
     },
   });
+});
+
+/**
+ * The pro sample if it is already cached, and nothing at all if it is not.
+ *
+ * This is what the champion cluster reads. `/builds/[champion]` exists to answer
+ * a question about ranked, and it must never block on a walk of the pro feed to
+ * do it (TASK-310) — so a cold cache means no pro strip on that page, not a
+ * slower page.
+ */
+export const getCachedProSample = cache(async function getCachedProSample(): Promise<ProSample | null> {
+  return cachedValue<ProSample>("pro-sample:all");
 });

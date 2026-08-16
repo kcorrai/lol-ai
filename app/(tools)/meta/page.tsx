@@ -162,6 +162,9 @@ export default async function MetaReportPage() {
         <Link href="/builds" className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text">
           Champion builds →
         </Link>
+        <Link href="/esports/champions" className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text">
+          What the pros are picking →
+        </Link>
         <Link href="/aram/tier-list" className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text">
           ARAM tier list →
         </Link>

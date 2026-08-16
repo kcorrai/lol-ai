@@ -97,6 +97,21 @@ export function livestatsFetch(path: string, options: FetchOptions = {}): Promis
   });
 }
 
+/**
+ * Read a cached value without ever producing one.
+ *
+ * For callers outside the section that want esports data if it happens to be
+ * warm and want nothing at all otherwise — a champion build page must not wait
+ * on a walk of the pro feed to render a ranked build (TASK-310). Falls through
+ * to the last-good copy, because a stale pro strip beside a ranked build is
+ * still useful and its absence is the only alternative.
+ */
+export async function cachedValue<TValue>(key: string): Promise<TValue | null> {
+  const fresh = (await getCached(`esports:${key}:fresh`).catch(() => null)) as TValue | null;
+  if (fresh !== null) return fresh;
+  return (await getCached(`esports:${key}:last-good`).catch(() => null)) as TValue | null;
+}
+
 interface CachedComputationOptions<TValue> {
   key: string;
   type: string;
