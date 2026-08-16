@@ -17,7 +17,14 @@ const getPlayerIndex = vi.fn<() => Promise<PlayerEntry[]>>();
 const getUpcoming = vi.fn<(query?: unknown) => Promise<EsportsEvent[]>>();
 const getCompleted = vi.fn<(query?: unknown) => Promise<EsportsEvent[]>>();
 
-vi.mock("@/domains/esports/services/leagueService", () => ({ getLeagues: () => getLeagues() }));
+// `prominentLeagues` is the rule under test here, so the real one runs.
+vi.mock("@/domains/esports/services/leagueService", async () => {
+  const actual =
+    await vi.importActual<typeof import("@/domains/esports/services/leagueService")>(
+      "@/domains/esports/services/leagueService"
+    );
+  return { prominentLeagues: actual.prominentLeagues, getLeagues: () => getLeagues() };
+});
 vi.mock("@/domains/esports/services/playerService", () => ({
   getPlayerIndex: () => getPlayerIndex(),
 }));
@@ -134,14 +141,26 @@ describe("esportsSitemapEntries", () => {
     expect(result).not.toContain("/esports/teams/elsewhere");
   });
 
-  it("publishes starters only, and only in leagues Riot features", async () => {
-    // `not_selected` is still published as a league and a team page, but Riot
-    // rarely publishes per-game stats for it, so its player pages stay out.
-    getLeagues.mockResolvedValue([
-      league(),
-      league({ id: "l-2", slug: "minor", name: "Minor", displayStatus: "not_selected" }),
-    ]);
-    const minor = team({ id: "t-2", slug: "minor-team", league: { name: "Minor", region: "EU" } });
+  it("publishes starters only, and only in the most prominent leagues", async () => {
+    // A league far enough down the order is still published as a league and a
+    // team page; its player pages are where the empty ones are.
+    const tail = Array.from({ length: 14 }, (_, index) =>
+      league({
+        id: `l-${index + 2}`,
+        slug: `minor-${index}`,
+        name: `Minor ${index}`,
+        displayStatus: "not_selected",
+        displayPosition: index,
+      })
+    );
+    getLeagues.mockResolvedValue([league(), ...tail]);
+
+    const last = tail[tail.length - 1];
+    const minor = team({
+      id: "t-2",
+      slug: "minor-team",
+      league: { name: last.name, region: "EU" },
+    });
     getTeams.mockResolvedValue([team(), minor]);
     getPlayerIndex.mockResolvedValue([
       entry("faker", "mid", team()),
@@ -155,8 +174,22 @@ describe("esportsSitemapEntries", () => {
     expect(result).not.toContain("/esports/players/coach");
     expect(result).not.toContain("/esports/players/unknown");
     // …but the minor league and its team page are still worth publishing.
-    expect(result).toContain("/esports/leagues/minor");
+    expect(result).toContain(`/esports/leagues/${last.slug}`);
     expect(result).toContain("/esports/teams/minor-team");
+  });
+
+  it("keeps players from a league Riot has not flagged as featured", async () => {
+    // The regression this guards: LCK and LPL sit in `not_selected`, so a bar
+    // built on the display band alone drops the best player pages in the file.
+    getLeagues.mockResolvedValue([
+      league({ slug: "lcs", name: "LCS", displayStatus: "selected" }),
+      league({ id: "l-2", slug: "lck", name: "LCK", displayStatus: "not_selected" }),
+    ]);
+    const t1 = team({ league: { name: "LCK", region: "KOREA" } });
+    getTeams.mockResolvedValue([t1]);
+    getPlayerIndex.mockResolvedValue([entry("faker", "mid", t1)]);
+
+    expect(paths(await esportsSitemapEntries())).toContain("/esports/players/faker");
   });
 
   it("dates completed matches by kickoff and lists a live series once", async () => {

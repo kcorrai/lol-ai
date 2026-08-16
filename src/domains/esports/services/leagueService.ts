@@ -72,6 +72,25 @@ function compareLeagues(a: EsportsLeague, b: EsportsLeague): number {
   return a.name.localeCompare(b.name);
 }
 
+/**
+ * The most prominent leagues, in Riot's own order.
+ *
+ * `displayStatus` alone is the wrong bar for this and it is worth writing down
+ * why: the band is a live merchandising signal, not a tier. At the time of
+ * writing `selected` holds LCS, CBLOL, Americas Cup, LEC, EWC and CACG, while
+ * **LCK and LPL sit in `not_selected`** and LTA North and South are `hidden`
+ * outright. Filtering on the band drops the two biggest leagues in the world.
+ *
+ * What the feed does get right is the order *within* each band — `not_selected`
+ * position 0 is LCK, 1 is LPL, 2 is LCP — so taking the head of the full sorted
+ * list gives a stable, feed-driven prominence ranking that survives Riot moving
+ * a league between bands mid-season. Hidden leagues are still excluded: that
+ * band is the one that does mean "not being shown".
+ */
+export function prominentLeagues(leagues: EsportsLeague[], limit: number): EsportsLeague[] {
+  return leagues.filter((league) => league.displayStatus !== "hidden").slice(0, limit);
+}
+
 function mapLeagues(parsed: z.infer<typeof LeaguesResponseSchema>): EsportsLeague[] {
   return parsed.data.leagues
     .map((raw) => ({

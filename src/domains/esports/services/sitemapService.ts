@@ -1,5 +1,5 @@
 import { logger } from "@/lib/utils/logger";
-import { getLeagues } from "@/domains/esports/services/leagueService";
+import { getLeagues, prominentLeagues } from "@/domains/esports/services/leagueService";
 import { getTeams, indexableTeams } from "@/domains/esports/services/teamService";
 import { getPlayerIndex } from "@/domains/esports/services/playerService";
 import { getUpcoming, getCompleted } from "@/domains/esports/services/scheduleService";
@@ -27,6 +27,7 @@ const SECTION_ROOTS: EsportsSitemapEntry[] = [
   { path: "/esports/schedule", changeFrequency: "hourly", priority: 0.9 },
   { path: "/esports/leagues", changeFrequency: "weekly", priority: 0.7 },
   { path: "/esports/teams", changeFrequency: "weekly", priority: 0.7 },
+  { path: "/esports/champions", changeFrequency: "daily", priority: 0.8 },
 ];
 
 /**
@@ -38,12 +39,11 @@ function publishableLeagues(leagues: EsportsLeague[]): EsportsLeague[] {
   return leagues.filter((league) => league.displayStatus !== "hidden");
 }
 
-/** The leagues Riot promotes in its own client — the same bar league pages prerender on. */
-function featuredLeagues(leagues: EsportsLeague[]): EsportsLeague[] {
-  return leagues.filter(
-    (league) => league.displayStatus === "force_selected" || league.displayStatus === "selected"
-  );
-}
+/**
+ * How far down the prominence order player pages are published. Twelve reaches
+ * LCK, LPL and LCP — the bands alone would not (see `prominentLeagues`).
+ */
+const PLAYER_LEAGUE_LIMIT = 12;
 
 function leagueNameSet(leagues: EsportsLeague[]): Set<string> {
   return new Set(leagues.map((league) => league.name.toLowerCase()));
@@ -60,15 +60,15 @@ function publishableTeams(teams: EsportsTeam[], leagueNames: Set<string>): Espor
 }
 
 /**
- * Starters in the leagues Riot itself features.
+ * Starters in the leagues at the top of the prominence order.
  *
  * ADR-017 §4 excludes a player with no recorded games, but proving that costs a
  * per-player walk of the game feed — thousands of requests to build one file.
  * Two cheap proxies stand in. Role removes staff and unassigned substitutes,
- * who never appear in a scoreboard. The featured-league bar removes the rest:
- * Riot publishes per-game livestats for the leagues it promotes and, for most
- * of the smaller ones, not at all — so a player page outside them usually has
- * a name and a team and nothing else.
+ * who never appear in a scoreboard. The league bar removes the rest: Riot
+ * publishes per-game livestats for the leagues at the top and, for most of the
+ * long tail, not at all — so a player page outside them usually carries a name
+ * and a team and nothing else.
  *
  * Teams stay on the wider bar. A team page is a roster and a fixture list, and
  * both of those exist for any league on the schedule.
@@ -95,7 +95,10 @@ export async function esportsSitemapEntries(): Promise<EsportsSitemapEntry[]> {
 
   const published = publishableLeagues(leagues);
   const teamList = publishableTeams(teams, leagueNameSet(published));
-  const playerList = publishablePlayers(players, leagueNameSet(featuredLeagues(leagues)));
+  const playerList = publishablePlayers(
+    players,
+    leagueNameSet(prominentLeagues(leagues, PLAYER_LEAGUE_LIMIT))
+  );
 
   const entries: EsportsSitemapEntry[] = [
     ...SECTION_ROOTS,
