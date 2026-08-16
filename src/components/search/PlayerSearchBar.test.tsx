@@ -163,4 +163,35 @@ describe("PlayerSearchBar", () => {
 
     expect(screen.getByText("No players found")).toBeInTheDocument();
   });
+
+  // TASK-317: the chip sits inside the bar, so the outside-click handler never fires for it. The
+  // suggestions panel used to stay open on top of the menu and swallow the option clicks.
+  it("switches region while a query is typed", async () => {
+    hits([]);
+    const user = userEvent.setup();
+    render(<PlayerSearchBar />);
+
+    await user.type(screen.getByRole("combobox"), "zz");
+    expect(screen.getByText("No players found")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /^region:/i }));
+    // The panel has to be gone, otherwise it covers the options it is stacked against.
+    expect(screen.queryByText("No players found")).not.toBeInTheDocument();
+
+    await user.click(within(screen.getByRole("listbox", { name: "Region" })).getByText("EUW"));
+
+    expect(screen.getByRole("button", { name: /^region: euw$/i })).toBeInTheDocument();
+  });
+
+  it("reopens the suggestions on the newly chosen region", async () => {
+    hits([FAKER]);
+    const user = userEvent.setup();
+    render(<PlayerSearchBar />);
+
+    await user.type(screen.getByRole("combobox"), "fa");
+    await user.click(screen.getByRole("button", { name: /^region:/i }));
+    await user.click(within(screen.getByRole("listbox", { name: "Region" })).getByText("EUW"));
+
+    expect(screen.getByText("Faker")).toBeInTheDocument();
+  });
 });

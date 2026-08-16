@@ -40,6 +40,7 @@ export function PlayerSearchBar({
   const listId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
 
+  const [open, setOpen] = useState(false);
   const [ownQuery, setOwnQuery] = useState("");
   const [ownRegion, setOwnRegion] = useState(DEFAULT_REGION);
   const query = controlledQuery ?? ownQuery;
@@ -56,11 +57,13 @@ export function PlayerSearchBar({
     (next: string) => {
       setOwnRegion(next);
       onRegionChange?.(next);
+      // The panel was closed to let the menu be clicked; bring it back so the hits for the platform
+      // just chosen are visible without another click into the input.
+      setOpen(true);
     },
     [onRegionChange],
   );
 
-  const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const { hits, isLoading } = usePlayerSearch(query, region);
 
@@ -163,7 +166,13 @@ export function PlayerSearchBar({
           aria-label="Search a Riot ID"
           className="h-full min-w-0 flex-1 bg-transparent px-2.5 text-sm text-text placeholder-text-muted outline-none"
         />
-        <RegionPicker value={region} onChange={setRegion} />
+        <RegionPicker
+          value={region}
+          onChange={setRegion}
+          // The chip lives inside `rootRef`, so the outside-click handler never fires for it. Without
+          // this the suggestions panel stays open over the menu and eats the option clicks.
+          onOpenChange={(menuOpen) => menuOpen && setOpen(false)}
+        />
       </div>
 
       {open && (
