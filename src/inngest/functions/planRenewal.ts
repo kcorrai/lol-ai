@@ -67,7 +67,7 @@ export const planRenewalWorker = inngest.createFunction(
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
     const { subject, html } = buildPlanRenewalEmail({
-      gameName: account?.gameName ?? "Oyuncu",
+      gameName: account?.gameName ?? "Player",
       appUrl,
     });
 
