@@ -76,6 +76,16 @@ const DETAILS = {
         championDamageShare: 0.25,
         wardsPlaced: 18,
         wardsDestroyed: 6,
+        attackDamage: 212,
+        abilityPower: 0,
+        armor: 90,
+        magicResistance: 70,
+        attackSpeed: 257,
+        lifeSteal: 0,
+        // Published by the feed and zero for every participant of every game
+        // sampled, which is why neither is mapped.
+        criticalChance: 0,
+        tenacity: 0,
         items: id === 1 ? [3078, 0, 3047, 0] : [1001],
         perkMetadata: { styleId: 8400, subStyleId: 8300, perks: [8437, 8446] },
       })),
@@ -258,6 +268,29 @@ describe("getGameStats", () => {
 
     const stats = await getGameStats("g1", { completed: true, now: NOW });
     expect(stats?.durationSeconds).toBeNull();
+  });
+
+  it("reads the end-game stat line", async () => {
+    mockFeed();
+
+    const stats = await getGameStats("g1", { completed: true, now: NOW });
+    expect(stats?.blue.participants[0].finalStats).toEqual({
+      attackDamage: 212,
+      // A real zero — a bruiser genuinely ends the game on no ability power —
+      // rather than a gap, which is why the whole line is null or nothing.
+      abilityPower: 0,
+      armor: 90,
+      magicResistance: 70,
+      attackSpeed: 257,
+      lifeSteal: 0,
+    });
+  });
+
+  it("has no stat line for a game the details feed published nothing for", async () => {
+    mockFeed({ failDetails: true });
+
+    const stats = await getGameStats("g1", { completed: true, now: NOW });
+    expect(stats?.blue.participants[0].finalStats).toBeNull();
   });
 
   it("reads wards killed as well as wards placed", async () => {

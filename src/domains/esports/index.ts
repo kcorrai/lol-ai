@@ -15,6 +15,9 @@ export type { TournamentEntry } from "@/domains/esports/services/leagueService";
 export { getStandings, primaryTable } from "@/domains/esports/services/standingsService";
 export { getMatch, defaultGame } from "@/domains/esports/services/matchService";
 export { getGameStats } from "@/domains/esports/services/gameStatsService";
+export { getGameTimeline } from "@/domains/esports/services/timelineService";
+export { goldDiff, objectiveEvents, peakLead, sampleClock } from "@/domains/esports/timeline";
+export type { ObjectiveEvent, ObjectiveKind } from "@/domains/esports/timeline";
 export {
   getProMeta,
   getProBuild,
@@ -55,6 +58,7 @@ export { ROLE_LABEL, roleLabel } from "@/domains/esports/roles";
 export { httpsAsset } from "@/domains/esports/services/esportsApi";
 export type {
   BracketMatch,
+  FinalStatLine,
   GameVod,
   EventStream,
   ProChampionStat,
@@ -71,6 +75,9 @@ export type {
   GameParticipant,
   GameStats,
   GameTeamStats,
+  GameTimeline,
+  TimelineSample,
+  TimelineTeamState,
   MatchDetail,
   MatchGameRef,
   EsportsPlayer,

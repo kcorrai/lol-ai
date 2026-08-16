@@ -25,6 +25,7 @@ function participant(
     damageShare: null,
     wardsPlaced: null,
     wardsDestroyed: null,
+    finalStats: null,
     items: [],
     runes: null,
     abilities: [],

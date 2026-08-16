@@ -58,6 +58,30 @@ export interface EsportsEventLeague {
   image: string | null;
 }
 
+/**
+ * The stat line a player finished the game on.
+ *
+ * The details feed publishes eight of these and fills six. `criticalChance` and
+ * `tenacity` came back zero for **100 of 100** participants sampled across ten
+ * games in five leagues — the fields exist and are never populated — so they are
+ * not mapped, rather than rendered as a nought every ADC would read as wrong.
+ *
+ * `attackSpeed` is published relative to the champion's base, not as attacks per
+ * second: read as an absolute it puts players above the game's own 2.5 cap,
+ * and read as a percentage of base every sampled value lands where it should.
+ * It is carried through as the feed's own number and labelled as a percentage.
+ */
+export interface FinalStatLine {
+  attackDamage: number;
+  abilityPower: number;
+  armor: number;
+  magicResistance: number;
+  /** Percentage of the champion's base attack speed. */
+  attackSpeed: number;
+  /** Percentage. Zero for four players in five — few pro builds carry it. */
+  lifeSteal: number;
+}
+
 export interface GameParticipant {
   /** 1-5 blue, 6-10 red. */
   participantId: number;
@@ -79,6 +103,8 @@ export interface GameParticipant {
   damageShare: number | null;
   wardsPlaced: number | null;
   wardsDestroyed: number | null;
+  /** Null when the details feed published nothing for this game. */
+  finalStats: FinalStatLine | null;
   items: number[];
   runes: { primaryStyle: number; secondaryStyle: number; perks: number[] } | null;
   /** Skill levelling order, in the order taken: ["Q","W","E","Q",…]. Empty when unpublished. */
@@ -117,6 +143,44 @@ export interface GameStats {
   durationSeconds: number | null;
   blue: GameTeamStats;
   red: GameTeamStats;
+}
+
+/** One side's state at a single point in a game. */
+export interface TimelineTeamState {
+  gold: number;
+  kills: number;
+  towers: number;
+  inhibitors: number;
+  barons: number;
+  /** Count, not types — the curve reads a number, the scoreboard reads the list. */
+  dragons: number;
+}
+
+export interface TimelineSample {
+  /** Seconds since the game's first published frame. */
+  seconds: number;
+  blue: TimelineTeamState;
+  red: TimelineTeamState;
+}
+
+/**
+ * The shape of a game over time.
+ *
+ * Sampled, not walked: the feed answers in hundred-second windows, so a
+ * full-resolution timeline of a 35-minute game costs ~21 requests against an
+ * unofficial feed. The samples are the real frames at those points, never
+ * interpolated — a gap in the walk is a gap in the curve.
+ */
+export interface GameTimeline {
+  gameId: string;
+  /** The game's first published frame, ISO 8601. Every sample offsets from it. */
+  startedAt: string;
+  intervalSeconds: number;
+  /** True when the walk hit its request ceiling before the game finished. */
+  truncated: boolean;
+  /** How far the samples reach, which for a truncated walk is not the game's length. */
+  durationSeconds: number | null;
+  samples: TimelineSample[];
 }
 
 /**
