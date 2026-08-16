@@ -7,10 +7,17 @@ export {
   getTournamentsForLeague,
   getCurrentTournament,
   pickCurrentTournament,
+  prominentLeagues,
 } from "@/domains/esports/services/leagueService";
 export { getStandings, primaryTable } from "@/domains/esports/services/standingsService";
 export { getMatch, defaultGame } from "@/domains/esports/services/matchService";
 export { getGameStats } from "@/domains/esports/services/gameStatsService";
+export { getProMeta } from "@/domains/esports/services/proMetaService";
+export type { ProMetaQuery } from "@/domains/esports/services/proMetaService";
+export { aggregateProMeta, MIN_MEANINGFUL_GAMES } from "@/domains/esports/proMeta";
+export { sortChampions, parseProMetaSort, PRO_META_SORTS } from "@/domains/esports/proMetaSort";
+export type { ProMetaSort } from "@/domains/esports/proMetaSort";
+export { gameWinner } from "@/domains/esports/gameOutcome";
 export {
   getPlayer,
   getPlayerIndex,
@@ -33,6 +40,8 @@ export { ROLE_LABEL, roleLabel } from "@/domains/esports/roles";
 export { httpsAsset } from "@/domains/esports/services/esportsApi";
 export type {
   BracketMatch,
+  ProChampionStat,
+  ProMeta,
   PlayerChampionStat,
   PlayerEntry,
   PlayerGame,

@@ -244,3 +244,36 @@ export interface EsportsEvent {
   teams: EsportsEventTeam[];
   hasVod: boolean;
 }
+
+export interface ProChampionStat {
+  /** Data Dragon champion id, e.g. "MissFortune". */
+  championId: string;
+  picks: number;
+  wins: number;
+  /** Games whose winner could be derived. Win rate is over these, not over picks. */
+  decidedGames: number;
+  /** Percentage, or null when no game in the sample was decided. */
+  winRate: number | null;
+  /** Percentage of games in the sample this champion was picked in. */
+  pickRate: number;
+  roles: Partial<Record<PlayerRole, number>>;
+  topRole: PlayerRole | null;
+}
+
+/**
+ * What the pros are playing, over a sample of finished games.
+ *
+ * No ban or presence figure: neither feed publishes bans, so the honest table is
+ * picks and results (see `proMeta.ts`).
+ */
+export interface ProMeta {
+  games: number;
+  /** Patches covered by the sample, ascending. */
+  patches: string[];
+  /** Timestamp of the most recent game's final frame, ISO 8601. */
+  lastGameAt: string | null;
+  /** True when the sample is too small for the numbers to mean much. */
+  thinSample: boolean;
+  /** Most-picked first. */
+  champions: ProChampionStat[];
+}

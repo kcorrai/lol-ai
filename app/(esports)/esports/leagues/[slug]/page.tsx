@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   getLeague,
@@ -233,6 +234,14 @@ export default async function LeaguePage({ params }: PageProps): Promise<React.R
           </ul>
         </section>
       )}
+
+      <p className="mt-12 text-sm text-text-muted">
+        See which champions {league.name} teams are actually picking in the{" "}
+        <Link href={`/esports/champions?league=${league.slug}`} className="text-accent hover:underline">
+          {league.name} champion meta
+        </Link>
+        .
+      </p>
 
       <DataCredit className="mt-12" />
     </div>
