@@ -93,6 +93,26 @@ request-time fetching, and the CC-BY-SA attribution the licence requires.
 - **Negative:** dependency on two unofficial endpoints that Riot can change or
   block without notice. Mitigated by the last-good snapshots, the Zod boundary,
   and pages that degrade to "schedule only" rather than 500.
+- **Amendment (2026-08-16): game length is derivable after all.** This ADR and
+  the pages built on it recorded duration as something neither feed publishes,
+  and so the section only ever showed per-game totals — "You vs the Pros"
+  named CS/min and gold/min as rows it could not draw. It is not published as a
+  field, but `window/{gameId}` **with no `startingTime` answers from the opening
+  frames of the game**, and the closing frame is already fetched to build a
+  scoreboard. The difference between the two timestamps is the game. Verified on
+  three completed games (34:41, 25:34, 32:40) and cross-checked against the VOD
+  segment offsets `getEventDetails` publishes for the same series, which run the
+  expected few minutes longer for draft and post-game.
+
+  It costs **one extra request per game**, cached for thirty days under
+  `game:{id}:start` — for a live game too, since a game's first frame is
+  immutable the moment it exists. `src/domains/esports/duration.ts` owns the
+  derivation and rejects any span shorter than two minutes or longer than two
+  hours: a repeated frame would otherwise report a zero-second game and send
+  every rate derived from it to infinity. Where a game has no opening window,
+  every per-minute figure is null and renders as an em dash rather than being
+  computed against an assumed length.
+
 - **Negative:** coverage is what Riot publishes. Tier-2 leagues have thinner
   livestats coverage, and `getStandings` returns brackets in a stage/section shape
   that varies by format — the standings service normalises this and must tolerate

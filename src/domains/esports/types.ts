@@ -78,6 +78,7 @@ export interface GameParticipant {
   killParticipation: number | null;
   damageShare: number | null;
   wardsPlaced: number | null;
+  wardsDestroyed: number | null;
   items: number[];
   runes: { primaryStyle: number; secondaryStyle: number; perks: number[] } | null;
   /** Skill levelling order, in the order taken: ["Q","W","E","Q",…]. Empty when unpublished. */
@@ -102,7 +103,18 @@ export interface GameStats {
   /** Two-part patch, e.g. "15.20". */
   patch: string;
   finished: boolean;
+  /** First published frame, ISO 8601. Null when the feed has no opening window. */
+  firstFrameAt: string | null;
   lastFrameAt: string;
+  /**
+   * Seconds between the first and last published frame — elapsed time so far
+   * while a game is live, the game's length once it is finished.
+   *
+   * Null when the opening frames were never published, which is the only honest
+   * answer: every per-minute figure on the site is null in that case rather than
+   * computed against an assumed length.
+   */
+  durationSeconds: number | null;
   blue: GameTeamStats;
   red: GameTeamStats;
 }
@@ -359,9 +371,10 @@ export interface ProPlayerOnChampion {
 /**
  * Per-game averages for a champion in pro play.
  *
- * Totals per game, never per minute: neither feed publishes a game's duration
- * (the window carries the final frame and no length), so a per-minute figure
- * would be invented. Whoever reads these has to be told they are per game.
+ * The absolute figures are per game and are named that way on every page that
+ * prints them. The `…PerMin` pair is derived from the game lengths in the sample
+ * (see `duration.ts`) and is null when none of the sampled games published the
+ * opening frames a length is measured from.
  */
 export interface ProChampionAverages {
   kills: number;
@@ -371,8 +384,14 @@ export interface ProChampionAverages {
   kda: number;
   creepScore: number;
   gold: number;
+  /** Mean length of the sampled games, in seconds. Null when none published one. */
+  gameLengthSeconds: number | null;
+  /** Farm and income over the games that have a measurable length. */
+  creepScorePerMin: number | null;
+  goldPerMin: number | null;
   /** Null when the details feed published none of it for this champion's games. */
   wardsPlaced: number | null;
+  wardsDestroyed: number | null;
   killParticipation: number | null;
   damageShare: number | null;
   winRate: number;

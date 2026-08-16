@@ -16,7 +16,11 @@ function pro(over: Partial<ProChampionAverages> = {}): ProChampionAverages {
     kda: 5,
     creepScore: 300,
     gold: 15000,
+    gameLengthSeconds: 1800,
+    creepScorePerMin: 10,
+    goldPerMin: 500,
     wardsPlaced: 12,
+    wardsDestroyed: 4,
     killParticipation: 0.65,
     damageShare: 0.25,
     winRate: 55,
@@ -32,6 +36,9 @@ function you(over: Partial<PlayerChampionAverages> = {}): PlayerChampionAverages
     creepScore: 210,
     gold: 12000,
     wardsPlaced: 8,
+    gameLengthSeconds: 1800,
+    creepScorePerMin: 7,
+    goldPerMin: 400,
     ...over,
   };
 }
@@ -55,13 +62,43 @@ describe("buildComparison", () => {
   });
 
   it("drops a row the player's side has no number for", () => {
-    // The signed-out path publishes results and KDA and nothing else.
+    // The signed-out path publishes results and KDA and nothing else — no game
+    // length either, so the two per-minute rows go with the totals.
     const rows = buildComparison(
       pro(),
-      you({ creepScore: null, gold: null, wardsPlaced: null })
+      you({
+        creepScore: null,
+        gold: null,
+        wardsPlaced: null,
+        gameLengthSeconds: null,
+        creepScorePerMin: null,
+        goldPerMin: null,
+      })
     );
 
     expect(rows.map((entry) => entry.key)).toEqual(["kda", "winRate"]);
+  });
+
+  it("drops only the per-minute rows when a game had no measurable length", () => {
+    // A game the feed published no opening frame for has no duration, so the
+    // pro rate is null while its per-game totals are perfectly real.
+    const rows = buildComparison(pro({ creepScorePerMin: null, goldPerMin: null }), you());
+
+    expect(rows.map((entry) => entry.key)).toEqual([
+      "kda",
+      "winRate",
+      "creepScore",
+      "gold",
+      "wardsPlaced",
+    ]);
+  });
+
+  it("reads a per-minute figure to one decimal", () => {
+    const rows = buildComparison(pro({ creepScorePerMin: 9.6 }), you({ creepScorePerMin: 7.15 }));
+    const cs = row(rows, "creepScorePerMin");
+
+    expect(formatMetric(cs!.pro, cs!.format)).toBe("9.6");
+    expect(formatMetric(cs!.you, cs!.format)).toBe("7.2");
   });
 
   it("drops a row the pro side has no number for", () => {

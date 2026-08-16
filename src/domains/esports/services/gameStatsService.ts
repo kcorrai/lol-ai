@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { elapsedSeconds } from "@/domains/esports/duration";
 import { cachedResource, livestatsFetch, TTL } from "@/domains/esports/services/esportsApi";
 import type {
   GameParticipant,
@@ -104,6 +105,11 @@ const DetailsSchema = z.object({
   ),
 });
 
+/** The opening window, read only for its first timestamp. */
+const GameStartSchema = z.object({
+  frames: z.array(z.object({ rfc460Timestamp: z.string() })),
+});
+
 type WindowPayload = z.infer<typeof WindowSchema>;
 type DetailsPayload = z.infer<typeof DetailsSchema>;
 
@@ -141,6 +147,7 @@ function buildTeam(
       killParticipation: detail?.killParticipation ?? null,
       damageShare: detail?.championDamageShare ?? null,
       wardsPlaced: detail?.wardsPlaced ?? null,
+      wardsDestroyed: detail?.wardsDestroyed ?? null,
       // Zeros are empty slots, not items.
       items: (detail?.items ?? []).filter((id) => id > 0),
       runes: detail?.perkMetadata
@@ -171,7 +178,8 @@ function buildTeam(
 
 function buildStats(
   windowPayload: WindowPayload,
-  detailsPayload: DetailsPayload | null
+  detailsPayload: DetailsPayload | null,
+  firstFrameAt: string | null
 ): GameStats | null {
   const frame = windowPayload.frames.at(-1);
   if (!frame) return null;
@@ -184,10 +192,35 @@ function buildStats(
     // "15.20.719.545" — only the first two parts are the patch people know.
     patch: (windowPayload.gameMetadata.patchVersion ?? "").split(".").slice(0, 2).join("."),
     finished: frame.gameState === "finished",
+    firstFrameAt,
     lastFrameAt: frame.rfc460Timestamp,
+    durationSeconds: elapsedSeconds(firstFrameAt, frame.rfc460Timestamp),
     blue: buildTeam("blue", windowPayload.gameMetadata.blueTeamMetadata, frame.blueTeam, details),
     red: buildTeam("red", windowPayload.gameMetadata.redTeamMetadata, frame.redTeam, details),
   };
+}
+
+/**
+ * When the game's first frame was published.
+ *
+ * The window endpoint answers from the beginning of the game when it is given no
+ * `startingTime`, which is the only way either feed reveals a game's length — and
+ * it is what ADR-016 recorded as unavailable. Verified against three completed
+ * games and cross-checked against the VOD segment lengths on the same series.
+ *
+ * Cached for a month regardless of whether the game is still being played: a
+ * game's opening frame is immutable the moment it exists, so a live game pays
+ * for this once rather than every thirty seconds.
+ */
+async function getGameStart(gameId: string): Promise<string | null> {
+  return cachedResource({
+    key: `game:${gameId}:start`,
+    type: CACHE_TYPE,
+    ttlDays: TTL.completedGame,
+    schema: GameStartSchema,
+    fetcher: () => livestatsFetch(`window/${gameId}`),
+    map: (payload) => payload.frames[0]?.rfc460Timestamp ?? null,
+  });
 }
 
 /**
@@ -213,17 +246,22 @@ export async function getGameStats(
   }).then(async (windowPayload) => {
     if (!windowPayload) return null;
 
-    // Details are a bonus: KDA, CS and gold already came from the window, so a
-    // game the details endpoint has no data for still renders a scoreboard.
-    const detailsPayload = await cachedResource({
-      key: completed ? `game:${gameId}:details` : `game:${gameId}:details:live`,
-      type: CACHE_TYPE,
-      ttlDays: completed ? TTL.completedGame : TTL.live,
-      schema: DetailsSchema,
-      fetcher: () => livestatsFetch(`details/${gameId}`, { params: { startingTime } }),
-      map: (payload) => payload,
-    });
+    // Both are a bonus on top of the window: KDA, CS and gold already came from
+    // it, so a game the details endpoint has no data for — or one whose opening
+    // frames were never published — still renders a scoreboard, just without the
+    // extra columns.
+    const [detailsPayload, firstFrameAt] = await Promise.all([
+      cachedResource({
+        key: completed ? `game:${gameId}:details` : `game:${gameId}:details:live`,
+        type: CACHE_TYPE,
+        ttlDays: completed ? TTL.completedGame : TTL.live,
+        schema: DetailsSchema,
+        fetcher: () => livestatsFetch(`details/${gameId}`, { params: { startingTime } }),
+        map: (payload) => payload,
+      }),
+      getGameStart(gameId),
+    ]);
 
-    return buildStats(windowPayload, detailsPayload);
+    return buildStats(windowPayload, detailsPayload, firstFrameAt);
   });
 }
