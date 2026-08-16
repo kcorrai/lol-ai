@@ -16,9 +16,9 @@ export function SkillOrder({ build }: { build: Pick<ChampionBuild, "skillOrder" 
   const levels = completeSkillOrder(build.skillOrder, build.skillMaxOrder);
 
   return (
-    <div className="rounded-2xl border border-border bg-surface/60 p-5">
+    <div className="notch border border-border bg-surface p-5">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="font-display text-lg font-bold text-text">Skill Order</h2>
+        <h2 className="hud-label text-[10.5px]">Skill Order</h2>
         {build.skillMaxOrder.length > 0 && (
           <span className="text-sm text-text-muted">
             Max order:{" "}

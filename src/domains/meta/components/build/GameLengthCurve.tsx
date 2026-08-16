@@ -14,8 +14,8 @@ export function GameLengthCurve({ points }: { points: GameLengthPoint[] }) {
   if (points.length === 0) return null;
 
   return (
-    <div className="rounded-2xl border border-border bg-surface/60 p-5">
-      <h2 className="mb-1 font-display text-lg font-bold text-text">Win Rate by Game Length</h2>
+    <div className="notch border border-border bg-surface p-5">
+      <h2 className="hud-label mb-1 text-[10.5px]">Win Rate by Game Length</h2>
       <p className="mb-4 text-xs text-text-muted">How the champion performs as games go longer.</p>
       <div className="flex flex-col gap-2.5">
         {points.map((p) => {

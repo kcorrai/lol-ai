@@ -41,7 +41,7 @@ export default async function ChampionBuildPage({ params }: { params: { champion
       <BuildView {...data} />
       {/* Under the ranked build, never in place of it: a cold pro cache renders
           nothing here rather than making this page wait (TASK-310). */}
-      <div className="mx-auto max-w-5xl px-4 pb-12">
+      <div className="mx-auto max-w-[1240px] px-5 pb-12 md:px-8">
         <ProPlayStrip championId={data.championKey} name={data.name} />
       </div>
     </>

@@ -39,7 +39,7 @@ export default async function ChampionRoleBuildPage({ params }: PageProps) {
   return (
     <>
       <BuildView {...data} />
-      <div className="mx-auto max-w-5xl px-4 pb-12">
+      <div className="mx-auto max-w-[1240px] px-5 pb-12 md:px-8">
         <ProPlayStrip championId={data.championKey} name={data.name} />
       </div>
     </>

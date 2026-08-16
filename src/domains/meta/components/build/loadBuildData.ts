@@ -15,14 +15,25 @@ import type { BuildViewData } from "./BuildView";
 function topCounters(
   snapshot: MetaSnapshot,
   counters: MatchupEntry[]
-): { key: string; name: string }[] {
+): { key: string; name: string; winRate: number; games: number }[] {
   const index = new Map(snapshot.champions.map((c) => [c.championId, c]));
   return counters
     .filter((c) => c.subjectWinRate < 50)
     .slice(0, 8)
-    .map((c) => index.get(c.opponentId))
-    .filter((c): c is NonNullable<typeof c> => Boolean(c))
-    .map((c) => ({ key: c.championKey, name: c.name }));
+    .map((entry) => {
+      const opponent = index.get(entry.opponentId);
+      // The win rate and sample travel with the name: the matchup table prints both, and
+      // re-deriving them from the snapshot would lose the per-matchup figure.
+      return opponent
+        ? {
+            key: opponent.championKey,
+            name: opponent.name,
+            winRate: entry.subjectWinRate,
+            games: entry.games,
+          }
+        : null;
+    })
+    .filter((c): c is NonNullable<typeof c> => c !== null);
 }
 
 // Loads everything a build page needs (stats, build, catalogs, enriched counters),

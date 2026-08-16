@@ -2,8 +2,19 @@ import Image from "next/image";
 import type { BuildItemSet, ChampionBuild } from "@/domains/meta";
 import type { ItemInfo } from "@/lib/ddragon/itemsData";
 
-function ItemIcon({ info, size = 40 }: { info: ItemInfo | undefined; size?: number }) {
-  if (!info) return <span className="inline-block rounded-md bg-surface-2" style={{ width: size, height: size }} />;
+function ItemIcon({
+  info,
+  size = 38,
+  accent = false,
+}: {
+  info: ItemInfo | undefined;
+  size?: number;
+  accent?: boolean;
+}) {
+  const frame = `tag-cut shrink-0 border ${accent ? "border-accent" : "border-line-2"}`;
+  if (!info) {
+    return <span className={`${frame} inline-block bg-surface-dark`} style={{ width: size, height: size }} />;
+  }
   return (
     <Image
       src={info.iconUrl}
@@ -12,61 +23,73 @@ function ItemIcon({ info, size = 40 }: { info: ItemInfo | undefined; size?: numb
       width={size}
       height={size}
       unoptimized
-      className="rounded-md ring-1 ring-border"
+      className={frame}
     />
   );
 }
 
-function ItemGroup({
-  label,
-  set,
-  catalog,
-}: {
+interface CellProps {
   label: string;
+  note: string;
   set: BuildItemSet | null;
+  ids?: number[];
   catalog: Map<number, ItemInfo>;
-}) {
-  if (!set || set.ids.length === 0) return null;
+  accent?: boolean;
+}
+
+function Cell({ label, note, set, ids, catalog, accent = false }: CellProps): React.ReactElement | null {
+  const itemIds = ids ?? set?.ids ?? [];
+  if (itemIds.length === 0) return null;
   return (
-    <div>
-      <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-text-muted">{label}</p>
-      <div className="flex items-center gap-1.5">
-        {set.ids.map((id, i) => (
-          <ItemIcon key={`${id}-${i}`} info={catalog.get(id)} />
-        ))}
-        <span className="ml-1.5 text-xs text-success">{set.winRate.toFixed(1)}%</span>
+    <div className={`border-b border-line-1 px-4 py-4 last:border-b-0 lg:border-b-0 lg:border-r lg:last:border-r-0 ${accent ? "bg-accent/[0.06]" : ""}`}>
+      <div className="mb-2.5 flex items-center justify-between gap-2.5">
+        <span className="hud-label text-[9.5px]">{label}</span>
+        <span className={`font-mono text-xs font-bold ${accent ? "text-accent" : "text-text-body"}`}>
+          {set ? `${set.winRate.toFixed(1)}%` : "—"}
+        </span>
       </div>
+      <div className="flex flex-wrap gap-1.5">
+        {itemIds.map((id, i) => (
+          <ItemIcon key={`${id}-${i}`} info={catalog.get(id)} accent={accent} />
+        ))}
+      </div>
+      <p className="mt-2.5 font-mono text-[10px] tracking-[0.1em] text-text-faint">{note}</p>
     </div>
   );
 }
 
+/**
+ * The build path as one row: what you start with, what you rush, boots, and what is optional.
+ * The core cell is the accented one because it is the answer the page exists to give.
+ */
 export function ItemBuildPath({
   build,
   catalog,
 }: {
   build: ChampionBuild;
   catalog: Map<number, ItemInfo>;
-}) {
+}): React.ReactElement {
+  const core = build.coreItems;
   return (
-    <div className="rounded-2xl border border-border bg-surface/60 p-5">
-      <h2 className="mb-4 font-display text-lg font-bold text-text">Item Build</h2>
-      <div className="flex flex-col gap-4">
-        <ItemGroup label="Starting items" set={build.starterItems} catalog={catalog} />
-        <ItemGroup label="Core build" set={build.coreItems} catalog={catalog} />
-        <ItemGroup label="Boots" set={build.boots} catalog={catalog} />
-        {build.lateItemOptions.length > 0 && (
-          <div>
-            <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-text-muted">
-              Late-game options
-            </p>
-            <div className="flex flex-wrap items-center gap-1.5">
-              {build.lateItemOptions.map((set, i) => (
-                <ItemIcon key={i} info={catalog.get(set.ids[0])} />
-              ))}
-            </div>
-          </div>
-        )}
+    <section className="notch glow-accent-soft border border-accent bg-surface">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line-1 bg-surface-2 px-5 py-3.5">
+        <span className="font-mono text-[10.5px] uppercase tracking-label text-text">
+          {`// The build${core ? ` · ${core.winRate.toFixed(1)}% win rate` : ""}`}
+        </span>
+        <span className="hud-label text-[10.5px]">Highest win rate path this patch</span>
       </div>
-    </div>
+      <div className="grid lg:grid-cols-[auto_auto_auto_minmax(0,1fr)]">
+        <Cell label="Start" note="First back" set={build.starterItems} catalog={catalog} />
+        <Cell label="Core · in order" note="The whole build" set={core} catalog={catalog} accent />
+        <Cell label="Boots" note="Situational swap" set={build.boots} catalog={catalog} />
+        <Cell
+          label="Late options"
+          note="Pick one, not all"
+          set={null}
+          ids={build.lateItemOptions.map((s) => s.ids[0])}
+          catalog={catalog}
+        />
+      </div>
+    </section>
   );
 }

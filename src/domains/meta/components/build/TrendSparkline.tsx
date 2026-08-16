@@ -7,8 +7,8 @@ export function TrendSparkline({ trend }: { trend: PatchTrendPoint[] }) {
   const ordered = [...trend].reverse(); // op.gg returns newest first
 
   return (
-    <div className="rounded-2xl border border-border bg-surface/60 p-5">
-      <h2 className="mb-4 font-display text-lg font-bold text-text">Win Rate Trend</h2>
+    <div className="notch border border-border bg-surface p-5">
+      <h2 className="hud-label mb-4 text-[10.5px]">Win Rate Trend</h2>
       <div className="flex items-end justify-between gap-2">
         {ordered.map((p) => {
           const good = p.winRate >= 50;

@@ -6,8 +6,8 @@ export function SpellsRow({ spellIds }: { spellIds: number[] }) {
   if (urls.length === 0) return null;
 
   return (
-    <div className="rounded-2xl border border-border bg-surface/60 p-5">
-      <h2 className="mb-3 font-display text-lg font-bold text-text">Summoner Spells</h2>
+    <div className="notch border border-border bg-surface p-5">
+      <h2 className="hud-label mb-3 text-[10.5px]">Summoner Spells</h2>
       <div className="flex gap-2">
         {urls.map((url, i) => (
           <Image
