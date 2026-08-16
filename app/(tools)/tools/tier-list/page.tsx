@@ -48,7 +48,7 @@ export default async function TierListPage({ searchParams }: PageProps) {
   };
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-14">
+    <div className="mx-auto max-w-[1240px] px-5 py-12 md:px-8">
       {itemListJsonLd && (
         <script
           type="application/ld+json"
@@ -63,21 +63,20 @@ export default async function TierListPage({ searchParams }: PageProps) {
         ]}
       />
 
-      <header className="mb-6">
-        <PublicOnly>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
-            Free Tool · No login required
-          </p>
-        </PublicOnly>
-        <h1 className="font-display text-3xl font-black text-text md:text-4xl">
-          LoL Tier List{patch ? ` — Patch ${patch}` : ""}
-        </h1>
-        <p className="mt-2 text-text-muted">
-          The strongest champions per lane, ranked by real ranked win rate. Pick a lane below.
+      <PublicOnly>
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-accent">
+          Free Tool · No login required
         </p>
-      </header>
+      </PublicOnly>
 
-      <TierListView position={DEFAULT_POSITION} list={list} activeTier={null} />
+      <TierListView
+        mode="ranked"
+        position={DEFAULT_POSITION}
+        list={list}
+        activeTier={null}
+        title={`LoL tier list${patch ? ` — patch ${patch}` : ""}`}
+        subtitle="Strongest champions per lane by real ranked win rate. Pick a lane and a rank band."
+      />
 
       {list && list.entries.length > 0 && (
         <p className="mt-8 leading-relaxed text-text-muted">{tierBlurb(lane, list, patch)}</p>
