@@ -13,6 +13,7 @@ function event(matchId: string, startTime: string): EsportsEvent {
     tournamentId: null,
     teams: [],
     hasVod: false,
+    streams: [],
   };
 }
 

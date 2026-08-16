@@ -200,6 +200,7 @@ describe("isThinTeam / recentForm", () => {
         },
       ],
       hasVod: false,
+      streams: [],
     };
   }
 

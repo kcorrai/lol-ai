@@ -7,6 +7,7 @@ import {
   defaultGame,
   getGameStats,
   getEventStartTime,
+  getLiveEvents,
   teamSlugsById,
 } from "@/domains/esports";
 import type { GameTeamStats, MatchDetail, MatchGameRef } from "@/domains/esports";
@@ -16,6 +17,8 @@ import { LiveGameStats } from "@/domains/esports/components/LiveGameStats";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
 import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
+import { WatchLinks } from "@/domains/esports/components/WatchLinks";
+import { vodLinks, streamLinks } from "@/domains/esports/watch";
 
 // An hour for the series shell. Completed game stats behind it are immutable and
 // cached for a month; a live game refreshes on its own thirty-second window.
@@ -190,11 +193,16 @@ export default async function MatchPage({
     : null;
   const game = requested ?? defaultGame(match);
 
-  const [stats, startTime, teamSlugs] = await Promise.all([
+  const [stats, startTime, teamSlugs, live] = await Promise.all([
     game ? getGameStats(game.id, { completed: game.state === "completed" }) : null,
     getEventStartTime(match.matchId),
     teamSlugsById(match.teams.map((team) => team.id)),
+    // `getEventDetails` publishes no streams; only the live endpoint does, and
+    // it is already cached for the whole section.
+    getLiveEvents(),
   ]);
+
+  const liveStreams = live.find((event) => event.matchId === match.matchId)?.streams ?? [];
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 md:py-14">
@@ -211,6 +219,19 @@ export default async function MatchPage({
 
       <SeriesHeader match={match} teamSlugs={teamSlugs} />
       {game && <GameSwitcher match={match} activeId={game.id} />}
+
+      {/* While a series is on, the live broadcast is what someone wants; the
+          VODs of the games already played are what they want afterwards. Both
+          can be true mid-series, so both render. */}
+      <div className="mb-6 grid gap-2">
+        <WatchLinks links={streamLinks(liveStreams)} label="Watch live" />
+        {game && (
+          // Per game, not per series: the feed marks where each game starts
+          // inside the series video, so this opens on the game being read about
+          // rather than at the beginning of a six-hour broadcast.
+          <WatchLinks links={vodLinks(game.vods)} label={`Watch game ${game.number}`} />
+        )}
+      </div>
 
       {!game && (
         <p className="gaming-card notch-sm px-4 py-5 text-sm text-text-muted">
