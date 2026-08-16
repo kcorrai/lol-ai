@@ -273,6 +273,8 @@ export interface EsportsEvent {
   tournamentId: string | null;
   teams: EsportsEventTeam[];
   hasVod: boolean;
+  /** Live broadcasts, one per language. Only `getLive` publishes these. */
+  streams: EventStream[];
 }
 
 export interface ProChampionStat {
