@@ -108,11 +108,10 @@ export default function DashboardPage(): React.ReactElement {
             </div>
           </HudPanel>
 
-          {/* Layers 2 and 3 share the page with the duo rail. Everything in the main column
-              answers "how am I playing"; the rail answers "how are *we* playing", which is a
-              different unit of analysis and so gets its own column rather than a widget slot.
-              On phones the rail comes first — under the verdict, above the analysis — because a
-              rail stacked last would land below the whole match log. */}
+          {/* Layer 2 shares the page with the duo rail. Everything in the main column answers
+              "how am I playing"; the rail answers "how are *we* playing", which is a different
+              unit of analysis and so gets its own column rather than a widget slot.
+              On phones the rail comes first — under the verdict, above the analysis. */}
           <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,1fr)_336px]">
             <aside className="order-first min-w-0 lg:order-none lg:sticky lg:top-6">
               <DuoPanel riotAccountId={primaryId} />
@@ -124,41 +123,43 @@ export default function DashboardPage(): React.ReactElement {
 
               <AnalysisDeltas profile={profile} isLoading={profileLoading} />
 
+              {/* One two-column flow, not a stack of row-grids. Widgets differ wildly in height,
+                  so a per-row grid parked the short side on a void until the tall side caught up —
+                  three of them down the page. Two continuous columns let each side keep packing,
+                  which leaves a single ragged edge at the bottom instead.
+                  Two columns, not three: the duo widget that used to sit here is the rail now. */}
               <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.5fr_1fr]">
-                <div className="grid gap-4">
+                <div className="flex min-w-0 flex-col gap-4">
                   <DailyMomentumChart riotAccountId={primaryId} />
                   <PerformanceTrendChart
                     matches={profile?.recentMatches}
                     isLoading={profileLoading}
                   />
+                  <ImprovementPlanWidget riotAccountId={primaryId} />
+                  <ChampionPoolPanel matches={profile?.recentMatches} isLoading={profileLoading} />
+                </div>
+                <div className="flex min-w-0 flex-col gap-4">
+                  <PlaystyleProfile profile={profile} isLoading={profileLoading} />
                   <WinrateTrendWidget
                     matches={profile?.recentMatches}
                     isLoading={profileLoading}
                   />
-                </div>
-                <PlaystyleProfile profile={profile} isLoading={profileLoading} />
-              </div>
-
-              <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.5fr_1fr]">
-                <ImprovementPlanWidget riotAccountId={primaryId} />
-                <div className="grid gap-4">
                   <WeekSummaryWidget matches={profile?.recentMatches} isLoading={profileLoading} />
                   <PatchImpactWidget riotAccountId={primaryId} />
                   <MetaRecommendationsWidget riotAccountId={primaryId} />
+                  <HabitDetectionCard riotAccountId={primaryId} />
                 </div>
               </div>
 
-              {/* Two columns, not three: the duo widget that used to sit here is the rail now. */}
-              <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[1.4fr_1fr]">
-                <ChampionPoolPanel matches={profile?.recentMatches} isLoading={profileLoading} />
-                <HabitDetectionCard riotAccountId={primaryId} />
-              </div>
-
-              {/* ── Layer 3 · Archive ────────────────────────────────── */}
-              <HudRule label="// Match log" />
-              <RecentMatchList matches={profile?.recentMatches} isLoading={profileLoading} />
             </div>
           </div>
+
+          {/* ── Layer 3 · Archive ──────────────────────────────────────── */}
+          {/* Outside the rail grid on purpose. The rail is a few hundred pixels tall and the log
+              runs for thousands, so keeping the log in the rail's column left the whole right-hand
+              strip empty for the rest of the page. Full width instead. */}
+          <HudRule label="// Match log" />
+          <RecentMatchList matches={profile?.recentMatches} isLoading={profileLoading} />
 
           <EngagementStrip />
         </>
