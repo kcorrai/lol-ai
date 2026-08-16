@@ -1,5 +1,9 @@
 import { logger } from "@/lib/utils/logger";
-import { getLeagues, prominentLeagues } from "@/domains/esports/services/leagueService";
+import {
+  getLeagues,
+  prominentLeagues,
+  getTournamentIndex,
+} from "@/domains/esports/services/leagueService";
 import { getTeams, indexableTeams } from "@/domains/esports/services/teamService";
 import { getPlayerIndex } from "@/domains/esports/services/playerService";
 import { getUpcoming, getCompleted } from "@/domains/esports/services/scheduleService";
@@ -86,16 +90,20 @@ function publishablePlayers(index: PlayerEntry[], leagueNames: Set<string>): Pla
  * cached indexes rather than enumerated (ADR-017 §4).
  */
 export async function esportsSitemapEntries(): Promise<EsportsSitemapEntry[]> {
-  const [leagues, teams, players, upcoming, completed, proChampions] = await Promise.all([
-    getLeagues(),
-    getTeams(),
-    getPlayerIndex(),
-    getUpcoming({ limit: MATCH_WINDOW }),
-    getCompleted({ limit: MATCH_WINDOW }),
-    // Champions nobody has picked have an honest empty page, and the page marks
-    // itself `noindex` — so only the ones with games belong in the file.
-    getProChampionIds(),
-  ]);
+  const [leagues, teams, players, upcoming, completed, proChampions, tournaments] =
+    await Promise.all([
+      getLeagues(),
+      getTeams(),
+      getPlayerIndex(),
+      getUpcoming({ limit: MATCH_WINDOW }),
+      getCompleted({ limit: MATCH_WINDOW }),
+      // Champions nobody has picked have an honest empty page, and the page
+      // marks itself `noindex` — so only the ones with games belong in the file.
+      getProChampionIds(),
+      // Already bounded to the prominent leagues; a split with nothing
+      // published noindexes itself on the page.
+      getTournamentIndex(),
+    ]);
 
   const published = publishableLeagues(leagues);
   const teamList = publishableTeams(teams, leagueNameSet(published));
@@ -120,6 +128,11 @@ export async function esportsSitemapEntries(): Promise<EsportsSitemapEntry[]> {
       path: `/esports/players/${entry.slug}`,
       changeFrequency: "weekly" as const,
       priority: 0.5,
+    })),
+    ...tournaments.map((entry) => ({
+      path: `/esports/tournaments/${entry.tournament.slug}`,
+      changeFrequency: "daily" as const,
+      priority: 0.7,
     })),
     ...proChampions.map((championId) => ({
       path: `/esports/champions/${championId}`,
@@ -155,13 +168,15 @@ export async function esportsSitemapEntries(): Promise<EsportsSitemapEntry[]> {
     teams: teamList.length,
     players: playerList.length,
     champions: proChampions.length,
+    tournaments: tournaments.length,
     matches:
       deduped.length -
       SECTION_ROOTS.length -
       published.length -
       teamList.length -
       playerList.length -
-      proChampions.length,
+      proChampions.length -
+      tournaments.length,
   });
 
   return deduped;

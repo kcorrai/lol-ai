@@ -8,7 +8,10 @@ export {
   getCurrentTournament,
   pickCurrentTournament,
   prominentLeagues,
+  getTournament,
+  getTournamentIndex,
 } from "@/domains/esports/services/leagueService";
+export type { TournamentEntry } from "@/domains/esports/services/leagueService";
 export { getStandings, primaryTable } from "@/domains/esports/services/standingsService";
 export { getMatch, defaultGame } from "@/domains/esports/services/matchService";
 export { getGameStats } from "@/domains/esports/services/gameStatsService";
@@ -25,6 +28,8 @@ export type { BuildItemCatalogue, BuildItemFacts } from "@/domains/esports/proBu
 export { sortChampions, parseProMetaSort, PRO_META_SORTS } from "@/domains/esports/proMetaSort";
 export type { ProMetaSort } from "@/domains/esports/proMetaSort";
 export { gameWinner } from "@/domains/esports/gameOutcome";
+export { bracketLayout, bracketWinner } from "@/domains/esports/bracket";
+export type { BracketLayout, BracketRound } from "@/domains/esports/bracket";
 export { vodLink, vodLinks, streamLink, streamLinks } from "@/domains/esports/watch";
 export type { WatchLink } from "@/domains/esports/watch";
 export {
