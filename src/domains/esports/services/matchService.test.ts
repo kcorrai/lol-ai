@@ -73,7 +73,7 @@ function detail(games: MatchDetail["games"]): MatchDetail {
 }
 
 function gameRef(number: number, state: string): MatchDetail["games"][number] {
-  return { number, id: `g${number}`, state, blueTeamId: null, redTeamId: null, hasVod: false };
+  return { number, id: `g${number}`, state, blueTeamId: null, redTeamId: null, hasVod: false, vods: [] };
 }
 
 describe("getMatch", () => {

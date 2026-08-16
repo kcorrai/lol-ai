@@ -95,6 +95,7 @@ function event(matchId: string, startTime = "2026-08-16T09:00:00Z"): EsportsEven
     tournamentId: null,
     teams: [],
     hasVod: false,
+    streams: [],
   };
 }
 

@@ -35,6 +35,17 @@ export const EventSchema = z.object({
     image: z.string().nullish(),
   }),
   tournament: z.object({ id: z.string() }).nullish(),
+  // Only `getLive` sends these; the schedule payload omits them entirely.
+  streams: z
+    .array(
+      z.object({
+        provider: z.string().nullish(),
+        parameter: z.string().nullish(),
+        locale: z.string().nullish(),
+        mediaLocale: z.object({ translatedName: z.string().nullish() }).nullish(),
+      })
+    )
+    .nullish(),
   match: z
     .object({
       id: z.string(),
@@ -114,6 +125,18 @@ export function mapEvent(raw: RawEvent): EsportsEvent | null {
     tournamentId: raw.tournament?.id ?? null,
     teams: raw.match.teams.map(mapTeam),
     hasVod: raw.match.flags?.includes("hasVod") ?? false,
+    streams: (raw.streams ?? []).flatMap((stream) =>
+      stream.provider && stream.parameter
+        ? [
+            {
+              provider: stream.provider,
+              parameter: stream.parameter,
+              locale: stream.locale ?? "",
+              language: stream.mediaLocale?.translatedName ?? stream.locale ?? "Unknown",
+            },
+          ]
+        : []
+    ),
   };
 }
 

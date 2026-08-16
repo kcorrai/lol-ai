@@ -14,7 +14,18 @@ const GameSchema = z.object({
   id: z.string(),
   state: z.string(),
   teams: z.array(z.object({ id: z.string(), side: z.string() })).nullish(),
-  vods: z.array(z.object({ parameter: z.string().nullish() })).nullish(),
+  vods: z
+    .array(
+      z.object({
+        parameter: z.string().nullish(),
+        provider: z.string().nullish(),
+        locale: z.string().nullish(),
+        mediaLocale: z.object({ translatedName: z.string().nullish() }).nullish(),
+        // Where this game starts inside the series video. Absent on some locales.
+        startMillis: z.number().nullish(),
+      })
+    )
+    .nullish(),
 });
 
 const EventDetailsSchema = z.object({
@@ -73,6 +84,21 @@ function mapMatch(parsed: z.infer<typeof EventDetailsSchema>): MatchDetail {
       blueTeamId: game.teams?.find((t) => t.side === "blue")?.id ?? null,
       redTeamId: game.teams?.find((t) => t.side === "red")?.id ?? null,
       hasVod: (game.vods ?? []).length > 0,
+      vods: (game.vods ?? []).flatMap((vod) =>
+        vod.parameter && vod.provider
+          ? [
+              {
+                provider: vod.provider,
+                parameter: vod.parameter,
+                locale: vod.locale ?? "",
+                // The feed's own translated name is the only language label it
+                // gives; falling back to the raw locale beats showing nothing.
+                language: vod.mediaLocale?.translatedName ?? vod.locale ?? "Unknown",
+                startMillis: vod.startMillis ?? null,
+              },
+            ]
+          : []
+      ),
     })),
   };
 }

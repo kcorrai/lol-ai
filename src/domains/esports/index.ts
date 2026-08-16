@@ -25,6 +25,8 @@ export type { BuildItemCatalogue, BuildItemFacts } from "@/domains/esports/proBu
 export { sortChampions, parseProMetaSort, PRO_META_SORTS } from "@/domains/esports/proMetaSort";
 export type { ProMetaSort } from "@/domains/esports/proMetaSort";
 export { gameWinner } from "@/domains/esports/gameOutcome";
+export { vodLink, vodLinks, streamLink, streamLinks } from "@/domains/esports/watch";
+export type { WatchLink } from "@/domains/esports/watch";
 export {
   getPlayer,
   getPlayerIndex,
@@ -47,6 +49,8 @@ export { ROLE_LABEL, roleLabel } from "@/domains/esports/roles";
 export { httpsAsset } from "@/domains/esports/services/esportsApi";
 export type {
   BracketMatch,
+  GameVod,
+  EventStream,
   ProChampionStat,
   ProChampionBuild,
   ProGameAppearance,
