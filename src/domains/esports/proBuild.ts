@@ -3,6 +3,7 @@ import type {
   GameParticipant,
   GameTeamStats,
   ItemFrequency,
+  ProChampionAverages,
   ProChampionBuild,
   ProGameAppearance,
   ProPlayerOnChampion,
@@ -230,6 +231,40 @@ function toAppearance(entry: Appearance): ProGameAppearance {
   };
 }
 
+/** Mean of the values that are actually present, or null when none are. */
+function meanOf(values: (number | null)[]): number | null {
+  const present = values.filter((value): value is number => value !== null);
+  if (present.length === 0) return null;
+  return present.reduce((sum, value) => sum + value, 0) / present.length;
+}
+
+function averages(entries: Appearance[]): ProChampionAverages {
+  const players = entries.map((entry) => entry.participant);
+  const mean = (pick: (p: GameParticipant) => number): number =>
+    players.length === 0 ? 0 : players.reduce((sum, p) => sum + pick(p), 0) / players.length;
+
+  const kills = mean((p) => p.kills);
+  const deaths = mean((p) => p.deaths);
+  const assists = mean((p) => p.assists);
+  const decided = entries.filter((entry) => entry.won !== null);
+
+  return {
+    kills,
+    deaths,
+    assists,
+    kda: (kills + assists) / Math.max(deaths, 1),
+    creepScore: mean((p) => p.creepScore),
+    gold: mean((p) => p.gold),
+    wardsPlaced: meanOf(players.map((p) => p.wardsPlaced)),
+    killParticipation: meanOf(players.map((p) => p.killParticipation)),
+    damageShare: meanOf(players.map((p) => p.damageShare)),
+    winRate:
+      decided.length === 0
+        ? 0
+        : (decided.filter((entry) => entry.won === true).length / decided.length) * 100,
+  };
+}
+
 function topPlayers(entries: Appearance[]): ProPlayerOnChampion[] {
   const players = new Map<string, ProPlayerOnChampion>();
 
@@ -277,6 +312,7 @@ export function aggregateProBuilds(
       championId,
       games: entries.length,
       wins: entries.filter((entry) => entry.won === true).length,
+      averages: averages(entries),
       items: buildItems(
         entries.map((entry) => entry.participant),
         items

@@ -11,6 +11,7 @@ import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrum
 import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
 import { ProBuildPanel } from "@/domains/esports/components/ProBuildPanel";
 import { RecentProGames, TopPlayers } from "@/domains/esports/components/ProChampionGames";
+import { YouVsThePros } from "@/domains/esports/components/YouVsThePros";
 
 export const revalidate = 86400;
 export const dynamicParams = true;
@@ -225,6 +226,13 @@ export default async function ProChampionPage({ params }: PageProps): Promise<Re
           />
 
           <RecentProGames games={result.build.recentGames} />
+
+          <YouVsThePros
+            championId={result.build.championId}
+            championName={name}
+            pro={result.build.averages}
+            proGames={result.build.games}
+          />
         </>
       )}
 

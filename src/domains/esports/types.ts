@@ -326,11 +326,34 @@ export interface ProPlayerOnChampion {
   wins: number;
 }
 
+/**
+ * Per-game averages for a champion in pro play.
+ *
+ * Totals per game, never per minute: neither feed publishes a game's duration
+ * (the window carries the final frame and no length), so a per-minute figure
+ * would be invented. Whoever reads these has to be told they are per game.
+ */
+export interface ProChampionAverages {
+  kills: number;
+  deaths: number;
+  assists: number;
+  /** (kills + assists) / max(deaths, 1). */
+  kda: number;
+  creepScore: number;
+  gold: number;
+  /** Null when the details feed published none of it for this champion's games. */
+  wardsPlaced: number | null;
+  killParticipation: number | null;
+  damageShare: number | null;
+  winRate: number;
+}
+
 /** How pros actually finished a champion, over a sample of games. */
 export interface ProChampionBuild {
   championId: string;
   games: number;
   wins: number;
+  averages: ProChampionAverages;
   /** Most-finished items first. Trinkets and consumables excluded. */
   items: ItemFrequency[];
   /** Most-run rune pages first. */
