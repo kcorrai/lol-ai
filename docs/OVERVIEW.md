@@ -94,10 +94,11 @@ structure fixed by ADR-017.
 |---|---|
 | `/esports` | Hub — live scoreboards that poll while games are on, a day-grouped schedule, latest results, standings, pro-picked champions |
 | `/esports/schedule` | The full calendar |
+| `/esports/vods` | Every recorded series, game by game, filterable by league |
 | `/esports/leagues` + `/[slug]` | Every league and its standings |
 | `/esports/teams` + `/[slug]` | Rosters and recent form |
 | `/esports/players/[slug]` | A pro's champion pool and games |
-| `/esports/matches/[matchId]` | A series: draft, per-game stats, builds |
+| `/esports/matches/[matchId]` | A series: draft, scoreboard with per-minute rates, gold curve and objective ledger, end-game stat lines, head-to-head |
 | `/esports/champions` + `/[champion]` | Pro meta — what teams actually pick and ban, and how it goes for them |
 
 The hub renders from a five-minute cache and the live block polls on top of it, so an
@@ -307,7 +308,7 @@ happen inside a request.
 | **Riot API** | The player's own matches and ranked history | The only source of truth for a specific account |
 | **Data Dragon** | Champions, items, runes, spells, splash art, ability clips | Riot's own static CDN; free and versioned per patch |
 | **OP.GG public feed** | Patch-current aggregate stats — win/pick/ban, builds, matchups | The Riot API gives you one player's games, not the meta. Rebuilding aggregate stats from scratch would need a match-collection pipeline at a scale this product does not need (ADR-008) |
-| **LoL Esports feed** | Pro schedule, standings, rosters, live games and per-frame stats | Riot's own public esports API; per-frame data includes items and runes, so pro builds are derivable (ADR-016) |
+| **LoL Esports feed** | Pro schedule, standings, rosters, live games, VOD archive and per-frame stats | Riot's own public esports API; per-frame data includes items and runes, so pro builds are derivable, and a game's length is derivable from its opening and closing frames even though no endpoint publishes it (ADR-016) |
 | **OpenAI / Anthropic** | Turning metrics into a coaching report, plus Whisper STT and TTS | Behind one abstraction so either can serve |
 | **LemonSqueezy** | Subscriptions and webhooks | Merchant of record — it handles tax |
 
