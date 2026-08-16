@@ -6,21 +6,19 @@ import {
   getMatch,
   defaultGame,
   getGameStats,
+  getGameTimeline,
   getEventStartTime,
   getLiveEvents,
   teamSlugsById,
 } from "@/domains/esports";
 import type { GameTeamStats, MatchDetail, MatchGameRef } from "@/domains/esports";
-import { DraftPanel } from "@/domains/esports/components/DraftPanel";
-import { Scoreboard } from "@/domains/esports/components/Scoreboard";
-import { StatSheet, hasFinalStats } from "@/domains/esports/components/StatSheet";
 import { LiveGameStats } from "@/domains/esports/components/LiveGameStats";
+import { FinishedGame } from "@/domains/esports/components/FinishedGame";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
 import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
 import { WatchLinks } from "@/domains/esports/components/WatchLinks";
 import { vodLinks, streamLinks } from "@/domains/esports/watch";
-import { formatDuration } from "@/domains/esports/duration";
 
 // An hour for the series shell. Completed game stats behind it are immutable and
 // cached for a month; a live game refreshes on its own thirty-second window.
@@ -195,8 +193,13 @@ export default async function MatchPage({
     : null;
   const game = requested ?? defaultGame(match);
 
-  const [stats, startTime, teamSlugs, live] = await Promise.all([
+  const [stats, timeline, startTime, teamSlugs, live] = await Promise.all([
     game ? getGameStats(game.id, { completed: game.state === "completed" }) : null,
+    // The walk is only ever made for the game being read, never for the rest of
+    // the series — it is the section's one deliberately multi-request read.
+    game && game.state !== "unstarted"
+      ? getGameTimeline(game.id, { completed: game.state === "completed" })
+      : null,
     getEventStartTime(match.matchId),
     teamSlugsById(match.teams.map((team) => team.id)),
     // `getEventDetails` publishes no streams; only the live endpoint does, and
@@ -262,58 +265,12 @@ export default async function MatchPage({
       )}
 
       {stats && game && stats.finished && (
-        <>
-          <section>
-            <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-              <h2 className="font-display text-xl font-extrabold uppercase text-text md:text-2xl">
-                Draft
-              </h2>
-              <span className="hud-label">{stats.patch ? `Patch ${stats.patch}` : ""}</span>
-            </div>
-            <DraftPanel
-              blue={stats.blue}
-              red={stats.red}
-              blueName={sideName(match, game, stats.blue)}
-              redName={sideName(match, game, stats.red)}
-            />
-          </section>
-
-          <section className="mt-12">
-            <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-              <h2 className="font-display text-xl font-extrabold uppercase text-text md:text-2xl">
-                Scoreboard
-              </h2>
-              {stats.durationSeconds !== null && (
-                <span className="hud-label">{formatDuration(stats.durationSeconds)} game</span>
-              )}
-            </div>
-            <Scoreboard
-              blue={stats.blue}
-              red={stats.red}
-              blueName={sideName(match, game, stats.blue)}
-              redName={sideName(match, game, stats.red)}
-              durationSeconds={stats.durationSeconds}
-            />
-          </section>
-
-          {/* What they were holding, as opposed to what they did with it. */}
-          {hasFinalStats(stats.blue, stats.red) && (
-            <section className="mt-12">
-              <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-                <h2 className="font-display text-xl font-extrabold uppercase text-text md:text-2xl">
-                  Final stats
-                </h2>
-                <span className="hud-label">Attack speed and life steal are percentages</span>
-              </div>
-              <StatSheet
-                blue={stats.blue}
-                red={stats.red}
-                blueName={sideName(match, game, stats.blue)}
-                redName={sideName(match, game, stats.red)}
-              />
-            </section>
-          )}
-        </>
+        <FinishedGame
+          stats={stats}
+          timeline={timeline}
+          blueName={sideName(match, game, stats.blue)}
+          redName={sideName(match, game, stats.red)}
+        />
       )}
 
       {match.league.slug && (

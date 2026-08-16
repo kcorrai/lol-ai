@@ -145,6 +145,44 @@ export interface GameStats {
   red: GameTeamStats;
 }
 
+/** One side's state at a single point in a game. */
+export interface TimelineTeamState {
+  gold: number;
+  kills: number;
+  towers: number;
+  inhibitors: number;
+  barons: number;
+  /** Count, not types — the curve reads a number, the scoreboard reads the list. */
+  dragons: number;
+}
+
+export interface TimelineSample {
+  /** Seconds since the game's first published frame. */
+  seconds: number;
+  blue: TimelineTeamState;
+  red: TimelineTeamState;
+}
+
+/**
+ * The shape of a game over time.
+ *
+ * Sampled, not walked: the feed answers in hundred-second windows, so a
+ * full-resolution timeline of a 35-minute game costs ~21 requests against an
+ * unofficial feed. The samples are the real frames at those points, never
+ * interpolated — a gap in the walk is a gap in the curve.
+ */
+export interface GameTimeline {
+  gameId: string;
+  /** The game's first published frame, ISO 8601. Every sample offsets from it. */
+  startedAt: string;
+  intervalSeconds: number;
+  /** True when the walk hit its request ceiling before the game finished. */
+  truncated: boolean;
+  /** How far the samples reach, which for a truncated walk is not the game's length. */
+  durationSeconds: number | null;
+  samples: TimelineSample[];
+}
+
 /**
  * A recorded broadcast of one game.
  *
