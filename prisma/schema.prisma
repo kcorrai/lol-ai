@@ -1102,8 +1102,9 @@ enum DraftActionKind {
 model DraftSeries {
   id                String          @id @default(uuid()) @db.Uuid
   code              String          @unique // 8 URL-safe chars, crypto.randomBytes
-  // Capability tokens. Whoever holds one may draft for that side; they are never
-  // returned to a viewer who does not already present one.
+  // Capability tokens, one per team — named for the side that team starts on in
+  // game 1, because sides alternate later in the series and a seat follows its
+  // team. Never returned to a viewer who does not already present one.
   blueToken         String          @unique
   redToken          String          @unique
   team1Name         String

@@ -27,8 +27,8 @@ function origin(): string {
  *
  * The reference tool hands you a single URL and leaves you to work out who joins
  * as what, which is how scrims end up with both coaches on the same side. Naming
- * the links makes the capability explicit: whoever holds a drafter link can
- * draft for that side, and that needs saying out loud rather than implying.
+ * the links makes the capability explicit: whoever holds a drafter link drafts
+ * for that team, and that needs saying out loud rather than implying.
  */
 export function DraftShareLinks({
   code,
@@ -41,14 +41,14 @@ export function DraftShareLinks({
 
   const links: ShareLink[] = [
     {
-      label: `${team1Name} — blue side`,
-      hint: "Send to the first team's drafter",
+      label: `${team1Name} — drafter`,
+      hint: "Blue side in game 1. Send to the first team's drafter",
       href: `${origin()}/draft/${code}?as=${blueToken}`,
       accent: "text-accent-blue",
     },
     {
-      label: `${team2Name} — red side`,
-      hint: "Send to the second team's drafter",
+      label: `${team2Name} — drafter`,
+      hint: "Red side in game 1. Send to the second team's drafter",
       href: `${origin()}/draft/${code}?as=${redToken}`,
       accent: "text-danger",
     },
@@ -93,8 +93,9 @@ export function DraftShareLinks({
         </div>
       ))}
       <p className="text-[11.5px] leading-relaxed text-text-faint">
-        A drafter link is the seat. Anyone who has it can pick and ban for that side, so send each
-        one directly rather than posting it in a shared channel.
+        A drafter link is the seat. Anyone who has it picks and bans for that team all series,
+        whichever side the team is on that game, so send each one directly rather than posting it
+        in a shared channel.
       </p>
     </div>
   );
