@@ -163,6 +163,15 @@ export default async function EsportsHubPage(): Promise<React.ReactElement> {
         </Section>
       )}
 
+      <p className="mt-12 text-sm text-text-muted">
+        Want the picks rather than the scores? The{" "}
+        <Link href="/esports/champions" className="text-accent hover:underline">
+          pro champion meta
+        </Link>{" "}
+        aggregates every recorded game into what teams are actually playing, and how it is going for
+        them.
+      </p>
+
       <DataCredit className="mt-12" />
     </div>
   );

@@ -97,6 +97,46 @@ export function livestatsFetch(path: string, options: FetchOptions = {}): Promis
   });
 }
 
+interface CachedComputationOptions<TValue> {
+  key: string;
+  type: string;
+  ttlDays: number;
+  compute: () => Promise<TValue>;
+}
+
+/**
+ * The same fresh + last-good discipline as `cachedResource`, for a value we
+ * derive rather than fetch.
+ *
+ * Aggregations over a whole split cost hundreds of feed reads to rebuild, so a
+ * transient failure part-way through must not replace a good answer with
+ * nothing — it falls back to the last one that completed, exactly as a failed
+ * fetch does.
+ */
+export async function cachedComputation<TValue>(
+  options: CachedComputationOptions<TValue>
+): Promise<TValue | null> {
+  const freshKey = `esports:${options.key}:fresh`;
+  const lastGoodKey = `esports:${options.key}:last-good`;
+
+  const fresh = (await getCached(freshKey).catch(() => null)) as TValue | null;
+  if (fresh !== null) return fresh;
+
+  try {
+    const value = await options.compute();
+
+    await Promise.all([
+      setCached(freshKey, options.type, value, options.ttlDays).catch(() => undefined),
+      setCached(lastGoodKey, options.type, value, LAST_GOOD_TTL_DAYS).catch(() => undefined),
+    ]);
+
+    return value;
+  } catch (err) {
+    logger.warn(`[esportsApi] ${options.key} computation failed, falling back to last-good`, err);
+    return (await getCached(lastGoodKey).catch(() => null)) as TValue | null;
+  }
+}
+
 interface CachedResourceOptions<TRaw, TValue> {
   /** Cache key suffix; namespaced to `esports:` internally. */
   key: string;
