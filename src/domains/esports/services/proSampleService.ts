@@ -12,6 +12,9 @@ import type { MatchDetail, ProChampionBuild, ProMeta, SampledGame } from "@/doma
 
 const CACHE_TYPE = "esports-pro-meta";
 
+/** Bumped when the champion averages gained game length and the per-minute rates. */
+const SAMPLE_SHAPE_VERSION = 2;
+
 /**
  * How many finished series the sample walks.
  *
@@ -144,6 +147,7 @@ export const getProSample = perRequest(async function getProSample({
   return cachedComputation({
     key: `pro-sample:${leagueId ?? "all"}`,
     type: CACHE_TYPE,
+    version: SAMPLE_SHAPE_VERSION,
     ttlDays: TTL.standings,
     force,
     compute: async (): Promise<ProSample> => {
@@ -178,5 +182,5 @@ export const getProSample = perRequest(async function getProSample({
  * slower page.
  */
 export const getCachedProSample = perRequest(async function getCachedProSample(): Promise<ProSample | null> {
-  return cachedValue<ProSample>("pro-sample:all");
+  return cachedValue<ProSample>("pro-sample:all", SAMPLE_SHAPE_VERSION);
 });

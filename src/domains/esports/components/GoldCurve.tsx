@@ -76,7 +76,7 @@ export function GoldCurve({ timeline }: { timeline: GameTimeline }): React.React
         } minutes. It ends with ${
           last.diff === 0
             ? "the sides level"
-            : `${last.diff > 0 ? "blue" : "red"} ahead by ${Math.abs(last.diff).toLocaleString()} gold`
+            : `${last.diff > 0 ? "blue" : "red"} ahead by ${Math.abs(last.diff).toLocaleString("en-US")} gold`
         }.`}
       >
         <defs>
@@ -121,7 +121,7 @@ export function GoldCurve({ timeline }: { timeline: GameTimeline }): React.React
               {sampleClock(point.seconds)} —{" "}
               {point.diff === 0
                 ? "level"
-                : `${point.diff > 0 ? "blue" : "red"} +${Math.abs(point.diff).toLocaleString()}`}
+                : `${point.diff > 0 ? "blue" : "red"} +${Math.abs(point.diff).toLocaleString("en-US")}`}
             </title>
           </circle>
         ))}

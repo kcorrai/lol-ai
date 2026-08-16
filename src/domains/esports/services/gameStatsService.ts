@@ -10,6 +10,15 @@ import type { GameStats } from "@/domains/esports/types";
 export const CACHE_TYPE = "esports-game";
 
 /**
+ * Bumped when the game shape gained the end-game stat line and `wardsDestroyed`.
+ *
+ * Without it, every game already cached — thirty days of them — keeps serving
+ * the copy Zod stripped before those fields existed, and the stat sheet renders
+ * a table of zeros. See `cacheKey`.
+ */
+export const GAME_SHAPE_VERSION = 2;
+
+/**
  * The livestats feed answers with a ten-frame window starting at `startingTime`,
  * and it rejects a time in the future ("disallowed window with end time…").
  *
@@ -40,6 +49,7 @@ export async function getGameStart(gameId: string): Promise<string | null> {
   return cachedResource({
     key: `game:${gameId}:start`,
     type: CACHE_TYPE,
+    version: GAME_SHAPE_VERSION,
     ttlDays: TTL.completedGame,
     schema: GameStartSchema,
     fetcher: () => livestatsFetch(`window/${gameId}`),
@@ -63,6 +73,7 @@ export async function getGameStats(
   return cachedResource({
     key: completed ? `game:${gameId}` : `game:${gameId}:live`,
     type: CACHE_TYPE,
+    version: GAME_SHAPE_VERSION,
     ttlDays: completed ? TTL.completedGame : TTL.live,
     schema: WindowSchema,
     fetcher: () => livestatsFetch(`window/${gameId}`, { params: { startingTime } }),
@@ -78,6 +89,7 @@ export async function getGameStats(
       cachedResource({
         key: completed ? `game:${gameId}:details` : `game:${gameId}:details:live`,
         type: CACHE_TYPE,
+        version: GAME_SHAPE_VERSION,
         ttlDays: completed ? TTL.completedGame : TTL.live,
         schema: DetailsSchema,
         fetcher: () => livestatsFetch(`details/${gameId}`, { params: { startingTime } }),

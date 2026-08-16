@@ -9,6 +9,7 @@ import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
 import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
+import { ProAverages } from "@/domains/esports/components/ProAverages";
 import { ProBuildPanel } from "@/domains/esports/components/ProBuildPanel";
 import { RecentProGames, TopPlayers } from "@/domains/esports/components/ProChampionGames";
 import { YouVsThePros } from "@/domains/esports/components/YouVsThePros";
@@ -219,6 +220,8 @@ export default async function ProChampionPage({ params }: PageProps): Promise<Re
             itemCatalogue={items}
             runeCatalogue={runes}
           />
+
+          <ProAverages averages={result.build.averages} games={result.build.games} />
 
           <TopPlayers
             players={result.build.topPlayers}
