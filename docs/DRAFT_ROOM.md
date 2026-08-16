@@ -93,13 +93,19 @@ never selectable and never counted as banned.
 Creating a draft mints three secrets:
 
 - `code` — the public part of the URL. Grants **spectator** access.
-- `blueToken`, `redToken` — one per side, handed out via the join panel. Grant
-  the right to act for that side.
+- `blueToken`, `redToken` — one per **team**, handed out via the join panel.
+  Grant the right to act for that team.
+
+A seat belongs to a team, not to a side. The columns keep their original names —
+`blueToken` is the first team's seat, which is on blue in game 1 — but sides
+alternate through a series (§3), so the side a token resolves to is computed per
+game from that game's `blueTeam`. Anything else would hand the opposing coach
+your team from game 2 onward.
 
 The join panel is the only place a token is claimed, and it is claimed by opening
-`/draft/<code>?as=<token>`. A drafter link is a capability: whoever holds it can
-draft for that side. This matches how scrim links are actually passed around
-(Discord DM to the opposing coach) and avoids forcing accounts on people.
+`/draft/<code>?as=<token>`. A drafter link is a capability: whoever holds it
+drafts for that team all series. This matches how scrim links are actually passed
+around (Discord DM to the opposing coach) and avoids forcing accounts on people.
 
 Spectators may watch the board and the timer. They do **not** see either team's
 Intelligence panel until the game is complete.
@@ -124,7 +130,7 @@ Series expire 7 days after creation and are pruned by the existing cleanup cron.
 | Route | Purpose |
 |---|---|
 | `/draft` | Create form — team names, mode, game count, timer, disabled champions |
-| `/draft/[code]` | The room. `?game=N` selects a game, `?as=<token>` claims a side |
+| `/draft/[code]` | The room. `?game=N` selects a game, `?as=<token>` claims a seat |
 | `/api/draft` | `POST` create |
 | `/api/draft/[code]` | `GET` state |
 | `/api/draft/[code]/ready` | `POST` toggle ready for a side |

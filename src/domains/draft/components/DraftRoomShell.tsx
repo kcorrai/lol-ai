@@ -174,7 +174,7 @@ export function DraftRoomShell({ code }: Props): React.ReactElement {
       <HudPanel className="mt-6 max-w-md p-5">
         <HudRule label="YOUR SEAT" />
         <div className="mt-4">
-          <JoinDraftPanel state={state} role={role} />
+          <JoinDraftPanel state={state} role={role} gameNumber={gameNumber} />
         </div>
       </HudPanel>
     </div>

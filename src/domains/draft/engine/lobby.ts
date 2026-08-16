@@ -61,6 +61,10 @@ export function applyGameResult(
  * Move a team onto blue side before the ready check. This is how "first
  * selection" is expressed: blue side always acts first in the sequence, so
  * giving a team first selection means seating it on blue.
+ *
+ * The ready flags travel with the team rather than staying on the side, so a
+ * team that has already readied up is not silently un-readied — or worse, made
+ * to stand in for the ready its opponent never gave — by a swap.
  */
 export function applyBlueTeam(
   series: DraftSeriesState,
@@ -72,5 +76,10 @@ export function applyBlueTeam(
   if (game.phase !== "LOBBY") return { ok: false, reason: "not-in-lobby" };
   if (game.blueTeam === blueTeam) return { ok: true, series, changed: false };
 
-  return { ok: true, series: replaceGame(series, bump(game, { blueTeam })), changed: true };
+  const next = bump(game, {
+    blueTeam,
+    blueReady: game.redReady,
+    redReady: game.blueReady,
+  });
+  return { ok: true, series: replaceGame(series, next), changed: true };
 }

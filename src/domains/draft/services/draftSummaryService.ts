@@ -1,4 +1,4 @@
-import { evaluateDraft } from "@/domains/meta";
+import { ALL_POSITIONS, evaluateDraft } from "@/domains/meta";
 import type { DraftEvaluation, DraftTeam } from "@/domains/meta";
 import type { DraftSeriesState, DraftSide } from "@/domains/draft/engine/draft.types";
 import type { DraftCatalog, DraftChampion } from "@/domains/draft/draftCatalog.types";
@@ -27,13 +27,32 @@ function picksFor(
     .filter((c): c is DraftChampion => Boolean(c));
 }
 
-/** Lane-keyed comp, which is the shape `evaluateDraft` already speaks. */
-function toDraftTeam(champions: DraftChampion[]): DraftTeam {
+/**
+ * Lane-keyed comp, which is the shape `evaluateDraft` already speaks.
+ *
+ * `assignLanes` only places a champion in a lane it actually plays, so a comp
+ * with two champions competing for the same one — a second jungler, an off-meta
+ * bot lane — leaves someone unassigned. Those leftovers still get a lane here,
+ * because the alternative is a verdict that quietly scores three picks and
+ * presents the number as the whole team's.
+ */
+export function toDraftTeam(champions: DraftChampion[]): DraftTeam {
   const team: DraftTeam = {};
-  for (const [key, lane] of assignLanes(champions)) {
+  const lanes = assignLanes(champions);
+
+  for (const [key, lane] of lanes) {
     const champion = champions.find((c) => c.key.toLowerCase() === key);
     if (champion) team[lane] = champion.key;
   }
+
+  const free = ALL_POSITIONS.filter((lane) => !team[lane]);
+  for (const champion of champions) {
+    if (lanes.has(champion.key.toLowerCase())) continue;
+    const lane = free.shift();
+    if (!lane) break;
+    team[lane] = champion.key;
+  }
+
   return team;
 }
 
