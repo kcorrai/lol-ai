@@ -30,7 +30,7 @@ export const achievementChecker = inngest.createFunction(
           where: { id: riotAccountId },
           select: { gameName: true },
         });
-        const gameName = account?.gameName ?? "Oyuncu";
+        const gameName = account?.gameName ?? "Player";
 
         for (const id of awarded) {
           const meta = ACHIEVEMENT_CATALOG.find((a) => a.id === id);

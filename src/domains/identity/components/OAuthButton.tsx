@@ -6,7 +6,7 @@ type OAuthProvider = "google";
 
 const providerConfig: Record<OAuthProvider, { label: string; icon: string; caption: string }> = {
   google: {
-    label: "Google ile Devam Et",
+    label: "Continue with Google",
     icon: "G",
     caption: "We only read your name and email",
   },

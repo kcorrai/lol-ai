@@ -115,7 +115,7 @@ export const gdprExport = inngest.createFunction(
       return { skipped: "no_email_client" };
     }
 
-    const gameName = riotAccounts[0]?.gameName ?? user.name ?? "Oyuncu";
+    const gameName = riotAccounts[0]?.gameName ?? user.name ?? "Player";
     const { subject, html } = buildDataExportEmail({ gameName });
 
     const { error } = await emailClient.emails.send({
