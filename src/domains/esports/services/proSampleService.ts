@@ -1,4 +1,4 @@
-import { cache } from "react";
+import { perRequest } from "@/lib/utils/perRequest";
 import { cachedComputation, cachedValue, TTL } from "@/domains/esports/services/esportsApi";
 import { getCompleted } from "@/domains/esports/services/scheduleService";
 import { getMatch } from "@/domains/esports/services/matchService";
@@ -131,7 +131,7 @@ export interface ProSampleQuery {
  * rendering, and without request-level memoisation a cold cache would walk the
  * whole feed twice for one page view.
  */
-export const getProSample = cache(async function getProSample({
+export const getProSample = perRequest(async function getProSample({
   leagueId,
 }: ProSampleQuery = {}): Promise<ProSample | null> {
   const series = leagueId ? SERIES_PER_LEAGUE : SERIES_ALL_LEAGUES;
@@ -171,6 +171,6 @@ export const getProSample = cache(async function getProSample({
  * do it (TASK-310) — so a cold cache means no pro strip on that page, not a
  * slower page.
  */
-export const getCachedProSample = cache(async function getCachedProSample(): Promise<ProSample | null> {
+export const getCachedProSample = perRequest(async function getCachedProSample(): Promise<ProSample | null> {
   return cachedValue<ProSample>("pro-sample:all");
 });

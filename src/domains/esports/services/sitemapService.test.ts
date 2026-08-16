@@ -17,6 +17,7 @@ const getPlayerIndex = vi.fn<() => Promise<PlayerEntry[]>>();
 const getUpcoming = vi.fn<(query?: unknown) => Promise<EsportsEvent[]>>();
 const getCompleted = vi.fn<(query?: unknown) => Promise<EsportsEvent[]>>();
 const getProChampionIds = vi.fn<() => Promise<string[]>>();
+const getTournamentIndex = vi.fn<() => Promise<{ tournament: { slug: string } }[]>>();
 
 // `prominentLeagues` is the rule under test here, so the real one runs.
 vi.mock("@/domains/esports/services/leagueService", async () => {
@@ -24,7 +25,11 @@ vi.mock("@/domains/esports/services/leagueService", async () => {
     await vi.importActual<typeof import("@/domains/esports/services/leagueService")>(
       "@/domains/esports/services/leagueService"
     );
-  return { prominentLeagues: actual.prominentLeagues, getLeagues: () => getLeagues() };
+  return {
+    prominentLeagues: actual.prominentLeagues,
+    getLeagues: () => getLeagues(),
+    getTournamentIndex: () => getTournamentIndex(),
+  };
 });
 vi.mock("@/domains/esports/services/playerService", () => ({
   getPlayerIndex: () => getPlayerIndex(),
@@ -110,6 +115,7 @@ beforeEach(() => {
   getUpcoming.mockResolvedValue([]);
   getCompleted.mockResolvedValue([]);
   getProChampionIds.mockResolvedValue([]);
+  getTournamentIndex.mockResolvedValue([]);
 });
 
 describe("esportsSitemapEntries", () => {
@@ -207,6 +213,17 @@ describe("esportsSitemapEntries", () => {
     // The rest render an honest empty page and mark themselves noindex, so they
     // have no business in the file.
     expect(result).not.toContain("/esports/champions/Teemo");
+  });
+
+  it("publishes a page per tournament", async () => {
+    getTournamentIndex.mockResolvedValue([
+      { tournament: { slug: "lck_split_3_2026" } },
+      { tournament: { slug: "worlds_2026" } },
+    ]);
+
+    const result = paths(await esportsSitemapEntries());
+    expect(result).toContain("/esports/tournaments/lck_split_3_2026");
+    expect(result).toContain("/esports/tournaments/worlds_2026");
   });
 
   it("dates completed matches by kickoff and lists a live series once", async () => {

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { perRequest } from "@/lib/utils/perRequest";
 import {
   cachedResource,
   esportsFetch,
@@ -188,4 +189,53 @@ export async function getCurrentTournament(
   now: Date = new Date()
 ): Promise<EsportsTournament | null> {
   return pickCurrentTournament(await getTournamentsForLeague(leagueId), now);
+}
+
+/** A tournament with the league it belongs to — what a tournament page needs. */
+export interface TournamentEntry {
+  tournament: EsportsTournament;
+  league: EsportsLeague;
+}
+
+/**
+ * How far down the prominence order tournament pages are published.
+ *
+ * Every league below this still has its own hub with standings and results; what
+ * it does not get is a page per split, because the long tail publishes splits
+ * with no standings and no bracket behind them (ADR-017 §4).
+ */
+const TOURNAMENT_LEAGUE_LIMIT = 12;
+
+/**
+ * Every tournament worth a page, and the league each belongs to.
+ *
+ * Built by walking the prominent leagues rather than by asking for a tournament
+ * by slug, because the feed has no such endpoint — `getTournamentsForLeague` is
+ * the only way in, and it needs a league id. Each league's list is cached for an
+ * hour on its own, so this is a dozen cache reads rather than a dozen requests.
+ *
+ * Memoised per request as well: a tournament page resolves its slug once in
+ * `generateMetadata` and again while rendering, and without this a cold cache
+ * would walk all twelve leagues twice for one page view.
+ */
+export const getTournamentIndex = perRequest(async function getTournamentIndex(): Promise<
+  TournamentEntry[]
+> {
+  const leagues = prominentLeagues(await getLeagues(), TOURNAMENT_LEAGUE_LIMIT);
+
+  const perLeague = await Promise.all(
+    leagues.map(async (league) => {
+      const tournaments = await getTournamentsForLeague(league.id);
+      return tournaments.map((tournament) => ({ tournament, league }));
+    })
+  );
+
+  return perLeague.flat();
+});
+
+/** One tournament by its feed slug, or null when nothing published carries it. */
+export async function getTournament(slug: string): Promise<TournamentEntry | null> {
+  const needle = slug.toLowerCase();
+  const index = await getTournamentIndex();
+  return index.find((entry) => entry.tournament.slug.toLowerCase() === needle) ?? null;
 }

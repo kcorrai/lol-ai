@@ -211,20 +211,21 @@ export default async function LeaguePage({ params }: PageProps): Promise<React.R
           <h2 className="mb-3 font-display text-xl font-extrabold uppercase text-text md:text-2xl">
             Splits
           </h2>
-          {/* Plain text for now: tournament pages land in TASK-306, and a link
-              to a page that does not exist is worse than no link. */}
           <ul className="grid gap-1.5">
             {tournaments.slice(0, 8).map((tournament) => (
               <li
                 key={tournament.id}
                 className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border/60 pb-1.5 text-sm last:border-0"
               >
-                <span className={tournament.id === current?.id ? "text-text" : "text-text-body"}>
+                <Link
+                  href={`/esports/tournaments/${tournament.slug}`}
+                  className={`hover:text-accent ${tournament.id === current?.id ? "text-text" : "text-text-body"}`}
+                >
                   {splitLabel(tournament)}
                   {tournament.id === current?.id && (
                     <span className="hud-label ml-2 text-accent">Current</span>
                   )}
-                </span>
+                </Link>
                 <span className="font-mono text-[11px] text-text-faint">
                   {tournament.startDate ?? "—"}
                   {tournament.endDate ? ` → ${tournament.endDate}` : ""}
