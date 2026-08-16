@@ -7,13 +7,16 @@ import {
   defaultGame,
   getGameStats,
   getGameTimeline,
+  getCompleted,
   getEventStartTime,
   getLiveEvents,
+  headToHead,
   teamSlugsById,
 } from "@/domains/esports";
 import type { GameTeamStats, MatchDetail, MatchGameRef } from "@/domains/esports";
 import { LiveGameStats } from "@/domains/esports/components/LiveGameStats";
 import { FinishedGame } from "@/domains/esports/components/FinishedGame";
+import { HeadToHead } from "@/domains/esports/components/HeadToHead";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
 import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
@@ -193,7 +196,7 @@ export default async function MatchPage({
     : null;
   const game = requested ?? defaultGame(match);
 
-  const [stats, timeline, startTime, teamSlugs, live] = await Promise.all([
+  const [stats, timeline, startTime, teamSlugs, live, leagueResults] = await Promise.all([
     game ? getGameStats(game.id, { completed: game.state === "completed" }) : null,
     // The walk is only ever made for the game being read, never for the rest of
     // the series — it is the section's one deliberately multi-request read.
@@ -205,9 +208,19 @@ export default async function MatchPage({
     // `getEventDetails` publishes no streams; only the live endpoint does, and
     // it is already cached for the whole section.
     getLiveEvents(),
+    // The league's own completed window, which its hub page has already cached.
+    // There is no head-to-head endpoint anywhere in the feed, so the record is
+    // derived from the schedule rather than fetched.
+    match.league.id ? getCompleted({ leagueId: match.league.id, limit: 200 }) : [],
   ]);
 
   const liveStreams = live.find((event) => event.matchId === match.matchId)?.streams ?? [];
+
+  const [home, away] = match.teams;
+  const record =
+    home && away
+      ? headToHead(leagueResults, home, away, { excludeMatchId: match.matchId })
+      : null;
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 md:py-14">
@@ -271,6 +284,20 @@ export default async function MatchPage({
           blueName={sideName(match, game, stats.blue)}
           redName={sideName(match, game, stats.red)}
         />
+      )}
+
+      {record && record.meetings.length > 0 && (
+        <section className="mt-12">
+          <h2 className="mb-3 font-display text-xl font-extrabold uppercase text-text md:text-2xl">
+            Head to head
+          </h2>
+          <HeadToHead
+            record={record}
+            aName={match.teams[0].name}
+            bName={match.teams[1].name}
+            windowLabel={`the ${match.league.name}'s recent schedule`}
+          />
+        </section>
       )}
 
       {match.league.slug && (
