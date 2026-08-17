@@ -20,42 +20,56 @@ import { logger } from "@/lib/utils/logger";
 
 const DDRAGON = "https://ddragon.leagueoflegends.com";
 
-function sourceUrl(mode: string, dateKey: string): string | null {
+/**
+ * Candidates in preference order.
+ *
+ * Splash gets two: a champion's `skins[].num` list does not guarantee Data Dragon
+ * actually serves art at that index — Ambessa lists skin 6 and
+ * /splash/Ambessa_6.jpg is a 403 — so the chosen skin falls back to the base
+ * splash, which always exists. Validating all 9,087 skins at build time would
+ * mean hammering Data Dragon for a problem one extra request solves on the rare
+ * day it happens.
+ */
+function candidates(mode: string, dateKey: string): string[] {
   if (mode === "ability") {
-    const answer = answerFor("ability", dateKey);
-    const ability = abilityFor(answer, dateKey);
+    const ability = abilityFor(answerFor("ability", dateKey), dateKey);
     const folder = ability.slot === "P" ? "passive" : "spell";
-    return `${DDRAGON}/cdn/${DATASET_VERSION}/img/${folder}/${ability.image}`;
+    return [`${DDRAGON}/cdn/${DATASET_VERSION}/img/${folder}/${ability.image}`];
   }
   if (mode === "splash") {
     const answer = answerFor("splash", dateKey);
-    // Splash art is unversioned on Data Dragon, so this URL never goes stale.
-    return `${DDRAGON}/cdn/img/champion/splash/${answer.id}_${skinNumFor(answer, dateKey)}.jpg`;
+    // Splash art is unversioned on Data Dragon, so these URLs never go stale.
+    const url = (num: number) => `${DDRAGON}/cdn/img/champion/splash/${answer.id}_${num}.jpg`;
+    const chosen = skinNumFor(answer, dateKey);
+    return chosen === 0 ? [url(0)] : [url(chosen), url(0)];
   }
-  return null;
+  return [];
 }
 
 export async function GET(_request: NextRequest, { params }: { params: { mode: string } }) {
   const now = new Date();
 
   try {
-    const upstream = sourceUrl(params.mode, utcDateKey(now));
-    if (!upstream) return apiError("NOT_FOUND", "No asset for that mode", 404);
+    const urls = candidates(params.mode, utcDateKey(now));
+    if (urls.length === 0) return apiError("NOT_FOUND", "No asset for that mode", 404);
 
-    const res = await fetch(upstream, { next: { revalidate: 86_400 } });
-    if (!res.ok) {
-      logger.warn(`[quiz/asset] Data Dragon returned ${res.status} for ${params.mode}`);
-      return apiError("ASSET_UNAVAILABLE", "The artwork could not be loaded", 502);
+    for (const url of urls) {
+      const res = await fetch(url, { next: { revalidate: 86_400 } });
+      if (!res.ok) {
+        logger.warn(`[quiz/asset] Data Dragon returned ${res.status} for ${params.mode}`);
+        continue;
+      }
+      return new NextResponse(res.body, {
+        headers: {
+          "Content-Type": res.headers.get("content-type") ?? "image/jpeg",
+          // Expires exactly when the puzzle does, so a shared cache can never
+          // hand yesterday's picture to someone playing today.
+          "Cache-Control": `public, max-age=0, s-maxage=${secondsUntilReset(now)}`,
+        },
+      });
     }
 
-    return new NextResponse(res.body, {
-      headers: {
-        "Content-Type": res.headers.get("content-type") ?? "image/jpeg",
-        // Expires exactly when the puzzle does, so a shared cache can never hand
-        // yesterday's picture to someone playing today.
-        "Cache-Control": `public, max-age=0, s-maxage=${secondsUntilReset(now)}`,
-      },
-    });
+    return apiError("ASSET_UNAVAILABLE", "The artwork could not be loaded", 502);
   } catch (err) {
     logger.error("[quiz/asset] Unhandled error", err);
     return apiError("ASSET_UNAVAILABLE", "The artwork could not be loaded", 502);

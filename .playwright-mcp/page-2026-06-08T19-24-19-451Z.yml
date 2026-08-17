@@ -1,7 +1,0 @@
-- generic [active] [ref=e1]:
-  - generic [ref=e2]:
-    - paragraph [ref=e3]: Report not found
-    - paragraph [ref=e4]: This link may have expired or been revoked.
-    - link "Get Your Own AI Report" [ref=e5] [cursor=pointer]:
-      - /url: /
-  - alert [ref=e6]
