@@ -96,7 +96,21 @@ export type { SubmitOutcome } from "@/domains/marketplace/services/coachApplicat
 export {
   listCoaches,
   getCoachBySlug,
+  getCoachProfilePage,
 } from "@/domains/marketplace/services/coachSearchService";
+
+export {
+  listOwnListings,
+  publicListings,
+  createListing,
+  updateListing,
+  setListingActive,
+  deleteListing,
+} from "@/domains/marketplace/services/serviceListingService";
+export type {
+  ListingInput,
+  ListingOutcome,
+} from "@/domains/marketplace/services/serviceListingService";
 
 export {
   listApplications,

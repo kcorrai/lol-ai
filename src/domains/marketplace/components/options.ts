@@ -35,6 +35,20 @@ export const ROLE_OPTIONS: ChipOption[] = [
   { value: "UTILITY", label: "Support" },
 ];
 
+/** The three things a coach can sell, named the way a student would ask for them. */
+export const KIND_OPTIONS: ChipOption[] = [
+  { value: "VOD_REVIEW", label: "Replay review" },
+  { value: "LIVE_SESSION", label: "Live 1:1 session" },
+  { value: "LIVE_SPECTATE", label: "Live game coaching" },
+];
+
+const KIND_LABELS = new Map(KIND_OPTIONS.map((o) => [o.value, o.label]));
+
+/** A session kind as a reader should see it. */
+export function kindLabel(kind: string): string {
+  return KIND_LABELS.get(kind) ?? kind;
+}
+
 const LANGUAGE_LABELS = new Map(LANGUAGE_OPTIONS.map((o) => [o.value, o.label]));
 const ROLE_LABELS = new Map(ROLE_OPTIONS.map((o) => [o.value, o.label]));
 

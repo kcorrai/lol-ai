@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { getCoachBySlug } from "@/domains/marketplace";
+import { getCoachProfilePage } from "@/domains/marketplace";
+import { ListingCard } from "@/domains/marketplace/components/ListingCard";
 import { regionLabel } from "@/lib/riot/regions";
 import { RankBadgeChip } from "@/domains/marketplace/components/RankBadgeChip";
 import { languageLabel, roleLabel } from "@/domains/marketplace/components/options";
@@ -13,7 +14,7 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const coach = await getCoachBySlug(params.slug);
+  const coach = await getCoachProfilePage(params.slug);
   if (!coach) return { title: "Coach not found" };
 
   return {
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // The public profile. Listings, availability and the booking button arrive with
 // M4–M7; what is here is what a student needs to decide whether to read on.
 export default async function CoachProfilePage({ params }: Props) {
-  const coach = await getCoachBySlug(params.slug);
+  const coach = await getCoachProfilePage(params.slug);
   if (!coach) notFound();
 
   return (
@@ -64,9 +65,26 @@ export default async function CoachProfilePage({ params }: Props) {
         <Fact label="Taking students" value={coach.acceptingStudents ? "Yes" : "Paused"} />
       </dl>
 
-      <p className="rounded-md border border-border bg-surface-2 px-3 py-2 text-xs text-text-muted">
-        Booking opens once this coach has published what they sell and the hours they are available.
-      </p>
+      <section className="space-y-3">
+        <h2 className="font-display text-lg font-semibold text-text">What {coach.displayName} sells</h2>
+
+        {coach.listings.length === 0 ? (
+          <p className="rounded-md border border-border bg-surface-2 px-3 py-2 text-xs text-text-muted">
+            Nothing on sale yet. This coach has been approved but has not published a listing.
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {coach.listings.map((listing) => (
+              <ListingCard key={listing.id} listing={listing} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="space-y-2">
+        <h2 className="font-display text-lg font-semibold text-text">How they coach</h2>
+        <p className="whitespace-pre-wrap text-sm text-text-body">{coach.bio}</p>
+      </section>
     </div>
   );
 }

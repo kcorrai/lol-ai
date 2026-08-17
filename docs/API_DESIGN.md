@@ -1706,3 +1706,50 @@ this rank ourselves on that date. It does **not** mean the account was proven to
 belong to that person — that is `RIOT_VERIFIED`, which needs Riot Sign-On and an
 invitation we do not have (ADR-023). The UI labels the two differently and never
 shows the stronger wording for the weaker proof.
+
+### `GET /api/coaches/me/listings`
+
+Everything the caller sells, **active or not** — this is the management view.
+
+```json
+{ "data": { "listings": [ { "id": "…", "kind": "VOD_REVIEW", "title": "…", "durationMinutes": 60,
+  "priceCents": 3000, "currency": "USD", "deliveryHours": 48, "isActive": true } ] } }
+```
+
+Returns an empty list, not a `404`, for a user with no coach profile.
+
+### `POST /api/coaches/me/listings`
+
+Add one. Body: `kind` (`VOD_REVIEW|LIVE_SESSION|LIVE_SPECTATE`), `title`,
+`description`, `durationMinutes`, `priceCents`, `currency` (ISO 4217,
+uppercased), `deliveryHours`.
+
+- **Listings may be prepared before approval.** The storefront filters on the
+  profile's status, so nothing leaks by letting a coach get ready while they
+  wait.
+- `deliveryHours` is **nulled** for the scheduled kinds rather than stored. A
+  live session has a calendar slot, not a promised turnaround, and keeping a
+  number there would be a promise nothing could be measured against.
+- An async review **must** carry a turnaround — that is the only thing a late
+  delivery can be judged against.
+- `422` on a price or length outside the bounds in `policy.ts`, with the message
+  naming which.
+- New listings are appended to the coach's own ordering, where they cannot
+  displace anything.
+
+### `PATCH /api/coaches/me/listings/[listingId]`
+
+Takes **either** a full listing body **or** just `{ "isActive": boolean }` —
+the on-sale switch is one click in the UI and should not have to round-trip a
+whole listing to work.
+
+Both forms are scoped to the caller's own profile in the same statement, so a
+guessed id belonging to another coach updates nothing rather than updating
+theirs. `404` when nothing matched.
+
+### `DELETE /api/coaches/me/listings/[listingId]`
+
+- `409` once anything has been booked against it, with a message pointing at
+  "take off sale" instead. The booking snapshots its own price and terms, but
+  the listing row is what tells a dispute what was actually being sold.
+- `404` when the listing is not the caller's.

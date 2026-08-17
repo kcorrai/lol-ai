@@ -48,16 +48,16 @@ export function CoachConsoleHome({ profile }: Props): React.ReactElement {
 
       <div className="grid gap-3 sm:grid-cols-2">
         <Tile
-          href="/coach/apply"
+          href="/coach/profile"
           icon={UserRound}
           title="Profile and rank"
           description="What students read, and the account your rank is checked against."
         />
         <Tile
+          href="/coach/listings"
           icon={Tags}
           title="Listings"
           description="What you sell, how long it takes, and what it costs."
-          soon
         />
         <Tile
           icon={CalendarClock}
