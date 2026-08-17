@@ -14,6 +14,8 @@ import { BookingTimeline } from "@/domains/marketplace/components/BookingTimelin
 import { StatusBadge, whenLabel } from "@/domains/marketplace/components/BookingRow";
 import { VodReviewPanel } from "@/domains/marketplace/components/VodReviewPanel";
 import { LiveSessionPanel } from "@/domains/marketplace/components/LiveSessionPanel";
+import { SessionPrepPanel } from "@/domains/marketplace/components/SessionPrepPanel";
+import { SpectatePanel } from "@/domains/marketplace/components/SpectatePanel";
 import type { BookingPaymentView } from "@/domains/marketplace/types";
 
 interface Data {
@@ -101,6 +103,12 @@ export default function SessionPage({ bookingId }: { bookingId: string }): React
           )}
         </CardContent>
       </Card>
+
+      {booking.role === "coach" && <SessionPrepPanel bookingId={bookingId} />}
+
+      {booking.kind === "LIVE_SPECTATE" && booking.role === "coach" && (
+        <SpectatePanel bookingId={bookingId} />
+      )}
 
       {booking.kind !== "VOD_REVIEW" && (
         <LiveSessionPanel booking={booking} pending={act.isPending} onAct={handleAct} />

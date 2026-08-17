@@ -179,6 +179,11 @@ export type { AnnotationInput, VodOutcome } from "@/domains/marketplace/services
 
 export { ANNOTATION_CATEGORIES, secondsToClock, clockToSeconds } from "@/domains/marketplace/vodClock";
 
+export { sessionPrep } from "@/domains/marketplace/services/sessionPrepService";
+export { spectateStatus } from "@/domains/marketplace/services/spectateService";
+export type { SpectateStatus } from "@/domains/marketplace/services/spectateService";
+export type { SessionPrep } from "@/domains/marketplace/services/sessionPrepService";
+
 export { listBookings, getBookingFor, coachWorkload } from "@/domains/marketplace/services/bookingQueryService";
 export type { CoachWorkload } from "@/domains/marketplace/services/bookingQueryService";
 

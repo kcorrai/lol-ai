@@ -2088,3 +2088,33 @@ afterwards is one that goes stale between accepting and the day.
   about where a session happens moves it through its life.
 - `403` for the student. `409` once the session is over: rewriting the room a
   finished session happened in would quietly change the record of it.
+
+### `GET /api/bookings/[bookingId]/prep`
+
+The student's own match data, for the coach they asked to look at it. **No AI
+touches this** — it is what we already hold, shown to one person.
+
+```json
+{ "prep": { "shared": true, "riotId": "Player#EUW", "rank": {…},
+  "flaggedMatchIds": ["EUW1_555"], "profile": {…}, "studentGoal": "…" } }
+```
+
+**Consent is structural, not a setting.** The coach sees this because the
+student attached a Riot account to the booking, and only that account. No
+attachment means `shared: false` and nothing else — which is a shape rather than
+an error, because "they did not share one" is a normal answer.
+
+`404` for anybody but the coach on the booking, including the student: they have
+all of this on their own dashboard, and a second copy here would make it read as
+surveillance rather than preparation.
+
+### `GET /api/bookings/[bookingId]/spectate`
+
+Whether the student is in a game right now. Live-spectate bookings only, coach
+only, same consent rule.
+
+The coach spectates in their own client — nothing streams through us. What this
+answers is the part that is otherwise a scramble in a DM: is the game on, and
+how far in. Polled by the client rather than pushed, on the same reasoning as
+the draft room's live sync (ADR-016). A Riot outage degrades it to
+`inGame: false` rather than breaking the session page.
