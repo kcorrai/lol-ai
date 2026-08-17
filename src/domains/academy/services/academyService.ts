@@ -3,6 +3,7 @@ import { listAccounts } from "@/domains/riot";
 import { DEFAULT_PLACEMENT, placeFromProfile, type Placement } from "@/domains/academy/placement";
 import { chooseNextLesson, type Recommendation } from "@/domains/academy/recommendation";
 import { getLessonStatuses } from "@/domains/academy/services/progressService";
+import { getActiveAssignments, type AssignmentView } from "@/domains/academy/services/assignmentService";
 import type { LeakTag, LessonStatus } from "@/domains/academy/types";
 
 /** Habit types the habit detector raises that the curriculum knows how to teach to. */
@@ -19,6 +20,8 @@ export interface AcademyOverview {
   statuses: Map<string, LessonStatus>;
   placement: Placement;
   recommendation: Recommendation | null;
+  /** Field assignments still being judged against the player's matches. */
+  assignments: AssignmentView[];
   /** False when there is nothing to personalise from — no account, or no synced matches. */
   personalised: boolean;
 }
@@ -38,12 +41,14 @@ export async function getAcademyOverview(userId: string | null): Promise<Academy
         placement: DEFAULT_PLACEMENT,
         detectedLeaks: [],
       }),
+      assignments: [],
       personalised: false,
     };
   }
 
-  const [statuses, riotAccountId] = await Promise.all([
+  const [statuses, assignments, riotAccountId] = await Promise.all([
     getLessonStatuses(userId),
+    getActiveAssignments(userId),
     primaryRiotAccountId(userId),
   ]);
 
@@ -53,6 +58,7 @@ export async function getAcademyOverview(userId: string | null): Promise<Academy
     statuses,
     placement,
     recommendation: chooseNextLesson({ statuses, placement, detectedLeaks }),
+    assignments,
     personalised,
   };
 }

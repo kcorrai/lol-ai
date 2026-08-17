@@ -3,21 +3,21 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   allLessons,
-  buildAssignmentTarget,
+  getAssignmentForLesson,
   getLesson,
   isGated,
+  lessonId as toLessonId,
   lessonNeighbours,
+  previewAssignmentTarget,
   visibleBlocks,
   visibleDrills,
-  type AssignmentTarget,
 } from "@/domains/academy";
+import { AssignmentStatus } from "@/domains/academy/components/AssignmentStatus";
 import { LessonBody } from "@/domains/academy/components/LessonBody";
 import { ProGate } from "@/domains/academy/components/ProGate";
 import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { getSession } from "@/lib/auth/session";
 import { getCurrentSubscription } from "@/lib/subscription/subscriptionService";
-import { getPlayerPerformanceProfile } from "@/domains/analysis";
-import { listAccounts } from "@/domains/riot";
 
 interface PageProps {
   params: { track: string; lesson: string };
@@ -38,22 +38,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-/** The player's own baseline for this lesson's assignment, when we have games to read. */
-async function assignmentFor(
-  userId: string | undefined,
-  lesson: NonNullable<ReturnType<typeof getLesson>>
-): Promise<AssignmentTarget | null> {
-  if (!userId) return null;
-
-  const accounts = await listAccounts(userId).catch(() => []);
-  const account = accounts.find((a) => a.isPrimary) ?? accounts[0];
-  if (!account) return null;
-
-  // A linked account with nothing synced yet throws; that is a normal day-one state.
-  const profile = await getPlayerPerformanceProfile(account.id, 20).catch(() => null);
-  return profile ? buildAssignmentTarget(lesson, profile) : null;
-}
-
 export default async function LessonPage({ params }: PageProps): Promise<React.ReactElement> {
   const lesson = getLesson(params.track, params.lesson);
   if (!lesson) notFound();
@@ -64,9 +48,14 @@ export default async function LessonPage({ params }: PageProps): Promise<React.R
   const hasPro = subscription !== null && subscription.plan !== "free";
 
   const gated = isGated(lesson, hasPro);
-  const [assignment, { previous, next, index, total }] = await Promise.all([
-    gated ? Promise.resolve(null) : assignmentFor(userId, lesson),
-    Promise.resolve(lessonNeighbours(lesson)),
+  const id = toLessonId(lesson);
+  const { previous, next, index, total } = lessonNeighbours(lesson);
+
+  // The stored assignment is the live one, judged against real matches. The computed target is
+  // only the preview a player without one sees — anonymous, unsynced, or behind the pro gate.
+  const [stored, assignment] = await Promise.all([
+    userId && !gated ? getAssignmentForLesson(userId, id) : Promise.resolve(null),
+    userId && !gated ? previewAssignmentTarget(userId, id) : Promise.resolve(null),
   ]);
 
   return (
@@ -102,14 +91,17 @@ export default async function LessonPage({ params }: PageProps): Promise<React.R
 
       <div className="mt-8">
         <LessonBody
-          lessonId={`${lesson.trackId}/${lesson.slug}`}
+          lessonId={id}
           blocks={visibleBlocks(lesson, hasPro)}
           drills={visibleDrills(lesson, hasPro)}
           assignment={assignment}
           next={next ? { href: `/academy/${next.trackId}/${next.slug}`, title: next.title } : null}
           isAuthenticated={Boolean(userId)}
+          liveAssignment={stored !== null}
         />
       </div>
+
+      {stored && <AssignmentStatus assignment={stored} instruction={lesson.assignment.instruction} />}
 
       {gated && <ProGate lessonTitle={lesson.title} />}
 

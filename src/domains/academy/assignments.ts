@@ -1,4 +1,3 @@
-import type { PlayerPerformanceProfile } from "@/domains/analysis";
 import type { AssignmentMetric, FieldAssignment, Lesson } from "@/domains/academy/types";
 
 // Proof of Practice. A lesson's assignment is written as a movement — "0.5 more CS per
@@ -22,30 +21,6 @@ const DECIMALS: Record<AssignmentMetric, number> = {
   kda: 1,
 };
 
-function mean(values: number[]): number {
-  if (values.length === 0) return 0;
-  return values.reduce((sum, v) => sum + v, 0) / values.length;
-}
-
-/** The player's current value for a metric, read off their last games. */
-export function baselineFor(metric: AssignmentMetric, profile: PlayerPerformanceProfile): number {
-  const m = profile.avgMetrics;
-  switch (metric) {
-    case "csPerMinute":
-      return m.csPerMinute;
-    case "deathsPerGame":
-      return m.avgDeathsPerGame;
-    case "killParticipation":
-      return m.killParticipation;
-    case "kda":
-      return m.kda;
-    case "visionScore":
-      // avgMetrics carries vision per minute; the assignment is written in raw score,
-      // which is the number a player actually sees on the end screen.
-      return mean(profile.recentMatches.map((match) => match.visionScore));
-  }
-}
-
 export interface AssignmentTarget {
   metric: AssignmentMetric;
   label: string;
@@ -64,13 +39,13 @@ function round(value: number, metric: AssignmentMetric): number {
 /**
  * Turns a lesson's assignment into a concrete target for one player. A decrease target
  * is floored at zero — "0.4 fewer deaths" cannot ask for negative deaths.
+ *
+ * `baseline` must be measured over the same population the assignment will be judged on —
+ * ranked games only. Mixing a mixed-queue average with a ranked-only verdict produces
+ * targets that are unreachable in one direction and free in the other.
  */
-export function buildAssignmentTarget(
-  lesson: Lesson,
-  profile: PlayerPerformanceProfile
-): AssignmentTarget {
+export function buildAssignmentTarget(lesson: Lesson, baseline: number): AssignmentTarget {
   const { metric, direction, delta, games, instruction } = lesson.assignment;
-  const baseline = baselineFor(metric, profile);
   const raw = direction === "increase" ? baseline + delta : baseline - delta;
 
   return {

@@ -12,6 +12,8 @@ interface LessonCompleteProps {
   isAuthenticated: boolean;
   saving: boolean;
   saveFailed: boolean;
+  /** True when a stored assignment is already being tracked below this panel. */
+  liveAssignment: boolean;
 }
 
 /**
@@ -25,6 +27,7 @@ export function LessonComplete({
   isAuthenticated,
   saving,
   saveFailed,
+  liveAssignment,
 }: LessonCompleteProps): React.ReactElement {
   return (
     <section className="notch mt-10 border border-acid-500 bg-surface glow-accent-soft">
@@ -47,7 +50,12 @@ export function LessonComplete({
           Field assignment
         </p>
 
-        {assignment ? (
+        {liveAssignment ? (
+          <p className="mt-2.5 text-[14.5px] leading-relaxed text-text">
+            Your assignment is live below — the Academy is now watching your next ranked games
+            and will mark this lesson mastered when you hit the target.
+          </p>
+        ) : assignment ? (
           <>
             <p className="mt-2.5 text-[14.5px] leading-relaxed text-text">
               {assignment.instruction}
@@ -64,8 +72,8 @@ export function LessonComplete({
         ) : (
           <p className="mt-2.5 text-[14px] leading-relaxed text-text-body">
             {isAuthenticated
-              ? "Connect and sync a Riot account and the Academy will measure this assignment against your own games."
-              : "Sign in and connect your Riot account to get this assignment measured against your own games."}
+              ? "Play a few ranked games and sync, and the Academy will set this assignment against your own numbers and judge it from your matches."
+              : "Sign in and connect your Riot account to get this assignment measured against your own ranked games."}
           </p>
         )}
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { TRACKS, getAcademyOverview, trackCompletion } from "@/domains/academy";
+import { ActiveAssignments } from "@/domains/academy/components/ActiveAssignments";
 import { NextUpPanel } from "@/domains/academy/components/NextUpPanel";
 import { TrackCard } from "@/domains/academy/components/TrackCard";
 import { getSession } from "@/lib/auth/session";
@@ -56,6 +57,8 @@ export default async function AcademyHubPage(): Promise<React.ReactElement> {
           personalised={overview.personalised}
         />
       </div>
+
+      <ActiveAssignments assignments={overview.assignments} />
 
       <section className="mt-12">
         <div className="flex items-center gap-3.5">

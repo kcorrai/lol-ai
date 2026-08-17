@@ -35,7 +35,7 @@ Track  →  Lesson  →  Blocks + Drills + Field assignment
 - **Field assignment** — Proof of Practice. Written as a *movement* ("0.5 more CS per minute
   over 3 games"), never an absolute, and resolved against the player's own baseline so a
   Bronze and a Diamond player reading the same lesson get the same instruction and different
-  numbers.
+  numbers. See below — this is the half that makes the Academy more than a course.
 
 ## Curriculum (v1)
 
@@ -58,6 +58,38 @@ Track  →  Lesson  →  Blocks + Drills + Field assignment
 6. The First Back
 
 Planned: Vision & Map, Macro, Teamfighting, Mental & Consistency, Role Paths, Champion Mastery.
+
+## Proof of Practice
+
+Finishing the drills completes a lesson. **Mastering** it takes a real game.
+
+When a lesson is completed, the Academy opens an assignment pinned to the player's own numbers,
+then judges it from their matches — nothing is self-reported.
+
+| | Rule | Why |
+|---|---|---|
+| **Baseline** | Mean over the last 20 ranked games **in the player's main role** | Must match the population the verdict is read from |
+| **Target** | Baseline ± the lesson's delta, floored at zero | A movement, not an absolute — same lesson, different numbers per player |
+| **Counted games** | The **first** N ranked games in that role after the lesson was finished | First N, not best N — that is what makes it a commitment |
+| **Verdict** | Mean of those games vs the target; landing exactly on it passes | Averaging matches how the baseline was built |
+| **Expiry** | 14 days without collecting N games | An assignment that never resolves is worse than none |
+| **Pass** | `academy_progress.status → mastered` | The only thing in the product that can set `mastered` |
+| **Fail** | Lesson stays `completed`; the player can restart with a fresh baseline | A miss is not a punishment |
+
+Both filters were learned against real data and both matter:
+
+- **Ranked only.** An ARAM-inclusive baseline against a ranked-only verdict is unreachable for
+  some players and free for others.
+- **One role.** An account averaged 4.1 CS/min across its last twenty ranked games (a mix of mid
+  and support) while the three games that would have judged the assignment were all support, at
+  0.85. CS per minute is not comparable across roles, so the role is measured at open time and
+  stored on the row — a player's main role can shift before the verdict lands.
+
+Fewer than 3 ranked games in the main role means no assignment is opened at all. The lesson still
+completes; a target guessed from one game is worse than no target.
+
+The checker runs off `academy/check-assignments`, fired by `matchSyncService` after any sync that
+brought in new matches — so a verdict lands the moment the games do.
 
 ## Access
 
@@ -90,6 +122,9 @@ drills behind the gate.
 | Lookup & gating | `src/domains/academy/curriculum.ts` |
 | Drill grading | `src/domains/academy/drills/scoring.ts` |
 | Placement / recommendation / assignments | `src/domains/academy/{placement,recommendation,assignments}.ts` |
+| Assignment judging | `src/domains/academy/verification.ts` |
+| Assignment lifecycle (Prisma) | `src/domains/academy/services/assignmentService.ts` |
+| Post-sync checker | `src/inngest/functions/academyAssignmentChecker.ts` |
 | Services (Prisma) | `src/domains/academy/services/` |
 | Components | `src/domains/academy/components/` |
 | Routes | `app/(academy)/academy/` |
@@ -112,9 +147,6 @@ nothing else to register.
 
 ## Not built yet
 
-- **Proof of Practice verification.** Assignments are created with a real baseline and shown
-  to the player, but nothing yet watches the next N matches and lifts a lesson to `mastered`.
-  The `academy_assignments` table and the `mastered` status exist for it.
 - **Spaced repetition.** `review` status exists; nothing demotes a mastered lesson when the
   metric slips back.
 - Certificates/transcript, Academy XP and streak, `map` and `wave-sim` drill types.

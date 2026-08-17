@@ -1842,3 +1842,16 @@ Response for `submit`:
   that does not resolve is a client sending something we never published.
 - **`completed` is the ceiling this endpoint can set.** `mastered` is earned from real match
   data, so a lesson already mastered stays mastered no matter what a later attempt scores.
+- **A passing submit also opens the field assignment** and returns it as `assignment`. It is
+  `null` when there is nothing to measure against — no linked account, or fewer than 3 ranked
+  games in the player's main role. The lesson still completes; see `docs/ACADEMY.md`.
+
+The third action restarts a resolved assignment:
+
+```jsonc
+{ "action": "restart-assignment", "lessonId": "foundations/minions-and-gold" }
+```
+
+Deletes the `failed`/`expired` row and opens a fresh one from today's baseline, so a miss is a
+retry rather than a permanent mark. An `active` assignment is left alone — restarting one mid-flight
+would let a player reroll a verdict they could already see coming.

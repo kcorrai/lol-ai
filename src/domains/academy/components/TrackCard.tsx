@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Lock } from "lucide-react";
+import { Lock, Star } from "lucide-react";
 import { lessonId, trackMinutes } from "@/domains/academy/curriculum";
 import type { LessonStatus, Track } from "@/domains/academy/types";
 
@@ -20,6 +20,7 @@ const DONE: readonly LessonStatus[] = ["completed", "mastered"];
 
 export function TrackCard({ track, statuses, completion }: TrackCardProps): React.ReactElement {
   const done = track.lessons.filter((l) => DONE.includes(statuses.get(lessonId(l)) ?? "available"));
+  const mastered = track.lessons.filter((l) => statuses.get(lessonId(l)) === "mastered").length;
 
   return (
     <Link
@@ -54,6 +55,12 @@ export function TrackCard({ track, statuses, completion }: TrackCardProps): Reac
             {track.lessons.length} lessons
           </span>
           <span className="font-mono text-[11px] text-text-muted">{trackMinutes(track)} min</span>
+          {mastered > 0 && (
+            <span className="flex items-center gap-1 font-mono text-[11px] text-accent">
+              <Star className="h-3 w-3 fill-current" strokeWidth={2} />
+              {mastered} mastered
+            </span>
+          )}
           {track.lessons.some((l) => l.access === "pro") && (
             <span className="ml-auto flex items-center gap-1 font-mono text-[11px] text-text-faint">
               <Lock className="h-3 w-3" strokeWidth={2} />

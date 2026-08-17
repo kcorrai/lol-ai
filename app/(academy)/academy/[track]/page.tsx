@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Check, Lock } from "lucide-react";
+import { Check, Lock, Star } from "lucide-react";
 import {
   TRACKS,
   getLessonStatuses,
@@ -68,6 +68,8 @@ export default async function TrackPage({ params }: PageProps): Promise<React.Re
         {track.lessons.map((lesson, i) => {
           const status = statuses.get(lessonId(lesson)) ?? "available";
           const done = DONE.includes(status);
+          // Mastered is a different claim from completed: you read it versus you did it in game.
+          const mastered = status === "mastered";
 
           return (
             <li key={lesson.slug}>
@@ -77,10 +79,20 @@ export default async function TrackPage({ params }: PageProps): Promise<React.Re
               >
                 <span
                   className={`notch-sm mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center font-mono text-[12px] font-bold ${
-                    done ? "bg-accent text-background" : "border border-line-2 text-text-muted"
+                    mastered
+                      ? "bg-accent text-background glow-accent-soft"
+                      : done
+                        ? "bg-accent text-background"
+                        : "border border-line-2 text-text-muted"
                   }`}
                 >
-                  {done ? <Check className="h-4 w-4" strokeWidth={2.5} /> : i + 1}
+                  {mastered ? (
+                    <Star className="h-4 w-4 fill-current" strokeWidth={2} />
+                  ) : done ? (
+                    <Check className="h-4 w-4" strokeWidth={2.5} />
+                  ) : (
+                    i + 1
+                  )}
                 </span>
 
                 <span className="min-w-0 flex-1">
@@ -92,6 +104,11 @@ export default async function TrackPage({ params }: PageProps): Promise<React.Re
                       <span className="tag-cut flex items-center gap-1 bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-label text-text-faint">
                         <Lock className="h-2.5 w-2.5" strokeWidth={2.5} />
                         Pro
+                      </span>
+                    )}
+                    {mastered && (
+                      <span className="font-mono text-[10px] uppercase tracking-label text-accent">
+                        Mastered
                       </span>
                     )}
                     {status === "in_progress" && (
