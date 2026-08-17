@@ -80,7 +80,7 @@ export function ChampionGrid({
   }
 
   return (
-    <div onKeyDown={onKeyDown} className="flex min-h-0 flex-col gap-3">
+    <div onKeyDown={onKeyDown} className="flex min-h-0 flex-1 flex-col gap-3">
       <div className="flex flex-wrap items-center gap-2">
         <div className="flex gap-1">
           <LaneChip active={lane === null} onClick={() => setLane(null)} label="All" />
