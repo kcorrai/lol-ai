@@ -283,6 +283,9 @@ model RiotAccount {
 
   @@unique([userId, puuid])
   @@index([userId])
+  // Raw-SQL index from 20260607000012_analytics_indexes (admin DAU/MAU proxy), mirrored here so
+  // the next `migrate dev` stops proposing to drop it — see LA-15.
+  @@index([updatedAt(sort: Desc)], map: "idx_riot_accounts_updated_at")
   @@map("riot_accounts")
 }
 
@@ -358,8 +361,18 @@ model PlayerIndex {
   lastSeenAt    DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  @@index([searchKey(ops: raw("text_pattern_ops"))])
-  @@index([region, searchKey(ops: raw("text_pattern_ops"))])
+  // Declared plain here, but created with `text_pattern_ops` by
+  // 20260816000001_add_player_index — and that is deliberate, not a mistake to fix (LA-15).
+  //
+  // Prisma 5.22 cannot introspect a non-default operator class: `db pull` reads both of these
+  // back as plain `@@index([searchKey])`. So while the model said `ops: raw("text_pattern_ops")`
+  // every `migrate dev` proposed dropping and recreating them — identical SQL, forever, because
+  // the two sides can never agree. Declaring them plain makes Prisma see a match and leave them
+  // alone, and the operator class survives where it actually lives: in the migration that
+  // creates the index. Never let Prisma regenerate these; the migration SQL is their source of
+  // truth. See the comment on `searchKey` for why the operator class matters at all.
+  @@index([searchKey])
+  @@index([region, searchKey])
   @@map("player_index")
 }
 
@@ -519,6 +532,10 @@ model RankedHistory {
   riotAccount RiotAccount @relation(fields: [riotAccountId], references: [id], onDelete: Cascade)
 
   @@index([riotAccountId, queueType, recordedAt(sort: Desc)])
+  // Added as raw SQL by 20260607000012_analytics_indexes for the leaderboard query and never
+  // mirrored here, which is how schema.prisma and the migration history drifted apart (LA-15).
+  // The `map` keeps the hand-written name the database already has.
+  @@index([riotAccountId, recordedAt(sort: Desc)], map: "idx_ranked_history_account_recorded")
   @@map("ranked_history")
 }
 
@@ -575,6 +592,9 @@ model CoachingReport {
 
   @@index([riotAccountId, createdAt(sort: Desc)])
   @@index([status])
+  // Raw-SQL index from 20260607000012_analytics_indexes (admin feature-usage counts), mirrored
+  // here so the next `migrate dev` stops proposing to drop it — see LA-15.
+  @@index([createdAt(sort: Desc)], map: "idx_coaching_reports_created_at")
   @@map("coaching_reports")
 }
 
@@ -717,6 +737,11 @@ model MatchDeathEvent {
   positionY     Int
   gameTimeMs    Int
   championName  String
+  // Present in the database since 20260607000004_add_death_events and missing from this model,
+  // which is why `migrate dev` wanted to drop the column outright (LA-15). Kept, not dropped:
+  // the rows are cheap and knowing when a death was ingested is the only way to tell a
+  // re-processed match from a freshly synced one.
+  createdAt     DateTime    @default(now())
 
   match       Match       @relation(fields: [matchId], references: [id], onDelete: Cascade)
   riotAccount RiotAccount @relation(fields: [riotAccountId], references: [id], onDelete: Cascade)
@@ -840,7 +865,9 @@ model ShareableCard {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([token])
+  // No `@@index([token])`: `token` is already `@unique`, and a unique constraint is a btree index.
+  // The duplicate was in the model but never in any migration, so it was one of the differences
+  // that made `migrate dev` untrustworthy (LA-15). Dropped in the model, not added to the database.
   @@index([userId, createdAt(sort: Desc)])
   @@map("shareable_cards")
 }
