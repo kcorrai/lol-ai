@@ -5,10 +5,11 @@ import { sideToAct, unavailableReason } from "@/domains/draft";
 import type { DraftSeriesState, LegalityReason, ViewerRole } from "@/domains/draft";
 import type { DraftCatalog } from "@/domains/draft/draftCatalog.types";
 import { ChampionGrid } from "./ChampionGrid";
-import { SeriesTabs } from "./SeriesTabs";
 import { TeamColumn } from "./TeamColumn";
 import { TurnIndicator } from "./TurnIndicator";
 import { BanRail } from "./BanRail";
+import { CoachStrip } from "./CoachStrip";
+import { DraftActionBar } from "./DraftActionBar";
 
 interface Props {
   state: DraftSeriesState;
@@ -18,11 +19,21 @@ interface Props {
   selected: string | null;
   onSelect: (championKey: string | null) => void;
   onLock: (championKey: string | null) => void;
+  onReady: (ready: boolean) => void;
   pending: boolean;
-  children?: React.ReactNode;
   clock?: React.ReactNode;
+  undo?: React.ReactNode;
 }
 
+/**
+ * The board owns the viewport.
+ *
+ * Turn bar, picks, grid and bans are all one screen: the grid is the only thing
+ * that scrolls, so a drafter never loses sight of what is banned or whose turn
+ * it is. Below the breakpoint the pinning is dropped and the whole thing
+ * becomes a normal scrolling page, because a 300px-tall grid is worse than a
+ * long page.
+ */
 export function DraftBoard({
   state,
   gameNumber,
@@ -31,9 +42,10 @@ export function DraftBoard({
   selected,
   onSelect,
   onLock,
+  onReady,
   pending,
-  children,
   clock,
+  undo,
 }: Props): React.ReactElement | null {
   const game = state.games.find((g) => g.gameNumber === gameNumber);
 
@@ -57,64 +69,60 @@ export function DraftBoard({
     onSelect(null);
   }, [onLock, onSelect, selected]);
 
+  const passBan = useCallback(() => {
+    onLock(null);
+    onSelect(null);
+  }, [onLock, onSelect]);
+
   if (!game) return null;
 
   const isMyTurn = game.phase === "IN_PROGRESS" && sideToAct(game.step) === role;
 
   return (
-    <div className="notch flex flex-col overflow-hidden border border-border bg-background">
-      <SeriesTabs state={state} gameNumber={gameNumber} />
-
-      <TurnIndicator
-        state={state}
-        game={game}
-        role={role}
-        selected={selected}
-        onCommit={commit}
-        onPassBan={() => {
-          onLock(null);
-          onSelect(null);
-        }}
-        pending={pending}
-      >
+    <div className="flex flex-col lg:h-screen lg:overflow-hidden">
+      <TurnIndicator state={state} game={game} role={role} selected={selected}>
         {clock}
       </TurnIndicator>
 
-      {/* Picks either side of the grid, the way the board is read. Below the
-          breakpoint the columns fall above and below rather than squeezing to
-          nothing, so the grid keeps the width it needs. */}
-      <div className="grid gap-0 lg:grid-cols-[minmax(210px,1fr)_minmax(0,2.1fr)_minmax(210px,1fr)]">
-        <div className="border-line-1 p-3 lg:border-r">
+      <div className="grid min-h-0 flex-1 lg:grid-cols-[minmax(210px,1fr)_minmax(0,2.1fr)_minmax(210px,1fr)]">
+        <div className="min-h-0 border-line-1 p-3 lg:border-r">
           <TeamColumn
             game={game}
             side="BLUE"
-            ready={game.blueReady}
-            teamName={game.blueTeam === 1 ? state.team1Name : state.team2Name}
             championsByKey={championsByKey}
           />
         </div>
 
-        {/* Capped, not free-growing: a hundred and seventy champions at full
-            height pushed the ban rail a screen and a half below the board, and
-            what is banned is exactly what you need while picking. */}
-        <div className="order-last flex min-h-[420px] flex-col gap-3 p-3 lg:order-none lg:max-h-[calc(100vh-260px)]">
-          <ChampionGrid
-            champions={catalog.champions}
-            reasonFor={reasonFor}
+        <div className="order-last flex min-h-0 flex-col border-line-1 max-lg:border-y lg:order-none">
+          <CoachStrip game={game} role={role} />
+
+          <div className="flex min-h-[380px] flex-1 flex-col p-3 lg:min-h-0">
+            <ChampionGrid
+              champions={catalog.champions}
+              reasonFor={reasonFor}
+              selected={selected}
+              onSelect={onSelect}
+              onCommit={commit}
+              interactive={isMyTurn}
+            />
+          </div>
+
+          <DraftActionBar
+            game={game}
+            role={role}
             selected={selected}
-            onSelect={onSelect}
             onCommit={commit}
-            interactive={isMyTurn}
+            onPassBan={passBan}
+            onReady={onReady}
+            pending={pending}
+            undo={undo}
           />
-          <div className="shrink-0">{children}</div>
         </div>
 
-        <div className="border-line-1 p-3 lg:border-l">
+        <div className="min-h-0 border-line-1 p-3 lg:border-l">
           <TeamColumn
             game={game}
             side="RED"
-            ready={game.redReady}
-            teamName={game.blueTeam === 1 ? state.team2Name : state.team1Name}
             championsByKey={championsByKey}
           />
         </div>

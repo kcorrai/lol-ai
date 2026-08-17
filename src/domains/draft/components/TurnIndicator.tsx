@@ -8,9 +8,6 @@ interface Props {
   game: DraftGameState;
   role: ViewerRole;
   selected: string | null;
-  onCommit: () => void;
-  onPassBan: () => void;
-  pending: boolean;
   children?: React.ReactNode;
 }
 
@@ -37,15 +34,15 @@ function turnLabel(state: DraftSeriesState, game: DraftGameState): string {
  *
  * The bar reads left-to-right as the board does: blue, whose turn it is, red.
  * Naming both sides here is what lets the pick columns drop their own headers.
+ *
+ * It states the turn and nothing else — committing lives in the action bar
+ * under the grid, where the champion you are about to lock is still in view.
  */
 export function TurnIndicator({
   state,
   game,
   role,
   selected,
-  onCommit,
-  onPassBan,
-  pending,
   children,
 }: Props): React.ReactElement {
   const step = stepAt(game.step);
@@ -65,7 +62,7 @@ export function TurnIndicator({
         : "border-danger bg-danger text-ink-1000";
 
   return (
-    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 border-b border-line-1 bg-surface/70 px-4 py-3 backdrop-blur md:px-6">
+    <div className="grid shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-4 border-b border-line-1 bg-surface/70 px-4 py-3 backdrop-blur md:px-6">
       <div className="flex min-w-0 items-baseline gap-3">
         <span className="truncate font-display text-lg font-black uppercase tracking-wide text-accent-blue">
           {blueName}
@@ -111,30 +108,6 @@ export function TurnIndicator({
         </span>
       </div>
 
-      {/* The commit controls live in the board's action bar; these stay mounted
-          so a drafter can act from the top of a tall board without scrolling. */}
-      {isMyTurn && (
-        <div className="col-span-3 flex justify-center gap-2 pt-1">
-          {step?.kind === "BAN" && (
-            <button
-              type="button"
-              onClick={onPassBan}
-              disabled={pending}
-              className="tag-cut border border-line-2 px-3 py-1.5 font-mono text-[10px] uppercase tracking-label text-fg-3 transition-colors hover:border-acid-500 hover:text-acid-500 disabled:opacity-40"
-            >
-              Pass ban
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={onCommit}
-            disabled={!selected || pending}
-            className="tag-cut btn-glow bg-acid-500 px-5 py-1.5 font-display text-[12px] font-bold uppercase tracking-wide text-ink-1000 transition-colors hover:bg-acid-400 disabled:opacity-40"
-          >
-            {pending ? "Locking…" : selected ? "Lock in" : "Select a champion"}
-          </button>
-        </div>
-      )}
     </div>
   );
 }
