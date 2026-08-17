@@ -156,15 +156,15 @@ model User {
   // Coach marketplace. `coachProfile` is what makes this account a coach — there
   // is no role column, by design (ADR-019). Everything else here is the same
   // account acting as a student, which is the common case: coaches queue too.
-  coachProfile        CoachProfile?    @relation("CoachProfileUser")
-  coachProfilesReviewed CoachProfile[] @relation("CoachProfileReviewer")
-  bookingsAsStudent   Booking[]        @relation("BookingStudent")
-  bookingEvents       BookingEvent[]   @relation("BookingEventActor")
-  sessionReviews      SessionReview[]  @relation("SessionReviewStudent")
-  conversations       Conversation[]   @relation("ConversationStudent")
-  messagesSent        Message[]        @relation("MessageSender")
-  disputesOpened      BookingDispute[] @relation("DisputeOpener")
-  disputesResolved    BookingDispute[] @relation("DisputeResolver")
+  coachProfile          CoachProfile?    @relation("CoachProfileUser")
+  coachProfilesReviewed CoachProfile[]   @relation("CoachProfileReviewer")
+  bookingsAsStudent     Booking[]        @relation("BookingStudent")
+  bookingEvents         BookingEvent[]   @relation("BookingEventActor")
+  sessionReviews        SessionReview[]  @relation("SessionReviewStudent")
+  conversations         Conversation[]   @relation("ConversationStudent")
+  messagesSent          Message[]        @relation("MessageSender")
+  disputesOpened        BookingDispute[] @relation("DisputeOpener")
+  disputesResolved      BookingDispute[] @relation("DisputeResolver")
 
   @@map("users")
 }
@@ -750,9 +750,9 @@ model TiltAlert {
 // ============================================================
 
 model MatchDeathEvent {
-  id            String @id @default(uuid()) @db.Uuid
-  matchId       String @db.Uuid
-  riotAccountId String @db.Uuid
+  id            String   @id @default(uuid()) @db.Uuid
+  matchId       String   @db.Uuid
+  riotAccountId String   @db.Uuid
   positionX     Int
   positionY     Int
   gameTimeMs    Int
@@ -761,7 +761,7 @@ model MatchDeathEvent {
   // which is why `migrate dev` wanted to drop the column outright (LA-15). Kept, not dropped:
   // the rows are cheap and knowing when a death was ingested is the only way to tell a
   // re-processed match from a freshly synced one.
-  createdAt     DateTime    @default(now())
+  createdAt     DateTime @default(now())
 
   match       Match       @relation(fields: [matchId], references: [id], onDelete: Cascade)
   riotAccount RiotAccount @relation(fields: [riotAccountId], references: [id], onDelete: Cascade)
@@ -1247,7 +1247,6 @@ model FollowedTeam {
 }
 
 // ============================================================
-<<<<<<< HEAD
 // DAILY QUIZ
 // The puzzle itself is not stored: the answer is derived from the UTC date by
 // dailySeed.ts, so an anonymous visitor gets the same puzzle with no row at all.
@@ -1302,7 +1301,9 @@ model QuizStreak {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("quiz_streaks")
-=======
+}
+
+// ============================================================
 // COACH MARKETPLACE (see docs/MARKETPLACE_PLAN.md)
 //
 // Human coaches, sold by the session. Deliberately separate from everything
@@ -1441,8 +1442,8 @@ model CoachProfile {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
-  user          User                        @relation("CoachProfileUser", fields: [userId], references: [id], onDelete: Cascade)
-  reviewedBy    User?                       @relation("CoachProfileReviewer", fields: [reviewedById], references: [id])
+  user          User                         @relation("CoachProfileUser", fields: [userId], references: [id], onDelete: Cascade)
+  reviewedBy    User?                        @relation("CoachProfileReviewer", fields: [reviewedById], references: [id])
   rankProofs    CoachRankProof[]
   listings      CoachListing[]
   availability  CoachAvailability[]
@@ -1475,11 +1476,11 @@ model CoachRankProof {
   method    RankProofMethod
   queueType QueueType
 
-  tier          RankTier
-  division      RankDivision
-  leaguePoints  Int          @default(0)
-  peakTier      RankTier?
-  peakDivision  RankDivision?
+  tier         RankTier
+  division     RankDivision
+  leaguePoints Int           @default(0)
+  peakTier     RankTier?
+  peakDivision RankDivision?
 
   checkedAt DateTime @default(now())
   staleAt   DateTime
@@ -1589,10 +1590,10 @@ model Booking {
   // Copied from the listing and the profile, never joined for. A coach raising
   // their rate or a change to the platform's cut must not retroactively rewrite
   // what a settled booking was worth.
-  priceCents        Int
-  currency          String @default("USD")
-  commissionBps     Int
-  platformFeeCents  Int
+  priceCents         Int
+  currency           String @default("USD")
+  commissionBps      Int
+  platformFeeCents   Int
   coachEarningsCents Int
 
   // What the coach is being asked to look at. `riotAccountId` is the account
@@ -1632,12 +1633,12 @@ model Booking {
   listing      CoachListing @relation(fields: [listingId], references: [id])
   riotAccount  RiotAccount? @relation(fields: [riotAccountId], references: [id], onDelete: SetNull)
 
-  events     BookingEvent[]
-  messages   Message[]
-  reviews    SessionReview[]
-  vodReview  VodReview?
-  payment    BookingPayment?
-  dispute    BookingDispute?
+  events    BookingEvent[]
+  messages  Message[]
+  reviews   SessionReview[]
+  vodReview VodReview?
+  payment   BookingPayment?
+  dispute   BookingDispute?
 
   @@index([coachProfileId, status, startTime])
   @@index([studentId, createdAt(sort: Desc)])
@@ -1656,13 +1657,13 @@ model Booking {
 // having no record of the transitions costs. A booking's `status` is where it
 // is; this is how it got there.
 model BookingEvent {
-  id         String        @id @default(uuid()) @db.Uuid
-  bookingId  String        @db.Uuid
-  actorId    String?       @db.Uuid // null when a scheduled sweep did it
+  id         String         @id @default(uuid()) @db.Uuid
+  bookingId  String         @db.Uuid
+  actorId    String?        @db.Uuid // null when a scheduled sweep did it
   fromStatus BookingStatus?
   toStatus   BookingStatus
   reason     String?
-  createdAt  DateTime      @default(now())
+  createdAt  DateTime       @default(now())
 
   booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
   actor   User?   @relation("BookingEventActor", fields: [actorId], references: [id], onDelete: SetNull)
@@ -1867,5 +1868,4 @@ model BookingDispute {
 
   @@index([status, createdAt])
   @@map("booking_disputes")
->>>>>>> fix/TASK-317-region-picker-click-blocked
 }
