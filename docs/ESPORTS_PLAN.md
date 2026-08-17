@@ -101,10 +101,10 @@ are independently shippable once the spine exists.
   the purpose and worsens the licensing position (ADR-016).
 - **No live-game predictions or betting-adjacent content.** Wrong audience, and
   it drags the domain into a category we do not want to be classified in.
-- **No VOD hosting.** Linking out to the official recording is the whole of it.
-  Whether to *embed* the official Twitch and YouTube players in-page rather than
-  link to them is an open decision, not a settled non-goal — it needs `frame-src`
-  opened for two hosts, which CLAUDE.md puts behind review.
+- **No VOD hosting.** We host, re-encode and re-serve nothing. The official
+  Twitch and YouTube players are embedded click-to-load (ADR-018), which is a
+  different thing: the rightsholder's own player, on our page, playing only when
+  a reader asks it to.
 - **No writing esports *data* into Postgres.** TASK-313 was approved and added
   `followed_teams`, and that is the whole of it: a reader's choice of team, not
   a copy of the feed. The section stays a cache over a feed, which is what makes

@@ -21,7 +21,8 @@ Each of these has been verified as stated, or is named as not yet done.
 | 1.4 | Nothing in the section sits behind the paywall | **Verified** — every route is under `(esports)` with the public chrome branch |
 | 1.5 | Cache warming runs and the pro sample is warm before a reader arrives | **Verified** at TASK-305 (`377cd6e`); the Inngest cron must be confirmed live in the target environment |
 | 1.6 | A Data Dragon outage cannot take a page down | **Not true today.** See §3.1 |
-| 1.7 | `LOLESPORTS_API_KEY` set in the environment, or the pinned public web key still accepted | Check at deploy. The key is public and not a credential (ADR-016), but it is repointable for the day Riot rotates it |
+| 1.7 | `NEXT_PUBLIC_APP_URL` matches the deployed host | Check at deploy. Twitch refuses to play in an iframe whose `parent` does not match; a wrong value degrades to the link the reader had before, not a break (ADR-018) |
+| 1.8 | `LOLESPORTS_API_KEY` set in the environment, or the pinned public web key still accepted | Check at deploy. The key is public and not a credential (ADR-016), but it is repointable for the day Riot rotates it |
 
 ## 2. Cost, as measured
 
@@ -72,8 +73,8 @@ rather than rendered as a nought.
 
 TASK-312 (AI previews and recaps) is not being built — Kaan's call, 17 Aug 2026.
 TASK-313 (follow teams) is built; match reminders are not — that half needs a scheduled job and a notification channel, and is not started. The tier list's pro-presence
-column is built. Embedding VODs in-page rather than linking out is an open
-decision, not a task; §5 of `ESPORTS_PLAN.md` currently rules it out.
+column is built. Embedding is decided and done — ADR-018, click-to-load, with
+`frame-src` opened for exactly `player.twitch.tv` and `www.youtube-nocookie.com`.
 
 ## 4. E2E, and how to keep it alive
 

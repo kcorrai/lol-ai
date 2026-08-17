@@ -31,7 +31,7 @@ function isProvider(raw: string): raw is (typeof PROVIDERS)[number] {
  * English-language site, and the rest are alphabetical rather than in the
  * feed's own order, which is not stable.
  */
-function byLanguage(a: WatchLink, b: WatchLink): number {
+export function orderWatchLinks(a: WatchLink, b: WatchLink): number {
   const aEnglish = a.locale.startsWith("en");
   const bEnglish = b.locale.startsWith("en");
   if (aEnglish !== bEnglish) return aEnglish ? -1 : 1;
@@ -126,12 +126,12 @@ export function archiveLink(videoId: string, startMillis: number | null): string
 
 export function vodLinks(vods: GameVod[]): WatchLink[] {
   return dedupe(vods.map(vodLink).filter((link): link is WatchLink => link !== null)).sort(
-    byLanguage
+    orderWatchLinks
   );
 }
 
 export function streamLinks(streams: EventStream[]): WatchLink[] {
   return dedupe(streams.map(streamLink).filter((link): link is WatchLink => link !== null)).sort(
-    byLanguage
+    orderWatchLinks
   );
 }

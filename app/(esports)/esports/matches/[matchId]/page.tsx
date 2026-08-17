@@ -22,6 +22,7 @@ import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrum
 import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
 import { WatchLinks } from "@/domains/esports/components/WatchLinks";
 import { vodLinks, streamLinks } from "@/domains/esports/watch";
+import { embedParent, primaryStreamEmbed, primaryVodEmbed } from "@/domains/esports/watchEmbed";
 
 // An hour for the series shell. Completed game stats behind it are immutable and
 // cached for a month; a live game refreshes on its own thirty-second window.
@@ -215,6 +216,9 @@ export default async function MatchPage({
   ]);
 
   const liveStreams = live.find((event) => event.matchId === match.matchId)?.streams ?? [];
+  // Twitch will not play in an iframe whose `parent` does not match the page's
+  // own host, so the embed is only offered where we can name it.
+  const parent = embedParent(process.env.NEXT_PUBLIC_APP_URL);
 
   const [home, away] = match.teams;
   const record =
@@ -241,13 +245,22 @@ export default async function MatchPage({
       {/* While a series is on, the live broadcast is what someone wants; the
           VODs of the games already played are what they want afterwards. Both
           can be true mid-series, so both render. */}
-      <div className="mb-6 grid gap-2">
-        <WatchLinks links={streamLinks(liveStreams)} label="Watch live" />
+      <div className="mb-6 grid gap-4">
+        <WatchLinks
+          links={streamLinks(liveStreams)}
+          label="Watch live"
+          embed={primaryStreamEmbed(liveStreams, parent)}
+        />
         {game && (
           // Per game, not per series: the feed marks where each game starts
-          // inside the series video, so this opens on the game being read about
-          // rather than at the beginning of a six-hour broadcast.
-          <WatchLinks links={vodLinks(game.vods)} label={`Watch game ${game.number}`} />
+          // inside the series video, so both the link and the player open on
+          // the game being read about rather than at the beginning of a
+          // six-hour broadcast.
+          <WatchLinks
+            links={vodLinks(game.vods)}
+            label={`Watch game ${game.number}`}
+            embed={primaryVodEmbed(game.vods, parent)}
+          />
         )}
       </div>
 

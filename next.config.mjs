@@ -25,6 +25,15 @@ const CSP = [
   "media-src 'self' https://d28xe8vt774jo5.cloudfront.net",
   // Same-origin API calls + DDragon JSON data + Sentry error reporting
   "connect-src 'self' https://ddragon.leagueoflegends.com https://*.ingest.sentry.io https://*.sentry.io",
+  // The official Twitch and YouTube players, for watching a pro game on the
+  // page you are reading about it (TASK-313 follow-up, ADR-016 §watch).
+  //
+  // Two exact hosts, no wildcard: `player.twitch.tv` is the embed host — the
+  // rest of twitch.tv is not, and neither is any other subdomain. YouTube is
+  // the `-nocookie` variant, which does not write a tracking cookie until the
+  // reader actually starts the video. Nothing on this site is framed *by*
+  // anyone — `frame-ancestors 'none'` below is a different question and stays.
+  "frame-src https://player.twitch.tv https://www.youtube-nocookie.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",

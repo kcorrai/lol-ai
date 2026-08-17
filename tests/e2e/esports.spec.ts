@@ -76,6 +76,33 @@ test.describe("Esports section", () => {
     await expect(page.getByRole("img", { name: /Gold difference over/ })).toBeVisible();
   });
 
+  test("the VOD player loads nothing until the reader asks for it", async ({ page }) => {
+    await page.goto(`/esports/matches/${manifest.matchId}`);
+
+    // Nothing from Twitch or YouTube may be requested before the click. That is
+    // the whole reason the player is click-to-load rather than mounted: a
+    // reader who never intended to watch anything should not have a third-party
+    // cookie written for them.
+    const thirdParty: string[] = [];
+    page.on("request", (request) => {
+      const host = new URL(request.url()).hostname;
+      if (/twitch|youtube/.test(host)) thirdParty.push(host);
+    });
+
+    const play = page.getByRole("button", { name: /^Play/ }).first();
+    await expect(play).toBeVisible();
+    expect(thirdParty).toEqual([]);
+
+    await play.click();
+
+    // The embed host, not the watch host — they are different addresses and a
+    // caller that guessed would frame a 404.
+    const frame = page.locator("iframe[src*='youtube-nocookie.com/embed/']");
+    await expect(frame).toBeVisible();
+    // Deep-linked to where this game starts inside the series recording.
+    await expect(frame).toHaveAttribute("src", /start=\d+/);
+  });
+
   test("VOD archive lists recorded series and links back into the section", async ({ page }) => {
     await page.goto("/esports/vods");
     await expect(page.getByRole("heading", { name: "Esports VODs", level: 1 })).toBeVisible();
