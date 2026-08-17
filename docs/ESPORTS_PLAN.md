@@ -46,7 +46,9 @@ src/domains/esports/                    new bounded context, isolated like riot/
 ├── index.ts                            the ONLY import surface for the rest of the app
 ├── types.ts                            our types, not the feed's
 ├── services/
-│   ├── esportsApi.ts                   fetch + zod + fresh/last-good cache helper
+│   ├── esportsApi.ts                   the fetch boundary — the only module that knows the feeds exist
+│   ├── esportsCache.ts                 zod + fresh/last-good cache helpers, and the TTL table
+│   ├── esportsFixtures.ts              replays captured payloads under E2E_MOCK, so tests reach no network
 │   ├── leagueService.ts                leagues, tournaments
 │   ├── scheduleService.ts              upcoming / live / completed events
 │   ├── standingsService.ts             standings + bracket normalisation
@@ -91,7 +93,7 @@ are independently shippable once the spine exists.
 | TASK-311 | "You vs the pros" comparison | conversion |
 | TASK-312 | AI match previews and recaps (cached, top leagues) | content depth |
 | TASK-313 | Follow teams and match reminders — **needs schema approval** | retention |
-| TASK-314 | E2E coverage, docs, launch checklist | done |
+| TASK-314 | E2E coverage, docs, launch checklist | launch readiness — `docs/ESPORTS_LAUNCH_CHECKLIST.md` |
 
 ## 5. Non-goals for this section
 
@@ -99,7 +101,10 @@ are independently shippable once the spine exists.
   the purpose and worsens the licensing position (ADR-016).
 - **No live-game predictions or betting-adjacent content.** Wrong audience, and
   it drags the domain into a category we do not want to be classified in.
-- **No VOD hosting or embedding beyond the official links** the feed provides.
+- **No VOD hosting.** Linking out to the official recording is the whole of it.
+  Whether to *embed* the official Twitch and YouTube players in-page rather than
+  link to them is an open decision, not a settled non-goal — it needs `frame-src`
+  opened for two hosts, which CLAUDE.md puts behind review.
 - **No writing esports data into Postgres** before TASK-313 is approved. Phase 1
   is a cache over a feed; keeping it that way is what makes it cheap.
 

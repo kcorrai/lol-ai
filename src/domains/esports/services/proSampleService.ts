@@ -1,5 +1,5 @@
 import { perRequest } from "@/lib/utils/perRequest";
-import { cachedComputation, cachedValue, TTL } from "@/domains/esports/services/esportsApi";
+import { TTL, cachedComputation, cachedValue } from "@/domains/esports/services/esportsCache";
 import { getCompleted } from "@/domains/esports/services/scheduleService";
 import { getMatch } from "@/domains/esports/services/matchService";
 import { getGameStats } from "@/domains/esports/services/gameStatsService";

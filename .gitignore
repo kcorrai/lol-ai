@@ -43,6 +43,10 @@ coverage
 playwright-report
 test-results
 .playwright-mcp
+
+# Saved browser session for the E2E user — a real logged-in cookie, regenerated
+# by the setup project on every run.
+tests/e2e/.auth
 *.png
 1.png
 

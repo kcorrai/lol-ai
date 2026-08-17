@@ -1,11 +1,7 @@
 import { z } from "zod";
 import { perRequest } from "@/lib/utils/perRequest";
-import {
-  cachedResource,
-  esportsFetch,
-  httpsAsset,
-  TTL,
-} from "@/domains/esports/services/esportsApi";
+import { esportsFetch, httpsAsset } from "@/domains/esports/services/esportsApi";
+import { TTL, cachedResource } from "@/domains/esports/services/esportsCache";
 import type {
   EsportsLeague,
   EsportsTournament,

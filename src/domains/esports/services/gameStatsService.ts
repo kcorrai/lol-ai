@@ -1,4 +1,5 @@
-import { cachedResource, livestatsFetch, TTL } from "@/domains/esports/services/esportsApi";
+import { livestatsFetch } from "@/domains/esports/services/esportsApi";
+import { TTL, cachedResource } from "@/domains/esports/services/esportsCache";
 import {
   buildStats,
   DetailsSchema,

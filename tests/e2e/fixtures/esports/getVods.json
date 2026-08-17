@@ -1,0 +1,713 @@
+{
+ "data": {
+  "schedule": {
+   "events": [
+    {
+     "startTime": "2026-07-30T05:00:00Z",
+     "state": "completed",
+     "blockName": "Week 10",
+     "league": {
+      "name": "LCK Challengers"
+     },
+     "match": {
+      "id": "116889604984222869",
+      "type": "normal",
+      "teams": [
+       {
+        "name": "HLE Challengers",
+        "code": "HLE",
+        "image": "http://static.lolesports.com/teams/hle-2021-color-on-dark.png",
+        "result": {
+         "gameWins": 0
+        }
+       },
+       {
+        "name": "BNK FEARX Youth",
+        "code": "BFX",
+        "image": "http://static.lolesports.com/teams/1734691838858_BFXfullcolorfordarkbg.png",
+        "result": {
+         "gameWins": 2
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     },
+     "games": [
+      {
+       "id": "116889604984222870",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "galES_SM9PE",
+         "startMillis": 38000,
+         "endMillis": 1693000
+        }
+       ]
+      },
+      {
+       "id": "116889604984222871",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "galES_SM9PE",
+         "startMillis": 1714000,
+         "endMillis": 4098000
+        }
+       ]
+      },
+      {
+       "id": "116889604984222872",
+       "state": "unneeded",
+       "vods": []
+      }
+     ]
+    },
+    {
+     "startTime": "2026-07-30T08:00:00Z",
+     "state": "completed",
+     "blockName": "Week 10",
+     "league": {
+      "name": "LCK"
+     },
+     "match": {
+      "id": "115548147900684657",
+      "type": "normal",
+      "teams": [
+       {
+        "name": "BNK FEARX",
+        "code": "BFX",
+        "image": "http://static.lolesports.com/teams/1734691810721_BFXfullcolorfordarkbg.png",
+        "result": {
+         "gameWins": 2
+        }
+       },
+       {
+        "name": "DN SOOPers",
+        "code": "DNS",
+        "image": "http://static.lolesports.com/teams/1767340467921_DN_SOOPerslogo_profile.webp",
+        "result": {
+         "gameWins": 0
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     },
+     "games": [
+      {
+       "id": "115548147900684658",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "68S3w-CBWRU",
+         "startMillis": 1750000,
+         "endMillis": 4995000
+        },
+        {
+         "parameter": "h4jqdlueBYU",
+         "startMillis": 351000,
+         "endMillis": 3596000
+        },
+        {
+         "parameter": "202892313",
+         "startMillis": null,
+         "endMillis": null
+        }
+       ]
+      },
+      {
+       "id": "115548147900684659",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "68S3w-CBWRU",
+         "startMillis": 4995000,
+         "endMillis": 9535000
+        },
+        {
+         "parameter": "h4jqdlueBYU",
+         "startMillis": 3148000,
+         "endMillis": 7688000
+        },
+        {
+         "parameter": "202897737",
+         "startMillis": null,
+         "endMillis": null
+        }
+       ]
+      },
+      {
+       "id": "115548147900684660",
+       "state": "unneeded",
+       "vods": []
+      }
+     ]
+    },
+    {
+     "startTime": "2026-07-30T09:00:00Z",
+     "state": "completed",
+     "blockName": "Swiss",
+     "league": {
+      "name": "LCP"
+     },
+     "match": {
+      "id": "115570814727903845",
+      "type": "normal",
+      "teams": [
+       {
+        "name": "DetonatioN FocusMe",
+        "code": "DFM",
+        "image": "http://static.lolesports.com/teams/1673415140442_dfm.png",
+        "result": {
+         "gameWins": 2
+        }
+       },
+       {
+        "name": "Fukuoka SoftBank HAWKS gaming",
+        "code": "SHG",
+        "image": "http://static.lolesports.com/teams/1725885083108_SHG_White_Main.png",
+        "result": {
+         "gameWins": 1
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     },
+     "games": [
+      {
+       "id": "115570814727903846",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "zhjSegkmEOw",
+         "startMillis": 2439000,
+         "endMillis": 5957000
+        },
+        {
+         "parameter": "83oi4yEynYk",
+         "startMillis": 2411000,
+         "endMillis": 5929000
+        },
+        {
+         "parameter": "zWISgo-FFmc",
+         "startMillis": 1835000,
+         "endMillis": 5353000
+        },
+        {
+         "parameter": "zf4HsI539zw",
+         "startMillis": null,
+         "endMillis": null
+        },
+        {
+         "parameter": "POjTzlOpC_U",
+         "startMillis": 3157000,
+         "endMillis": 6675000
+        }
+       ]
+      },
+      {
+       "id": "115570814727903847",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "zhjSegkmEOw",
+         "startMillis": 5953000,
+         "endMillis": 9398000
+        },
+        {
+         "parameter": "83oi4yEynYk",
+         "startMillis": 5920000,
+         "endMillis": 9365000
+        },
+        {
+         "parameter": "zWISgo-FFmc",
+         "startMillis": 5353000,
+         "endMillis": 8798000
+        },
+        {
+         "parameter": "LyXiaognqDo",
+         "startMillis": null,
+         "endMillis": null
+        },
+        {
+         "parameter": "POjTzlOpC_U",
+         "startMillis": 6673000,
+         "endMillis": 10118000
+        }
+       ]
+      },
+      {
+       "id": "115570814727903848",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "zhjSegkmEOw",
+         "startMillis": 8198000,
+         "endMillis": 11983000
+        },
+        {
+         "parameter": "83oi4yEynYk",
+         "startMillis": 8168000,
+         "endMillis": 11953000
+        },
+        {
+         "parameter": "zWISgo-FFmc",
+         "startMillis": 8798000,
+         "endMillis": 12583000
+        },
+        {
+         "parameter": "lBmiemxwN3U",
+         "startMillis": null,
+         "endMillis": null
+        },
+        {
+         "parameter": "POjTzlOpC_U",
+         "startMillis": 8918000,
+         "endMillis": 12703000
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "startTime": "2026-07-30T10:00:00Z",
+     "state": "completed",
+     "blockName": "Week 10",
+     "league": {
+      "name": "LCK"
+     },
+     "match": {
+      "id": "115548147900553453",
+      "type": "normal",
+      "teams": [
+       {
+        "name": "Hanwha Life Esports",
+        "code": "HLE",
+        "image": "http://static.lolesports.com/teams/1631819564399_hle-2021-worlds.png",
+        "result": {
+         "gameWins": 1
+        }
+       },
+       {
+        "name": "Dplus KIA",
+        "code": "DK",
+        "image": "http://static.lolesports.com/teams/1673260049703_DPlusKIALOGO11.png",
+        "result": {
+         "gameWins": 2
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     },
+     "games": [
+      {
+       "id": "115548147900553454",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "68S3w-CBWRU",
+         "startMillis": 9535000,
+         "endMillis": 12795000
+        },
+        {
+         "parameter": "meRjJoCeBZI",
+         "startMillis": 618000,
+         "endMillis": 3878000
+        },
+        {
+         "parameter": "202903515",
+         "startMillis": null,
+         "endMillis": null
+        }
+       ]
+      },
+      {
+       "id": "115548147900553455",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "68S3w-CBWRU",
+         "startMillis": 12795000,
+         "endMillis": 16170000
+        },
+        {
+         "parameter": "meRjJoCeBZI",
+         "startMillis": 3407000,
+         "endMillis": 6782000
+        },
+        {
+         "parameter": "202909065",
+         "startMillis": null,
+         "endMillis": null
+        }
+       ]
+      },
+      {
+       "id": "115548147900553456",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "68S3w-CBWRU",
+         "startMillis": 16170000,
+         "endMillis": 18600000
+        },
+        {
+         "parameter": "meRjJoCeBZI",
+         "startMillis": 6344000,
+         "endMillis": 8774000
+        },
+        {
+         "parameter": "202917629",
+         "startMillis": null,
+         "endMillis": null
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "startTime": "2026-07-30T11:30:00Z",
+     "state": "completed",
+     "blockName": "Swiss",
+     "league": {
+      "name": "LCP"
+     },
+     "match": {
+      "id": "115570814727903849",
+      "type": "normal",
+      "teams": [
+       {
+        "name": "Ground Zero Gaming",
+        "code": "GZ",
+        "image": "http://static.lolesports.com/teams/1766395585595_LCP_TEAMLogo_GZ_Full_B.png",
+        "result": {
+         "gameWins": 1
+        }
+       },
+       {
+        "name": "Relove Deep Cross Gaming",
+        "code": "DCG",
+        "image": "http://static.lolesports.com/teams/1785400397160_LCP_DCG_Full_W1.png",
+        "result": {
+         "gameWins": 2
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     },
+     "games": [
+      {
+       "id": "115570814727903850",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "zhjSegkmEOw",
+         "startMillis": 11983000,
+         "endMillis": 15618000
+        },
+        {
+         "parameter": "83oi4yEynYk",
+         "startMillis": 11953000,
+         "endMillis": 15588000
+        },
+        {
+         "parameter": "zWISgo-FFmc",
+         "startMillis": 12583000,
+         "endMillis": 16218000
+        },
+        {
+         "parameter": "Y8UDBa4CPv4",
+         "startMillis": null,
+         "endMillis": null
+        },
+        {
+         "parameter": "POjTzlOpC_U",
+         "startMillis": 12703000,
+         "endMillis": 16338000
+        }
+       ]
+      },
+      {
+       "id": "115570814727903851",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "zhjSegkmEOw",
+         "startMillis": 15618000,
+         "endMillis": 18000000
+        },
+        {
+         "parameter": "83oi4yEynYk",
+         "startMillis": 15580000,
+         "endMillis": 17962000
+        },
+        {
+         "parameter": "zWISgo-FFmc",
+         "startMillis": 16218000,
+         "endMillis": 18600000
+        },
+        {
+         "parameter": "i2pTysZRVyA",
+         "startMillis": null,
+         "endMillis": null
+        },
+        {
+         "parameter": "POjTzlOpC_U",
+         "startMillis": 16338000,
+         "endMillis": 18720000
+        }
+       ]
+      },
+      {
+       "id": "115570814727903852",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "zhjSegkmEOw",
+         "startMillis": 21324000,
+         "endMillis": 24323000
+        },
+        {
+         "parameter": "83oi4yEynYk",
+         "startMillis": 21300000,
+         "endMillis": 24299000
+        },
+        {
+         "parameter": "40sxIIlY5Ds",
+         "startMillis": 1000,
+         "endMillis": 3000000
+        },
+        {
+         "parameter": "SGahrv5S9kk",
+         "startMillis": null,
+         "endMillis": null
+        },
+        {
+         "parameter": "POjTzlOpC_U",
+         "startMillis": 18444000,
+         "endMillis": 21443000
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "startTime": "2026-07-30T14:30:00Z",
+     "state": "completed",
+     "blockName": "Play-Ins",
+     "league": {
+      "name": "TCL"
+     },
+     "match": {
+      "id": "116838220144573087",
+      "type": "normal",
+      "teams": [
+       {
+        "name": "PCIFIC Esports",
+        "code": "PCF",
+        "image": "http://static.lolesports.com/teams/1767800848871_PcificLogo2.png",
+        "result": {
+         "gameWins": 2
+        }
+       },
+       {
+        "name": "BoostGate Esports",
+        "code": "BGT",
+        "image": "http://static.lolesports.com/teams/1737386212434_BoostGate.png",
+        "result": {
+         "gameWins": 0
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     },
+     "games": [
+      {
+       "id": "116838220144573088",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "2832736545",
+         "startMillis": 4978000,
+         "endMillis": 6938000
+        }
+       ]
+      },
+      {
+       "id": "116838220144573089",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "2832736545",
+         "startMillis": 8411000,
+         "endMillis": 9833000
+        }
+       ]
+      },
+      {
+       "id": "116838220144573090",
+       "state": "unneeded",
+       "vods": []
+      }
+     ]
+    },
+    {
+     "startTime": "2026-07-30T15:00:00Z",
+     "state": "completed",
+     "blockName": "Week 3",
+     "league": {
+      "name": "LES"
+     },
+     "match": {
+      "id": "116833506932193671",
+      "type": "normal",
+      "teams": [
+       {
+        "name": "LUA Gaming",
+        "code": "LUA",
+        "image": "http://static.lolesports.com/teams/1715245265080_658435d7e218f402908540.png",
+        "result": {
+         "gameWins": 0
+        }
+       },
+       {
+        "name": "Barça Esports",
+        "code": "BAR",
+        "image": "http://static.lolesports.com/teams/1639828813946_61b778236a9c9995719028.png",
+        "result": {
+         "gameWins": 2
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     },
+     "games": [
+      {
+       "id": "116833506932193672",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "6ulVPXVukD4",
+         "startMillis": 0,
+         "endMillis": 2757000
+        }
+       ]
+      },
+      {
+       "id": "116833506932193673",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "6ulVPXVukD4",
+         "startMillis": 3298000,
+         "endMillis": 5822000
+        }
+       ]
+      },
+      {
+       "id": "116833506932193674",
+       "state": "unneeded",
+       "vods": []
+      }
+     ]
+    },
+    {
+     "startTime": "2026-07-30T15:00:00Z",
+     "state": "completed",
+     "blockName": "Week 6",
+     "league": {
+      "name": "Prime League"
+     },
+     "match": {
+      "id": "116713163972559112",
+      "type": "normal",
+      "teams": [
+       {
+        "name": "Rossmann Centaurs",
+        "code": "ROSS",
+        "image": "http://static.lolesports.com/teams/1734307301367_ROSS.png",
+        "result": {
+         "gameWins": 1
+        }
+       },
+       {
+        "name": "Eintracht Spandau",
+        "code": "EINS",
+        "image": "http://static.lolesports.com/teams/1674832820210_PRM_EINS-FullColorDarkBG.png",
+        "result": {
+         "gameWins": 2
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     },
+     "games": [
+      {
+       "id": "116713163972559113",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "4I91tcw9y3o",
+         "startMillis": 2050000,
+         "endMillis": 5358000
+        }
+       ]
+      },
+      {
+       "id": "116713163972559114",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "4I91tcw9y3o",
+         "startMillis": 5358000,
+         "endMillis": 8611000
+        }
+       ]
+      },
+      {
+       "id": "116713163972559115",
+       "state": "completed",
+       "vods": [
+        {
+         "parameter": "4I91tcw9y3o",
+         "startMillis": 8611000,
+         "endMillis": 12000000
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "nextUnstartedMatch": {
+   "events": [
+    {
+     "startTime": "2025-05-30T05:00:00Z"
+    }
+   ]
+  }
+ }
+}

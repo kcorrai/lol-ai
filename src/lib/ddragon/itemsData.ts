@@ -27,6 +27,12 @@ interface RawItem {
 // Cached catalog of Data Dragon items (id → name/icon/gold). Cached for 24h via
 // the framework fetch cache.
 export async function fetchItems(): Promise<Map<number, ItemInfo>> {
+  // No network in an E2E run (CLAUDE.md 5.4). An empty catalogue is a state
+  // every caller already handles — each one wraps this in a catch that falls
+  // back to exactly this — so the pages render, minus item names. What the
+  // catalogue is *for* is covered by proBuild.test.ts against fixed input.
+  if (process.env.E2E_MOCK === "true") return new Map();
+
   const version = await getLatestDdragonVersion();
   const res = await fetch(
     `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/item.json`,

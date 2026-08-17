@@ -18,6 +18,11 @@ const DDRAGON_VERSIONS_URL = "https://ddragon.leagueoflegends.com/api/versions.j
 // back to DDRAGON_VERSION if the version feed is unreachable. Must not be called
 // from client components (they cannot await).
 export async function getLatestDdragonVersion(): Promise<string> {
+  // E2E replays every feed it depends on and must reach no network at all
+  // (CLAUDE.md 5.4). The pinned version is what this returns whenever the
+  // version feed is unavailable anyway, so a test run simply starts there.
+  if (process.env.E2E_MOCK === "true") return DDRAGON_VERSION;
+
   try {
     const res = await fetch(DDRAGON_VERSIONS_URL, { next: { revalidate: 43200 } });
     if (!res.ok) return DDRAGON_VERSION;

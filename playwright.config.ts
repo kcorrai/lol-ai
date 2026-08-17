@@ -51,6 +51,19 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
 
+    // The esports section is public and stateless — a cache over a feed, with
+    // no seeded row behind any of it, so it needs neither auth nor setup.
+    {
+      name: "esports",
+      testMatch: /esports\.spec\.ts$/,
+      // The hub aggregates a whole split's worth of games to build the pro
+      // sample, and under `next dev` each route pays its first compile on the
+      // request that reaches it. Both are one-off, and neither is worth
+      // reporting as a failure at the 30s default.
+      timeout: 120_000,
+      use: { ...devices["Desktop Chrome"] },
+    },
+
     // The draft room is public too, and deliberately runs with no auth state:
     // two strangers sharing a link is exactly the case it has to survive.
     {

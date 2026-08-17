@@ -1,0 +1,1013 @@
+{
+ "esportsGameId": "115548681803406284",
+ "esportsMatchId": "115548681803406283",
+ "gameMetadata": {
+  "patchVersion": "16.16.805.442",
+  "blueTeamMetadata": {
+   "esportsTeamId": "98767991866488695",
+   "participantMetadata": [
+    {
+     "participantId": 1,
+     "esportsPlayerId": "107492129389636107",
+     "summonerName": "FNC Soboro",
+     "championId": "Gnar",
+     "role": "top"
+    },
+    {
+     "participantId": 2,
+     "esportsPlayerId": "100238780551262852",
+     "summonerName": "FNC Razork",
+     "championId": "MonkeyKing",
+     "role": "jungle"
+    },
+    {
+     "participantId": 3,
+     "esportsPlayerId": "107045034481599547",
+     "summonerName": "FNC Vladi",
+     "championId": "Ryze",
+     "role": "mid"
+    },
+    {
+     "participantId": 4,
+     "esportsPlayerId": "99322214653265200",
+     "summonerName": "FNC Upset",
+     "championId": "Ezreal",
+     "role": "bottom"
+    },
+    {
+     "participantId": 5,
+     "esportsPlayerId": "107492067202132417",
+     "summonerName": "FNC Lospa",
+     "championId": "Karma",
+     "role": "support"
+    }
+   ]
+  },
+  "redTeamMetadata": {
+   "esportsTeamId": "98767991926151025",
+   "participantMetadata": [
+    {
+     "participantId": 6,
+     "esportsPlayerId": "99566406047571736",
+     "summonerName": "G2 BrokenBlade",
+     "championId": "TwistedFate",
+     "role": "top"
+    },
+    {
+     "participantId": 7,
+     "esportsPlayerId": "107128052280762804",
+     "summonerName": "G2 SkewMond",
+     "championId": "Pantheon",
+     "role": "jungle"
+    },
+    {
+     "participantId": 8,
+     "esportsPlayerId": "98767975968177297",
+     "summonerName": "G2 Caps",
+     "championId": "Anivia",
+     "role": "mid"
+    },
+    {
+     "participantId": 9,
+     "esportsPlayerId": "98767975961872793",
+     "summonerName": "G2 Hans Sama",
+     "championId": "Lucian",
+     "role": "bottom"
+    },
+    {
+     "participantId": 10,
+     "esportsPlayerId": "102787200059605684",
+     "summonerName": "G2 Labrov",
+     "championId": "Milio",
+     "role": "support"
+    }
+   ]
+  }
+ },
+ "frames": [
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:20.033Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20033,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19593,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:20.066Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20033,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19593,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:20.969Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20033,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19593,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:21.004Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20033,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19593,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:21.035Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20043,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19604,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:21.903Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20043,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19604,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:21.970Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20043,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19604,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:22.037Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20054,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19614,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:22.038Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20054,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19614,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:22.204Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20054,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19614,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:22.538Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20054,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19614,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:23.039Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20064,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19625,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:23.238Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20064,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19625,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:23.338Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20064,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19625,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:23.339Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20064,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19625,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:23.507Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20064,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19625,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:23.507Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20064,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19625,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:23.772Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20064,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19625,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:23.773Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20064,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19625,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:23.773Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20064,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19625,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:23.773Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20064,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19625,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:23.774Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20064,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19625,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:24.041Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20075,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19635,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:24.474Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20075,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19635,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:24.540Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20075,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19635,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:24.541Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20075,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19635,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:24.541Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20075,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19635,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:25.043Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20085,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19666,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:25.209Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20085,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19666,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:25.342Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20085,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19666,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:25.343Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20085,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19666,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:25.343Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20085,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19666,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:25.811Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20085,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19666,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:26.044Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20096,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19691,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:26.078Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20096,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19691,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:26.111Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20096,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19691,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:26.880Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20096,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19691,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:27.046Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20106,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19769,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:27.748Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20106,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19769,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:28.048Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20119,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19783,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:28.181Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20119,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19783,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  },
+  {
+   "rfc460Timestamp": "2026-08-16T17:23:29.050Z",
+   "gameState": "in_game",
+   "blueTeam": {
+    "totalGold": 20145,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 2,
+    "dragons": [
+     "ocean"
+    ]
+   },
+   "redTeam": {
+    "totalGold": 19793,
+    "inhibitors": 0,
+    "towers": 0,
+    "barons": 0,
+    "totalKills": 1,
+    "dragons": []
+   }
+  }
+ ]
+}

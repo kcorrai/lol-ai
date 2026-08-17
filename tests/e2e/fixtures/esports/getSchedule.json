@@ -1,0 +1,1898 @@
+{
+ "data": {
+  "schedule": {
+   "pages": {
+    "older": "b2xkZXI6OjExNTU0ODY2ODA1OTUyMzY2NA==",
+    "newer": null
+   },
+   "events": [
+    {
+     "startTime": "2026-07-26T17:30:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 1",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406287",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "G2 Esports",
+        "code": "G2",
+        "image": "http://static.lolesports.com/teams/G2-FullonDark.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 1
+        },
+        "record": {
+         "wins": 6,
+         "losses": 2
+        }
+       },
+       {
+        "name": "Karmine Corp",
+        "code": "KC",
+        "image": "http://static.lolesports.com/teams/1704714951336_KC.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 6,
+         "losses": 0
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-07-31T15:00:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 2",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406115",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "Team Heretics",
+        "code": "TH",
+        "image": "http://static.lolesports.com/teams/1672933861879_Heretics-Full-Color.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 1,
+         "losses": 3
+        }
+       },
+       {
+        "name": "Team Vitality",
+        "code": "VIT",
+        "image": "http://static.lolesports.com/teams/1675865863968_Vitality_FullColor.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 4,
+         "losses": 2
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-07-31T17:15:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 2",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406215",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "Movistar KOI",
+        "code": "MKOI",
+        "image": "http://static.lolesports.com/teams/1734012609283_MKOI_FullColor_Blue.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 3,
+         "losses": 4
+        }
+       },
+       {
+        "name": "Shifters",
+        "code": "SHFT",
+        "image": "http://static.lolesports.com/teams/1765897071435_600px-Shifters_allmode.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 1
+        },
+        "record": {
+         "wins": 0,
+         "losses": 5
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-01T15:00:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 2",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406231",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "GIANTX",
+        "code": "GX",
+        "image": "http://static.lolesports.com/teams/1765897105091_GIANTX-logotype-white.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 1
+        },
+        "record": {
+         "wins": 2,
+         "losses": 2
+        }
+       },
+       {
+        "name": "SK Gaming",
+        "code": "SK",
+        "image": "http://static.lolesports.com/teams/1643979272144_SK_Monochrome.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 2,
+         "losses": 4
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-01T17:15:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 2",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406171",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "Karmine Corp",
+        "code": "KC",
+        "image": "http://static.lolesports.com/teams/1704714951336_KC.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 6,
+         "losses": 0
+        }
+       },
+       {
+        "name": "Natus Vincere",
+        "code": "NAVI",
+        "image": "http://static.lolesports.com/teams/1752746833620_NAVI_FullColor.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 3
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-02T15:00:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 2",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406263",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "G2 Esports",
+        "code": "G2",
+        "image": "http://static.lolesports.com/teams/G2-FullonDark.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 6,
+         "losses": 2
+        }
+       },
+       {
+        "name": "SK Gaming",
+        "code": "SK",
+        "image": "http://static.lolesports.com/teams/1643979272144_SK_Monochrome.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 4
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-02T17:15:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 2",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406267",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "Movistar KOI",
+        "code": "MKOI",
+        "image": "http://static.lolesports.com/teams/1734012609283_MKOI_FullColor_Blue.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 3,
+         "losses": 4
+        }
+       },
+       {
+        "name": "Fnatic",
+        "code": "FNC",
+        "image": "http://static.lolesports.com/teams/1631819669150_fnc-2021-worlds.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 1
+        },
+        "record": {
+         "wins": 2,
+         "losses": 3
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-03T15:00:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 2",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406151",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "Natus Vincere",
+        "code": "NAVI",
+        "image": "http://static.lolesports.com/teams/1752746833620_NAVI_FullColor.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 2,
+         "losses": 3
+        }
+       },
+       {
+        "name": "Shifters",
+        "code": "SHFT",
+        "image": "http://static.lolesports.com/teams/1765897071435_600px-Shifters_allmode.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 0,
+         "losses": 5
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-03T17:15:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 2",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406139",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "Karmine Corp",
+        "code": "KC",
+        "image": "http://static.lolesports.com/teams/1704714951336_KC.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 6,
+         "losses": 0
+        }
+       },
+       {
+        "name": "Team Heretics",
+        "code": "TH",
+        "image": "http://static.lolesports.com/teams/1672933861879_Heretics-Full-Color.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 1,
+         "losses": 3
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-07T15:00:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 3",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406207",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "Shifters",
+        "code": "SHFT",
+        "image": "http://static.lolesports.com/teams/1765897071435_600px-Shifters_allmode.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 1
+        },
+        "record": {
+         "wins": 0,
+         "losses": 5
+        }
+       },
+       {
+        "name": "GIANTX",
+        "code": "GX",
+        "image": "http://static.lolesports.com/teams/1765897105091_GIANTX-logotype-white.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 2,
+         "losses": 2
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-07T17:15:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 3",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406135",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "Team Heretics",
+        "code": "TH",
+        "image": "http://static.lolesports.com/teams/1672933861879_Heretics-Full-Color.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 1,
+         "losses": 3
+        }
+       },
+       {
+        "name": "Fnatic",
+        "code": "FNC",
+        "image": "http://static.lolesports.com/teams/1631819669150_fnc-2021-worlds.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 1
+        },
+        "record": {
+         "wins": 2,
+         "losses": 3
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-08T15:00:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 3",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406159",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "Natus Vincere",
+        "code": "NAVI",
+        "image": "http://static.lolesports.com/teams/1752746833620_NAVI_FullColor.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 2,
+         "losses": 3
+        }
+       },
+       {
+        "name": "SK Gaming",
+        "code": "SK",
+        "image": "http://static.lolesports.com/teams/1643979272144_SK_Monochrome.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 1
+        },
+        "record": {
+         "wins": 2,
+         "losses": 4
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-08T17:15:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 3",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406235",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "GIANTX",
+        "code": "GX",
+        "image": "http://static.lolesports.com/teams/1765897105091_GIANTX-logotype-white.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 2,
+         "losses": 2
+        }
+       },
+       {
+        "name": "Movistar KOI",
+        "code": "MKOI",
+        "image": "http://static.lolesports.com/teams/1734012609283_MKOI_FullColor_Blue.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 3,
+         "losses": 4
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-09T15:00:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 3",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406143",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "G2 Esports",
+        "code": "G2",
+        "image": "http://static.lolesports.com/teams/G2-FullonDark.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 6,
+         "losses": 2
+        }
+       },
+       {
+        "name": "Team Heretics",
+        "code": "TH",
+        "image": "http://static.lolesports.com/teams/1672933861879_Heretics-Full-Color.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 1,
+         "losses": 3
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-09T17:15:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 3",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406279",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "Karmine Corp",
+        "code": "KC",
+        "image": "http://static.lolesports.com/teams/1704714951336_KC.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 6,
+         "losses": 0
+        }
+       },
+       {
+        "name": "Fnatic",
+        "code": "FNC",
+        "image": "http://static.lolesports.com/teams/1631819669150_fnc-2021-worlds.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 3
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-10T15:00:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 3",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406187",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "SK Gaming",
+        "code": "SK",
+        "image": "http://static.lolesports.com/teams/1643979272144_SK_Monochrome.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 4
+        }
+       },
+       {
+        "name": "Team Vitality",
+        "code": "VIT",
+        "image": "http://static.lolesports.com/teams/1675865863968_Vitality_FullColor.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 4,
+         "losses": 2
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-10T17:15:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 3",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406175",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "G2 Esports",
+        "code": "G2",
+        "image": "http://static.lolesports.com/teams/G2-FullonDark.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 6,
+         "losses": 2
+        }
+       },
+       {
+        "name": "Natus Vincere",
+        "code": "NAVI",
+        "image": "http://static.lolesports.com/teams/1752746833620_NAVI_FullColor.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 3
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-14T15:00:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 4",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406211",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "SK Gaming",
+        "code": "SK",
+        "image": "http://static.lolesports.com/teams/1643979272144_SK_Monochrome.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 2,
+         "losses": 4
+        }
+       },
+       {
+        "name": "Shifters",
+        "code": "SHFT",
+        "image": "http://static.lolesports.com/teams/1765897071435_600px-Shifters_allmode.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 0,
+         "losses": 5
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-14T17:15:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 4",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406183",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "GIANTX",
+        "code": "GX",
+        "image": "http://static.lolesports.com/teams/1765897105091_GIANTX-logotype-white.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 1
+        },
+        "record": {
+         "wins": 2,
+         "losses": 2
+        }
+       },
+       {
+        "name": "Team Vitality",
+        "code": "VIT",
+        "image": "http://static.lolesports.com/teams/1675865863968_Vitality_FullColor.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 4,
+         "losses": 2
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-15T15:00:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 4",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406255",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "Fnatic",
+        "code": "FNC",
+        "image": "http://static.lolesports.com/teams/1631819669150_fnc-2021-worlds.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 2,
+         "losses": 3
+        }
+       },
+       {
+        "name": "SK Gaming",
+        "code": "SK",
+        "image": "http://static.lolesports.com/teams/1643979272144_SK_Monochrome.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 4
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-15T17:15:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 4",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406227",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "G2 Esports",
+        "code": "G2",
+        "image": "http://static.lolesports.com/teams/G2-FullonDark.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 6,
+         "losses": 2
+        }
+       },
+       {
+        "name": "Shifters",
+        "code": "SHFT",
+        "image": "http://static.lolesports.com/teams/1765897071435_600px-Shifters_allmode.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 0,
+         "losses": 5
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-16T15:00:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 4",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406163",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "Natus Vincere",
+        "code": "NAVI",
+        "image": "http://static.lolesports.com/teams/1752746833620_NAVI_FullColor.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 3
+        }
+       },
+       {
+        "name": "Movistar KOI",
+        "code": "MKOI",
+        "image": "http://static.lolesports.com/teams/1734012609283_MKOI_FullColor_Blue.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 3,
+         "losses": 4
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-16T17:15:00Z",
+     "state": "completed",
+     "type": "match",
+     "blockName": "Week 4",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406283",
+      "flags": [
+       "hasVod"
+      ],
+      "teams": [
+       {
+        "name": "Fnatic",
+        "code": "FNC",
+        "image": "http://static.lolesports.com/teams/1631819669150_fnc-2021-worlds.png",
+        "result": {
+         "outcome": "win",
+         "gameWins": 2
+        },
+        "record": {
+         "wins": 2,
+         "losses": 3
+        }
+       },
+       {
+        "name": "G2 Esports",
+        "code": "G2",
+        "image": "http://static.lolesports.com/teams/G2-FullonDark.png",
+        "result": {
+         "outcome": "loss",
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 6,
+         "losses": 2
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-17T15:00:00Z",
+     "state": "unstarted",
+     "type": "match",
+     "blockName": "Week 4",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803340575",
+      "flags": [],
+      "teams": [
+       {
+        "name": "Team Heretics",
+        "code": "TH",
+        "image": "http://static.lolesports.com/teams/1672933861879_Heretics-Full-Color.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 1,
+         "losses": 3
+        }
+       },
+       {
+        "name": "Natus Vincere",
+        "code": "NAVI",
+        "image": "http://static.lolesports.com/teams/1752746833620_NAVI_FullColor.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 3
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-17T17:15:00Z",
+     "state": "unstarted",
+     "type": "match",
+     "blockName": "Week 4",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406243",
+      "flags": [],
+      "teams": [
+       {
+        "name": "GIANTX",
+        "code": "GX",
+        "image": "http://static.lolesports.com/teams/1765897105091_GIANTX-logotype-white.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 2
+        }
+       },
+       {
+        "name": "Karmine Corp",
+        "code": "KC",
+        "image": "http://static.lolesports.com/teams/1704714951336_KC.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 6,
+         "losses": 0
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-21T15:00:00Z",
+     "state": "unstarted",
+     "type": "match",
+     "blockName": "Week 5",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406127",
+      "flags": [],
+      "teams": [
+       {
+        "name": "Team Heretics",
+        "code": "TH",
+        "image": "http://static.lolesports.com/teams/1672933861879_Heretics-Full-Color.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 1,
+         "losses": 3
+        }
+       },
+       {
+        "name": "SK Gaming",
+        "code": "SK",
+        "image": "http://static.lolesports.com/teams/1643979272144_SK_Monochrome.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 4
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-21T17:15:00Z",
+     "state": "unstarted",
+     "type": "match",
+     "blockName": "Week 5",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406147",
+      "flags": [],
+      "teams": [
+       {
+        "name": "Natus Vincere",
+        "code": "NAVI",
+        "image": "http://static.lolesports.com/teams/1752746833620_NAVI_FullColor.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 3
+        }
+       },
+       {
+        "name": "Team Vitality",
+        "code": "VIT",
+        "image": "http://static.lolesports.com/teams/1675865863968_Vitality_FullColor.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 4,
+         "losses": 2
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-22T15:00:00Z",
+     "state": "unstarted",
+     "type": "match",
+     "blockName": "Week 5",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406219",
+      "flags": [],
+      "teams": [
+       {
+        "name": "Shifters",
+        "code": "SHFT",
+        "image": "http://static.lolesports.com/teams/1765897071435_600px-Shifters_allmode.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 0,
+         "losses": 5
+        }
+       },
+       {
+        "name": "Fnatic",
+        "code": "FNC",
+        "image": "http://static.lolesports.com/teams/1631819669150_fnc-2021-worlds.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 3
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-22T17:15:00Z",
+     "state": "unstarted",
+     "type": "match",
+     "blockName": "Week 5",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406251",
+      "flags": [],
+      "teams": [
+       {
+        "name": "SK Gaming",
+        "code": "SK",
+        "image": "http://static.lolesports.com/teams/1643979272144_SK_Monochrome.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 4
+        }
+       },
+       {
+        "name": "Movistar KOI",
+        "code": "MKOI",
+        "image": "http://static.lolesports.com/teams/1734012609283_MKOI_FullColor_Blue.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 3,
+         "losses": 4
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-23T15:00:00Z",
+     "state": "unstarted",
+     "type": "match",
+     "blockName": "Week 5",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406123",
+      "flags": [],
+      "teams": [
+       {
+        "name": "Team Heretics",
+        "code": "TH",
+        "image": "http://static.lolesports.com/teams/1672933861879_Heretics-Full-Color.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 1,
+         "losses": 3
+        }
+       },
+       {
+        "name": "GIANTX",
+        "code": "GX",
+        "image": "http://static.lolesports.com/teams/1765897105091_GIANTX-logotype-white.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 2
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-23T17:15:00Z",
+     "state": "unstarted",
+     "type": "match",
+     "blockName": "Week 5",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406223",
+      "flags": [],
+      "teams": [
+       {
+        "name": "Shifters",
+        "code": "SHFT",
+        "image": "http://static.lolesports.com/teams/1765897071435_600px-Shifters_allmode.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 0,
+         "losses": 5
+        }
+       },
+       {
+        "name": "Karmine Corp",
+        "code": "KC",
+        "image": "http://static.lolesports.com/teams/1704714951336_KC.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 6,
+         "losses": 0
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-24T15:00:00Z",
+     "state": "unstarted",
+     "type": "match",
+     "blockName": "Week 5",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406167",
+      "flags": [],
+      "teams": [
+       {
+        "name": "Natus Vincere",
+        "code": "NAVI",
+        "image": "http://static.lolesports.com/teams/1752746833620_NAVI_FullColor.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 3
+        }
+       },
+       {
+        "name": "Fnatic",
+        "code": "FNC",
+        "image": "http://static.lolesports.com/teams/1631819669150_fnc-2021-worlds.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 3
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-24T17:15:00Z",
+     "state": "unstarted",
+     "type": "match",
+     "blockName": "Week 5",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406247",
+      "flags": [],
+      "teams": [
+       {
+        "name": "GIANTX",
+        "code": "GX",
+        "image": "http://static.lolesports.com/teams/1765897105091_GIANTX-logotype-white.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 2
+        }
+       },
+       {
+        "name": "G2 Esports",
+        "code": "G2",
+        "image": "http://static.lolesports.com/teams/G2-FullonDark.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 6,
+         "losses": 2
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-28T15:00:00Z",
+     "state": "unstarted",
+     "type": "match",
+     "blockName": "Week 6",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406119",
+      "flags": [],
+      "teams": [
+       {
+        "name": "Team Heretics",
+        "code": "TH",
+        "image": "http://static.lolesports.com/teams/1672933861879_Heretics-Full-Color.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 1,
+         "losses": 3
+        }
+       },
+       {
+        "name": "Shifters",
+        "code": "SHFT",
+        "image": "http://static.lolesports.com/teams/1765897071435_600px-Shifters_allmode.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 0,
+         "losses": 5
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-28T17:15:00Z",
+     "state": "unstarted",
+     "type": "match",
+     "blockName": "Week 6",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406195",
+      "flags": [],
+      "teams": [
+       {
+        "name": "Team Vitality",
+        "code": "VIT",
+        "image": "http://static.lolesports.com/teams/1675865863968_Vitality_FullColor.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 4,
+         "losses": 2
+        }
+       },
+       {
+        "name": "Fnatic",
+        "code": "FNC",
+        "image": "http://static.lolesports.com/teams/1631819669150_fnc-2021-worlds.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 3
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-29T15:00:00Z",
+     "state": "unstarted",
+     "type": "match",
+     "blockName": "Week 6",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406259",
+      "flags": [],
+      "teams": [
+       {
+        "name": "SK Gaming",
+        "code": "SK",
+        "image": "http://static.lolesports.com/teams/1643979272144_SK_Monochrome.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 4
+        }
+       },
+       {
+        "name": "Karmine Corp",
+        "code": "KC",
+        "image": "http://static.lolesports.com/teams/1704714951336_KC.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 6,
+         "losses": 0
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-29T17:15:00Z",
+     "state": "unstarted",
+     "type": "match",
+     "blockName": "Week 6",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406155",
+      "flags": [],
+      "teams": [
+       {
+        "name": "Natus Vincere",
+        "code": "NAVI",
+        "image": "http://static.lolesports.com/teams/1752746833620_NAVI_FullColor.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 3
+        }
+       },
+       {
+        "name": "GIANTX",
+        "code": "GX",
+        "image": "http://static.lolesports.com/teams/1765897105091_GIANTX-logotype-white.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 2
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-30T12:00:00Z",
+     "state": "unstarted",
+     "type": "match",
+     "blockName": "Week 6",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406179",
+      "flags": [],
+      "teams": [
+       {
+        "name": "Team Vitality",
+        "code": "VIT",
+        "image": "http://static.lolesports.com/teams/1675865863968_Vitality_FullColor.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 4,
+         "losses": 2
+        }
+       },
+       {
+        "name": "Shifters",
+        "code": "SHFT",
+        "image": "http://static.lolesports.com/teams/1765897071435_600px-Shifters_allmode.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 0,
+         "losses": 5
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-30T14:15:00Z",
+     "state": "unstarted",
+     "type": "match",
+     "blockName": "Week 6",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406131",
+      "flags": [],
+      "teams": [
+       {
+        "name": "Team Heretics",
+        "code": "TH",
+        "image": "http://static.lolesports.com/teams/1672933861879_Heretics-Full-Color.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 1,
+         "losses": 3
+        }
+       },
+       {
+        "name": "Movistar KOI",
+        "code": "MKOI",
+        "image": "http://static.lolesports.com/teams/1734012609283_MKOI_FullColor_Blue.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 3,
+         "losses": 4
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    },
+    {
+     "startTime": "2026-08-30T16:30:00Z",
+     "state": "unstarted",
+     "type": "match",
+     "blockName": "Week 6",
+     "league": {
+      "name": "LEC",
+      "slug": "lec"
+     },
+     "match": {
+      "id": "115548681803406239",
+      "flags": [],
+      "teams": [
+       {
+        "name": "GIANTX",
+        "code": "GX",
+        "image": "http://static.lolesports.com/teams/1765897105091_GIANTX-logotype-white.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 2
+        }
+       },
+       {
+        "name": "Fnatic",
+        "code": "FNC",
+        "image": "http://static.lolesports.com/teams/1631819669150_fnc-2021-worlds.png",
+        "result": {
+         "outcome": null,
+         "gameWins": 0
+        },
+        "record": {
+         "wins": 2,
+         "losses": 3
+        }
+       }
+      ],
+      "strategy": {
+       "type": "bestOf",
+       "count": 3
+      }
+     }
+    }
+   ]
+  }
+ }
+}

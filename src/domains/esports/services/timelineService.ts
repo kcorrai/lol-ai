@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { elapsedSeconds } from "@/domains/esports/duration";
-import { cachedResource, livestatsFetch, TTL } from "@/domains/esports/services/esportsApi";
+import { livestatsFetch } from "@/domains/esports/services/esportsApi";
+import { TTL, cachedResource } from "@/domains/esports/services/esportsCache";
 import { CACHE_TYPE, getGameStart } from "@/domains/esports/services/gameStatsService";
 import { logger } from "@/lib/utils/logger";
 import type { GameTimeline, TimelineSample } from "@/domains/esports/types";
