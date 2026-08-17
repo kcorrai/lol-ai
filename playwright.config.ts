@@ -40,6 +40,9 @@ export default defineConfig({
     {
       name: "setup",
       testMatch: /auth-setup\.setup\.ts$/,
+      // First past the post under `next dev`: this is what pays the compile for
+      // /login and /dashboard, and every other project waits behind it.
+      timeout: 120_000,
       use: { ...devices["Desktop Chrome"] },
     },
 

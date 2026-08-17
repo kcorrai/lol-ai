@@ -1,6 +1,6 @@
 # Coach Marketplace — Master Plan
 
-**Status:** In progress
+**Status:** Shipped — M0 → M20 on `agent/1`
 **Decisions:** ADR-019 (role model), ADR-020 (payment architecture),
 ADR-021 (session delivery), ADR-022 (availability and timezones),
 ADR-023 (rank verification tiers)
@@ -140,19 +140,19 @@ independently shippable once the spine exists.
 | M5 ✅ | `/coaches` search + public profile | first public page |
 | M6 ✅ | Availability + slot computation | calendar correctness |
 | M7 ✅ | Booking flow | the transaction |
-| M8 | Payment ledger (manual driver) | money, modelled but not moved |
-| M9 | Student sessions + coach dashboard | both sides' home |
-| M10 | Async VOD review delivery | the async product |
-| M11 | Live session delivery | the live product |
-| M12 | Live spectate delivery | the third product |
-| M13 | Session prep — the student's own data, shown to their coach | no AI, raw data |
-| M14 | Messaging + contact redaction | the relationship |
-| M15 | Two-sided blind reviews | reputation |
-| M16 | Expiry, cancellation, auto-completion sweeps | the promises kept |
-| M17 | Disputes + admin resolution | the promise of last resort |
-| M18 | Notifications and reminders | attendance |
-| M19 | Rate limiting and hardening | abuse |
-| M20 | E2E, docs, launch checklist | launch readiness |
+| M8 ✅ | Payment ledger (manual driver) | money, modelled but not moved |
+| M9 ✅ | Student sessions + coach dashboard | both sides' home |
+| M10 ✅ | Async VOD review delivery | the async product |
+| M11 ✅ | Live session delivery | the live product |
+| M12 ✅ | Live spectate delivery | the third product |
+| M13 ✅ | Session prep — the student's own data, shown to their coach | no AI, raw data |
+| M14 ✅ | Messaging + contact redaction | the relationship |
+| M15 ✅ | Two-sided blind reviews | reputation |
+| M16 ✅ | Expiry, cancellation, auto-completion sweeps | the promises kept |
+| M17 ✅ | Disputes + admin resolution | the promise of last resort |
+| M18 ✅ | Notifications and reminders | attendance |
+| M19 ✅ | Rate limiting and hardening | abuse |
+| M20 ✅ | E2E, docs, launch checklist | launch readiness |
 
 ## 6. Non-goals for this section
 
