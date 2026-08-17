@@ -99,6 +99,29 @@ export default async function CoachProfilePage({ params }: Props) {
         <h2 className="font-display text-lg font-semibold text-text">How they coach</h2>
         <p className="whitespace-pre-wrap text-sm text-text-body">{coach.bio}</p>
       </section>
+
+      {coach.reviews.length > 0 && (
+        <section className="space-y-3">
+          <h2 className="font-display text-lg font-semibold text-text">What students said</h2>
+          {coach.reviews.map((review) => (
+            <article key={review.id} className="rounded-lg border border-border bg-surface p-4">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-sm text-accent">{review.rating}/5</span>
+                <span className="text-xs text-text-muted">{review.authorName}</span>
+              </div>
+              {review.body && (
+                <p className="mt-2 whitespace-pre-wrap text-sm text-text-body">{review.body}</p>
+              )}
+              {review.coachReply && (
+                <p className="mt-3 border-l border-border pl-3 text-sm text-text-muted">
+                  <span className="font-semibold text-text">{coach.displayName}:</span>{" "}
+                  {review.coachReply}
+                </p>
+              )}
+            </article>
+          ))}
+        </section>
+      )}
     </div>
   );
 }

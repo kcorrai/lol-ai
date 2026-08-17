@@ -16,6 +16,7 @@ import { VodReviewPanel } from "@/domains/marketplace/components/VodReviewPanel"
 import { LiveSessionPanel } from "@/domains/marketplace/components/LiveSessionPanel";
 import { SessionPrepPanel } from "@/domains/marketplace/components/SessionPrepPanel";
 import { SpectatePanel } from "@/domains/marketplace/components/SpectatePanel";
+import { ReviewPanel } from "@/domains/marketplace/components/ReviewPanel";
 import type { BookingPaymentView } from "@/domains/marketplace/types";
 
 interface Data {
@@ -117,6 +118,8 @@ export default function SessionPage({ bookingId }: { bookingId: string }): React
       {booking.kind === "VOD_REVIEW" && (
         <VodReviewPanel booking={booking} onDelivered={() => void refetch()} />
       )}
+
+      <ReviewPanel booking={booking} onDone={() => void refetch()} />
 
       {booking.payment && (
         <Card>

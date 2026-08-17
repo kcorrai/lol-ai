@@ -192,6 +192,23 @@ export type {
   SendOutcome,
 } from "@/domains/marketplace/services/messagingService";
 
+export {
+  leaveReview,
+  revealIfReady,
+  revealExpired,
+  refreshCoachRating,
+  publicReviews,
+  replyToReview,
+} from "@/domains/marketplace/services/reviewService";
+export type { ReviewOutcome } from "@/domains/marketplace/services/reviewService";
+
+export {
+  bayesianAverage,
+  wilsonLowerBound,
+  aggregateRatings,
+} from "@/domains/marketplace/rating";
+export type { RatingAggregate } from "@/domains/marketplace/rating";
+
 export { redactContacts, redactionNotice } from "@/domains/marketplace/redact";
 export type { RedactionResult } from "@/domains/marketplace/redact";
 

@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db/prisma";
 import { MIN_REVIEWS_FOR_SCORE } from "@/domains/marketplace/policy";
 import { badgesFor } from "@/domains/marketplace/services/rankBadgeService";
 import { publicListings } from "@/domains/marketplace/services/serviceListingService";
+import { publicReviews } from "@/domains/marketplace/services/reviewService";
 import type { CoachCard, CoachPublicProfile } from "@/domains/marketplace/types";
 
 // The storefront's read side.
@@ -88,13 +89,14 @@ export async function getCoachProfilePage(slug: string): Promise<CoachPublicProf
   });
   if (!row) return null;
 
-  const [card, listings] = await Promise.all([
+  const [card, listings, reviews] = await Promise.all([
     getCoachBySlug(slug),
     publicListings(row.id),
+    publicReviews(row.id),
   ]);
   if (!card) return null;
 
-  return { ...card, bio: row.bio, timezone: row.timezone, listings, reviews: [] };
+  return { ...card, bio: row.bio, timezone: row.timezone, listings, reviews };
 }
 
 /** One coach by slug, or null. Approved only, for the same reason as above. */

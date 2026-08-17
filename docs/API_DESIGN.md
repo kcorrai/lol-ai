@@ -2152,3 +2152,25 @@ service.
 
 Polled at five seconds rather than pushed, on the draft room's reasoning
 (ADR-016).
+
+### `POST /api/bookings/[bookingId]/review-session`
+
+One side's review: `{ rating: 1..5, body }`. Named apart from `/review`, which
+is the async deliverable.
+
+**Two-sided and blind.** Neither review is visible until both are in or the
+14-day window closes, whichever comes first — both rows get the same
+`revealedAt`, so there is no moment where one is up and the other is not.
+Airbnb published what changing to this did: more reviews, and more honest
+negative ones, because a student writing the truth is no longer risking the
+reply. Every competitor here is one-sided, which is why their coach ratings all
+sit at 4.9.
+
+**Verified purchase by construction**, not by a check somebody could forget:
+`409` unless the booking is `COMPLETED`, and one review per side per booking.
+
+Only *student* reviews move a coach's rating — a coach rating their students has
+nothing to do with how good the coaching was. Two aggregates are recomputed on
+reveal: a Bayesian average for display (withheld below three reviews) and a
+Wilson lower bound for search ordering, so a 5.0 from two people does not
+outrank a 4.8 from ninety.
