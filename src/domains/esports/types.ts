@@ -415,6 +415,20 @@ export interface ProMeta {
   champions: ProChampionStat[];
 }
 
+/**
+ * How much pro play uses a champion, for pages that are not about pro play.
+ *
+ * The narrow slice of `ProChampionStat` that a ranked surface can show without
+ * having to explain a whole esports sample in a column header.
+ */
+export interface ProPresence {
+  /** Data Dragon champion id, in the feed's own casing. */
+  championId: string;
+  picks: number;
+  /** Percentage of games in the sample the champion was picked in. */
+  pickRate: number;
+}
+
 /** One finished game as it enters an aggregate, with the context `GameStats` alone lacks. */
 export interface SampledGame {
   matchId: string;

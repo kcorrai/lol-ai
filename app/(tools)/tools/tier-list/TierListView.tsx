@@ -7,8 +7,10 @@ import {
   formatGamePatch,
 } from "@/domains/meta";
 import type { CanonicalPosition, RoleTierList, SnapshotTier } from "@/domains/meta";
+import type { ProPresence } from "@/domains/esports";
 import { StatBlock } from "@/components/dashboard/laneiq/HudPanel";
 import { TierListConsole, type TierListTab } from "./TierListConsole";
+import type { TierRow } from "./sortEntries";
 
 interface TierListViewProps {
   mode: "ranked" | "aram";
@@ -17,6 +19,11 @@ interface TierListViewProps {
   activeTier: SnapshotTier | null; // current ?tier= rank filter (null = default bracket)
   title: string;
   subtitle: string;
+  /**
+   * Pro pick rates keyed by lowercased champion id, or null when the pro sample
+   * is not warm. Null hides the column rather than showing it empty.
+   */
+  proPresence: Record<string, ProPresence> | null;
 }
 
 /** Whole hours since an ISO timestamp; 0 when the snapshot is somehow in the future. */
@@ -35,8 +42,15 @@ export function TierListView({
   activeTier,
   title,
   subtitle,
+  proPresence,
 }: TierListViewProps): React.ReactElement {
   const aram = mode === "aram";
+  // Pro play is Summoner's Rift, so the column means nothing on the ARAM list.
+  const showPro = !aram && proPresence !== null;
+  const rows: TierRow[] = (list?.entries ?? []).map((entry) => ({
+    ...entry,
+    proPickRate: proPresence?.[entry.championKey.toLowerCase()]?.pickRate ?? null,
+  }));
   const rolePath = position ? `/tools/tier-list/${POSITION_SLUG[position]}` : "/tools/tier-list";
 
   const modeTabs: TierListTab[] = [
@@ -105,7 +119,7 @@ export function TierListView({
           </p>
         ) : (
           <TierListConsole
-            entries={list.entries}
+            entries={rows}
             modeTabs={modeTabs}
             laneTabs={laneTabs}
             rankTabs={rankTabs}
@@ -113,6 +127,7 @@ export function TierListView({
             hrefBase={aram ? "/aram" : "/counters"}
             showBan={!aram}
             showMovement={!aram}
+            showPro={showPro}
           />
         )}
       </div>

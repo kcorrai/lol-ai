@@ -72,7 +72,7 @@ rather than rendered as a nought.
 
 TASK-312 (AI previews and recaps) is not being built — Kaan's call, 17 Aug 2026.
 TASK-313 (follow teams) is approved and separate. The tier list's pro-presence
-column is unbuilt. Embedding VODs in-page rather than linking out is an open
+column is built. Embedding VODs in-page rather than linking out is an open
 decision, not a task; §5 of `ESPORTS_PLAN.md` currently rules it out.
 
 ## 4. E2E, and how to keep it alive

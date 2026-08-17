@@ -5,9 +5,14 @@ import { movementOf } from "./tierDisplay";
 import type { SortColumn, SortDirection } from "./sortEntries";
 import type { TierListEntry } from "@/domains/meta";
 
-/** Groups sorted rows by tier letter, keeping the caller's order inside each group. */
-export function groupByTier(entries: TierListEntry[]): { letter: string; rows: TierListEntry[] }[] {
-  const groups: { letter: string; rows: TierListEntry[] }[] = [];
+/**
+ * Groups sorted rows by tier letter, keeping the caller's order inside each group.
+ *
+ * Generic over the row so a caller that carries extra columns — the tier list's
+ * pro presence — still has them on the far side of the grouping.
+ */
+export function groupByTier<T extends TierListEntry>(entries: T[]): { letter: string; rows: T[] }[] {
+  const groups: { letter: string; rows: T[] }[] = [];
   for (const entry of entries) {
     const letter = tierLetter(entry.tier);
     const last = groups[groups.length - 1];

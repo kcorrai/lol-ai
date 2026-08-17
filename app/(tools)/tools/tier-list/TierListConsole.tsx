@@ -11,8 +11,8 @@ import {
   DEFAULT_SORT,
   type SortColumn,
   type SortDirection,
+  type TierRow,
 } from "./sortEntries";
-import type { TierListEntry } from "@/domains/meta";
 
 /** A navigation chip. Built on the server so this component never imports the meta barrel. */
 export interface TierListTab {
@@ -22,7 +22,7 @@ export interface TierListTab {
 }
 
 interface TierListConsoleProps {
-  entries: TierListEntry[];
+  entries: TierRow[];
   modeTabs: TierListTab[];
   laneTabs: TierListTab[] | null; // null in ARAM, which has no lanes
   rankTabs: TierListTab[];
@@ -30,6 +30,7 @@ interface TierListConsoleProps {
   hrefBase: string;
   showBan: boolean;
   showMovement: boolean;
+  showPro: boolean;
 }
 
 const TAG =
@@ -60,6 +61,7 @@ export function TierListConsole({
   hrefBase,
   showBan,
   showMovement,
+  showPro,
 }: TierListConsoleProps): React.ReactElement {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortColumn>(DEFAULT_SORT.column);
@@ -153,6 +155,7 @@ export function TierListConsole({
             hrefBase={hrefBase}
             showBan={showBan}
             showMovement={showMovement}
+            showPro={showPro}
           />
         </>
       )}

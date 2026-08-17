@@ -1,8 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { sortEntries, defaultDirectionFor, DEFAULT_SORT } from "./sortEntries";
-import type { TierListEntry } from "@/domains/meta";
+import { sortEntries, defaultDirectionFor, DEFAULT_SORT, type TierRow } from "./sortEntries";
 
-const entry = (over: Partial<TierListEntry> & { championKey: string }): TierListEntry => ({
+const entry = (over: Partial<TierRow> & { championKey: string }): TierRow => ({
   name: over.championKey,
   tier: 1,
   rank: 1,
@@ -12,12 +11,13 @@ const entry = (over: Partial<TierListEntry> & { championKey: string }): TierList
   banRate: 5,
   games: 1000,
   lowConfidence: false,
+  proPickRate: null,
   ...over,
 });
 
-const keys = (list: TierListEntry[]) => list.map((e) => e.championKey);
+const keys = (list: TierRow[]) => list.map((e) => e.championKey);
 
-const LIST: TierListEntry[] = [
+const LIST: TierRow[] = [
   entry({ championKey: "Ahri", rank: 1, tier: 1, winRate: 51.4, pickRate: 9.2, banRate: 2.9, prevPatchRank: 2 }),
   entry({ championKey: "Sylas", rank: 2, tier: 1, winRate: 50.6, pickRate: 9.2, banRate: 19.4, prevPatchRank: 1 }),
   entry({ championKey: "Zed", rank: 3, tier: 2, winRate: 50.2, pickRate: 7.2, banRate: 19.0, prevPatchRank: 8 }),
@@ -64,6 +64,34 @@ describe("sortEntries", () => {
     expect(keys(sortEntries(withNew, "movement", "asc")).at(-1)).toBe("Aurora");
   });
 
+  it("ranks by pro pick rate, most-picked first when descending", () => {
+    const withPro = [
+      entry({ championKey: "Ahri", rank: 1, proPickRate: 12 }),
+      entry({ championKey: "Sylas", rank: 2, proPickRate: 41 }),
+      entry({ championKey: "Zed", rank: 3, proPickRate: 3 }),
+    ];
+
+    expect(keys(sortEntries(withPro, "pro", "desc"))).toEqual(["Sylas", "Ahri", "Zed"]);
+    expect(keys(sortEntries(withPro, "pro", "asc"))).toEqual(["Zed", "Ahri", "Sylas"]);
+  });
+
+  it("sinks champions with no pro games in both directions", () => {
+    // Most champions are never picked professionally. Absence from the sample is
+    // not a pick rate of zero, and must not float to the top of an ascending sort.
+    const withPro = [
+      entry({ championKey: "Ahri", rank: 1, proPickRate: 12 }),
+      entry({ championKey: "Sylas", rank: 2, proPickRate: 41 }),
+      entry({ championKey: "Yuumi", rank: 3, proPickRate: null }),
+    ];
+
+    expect(keys(sortEntries(withPro, "pro", "desc")).at(-1)).toBe("Yuumi");
+    expect(keys(sortEntries(withPro, "pro", "asc")).at(-1)).toBe("Yuumi");
+  });
+
+  it("falls back to meta order when nothing in the list has a pro pick rate", () => {
+    expect(keys(sortEntries(LIST, "pro", "desc"))).toEqual(["Ahri", "Sylas", "Zed"]);
+  });
+
   it("does not mutate the list it was given", () => {
     const original = keys(LIST);
     sortEntries(LIST, "winRate", "asc");
@@ -77,8 +105,9 @@ describe("defaultDirectionFor", () => {
     expect(defaultDirectionFor("tier")).toBe("asc");
   });
 
-  it("opens the rate columns and movement highest-first", () => {
+  it("opens the rate columns, movement and pro presence highest-first", () => {
     expect(defaultDirectionFor("winRate")).toBe("desc");
     expect(defaultDirectionFor("movement")).toBe("desc");
+    expect(defaultDirectionFor("pro")).toBe("desc");
   });
 });

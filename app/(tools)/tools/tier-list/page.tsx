@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { permanentRedirect } from "next/navigation";
 import { getTierList, parsePosition, POSITION_SLUG, formatGamePatch } from "@/domains/meta";
 import type { CanonicalPosition } from "@/domains/meta";
+import { getProPresence } from "@/domains/esports";
 import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { TierListView } from "./TierListView";
 import { tierBlurb } from "./tierBlurb";
@@ -32,7 +33,9 @@ export default async function TierListPage({ searchParams }: PageProps) {
   const requested = parsePosition(searchParams.role);
   if (requested) permanentRedirect(`/tools/tier-list/${POSITION_SLUG[requested]}`);
 
-  const list = await getTierList(DEFAULT_POSITION);
+  // The pro read is cache-only and resolves to null on a cold sample, so it can
+  // sit beside the tier list rather than behind it (TASK-310).
+  const [list, proPresence] = await Promise.all([getTierList(DEFAULT_POSITION), getProPresence()]);
   const patch = list ? formatGamePatch(list.patch) : "";
   const lane = "Mid";
 
@@ -75,6 +78,7 @@ export default async function TierListPage({ searchParams }: PageProps) {
         list={list}
         activeTier={null}
         title={`LoL tier list${patch ? ` — patch ${patch}` : ""}`}
+        proPresence={proPresence}
         subtitle="Strongest champions per lane by real ranked win rate. Pick a lane and a rank band."
       />
 

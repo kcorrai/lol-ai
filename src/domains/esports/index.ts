@@ -23,6 +23,7 @@ export {
   getProBuild,
   getCachedProBuild,
   getProChampionIds,
+  getProPresence,
 } from "@/domains/esports/services/proMetaService";
 export type { ProMetaQuery, ProBuildResult } from "@/domains/esports/services/proMetaService";
 export { aggregateProMeta, MIN_MEANINGFUL_GAMES } from "@/domains/esports/proMeta";
@@ -74,6 +75,7 @@ export type {
   VodSeries,
   EventStream,
   ProChampionStat,
+  ProPresence,
   ProChampionBuild,
   ProGameAppearance,
   ProPlayerOnChampion,

@@ -4,17 +4,18 @@ import Link from "next/link";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { TIER_NOTE, formatGames, tierChipClass, winRateScale } from "./tierDisplay";
 import { Movement, SortButton, groupByTier } from "./TierTableParts";
-import type { SortColumn, SortDirection } from "./sortEntries";
-import type { TierListEntry } from "@/domains/meta";
+import type { SortColumn, SortDirection, TierRow } from "./sortEntries";
 
 interface TierTableProps {
-  entries: TierListEntry[]; // already sorted by the caller
+  entries: TierRow[]; // already sorted by the caller
   sort: SortColumn;
   direction: SortDirection;
   onSort: (column: SortColumn) => void;
   hrefBase: string;
   showBan: boolean;
   showMovement: boolean;
+  /** False in ARAM, and whenever the pro sample is not warm. */
+  showPro: boolean;
 }
 
 const CELL = "font-mono text-[13px] tabular-nums";
@@ -28,6 +29,7 @@ export function TierTable({
   hrefBase,
   showBan,
   showMovement,
+  showPro,
 }: TierTableProps): React.ReactElement {
   const scale = winRateScale(entries);
   const groups = groupByTier(entries);
@@ -39,6 +41,7 @@ export function TierTable({
     "132px",
     "82px",
     showBan ? "82px" : null,
+    showPro ? "76px" : null,
   ]
     .filter(Boolean)
     .join(" ");
@@ -71,6 +74,11 @@ export function TierTable({
           <SortButton label="Pick" column="pickRate" sort={sort} direction={direction} onSort={onSort} />
           {showBan && (
             <SortButton label="Ban" column="banRate" sort={sort} direction={direction} onSort={onSort} />
+          )}
+          {showPro && (
+            <span title="Share of recent professional games this champion was picked in">
+              <SortButton label="Pro" column="pro" sort={sort} direction={direction} onSort={onSort} />
+            </span>
           )}
         </div>
 
@@ -141,6 +149,24 @@ export function TierTable({
                   {showBan && (
                     <span className={`${CELL} text-right text-text-muted`}>{entry.banRate.toFixed(1)}%</span>
                   )}
+                  {showPro &&
+                    (entry.proPickRate === null ? (
+                      // An em dash, not 0% — the champion is absent from the pro
+                      // sample, which is a different statement from "picked, never".
+                      <span className={`${CELL} text-right text-text-faint`} title="No games in the pro sample">
+                        &mdash;
+                      </span>
+                    ) : (
+                      <Link
+                        href={`/esports/champions/${entry.championKey}`}
+                        className={`${CELL} text-right text-accent hover:underline`}
+                        // The cell reads "41%" and nothing else, which is no use
+                        // to a screen reader working through a column of links.
+                        aria-label={`${entry.name} in pro play — picked in ${entry.proPickRate.toFixed(0)}% of recent games`}
+                      >
+                        {entry.proPickRate.toFixed(0)}%
+                      </Link>
+                    ))}
                 </div>
               );
             })}

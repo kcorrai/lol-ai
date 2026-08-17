@@ -9,6 +9,7 @@ import {
   ALL_POSITIONS,
   formatGamePatch,
 } from "@/domains/meta";
+import { getProPresence } from "@/domains/esports";
 import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { TierListView } from "../TierListView";
 import { tierBlurb } from "../tierBlurb";
@@ -52,7 +53,11 @@ export default async function RoleTierListPage({ params, searchParams }: PagePro
 
   const lane = POSITION_LABELS[position];
   const tier = parseTier(searchParams.tier);
-  const list = await getTierList(position, tier ?? undefined);
+  // Cache-only, so it costs nothing on a cold sample and hides its own column.
+  const [list, proPresence] = await Promise.all([
+    getTierList(position, tier ?? undefined),
+    getProPresence(),
+  ]);
   const patch = list ? formatGamePatch(list.patch) : "";
 
   const itemListJsonLd = list && {
@@ -95,6 +100,7 @@ export default async function RoleTierListPage({ params, searchParams }: PagePro
         list={list}
         activeTier={tier}
         title={`LoL ${lane} tier list${patch ? ` — patch ${patch}` : ""}`}
+        proPresence={proPresence}
         subtitle={`The strongest ${lane} champions this patch, ranked by real win rate with patch movement.`}
       />
 
