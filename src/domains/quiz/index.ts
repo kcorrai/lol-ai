@@ -37,6 +37,9 @@ export { abilityFor, answerFor, buildPuzzle, skinNumFor, visibleEmoji } from "./
 
 export { UnknownChampionError, judgeGuess, missCount, revealAnswer } from "./services/guessService";
 
+export { rankPlayers } from "./services/leaderboardRanking";
+export type { PlayerResults, RankedPlayer } from "./services/leaderboardRanking";
+
 export { buildShareGrid } from "./services/shareGrid";
 export type { ModeResult, ShareGridInput } from "./services/shareGrid";
 

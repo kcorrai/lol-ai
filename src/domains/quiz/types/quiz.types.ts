@@ -84,6 +84,8 @@ export interface DailyPuzzle {
   mode: QuizMode;
   dateKey: string; // "2026-08-17" (UTC)
   puzzleNumber: number;
+  /** Set only in practice mode; echoed back so guesses land on the same puzzle. */
+  practiceSeed?: string;
   /** Mode-specific prompt. Never contains anything that identifies the answer. */
   prompt: QuizPrompt;
   nextResetAt: string; // ISO timestamp of the next UTC midnight

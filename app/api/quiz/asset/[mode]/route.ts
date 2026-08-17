@@ -30,27 +30,28 @@ const DDRAGON = "https://ddragon.leagueoflegends.com";
  * mean hammering Data Dragon for a problem one extra request solves on the rare
  * day it happens.
  */
-function candidates(mode: string, dateKey: string): string[] {
+function candidates(mode: string, dateKey: string, seed?: string): string[] {
   if (mode === "ability") {
-    const ability = abilityFor(answerFor("ability", dateKey), dateKey);
+    const ability = abilityFor(answerFor("ability", dateKey, seed), dateKey, seed);
     const folder = ability.slot === "P" ? "passive" : "spell";
     return [`${DDRAGON}/cdn/${DATASET_VERSION}/img/${folder}/${ability.image}`];
   }
   if (mode === "splash") {
-    const answer = answerFor("splash", dateKey);
+    const answer = answerFor("splash", dateKey, seed);
     // Splash art is unversioned on Data Dragon, so these URLs never go stale.
     const url = (num: number) => `${DDRAGON}/cdn/img/champion/splash/${answer.id}_${num}.jpg`;
-    const chosen = skinNumFor(answer, dateKey);
+    const chosen = skinNumFor(answer, dateKey, seed);
     return chosen === 0 ? [url(0)] : [url(chosen), url(0)];
   }
   return [];
 }
 
-export async function GET(_request: NextRequest, { params }: { params: { mode: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { mode: string } }) {
   const now = new Date();
+  const seed = request.nextUrl.searchParams.get("seed") ?? undefined;
 
   try {
-    const urls = candidates(params.mode, utcDateKey(now));
+    const urls = candidates(params.mode, utcDateKey(now), seed);
     if (urls.length === 0) return apiError("NOT_FOUND", "No asset for that mode", 404);
 
     for (const url of urls) {
@@ -62,9 +63,13 @@ export async function GET(_request: NextRequest, { params }: { params: { mode: s
       return new NextResponse(res.body, {
         headers: {
           "Content-Type": res.headers.get("content-type") ?? "image/jpeg",
-          // Expires exactly when the puzzle does, so a shared cache can never
-          // hand yesterday's picture to someone playing today.
-          "Cache-Control": `public, max-age=0, s-maxage=${secondsUntilReset(now)}`,
+          // The daily image expires exactly when the puzzle does, so a shared
+          // cache can never hand yesterday's picture to someone playing today.
+          // A practice image is keyed by its seed and never changes, so it can
+          // be cached hard instead.
+          "Cache-Control": seed
+            ? "public, max-age=0, s-maxage=604800, immutable"
+            : `public, max-age=0, s-maxage=${secondsUntilReset(now)}`,
         },
       });
     }

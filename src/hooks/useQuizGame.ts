@@ -46,29 +46,40 @@ function pruneOldDays(dateKey: string): void {
   }
 }
 
-export function useQuizGame(dateKey: string | undefined, mode: QuizMode) {
+export function useQuizGame(
+  dateKey: string | undefined,
+  mode: QuizMode,
+  practiceSeed?: string
+) {
   const [state, setState] = useState<QuizGameState>(EMPTY);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
   useEffect(() => {
+    // A practice round starts empty every time and is never restored: it has no
+    // streak, no share card and no reason to outlive the tab.
+    if (practiceSeed) {
+      setState(EMPTY);
+      setError(null);
+      return;
+    }
     if (!dateKey) return;
     pruneOldDays(dateKey);
     setState(read(dateKey, mode));
     setError(null);
-  }, [dateKey, mode]);
+  }, [dateKey, mode, practiceSeed]);
 
   const persist = useCallback(
     (next: QuizGameState) => {
       setState(next);
-      if (!dateKey) return;
+      if (!dateKey || practiceSeed) return;
       try {
         window.localStorage.setItem(storageKey(dateKey, mode), JSON.stringify(next));
       } catch {
         // Same as above — losing persistence is survivable, losing the turn is not.
       }
     },
-    [dateKey, mode]
+    [dateKey, mode, practiceSeed]
   );
 
   // Returns the state the turn produced rather than relying on the caller to
@@ -93,6 +104,7 @@ export function useQuizGame(dateKey: string | undefined, mode: QuizMode) {
             mode,
             guess,
             previousGuesses: state.results.map((r) => r.guess),
+            ...(practiceSeed ? { practiceSeed } : {}),
           }),
         });
         const json = (await res.json()) as { data?: GuessResult; error?: { message: string } };
@@ -116,7 +128,7 @@ export function useQuizGame(dateKey: string | undefined, mode: QuizMode) {
         setPending(false);
       }
     },
-    [mode, pending, persist, state]
+    [mode, pending, persist, practiceSeed, state]
   );
 
   const giveUp = useCallback(async (): Promise<QuizGameState | null> => {
@@ -126,7 +138,7 @@ export function useQuizGame(dateKey: string | undefined, mode: QuizMode) {
       const res = await fetch("/api/quiz/guess", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode, giveUp: true }),
+        body: JSON.stringify({ mode, giveUp: true, ...(practiceSeed ? { practiceSeed } : {}) }),
       });
       const json = (await res.json()) as {
         data?: { answer: NonNullable<GuessResult["answer"]> };
@@ -141,7 +153,7 @@ export function useQuizGame(dateKey: string | undefined, mode: QuizMode) {
     } finally {
       setPending(false);
     }
-  }, [mode, persist, state]);
+  }, [mode, persist, practiceSeed, state]);
 
   const misses = state.results.filter((r) => !r.correct).length;
 

@@ -12,12 +12,15 @@ export interface DailyQuizResponse {
  * prompt widens with each miss — the other modes ignore it, so their query is
  * refetched only when the mode changes.
  */
-export function useDailyQuiz(mode: QuizMode, misses: number) {
+export function useDailyQuiz(mode: QuizMode, misses: number, practiceSeed?: string) {
   const keyedMisses = mode === "emoji" ? misses : 0;
+  const seedParam = practiceSeed ? `&seed=${encodeURIComponent(practiceSeed)}` : "";
   return useQuery({
-    queryKey: ["quiz", "today", mode, keyedMisses],
+    queryKey: ["quiz", "today", mode, keyedMisses, practiceSeed ?? "daily"],
     queryFn: () =>
-      apiFetch<DailyQuizResponse>(`/api/quiz/today?mode=${mode}&misses=${keyedMisses}`),
+      apiFetch<DailyQuizResponse>(
+        `/api/quiz/today?mode=${mode}&misses=${keyedMisses}${seedParam}`
+      ),
     // The puzzle is fixed for the whole UTC day, so refetching it is wasted work.
     staleTime: 15 * 60 * 1000,
   });

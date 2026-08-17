@@ -51,6 +51,14 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
 
+    // The daily quiz is public and needs no seeded row: its puzzles are derived
+    // from the UTC date and a committed dataset, so there is nothing to set up.
+    {
+      name: "quiz",
+      testMatch: /quiz\.spec\.ts$/,
+      use: { ...devices["Desktop Chrome"] },
+    },
+
     // The esports section is public and stateless — a cache over a feed, with
     // no seeded row behind any of it, so it needs neither auth nor setup.
     {

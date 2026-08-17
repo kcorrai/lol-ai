@@ -19,6 +19,9 @@ interface QuizBoardProps {
   /** Every mode finished today, so the share card is a scorecard not one row. */
   allResults: ModeResult[];
   onFinished: (result: ModeResult) => void;
+  /** Set in practice mode. No streak, no share card, no record kept. */
+  practiceSeed?: string;
+  onNextPractice?: () => void;
 }
 
 export function QuizBoard({
@@ -26,19 +29,23 @@ export function QuizBoard({
   streak,
   allResults,
   onFinished,
+  practiceSeed,
+  onNextPractice,
 }: QuizBoardProps): React.JSX.Element {
   // Set after mount rather than during render: it feeds a localStorage key, and
   // computing it on the server would pin the board to the server's day.
   const [dateKey, setDateKey] = useState<string>();
   useEffect(() => setDateKey(new Date().toISOString().slice(0, 10)), []);
 
-  const game = useQuizGame(dateKey, mode);
-  const { data, isLoading, isError } = useDailyQuiz(mode, game.misses);
+  const game = useQuizGame(dateKey, mode, practiceSeed);
+  const { data, isLoading, isError } = useDailyQuiz(mode, game.misses, practiceSeed);
 
   const finished = game.state.solved || game.state.gaveUp;
 
   function report(next: QuizGameState | null): void {
-    if (!next || (!next.solved && !next.gaveUp)) return;
+    // A practice round is not part of the day: it must not touch the scorecard,
+    // the streak or the share card.
+    if (practiceSeed || !next || (!next.solved && !next.gaveUp)) return;
     onFinished({ mode, guessCount: next.results.length, solved: next.solved });
   }
 
@@ -70,7 +77,9 @@ export function QuizBoard({
         <h2 className="font-display text-base font-bold uppercase tracking-wide text-fg-1">
           {MODE_LABELS[mode]}
         </h2>
-        <span className="font-mono text-[10.5px] text-fg-4">#{puzzle.puzzleNumber}</span>
+        <span className="font-mono text-[10.5px] text-fg-4">
+          {practiceSeed ? "PRACTICE" : `#${puzzle.puzzleNumber}`}
+        </span>
       </div>
 
       <PuzzlePrompt prompt={puzzle.prompt} misses={game.misses} revealed={finished} />
@@ -106,7 +115,27 @@ export function QuizBoard({
         </>
       )}
 
-      {finished && game.state.answer && (
+      {finished && practiceSeed && game.state.answer && (
+        <div className="notch flex flex-wrap items-center justify-between gap-3 border border-line-2 bg-surface-dark p-4">
+          <div>
+            <p className="hud-label">
+              {game.state.solved ? `Solved in ${game.state.results.length}` : "The answer was"}
+            </p>
+            <p className="font-display text-lg font-bold uppercase tracking-wide text-fg-1">
+              {game.state.answer.name}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onNextPractice}
+            className="notch-sm border border-accent/50 bg-accent/12 px-3.5 py-2 font-mono text-[11px] uppercase tracking-label text-accent hover:bg-accent/20"
+          >
+            Next puzzle
+          </button>
+        </div>
+      )}
+
+      {finished && !practiceSeed && game.state.answer && (
         <ResultPanel
           mode={mode}
           puzzleNumber={puzzle.puzzleNumber}
