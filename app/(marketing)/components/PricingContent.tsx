@@ -1,154 +1,85 @@
 "use client";
 
 import { useState } from "react";
-import { PricingCard } from "./PricingCard";
-import { PricingComparisonTable } from "./PricingComparisonTable";
+import { PricingPlans } from "./PricingPlans";
+import { PricingCompare } from "./PricingCompare";
+import { PricingFaq } from "./PricingFaq";
 import { PricingB2BSection } from "./PricingB2BSection";
+import { cn } from "@/lib/utils";
 
 const FREE_FEATURES = [
-  { label: "3 AI Coaching Reports per month" },
-  { label: "1 Riot Account" },
-  { label: "10-game History" },
-  { label: "Match Detail Analysis" },
-  { label: "Rank Tracking" },
-  { label: "Counter Pick (3 counters)" },
-  { label: "Draft Analyzer" },
+  "3 AI coaching reports per month",
+  "1 Riot account, last 10 games",
+  "Match detail analysis and rank tracking",
+  "Counter picker, 3 counters per champion",
+  "Every free tool, no login",
 ];
 
-const PRO_BASE_FEATURES = [
-  { label: "Unlimited AI Coaching Reports" },
-  { label: "3 Riot Accounts" },
-  { label: "100-game History" },
-  { label: "Counter Pick (full list)" },
-  { label: "Priority AI Processing" },
-];
-
-const PRO_EXCLUSIVE_FEATURES = [
-  { label: "Matchup Intelligence" },
-  { label: "Champion Mastery Score" },
-  { label: "Habit Detection Engine" },
-  { label: "Progress Plan & History" },
-  { label: "Shareable AI Report Cards" },
-  { label: "Weekly AI Development Email" },
-  { label: "Voice Coaching (TTS)" },
-];
-
-const TEAM_BASE_FEATURES = [
-  { label: "All Pro features" },
-  { label: "Create up to 5 teams" },
-  { label: "5-person team (full roster)" },
-];
-
-const TEAM_EXCLUSIVE_FEATURES = [
-  { label: "Team Performance Dashboard" },
-  { label: "Coach / Player roles" },
-  { label: "Email member invitations" },
-  { label: "Bulk member analysis" },
+const PRO_FEATURES = [
+  "Unlimited coaching reports",
+  "3 Riot accounts",
+  "Last 100 games parsed",
+  "Matchup intelligence",
+  "Champion mastery score",
+  "Habit detection engine",
+  "Improvement plan and history",
+  "Shareable AI report cards",
+  "Weekly development email",
+  "Voice coaching",
 ];
 
 const MONTHLY_PRICE = "$9.99";
-const ANNUAL_PRICE_PER_MONTH = "$8.33";
 const ANNUAL_TOTAL = "$99.90";
-const TEAM_PRICE = "$29.99";
+const ANNUAL_PER_MONTH = "$8.33";
+const TEAM_MONTHLY = "$29.99/mo";
+const TEAM_ANNUAL = "$299.90/yr";
 
-export function PricingContent() {
+export function PricingContent(): React.JSX.Element {
   const [isAnnual, setIsAnnual] = useState(false);
-
-  const proPrice = isAnnual ? ANNUAL_PRICE_PER_MONTH : MONTHLY_PRICE;
-  const proPeriod = isAnnual ? "/month (annual)" : "/month";
-  const proCtaLabel = isAnnual
-    ? `Start Pro — ${ANNUAL_TOTAL}/year`
-    : `Start Pro — ${MONTHLY_PRICE}/month`;
-  const proCtaHref = isAnnual
-    ? `/settings/billing?period=annual`
-    : `/settings/billing`;
 
   return (
     <>
-      {/* Period toggle */}
-      <div className="mb-12 flex flex-col items-center gap-3">
-        <div className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-1">
-          <button
-            onClick={() => setIsAnnual(false)}
-            className={`rounded-xl px-5 py-2 text-sm font-semibold transition-colors ${
-              !isAnnual ? "bg-accent text-background" : "text-text-muted hover:text-text"
-            }`}
-          >
-            Monthly
-          </button>
-          <button
-            onClick={() => setIsAnnual(true)}
-            className={`flex items-center gap-2 rounded-xl px-5 py-2 text-sm font-semibold transition-colors ${
-              isAnnual ? "bg-accent text-background" : "text-text-muted hover:text-text"
-            }`}
-          >
-            Annual
-            <span
-              className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                isAnnual ? "bg-background/20 text-background" : "bg-success/15 text-success"
-              }`}
+      <div className="mb-6 flex flex-wrap items-center gap-3">
+        <div className="flex gap-1">
+          {[
+            { annual: false, label: "Monthly" },
+            { annual: true, label: "Annual" },
+          ].map((option) => (
+            <button
+              key={option.label}
+              onClick={() => setIsAnnual(option.annual)}
+              className={cn(
+                "tag-cut border px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-wide transition-colors",
+                isAnnual === option.annual
+                  ? "border-acid-500 bg-acid-500/10 text-acid-500"
+                  : "border-line-2 text-fg-3 hover:text-fg-1"
+              )}
             >
-              2 months free
-            </span>
-          </button>
+              {option.label}
+            </button>
+          ))}
         </div>
         {isAnnual && (
-          <p className="text-xs text-text-muted">
-            With annual payment{" "}
-            <span className="font-semibold text-success">total {ANNUAL_TOTAL}</span> — 17% cheaper than monthly.
-          </p>
+          <span className="tag-cut border border-acid-500 bg-acid-500/10 px-2.5 py-1 font-mono text-[9.5px] font-bold uppercase tracking-label text-acid-500">
+            2 months free
+          </span>
         )}
       </div>
 
-      {/* Cards */}
-      <div className="mx-auto mb-20 grid max-w-5xl gap-8 md:grid-cols-3 md:items-start">
-        <PricingCard
-          plan="free"
-          name="Free"
-          price="$0"
-          description="Everything you need to get started."
-          features={FREE_FEATURES}
-          cta="Start Free"
-          ctaHref="/register"
-        />
-        <PricingCard
-          plan="pro"
-          name="Pro"
-          price={proPrice}
-          period={proPeriod}
-          description="For those serious about climbing."
-          features={PRO_BASE_FEATURES}
-          proFeatures={PRO_EXCLUSIVE_FEATURES}
-          cta={proCtaLabel}
-          ctaHref={proCtaHref}
-        />
-        <PricingCard
-          plan="team"
-          name="Team"
-          price={TEAM_PRICE}
-          period="/month"
-          description="Analyze your teams, coach your players."
-          features={TEAM_BASE_FEATURES}
-          proFeatures={TEAM_EXCLUSIVE_FEATURES}
-          cta={`Start Team — ${TEAM_PRICE}/month`}
-          ctaHref="/settings/billing"
-        />
-      </div>
+      <PricingPlans
+        isAnnual={isAnnual}
+        freeFeatures={FREE_FEATURES}
+        proFeatures={PRO_FEATURES}
+        proPrice={isAnnual ? ANNUAL_TOTAL : MONTHLY_PRICE}
+        proUnit={isAnnual ? `/year · ${ANNUAL_PER_MONTH} a month` : "/month"}
+        proCta={isAnnual ? `Go Pro — ${ANNUAL_TOTAL} a year` : `Go Pro — ${MONTHLY_PRICE} a month`}
+        proCtaHref={isAnnual ? "/settings/billing?period=annual" : "/settings/billing"}
+        teamPrice={isAnnual ? TEAM_ANNUAL : TEAM_MONTHLY}
+      />
 
-      {/* Comparison table */}
-      <div className="mx-auto max-w-3xl">
-        <h2 className="mb-8 text-center font-display text-2xl font-bold text-text">
-          Feature Comparison
-        </h2>
-        <PricingComparisonTable />
-      </div>
-
-      <p className="mt-10 text-center text-sm text-text-muted">
-        All plans include unlimited match sync and dashboard access.{" "}
-        <span className="text-text">No hidden fees.</span>
-      </p>
-
+      <PricingCompare />
       <PricingB2BSection />
+      <PricingFaq />
     </>
   );
 }
