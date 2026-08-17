@@ -1,17 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import {
-  Target,
-  Swords,
-  Users,
-  Layers,
-  Trophy,
-  BookOpen,
-  Snowflake,
-  TrendingUp,
-  Radio,
-} from "lucide-react";
+import { getMetaSnapshot, formatGamePatch } from "@/domains/meta";
 import { PublicOnly } from "@/components/tools/PublicOnly";
+import { TOOL_GROUPS, TOOL_COUNT } from "./toolIndex";
+import { ToolsHero } from "./ToolsHero";
+import { ToolGroupList } from "./ToolGroupList";
+import { ToolsConversion } from "./ToolsConversion";
 
 export const metadata: Metadata = {
   title: "Free LoL Tools — Counters, Matchups, Draft & Tier List | LoL AI Coach",
@@ -20,73 +13,44 @@ export const metadata: Metadata = {
   alternates: { canonical: "/tools" },
 };
 
-const TOOLS = [
-  {
-    href: "/draft",
-    title: "Draft Room",
-    description:
-      "Run a full pick/ban with your team. Fearless series in one link, with live advice on the turn in front of you.",
-    Icon: Target,
-  },
-  {
-    href: "/tools/counter-picker",
-    title: "Counter Picker",
-    description: "Find the best champions to counter any pick, ranked by real win rate.",
-    Icon: Swords,
-  },
-  {
-    href: "/tools/matchup",
-    title: "Matchup Analyzer",
-    description: "Compare two champions head-to-head and see who wins the lane.",
-    Icon: Users,
-  },
-  {
-    href: "/tools/draft-analyzer",
-    title: "Draft Analyzer",
-    description: "Check any 5v5 comp's damage, frontline, scaling and lane matchups.",
-    Icon: Layers,
-  },
-  {
-    href: "/tools/tier-list",
-    title: "Tier List",
-    description: "The strongest champions per lane this patch, by win rate.",
-    Icon: Trophy,
-  },
-  {
-    href: "/builds",
-    title: "Champion Builds",
-    description: "Runes, items and skill order with the highest win rate for every champion.",
-    Icon: BookOpen,
-  },
-  {
-    href: "/aram/tier-list",
-    title: "ARAM Tier List",
-    description: "The best ARAM champions and builds this patch, by real win rate.",
-    Icon: Snowflake,
-  },
-  {
-    href: "/meta",
-    title: "Patch Meta Report",
-    description: "The biggest winners and losers of the current patch, updated automatically.",
-    Icon: TrendingUp,
-  },
-  {
-    href: "/esports",
-    title: "Esports",
-    description:
-      "Live scores, schedule and results from every pro league, plus what the pros pick.",
-    Icon: Radio,
-  },
-  {
-    href: "/esports/champions",
-    title: "Pro Champion Meta",
-    description:
-      "What pro teams are actually picking right now, with pick rates, win rates and their builds.",
-    Icon: Swords,
-  },
-];
+export const revalidate = 43200; // 12h ISR — the hub only moves when the snapshot does.
 
-export default function ToolsHubPage() {
+function formatCompact(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
+  return String(Math.round(n));
+}
+
+function hoursAgo(iso: string): number {
+  const then = new Date(iso).getTime();
+  if (Number.isNaN(then)) return 0;
+  return Math.max(0, Math.round((Date.now() - then) / 3_600_000));
+}
+
+export default async function ToolsHubPage(): Promise<React.JSX.Element> {
+  // The hub states four facts about its own data; all four come from the same
+  // snapshot the tools themselves are built on, so the page cannot claim a
+  // patch or a game count the tier list would disagree with.
+  const snapshot = await getMetaSnapshot();
+  const updated = snapshot ? `${hoursAgo(snapshot.fetchedAt)}h` : null;
+  const patch = snapshot ? formatGamePatch(snapshot.patch) : null;
+  const championCount = snapshot?.champions.length ?? 0;
+
+  const heroStats = [
+    { label: "Tools", value: String(TOOL_COUNT) },
+    ...(snapshot?.matchCount
+      ? [{ label: "Games parsed", value: formatCompact(snapshot.matchCount) }]
+      : []),
+    ...(updated ? [{ label: "Updated", value: updated, unit: "ago" }] : []),
+    ...(patch ? [{ label: "Patch", value: patch }] : []),
+  ];
+
+  const rowStats = {
+    ...(championCount > 0 ? { champions: `${championCount} champions` } : {}),
+    ...(patch ? { patch: `Patch ${patch}` } : {}),
+    ...(updated ? { updated: `Updated ${updated} ago` } : {}),
+  };
+
   const softwareJsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -97,62 +61,22 @@ export default function ToolsHubPage() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-16">
+    <div className="mx-auto max-w-[1240px] px-5 pb-16 pt-8 md:px-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareJsonLd) }}
       />
 
-      <header className="mb-10 text-center">
-        <PublicOnly>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
-            100% Free · No login required
-          </p>
-        </PublicOnly>
-        <h1 className="font-display text-4xl font-black text-text md:text-5xl">Free LoL Tools</h1>
-        <p className="mx-auto mt-3 max-w-2xl text-text-muted">
-          Counter picks, matchups, drafts and tier lists — all powered by real ranked data and
-          updated every patch. No account needed.
-        </p>
-      </header>
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        {TOOLS.map(({ href, title, description, Icon }) => (
-          <Link
-            key={href}
-            href={href}
-            className="group flex items-start gap-4 rounded-2xl border border-border bg-surface p-6 transition-all hover:border-accent/40 hover:bg-surface-2"
-          >
-            <span className="rounded-xl border border-accent/30 bg-accent/10 p-3 text-accent">
-              <Icon className="h-6 w-6" />
-            </span>
-            <span>
-              <span className="block font-display text-lg font-bold text-text group-hover:text-accent">
-                {title}
-              </span>
-              <span className="mt-1 block text-sm text-text-muted">{description}</span>
-            </span>
-          </Link>
-        ))}
-      </div>
+      <ToolsHero stats={heroStats} />
+      <ToolGroupList groups={TOOL_GROUPS} stats={rowStats} />
 
       <PublicOnly>
-        <div className="mt-12 rounded-2xl border border-accent/30 bg-accent/5 p-6 text-center">
-          <h2 className="font-display text-xl font-bold text-text">
-            Want coaching on your own games?
-          </h2>
-          <p className="mx-auto mt-2 max-w-xl text-sm text-text-muted">
-            Connect your Riot account for a personal AI coaching report — your worst matchups,
-            mistakes, and a plan to climb.
-          </p>
-          <Link
-            href="/register"
-            className="mt-5 inline-block rounded-md bg-accent px-6 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
-          >
-            Get your free AI analysis
-          </Link>
-        </div>
+        <ToolsConversion />
       </PublicOnly>
+
+      <p className="mt-6 font-mono text-[10px] uppercase tracking-wide text-fg-4">
+        Ranked solo/duo unless stated · not endorsed by Riot Games
+      </p>
     </div>
   );
 }
