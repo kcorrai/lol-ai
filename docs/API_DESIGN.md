@@ -2199,3 +2199,29 @@ does none of it — and one throwing does not stop the others, because a stuck
 expiry leaving deliveries unsettled would turn one problem into two. The money
 follows automatically, because settlement is driven by the booking's status
 rather than called separately.
+
+### `POST /api/bookings/[bookingId]/dispute`
+
+The student says a session did not happen as sold. `{ reason }`, at least
+twenty characters — "bad" is not something an admin can decide on.
+
+Only from `DELIVERED` and only inside the challenge window. Outside it the
+booking has completed and the coach has been paid; reopening that silently is
+how a marketplace ends up clawing money back from people who did the work.
+`404` for the coach, same as for a stranger.
+
+The money **stays held** while a dispute is open. It settles when the dispute
+does, not before.
+
+### `GET /api/admin/disputes?status=` · `PATCH /api/admin/disputes/[disputeId]`
+
+Admin only. The queue is oldest-first, and each row carries **the booking's
+whole recorded history** — the decision is made against the same sequence both
+sides have been able to read the whole time. That was the argument for building
+`booking_events` first: the most damaging thing in every competitor's reviews is
+a refusal nobody outside the company can reconstruct.
+
+`PATCH` takes `{ outcome: "refund" | "release", note }`. The note is required at
+twenty characters and is what the losing side is told. The booking moves to
+`REFUNDED` or `COMPLETED`, the ledger follows, and an `audit_logs` row records
+the admin who decided.

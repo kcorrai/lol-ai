@@ -219,6 +219,13 @@ export type { RatingAggregate } from "@/domains/marketplace/rating";
 export { redactContacts, redactionNotice } from "@/domains/marketplace/redact";
 export type { RedactionResult } from "@/domains/marketplace/redact";
 
+export {
+  openDispute,
+  listDisputes,
+  resolveDispute,
+} from "@/domains/marketplace/services/disputeService";
+export type { DisputeRow, DisputeOutcome } from "@/domains/marketplace/services/disputeService";
+
 export { sessionPrep } from "@/domains/marketplace/services/sessionPrepService";
 export { spectateStatus } from "@/domains/marketplace/services/spectateService";
 export type { SpectateStatus } from "@/domains/marketplace/services/spectateService";

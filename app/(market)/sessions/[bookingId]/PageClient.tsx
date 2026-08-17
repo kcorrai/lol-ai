@@ -17,6 +17,7 @@ import { LiveSessionPanel } from "@/domains/marketplace/components/LiveSessionPa
 import { SessionPrepPanel } from "@/domains/marketplace/components/SessionPrepPanel";
 import { SpectatePanel } from "@/domains/marketplace/components/SpectatePanel";
 import { ReviewPanel } from "@/domains/marketplace/components/ReviewPanel";
+import { DisputePanel } from "@/domains/marketplace/components/DisputePanel";
 import type { BookingPaymentView } from "@/domains/marketplace/types";
 
 interface Data {
@@ -120,6 +121,8 @@ export default function SessionPage({ bookingId }: { bookingId: string }): React
       )}
 
       <ReviewPanel booking={booking} onDone={() => void refetch()} />
+
+      <DisputePanel booking={booking} onOpened={() => void refetch()} />
 
       {booking.payment && (
         <Card>
