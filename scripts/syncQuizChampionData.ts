@@ -1,6 +1,11 @@
 import { readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
-import type { Position, QuizChampion, RangeType } from "../src/domains/quiz/types/quiz.types";
+import type {
+  AbilitySlot,
+  Position,
+  QuizChampion,
+  RangeType,
+} from "../src/domains/quiz/types/quiz.types";
 
 // Builds src/domains/quiz/data/championAttributes.json, the quiz's only source of
 // champion facts. Run it after a champion release, review the diff, commit the JSON.
@@ -96,19 +101,45 @@ function normalizeResource(partype: string): string {
   return trimmed === "" || trimmed === "None" ? "Manaless" : trimmed;
 }
 
-async function fetchSkinNums(version: string, id: string): Promise<number[]> {
-  const detail = await fetchJson<{ data: Record<string, { skins: { num: number }[] }> }>(
+interface DdragonDetail {
+  lore: string;
+  skins: { num: number }[];
+  passive: { name: string; image: { full: string } };
+  spells: { name: string; image: { full: string } }[];
+}
+
+/** Lore and ability icons are baked in for the same reason everything else is:
+ *  a Data Dragon outage must not be able to reach the quiz (LA-13). */
+async function fetchDetail(
+  version: string,
+  id: string
+): Promise<Pick<QuizChampion, "skinNums" | "lore" | "abilities">> {
+  const payload = await fetchJson<{ data: Record<string, DdragonDetail> }>(
     `${DDRAGON}/cdn/${version}/data/en_US/champion/${id}.json`
   );
-  const skins = detail ? Object.values(detail.data)[0]?.skins : undefined;
-  return skins ? skins.map((s) => s.num) : [0];
+  const detail = payload ? Object.values(payload.data)[0] : undefined;
+  if (!detail) return { skinNums: [0], lore: "", abilities: [] };
+
+  const slots: AbilitySlot[] = ["Q", "W", "E", "R"];
+  return {
+    skinNums: detail.skins.map((s) => s.num),
+    lore: detail.lore.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim(),
+    abilities: [
+      { slot: "P" as AbilitySlot, name: detail.passive.name, image: detail.passive.image.full },
+      ...detail.spells.slice(0, 4).map((spell, i) => ({
+        slot: slots[i],
+        name: spell.name,
+        image: spell.image.full,
+      })),
+    ],
+  };
 }
 
 function build(
   champ: DdragonChampion,
   meraki: MerakiChampion | null,
   overlay: OverlayEntry,
-  skinNums: number[]
+  detail: Pick<QuizChampion, "skinNums" | "lore" | "abilities">
 ): QuizChampion {
   const merakiRegion = meraki?.faction ? FACTION_NAMES[meraki.faction] : undefined;
   const positions = (meraki?.positions ?? [])
@@ -140,7 +171,7 @@ function build(
     releaseYear:
       overlay.releaseYear ??
       (meraki?.releaseDate ? Number(meraki.releaseDate.slice(0, 4)) : 0),
-    skinNums,
+    ...detail,
   };
 }
 
@@ -168,12 +199,12 @@ async function main(): Promise<void> {
         missing.push(champ.id);
         return null;
       }
-      const [meraki, skinNums] = await Promise.all([
+      const [meraki, detail] = await Promise.all([
         fetchJson<MerakiChampion>(`${MERAKI}/${champ.id}.json`),
-        fetchSkinNums(version, champ.id),
+        fetchDetail(version, champ.id),
       ]);
       if (!meraki) noMeraki.push(champ.id);
-      return build(champ, meraki, entry, skinNums);
+      return build(champ, meraki, entry, detail);
     })
   );
 
@@ -187,11 +218,16 @@ async function main(): Promise<void> {
 
   const champions = result.filter((c): c is QuizChampion => c !== null);
   const incomplete = champions.filter(
-    (c) => c.regions.length === 0 || c.positions.length === 0 || c.releaseYear === 0
+    (c) =>
+      c.regions.length === 0 ||
+      c.positions.length === 0 ||
+      c.releaseYear === 0 ||
+      c.lore.length === 0 ||
+      c.abilities.length !== 5
   );
   if (incomplete.length > 0) {
     throw new Error(
-      `${incomplete.length} champion(s) have empty regions/positions/releaseYear: ${incomplete
+      `${incomplete.length} champion(s) are missing regions/positions/releaseYear/lore/abilities: ${incomplete
         .map((c) => c.id)
         .join(", ")}`
     );

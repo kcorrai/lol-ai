@@ -24,6 +24,13 @@ export type AbilitySlot = "P" | "Q" | "W" | "E" | "R";
 
 export const ABILITY_SLOTS: readonly AbilitySlot[] = ["P", "Q", "W", "E", "R"] as const;
 
+export interface ChampionAbility {
+  slot: AbilitySlot;
+  name: string;
+  /** Data Dragon image filename, e.g. "AatroxQ.png" — the asset proxy needs it. */
+  image: string;
+}
+
 /**
  * One champion as the quiz sees it. Everything except `gender`, `species` and
  * `regions` is derived from Data Dragon / Meraki by the sync script; those three
@@ -43,6 +50,10 @@ export interface QuizChampion {
   rangeType: RangeType;
   releaseYear: number;
   skinNums: number[]; // splash art indices available for this champion
+  /** Lore prose, used by the Lore puzzle. Baked in so a Data Dragon outage
+   *  cannot reach the quiz (LA-13). */
+  lore: string;
+  abilities: ChampionAbility[];
 }
 
 /** A single Classic-grid cell verdict. */
