@@ -86,36 +86,10 @@ export function DraftRoomShell({ code }: Props): React.ReactElement {
   const liveAndMine = role !== "SPECTATOR" && game?.phase === "IN_PROGRESS";
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-8">
-      <header className="mb-5 flex flex-wrap items-baseline justify-between gap-3">
-        <h1 className="font-display text-2xl font-bold text-text">
-          {state.team1Name} <span className="text-text-faint">vs</span> {state.team2Name}
-        </h1>
-        <p className="hud-label">
-          {MODE_LABEL[state.mode]} · Bo{state.gameCount} ·{" "}
-          {state.timerSeconds === 0 ? "Untimed" : `${state.timerSeconds}s`}
-        </p>
-      </header>
-
-      {actions.error && (
-        <p role="alert" className="mb-3 text-[13px] text-danger">
-          {actions.error}
-        </p>
-      )}
-
-      {game?.phase === "LOBBY" && (
-        <div className="mb-4">
-          <ReadyCheck
-            state={state}
-            game={game}
-            role={role}
-            onReady={actions.setReady}
-            onSwapSides={actions.setBlueTeam}
-            pending={actions.pending}
-          />
-        </div>
-      )}
-
+    <>
+      {/* The board is the screen. Everything the room also needs — the seat
+          links, the series overview, the completed-game summary — lives below
+          it, one scroll away, rather than stealing rows from the grid. */}
       {catalog ? (
         <DraftBoard
           state={state}
@@ -125,58 +99,86 @@ export function DraftRoomShell({ code }: Props): React.ReactElement {
           selected={selected}
           onSelect={setSelected}
           onLock={actions.lock}
+          onReady={actions.setReady}
           pending={actions.pending}
-          clock={
+          clock={game && <TurnClock state={state} game={game} skewMs={skewMs} />}
+          undo={
             game && (
-              <>
-                <UndoButton
-                  game={game}
-                  role={role}
-                  onUndo={actions.undo}
-                  pending={actions.pending}
-                />
-                <TurnClock state={state} game={game} skewMs={skewMs} />
-              </>
+              <UndoButton game={game} role={role} onUndo={actions.undo} pending={actions.pending} />
             )
           }
-        >
+        />
+      ) : (
+        <p className="p-8 text-center text-[13px] text-text-muted">Loading champions…</p>
+      )}
+
+      <div className="mx-auto grid max-w-7xl gap-4 px-4 py-6">
+        <header className="flex flex-wrap items-baseline justify-between gap-3">
+          <h1 className="font-display text-2xl font-bold text-text">
+            {state.team1Name} <span className="text-text-faint">vs</span> {state.team2Name}
+          </h1>
+          <p className="hud-label">
+            {MODE_LABEL[state.mode]} · Bo{state.gameCount} ·{" "}
+            {state.timerSeconds === 0 ? "Untimed" : `${state.timerSeconds}s`}
+          </p>
+        </header>
+
+        {actions.error && (
+          <p role="alert" className="text-[13px] text-danger">
+            {actions.error}
+          </p>
+        )}
+
+        {game?.phase === "LOBBY" && (
+          <ReadyCheck
+            state={state}
+            game={game}
+            role={role}
+            onReady={actions.setReady}
+            onSwapSides={actions.setBlueTeam}
+            pending={actions.pending}
+          />
+        )}
+
+        {catalog && (
           <DraftAdvicePanel
             advice={advice}
             patch={catalog.patch}
             onSelect={setSelected}
             visible={Boolean(liveAndMine)}
           />
-          {game?.phase === "COMPLETE" && (
-            <DraftSummary
-              state={state}
-              game={game}
-              role={role}
-              summary={summary}
-              laneEdges={laneEdges}
-              onSetWinner={actions.setWinner}
-              pending={actions.pending}
-            />
-          )}
-          <SeriesOverview state={state} gameNumber={gameNumber} />
-          {liveAndMine && laneEdges.length > 0 && (
-            <HudPanel className="p-4">
-              <HudRule label="LANE EDGES" />
-              <div className="mt-3">
-                <LaneEdges edges={laneEdges} />
-              </div>
-            </HudPanel>
-          )}
-        </DraftBoard>
-      ) : (
-        <p className="p-8 text-center text-[13px] text-text-muted">Loading champions…</p>
-      )}
+        )}
 
-      <HudPanel className="mt-6 max-w-md p-5">
-        <HudRule label="YOUR SEAT" />
-        <div className="mt-4">
-          <JoinDraftPanel state={state} role={role} gameNumber={gameNumber} />
-        </div>
-      </HudPanel>
-    </div>
+        {game?.phase === "COMPLETE" && (
+          <DraftSummary
+            state={state}
+            game={game}
+            role={role}
+            summary={summary}
+            laneEdges={laneEdges}
+            onSetWinner={actions.setWinner}
+            pending={actions.pending}
+          />
+        )}
+
+        <SeriesOverview state={state} gameNumber={gameNumber} />
+
+        {liveAndMine && laneEdges.length > 0 && (
+          <HudPanel className="p-4">
+            <HudRule label="LANE EDGES" />
+            <div className="mt-3">
+              <LaneEdges edges={laneEdges} />
+            </div>
+          </HudPanel>
+        )}
+
+        <HudPanel className="max-w-md p-5">
+          <HudRule label="YOUR SEAT" />
+          <div className="mt-4">
+            <JoinDraftPanel state={state} role={role} gameNumber={gameNumber} />
+          </div>
+        </HudPanel>
+      </div>
+    </>
   );
 }

@@ -27,6 +27,19 @@ function columnCount(container: HTMLElement | null): number {
   return wrapped === -1 ? cells.length : wrapped;
 }
 
+type SortKey = "name" | "winRate" | "presence";
+
+const SORTS: { key: SortKey; label: string }[] = [
+  { key: "name", label: "A–Z" },
+  { key: "winRate", label: "Win rate" },
+  { key: "presence", label: "Presence" },
+];
+
+/** How much of the patch a champion is on: picked plus banned. */
+function presence(champion: DraftChampion): number {
+  return champion.pickRate + champion.banRate;
+}
+
 export function ChampionGrid({
   champions,
   reasonFor,
@@ -37,13 +50,22 @@ export function ChampionGrid({
 }: Props): React.ReactElement {
   const [query, setQuery] = useState("");
   const [lane, setLane] = useState<CanonicalPosition | null>(null);
+  const [sort, setSort] = useState<SortKey>("name");
   const gridRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
-  const visible = useMemo(
-    () => filterChampions(champions, { query, lane }),
-    [champions, query, lane]
-  );
+  const visible = useMemo(() => {
+    const matched = filterChampions(champions, { query, lane });
+    if (sort === "name") return matched;
+    // Copied before sorting: `filterChampions` may hand back the catalog array
+    // itself when nothing is filtered out, and sorting that in place would
+    // reorder every other consumer's view of the pool.
+    const ranked = [...matched];
+    ranked.sort((a, b) =>
+      sort === "winRate" ? b.winRate - a.winRate : presence(b) - presence(a)
+    );
+    return ranked;
+  }, [champions, query, lane, sort]);
 
   function moveSelection(delta: number): void {
     if (visible.length === 0) return;
@@ -93,6 +115,19 @@ export function ChampionGrid({
             />
           ))}
         </div>
+        <span className="flex items-center gap-1.5">
+          <span className="font-mono text-[9.5px] uppercase tracking-label text-text-muted">
+            Sort
+          </span>
+          {SORTS.map((option) => (
+            <LaneChip
+              key={option.key}
+              active={sort === option.key}
+              onClick={() => setSort(option.key)}
+              label={option.label}
+            />
+          ))}
+        </span>
         <input
           ref={searchRef}
           type="text"
