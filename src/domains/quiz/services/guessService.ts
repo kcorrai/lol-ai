@@ -16,7 +16,9 @@ export class UnknownChampionError extends Error {
   }
 }
 
-function reveal(answer: QuizChampion): GuessResult["answer"] {
+type RevealedAnswer = NonNullable<GuessResult["answer"]>;
+
+function reveal(answer: QuizChampion): RevealedAnswer {
   return { id: answer.id, name: answer.name, title: answer.title };
 }
 
@@ -61,7 +63,7 @@ export function judgeGuess(
 }
 
 /** Gives up on today's puzzle and reveals the answer. */
-export function revealAnswer(mode: QuizMode, now: Date): NonNullable<GuessResult["answer"]> {
+export function revealAnswer(mode: QuizMode, now: Date): RevealedAnswer {
   return reveal(answerFor(mode, utcDateKey(now)));
 }
 

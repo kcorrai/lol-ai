@@ -16,8 +16,11 @@ import type {
   QuizPrompt,
 } from "@/domains/quiz/types/quiz.types";
 
-const QUOTES = quotes as Record<string, string>;
-const EMOJI = emoji as Record<string, string[]>;
+// Both files carry a `_readme` key documenting how they are maintained, which is
+// why these go through `unknown` — no champion is ever called "_readme", so the
+// lookups below can never reach it.
+const QUOTES = quotes as unknown as Record<string, string>;
+const EMOJI = emoji as unknown as Record<string, string[]>;
 
 /** Champions eligible for a mode. Quote and Emoji only cover what is curated, so
  *  a champion without a line or an emoji set is simply never dealt. */

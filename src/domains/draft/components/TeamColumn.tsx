@@ -8,8 +8,6 @@ import { PickRow } from "./PickRow";
 interface Props {
   game: DraftGameState;
   side: DraftSide;
-  teamName: string;
-  ready: boolean;
   /** Catalog lookup, so a filled row can show the champion's patch win rate. */
   championsByKey: Map<string, DraftChampion>;
 }
@@ -37,39 +35,16 @@ function picksFor(game: DraftGameState, side: DraftSide): Slot[] {
 }
 
 /**
- * One side's five picks. Bans moved to the rail under the board (BanRail), so
- * this column is the comp and nothing else.
+ * One side's five picks, filling the column.
+ *
+ * Bans moved to the rail under the board and the team name to the turn bar, so
+ * this column is the comp and nothing else — five rows sharing the height the
+ * board gives them.
  */
-export function TeamColumn({
-  game,
-  side,
-  teamName,
-  ready,
-  championsByKey,
-}: Props): React.ReactElement {
-  const blue = side === "BLUE";
-
+export function TeamColumn({ game, side, championsByKey }: Props): React.ReactElement {
   return (
-    <div className="flex min-h-0 flex-col gap-2">
-      {/* The turn bar already names both sides; repeating it here put the same
-          two words on screen twice. Only the lobby's ready state is kept, and
-          the name goes with it so the pill is still attributable. */}
-      {game.phase === "LOBBY" && (
-        <div className={`flex items-baseline gap-2 ${blue ? "" : "flex-row-reverse"}`}>
-          <span
-            className={`tag-cut shrink-0 border px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-label ${
-              ready ? "border-acid-500 bg-acid-500/10 text-acid-500" : "border-line-2 text-fg-3"
-            }`}
-          >
-            {ready ? "Ready" : "Not ready"}
-          </span>
-          <span className="min-w-0 truncate font-mono text-[9.5px] uppercase tracking-wide text-fg-4">
-            {teamName}
-          </span>
-        </div>
-      )}
-
-      <div className="flex flex-col gap-2">
+    <div className="flex h-full min-h-0 flex-col gap-2">
+      <div className="flex min-h-0 flex-1 flex-col gap-2">
         {picksFor(game, side).map((slot, index) => (
           <PickRow
             key={slot.step}
