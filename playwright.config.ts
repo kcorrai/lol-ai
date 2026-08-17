@@ -80,6 +80,14 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
 
+    // The Academy is public: lessons are the SEO surface, and the curriculum is code
+    // rather than seeded rows, so this needs neither auth nor setup.
+    {
+      name: "academy",
+      testMatch: /academy\.spec\.ts$/,
+      use: { ...devices["Desktop Chrome"] },
+    },
+
     // Smoke tests requiring authentication — depend on setup project
     {
       name: "smoke",

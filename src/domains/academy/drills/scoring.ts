@@ -1,0 +1,72 @@
+import type { Drill, DrillOption } from "@/domains/academy/types";
+
+/** One attempt at one drill. `answer` is an option id, or the ordered ids for an order drill. */
+export interface DrillAttempt {
+  drillId: string;
+  answer: string[];
+}
+
+export interface DrillResult {
+  drillId: string;
+  correct: boolean;
+  /** The explanation to show, drawn from whatever the player actually picked. */
+  explanation: string;
+}
+
+function optionById(options: DrillOption[], id: string): DrillOption | undefined {
+  return options.find((o) => o.id === id);
+}
+
+function gradeChoice(options: DrillOption[], answer: string[]): { correct: boolean; explanation: string } {
+  const picked = answer.length === 1 ? optionById(options, answer[0]) : undefined;
+  if (!picked) {
+    return { correct: false, explanation: "No answer recorded." };
+  }
+  return { correct: picked.correct, explanation: picked.explain };
+}
+
+function gradeOrder(
+  correctOrder: string[],
+  explain: string,
+  answer: string[]
+): { correct: boolean; explanation: string } {
+  const correct =
+    answer.length === correctOrder.length && answer.every((id, i) => id === correctOrder[i]);
+  return { correct, explanation: explain };
+}
+
+export function gradeDrill(drill: Drill, answer: string[]): DrillResult {
+  const graded =
+    drill.kind === "order"
+      ? gradeOrder(drill.correctOrder, drill.explain, answer)
+      : gradeChoice(drill.options, answer);
+
+  return { drillId: drill.id, ...graded };
+}
+
+export interface LessonScore {
+  results: DrillResult[];
+  correct: number;
+  total: number;
+  /** 0–100, rounded. A lesson with no drills scores 100 on completion. */
+  score: number;
+  passed: boolean;
+}
+
+/** A lesson is passed at two thirds correct — enough to have understood it, not a perfection tax. */
+export const PASS_RATIO = 2 / 3;
+
+/**
+ * Grades a set of drills. Takes the drills rather than the lesson so a gated pro lesson can
+ * be scored on the half the reader was actually shown.
+ */
+export function scoreLesson(drills: Drill[], attempts: DrillAttempt[]): LessonScore {
+  const answers = new Map(attempts.map((a) => [a.drillId, a.answer]));
+  const results = drills.map((drill) => gradeDrill(drill, answers.get(drill.id) ?? []));
+
+  const total = results.length;
+  const correct = results.filter((r) => r.correct).length;
+  const score = total === 0 ? 100 : Math.round((correct / total) * 100);
+
+  return { results, correct, total, score, passed: total === 0 || correct / total >= PASS_RATIO };
+}
