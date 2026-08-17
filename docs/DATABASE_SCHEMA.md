@@ -894,3 +894,7 @@ ADR-019.
   loss is the single most complained-about thing about it.
 - **`quiz_attempts.guesses` keeps the whole guess list** so a returning player
   sees their own board again rather than an empty one.
+- **`quiz_attempts.guesses` is also the leaderboard's source of truth.**
+  `guessCount` is derived from that list server-side as each guess is judged; no
+  client-supplied total is accepted anywhere, because the board ranks on fewest
+  guesses and a reported count is a ranking anyone could top.

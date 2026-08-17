@@ -97,6 +97,39 @@ test.describe("LaneIQ Daily", () => {
     await expect(page.getByText(/^#\d+$/)).toBeVisible();
   });
 
+  test("shows the leaderboard, ranked on play rather than tenure", async ({ page }) => {
+    await page.goto("/quiz");
+    await page.getByRole("tab", { name: "Board", exact: true }).click();
+
+    await expect(page.getByRole("heading", { name: "Leaderboard" })).toBeVisible();
+    await expect(page.getByText(/most modes solved first, then fewest guesses/i)).toBeVisible();
+    await expect(page.getByRole("button", { name: "Today" })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    );
+
+    await page.getByRole("button", { name: "This week" }).click();
+    await expect(page.getByRole("button", { name: "This week" })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    );
+  });
+
+  test("does not accept a score the player did not earn", async ({ request }) => {
+    // The client used to report its own guess count when a mode finished, which
+    // is a leaderboard position anyone could claim. Guesses are counted in
+    // /api/quiz/guess now, and there is no endpoint left that takes a total.
+    const res = await request.post("/api/quiz/progress", {
+      data: { mode: "classic", guessCount: 1, solved: true },
+    });
+    expect(res.status()).toBe(405);
+  });
+
+  test("rejects a leaderboard period it does not have", async ({ request }) => {
+    const res = await request.get("/api/quiz/leaderboard?period=alltime");
+    expect(res.status()).toBe(422);
+  });
+
   test("is linked from the tools hub", async ({ page }) => {
     await page.goto("/tools");
     await page.getByRole("link", { name: /LaneIQ Daily/ }).first().click();

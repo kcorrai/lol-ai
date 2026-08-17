@@ -68,6 +68,14 @@ it the network tab solves them.
 seed instead of the date. Because practice never consults the date, no seed
 reproduces the day's puzzle.
 
+**Adding a leaderboard forced the guess count server-side.** Guesses were judged
+on the server from the start, but the *total* was reported by the client when a
+mode finished — fine for a streak, worthless for a ranking, since it is a
+position anyone can claim by editing one request. `/api/quiz/guess` now appends
+each guess to the attempt row and derives the count from the stored list, and
+the endpoint that accepted a total is gone. The cost is a write per guess for
+signed-in players.
+
 **Quote coverage is partial and will stay that way.** Voice lines have no
 programmatic source at all, so each is hand-entered; the mode deals only from
 champions that have one. A half-remembered quote costs a player an unanswerable

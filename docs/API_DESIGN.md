@@ -1755,15 +1755,36 @@ Cached until exactly the next UTC midnight, so a shared cache cannot serve
 yesterday's picture; a practice asset is keyed by its seed and cached hard.
 `502 ASSET_UNAVAILABLE` if Data Dragon cannot be reached.
 
-### `GET`/`POST /api/quiz/progress`
+`POST` also records the guess for a signed-in caller: the attempt row is
+upserted, the guess appended, and `guessCount` derived from the stored list.
+**The client never reports a count.** That was acceptable while the count only
+fed a streak; with a leaderboard ranked on fewest guesses it is a position
+anyone could claim by editing one request. A correct guess closes the mode out —
+streak and XP — in the same transaction. Practice guesses are never recorded.
+
+### `GET /api/quiz/progress`
 
 Streak and today's record. Requires auth; anonymous callers get `401`, which the
 client treats as a normal state rather than an error — the account buys
 persistence, not access.
 
-`POST` body `{ mode, guessCount, solved }` records a finished mode, advances the
-streak and grants XP, all in one transaction. Replaying a mode already solved
-today pays out nothing.
+**Read-only.** Results are written by `/api/quiz/guess` as each guess is judged,
+so there is no endpoint a client can use to assert a score it did not earn.
+
+### `GET /api/quiz/leaderboard?period=today|week`
+
+Public. Ranked on **most modes solved, then fewest guesses**, tiebroken by who
+finished earlier. Players who tie on the score itself share a rank.
+
+Efficiency rather than tenure is the deliberate choice: LoLdle has no board at
+all, and Esportdle and Champdle rank on streak length, which measures how long
+someone has been showing up. A player on day 400 outranks a better player on day
+12 and nothing they do closes the gap. Fewest guesses is a board a newcomer can
+win on their first day.
+
+Only players who have made their profile public are listed — the same consent
+boundary `/api/leaderboard` uses. A signed-in caller also gets `viewer`, their
+own line, whether or not they are listed; `viewer.listed` says which.
 
 ### `GET`/`POST /api/quiz/personal`
 

@@ -6,6 +6,7 @@ import { HudPanel } from "@/components/dashboard/laneiq/HudPanel";
 import { QUIZ_MODES, type ModeResult, type QuizMode } from "@/domains/quiz";
 import { ModeTabs } from "@/domains/quiz/components/ModeTabs";
 import { PersonalQuiz } from "@/domains/quiz/components/PersonalQuiz";
+import { QuizLeaderboard } from "@/domains/quiz/components/QuizLeaderboard";
 import { QuizBoard } from "@/domains/quiz/components/QuizBoard";
 import { ResetCountdown } from "@/domains/quiz/components/ResetCountdown";
 import { useQuizProgress } from "@/hooks/useQuizProgress";
@@ -28,13 +29,19 @@ function readDay(dateKey: string): ModeResult[] {
   }
 }
 
-/** The personal quiz is a seventh tab, but not a QuizMode — it has no daily
- *  answer to guess and no share grid, only questions about your own games. */
-type Tab = QuizMode | "personal";
+/** Two tabs are not QuizModes: the personal quiz has no daily answer to guess,
+ *  and the leaderboard is not a puzzle at all. */
+type Tab = QuizMode | "personal" | "board";
+
+const EXTRA_TABS: { key: Extract<Tab, "personal" | "board">; label: string }[] = [
+  { key: "personal", label: "Yours" },
+  { key: "board", label: "Board" },
+];
 
 export default function QuizPage(): React.JSX.Element {
   const [tab, setTab] = useState<Tab>("classic");
-  const mode: QuizMode = tab === "personal" ? "classic" : tab;
+  const isPuzzle = tab !== "personal" && tab !== "board";
+  const mode: QuizMode = isPuzzle ? tab : "classic";
   // Practice is off the clock and off the streak. A new seed is a new puzzle;
   // undefined means the daily one.
   const [practiceSeed, setPracticeSeed] = useState<string>();
@@ -76,9 +83,10 @@ export default function QuizPage(): React.JSX.Element {
         }
         return next;
       });
-      // Signed-in players get the solve recorded and the streak advanced; for
-      // everyone else this is a no-op the endpoint answers with 401.
-      if (result.solved) void recordSolve(result).then(() => void refetch());
+      // The solve is already recorded — /api/quiz/guess counts guesses server-side
+      // rather than taking the client's word, since that count is a leaderboard
+      // position now. This only pulls the updated streak back.
+      if (result.solved) void refetch();
     },
     [dateKey, refetch]
   );
@@ -119,26 +127,29 @@ export default function QuizPage(): React.JSX.Element {
       </HudPanel>
 
       <div className="mb-4 flex flex-wrap items-center gap-1.5">
-        <ModeTabs active={tab === "personal" ? undefined : tab} done={done} onSelect={setTab} />
+        <ModeTabs active={isPuzzle ? tab : undefined} done={done} onSelect={setTab} />
         <span className="mx-1 hidden h-5 w-px bg-line-2 sm:block" />
-        <button
-          role="tab"
-          type="button"
-          aria-selected={tab === "personal"}
-          onClick={() => setTab("personal")}
-          className={`notch-sm border px-3 py-1.5 font-mono text-[11px] uppercase tracking-label transition-colors ${
-            tab === "personal"
-              ? "border-accent bg-accent/15 text-accent"
-              : "border-line-2 bg-surface-dark text-fg-3 hover:text-fg-1"
-          }`}
-        >
-          Yours
-        </button>
+        {EXTRA_TABS.map((extra) => (
+          <button
+            key={extra.key}
+            role="tab"
+            type="button"
+            aria-selected={tab === extra.key}
+            onClick={() => setTab(extra.key)}
+            className={`notch-sm border px-3 py-1.5 font-mono text-[11px] uppercase tracking-label transition-colors ${
+              tab === extra.key
+                ? "border-accent bg-accent/15 text-accent"
+                : "border-line-2 bg-surface-dark text-fg-3 hover:text-fg-1"
+            }`}
+          >
+            {extra.label}
+          </button>
+        ))}
       </div>
 
-      {tab === "personal" ? (
-        <PersonalQuiz />
-      ) : (
+      {tab === "personal" && <PersonalQuiz />}
+      {tab === "board" && <QuizLeaderboard />}
+      {isPuzzle && (
         <QuizBoard
           key={`${mode}:${practiceSeed ?? "daily"}`}
           mode={mode}
@@ -150,7 +161,7 @@ export default function QuizPage(): React.JSX.Element {
         />
       )}
 
-      {tab !== "personal" && (
+      {isPuzzle && (
         <div className="mt-3 text-center">
           <button
             type="button"
@@ -172,21 +183,4 @@ export default function QuizPage(): React.JSX.Element {
 /** Random enough that two players are not handed the same practice puzzle. */
 function newSeed(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
-}
-
-async function recordSolve(result: ModeResult): Promise<void> {
-  try {
-    await fetch("/api/quiz/progress", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        mode: result.mode,
-        guessCount: result.guessCount ?? 0,
-        solved: result.solved,
-      }),
-    });
-  } catch {
-    // The board is client-authoritative; a failed sync costs the streak a day,
-    // not the game.
-  }
 }
