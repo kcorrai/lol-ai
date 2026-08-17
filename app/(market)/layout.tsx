@@ -25,7 +25,12 @@ export default async function MarketLayout({ children }: { children: React.React
 
   const nav: MarketNavItem[] = [
     { href: "/coaches", label: "Find a coach" },
-    ...(signedIn ? [{ href: "/sessions", label: "My sessions" }] : []),
+    ...(signedIn
+      ? [
+          { href: "/sessions", label: "My sessions" },
+          { href: "/messages", label: "Messages" },
+        ]
+      : []),
     ...(isCoach
       ? [
           { href: "/coach", label: "Coach console" },

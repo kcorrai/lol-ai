@@ -179,6 +179,22 @@ export type { AnnotationInput, VodOutcome } from "@/domains/marketplace/services
 
 export { ANNOTATION_CATEGORIES, secondsToClock, clockToSeconds } from "@/domains/marketplace/vodClock";
 
+export {
+  listThreads,
+  getThread,
+  openThread,
+  sendMessage,
+} from "@/domains/marketplace/services/messagingService";
+export type {
+  MessageView,
+  ThreadView,
+  ThreadSummary,
+  SendOutcome,
+} from "@/domains/marketplace/services/messagingService";
+
+export { redactContacts, redactionNotice } from "@/domains/marketplace/redact";
+export type { RedactionResult } from "@/domains/marketplace/redact";
+
 export { sessionPrep } from "@/domains/marketplace/services/sessionPrepService";
 export { spectateStatus } from "@/domains/marketplace/services/spectateService";
 export type { SpectateStatus } from "@/domains/marketplace/services/spectateService";

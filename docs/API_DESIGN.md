@@ -2118,3 +2118,37 @@ answers is the part that is otherwise a scramble in a DM: is the game on, and
 how far in. Polled by the client rather than pushed, on the same reasoning as
 the draft room's live sync (ADR-016). A Riot outage degrades it to
 `inGame: false` rather than breaking the session page.
+
+### Messaging (M14)
+
+One thread per coach/student pair, **not per booking** — the relationship
+outlives any single session. Threads are addressed by their own id, because a
+coach with two students has two threads and addressing by coach alone would
+pick one arbitrarily.
+
+- `GET /api/threads` — every conversation the caller is in, with unread counts.
+- `POST /api/threads` — `{ coachProfileId }`. The student's thread with a coach,
+  created on first use. **`403` without a booking between them**: open messaging
+  would turn the storefront into an inbox for anyone who can type a slug, and
+  the first thing that inbox fills with is people arranging to pay each other
+  somewhere else.
+- `GET /api/threads/[conversationId]` — the thread, oldest first. Marks the
+  other side's messages read.
+- `POST /api/threads/[conversationId]` — send one. Answers with the stored
+  message and a `notice` when something was stripped.
+
+**Contact details are removed before storage, not on display.** A detail that
+can be recovered from the row later has not really been removed, and keeping it
+would make the table a list of everyone's phone numbers. The sender is told
+what was taken, because hiding it would leave them believing they had shared a
+Discord tag that never arrived.
+
+The filter is deliberately modest — email addresses, invite links, Discord tags,
+phone numbers and @handles typed by someone not trying to hide them. Airbnb's
+own engineering writing is candid that a regex is circumventable; chasing
+leetspeak would cost more in false positives ("recall at 9 30" is not a phone
+number) than the leakage is worth at this size. The rest is the terms of
+service.
+
+Polled at five seconds rather than pushed, on the draft room's reasoning
+(ADR-016).
