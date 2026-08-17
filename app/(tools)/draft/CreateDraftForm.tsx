@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 import { rememberDraftLinks } from "@/domains/draft/components/draftLinkStore";
 import { useCreateDraft } from "@/hooks/useCreateDraft";
 import type { SeriesMode } from "@/domains/draft";
@@ -68,8 +68,10 @@ export function CreateDraftForm(): React.ReactElement {
         e.preventDefault();
         submit();
       }}
-      className="flex flex-col gap-5"
+      className="flex flex-col gap-4"
     >
+      {/* Named by number, not by side: the series swaps sides between games, so
+          "Blue side" would be wrong from game two onward. */}
       <div className="grid gap-3 sm:grid-cols-2">
         {(
           [
@@ -84,28 +86,34 @@ export function CreateDraftForm(): React.ReactElement {
               value={value}
               maxLength={40}
               onChange={(e) => set(e.target.value)}
-              className="notch-sm border border-border bg-surface-2 px-3 py-2 text-[14px] text-text focus:border-accent focus:outline-none"
+              className="notch-sm border border-line-2 bg-surface-dark px-3 py-2.5 text-[14px] text-fg-1 focus:border-acid-500 focus:outline-none"
             />
           </label>
         ))}
       </div>
 
       <OptionRow label="Series format">
-        <div className="grid gap-2 sm:grid-cols-3">
+        <div className="grid gap-2">
           {MODES.map((option) => (
             <button
               key={option.value}
               type="button"
               onClick={() => setMode(option.value)}
               aria-pressed={mode === option.value}
-              className={`notch-sm border p-3 text-left transition-colors ${
+              className={`tag-cut border p-3 text-left transition-colors ${
                 mode === option.value
-                  ? "border-accent bg-accent/10"
-                  : "border-border bg-surface-2 hover:border-line-3"
+                  ? "border-acid-500 bg-acid-500/10"
+                  : "border-line-1 bg-surface-dark hover:border-line-3"
               }`}
             >
-              <span className="block text-[13px] font-semibold text-text">{option.label}</span>
-              <span className="mt-1 block text-[11.5px] leading-relaxed text-text-muted">
+              <span
+                className={`block font-display text-[13.5px] font-bold uppercase tracking-wide ${
+                  mode === option.value ? "text-acid-500" : "text-fg-1"
+                }`}
+              >
+                {option.label}
+              </span>
+              <span className="mt-1 block text-[12.5px] leading-relaxed text-fg-3">
                 {option.blurb}
               </span>
             </button>
@@ -113,11 +121,16 @@ export function CreateDraftForm(): React.ReactElement {
         </div>
       </OptionRow>
 
-      <div className="grid gap-5 sm:grid-cols-2">
+      {/* Stacked, not side by side: the panel is 420px and five game chips plus
+          five timer chips overflow a half-width column into each other. */}
+      <div className="grid gap-4">
         <OptionRow label="Games">
-          <div className="flex gap-1.5">
+          <div className="flex flex-wrap gap-1.5">
             {[1, 2, 3, 4, 5].map((n) => (
+              // The "BO" is decorative — the group is already labelled Games,
+              // and hiding it keeps each chip's accessible name the number.
               <Chip key={n} active={gameCount === n} onClick={() => setGameCount(n)}>
+                <span aria-hidden="true">BO</span>
                 {n}
               </Chip>
             ))}
@@ -139,7 +152,9 @@ export function CreateDraftForm(): React.ReactElement {
         </OptionRow>
       </div>
 
-      <DisabledChampionPicker value={disabledChampions} onChange={setDisabledChampions} />
+      <div className="border-t border-line-1 pt-4">
+        <DisabledChampionPicker value={disabledChampions} onChange={setDisabledChampions} />
+      </div>
 
       {create.isError && (
         <p role="alert" className="text-[13px] text-danger">
@@ -147,9 +162,18 @@ export function CreateDraftForm(): React.ReactElement {
         </p>
       )}
 
-      <Button type="submit" size="lg" disabled={create.isPending}>
+      <button
+        type="submit"
+        disabled={create.isPending}
+        className="notch-sm btn-glow flex w-full items-center justify-center gap-2 bg-acid-500 px-4 py-3 font-display text-sm font-bold uppercase tracking-wide text-ink-1000 transition-colors hover:bg-acid-400 disabled:opacity-50"
+      >
         {create.isPending ? "Creating…" : "Create draft"}
-      </Button>
+        {!create.isPending && <ArrowRight className="h-4 w-4" aria-hidden />}
+      </button>
+
+      <p className="text-center font-mono text-[9.5px] uppercase tracking-wide text-fg-4">
+        No login · one link per side
+      </p>
     </form>
   );
 }
@@ -168,10 +192,10 @@ function Chip({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`notch-sm min-w-[44px] border px-3 py-2 text-[13px] font-semibold transition-colors ${
+      className={`tag-cut min-w-[46px] border px-2.5 py-2 font-mono text-[11.5px] tracking-wide transition-colors ${
         active
-          ? "border-accent bg-accent/10 text-accent"
-          : "border-border bg-surface-2 text-text-body hover:border-line-3"
+          ? "border-acid-500 bg-acid-500/10 text-acid-500"
+          : "border-line-1 bg-surface-dark text-fg-3 hover:border-line-3"
       }`}
     >
       {children}
