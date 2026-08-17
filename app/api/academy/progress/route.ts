@@ -3,7 +3,13 @@ import { z } from "zod";
 import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
 import { Errors } from "@/lib/api/errors";
-import { getLessonById, markLessonOpened, submitLessonAttempt } from "@/domains/academy";
+import {
+  getLessonById,
+  markLessonOpened,
+  openAssignment,
+  restartAssignment,
+  submitLessonAttempt,
+} from "@/domains/academy";
 import { getCurrentSubscription } from "@/lib/subscription/subscriptionService";
 
 export const dynamic = "force-dynamic";
@@ -17,9 +23,10 @@ const bodySchema = z.discriminatedUnion("action", [
       .array(z.object({ drillId: z.string().min(1), answer: z.array(z.string()) }))
       .max(20),
   }),
+  z.object({ action: z.literal("restart-assignment"), lessonId: z.string().min(1) }),
 ]);
 
-// POST /api/academy/progress — open a lesson, or submit its drills for grading.
+// POST /api/academy/progress — open a lesson, submit its drills, or restart its field assignment.
 export const POST = withAuth(async (req: NextRequest, { userId }) => {
   const parsed = bodySchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) throw Errors.validation("Invalid request body");
@@ -32,8 +39,16 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
     return apiSuccess({ ok: true });
   }
 
+  if (body.action === "restart-assignment") {
+    return apiSuccess({ assignment: await restartAssignment(userId, body.lessonId) });
+  }
+
   const { plan } = await getCurrentSubscription(userId);
-  return apiSuccess(
-    await submitLessonAttempt(userId, body.lessonId, body.attempts, plan !== "free")
-  );
+  const result = await submitLessonAttempt(userId, body.lessonId, body.attempts, plan !== "free");
+
+  // Passing the drills starts the Proof of Practice clock. A player with no synced account
+  // gets null back and still keeps the completion — see openAssignment.
+  const assignment = result.progress.status === "completed" ? await openAssignment(userId, body.lessonId) : null;
+
+  return apiSuccess({ ...result, assignment });
 });

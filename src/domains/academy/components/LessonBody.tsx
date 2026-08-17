@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useOpenLesson, useSubmitLesson } from "@/hooks/useAcademyProgress";
 import { scoreLesson, type DrillAttempt } from "@/domains/academy/drills/scoring";
 import type { AssignmentTarget } from "@/domains/academy/assignments";
@@ -16,6 +17,8 @@ interface LessonBodyProps {
   assignment: AssignmentTarget | null;
   next: { href: string; title: string } | null;
   isAuthenticated: boolean;
+  /** A stored assignment is already on the page below, so the panel need not repeat it. */
+  liveAssignment: boolean;
 }
 
 /**
@@ -31,8 +34,10 @@ export function LessonBody({
   assignment,
   next,
   isAuthenticated,
+  liveAssignment,
 }: LessonBodyProps): React.ReactElement {
   const [attempts, setAttempts] = useState<DrillAttempt[]>([]);
+  const router = useRouter();
   const open = useOpenLesson();
   const submit = useSubmitLesson();
   const submitted = useRef(false);
@@ -46,12 +51,14 @@ export function LessonBody({
     if (isAuthenticated) openMutate(lessonId);
   }, [isAuthenticated, lessonId, openMutate]);
 
+  // The submit is what opens the field assignment, and the assignment panel is rendered by the
+  // server component above this one — so a refresh is how it appears without a manual reload.
   const submitMutate = submit.mutate;
   useEffect(() => {
     if (!finished || submitted.current || !isAuthenticated) return;
     submitted.current = true;
-    submitMutate({ lessonId, attempts });
-  }, [finished, isAuthenticated, lessonId, attempts, submitMutate]);
+    submitMutate({ lessonId, attempts }, { onSuccess: () => router.refresh() });
+  }, [finished, isAuthenticated, lessonId, attempts, submitMutate, router]);
 
   function record(drillId: string, answer: string[]): void {
     setAttempts((prev) =>
@@ -81,6 +88,7 @@ export function LessonBody({
           isAuthenticated={isAuthenticated}
           saving={submit.isPending}
           saveFailed={submit.isError}
+          liveAssignment={liveAssignment}
         />
       )}
     </div>

@@ -922,9 +922,13 @@ Notes on the shape:
 - **`academy_assignments.baseline` is stored, not recomputed.** The target is a *movement*
   from where the player was when they finished the lesson — recomputing the baseline later
   would move the goalposts every time they played a game.
-- **`AcademyLessonStatus.mastered` cannot be set by the drill endpoint.** Drills prove you
-  read the lesson; mastery is meant to be proved by matches, which is what
-  `academy_assignments` exists to judge. That judgement is not built yet — the column and
-  the status are the seat it will sit in.
+- **`AcademyLessonStatus.mastered` cannot be set by the drill endpoint.** Drills prove you read
+  the lesson; mastery is proved by matches, and the only writer is `checkAssignments`, run from
+  the post-sync `academy/check-assignments` job.
+- **`academy_assignments.position` is the role the baseline was measured in**, and the only role
+  the verdict counts. CS per minute is not comparable across a support game and a mid game;
+  a role-blind baseline sets a target no support can reach and every mid clears by accident. It
+  is stored rather than re-derived because a player's main role can shift between the lesson and
+  the verdict. Nullable: rows written before the fix are judged role-blind.
 - **`review` is unused today.** It is the seat for spaced repetition: a mastered lesson whose
   metric slips back should come round again.

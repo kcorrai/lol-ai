@@ -1958,6 +1958,12 @@ model AcademyAssignment {
   gamesRequired Int     @default(3)
   gamesObserved Int     @default(0)
 
+  // The role the baseline was measured in, and the only role the verdict counts. CS per
+  // minute means nothing across a support game and a mid game; averaging the two produces a
+  // target no support can reach and every mid clears by accident. Stored rather than
+  // re-derived, because a player's main role can shift between opening and judging.
+  position Position?
+
   status   AcademyAssignmentStatus @default(active)
   evidence Json?
 

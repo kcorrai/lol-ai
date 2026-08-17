@@ -28,8 +28,21 @@ export type { Placement, PlacementLevel, PlacementSignal } from "./placement";
 export { chooseNextLesson } from "./recommendation";
 export type { Recommendation, RecommendationSource } from "./recommendation";
 
-export { baselineFor, buildAssignmentTarget, formatMetric, METRIC_LABEL } from "./assignments";
+export { buildAssignmentTarget, formatMetric, METRIC_LABEL } from "./assignments";
 export type { AssignmentTarget } from "./assignments";
+
+export { ASSIGNMENT_EXPIRY_DAYS, judgeAssignment, metricValue } from "./verification";
+export type { AssignmentOutcome, Judgement, MatchReading } from "./verification";
+
+export {
+  checkAssignments,
+  getActiveAssignments,
+  getAssignmentForLesson,
+  openAssignment,
+  previewAssignmentTarget,
+  restartAssignment,
+} from "./services/assignmentService";
+export type { AssignmentStatus, AssignmentView, CheckResult } from "./services/assignmentService";
 
 export { getAcademyOverview } from "./services/academyService";
 export type { AcademyOverview } from "./services/academyService";

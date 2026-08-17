@@ -167,6 +167,7 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   if (newCount > 0) inngest.send({ name: "timeline/fetch-for-account", data: { riotAccountId: account.id } }).catch((err) => logger.warn("[sync] Failed to fire timeline/fetch-for-account event", err));
   inngest.send({ name: "challenge/check-progress", data: { riotAccountId: account.id, userId: account.userId } }).catch((err) => logger.warn("[sync] Failed to fire challenge/check-progress event", err));
   inngest.send({ name: "snapshot/compute", data: { riotAccountId: account.id } }).catch((err) => logger.warn("[sync] Failed to fire snapshot/compute event", err));
+  if (newCount > 0) inngest.send({ name: "academy/check-assignments", data: { riotAccountId: account.id, userId: account.userId } }).catch((err) => logger.warn("[sync] Failed to fire academy/check-assignments event", err));
 
   if (newCount > 0) {
     const positions = ["all", "TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"];
