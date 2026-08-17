@@ -50,6 +50,29 @@ export {
 export { slugify, isReserved, pickSlug } from "@/domains/marketplace/slug";
 
 export {
+  compareRanks,
+  higherRank,
+  isApex,
+  rankScore,
+  tiersAtOrAbove,
+  formatRank,
+} from "@/domains/marketplace/rank";
+export type { Rank } from "@/domains/marketplace/rank";
+
+export {
+  checkRank,
+  refreshStaleBadges,
+} from "@/domains/marketplace/services/rankVerificationService";
+export type { CheckOutcome } from "@/domains/marketplace/services/rankVerificationService";
+
+export {
+  getBadge,
+  badgesFor,
+  coachBadgeAndAccounts,
+} from "@/domains/marketplace/services/rankBadgeService";
+export type { CheckableAccount } from "@/domains/marketplace/services/rankBadgeService";
+
+export {
   getOwnProfile,
   isApprovedCoach,
   approvedCoachProfileId,
