@@ -150,6 +150,8 @@ model User {
   auditLogs          AuditLog[]
   pushSubscriptions  PushSubscription[]
   draftSeries        DraftSeries[]
+  quizAttempts       QuizAttempt[]
+  quizStreak         QuizStreak?
 
   @@map("users")
 }
@@ -1197,4 +1199,61 @@ model FollowedTeam {
   @@unique([userId, teamId])
   @@index([userId, createdAt(sort: Desc)])
   @@map("followed_teams")
+}
+
+// ============================================================
+// DAILY QUIZ
+// The puzzle itself is not stored: the answer is derived from the UTC date by
+// dailySeed.ts, so an anonymous visitor gets the same puzzle with no row at all.
+// These two tables hold only what has to outlive a browser — a signed-in
+// player's results and their streak.
+// ============================================================
+
+model QuizAttempt {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+
+  // The UTC calendar day the puzzle belongs to, not the moment it was played —
+  // a game started at 23:59 and finished at 00:01 stays on the day it started.
+  puzzleDate DateTime @db.Date
+  mode       String
+
+  // Every guess in order. Kept so a returning player sees their own grid again
+  // instead of an empty board, and so the share grid can be rebuilt server-side.
+  guesses     String[]
+  guessCount  Int       @default(0)
+  solved      Boolean   @default(false)
+  gaveUp      Boolean   @default(false)
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, puzzleDate, mode])
+  @@index([userId, puzzleDate])
+  @@map("quiz_attempts")
+}
+
+model QuizStreak {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @unique @db.Uuid
+
+  current Int @default(0)
+  longest Int @default(0)
+
+  // Solving any one mode keeps the streak. LoLdle requires all five and the
+  // resulting all-or-nothing loss is the single most complained-about thing
+  // about it, so one mode is deliberately enough here.
+  lastPlayedDate DateTime? @db.Date
+
+  // One missed day a week is forgiven. Refilled when a new ISO week is entered,
+  // which is why the week it was last granted has to be recorded.
+  freezesLeft   Int      @default(1)
+  freezeWeekKey String?
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("quiz_streaks")
 }
