@@ -79,6 +79,20 @@ export async function getOwnProfile(userId: string): Promise<OwnCoachProfile | n
   return row ? toOwnProfile(row) : null;
 }
 
+/**
+ * Whether this user has a coach profile at all, whatever state it is in.
+ *
+ * What the section's nav keys off, rather than approval: an application sitting
+ * in review is exactly when somebody needs to find their way back to it.
+ */
+export async function hasCoachProfile(userId: string): Promise<boolean> {
+  const row = await prisma.coachProfile.findUnique({
+    where: { userId },
+    select: { id: true },
+  });
+  return row !== null;
+}
+
 /** Whether this user is a coach anyone can currently book. */
 export async function isApprovedCoach(userId: string): Promise<boolean> {
   const row = await prisma.coachProfile.findUnique({
