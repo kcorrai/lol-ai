@@ -158,6 +158,15 @@ export type { LifecycleOutcome, ActorRole } from "@/domains/marketplace/services
 export { transition, recordCreation, bookingHistory } from "@/domains/marketplace/services/bookingEventService";
 export type { TransitionInput, TransitionOutcome } from "@/domains/marketplace/services/bookingEventService";
 
+export {
+  getReview,
+  saveReview,
+  publishReview,
+} from "@/domains/marketplace/services/vodReviewService";
+export type { AnnotationInput, VodOutcome } from "@/domains/marketplace/services/vodReviewService";
+
+export { ANNOTATION_CATEGORIES, secondsToClock, clockToSeconds } from "@/domains/marketplace/vodClock";
+
 export { listBookings, getBookingFor, coachWorkload } from "@/domains/marketplace/services/bookingQueryService";
 export type { CoachWorkload } from "@/domains/marketplace/services/bookingQueryService";
 

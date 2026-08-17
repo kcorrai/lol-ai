@@ -2046,3 +2046,31 @@ directly onto a destination charge with an `application_fee_amount`, a manual
 payout schedule for the hold, `Payout.create` for the release and
 `Refund.create({ reverse_transfer: true, refund_application_fee: true })` for
 the return. See ADR-020.
+
+### `GET /api/bookings/[bookingId]/review`
+
+The async deliverable. Returns `{ "review": null }` when there is none —
+**and also when the student asks for a draft the coach has not published**. A
+student reading half-written notes would be worse than reading none.
+
+### `PUT /api/bookings/[bookingId]/review`
+
+The coach writes it: `summary`, optional `sourceUrl`, `annotations[]`
+(`timestampSeconds`, `title`, `body`, `category`) and `publish`.
+
+- **Only the coach** — `403` for anybody else, including the student whose
+  session it is.
+- `409` on a booking that is not a `VOD_REVIEW`.
+- Annotations are **replaced wholesale**, not patched: a coach edits them as a
+  list, and a partial update leaves a note nobody meant to keep.
+- `sourceUrl` falls back to whatever the student supplied, so a coach who
+  writes the review without re-pasting the link does not lose what it was about.
+- Saving and publishing are separate acts. `publish: true` does both.
+- Notes come back ordered by timestamp however they were sent — a coach writes
+  them as they scrub, not in order.
+- `422` below thirty characters of summary, above sixty notes, or on a note with
+  no title.
+
+**No video is hosted.** The review points at a match id of ours or a link of
+the student's, and the timestamps are the game clock for them to scrub their own
+replay to (ADR-021).

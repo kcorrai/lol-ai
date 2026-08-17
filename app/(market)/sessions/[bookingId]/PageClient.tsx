@@ -11,6 +11,7 @@ import type { BookingDetail, BookingEventRow } from "@/domains/marketplace/types
 import { BookingActions } from "@/domains/marketplace/components/BookingActions";
 import { BookingTimeline } from "@/domains/marketplace/components/BookingTimeline";
 import { StatusBadge, whenLabel } from "@/domains/marketplace/components/BookingRow";
+import { VodReviewPanel } from "@/domains/marketplace/components/VodReviewPanel";
 import type { BookingPaymentView } from "@/domains/marketplace/types";
 
 interface Data {
@@ -101,6 +102,10 @@ export default function SessionPage({ bookingId }: { bookingId: string }): React
           )}
         </CardContent>
       </Card>
+
+      {booking.kind === "VOD_REVIEW" && (
+        <VodReviewPanel booking={booking} onDelivered={() => void refetch()} />
+      )}
 
       {booking.payment && (
         <Card>
