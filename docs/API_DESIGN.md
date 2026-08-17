@@ -1656,3 +1656,53 @@ Admin only. One decision, as a discriminated union:
 - Every decision writes an `audit_logs` row naming the admin.
 - `404` on an unknown id, `409` when the coach is not in a state that decision
   applies to, `422` on a missing or too-short note.
+
+### `GET /api/coaches/me/rank`
+
+The caller's rank badge and the linked accounts it could be read from, in one
+request — a picker with no current state beside it cannot tell a coach whether
+pressing anything would change something.
+
+```json
+{
+  "data": {
+    "badge": {
+      "method": "PLATFORM_CHECKED",
+      "tier": "GOLD", "division": "II", "leaguePoints": 71,
+      "peakTier": "GOLD", "peakDivision": "II",
+      "checkedAt": "2026-08-17T19:22:13.684Z",
+      "stale": false
+    },
+    "accounts": [
+      { "id": "…", "gameName": "kaanproak0", "tagLine": "TR1", "region": "tr1", "isBadgeSource": true }
+    ]
+  }
+}
+```
+
+`badge` is `null` until a rank has been checked. `stale` is derived at read time
+from a stored `staleAt` (36 hours), so it is a fact about now rather than about
+the row.
+
+### `POST /api/coaches/me/rank`
+
+Read the rank off one of the caller's linked accounts and record it as their
+badge. Body: `{ "riotAccountId": "<uuid>" }`.
+
+**The coach picks the account and cannot supply a rank.** That asymmetry is the
+whole feature — every competitor lets the coach type the number into a bio.
+
+- The rank is read from `ranked_history`, our own record of what Riot returned,
+  so this costs no extra Riot call and asserts nothing the product was not
+  already reading.
+- `403 RIOT_ACCOUNT_NOT_OWNED` when the account is not the caller's — a coach
+  must not be able to hang a badge on somebody else's account by guessing an id.
+- `409` when no ranked snapshot has been synced for that account yet. The answer
+  is to sync it, not to let them assert one.
+- `404` when the caller has no coach profile.
+
+**What the badge does and does not claim.** `PLATFORM_CHECKED` means we read
+this rank ourselves on that date. It does **not** mean the account was proven to
+belong to that person — that is `RIOT_VERIFIED`, which needs Riot Sign-On and an
+invitation we do not have (ADR-023). The UI labels the two differently and never
+shows the stronger wording for the weaker proof.
