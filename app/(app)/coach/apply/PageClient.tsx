@@ -12,6 +12,7 @@ import {
 import type { CoachProfileInput } from "@/domains/marketplace";
 import { CoachApplicationForm } from "@/domains/marketplace/components/CoachApplicationForm";
 import { ApplicationStatusPanel } from "@/domains/marketplace/components/ApplicationStatusPanel";
+import { RankProofPanel } from "@/domains/marketplace/components/RankProofPanel";
 
 export default function CoachApplyPage(): React.ReactElement {
   const { data, isLoading, isError, refetch } = useOwnCoachProfile();
@@ -83,6 +84,13 @@ export default function CoachApplyPage(): React.ReactElement {
           error={statusError}
         />
       )}
+
+      {/*
+        Shown even while the profile is locked. A rank is read, not written, so
+        refreshing it under a reviewer changes nothing the reviewer is judging —
+        and it is the thing they are judging *on*.
+      */}
+      {profile && <RankProofPanel />}
 
       {!locked && (
         <CoachApplicationForm profile={profile} saving={save.isPending} onSave={handleSave} />
