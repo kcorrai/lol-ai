@@ -166,6 +166,11 @@ model User {
   disputesOpened        BookingDispute[] @relation("DisputeOpener")
   disputesResolved      BookingDispute[] @relation("DisputeResolver")
 
+  // Academy
+  academyProgress    AcademyProgress[]
+  academyEnrollments AcademyEnrollment[]
+  academyAssignments AcademyAssignment[]
+
   @@map("users")
 }
 
@@ -1868,4 +1873,95 @@ model BookingDispute {
 
   @@index([status, createdAt])
   @@map("booking_disputes")
+}
+
+// ─── Academy ──────────────────────────────────────────────────────────────────
+// The learning section at /academy. Lesson content itself lives in code
+// (src/domains/academy/content) — see docs/adr/ADR-025-academy-content-model.md.
+// Only the player's relationship to that content is stored here.
+
+enum AcademyLessonStatus {
+  available
+  in_progress
+  completed
+  mastered
+  review
+}
+
+enum AcademyAssignmentStatus {
+  active
+  passed
+  failed
+  expired
+}
+
+model AcademyProgress {
+  id       String @id @default(uuid()) @db.Uuid
+  userId   String @db.Uuid
+  // `track/slug`, resolved by src/domains/academy/curriculum.ts. Deliberately not a
+  // foreign key: the curriculum is code, and a renamed slug should surface as a
+  // missing lesson rather than a broken constraint.
+  lessonId String
+
+  status    AcademyLessonStatus @default(available)
+  attempts  Int                 @default(0)
+  bestScore Int                 @default(0)
+
+  completedAt DateTime?
+  masteredAt  DateTime?
+  lastSeenAt  DateTime  @default(now())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([userId, status])
+  @@map("academy_progress")
+}
+
+model AcademyEnrollment {
+  id      String @id @default(uuid()) @db.Uuid
+  userId  String @db.Uuid
+  trackId String
+
+  // Where the placement check put this player when they started the track, kept so
+  // the recommendation can be explained later ("we started you here because…").
+  placementLevel String?
+
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, trackId])
+  @@map("academy_enrollments")
+}
+
+// Proof of Practice: the lesson's field assignment, pinned to the player's own
+// baseline at the moment they finished the lesson so it can be judged against
+// their real matches rather than against a global target.
+model AcademyAssignment {
+  id       String @id @default(uuid()) @db.Uuid
+  userId   String @db.Uuid
+  lessonId String
+
+  metric        String
+  direction     String
+  baseline      Decimal @db.Decimal(6, 2)
+  target        Decimal @db.Decimal(6, 2)
+  gamesRequired Int     @default(3)
+  gamesObserved Int     @default(0)
+
+  status   AcademyAssignmentStatus @default(active)
+  evidence Json?
+
+  startedAt  DateTime  @default(now())
+  resolvedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([userId, lessonId])
+  @@map("academy_assignments")
 }

@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { getMatchupPairs, getMetaSnapshot, ALL_POSITIONS, POSITION_SLUG } from "@/domains/meta";
 import { esportsSitemapEntries } from "@/domains/esports";
+import { TRACKS, allLessons } from "@/domains/academy";
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
 
@@ -54,6 +55,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ];
 
+  // The curriculum is code, so these are exact and never go stale against the routes.
+  const academyRoutes: MetadataRoute.Sitemap = [
+    { url: `${BASE_URL}/academy`, changeFrequency: "weekly" as const, priority: 0.9 },
+    ...TRACKS.map((track) => ({
+      url: `${BASE_URL}/academy/${track.id}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
+    ...allLessons().map((lesson) => ({
+      url: `${BASE_URL}/academy/${lesson.trackId}/${lesson.slug}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
+  ];
+
   const buildRoutes: MetadataRoute.Sitemap = champions.map((c) => ({
     url: `${BASE_URL}/builds/${c.id}`,
     lastModified: dataLastMod,
@@ -99,6 +115,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...staticRoutes,
+    ...academyRoutes,
     ...championRoutes,
     ...counterRoutes,
     ...buildRoutes,
