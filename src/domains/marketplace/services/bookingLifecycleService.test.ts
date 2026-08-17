@@ -7,8 +7,8 @@ import {
   cancelBooking,
   markDelivered,
   confirmDelivery,
-  expireBooking,
 } from "@/domains/marketplace/services/bookingLifecycleService";
+import { expireBooking } from "@/domains/marketplace/services/bookingSweepService";
 
 vi.mock("@/lib/db/prisma", () => ({ prisma: { booking: { findUnique: vi.fn() } } }));
 vi.mock("@/domains/marketplace/services/bookingEventService", () => ({

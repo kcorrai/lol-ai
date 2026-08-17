@@ -7,11 +7,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/ui/error-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useBookingAction } from "@/hooks/useBookings";
+import type { BookingAction } from "@/hooks/useBookings";
 import type { BookingDetail, BookingEventRow } from "@/domains/marketplace/types";
 import { BookingActions } from "@/domains/marketplace/components/BookingActions";
 import { BookingTimeline } from "@/domains/marketplace/components/BookingTimeline";
 import { StatusBadge, whenLabel } from "@/domains/marketplace/components/BookingRow";
 import { VodReviewPanel } from "@/domains/marketplace/components/VodReviewPanel";
+import { LiveSessionPanel } from "@/domains/marketplace/components/LiveSessionPanel";
 import type { BookingPaymentView } from "@/domains/marketplace/types";
 
 interface Data {
@@ -47,6 +49,17 @@ export default function SessionPage({ bookingId }: { bookingId: string }): React
 
   const { booking, history } = data;
 
+  function handleAct(body: BookingAction): void {
+    setError(null);
+    act.mutate(
+      { bookingId, ...body },
+      {
+        onSuccess: () => void refetch(),
+        onError: (err) => setError(err instanceof Error ? err.message : "That did not work."),
+      }
+    );
+  }
+
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-6">
       <div>
@@ -68,21 +81,7 @@ export default function SessionPage({ bookingId }: { bookingId: string }): React
         </p>
       )}
 
-      <BookingActions
-        booking={booking}
-        pending={act.isPending}
-        onAct={(body) => {
-          setError(null);
-          act.mutate(
-            { bookingId, ...body },
-            {
-              onSuccess: () => void refetch(),
-              onError: (err) =>
-                setError(err instanceof Error ? err.message : "That did not work."),
-            }
-          );
-        }}
-      />
+      <BookingActions booking={booking} pending={act.isPending} onAct={handleAct} />
 
       <Card>
         <CardHeader>
@@ -102,6 +101,10 @@ export default function SessionPage({ bookingId }: { bookingId: string }): React
           )}
         </CardContent>
       </Card>
+
+      {booking.kind !== "VOD_REVIEW" && (
+        <LiveSessionPanel booking={booking} pending={act.isPending} onAct={handleAct} />
+      )}
 
       {booking.kind === "VOD_REVIEW" && (
         <VodReviewPanel booking={booking} onDelivered={() => void refetch()} />

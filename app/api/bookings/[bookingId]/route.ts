@@ -13,6 +13,10 @@ const ActionBody = z.discriminatedUnion("action", [
   z.object({ action: z.literal("cancel"), reason: z.string().trim().min(5).max(1000) }),
   z.object({ action: z.literal("deliver") }),
   z.object({ action: z.literal("confirm") }),
+  z.object({
+    action: z.literal("meeting"),
+    meetingUrl: z.string().url().max(500).nullable(),
+  }),
 ]);
 
 // GET /api/bookings/[bookingId] — one booking and its whole history.
@@ -39,23 +43,10 @@ export function PATCH(
       throw Errors.validation(parsed.error.issues[0]?.message ?? "Unknown action.");
     }
 
-    const body = parsed.data;
-    const id = params.bookingId;
-
-    const result =
-      body.action === "accept"
-        ? await market.acceptBooking(id, userId, body.meetingUrl ?? null)
-        : body.action === "decline"
-          ? await market.declineBooking(id, userId, body.reason)
-          : body.action === "cancel"
-            ? await market.cancelBooking(id, userId, body.reason)
-            : body.action === "deliver"
-              ? await market.markDelivered(id, userId)
-              : await market.confirmDelivery(id, userId);
-
+    const result = await market.performBookingCommand(params.bookingId, userId, parsed.data);
     if (!result.ok) throw refusal(result.reason);
 
-    return apiSuccess({ action: body.action });
+    return apiSuccess({ action: parsed.data.action });
   })(req);
 }
 

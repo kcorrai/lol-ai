@@ -67,7 +67,8 @@ export type BookingAction =
   | { action: "decline"; reason: string }
   | { action: "cancel"; reason: string }
   | { action: "deliver" }
-  | { action: "confirm" };
+  | { action: "confirm" }
+  | { action: "meeting"; meetingUrl: string | null };
 
 export function useBookingAction() {
   const qc = useQueryClient();

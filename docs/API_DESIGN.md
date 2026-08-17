@@ -2074,3 +2074,17 @@ The coach writes it: `summary`, optional `sourceUrl`, `annotations[]`
 **No video is hosted.** The review points at a match id of ours or a link of
 the student's, and the timestamps are the game clock for them to scrub their own
 replay to (ADR-021).
+
+### `PATCH /api/bookings/[bookingId]` — `meeting`
+
+`{ "action": "meeting", "meetingUrl": "https://…" | null }`. The coach sets or
+changes where a live session will happen.
+
+Separate from `accept` because a coach usually knows they will take a session
+before they know which room it will be in, and a link that cannot be changed
+afterwards is one that goes stale between accepting and the day.
+
+- **Not a status change**, so it does not go through the state machine — nothing
+  about where a session happens moves it through its life.
+- `403` for the student. `409` once the session is over: rewriting the room a
+  finished session happened in would quietly change the record of it.

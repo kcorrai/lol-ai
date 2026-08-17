@@ -33,7 +33,7 @@ interface BookingActor {
  * booking", deliberately: a stranger probing ids should not be able to tell a
  * booking that exists from one that does not.
  */
-async function actorOn(bookingId: string, userId: string): Promise<BookingActor | null> {
+export async function actorOn(bookingId: string, userId: string): Promise<BookingActor | null> {
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },
     select: {
@@ -172,40 +172,6 @@ export async function confirmDelivery(
   if (actor.role !== "student") return { ok: false, reason: "forbidden" };
 
   return apply(actor, "COMPLETED", userId, "Confirmed by the student.", { completedAt: now });
-}
-
-/** A sweep completing a delivery nobody challenged. No actor: nobody did it. */
-export async function autoComplete(
-  bookingId: string,
-  status: BookingStatus,
-  now = new Date()
-): Promise<LifecycleOutcome> {
-  const result = await transition({
-    bookingId,
-    from: status,
-    to: "COMPLETED",
-    actorId: null,
-    reason: "The challenge window closed with no dispute.",
-    data: { completedAt: now },
-  });
-
-  if (result.ok) await settleForStatus(bookingId, "COMPLETED");
-  return toOutcome(result);
-}
-
-/** A sweep giving up on a request the coach never answered. */
-export async function expireBooking(bookingId: string, now = new Date()): Promise<LifecycleOutcome> {
-  const result = await transition({
-    bookingId,
-    from: "PENDING_COACH",
-    to: "EXPIRED",
-    actorId: null,
-    reason: "The coach did not answer in time.",
-    data: { cancelledAt: now, cancelReason: "No answer from the coach." },
-  });
-
-  if (result.ok) await settleForStatus(bookingId, "EXPIRED");
-  return toOutcome(result);
 }
 
 async function apply(

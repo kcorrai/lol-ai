@@ -150,10 +150,22 @@ export {
   cancelBooking,
   markDelivered,
   confirmDelivery,
+} from "@/domains/marketplace/services/bookingLifecycleService";
+
+export {
+  setMeetingUrl,
+  performBookingCommand,
+} from "@/domains/marketplace/services/bookingCommandService";
+
+export {
   autoComplete,
   expireBooking,
+} from "@/domains/marketplace/services/bookingSweepService";
+export type {
+  LifecycleOutcome,
+  ActorRole,
 } from "@/domains/marketplace/services/bookingLifecycleService";
-export type { LifecycleOutcome, ActorRole } from "@/domains/marketplace/services/bookingLifecycleService";
+export type { BookingCommand } from "@/domains/marketplace/services/bookingCommandService";
 
 export { transition, recordCreation, bookingHistory } from "@/domains/marketplace/services/bookingEventService";
 export type { TransitionInput, TransitionOutcome } from "@/domains/marketplace/services/bookingEventService";
