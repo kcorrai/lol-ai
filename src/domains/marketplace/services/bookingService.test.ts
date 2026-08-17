@@ -9,6 +9,7 @@ vi.mock("@/lib/db/prisma", () => ({
   prisma: {
     coachListing: { findFirst: vi.fn() },
     riotAccount: { findFirst: vi.fn() },
+    user: { findUnique: vi.fn() },
   },
 }));
 vi.mock("@/lib/db/userLock", () => ({ withUserLock: vi.fn() }));
@@ -21,6 +22,7 @@ vi.mock("@/domains/marketplace/services/bookingEventService", () => ({
 vi.mock("@/domains/marketplace/services/payments/paymentService", () => ({
   openPayment: vi.fn(),
 }));
+vi.mock("@/domains/marketplace/services/notificationService", () => ({ notify: vi.fn() }));
 vi.mock("@/lib/utils/logger", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));
@@ -64,6 +66,7 @@ beforeEach(() => {
   mockLock.mockImplementation(async (_key, fn) => fn(tx as never));
   mockSlotFree.mockResolvedValue(true);
   mockPrisma.coachListing.findFirst.mockResolvedValue(LIVE_LISTING as never);
+  mockPrisma.user.findUnique.mockResolvedValue({ name: "TestStudent" } as never);
 });
 
 describe("createBooking", () => {

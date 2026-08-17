@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
 import { autoComplete, expireBooking } from "@/domains/marketplace/services/bookingSweepService";
 import { revealExpired } from "@/domains/marketplace/services/reviewService";
+import { sendSessionReminders } from "@/domains/marketplace/services/reminderService";
 
 // The promises the marketplace keeps without anybody pressing anything.
 //
@@ -18,6 +19,7 @@ export interface SweepReport {
   expired: number;
   completed: number;
   reviewsRevealed: number;
+  remindersSent: number;
   failed: number;
 }
 
@@ -73,7 +75,13 @@ export async function completeUnchallenged(now = new Date(), limit = BATCH): Pro
 
 /** Run all three, and say what each did. */
 export async function runBookingSweeps(now = new Date()): Promise<SweepReport> {
-  const report: SweepReport = { expired: 0, completed: 0, reviewsRevealed: 0, failed: 0 };
+  const report: SweepReport = {
+    expired: 0,
+    completed: 0,
+    reviewsRevealed: 0,
+    remindersSent: 0,
+    failed: 0,
+  };
 
   // Sequential rather than parallel: they touch the same rows in sequence — an
   // expiry can create work for nothing else, but a completion can create a
@@ -83,6 +91,7 @@ export async function runBookingSweeps(now = new Date()): Promise<SweepReport> {
     ["expired", () => expireUnanswered(now)],
     ["completed", () => completeUnchallenged(now)],
     ["reviewsRevealed", () => revealExpired(now)],
+    ["remindersSent", () => sendSessionReminders(now)],
   ];
 
   for (const [key, step] of steps) {

@@ -226,6 +226,18 @@ export {
 } from "@/domains/marketplace/services/disputeService";
 export type { DisputeRow, DisputeOutcome } from "@/domains/marketplace/services/disputeService";
 
+export {
+  notify,
+  listNotifications,
+  markNotificationsRead,
+} from "@/domains/marketplace/services/notificationService";
+export type {
+  MarketplaceNotification,
+  NotificationView,
+} from "@/domains/marketplace/services/notificationService";
+
+export { sendSessionReminders } from "@/domains/marketplace/services/reminderService";
+
 export { sessionPrep } from "@/domains/marketplace/services/sessionPrepService";
 export { spectateStatus } from "@/domains/marketplace/services/spectateService";
 export type { SpectateStatus } from "@/domains/marketplace/services/spectateService";

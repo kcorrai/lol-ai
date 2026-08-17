@@ -2225,3 +2225,36 @@ a refusal nobody outside the company can reconstruct.
 twenty characters and is what the losing side is told. The booking moves to
 `REFUNDED` or `COMPLETED`, the ledger follows, and an `audit_logs` row records
 the admin who decided.
+
+### `GET /api/notifications` · `PATCH /api/notifications`
+
+The caller's own notifications, newest first, with an unread count. `PATCH`
+marks everything read.
+
+The `Notification` table has existed since the initial schema and **nothing had
+ever written to it** — everything the app told anybody went by email. The
+marketplace needs both: a coach may not be on the site when a request arrives,
+and will be later and has to find it. So the endpoint is general-purpose, and
+the bell in the top bar — a static button until now — is finally wired to it.
+
+Written on: a request arriving, a request accepted, declined (**with the
+coach's reason carried through**), expired, or delivered; a session starting in
+an hour; and a dispute being decided. Deliberately not on every transition — a
+student cancelling their own booking does not need telling that they cancelled
+it.
+
+Notification writes swallow their own failures. One that cannot be written must
+not roll back the booking it was about.
+
+### Session reminders
+
+An hour before a scheduled session, to **both sides**. A coach with a full week
+is exactly the person who loses track of one, and a coach who does not turn up
+is the failure this marketplace can least afford.
+
+A sweep over a window rather than a timer per booking: Vercel caps a project at
+100 cron jobs, and Vercel Queues' delay tops out at seven days, which a session
+booked three weeks out would blow straight through. `reminderSentAt` is stamped
+before the notifications go out, so overlapping runs cannot send twice — a
+missed reminder is a much smaller problem than one arriving every five minutes
+until the session starts.

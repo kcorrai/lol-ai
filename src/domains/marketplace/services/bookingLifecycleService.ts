@@ -4,6 +4,7 @@ import { logger } from "@/lib/utils/logger";
 import { autoCompleteFrom, canCancelFreely } from "@/domains/marketplace/policy";
 import { transition } from "@/domains/marketplace/services/bookingEventService";
 import { settleForStatus } from "@/domains/marketplace/services/payments/paymentService";
+import { notifyForMove } from "@/domains/marketplace/services/bookingNotifier";
 
 // Moving a booking through its life. Creating one is `bookingService`.
 //
@@ -194,6 +195,7 @@ async function apply(
     // Driven by where the booking ended up rather than decided here, so the
     // money and the booking can never disagree about what happened.
     await settleForStatus(actor.bookingId, to);
+    await notifyForMove(actor.bookingId, to, reason);
     logger.info("[marketplace] booking moved", {
       bookingId: actor.bookingId,
       from: actor.status,

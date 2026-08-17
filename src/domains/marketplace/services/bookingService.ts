@@ -10,6 +10,7 @@ import {
 import { isSlotFree } from "@/domains/marketplace/services/slotService";
 import { recordCreation } from "@/domains/marketplace/services/bookingEventService";
 import { openPayment } from "@/domains/marketplace/services/payments/paymentService";
+import { notify } from "@/domains/marketplace/services/notificationService";
 
 // Creating a booking. Moving one afterwards is `bookingLifecycleService`.
 
@@ -167,6 +168,19 @@ export async function createBooking(request: BookingRequest): Promise<CreateOutc
   });
 
   if (!created) return { ok: false, reason: "slot-taken" };
+
+  // Outside the transaction: a notification that cannot be written must not
+  // roll back the booking it was about.
+  const student = await prisma.user.findUnique({
+    where: { id: request.studentId },
+    select: { name: true },
+  });
+  await notify({
+    type: "booking.requested",
+    bookingId: created.id,
+    coachUserId: listing.coachProfile.userId,
+    studentName: student?.name ?? "A student",
+  });
 
   logger.info("[marketplace] booking requested", {
     bookingId: created.id,

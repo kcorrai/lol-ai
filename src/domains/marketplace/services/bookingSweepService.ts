@@ -1,6 +1,7 @@
 import type { BookingStatus } from "@prisma/client";
 import { transition } from "@/domains/marketplace/services/bookingEventService";
 import { settleForStatus } from "@/domains/marketplace/services/payments/paymentService";
+import { notifyForMove } from "@/domains/marketplace/services/bookingNotifier";
 import type { LifecycleOutcome } from "@/domains/marketplace/services/bookingLifecycleService";
 
 // Transitions nobody performs.
@@ -39,7 +40,10 @@ export async function expireBooking(bookingId: string, now = new Date()): Promis
     data: { cancelledAt: now, cancelReason: "No answer from the coach." },
   });
 
-  if (result.ok) await settleForStatus(bookingId, "EXPIRED");
+  if (result.ok) {
+    await settleForStatus(bookingId, "EXPIRED");
+    await notifyForMove(bookingId, "EXPIRED", null);
+  }
   return toOutcome(result);
 }
 

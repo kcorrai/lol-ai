@@ -17,6 +17,7 @@ vi.mock("@/domains/marketplace/services/bookingEventService", () => ({
 vi.mock("@/domains/marketplace/services/payments/paymentService", () => ({
   settleForStatus: vi.fn(),
 }));
+vi.mock("@/domains/marketplace/services/bookingNotifier", () => ({ notifyForMove: vi.fn() }));
 vi.mock("@/lib/utils/logger", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));

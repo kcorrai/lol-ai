@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { prisma } from "@/lib/db/prisma";
 import { autoComplete, expireBooking } from "@/domains/marketplace/services/bookingSweepService";
 import { revealExpired } from "@/domains/marketplace/services/reviewService";
+import { sendSessionReminders } from "@/domains/marketplace/services/reminderService";
 import {
   expireUnanswered,
   completeUnchallenged,
@@ -14,6 +15,7 @@ vi.mock("@/domains/marketplace/services/bookingSweepService", () => ({
   expireBooking: vi.fn(),
 }));
 vi.mock("@/domains/marketplace/services/reviewService", () => ({ revealExpired: vi.fn() }));
+vi.mock("@/domains/marketplace/services/reminderService", () => ({ sendSessionReminders: vi.fn() }));
 vi.mock("@/lib/utils/logger", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));
@@ -22,6 +24,7 @@ const mockPrisma = vi.mocked(prisma, true);
 const mockExpire = vi.mocked(expireBooking);
 const mockComplete = vi.mocked(autoComplete);
 const mockReveal = vi.mocked(revealExpired);
+const mockRemind = vi.mocked(sendSessionReminders);
 
 const NOW = new Date("2026-08-18T12:00:00Z");
 
@@ -31,6 +34,7 @@ beforeEach(() => {
   mockExpire.mockResolvedValue({ ok: true });
   mockComplete.mockResolvedValue({ ok: true });
   mockReveal.mockResolvedValue(0);
+  mockRemind.mockResolvedValue(0);
 });
 
 describe("expireUnanswered", () => {
@@ -92,10 +96,13 @@ describe("runBookingSweeps", () => {
       .mockResolvedValueOnce([{ id: "b" }, { id: "c" }] as never);
     mockReveal.mockResolvedValue(4);
 
+    mockRemind.mockResolvedValue(6);
+
     expect(await runBookingSweeps(NOW)).toEqual({
       expired: 1,
       completed: 2,
       reviewsRevealed: 4,
+      remindersSent: 6,
       failed: 0,
     });
   });
