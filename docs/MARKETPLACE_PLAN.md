@@ -74,6 +74,14 @@ Three session kinds, all human-delivered:
 
 ## 3. Architecture at a glance
 
+The section has **its own shell**, not the dashboard's. Kaan's call, and the
+right one: a coach here is running a business (bookings, hours, students,
+earnings) and a student is dealing with a person — neither of those is "look at
+my last twenty games", and hanging them off the player sidebar would make both
+read as a sub-tab of something else. One link in the dashboard sidebar leads
+here, the same shape Esports uses, and one small link leads back. A section you
+enter, not a page you pass through — but never a trap.
+
 ```
 src/domains/marketplace/            new bounded context, isolated like esports/ and riot/
 ├── index.ts                        the ONLY import surface for the rest of the app
@@ -87,9 +95,12 @@ src/domains/marketplace/            new bounded context, isolated like esports/ 
 │   └── payments/                   provider-neutral ledger + drivers
 └── components/                     section-specific UI
 
-app/(coaches)/coaches/…             public, ISR, indexable
-app/(app)/coach/…                   the coach's own side
-app/(app)/sessions/…                the student's own side
+app/(market)/                       the section's own route group and shell
+├── layout.tsx                      MarketChrome — own wordmark, own nav, no sidebar
+├── coaches/…                       public, ISR, indexable — the acquisition surface
+├── coaches/[slug]/                 public coach profile
+├── coach/                          the coach console (auth-gated by middleware)
+└── sessions/…                      the student's own side, in this section too
 app/admin/coaches/…                 review queue and dispute resolution
 app/api/coaches/…                   thin handlers over the services
 src/inngest/functions/…             expiry, auto-completion, reminders, rank refresh
