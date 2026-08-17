@@ -4,10 +4,12 @@ import Link from "next/link";
 import { CalendarClock, ClipboardList, Tags, UserRound } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import type { OwnCoachProfile } from "@/domains/marketplace";
+import type { CoachWorkload, OwnCoachProfile } from "@/domains/marketplace";
 
 interface Props {
   profile: OwnCoachProfile;
+  /** Null only while a profile exists but its id could not be read. */
+  workload: CoachWorkload | null;
 }
 
 /**
@@ -17,7 +19,7 @@ interface Props {
  * needs to know what this will become before deciding to invest a profile in
  * it, and a console that quietly grows tiles reads as broken until it does not.
  */
-export function CoachConsoleHome({ profile }: Props): React.ReactElement {
+export function CoachConsoleHome({ profile, workload }: Props): React.ReactElement {
   const live = profile.status === "APPROVED";
 
   return (
@@ -39,37 +41,54 @@ export function CoachConsoleHome({ profile }: Props): React.ReactElement {
         <CardContent className="flex flex-wrap gap-3 text-sm">
           <Stat label="Sessions completed" value={String(profile.sessionsCompleted)} />
           <Stat label="Reviews" value={String(profile.ratingCount)} />
-          <Stat
-            label="Taking students"
-            value={profile.acceptingStudents ? "Yes" : "Paused"}
-          />
+          <Stat label="Taking students" value={profile.acceptingStudents ? "Yes" : "Paused"} />
         </CardContent>
       </Card>
 
+      {workload && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Right now</CardTitle>
+            <CardDescription>
+              {workload.pending > 0
+                ? `${workload.pending} ${workload.pending === 1 ? "person is" : "people are"} waiting on an answer from you.`
+                : "Nothing is waiting on you."}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-wrap gap-3 text-sm">
+            <Stat label="Awaiting your answer" value={String(workload.pending)} />
+            <Stat label="Upcoming" value={String(workload.upcoming)} />
+            <Stat label="Delivered, unconfirmed" value={String(workload.awaitingConfirmation)} />
+            <Stat label="Earned" value={money(workload.releasedCents, workload.currency)} />
+            <Stat label="Held" value={money(workload.heldCents, workload.currency)} />
+          </CardContent>
+        </Card>
+      )}
+
       <div className="grid gap-3 sm:grid-cols-2">
         <Tile
-          href="/coach/apply"
+          href="/coach/profile"
           icon={UserRound}
           title="Profile and rank"
           description="What students read, and the account your rank is checked against."
         />
         <Tile
+          href="/coach/listings"
           icon={Tags}
           title="Listings"
           description="What you sell, how long it takes, and what it costs."
-          soon
         />
         <Tile
+          href="/coach/availability"
           icon={CalendarClock}
           title="Availability"
           description="The hours you are bookable, in your own timezone."
-          soon
         />
         <Tile
+          href="/sessions"
           icon={ClipboardList}
           title="Requests and sessions"
           description="Accept or decline bookings, and deliver the work."
-          soon
         />
       </div>
     </div>
@@ -122,4 +141,12 @@ function Tile({
       {body}
     </Link>
   );
+}
+
+function money(cents: number, currency: string): string {
+  return new Intl.NumberFormat(undefined, {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0,
+  }).format(cents / 100);
 }

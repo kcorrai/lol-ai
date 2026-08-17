@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
+import { ApiError } from "@/lib/api/errors";
 import { apiError } from "@/lib/api/response";
+import { logger } from "@/lib/utils/logger";
 
 // Who the admin is, for routes that have to record who made a decision.
 //
@@ -34,9 +37,22 @@ export function withAdminAuth(handler: AdminHandler) {
       return apiError("FORBIDDEN", "Admin access required", 403);
     }
 
-    return handler(req, {
-      adminId: session.user.id,
-      adminEmail: session.user.email,
-    });
+    // Admin handlers throw `ApiError` the same way authenticated ones do, and
+    // without this they surfaced as 500s — a validation failure on an admin
+    // route answered "internal error" instead of saying what was wrong.
+    // `withAuth` has always caught these; this is the same contract.
+    try {
+      return await handler(req, {
+        adminId: session.user.id,
+        adminEmail: session.user.email,
+      });
+    } catch (err) {
+      if (err instanceof ApiError) {
+        return apiError(err.code, err.message, err.statusCode);
+      }
+      logger.error("[withAdminAuth] Unhandled error", err);
+      Sentry.captureException(err);
+      return apiError("INTERNAL_ERROR", "An unexpected error occurred", 500);
+    }
   };
 }

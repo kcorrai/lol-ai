@@ -124,7 +124,12 @@ model User {
 
   totpEnabled     Boolean  @default(false)
   totpSecret      String? // AES-encrypted TOTP secret
-  totpBackupCodes String[] // bcrypt-hashed backup codes
+  // `@default([])` is load-bearing, not decoration. Prisma omits a scalar list
+  // from the INSERT when the model declares no default, so this NOT NULL column
+  // was being filled by the database's own default — and the schema-drift
+  // reconciliation dropped that default, which broke registration outright
+  // until this was added. See 20260817233500_restore_totp_backup_codes_default.
+  totpBackupCodes String[] @default([]) // bcrypt-hashed backup codes
 
   sessionVersion Int @default(0) // incremented to invalidate all active sessions
 

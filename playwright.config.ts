@@ -5,6 +5,13 @@ import { defineConfig, devices } from "@playwright/test";
 // local development where a single DB is acceptable.
 const BASE_URL = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3001";
 
+// The server has to come up on the port the tests are pointed at. Hardcoding
+// 3001 here while `baseURL` follows the override means a run on another port
+// silently reuses whatever is already listening — which is how a suite ends up
+// testing a different checkout, or failing to log in because that server's
+// NEXTAUTH_URL names a third port.
+const PORT = new URL(BASE_URL).port || "3001";
+
 export default defineConfig({
   testDir: "./tests/e2e",
   testMatch: /\.spec\.ts$|\.setup\.ts$/,
@@ -88,6 +95,20 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
 
+    // The marketplace needs the seeded session for the coach side, and drives
+    // its own rows through Prisma rather than through an admin UI the seeded
+    // user has no access to. The public storefront cases inside it opt out of
+    // the stored session with `test.use`.
+    {
+      name: "marketplace",
+      testMatch: /marketplace\.spec\.ts$/,
+      dependencies: ["setup"],
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: "tests/e2e/.auth/user.json",
+      },
+    },
+
     // Smoke tests requiring authentication — depend on setup project
     {
       name: "smoke",
@@ -104,7 +125,7 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: "next dev -p 3001",
+    command: `next dev -p ${PORT}`,
     url: BASE_URL,
     reuseExistingServer: !process.env.CI,
     timeout: 90_000,

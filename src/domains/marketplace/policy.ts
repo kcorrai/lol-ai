@@ -37,8 +37,14 @@ export const DISPUTE_WINDOW_HOURS = 72;
 /** How long a written review stays hidden while waiting for the other side's. */
 export const REVIEW_BLIND_DAYS = 14;
 
-/** Below this many revealed reviews a coach shows a "New" badge instead of a score. */
-export const MIN_REVIEWS_FOR_SCORE = 3;
+/**
+ * Below this many revealed reviews a coach shows a "New" badge instead of a score.
+ *
+ * Re-exported from `rating.ts`, which is where the aggregation that depends on
+ * it lives — two copies of this number would drift and the storefront would
+ * start disagreeing with itself about who has a rating.
+ */
+export { MIN_REVIEWS_FOR_SCORE } from "@/domains/marketplace/rating";
 
 /**
  * The shortest bio a reviewer will be asked to read.
@@ -48,6 +54,16 @@ export const MIN_REVIEWS_FOR_SCORE = 3;
  * module holding the submit check reaches for Prisma.
  */
 export const MIN_BIO_LENGTH = 120;
+
+/**
+ * How many unanswered requests one student may hold against one coach.
+ *
+ * The real slot-squatting defence, and better than a rate limit for it: a
+ * pending request blocks a slot for up to 48 hours, so without a cap one
+ * account can quietly take a coach's whole week and never pay for any of it.
+ * Three is more than anybody books in good faith at once.
+ */
+export const MAX_PENDING_PER_COACH = 3;
 
 /** Bounds on what a coach may charge for one session, in cents. */
 export const MIN_PRICE_CENTS = 500;

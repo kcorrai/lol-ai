@@ -2,16 +2,18 @@ import type { MetadataRoute } from "next";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { getMatchupPairs, getMetaSnapshot, ALL_POSITIONS, POSITION_SLUG } from "@/domains/meta";
 import { esportsSitemapEntries } from "@/domains/esports";
+import { marketplaceSitemapEntries } from "@/domains/marketplace";
 import { TRACKS, allLessons } from "@/domains/academy";
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [champions, matchupPairs, snapshot, esports] = await Promise.all([
+  const [champions, matchupPairs, snapshot, esports, marketplace] = await Promise.all([
     fetchAllChampions(),
     getMatchupPairs(1500),
     getMetaSnapshot(),
     esportsSitemapEntries(),
+    marketplaceSitemapEntries(),
   ]);
 
   // Real last-modified for data pages: when the meta snapshot was last fetched.
@@ -113,6 +115,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: entry.priority,
   }));
 
+  // Coach profiles that have something on sale. Filtered storefront URLs are
+  // deliberately absent — the filter space is combinatorial and every
+  // combination renders the same handful of coaches (ADR-017 §4's reasoning).
+  const marketplaceRoutes: MetadataRoute.Sitemap = marketplace.map((entry) => ({
+    url: `${BASE_URL}${entry.path}`,
+    lastModified: entry.lastModified,
+    changeFrequency: "weekly" as const,
+    priority: entry.path === "/coaches" ? 0.9 : 0.7,
+  }));
+
   return [
     ...staticRoutes,
     ...academyRoutes,
@@ -122,5 +134,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...aramBuildRoutes,
     ...matchupRoutes,
     ...esportsRoutes,
+    ...marketplaceRoutes,
   ];
 }

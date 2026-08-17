@@ -1707,6 +1707,119 @@ belong to that person — that is `RIOT_VERIFIED`, which needs Riot Sign-On and 
 invitation we do not have (ADR-023). The UI labels the two differently and never
 shows the stronger wording for the weaker proof.
 
+### `GET /api/coaches/me/listings`
+
+Everything the caller sells, **active or not** — this is the management view.
+
+```json
+{ "data": { "listings": [ { "id": "…", "kind": "VOD_REVIEW", "title": "…", "durationMinutes": 60,
+  "priceCents": 3000, "currency": "USD", "deliveryHours": 48, "isActive": true } ] } }
+```
+
+Returns an empty list, not a `404`, for a user with no coach profile.
+
+### `POST /api/coaches/me/listings`
+
+Add one. Body: `kind` (`VOD_REVIEW|LIVE_SESSION|LIVE_SPECTATE`), `title`,
+`description`, `durationMinutes`, `priceCents`, `currency` (ISO 4217,
+uppercased), `deliveryHours`.
+
+- **Listings may be prepared before approval.** The storefront filters on the
+  profile's status, so nothing leaks by letting a coach get ready while they
+  wait.
+- `deliveryHours` is **nulled** for the scheduled kinds rather than stored. A
+  live session has a calendar slot, not a promised turnaround, and keeping a
+  number there would be a promise nothing could be measured against.
+- An async review **must** carry a turnaround — that is the only thing a late
+  delivery can be judged against.
+- `422` on a price or length outside the bounds in `policy.ts`, with the message
+  naming which.
+- New listings are appended to the coach's own ordering, where they cannot
+  displace anything.
+
+### `PATCH /api/coaches/me/listings/[listingId]`
+
+Takes **either** a full listing body **or** just `{ "isActive": boolean }` —
+the on-sale switch is one click in the UI and should not have to round-trip a
+whole listing to work.
+
+Both forms are scoped to the caller's own profile in the same statement, so a
+guessed id belonging to another coach updates nothing rather than updating
+theirs. `404` when nothing matched.
+
+### `DELETE /api/coaches/me/listings/[listingId]`
+
+- `409` once anything has been booked against it, with a message pointing at
+  "take off sale" instead. The booking snapshots its own price and terms, but
+  the listing row is what tells a dispute what was actually being sold.
+- `404` when the listing is not the caller's.
+
+### `GET /api/coaches/me/availability`
+
+The caller's weekly hours, their date exceptions, and the IANA zone all of it
+is written in.
+
+```json
+{ "data": { "timeZone": "Europe/Istanbul",
+  "rules": [ { "id": "…", "days": [1,2,3,4,5], "startMinute": 1080, "endMinute": 1260 } ],
+  "exceptions": [ { "id": "…", "date": "2026-09-03", "isBlocked": true, "startMinute": null, "endMinute": null, "note": null } ] } }
+```
+
+Minutes since local midnight, **not** instants. A weekly rule is wall-clock
+time in the coach's own zone; resolving it to a UTC instant is a read-time job
+done per calendar day, because collapsing it to one fixed offset is exactly
+what breaks on the day the clocks move (ADR-022).
+
+### `PUT /api/coaches/me/availability`
+
+Replace the whole weekly schedule: `{ "rules": [ { days, startMinute, endMinute } ] }`.
+
+**Replaced, not patched.** A schedule is read as a set, and a partial update
+leaves behind a window nobody meant to keep. Applied in one transaction, so a
+failed save cannot leave a coach with no hours at all. Answers with the new
+state, so the client needs no second request.
+
+`422` when a row has no days, when hours fall outside a single day, or when the
+finish is not after the start — a window crossing midnight has to be two rows,
+and accepting one silently produces no hours.
+
+### `POST /api/coaches/me/availability/exceptions`
+
+One date that does not follow the weekly rules:
+`{ date: "YYYY-MM-DD", isBlocked, startMinute, endMinute }`.
+
+An exception **replaces** that day rather than adding to it, which is what lets
+one concept express both "closed on the 3rd" and "open this Sunday for once".
+Keyed by date, so saving twice is one row.
+
+### `DELETE /api/coaches/me/availability/exceptions?date=YYYY-MM-DD`
+
+Puts the day back on the weekly rules. Both exception endpoints answer with the
+whole availability view.
+
+### `GET /api/coaches/[slug]/slots?listingId=&days=`
+
+**Public.** A student has to see when a coach is free before deciding to sign
+up, so this answers without a session. Rate limited at 60/min per IP — it is a
+computed answer over a month of calendar, not a table lookup.
+
+```json
+{ "data": { "slots": [ { "start": "2026-08-18T15:00:00.000Z", "end": "2026-08-18T16:00:00.000Z" } ],
+  "timeZone": "Europe/Istanbul", "durationMinutes": 60 } }
+```
+
+- **The listing decides the length.** A request cannot ask for a 15-minute slot
+  on a 60-minute product.
+- **A `VOD_REVIEW` listing returns an empty list**, and that is the right
+  answer rather than a missing one: an async review runs against a deadline and
+  has no calendar at all.
+- **Pending requests block time the same as confirmed ones.** The coach has 48
+  hours to answer, and offering that hour to somebody else meanwhile is a
+  double booking waiting for the coach to accept both.
+- Nothing is cached: a slot list goes stale the moment anybody books, and
+  serving a slot that has just gone is how two students end up holding the same
+  hour.
+- `404` for an unknown coach or listing, `422` without a listing id.
 ---
 
 ## Daily quiz (LaneIQ Daily)
@@ -1842,6 +1955,330 @@ Response for `submit`:
   that does not resolve is a client sending something we never published.
 - **`completed` is the ceiling this endpoint can set.** `mastered` is earned from real match
   data, so a lesson already mastered stays mastered no matter what a later attempt scores.
+
+### `POST /api/bookings`
+
+Request a session. Body: `listingId`, `startTime` (ISO, null for the async
+kind), `studentGoal`, `studentTimezone`, `riotAccountId`, `matchIds[]`,
+`vodUrl`.
+
+Creates a **request**, not a confirmed session — the coach has 48 hours
+(`respondByAt`) to accept or decline, and nothing is charged.
+
+- The whole thing runs under an advisory lock on the coach, because checking a
+  slot is free and taking it are two statements. Without it, two students both
+  read "free" and both insert, and the coach wakes up double-booked with no way
+  to tell which request was first.
+- The economics are **snapshotted** onto the row — price, commission, fee, the
+  coach's share and the cancellation window. A coach raising their rate later
+  must not rewrite what this session was worth.
+- Both timezones are captured, so a rescheduling email can name the hour each
+  side actually saw.
+- `409` when the slot went between the page loading and the request, with a
+  message telling the client to refresh rather than retry.
+- `403` on booking your own listing — it would settle money in a circle and
+  pollute the coach's own review count.
+- `422` for a scheduled kind with no time, or an async kind with neither a match
+  id nor a video link (a review with nothing to review is a session the coach
+  cannot start).
+
+### `GET /api/bookings?as=student|coach`
+
+The caller's own bookings on one side. Scoped in the query, never filtered
+afterwards. The coach's view carries the student's **name and not their email**:
+a coach needs to know who they are talking to, not how to reach them off the
+platform.
+
+### `GET /api/bookings/[bookingId]`
+
+One booking and **its whole history** — every transition, with who made it and
+why. Both sides see the same record, which is what a dispute is settled
+against.
+
+### `PATCH /api/bookings/[bookingId]`
+
+One move: `accept` (+ optional `meetingUrl`), `decline`, `cancel`, `deliver`,
+`confirm`.
+
+Who may do what is established **from the row**, never from the request, and
+the move itself is checked against the state machine in `transitions.ts`.
+
+| Refusal | Meaning |
+|---|---|
+| `404` | No such booking — **and** what a stranger probing ids gets, so one cannot be told from the other |
+| `403` | Not your side of this booking |
+| `409 too late` | A student cancelling inside the window they agreed to |
+| `409 stale` | It already moved; the update is guarded on the status that was read, so two requests racing to accept cannot both win |
+
+A coach may always cancel. The session cannot happen without them and refusing
+just produces a no-show instead — it is recorded as *their* cancellation, which
+is what an automatic refund keys off.
+
+`deliver` settles nothing: it starts the window the student can challenge it in
+(`autoCompleteAt`).
+
+### Payments (M8)
+
+There is no payment endpoint, and that is the design. The ledger is opened in
+the same transaction as the booking and settled by whatever status the booking
+reaches — so a booking without a payment row is a bug rather than a state, and
+the money and the booking can never disagree about what happened.
+
+`GET /api/bookings/[bookingId]` carries the ledger as `payment`:
+
+```json
+{ "provider": "manual", "status": "HELD", "amountCents": 4500,
+  "platformFeeCents": 900, "coachAmountCents": 3600, "currency": "USD",
+  "capturedAt": "…", "releasedAt": null, "refundedAt": null }
+```
+
+| Booking reaches | Money becomes |
+|---|---|
+| `PENDING_COACH`, `CONFIRMED`, `DELIVERED`, `DISPUTED` | stays `HELD` |
+| `COMPLETED` | `RELEASED` |
+| `DECLINED`, `EXPIRED`, either cancellation, `REFUNDED` | `REFUNDED` |
+
+**No money moves.** The only driver is `manual`, which advances these states
+and settles nothing, and the session page says so in as many words rather than
+letting a student believe they have been charged. Adding Stripe is a driver
+registration, not an edit: the provider interface is four verbs that map
+directly onto a destination charge with an `application_fee_amount`, a manual
+payout schedule for the hold, `Payout.create` for the release and
+`Refund.create({ reverse_transfer: true, refund_application_fee: true })` for
+the return. See ADR-020.
+
+### `GET /api/bookings/[bookingId]/review`
+
+The async deliverable. Returns `{ "review": null }` when there is none —
+**and also when the student asks for a draft the coach has not published**. A
+student reading half-written notes would be worse than reading none.
+
+### `PUT /api/bookings/[bookingId]/review`
+
+The coach writes it: `summary`, optional `sourceUrl`, `annotations[]`
+(`timestampSeconds`, `title`, `body`, `category`) and `publish`.
+
+- **Only the coach** — `403` for anybody else, including the student whose
+  session it is.
+- `409` on a booking that is not a `VOD_REVIEW`.
+- Annotations are **replaced wholesale**, not patched: a coach edits them as a
+  list, and a partial update leaves a note nobody meant to keep.
+- `sourceUrl` falls back to whatever the student supplied, so a coach who
+  writes the review without re-pasting the link does not lose what it was about.
+- Saving and publishing are separate acts. `publish: true` does both.
+- Notes come back ordered by timestamp however they were sent — a coach writes
+  them as they scrub, not in order.
+- `422` below thirty characters of summary, above sixty notes, or on a note with
+  no title.
+
+**No video is hosted.** The review points at a match id of ours or a link of
+the student's, and the timestamps are the game clock for them to scrub their own
+replay to (ADR-021).
+
+### `PATCH /api/bookings/[bookingId]` — `meeting`
+
+`{ "action": "meeting", "meetingUrl": "https://…" | null }`. The coach sets or
+changes where a live session will happen.
+
+Separate from `accept` because a coach usually knows they will take a session
+before they know which room it will be in, and a link that cannot be changed
+afterwards is one that goes stale between accepting and the day.
+
+- **Not a status change**, so it does not go through the state machine — nothing
+  about where a session happens moves it through its life.
+- `403` for the student. `409` once the session is over: rewriting the room a
+  finished session happened in would quietly change the record of it.
+
+### `GET /api/bookings/[bookingId]/prep`
+
+The student's own match data, for the coach they asked to look at it. **No AI
+touches this** — it is what we already hold, shown to one person.
+
+```json
+{ "prep": { "shared": true, "riotId": "Player#EUW", "rank": {…},
+  "flaggedMatchIds": ["EUW1_555"], "profile": {…}, "studentGoal": "…" } }
+```
+
+**Consent is structural, not a setting.** The coach sees this because the
+student attached a Riot account to the booking, and only that account. No
+attachment means `shared: false` and nothing else — which is a shape rather than
+an error, because "they did not share one" is a normal answer.
+
+`404` for anybody but the coach on the booking, including the student: they have
+all of this on their own dashboard, and a second copy here would make it read as
+surveillance rather than preparation.
+
+### `GET /api/bookings/[bookingId]/spectate`
+
+Whether the student is in a game right now. Live-spectate bookings only, coach
+only, same consent rule.
+
+The coach spectates in their own client — nothing streams through us. What this
+answers is the part that is otherwise a scramble in a DM: is the game on, and
+how far in. Polled by the client rather than pushed, on the same reasoning as
+the draft room's live sync (ADR-016). A Riot outage degrades it to
+`inGame: false` rather than breaking the session page.
+
+### Messaging (M14)
+
+One thread per coach/student pair, **not per booking** — the relationship
+outlives any single session. Threads are addressed by their own id, because a
+coach with two students has two threads and addressing by coach alone would
+pick one arbitrarily.
+
+- `GET /api/threads` — every conversation the caller is in, with unread counts.
+- `POST /api/threads` — `{ coachProfileId }`. The student's thread with a coach,
+  created on first use. **`403` without a booking between them**: open messaging
+  would turn the storefront into an inbox for anyone who can type a slug, and
+  the first thing that inbox fills with is people arranging to pay each other
+  somewhere else.
+- `GET /api/threads/[conversationId]` — the thread, oldest first. Marks the
+  other side's messages read.
+- `POST /api/threads/[conversationId]` — send one. Answers with the stored
+  message and a `notice` when something was stripped.
+
+**Contact details are removed before storage, not on display.** A detail that
+can be recovered from the row later has not really been removed, and keeping it
+would make the table a list of everyone's phone numbers. The sender is told
+what was taken, because hiding it would leave them believing they had shared a
+Discord tag that never arrived.
+
+The filter is deliberately modest — email addresses, invite links, Discord tags,
+phone numbers and @handles typed by someone not trying to hide them. Airbnb's
+own engineering writing is candid that a regex is circumventable; chasing
+leetspeak would cost more in false positives ("recall at 9 30" is not a phone
+number) than the leakage is worth at this size. The rest is the terms of
+service.
+
+Polled at five seconds rather than pushed, on the draft room's reasoning
+(ADR-016).
+
+### `POST /api/bookings/[bookingId]/review-session`
+
+One side's review: `{ rating: 1..5, body }`. Named apart from `/review`, which
+is the async deliverable.
+
+**Two-sided and blind.** Neither review is visible until both are in or the
+14-day window closes, whichever comes first — both rows get the same
+`revealedAt`, so there is no moment where one is up and the other is not.
+Airbnb published what changing to this did: more reviews, and more honest
+negative ones, because a student writing the truth is no longer risking the
+reply. Every competitor here is one-sided, which is why their coach ratings all
+sit at 4.9.
+
+**Verified purchase by construction**, not by a check somebody could forget:
+`409` unless the booking is `COMPLETED`, and one review per side per booking.
+
+Only *student* reviews move a coach's rating — a coach rating their students has
+nothing to do with how good the coaching was. Two aggregates are recomputed on
+reveal: a Bayesian average for display (withheld below three reviews) and a
+Wilson lower bound for search ordering, so a 5.0 from two people does not
+outrank a 4.8 from ninety.
+
+### Scheduled sweeps (M16)
+
+No endpoint — an Inngest cron every five minutes (`marketplace-sweeps`) runs
+three things the marketplace has promised:
+
+| Sweep | Closes |
+|---|---|
+| `expireUnanswered` | a request sitting on a student's money because nobody answered it |
+| `completeUnchallenged` | a delivery that never settles because nobody clicked |
+| `revealExpired` | a review hidden for ever because the other side never wrote one |
+
+Five minutes rather than hourly because all three are deadlines somebody is
+waiting on — an hourly sweep means a coach's money sitting unreleased for up to
+an hour after it was due, and a student staring at a request that expired fifty
+minutes ago and still looks live.
+
+Inngest rather than Vercel cron: Vercel caps a project at 100 jobs and at
+once-a-day on Hobby, and this section needs more than one schedule.
+
+Each sweep is bounded per run — one that tries to do everything on a bad day
+does none of it — and one throwing does not stop the others, because a stuck
+expiry leaving deliveries unsettled would turn one problem into two. The money
+follows automatically, because settlement is driven by the booking's status
+rather than called separately.
+
+### `POST /api/bookings/[bookingId]/dispute`
+
+The student says a session did not happen as sold. `{ reason }`, at least
+twenty characters — "bad" is not something an admin can decide on.
+
+Only from `DELIVERED` and only inside the challenge window. Outside it the
+booking has completed and the coach has been paid; reopening that silently is
+how a marketplace ends up clawing money back from people who did the work.
+`404` for the coach, same as for a stranger.
+
+The money **stays held** while a dispute is open. It settles when the dispute
+does, not before.
+
+### `GET /api/admin/disputes?status=` · `PATCH /api/admin/disputes/[disputeId]`
+
+Admin only. The queue is oldest-first, and each row carries **the booking's
+whole recorded history** — the decision is made against the same sequence both
+sides have been able to read the whole time. That was the argument for building
+`booking_events` first: the most damaging thing in every competitor's reviews is
+a refusal nobody outside the company can reconstruct.
+
+`PATCH` takes `{ outcome: "refund" | "release", note }`. The note is required at
+twenty characters and is what the losing side is told. The booking moves to
+`REFUNDED` or `COMPLETED`, the ledger follows, and an `audit_logs` row records
+the admin who decided.
+
+### `GET /api/notifications` · `PATCH /api/notifications`
+
+The caller's own notifications, newest first, with an unread count. `PATCH`
+marks everything read.
+
+The `Notification` table has existed since the initial schema and **nothing had
+ever written to it** — everything the app told anybody went by email. The
+marketplace needs both: a coach may not be on the site when a request arrives,
+and will be later and has to find it. So the endpoint is general-purpose, and
+the bell in the top bar — a static button until now — is finally wired to it.
+
+Written on: a request arriving, a request accepted, declined (**with the
+coach's reason carried through**), expired, or delivered; a session starting in
+an hour; and a dispute being decided. Deliberately not on every transition — a
+student cancelling their own booking does not need telling that they cancelled
+it.
+
+Notification writes swallow their own failures. One that cannot be written must
+not roll back the booking it was about.
+
+### Session reminders
+
+An hour before a scheduled session, to **both sides**. A coach with a full week
+is exactly the person who loses track of one, and a coach who does not turn up
+is the failure this marketplace can least afford.
+
+A sweep over a window rather than a timer per booking: Vercel caps a project at
+100 cron jobs, and Vercel Queues' delay tops out at seven days, which a session
+booked three weeks out would blow straight through. `reminderSentAt` is stamped
+before the notifications go out, so overlapping runs cannot send twice — a
+missed reminder is a much smaller problem than one arriving every five minutes
+until the session starts.
+
+### Abuse limits (M19)
+
+| Endpoint | Limit | Why |
+|---|---|---|
+| `POST /api/bookings` | 20/hour per **user** | a session is already required, so what is worth bounding is one account's appetite |
+| `POST /api/threads/[id]` | 60/5min per user | generous for a real conversation, tight enough that a compromised account cannot use the inbox as a delivery mechanism |
+| `POST /api/threads` | 30/hour per user | thread creation |
+| `GET /api/coaches/[slug]/slots` | 60/min per IP | public, and a computed answer over a month of calendar |
+
+**The slot-squatting defence is a domain rule, not a rate limit.** A pending
+request blocks a slot for up to 48 hours, so one account could quietly take a
+coach's whole week and never pay for any of it. A student may hold at most
+**three** unanswered requests against one coach; the fourth is a `409` naming
+the reason. A rate limit would not have fixed this — twenty bookings an hour is
+still a week of somebody's calendar.
+
+`policy.ts`, `transitions.ts`, `rating.ts` and `redact.ts` are pinned at 100%
+coverage in `vitest.config.ts`, alongside the existing security-critical files.
+Those four decide who gets paid, what may move where, what a rating means and
+what leaves the platform.
 - **A passing submit also opens the field assignment** and returns it as `assignment`. It is
   `null` when there is nothing to measure against — no linked account, or fewer than 3 ranked
   games in the player's main role. The lesson still completes; see `docs/ACADEMY.md`.

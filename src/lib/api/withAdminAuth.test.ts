@@ -2,9 +2,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("next-auth");
 vi.mock("@/lib/auth/config", () => ({ authOptions: {} }));
+vi.mock("@sentry/nextjs", () => ({ captureException: vi.fn() }));
+vi.mock("@/lib/utils/logger", () => ({
+  logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
+}));
 
 import { NextResponse } from "next/server";
 import { authenticateAs, authenticateAsNobody, readApiResponse, routeRequest } from "@/test/apiRoute";
+import { ApiError } from "@/lib/api/errors";
 import { withAdminAuth } from "./withAdminAuth";
 
 const ADMIN = "admin@lolai.test";
@@ -123,5 +128,32 @@ describe("withAdminAuth", () => {
 
     expect(res.status).toBe(403);
     expect(handler).not.toHaveBeenCalled();
+  });
+
+  /**
+   * Admin handlers throw `ApiError` the same way authenticated ones do. Without
+   * this they surfaced as 500s, so a validation failure on an admin route
+   * answered "internal error" instead of saying what was wrong.
+   */
+  it("turns an ApiError from the handler into its own status", async () => {
+    handler.mockRejectedValue(new ApiError("VALIDATION_ERROR", "A reason is required.", 422));
+
+    const res = await guarded(request());
+
+    const { status, error } = await readApiResponse(res);
+    expect(status).toBe(422);
+    expect(error?.code).toBe("VALIDATION_ERROR");
+    expect(error?.message).toBe("A reason is required.");
+  });
+
+  it("turns anything else into a 500 without leaking it", async () => {
+    handler.mockRejectedValue(new Error("connection pool exhausted at 03:14"));
+
+    const res = await guarded(request());
+
+    const { status, error } = await readApiResponse(res);
+    expect(status).toBe(500);
+    expect(error?.code).toBe("INTERNAL_ERROR");
+    expect(error?.message).not.toMatch(/connection pool/);
   });
 });

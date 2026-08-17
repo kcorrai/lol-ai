@@ -24,6 +24,7 @@ const PROTECTED_PATHS = [
   // storefront and stays open — that is the acquisition surface.
   "/coach",
   "/sessions",
+  "/messages",
 ];
 
 const AUTH_PATHS = ["/login", "/register", "/forgot-password", "/reset-password"];
@@ -79,6 +80,7 @@ export const config = {
     "/champion-pool/:path*",
     "/coach/:path*",
     "/sessions/:path*",
+    "/messages/:path*",
     "/admin/:path*",
     "/login",
     "/register",

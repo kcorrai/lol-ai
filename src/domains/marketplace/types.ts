@@ -2,6 +2,7 @@ import type {
   AnnotationCategory,
   BookingStatus,
   CoachStatus,
+  PaymentStatus,
   Position,
   RankDivision,
   RankProofMethod,
@@ -158,4 +159,42 @@ export interface CoachSearchResult {
   coaches: CoachCard[];
   nextCursor: string | null;
   total: number;
+}
+
+/** One booking as the two people on it see it, with the extra detail a list omits. */
+export interface BookingDetail extends BookingSummary {
+  /** Which side the reader is on. Established from the row, never from the request. */
+  role: "student" | "coach";
+  studentGoal: string;
+  meetingUrl: string | null;
+  matchIds: string[];
+  vodUrl: string | null;
+  deliveredAt: string | null;
+  /** When delivery stops being challengeable. ISO. */
+  autoCompleteAt: string | null;
+  /** Null only for a booking written before the ledger existed. */
+  payment: BookingPaymentView | null;
+}
+
+/** One recorded transition, as the session page shows it. */
+export interface BookingEventRow {
+  id: string;
+  fromStatus: BookingStatus | null;
+  toStatus: BookingStatus;
+  reason: string | null;
+  createdAt: string;
+  actor: { id: string; name: string | null } | null;
+}
+
+/** A booking's money, as the session page shows it. Null while a booking has no ledger row. */
+export interface BookingPaymentView {
+  provider: string;
+  status: PaymentStatus;
+  amountCents: number;
+  platformFeeCents: number;
+  coachAmountCents: number;
+  currency: string;
+  capturedAt: Date | null;
+  releasedAt: Date | null;
+  refundedAt: Date | null;
 }

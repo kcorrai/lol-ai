@@ -132,14 +132,14 @@ independently shippable once the spine exists.
 
 | Task | Title | Ships |
 |---|---|---|
-| M0 | Reconcile the schema drift (LA-15) | prerequisite — `migrate dev` becomes trustworthy |
-| M1 | Domain foundation — schema, migration, policy, state machine | data layer, no UI |
-| M2 | Coach application + admin review queue | the way in |
-| M3 | Checked rank badge + daily refresh | the differentiator |
-| M4 | Profile editing + listings | what a coach sells |
-| M5 | `/coaches` search + public profile | first public page |
-| M6 | Availability + slot computation | calendar correctness |
-| M7 | Booking flow | the transaction |
+| M0 ✅ | Reconcile the schema drift (LA-15) | prerequisite — `migrate dev` becomes trustworthy |
+| M1 ✅ | Domain foundation — schema, migration, policy, state machine | data layer, no UI |
+| M2 ✅ | Coach application + admin review queue | the way in |
+| M3 ✅ | Checked rank badge + daily refresh | the differentiator |
+| M4 ✅ | Profile editing + listings | what a coach sells |
+| M5 ✅ | `/coaches` search + public profile | first public page |
+| M6 ✅ | Availability + slot computation | calendar correctness |
+| M7 ✅ | Booking flow | the transaction |
 | M8 | Payment ledger (manual driver) | money, modelled but not moved |
 | M9 | Student sessions + coach dashboard | both sides' home |
 | M10 | Async VOD review delivery | the async product |

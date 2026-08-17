@@ -75,6 +75,7 @@ export type { CheckableAccount } from "@/domains/marketplace/services/rankBadgeS
 export {
   getOwnProfile,
   hasCoachProfile,
+  ownCoachProfileId,
   isApprovedCoach,
   approvedCoachProfileId,
   saveOwnProfile,
@@ -96,7 +97,199 @@ export type { SubmitOutcome } from "@/domains/marketplace/services/coachApplicat
 export {
   listCoaches,
   getCoachBySlug,
+  getCoachProfilePage,
 } from "@/domains/marketplace/services/coachSearchService";
+
+export {
+  searchCoaches,
+  sortPageByPrice,
+} from "@/domains/marketplace/services/coachDiscoveryService";
+
+export { computeFreeSlots, openWindows } from "@/domains/marketplace/slots";
+export type { WeeklyRule, DateException, SlotRequest } from "@/domains/marketplace/slots";
+
+export { merge, subtractAll, subtractOne } from "@/domains/marketplace/intervals";
+export type { Interval } from "@/domains/marketplace/intervals";
+
+export {
+  wallTimeIn,
+  offsetMsAt,
+  instantFromWallTime,
+  existsInZone,
+  isValidTimeZone,
+  localDatesBetween,
+} from "@/domains/marketplace/timezone";
+export type { WallTime } from "@/domains/marketplace/timezone";
+
+export {
+  getAvailability,
+  replaceRules,
+  upsertException,
+  deleteException,
+  isSchedulableTimeZone,
+  timeToMinutes,
+  minutesToTime,
+  dateToKey,
+  keyToDate,
+} from "@/domains/marketplace/services/availabilityService";
+export type {
+  AvailabilityView,
+  RuleInput,
+  ExceptionInput,
+  AvailabilityOutcome,
+} from "@/domains/marketplace/services/availabilityService";
+
+export { freeSlots, isSlotFree, coachSlotsBySlug } from "@/domains/marketplace/services/slotService";
+
+export { createBooking } from "@/domains/marketplace/services/bookingService";
+export type { BookingRequest, CreateOutcome } from "@/domains/marketplace/services/bookingService";
+
+export {
+  acceptBooking,
+  declineBooking,
+  cancelBooking,
+  markDelivered,
+  confirmDelivery,
+} from "@/domains/marketplace/services/bookingLifecycleService";
+
+export {
+  setMeetingUrl,
+  performBookingCommand,
+} from "@/domains/marketplace/services/bookingCommandService";
+
+export {
+  autoComplete,
+  expireBooking,
+} from "@/domains/marketplace/services/bookingSweepService";
+
+export {
+  runBookingSweeps,
+  expireUnanswered,
+  completeUnchallenged,
+} from "@/domains/marketplace/services/bookingSweeps";
+export type { SweepReport } from "@/domains/marketplace/services/bookingSweeps";
+export type {
+  LifecycleOutcome,
+  ActorRole,
+} from "@/domains/marketplace/services/bookingLifecycleService";
+export type { BookingCommand } from "@/domains/marketplace/services/bookingCommandService";
+
+export { transition, recordCreation, bookingHistory } from "@/domains/marketplace/services/bookingEventService";
+export type { TransitionInput, TransitionOutcome } from "@/domains/marketplace/services/bookingEventService";
+
+export {
+  getReview,
+  saveReview,
+  publishReview,
+} from "@/domains/marketplace/services/vodReviewService";
+export type { AnnotationInput, VodOutcome } from "@/domains/marketplace/services/vodReviewService";
+
+export { ANNOTATION_CATEGORIES, secondsToClock, clockToSeconds } from "@/domains/marketplace/vodClock";
+
+export {
+  listThreads,
+  getThread,
+  openThread,
+  sendMessage,
+} from "@/domains/marketplace/services/messagingService";
+export type {
+  MessageView,
+  ThreadView,
+  ThreadSummary,
+  SendOutcome,
+} from "@/domains/marketplace/services/messagingService";
+
+export {
+  leaveReview,
+  revealIfReady,
+  revealExpired,
+  refreshCoachRating,
+  publicReviews,
+  replyToReview,
+} from "@/domains/marketplace/services/reviewService";
+export type { ReviewOutcome } from "@/domains/marketplace/services/reviewService";
+
+export {
+  bayesianAverage,
+  wilsonLowerBound,
+  aggregateRatings,
+} from "@/domains/marketplace/rating";
+export type { RatingAggregate } from "@/domains/marketplace/rating";
+
+export { redactContacts, redactionNotice } from "@/domains/marketplace/redact";
+export type { RedactionResult } from "@/domains/marketplace/redact";
+
+export {
+  openDispute,
+  listDisputes,
+  resolveDispute,
+} from "@/domains/marketplace/services/disputeService";
+export type { DisputeRow, DisputeOutcome } from "@/domains/marketplace/services/disputeService";
+
+export {
+  notify,
+  listNotifications,
+  markNotificationsRead,
+} from "@/domains/marketplace/services/notificationService";
+export type {
+  MarketplaceNotification,
+  NotificationView,
+} from "@/domains/marketplace/services/notificationService";
+
+export { sendSessionReminders } from "@/domains/marketplace/services/reminderService";
+
+export { sessionPrep } from "@/domains/marketplace/services/sessionPrepService";
+export { spectateStatus } from "@/domains/marketplace/services/spectateService";
+export type { SpectateStatus } from "@/domains/marketplace/services/spectateService";
+export type { SessionPrep } from "@/domains/marketplace/services/sessionPrepService";
+
+export { listBookings, getBookingFor, coachWorkload } from "@/domains/marketplace/services/bookingQueryService";
+export type { CoachWorkload } from "@/domains/marketplace/services/bookingQueryService";
+
+export {
+  openPayment,
+  settleForStatus,
+  paymentFor,
+  setPaymentProvider,
+  currentPaymentProvider,
+} from "@/domains/marketplace/services/payments/paymentService";
+export { manualProvider } from "@/domains/marketplace/services/payments/manualProvider";
+export type {
+  PaymentProvider,
+  ChargeRequest,
+  ChargeResult,
+  ReleaseResult,
+  RefundResult,
+} from "@/domains/marketplace/services/payments/paymentProvider";
+export type { SlotQuery } from "@/domains/marketplace/services/slotService";
+
+export { marketplaceSitemapEntries } from "@/domains/marketplace/services/marketplaceSitemapService";
+export type { MarketplaceSitemapEntry } from "@/domains/marketplace/services/marketplaceSitemapService";
+
+export { coachProfileJsonLd, coachesIndexJsonLd } from "@/domains/marketplace/jsonLd";
+
+export {
+  parseSearchQuery,
+  buildSearchParams,
+  canonicalPath,
+  isFiltered,
+  pageOf,
+  PAGE_SIZE,
+  SORTS,
+} from "@/domains/marketplace/searchQuery";
+
+export {
+  listOwnListings,
+  publicListings,
+  createListing,
+  updateListing,
+  setListingActive,
+  deleteListing,
+} from "@/domains/marketplace/services/serviceListingService";
+export type {
+  ListingInput,
+  ListingOutcome,
+} from "@/domains/marketplace/services/serviceListingService";
 
 export {
   listApplications,
@@ -114,6 +307,8 @@ export type {
 export type {
   Annotation,
   BookingSummary,
+  BookingDetail,
+  BookingEventRow,
   CoachApplicationState,
   CoachCard,
   CoachPublicProfile,

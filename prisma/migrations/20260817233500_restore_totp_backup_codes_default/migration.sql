@@ -1,0 +1,15 @@
+-- Restore the database default on `users.totpBackupCodes`.
+--
+-- 20260817183944_reconcile_schema_drift dropped it, on the reasoning that every
+-- write goes through the Prisma client so no database default is load-bearing.
+-- That reasoning is wrong for scalar lists: when the model declares no
+-- `@default`, Prisma omits the column from the INSERT entirely rather than
+-- sending an empty array, so this NOT NULL column was being filled by the
+-- database. Dropping the default broke registration outright —
+-- `POST /api/auth/register` returned a 500 with "Null constraint violation on
+-- the fields: (`totpBackupCodes`)" for every new account.
+--
+-- The model now carries `@default([])`, which makes Prisma send `{}` itself and
+-- keeps the two in agreement. The database default is restored as well, so an
+-- insert from anywhere else still cannot violate the constraint.
+ALTER TABLE "users" ALTER COLUMN "totpBackupCodes" SET DEFAULT ARRAY[]::TEXT[];

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getRequiredSession } from "@/lib/auth/session";
-import { getOwnProfile } from "@/domains/marketplace";
+import { getOwnProfile, coachWorkload, ownCoachProfileId } from "@/domains/marketplace";
 import { CoachConsoleHome } from "@/domains/marketplace/components/CoachConsoleHome";
 
 export const metadata: Metadata = { title: "Coach Console" };
@@ -20,6 +20,9 @@ export default async function CoachConsolePage() {
 
   if (!profile) redirect("/coach/apply");
 
+  const coachProfileId = await ownCoachProfileId(session.user.id);
+  const workload = coachProfileId ? await coachWorkload(coachProfileId) : null;
+
   return (
     <div className="mx-auto max-w-4xl space-y-6 p-6">
       <div>
@@ -31,7 +34,7 @@ export default async function CoachConsolePage() {
         </p>
       </div>
 
-      <CoachConsoleHome profile={profile} />
+      <CoachConsoleHome profile={profile} workload={workload} />
 
       <p className="text-xs text-text-faint">
         Looking for your own games and reports?{" "}

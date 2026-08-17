@@ -34,6 +34,7 @@ export const AUDIT_EVENTS = {
   "coach.application.rejected": "Coach application rejected",
   "coach.suspended": "Coach suspended",
   "coach.reinstated": "Coach reinstated",
+  "coach.dispute.resolved": "Session dispute resolved",
 
   // Teams
   "team.created": "Team created",
