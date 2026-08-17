@@ -26,6 +26,15 @@ export const AUDIT_EVENTS = {
   "admin.user.viewed": "Admin viewed user data",
   "admin.impersonation": "Admin acted on behalf of user",
 
+  // Coach marketplace — every decision that changes who may sell on the
+  // platform is recorded, because "why is this coach listed" has to be
+  // answerable later by someone who was not in the room.
+  "coach.application.submitted": "Coach application submitted",
+  "coach.application.approved": "Coach application approved",
+  "coach.application.rejected": "Coach application rejected",
+  "coach.suspended": "Coach suspended",
+  "coach.reinstated": "Coach reinstated",
+
   // Teams
   "team.created": "Team created",
   "team.member.invited": "Team member invited",

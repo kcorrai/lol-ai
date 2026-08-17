@@ -40,6 +40,42 @@ export {
   isReviewable,
 } from "@/domains/marketplace/transitions";
 
+export { slugify, isReserved, pickSlug } from "@/domains/marketplace/slug";
+
+export {
+  getOwnProfile,
+  isApprovedCoach,
+  approvedCoachProfileId,
+  saveOwnProfile,
+  setAcceptingStudents,
+} from "@/domains/marketplace/services/coachProfileService";
+export type {
+  CoachProfileInput,
+  OwnCoachProfile,
+  SaveOutcome,
+} from "@/domains/marketplace/services/coachProfileService";
+
+export {
+  submitApplication,
+  withdrawApplication,
+  firstMissingField,
+  MIN_BIO_LENGTH,
+} from "@/domains/marketplace/services/coachApplicationService";
+export type { SubmitOutcome } from "@/domains/marketplace/services/coachApplicationService";
+
+export {
+  listApplications,
+  pendingCount,
+  approveApplication,
+  rejectApplication,
+  suspendCoach,
+  reinstateCoach,
+} from "@/domains/marketplace/services/coachReviewService";
+export type {
+  ApplicationRow,
+  DecisionOutcome,
+} from "@/domains/marketplace/services/coachReviewService";
+
 export type {
   Annotation,
   BookingSummary,

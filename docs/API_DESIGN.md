@@ -1549,3 +1549,110 @@ that case impossible.
 `removed` is `false` when there was nothing to delete. Still `200` — the reader
 wanted it gone and it is gone, and a `404` would make a double-click look like a
 failure.
+
+---
+
+## 13. Coach Marketplace Endpoints (LA-19 — see `docs/MARKETPLACE_PLAN.md`)
+
+Human coaching sold by the session. Nothing under this heading calls an AI
+provider or reads an AI table.
+
+The identity rule these endpoints enforce, which is worth stating once: **there
+is no coach role.** Being a coach is having an approved `coach_profiles` row, so
+`/api/coaches/me` answers for any signed-in user and simply returns `null` when
+they have never started one.
+
+### `GET /api/coaches/me`
+
+The caller's own coach profile.
+
+```json
+{ "data": { "profile": null } }
+```
+
+`profile` is `null` — not a `404` — when the user has never opened the
+application form. "You are not a coach yet" is the answer the application page
+is asking for, not a missing resource.
+
+Otherwise `profile` carries the editable fields plus `status`
+(`DRAFT|PENDING|APPROVED|REJECTED|SUSPENDED`), `slug`, `submittedAt`,
+`reviewedAt` and `reviewNote`.
+
+### `PUT /api/coaches/me`
+
+Create or update it. Body: `displayName`, `headline`, `bio`, `languages[]`
+(ISO 639-1), `regions[]`, `roles[]` (`Position`), `championIds[]`, `timezone`
+(IANA).
+
+- `409` while the profile is `PENDING` or `SUSPENDED`. A profile that can be
+  edited under a reviewer is one where what gets approved is not what was read.
+- `422` on a body that does not parse.
+
+### `POST /api/coaches/me/apply`
+
+Move the profile into review.
+
+```json
+{ "data": { "submitted": true } }
+```
+
+- `404` when there is no profile to submit.
+- `409` when one is already `PENDING` or `APPROVED`.
+- `403` when the profile is `SUSPENDED` — reapplying is not the way back.
+- `422` when the profile is incomplete. The message is the *one* thing still
+  missing, phrased for the applicant ("Write at least 120 characters about how
+  you coach."), because a list of six problems is one nobody reads.
+
+A `REJECTED` profile can be resubmitted, and doing so clears the previous
+decision so a reviewer never sees last round's note attached to this one.
+
+### `DELETE /api/coaches/me/apply`
+
+Withdraw, while nobody has decided yet.
+
+```json
+{ "data": { "withdrawn": true } }
+```
+
+`false` when there was nothing pending. Still `200`, for the same reason
+unfollowing something already gone is.
+
+### `GET /api/admin/coaches?status=`
+
+Admin only (`withAdminAuth`). The review queue for one status, defaulting to
+`PENDING`, **oldest first** — nobody works a queue from the back.
+
+```json
+{ "data": { "applications": [ … ], "pending": 3 } }
+```
+
+`pending` is always the `PENDING` count whatever `status` was asked for, so it
+can drive a nav badge without a second request. Each application carries the
+account's email and its `rankProofs`, which are the substance of the review: a
+`PLATFORM_CHECKED` proof is a rank we read from Riot ourselves.
+
+### `PATCH /api/admin/coaches/[coachProfileId]`
+
+Admin only. One decision, as a discriminated union:
+
+| `decision` | From | Note |
+|---|---|---|
+| `approve` | `PENDING` | — |
+| `reject` | `PENDING` | required, 10–1000 chars |
+| `suspend` | `APPROVED` | required, 10–1000 chars |
+| `reinstate` | `SUSPENDED` | required, 10–1000 chars |
+
+```json
+{ "data": { "decided": "approve", "slug": "rekkles" } }
+```
+
+- The note is **required** on everything but approval. Being told nothing is the
+  complaint every rejected applicant on every competing platform has, and it is
+  also the only thing that makes a second application worth reading.
+- The slug is assigned here and nowhere else — at approval rather than at
+  signup, so a rejected application never burns a name and nobody reserves an
+  impersonating URL by filling in a form. A coach approved once keeps the slug
+  they already had.
+- Every decision writes an `audit_logs` row naming the admin.
+- `404` on an unknown id, `409` when the coach is not in a state that decision
+  applies to, `422` on a missing or too-short note.

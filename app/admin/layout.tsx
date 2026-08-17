@@ -22,6 +22,7 @@ export default async function AdminLayout({
           <p className="text-xs font-bold uppercase tracking-widest text-accent">Admin</p>
           <nav className="flex items-center gap-4 text-xs text-text-muted">
             <Link href="/admin/analytics" className="hover:text-text">Analytics</Link>
+            <Link href="/admin/coaches" className="hover:text-text">Coaches</Link>
             <Link href="/admin/ai-cost" className="hover:text-text">AI Cost</Link>
             <Link href="/admin/audit-logs" className="hover:text-text">Audit Logs</Link>
             <Link href="/admin/feature-flags" className="hover:text-text">Feature Flags</Link>
