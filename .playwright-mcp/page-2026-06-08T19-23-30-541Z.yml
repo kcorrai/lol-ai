@@ -1,0 +1,32 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - paragraph [ref=e4]: LoL AI Coach
+      - paragraph [ref=e5]: AI-Powered League of Legends Coaching
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - heading "Giriş Yap" [level=3] [ref=e9]
+        - paragraph [ref=e10]: Devam etmek için e-posta ve şifreni gir
+      - generic [ref=e11]:
+        - button "G Google ile Devam Et" [ref=e12] [cursor=pointer]:
+          - generic [ref=e13]: G
+          - text: Google ile Devam Et
+        - generic [ref=e18]: Veya e-posta ile devam et
+        - generic [ref=e19]:
+          - generic [ref=e20]:
+            - text: E-posta
+            - textbox "E-posta" [ref=e21]:
+              - /placeholder: oyuncu@ornek.com
+          - generic [ref=e22]:
+            - generic [ref=e23]:
+              - generic [ref=e24]: Şifre
+              - link "Şifreni mi unuttun?" [ref=e25] [cursor=pointer]:
+                - /url: /forgot-password
+            - textbox "Şifre" [ref=e26]:
+              - /placeholder: ••••••••
+          - button "Giriş Yap" [ref=e27] [cursor=pointer]
+        - paragraph [ref=e28]:
+          - text: Hesabın yok mu?
+          - link "Ücretsiz oluştur" [ref=e29] [cursor=pointer]:
+            - /url: /register
+  - alert [ref=e30]

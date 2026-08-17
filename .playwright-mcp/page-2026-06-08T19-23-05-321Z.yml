@@ -1,0 +1,747 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "LoL AI Coach" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img [ref=e6]
+          - generic [ref=e8]: LoL AI Coach
+        - navigation [ref=e9]:
+          - link "Şampiyonlar" [ref=e10] [cursor=pointer]:
+            - /url: /champions
+          - link "Fiyatlar" [ref=e11] [cursor=pointer]:
+            - /url: /pricing
+        - generic [ref=e12]:
+          - link "Giriş Yap" [ref=e13] [cursor=pointer]:
+            - /url: /login
+          - link "Ücretsiz Başla" [ref=e14] [cursor=pointer]:
+            - /url: /register
+    - main [ref=e15]:
+      - generic [ref=e16]:
+        - heading "Şampiyon Rehberleri" [level=1] [ref=e17]
+        - paragraph [ref=e18]: AI koçunla her şampiyonun performansını analiz et.
+        - generic [ref=e19]:
+          - link "Tümü" [ref=e20] [cursor=pointer]:
+            - /url: /champions
+          - link "Assassin" [ref=e21] [cursor=pointer]:
+            - /url: /champions?role=Assassin
+          - link "Fighter" [ref=e22] [cursor=pointer]:
+            - /url: /champions?role=Fighter
+          - link "Mage" [ref=e23] [cursor=pointer]:
+            - /url: /champions?role=Mage
+          - link "Marksman" [ref=e24] [cursor=pointer]:
+            - /url: /champions?role=Marksman
+          - link "Support" [ref=e25] [cursor=pointer]:
+            - /url: /champions?role=Support
+          - link "Tank" [ref=e26] [cursor=pointer]:
+            - /url: /champions?role=Tank
+        - generic [ref=e27]:
+          - link "Aatrox Aatrox" [ref=e28] [cursor=pointer]:
+            - /url: /champions/Aatrox
+            - img "Aatrox" [ref=e30]
+            - paragraph [ref=e31]: Aatrox
+          - link "Ahri Ahri" [ref=e32] [cursor=pointer]:
+            - /url: /champions/Ahri
+            - img "Ahri" [ref=e34]
+            - paragraph [ref=e35]: Ahri
+          - link "Akali Akali" [ref=e36] [cursor=pointer]:
+            - /url: /champions/Akali
+            - img "Akali" [ref=e38]
+            - paragraph [ref=e39]: Akali
+          - link "Akshan Akshan" [ref=e40] [cursor=pointer]:
+            - /url: /champions/Akshan
+            - img "Akshan" [ref=e42]
+            - paragraph [ref=e43]: Akshan
+          - link "Alistar Alistar" [ref=e44] [cursor=pointer]:
+            - /url: /champions/Alistar
+            - img "Alistar" [ref=e46]
+            - paragraph [ref=e47]: Alistar
+          - link "Ambessa Ambessa" [ref=e48] [cursor=pointer]:
+            - /url: /champions/Ambessa
+            - img "Ambessa" [ref=e50]
+            - paragraph [ref=e51]: Ambessa
+          - link "Amumu Amumu" [ref=e52] [cursor=pointer]:
+            - /url: /champions/Amumu
+            - img "Amumu" [ref=e54]
+            - paragraph [ref=e55]: Amumu
+          - link "Anivia Anivia" [ref=e56] [cursor=pointer]:
+            - /url: /champions/Anivia
+            - img "Anivia" [ref=e58]
+            - paragraph [ref=e59]: Anivia
+          - link "Annie Annie" [ref=e60] [cursor=pointer]:
+            - /url: /champions/Annie
+            - img "Annie" [ref=e62]
+            - paragraph [ref=e63]: Annie
+          - link "Aphelios Aphelios" [ref=e64] [cursor=pointer]:
+            - /url: /champions/Aphelios
+            - img "Aphelios" [ref=e66]
+            - paragraph [ref=e67]: Aphelios
+          - link "Ashe Ashe" [ref=e68] [cursor=pointer]:
+            - /url: /champions/Ashe
+            - img "Ashe" [ref=e70]
+            - paragraph [ref=e71]: Ashe
+          - link "Aurelion Sol Aurelion Sol" [ref=e72] [cursor=pointer]:
+            - /url: /champions/AurelionSol
+            - img "Aurelion Sol" [ref=e74]
+            - paragraph [ref=e75]: Aurelion Sol
+          - link "Aurora Aurora" [ref=e76] [cursor=pointer]:
+            - /url: /champions/Aurora
+            - img "Aurora" [ref=e78]
+            - paragraph [ref=e79]: Aurora
+          - link "Azir Azir" [ref=e80] [cursor=pointer]:
+            - /url: /champions/Azir
+            - img "Azir" [ref=e82]
+            - paragraph [ref=e83]: Azir
+          - link "Bard Bard" [ref=e84] [cursor=pointer]:
+            - /url: /champions/Bard
+            - img "Bard" [ref=e86]
+            - paragraph [ref=e87]: Bard
+          - link "Bel'Veth Bel'Veth" [ref=e88] [cursor=pointer]:
+            - /url: /champions/Belveth
+            - img "Bel'Veth" [ref=e90]
+            - paragraph [ref=e91]: Bel'Veth
+          - link "Blitzcrank Blitzcrank" [ref=e92] [cursor=pointer]:
+            - /url: /champions/Blitzcrank
+            - img "Blitzcrank" [ref=e94]
+            - paragraph [ref=e95]: Blitzcrank
+          - link "Brand Brand" [ref=e96] [cursor=pointer]:
+            - /url: /champions/Brand
+            - img "Brand" [ref=e98]
+            - paragraph [ref=e99]: Brand
+          - link "Braum Braum" [ref=e100] [cursor=pointer]:
+            - /url: /champions/Braum
+            - img "Braum" [ref=e102]
+            - paragraph [ref=e103]: Braum
+          - link "Briar Briar" [ref=e104] [cursor=pointer]:
+            - /url: /champions/Briar
+            - img "Briar" [ref=e106]
+            - paragraph [ref=e107]: Briar
+          - link "Caitlyn Caitlyn" [ref=e108] [cursor=pointer]:
+            - /url: /champions/Caitlyn
+            - img "Caitlyn" [ref=e110]
+            - paragraph [ref=e111]: Caitlyn
+          - link "Camille Camille" [ref=e112] [cursor=pointer]:
+            - /url: /champions/Camille
+            - img "Camille" [ref=e114]
+            - paragraph [ref=e115]: Camille
+          - link "Cassiopeia Cassiopeia" [ref=e116] [cursor=pointer]:
+            - /url: /champions/Cassiopeia
+            - img "Cassiopeia" [ref=e118]
+            - paragraph [ref=e119]: Cassiopeia
+          - link "Cho'Gath Cho'Gath" [ref=e120] [cursor=pointer]:
+            - /url: /champions/Chogath
+            - img "Cho'Gath" [ref=e122]
+            - paragraph [ref=e123]: Cho'Gath
+          - link "Corki Corki" [ref=e124] [cursor=pointer]:
+            - /url: /champions/Corki
+            - img "Corki" [ref=e126]
+            - paragraph [ref=e127]: Corki
+          - link "Darius Darius" [ref=e128] [cursor=pointer]:
+            - /url: /champions/Darius
+            - img "Darius" [ref=e130]
+            - paragraph [ref=e131]: Darius
+          - link "Diana Diana" [ref=e132] [cursor=pointer]:
+            - /url: /champions/Diana
+            - img "Diana" [ref=e134]
+            - paragraph [ref=e135]: Diana
+          - link "Dr. Mundo Dr. Mundo" [ref=e136] [cursor=pointer]:
+            - /url: /champions/DrMundo
+            - img "Dr. Mundo" [ref=e138]
+            - paragraph [ref=e139]: Dr. Mundo
+          - link "Draven Draven" [ref=e140] [cursor=pointer]:
+            - /url: /champions/Draven
+            - img "Draven" [ref=e142]
+            - paragraph [ref=e143]: Draven
+          - link "Ekko Ekko" [ref=e144] [cursor=pointer]:
+            - /url: /champions/Ekko
+            - img "Ekko" [ref=e146]
+            - paragraph [ref=e147]: Ekko
+          - link "Elise Elise" [ref=e148] [cursor=pointer]:
+            - /url: /champions/Elise
+            - img "Elise" [ref=e150]
+            - paragraph [ref=e151]: Elise
+          - link "Evelynn Evelynn" [ref=e152] [cursor=pointer]:
+            - /url: /champions/Evelynn
+            - img "Evelynn" [ref=e154]
+            - paragraph [ref=e155]: Evelynn
+          - link "Ezreal Ezreal" [ref=e156] [cursor=pointer]:
+            - /url: /champions/Ezreal
+            - img "Ezreal" [ref=e158]
+            - paragraph [ref=e159]: Ezreal
+          - link "Fiddlesticks Fiddlesticks" [ref=e160] [cursor=pointer]:
+            - /url: /champions/Fiddlesticks
+            - img "Fiddlesticks" [ref=e162]
+            - paragraph [ref=e163]: Fiddlesticks
+          - link "Fiora Fiora" [ref=e164] [cursor=pointer]:
+            - /url: /champions/Fiora
+            - img "Fiora" [ref=e166]
+            - paragraph [ref=e167]: Fiora
+          - link "Fizz Fizz" [ref=e168] [cursor=pointer]:
+            - /url: /champions/Fizz
+            - img "Fizz" [ref=e170]
+            - paragraph [ref=e171]: Fizz
+          - link "Galio Galio" [ref=e172] [cursor=pointer]:
+            - /url: /champions/Galio
+            - img "Galio" [ref=e174]
+            - paragraph [ref=e175]: Galio
+          - link "Gangplank Gangplank" [ref=e176] [cursor=pointer]:
+            - /url: /champions/Gangplank
+            - img "Gangplank" [ref=e178]
+            - paragraph [ref=e179]: Gangplank
+          - link "Garen Garen" [ref=e180] [cursor=pointer]:
+            - /url: /champions/Garen
+            - img "Garen" [ref=e182]
+            - paragraph [ref=e183]: Garen
+          - link "Gnar Gnar" [ref=e184] [cursor=pointer]:
+            - /url: /champions/Gnar
+            - img "Gnar" [ref=e186]
+            - paragraph [ref=e187]: Gnar
+          - link "Gragas Gragas" [ref=e188] [cursor=pointer]:
+            - /url: /champions/Gragas
+            - img "Gragas" [ref=e190]
+            - paragraph [ref=e191]: Gragas
+          - link "Graves Graves" [ref=e192] [cursor=pointer]:
+            - /url: /champions/Graves
+            - img "Graves" [ref=e194]
+            - paragraph [ref=e195]: Graves
+          - link "Gwen Gwen" [ref=e196] [cursor=pointer]:
+            - /url: /champions/Gwen
+            - img "Gwen" [ref=e198]
+            - paragraph [ref=e199]: Gwen
+          - link "Hecarim Hecarim" [ref=e200] [cursor=pointer]:
+            - /url: /champions/Hecarim
+            - img "Hecarim" [ref=e202]
+            - paragraph [ref=e203]: Hecarim
+          - link "Heimerdinger Heimerdinger" [ref=e204] [cursor=pointer]:
+            - /url: /champions/Heimerdinger
+            - img "Heimerdinger" [ref=e206]
+            - paragraph [ref=e207]: Heimerdinger
+          - link "Hwei Hwei" [ref=e208] [cursor=pointer]:
+            - /url: /champions/Hwei
+            - img "Hwei" [ref=e210]
+            - paragraph [ref=e211]: Hwei
+          - link "Illaoi Illaoi" [ref=e212] [cursor=pointer]:
+            - /url: /champions/Illaoi
+            - img "Illaoi" [ref=e214]
+            - paragraph [ref=e215]: Illaoi
+          - link "Irelia Irelia" [ref=e216] [cursor=pointer]:
+            - /url: /champions/Irelia
+            - img "Irelia" [ref=e218]
+            - paragraph [ref=e219]: Irelia
+          - link "Ivern Ivern" [ref=e220] [cursor=pointer]:
+            - /url: /champions/Ivern
+            - img "Ivern" [ref=e222]
+            - paragraph [ref=e223]: Ivern
+          - link "Janna Janna" [ref=e224] [cursor=pointer]:
+            - /url: /champions/Janna
+            - img "Janna" [ref=e226]
+            - paragraph [ref=e227]: Janna
+          - link "Jarvan IV Jarvan IV" [ref=e228] [cursor=pointer]:
+            - /url: /champions/JarvanIV
+            - img "Jarvan IV" [ref=e230]
+            - paragraph [ref=e231]: Jarvan IV
+          - link "Jax Jax" [ref=e232] [cursor=pointer]:
+            - /url: /champions/Jax
+            - img "Jax" [ref=e234]
+            - paragraph [ref=e235]: Jax
+          - link "Jayce Jayce" [ref=e236] [cursor=pointer]:
+            - /url: /champions/Jayce
+            - img "Jayce" [ref=e238]
+            - paragraph [ref=e239]: Jayce
+          - link "Jhin Jhin" [ref=e240] [cursor=pointer]:
+            - /url: /champions/Jhin
+            - img "Jhin" [ref=e242]
+            - paragraph [ref=e243]: Jhin
+          - link "Jinx Jinx" [ref=e244] [cursor=pointer]:
+            - /url: /champions/Jinx
+            - img "Jinx" [ref=e246]
+            - paragraph [ref=e247]: Jinx
+          - link "K'Sante K'Sante" [ref=e248] [cursor=pointer]:
+            - /url: /champions/KSante
+            - img "K'Sante" [ref=e250]
+            - paragraph [ref=e251]: K'Sante
+          - link "Kai'Sa Kai'Sa" [ref=e252] [cursor=pointer]:
+            - /url: /champions/Kaisa
+            - img "Kai'Sa" [ref=e254]
+            - paragraph [ref=e255]: Kai'Sa
+          - link "Kalista Kalista" [ref=e256] [cursor=pointer]:
+            - /url: /champions/Kalista
+            - img "Kalista" [ref=e258]
+            - paragraph [ref=e259]: Kalista
+          - link "Karma Karma" [ref=e260] [cursor=pointer]:
+            - /url: /champions/Karma
+            - img "Karma" [ref=e262]
+            - paragraph [ref=e263]: Karma
+          - link "Karthus Karthus" [ref=e264] [cursor=pointer]:
+            - /url: /champions/Karthus
+            - img "Karthus" [ref=e266]
+            - paragraph [ref=e267]: Karthus
+          - link "Kassadin Kassadin" [ref=e268] [cursor=pointer]:
+            - /url: /champions/Kassadin
+            - img "Kassadin" [ref=e270]
+            - paragraph [ref=e271]: Kassadin
+          - link "Katarina Katarina" [ref=e272] [cursor=pointer]:
+            - /url: /champions/Katarina
+            - img "Katarina" [ref=e274]
+            - paragraph [ref=e275]: Katarina
+          - link "Kayle Kayle" [ref=e276] [cursor=pointer]:
+            - /url: /champions/Kayle
+            - img "Kayle" [ref=e278]
+            - paragraph [ref=e279]: Kayle
+          - link "Kayn Kayn" [ref=e280] [cursor=pointer]:
+            - /url: /champions/Kayn
+            - img "Kayn" [ref=e282]
+            - paragraph [ref=e283]: Kayn
+          - link "Kennen Kennen" [ref=e284] [cursor=pointer]:
+            - /url: /champions/Kennen
+            - img "Kennen" [ref=e286]
+            - paragraph [ref=e287]: Kennen
+          - link "Kha'Zix Kha'Zix" [ref=e288] [cursor=pointer]:
+            - /url: /champions/Khazix
+            - img "Kha'Zix" [ref=e290]
+            - paragraph [ref=e291]: Kha'Zix
+          - link "Kindred Kindred" [ref=e292] [cursor=pointer]:
+            - /url: /champions/Kindred
+            - img "Kindred" [ref=e294]
+            - paragraph [ref=e295]: Kindred
+          - link "Kled Kled" [ref=e296] [cursor=pointer]:
+            - /url: /champions/Kled
+            - img "Kled" [ref=e298]
+            - paragraph [ref=e299]: Kled
+          - link "Kog'Maw Kog'Maw" [ref=e300] [cursor=pointer]:
+            - /url: /champions/KogMaw
+            - img "Kog'Maw" [ref=e302]
+            - paragraph [ref=e303]: Kog'Maw
+          - link "LeBlanc LeBlanc" [ref=e304] [cursor=pointer]:
+            - /url: /champions/Leblanc
+            - img "LeBlanc" [ref=e306]
+            - paragraph [ref=e307]: LeBlanc
+          - link "Lee Sin Lee Sin" [ref=e308] [cursor=pointer]:
+            - /url: /champions/LeeSin
+            - img "Lee Sin" [ref=e310]
+            - paragraph [ref=e311]: Lee Sin
+          - link "Leona Leona" [ref=e312] [cursor=pointer]:
+            - /url: /champions/Leona
+            - img "Leona" [ref=e314]
+            - paragraph [ref=e315]: Leona
+          - link "Lillia Lillia" [ref=e316] [cursor=pointer]:
+            - /url: /champions/Lillia
+            - img "Lillia" [ref=e318]
+            - paragraph [ref=e319]: Lillia
+          - link "Lissandra Lissandra" [ref=e320] [cursor=pointer]:
+            - /url: /champions/Lissandra
+            - img "Lissandra" [ref=e322]
+            - paragraph [ref=e323]: Lissandra
+          - link "Lucian Lucian" [ref=e324] [cursor=pointer]:
+            - /url: /champions/Lucian
+            - img "Lucian" [ref=e326]
+            - paragraph [ref=e327]: Lucian
+          - link "Lulu Lulu" [ref=e328] [cursor=pointer]:
+            - /url: /champions/Lulu
+            - img "Lulu" [ref=e330]
+            - paragraph [ref=e331]: Lulu
+          - link "Lux Lux" [ref=e332] [cursor=pointer]:
+            - /url: /champions/Lux
+            - img "Lux" [ref=e334]
+            - paragraph [ref=e335]: Lux
+          - link "Malphite Malphite" [ref=e336] [cursor=pointer]:
+            - /url: /champions/Malphite
+            - img "Malphite" [ref=e338]
+            - paragraph [ref=e339]: Malphite
+          - link "Malzahar Malzahar" [ref=e340] [cursor=pointer]:
+            - /url: /champions/Malzahar
+            - img "Malzahar" [ref=e342]
+            - paragraph [ref=e343]: Malzahar
+          - link "Maokai Maokai" [ref=e344] [cursor=pointer]:
+            - /url: /champions/Maokai
+            - img "Maokai" [ref=e346]
+            - paragraph [ref=e347]: Maokai
+          - link "Master Yi Master Yi" [ref=e348] [cursor=pointer]:
+            - /url: /champions/MasterYi
+            - img "Master Yi" [ref=e350]
+            - paragraph [ref=e351]: Master Yi
+          - link "Mel Mel" [ref=e352] [cursor=pointer]:
+            - /url: /champions/Mel
+            - img "Mel" [ref=e354]
+            - paragraph [ref=e355]: Mel
+          - link "Milio Milio" [ref=e356] [cursor=pointer]:
+            - /url: /champions/Milio
+            - img "Milio" [ref=e358]
+            - paragraph [ref=e359]: Milio
+          - link "Miss Fortune Miss Fortune" [ref=e360] [cursor=pointer]:
+            - /url: /champions/MissFortune
+            - img "Miss Fortune" [ref=e362]
+            - paragraph [ref=e363]: Miss Fortune
+          - link "Mordekaiser Mordekaiser" [ref=e364] [cursor=pointer]:
+            - /url: /champions/Mordekaiser
+            - img "Mordekaiser" [ref=e366]
+            - paragraph [ref=e367]: Mordekaiser
+          - link "Morgana Morgana" [ref=e368] [cursor=pointer]:
+            - /url: /champions/Morgana
+            - img "Morgana" [ref=e370]
+            - paragraph [ref=e371]: Morgana
+          - link "Naafiri Naafiri" [ref=e372] [cursor=pointer]:
+            - /url: /champions/Naafiri
+            - img "Naafiri" [ref=e374]
+            - paragraph [ref=e375]: Naafiri
+          - link "Nami Nami" [ref=e376] [cursor=pointer]:
+            - /url: /champions/Nami
+            - img "Nami" [ref=e378]
+            - paragraph [ref=e379]: Nami
+          - link "Nasus Nasus" [ref=e380] [cursor=pointer]:
+            - /url: /champions/Nasus
+            - img "Nasus" [ref=e382]
+            - paragraph [ref=e383]: Nasus
+          - link "Nautilus Nautilus" [ref=e384] [cursor=pointer]:
+            - /url: /champions/Nautilus
+            - img "Nautilus" [ref=e386]
+            - paragraph [ref=e387]: Nautilus
+          - link "Neeko Neeko" [ref=e388] [cursor=pointer]:
+            - /url: /champions/Neeko
+            - img "Neeko" [ref=e390]
+            - paragraph [ref=e391]: Neeko
+          - link "Nidalee Nidalee" [ref=e392] [cursor=pointer]:
+            - /url: /champions/Nidalee
+            - img "Nidalee" [ref=e394]
+            - paragraph [ref=e395]: Nidalee
+          - link "Nilah Nilah" [ref=e396] [cursor=pointer]:
+            - /url: /champions/Nilah
+            - img "Nilah" [ref=e398]
+            - paragraph [ref=e399]: Nilah
+          - link "Nocturne Nocturne" [ref=e400] [cursor=pointer]:
+            - /url: /champions/Nocturne
+            - img "Nocturne" [ref=e402]
+            - paragraph [ref=e403]: Nocturne
+          - link "Nunu & Willump Nunu & Willump" [ref=e404] [cursor=pointer]:
+            - /url: /champions/Nunu
+            - img "Nunu & Willump" [ref=e406]
+            - paragraph [ref=e407]: Nunu & Willump
+          - link "Olaf Olaf" [ref=e408] [cursor=pointer]:
+            - /url: /champions/Olaf
+            - img "Olaf" [ref=e410]
+            - paragraph [ref=e411]: Olaf
+          - link "Orianna Orianna" [ref=e412] [cursor=pointer]:
+            - /url: /champions/Orianna
+            - img "Orianna" [ref=e414]
+            - paragraph [ref=e415]: Orianna
+          - link "Ornn Ornn" [ref=e416] [cursor=pointer]:
+            - /url: /champions/Ornn
+            - img "Ornn" [ref=e418]
+            - paragraph [ref=e419]: Ornn
+          - link "Pantheon Pantheon" [ref=e420] [cursor=pointer]:
+            - /url: /champions/Pantheon
+            - img "Pantheon" [ref=e422]
+            - paragraph [ref=e423]: Pantheon
+          - link "Poppy Poppy" [ref=e424] [cursor=pointer]:
+            - /url: /champions/Poppy
+            - img "Poppy" [ref=e426]
+            - paragraph [ref=e427]: Poppy
+          - link "Pyke Pyke" [ref=e428] [cursor=pointer]:
+            - /url: /champions/Pyke
+            - img "Pyke" [ref=e430]
+            - paragraph [ref=e431]: Pyke
+          - link "Qiyana Qiyana" [ref=e432] [cursor=pointer]:
+            - /url: /champions/Qiyana
+            - img "Qiyana" [ref=e434]
+            - paragraph [ref=e435]: Qiyana
+          - link "Quinn Quinn" [ref=e436] [cursor=pointer]:
+            - /url: /champions/Quinn
+            - img "Quinn" [ref=e438]
+            - paragraph [ref=e439]: Quinn
+          - link "Rakan Rakan" [ref=e440] [cursor=pointer]:
+            - /url: /champions/Rakan
+            - img "Rakan" [ref=e442]
+            - paragraph [ref=e443]: Rakan
+          - link "Rammus Rammus" [ref=e444] [cursor=pointer]:
+            - /url: /champions/Rammus
+            - img "Rammus" [ref=e446]
+            - paragraph [ref=e447]: Rammus
+          - link "Rek'Sai Rek'Sai" [ref=e448] [cursor=pointer]:
+            - /url: /champions/RekSai
+            - img "Rek'Sai" [ref=e450]
+            - paragraph [ref=e451]: Rek'Sai
+          - link "Rell Rell" [ref=e452] [cursor=pointer]:
+            - /url: /champions/Rell
+            - img "Rell" [ref=e454]
+            - paragraph [ref=e455]: Rell
+          - link "Renata Glasc Renata Glasc" [ref=e456] [cursor=pointer]:
+            - /url: /champions/Renata
+            - img "Renata Glasc" [ref=e458]
+            - paragraph [ref=e459]: Renata Glasc
+          - link "Renekton Renekton" [ref=e460] [cursor=pointer]:
+            - /url: /champions/Renekton
+            - img "Renekton" [ref=e462]
+            - paragraph [ref=e463]: Renekton
+          - link "Rengar Rengar" [ref=e464] [cursor=pointer]:
+            - /url: /champions/Rengar
+            - img "Rengar" [ref=e466]
+            - paragraph [ref=e467]: Rengar
+          - link "Riven Riven" [ref=e468] [cursor=pointer]:
+            - /url: /champions/Riven
+            - img "Riven" [ref=e470]
+            - paragraph [ref=e471]: Riven
+          - link "Rumble Rumble" [ref=e472] [cursor=pointer]:
+            - /url: /champions/Rumble
+            - img "Rumble" [ref=e474]
+            - paragraph [ref=e475]: Rumble
+          - link "Ryze Ryze" [ref=e476] [cursor=pointer]:
+            - /url: /champions/Ryze
+            - img "Ryze" [ref=e478]
+            - paragraph [ref=e479]: Ryze
+          - link "Samira Samira" [ref=e480] [cursor=pointer]:
+            - /url: /champions/Samira
+            - img "Samira" [ref=e482]
+            - paragraph [ref=e483]: Samira
+          - link "Sejuani Sejuani" [ref=e484] [cursor=pointer]:
+            - /url: /champions/Sejuani
+            - img "Sejuani" [ref=e486]
+            - paragraph [ref=e487]: Sejuani
+          - link "Senna Senna" [ref=e488] [cursor=pointer]:
+            - /url: /champions/Senna
+            - img "Senna" [ref=e490]
+            - paragraph [ref=e491]: Senna
+          - link "Seraphine Seraphine" [ref=e492] [cursor=pointer]:
+            - /url: /champions/Seraphine
+            - img "Seraphine" [ref=e494]
+            - paragraph [ref=e495]: Seraphine
+          - link "Sett Sett" [ref=e496] [cursor=pointer]:
+            - /url: /champions/Sett
+            - img "Sett" [ref=e498]
+            - paragraph [ref=e499]: Sett
+          - link "Shaco Shaco" [ref=e500] [cursor=pointer]:
+            - /url: /champions/Shaco
+            - img "Shaco" [ref=e502]
+            - paragraph [ref=e503]: Shaco
+          - link "Shen Shen" [ref=e504] [cursor=pointer]:
+            - /url: /champions/Shen
+            - img "Shen" [ref=e506]
+            - paragraph [ref=e507]: Shen
+          - link "Shyvana Shyvana" [ref=e508] [cursor=pointer]:
+            - /url: /champions/Shyvana
+            - img "Shyvana" [ref=e510]
+            - paragraph [ref=e511]: Shyvana
+          - link "Singed Singed" [ref=e512] [cursor=pointer]:
+            - /url: /champions/Singed
+            - img "Singed" [ref=e514]
+            - paragraph [ref=e515]: Singed
+          - link "Sion Sion" [ref=e516] [cursor=pointer]:
+            - /url: /champions/Sion
+            - img "Sion" [ref=e518]
+            - paragraph [ref=e519]: Sion
+          - link "Sivir Sivir" [ref=e520] [cursor=pointer]:
+            - /url: /champions/Sivir
+            - img "Sivir" [ref=e522]
+            - paragraph [ref=e523]: Sivir
+          - link "Skarner Skarner" [ref=e524] [cursor=pointer]:
+            - /url: /champions/Skarner
+            - img "Skarner" [ref=e526]
+            - paragraph [ref=e527]: Skarner
+          - link "Smolder Smolder" [ref=e528] [cursor=pointer]:
+            - /url: /champions/Smolder
+            - img "Smolder" [ref=e530]
+            - paragraph [ref=e531]: Smolder
+          - link "Sona Sona" [ref=e532] [cursor=pointer]:
+            - /url: /champions/Sona
+            - img "Sona" [ref=e534]
+            - paragraph [ref=e535]: Sona
+          - link "Soraka Soraka" [ref=e536] [cursor=pointer]:
+            - /url: /champions/Soraka
+            - img "Soraka" [ref=e538]
+            - paragraph [ref=e539]: Soraka
+          - link "Swain Swain" [ref=e540] [cursor=pointer]:
+            - /url: /champions/Swain
+            - img "Swain" [ref=e542]
+            - paragraph [ref=e543]: Swain
+          - link "Sylas Sylas" [ref=e544] [cursor=pointer]:
+            - /url: /champions/Sylas
+            - img "Sylas" [ref=e546]
+            - paragraph [ref=e547]: Sylas
+          - link "Syndra Syndra" [ref=e548] [cursor=pointer]:
+            - /url: /champions/Syndra
+            - img "Syndra" [ref=e550]
+            - paragraph [ref=e551]: Syndra
+          - link "Tahm Kench Tahm Kench" [ref=e552] [cursor=pointer]:
+            - /url: /champions/TahmKench
+            - img "Tahm Kench" [ref=e554]
+            - paragraph [ref=e555]: Tahm Kench
+          - link "Taliyah Taliyah" [ref=e556] [cursor=pointer]:
+            - /url: /champions/Taliyah
+            - img "Taliyah" [ref=e558]
+            - paragraph [ref=e559]: Taliyah
+          - link "Talon Talon" [ref=e560] [cursor=pointer]:
+            - /url: /champions/Talon
+            - img "Talon" [ref=e562]
+            - paragraph [ref=e563]: Talon
+          - link "Taric Taric" [ref=e564] [cursor=pointer]:
+            - /url: /champions/Taric
+            - img "Taric" [ref=e566]
+            - paragraph [ref=e567]: Taric
+          - link "Teemo Teemo" [ref=e568] [cursor=pointer]:
+            - /url: /champions/Teemo
+            - img "Teemo" [ref=e570]
+            - paragraph [ref=e571]: Teemo
+          - link "Thresh Thresh" [ref=e572] [cursor=pointer]:
+            - /url: /champions/Thresh
+            - img "Thresh" [ref=e574]
+            - paragraph [ref=e575]: Thresh
+          - link "Tristana Tristana" [ref=e576] [cursor=pointer]:
+            - /url: /champions/Tristana
+            - img "Tristana" [ref=e578]
+            - paragraph [ref=e579]: Tristana
+          - link "Trundle Trundle" [ref=e580] [cursor=pointer]:
+            - /url: /champions/Trundle
+            - img "Trundle" [ref=e582]
+            - paragraph [ref=e583]: Trundle
+          - link "Tryndamere Tryndamere" [ref=e584] [cursor=pointer]:
+            - /url: /champions/Tryndamere
+            - img "Tryndamere" [ref=e586]
+            - paragraph [ref=e587]: Tryndamere
+          - link "Twisted Fate Twisted Fate" [ref=e588] [cursor=pointer]:
+            - /url: /champions/TwistedFate
+            - img "Twisted Fate" [ref=e590]
+            - paragraph [ref=e591]: Twisted Fate
+          - link "Twitch Twitch" [ref=e592] [cursor=pointer]:
+            - /url: /champions/Twitch
+            - img "Twitch" [ref=e594]
+            - paragraph [ref=e595]: Twitch
+          - link "Udyr Udyr" [ref=e596] [cursor=pointer]:
+            - /url: /champions/Udyr
+            - img "Udyr" [ref=e598]
+            - paragraph [ref=e599]: Udyr
+          - link "Urgot Urgot" [ref=e600] [cursor=pointer]:
+            - /url: /champions/Urgot
+            - img "Urgot" [ref=e602]
+            - paragraph [ref=e603]: Urgot
+          - link "Varus Varus" [ref=e604] [cursor=pointer]:
+            - /url: /champions/Varus
+            - img "Varus" [ref=e606]
+            - paragraph [ref=e607]: Varus
+          - link "Vayne Vayne" [ref=e608] [cursor=pointer]:
+            - /url: /champions/Vayne
+            - img "Vayne" [ref=e610]
+            - paragraph [ref=e611]: Vayne
+          - link "Veigar Veigar" [ref=e612] [cursor=pointer]:
+            - /url: /champions/Veigar
+            - img "Veigar" [ref=e614]
+            - paragraph [ref=e615]: Veigar
+          - link "Vel'Koz Vel'Koz" [ref=e616] [cursor=pointer]:
+            - /url: /champions/Velkoz
+            - img "Vel'Koz" [ref=e618]
+            - paragraph [ref=e619]: Vel'Koz
+          - link "Vex Vex" [ref=e620] [cursor=pointer]:
+            - /url: /champions/Vex
+            - img "Vex" [ref=e622]
+            - paragraph [ref=e623]: Vex
+          - link "Vi Vi" [ref=e624] [cursor=pointer]:
+            - /url: /champions/Vi
+            - img "Vi" [ref=e626]
+            - paragraph [ref=e627]: Vi
+          - link "Viego Viego" [ref=e628] [cursor=pointer]:
+            - /url: /champions/Viego
+            - img "Viego" [ref=e630]
+            - paragraph [ref=e631]: Viego
+          - link "Viktor Viktor" [ref=e632] [cursor=pointer]:
+            - /url: /champions/Viktor
+            - img "Viktor" [ref=e634]
+            - paragraph [ref=e635]: Viktor
+          - link "Vladimir Vladimir" [ref=e636] [cursor=pointer]:
+            - /url: /champions/Vladimir
+            - img "Vladimir" [ref=e638]
+            - paragraph [ref=e639]: Vladimir
+          - link "Volibear Volibear" [ref=e640] [cursor=pointer]:
+            - /url: /champions/Volibear
+            - img "Volibear" [ref=e642]
+            - paragraph [ref=e643]: Volibear
+          - link "Warwick Warwick" [ref=e644] [cursor=pointer]:
+            - /url: /champions/Warwick
+            - img "Warwick" [ref=e646]
+            - paragraph [ref=e647]: Warwick
+          - link "Wukong Wukong" [ref=e648] [cursor=pointer]:
+            - /url: /champions/MonkeyKing
+            - img "Wukong" [ref=e650]
+            - paragraph [ref=e651]: Wukong
+          - link "Xayah Xayah" [ref=e652] [cursor=pointer]:
+            - /url: /champions/Xayah
+            - img "Xayah" [ref=e654]
+            - paragraph [ref=e655]: Xayah
+          - link "Xerath Xerath" [ref=e656] [cursor=pointer]:
+            - /url: /champions/Xerath
+            - img "Xerath" [ref=e658]
+            - paragraph [ref=e659]: Xerath
+          - link "Xin Zhao Xin Zhao" [ref=e660] [cursor=pointer]:
+            - /url: /champions/XinZhao
+            - img "Xin Zhao" [ref=e662]
+            - paragraph [ref=e663]: Xin Zhao
+          - link "Yasuo Yasuo" [ref=e664] [cursor=pointer]:
+            - /url: /champions/Yasuo
+            - img "Yasuo" [ref=e666]
+            - paragraph [ref=e667]: Yasuo
+          - link "Yone Yone" [ref=e668] [cursor=pointer]:
+            - /url: /champions/Yone
+            - img "Yone" [ref=e670]
+            - paragraph [ref=e671]: Yone
+          - link "Yorick Yorick" [ref=e672] [cursor=pointer]:
+            - /url: /champions/Yorick
+            - img "Yorick" [ref=e674]
+            - paragraph [ref=e675]: Yorick
+          - link "Yunara Yunara" [ref=e676] [cursor=pointer]:
+            - /url: /champions/Yunara
+            - img "Yunara" [ref=e678]
+            - paragraph [ref=e679]: Yunara
+          - link "Yuumi Yuumi" [ref=e680] [cursor=pointer]:
+            - /url: /champions/Yuumi
+            - img "Yuumi" [ref=e682]
+            - paragraph [ref=e683]: Yuumi
+          - link "Zaahen Zaahen" [ref=e684] [cursor=pointer]:
+            - /url: /champions/Zaahen
+            - img "Zaahen" [ref=e686]
+            - paragraph [ref=e687]: Zaahen
+          - link "Zac Zac" [ref=e688] [cursor=pointer]:
+            - /url: /champions/Zac
+            - img "Zac" [ref=e690]
+            - paragraph [ref=e691]: Zac
+          - link "Zed Zed" [ref=e692] [cursor=pointer]:
+            - /url: /champions/Zed
+            - img "Zed" [ref=e694]
+            - paragraph [ref=e695]: Zed
+          - link "Zeri Zeri" [ref=e696] [cursor=pointer]:
+            - /url: /champions/Zeri
+            - img "Zeri" [ref=e698]
+            - paragraph [ref=e699]: Zeri
+          - link "Ziggs Ziggs" [ref=e700] [cursor=pointer]:
+            - /url: /champions/Ziggs
+            - img "Ziggs" [ref=e702]
+            - paragraph [ref=e703]: Ziggs
+          - link "Zilean Zilean" [ref=e704] [cursor=pointer]:
+            - /url: /champions/Zilean
+            - img "Zilean" [ref=e706]
+            - paragraph [ref=e707]: Zilean
+          - link "Zoe Zoe" [ref=e708] [cursor=pointer]:
+            - /url: /champions/Zoe
+            - img "Zoe" [ref=e710]
+            - paragraph [ref=e711]: Zoe
+          - link "Zyra Zyra" [ref=e712] [cursor=pointer]:
+            - /url: /champions/Zyra
+            - img "Zyra" [ref=e714]
+            - paragraph [ref=e715]: Zyra
+    - contentinfo [ref=e716]:
+      - generic [ref=e717]:
+        - generic [ref=e718]:
+          - generic [ref=e719]:
+            - img [ref=e720]
+            - generic [ref=e722]: LoL AI Coach
+          - navigation [ref=e723]:
+            - link "Pricing" [ref=e724] [cursor=pointer]:
+              - /url: /pricing
+            - link "Privacy" [ref=e725] [cursor=pointer]:
+              - /url: /privacy
+            - link "Terms" [ref=e726] [cursor=pointer]:
+              - /url: /terms
+            - link "Login" [ref=e727] [cursor=pointer]:
+              - /url: /login
+            - link "Sign up" [ref=e728] [cursor=pointer]:
+              - /url: /register
+        - generic [ref=e729]:
+          - paragraph [ref=e730]: LoL AI Coach isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. League of Legends © Riot Games, Inc.
+          - paragraph [ref=e731]: © 2026 LoL AI Coach
+  - alert [ref=e732]

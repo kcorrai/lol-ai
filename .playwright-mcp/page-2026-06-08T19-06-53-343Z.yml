@@ -1,0 +1,94 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "LoL AI Coach" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img [ref=e6]
+          - generic [ref=e8]: LoL AI Coach
+        - navigation [ref=e9]:
+          - link "Şampiyonlar" [ref=e10] [cursor=pointer]:
+            - /url: /champions
+          - link "Fiyatlar" [ref=e11] [cursor=pointer]:
+            - /url: /pricing
+        - generic [ref=e12]:
+          - link "Login" [ref=e13] [cursor=pointer]:
+            - /url: /login
+          - link "Get Started Free" [ref=e14] [cursor=pointer]:
+            - /url: /register
+    - main [ref=e15]:
+      - generic [ref=e16]:
+        - paragraph [ref=e17]:
+          - link "Şampiyonlar" [ref=e18] [cursor=pointer]:
+            - /url: /champions
+          - text: / Ahri
+        - generic [ref=e19]:
+          - img "Ahri" [ref=e21]
+          - generic [ref=e23]:
+            - heading "Ahri" [level=1] [ref=e24]
+            - paragraph [ref=e25]: the Nine-Tailed Fox
+            - generic [ref=e26]:
+              - generic [ref=e27]: Mage
+              - generic [ref=e28]: Assassin
+        - generic [ref=e29]:
+          - heading "Hikaye" [level=2] [ref=e30]
+          - paragraph [ref=e31]: Innately connected to the magic of the spirit realm, Ahri is a fox-like vastaya who can manipulate her prey's emotions and consume their essence—receiving flashes of their memory and insight from each soul she consumes. Once a powerful yet wayward...
+        - generic [ref=e32]:
+          - heading "Temel İstatistikler" [level=2] [ref=e33]
+          - generic [ref=e34]:
+            - generic [ref=e35]:
+              - generic [ref=e36]: Can
+              - generic [ref=e37]: "590"
+            - generic [ref=e38]:
+              - generic [ref=e39]: Zırh
+              - generic [ref=e40]: "21"
+            - generic [ref=e41]:
+              - generic [ref=e42]: Büyü Direnci
+              - generic [ref=e43]: "30"
+            - generic [ref=e44]:
+              - generic [ref=e45]: Saldırı Hasarı
+              - generic [ref=e46]: "53"
+            - generic [ref=e47]:
+              - generic [ref=e48]: Menzil
+              - generic [ref=e49]: "550"
+            - generic [ref=e50]:
+              - generic [ref=e51]: Hareket Hızı
+              - generic [ref=e52]: "330"
+        - generic [ref=e53]:
+          - heading "İpuçları" [level=2] [ref=e54]
+          - list [ref=e55]:
+            - listitem [ref=e56]:
+              - generic [ref=e57]: →
+              - generic [ref=e58]: Use Charm to set up your combos, it will make landing Orb of Deception and Fox-Fire dramatically easier.
+            - listitem [ref=e59]:
+              - generic [ref=e60]: →
+              - generic [ref=e61]: Initiate team fights using Charm, and chase down stragglers with Spirit Rush.
+            - listitem [ref=e62]:
+              - generic [ref=e63]: →
+              - generic [ref=e64]: Spirit Rush enables Ahri's abilities, it opens up paths for Charm, helps double hitting with Orb of Deception, and closes to make use of Fox-Fire.
+        - generic [ref=e65]:
+          - paragraph [ref=e66]: Ahri ile daha iyi oynamak ister misin?
+          - paragraph [ref=e67]: AI koçun seni analiz ediyor — ücretsiz başla
+          - link "Ücretsiz Başla →" [ref=e68] [cursor=pointer]:
+            - /url: /register
+    - contentinfo [ref=e69]:
+      - generic [ref=e70]:
+        - generic [ref=e71]:
+          - generic [ref=e72]:
+            - img [ref=e73]
+            - generic [ref=e75]: LoL AI Coach
+          - navigation [ref=e76]:
+            - link "Pricing" [ref=e77] [cursor=pointer]:
+              - /url: /pricing
+            - link "Privacy" [ref=e78] [cursor=pointer]:
+              - /url: /privacy
+            - link "Terms" [ref=e79] [cursor=pointer]:
+              - /url: /terms
+            - link "Login" [ref=e80] [cursor=pointer]:
+              - /url: /login
+            - link "Sign up" [ref=e81] [cursor=pointer]:
+              - /url: /register
+        - generic [ref=e82]:
+          - paragraph [ref=e83]: LoL AI Coach isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. League of Legends © Riot Games, Inc.
+          - paragraph [ref=e84]: © 2026 LoL AI Coach
+  - alert [ref=e85]

@@ -1,0 +1,8 @@
+[     353ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://lol-na83rzy3r-kcorrais-projects.vercel.app/api/subscription:0
+[     461ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://lol-na83rzy3r-kcorrais-projects.vercel.app/api/tilt/alerts:0
+[     606ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://lol-na83rzy3r-kcorrais-projects.vercel.app/api/achievements:0
+[     691ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://lol-na83rzy3r-kcorrais-projects.vercel.app/api/riot/accounts:0
+[    1560ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://lol-na83rzy3r-kcorrais-projects.vercel.app/api/subscription:0
+[    1752ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://lol-na83rzy3r-kcorrais-projects.vercel.app/api/tilt/alerts:0
+[    1841ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://lol-na83rzy3r-kcorrais-projects.vercel.app/api/achievements:0
+[    1961ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://lol-na83rzy3r-kcorrais-projects.vercel.app/api/riot/accounts:0
