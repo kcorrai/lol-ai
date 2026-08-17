@@ -1709,6 +1709,93 @@ shows the stronger wording for the weaker proof.
 
 ---
 
+## Daily quiz (LaneIQ Daily)
+
+Public. The puzzles are the same for everyone and carry no answer, so the read
+endpoints authenticate nothing — an anonymous visitor plays the whole game.
+
+### `GET /api/quiz/today?mode=<mode>&misses=<n>&seed=<seed>`
+
+Today's puzzle for one mode (`classic`, `ability`, `splash`, `lore`, `quote`,
+`emoji`), plus the champion catalogue the guess box needs.
+
+**The response deliberately contains no answer.** `prompt` is mode-specific and
+carries only what a player is entitled to see: redacted lore text, a voice line,
+the emoji revealed so far, or a proxied asset URL.
+
+- `misses` widens the emoji prompt by one clue per miss. It cannot reveal
+  anything a player could not have reached by guessing that many times, which is
+  why it is safe to accept from the client.
+- `seed` switches to practice mode: the answer is derived from the seed instead
+  of the date. Practice never consults the date, so no seed reproduces the day's
+  puzzle.
+
+### `POST /api/quiz/guess`
+
+Judges one guess. Body: `{ mode, guess, previousGuesses[], practiceSeed? }`, or
+`{ mode, giveUp: true, practiceSeed? }` to reveal the answer.
+
+Guesses are graded here rather than in the browser: the alternative, shipping
+the champion and comparing client-side, is solvable from devtools. Returns
+`answer` only once the puzzle is solved or given up on.
+
+- `422 UNKNOWN_CHAMPION` when the guess matches no champion. Names are folded
+  before matching, so `kaisa`, `Kai'Sa`, `j4` and `Wukong` all resolve.
+- Rate limited to 30/min per IP — the roster is 173 names, and an unthrottled
+  script would walk it in a second.
+
+### `GET /api/quiz/asset/[mode]?seed=<seed>`
+
+Streams the Ability icon or Splash art. **This endpoint exists because Data
+Dragon puts the answer in the path** — `/img/spell/AatroxQ.png`,
+`/img/champion/splash/Aatrox_0.jpg` — so linking those from the page means the
+network tab solves the puzzle. The URL here names only the mode.
+
+Cached until exactly the next UTC midnight, so a shared cache cannot serve
+yesterday's picture; a practice asset is keyed by its seed and cached hard.
+`502 ASSET_UNAVAILABLE` if Data Dragon cannot be reached.
+
+`POST` also records the guess for a signed-in caller: the attempt row is
+upserted, the guess appended, and `guessCount` derived from the stored list.
+**The client never reports a count.** That was acceptable while the count only
+fed a streak; with a leaderboard ranked on fewest guesses it is a position
+anyone could claim by editing one request. A correct guess closes the mode out —
+streak and XP — in the same transaction. Practice guesses are never recorded.
+
+### `GET /api/quiz/progress`
+
+Streak and today's record. Requires auth; anonymous callers get `401`, which the
+client treats as a normal state rather than an error — the account buys
+persistence, not access.
+
+**Read-only.** Results are written by `/api/quiz/guess` as each guess is judged,
+so there is no endpoint a client can use to assert a score it did not earn.
+
+### `GET /api/quiz/leaderboard?period=today|week`
+
+Public. Ranked on **most modes solved, then fewest guesses**, tiebroken by who
+finished earlier. Players who tie on the score itself share a rank.
+
+Efficiency rather than tenure is the deliberate choice: LoLdle has no board at
+all, and Esportdle and Champdle rank on streak length, which measures how long
+someone has been showing up. A player on day 400 outranks a better player on day
+12 and nothing they do closes the gap. Fewest guesses is a board a newcomer can
+win on their first day.
+
+Only players who have made their profile public are listed — the same consent
+boundary `/api/leaderboard` uses. A signed-in caller also gets `viewer`, their
+own line, whether or not they are listed; `viewer.listed` says which.
+
+### `GET`/`POST /api/quiz/personal`
+
+The personal quiz: five questions generated from the caller's own match history.
+Requires auth and a linked Riot account.
+
+`GET` returns questions with the answers stripped, or `needsMatches` when there
+are fewer than 10 synced games. `POST` body `{ questionId, choice }` grades one
+answer by regenerating the day's questions rather than storing them — the set is
+a pure function of the player, the date and their history.
+
 ## Academy (LA-21)
 
 The Academy's read side is entirely server-rendered — lessons, tracks and the hub are

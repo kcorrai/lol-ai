@@ -877,6 +877,28 @@ ADR-019.
   and `bookings.riotAccountId` are both `ON DELETE SET NULL`: unlinking a Riot
   account must not delete a coach's profile or a settled booking.
 
+## Daily quiz
+
+- **The puzzles are not stored.** `dailySeed.ts` derives each day's answer from
+  the UTC date, so an anonymous visitor gets the same puzzle with no row at all
+  and there is no nightly job that can leave a day blank. These two tables hold
+  only what has to outlive a browser.
+- **`quiz_attempts.puzzleDate` is the day the puzzle belongs to, not the moment
+  it was played.** A game started at 23:59 and finished at 00:01 stays on the day
+  it started. `@@unique([userId, puzzleDate, mode])` is what stops a mode paying
+  out twice.
+- **`quiz_streaks` is deliberately forgiving, and the columns are the reason.**
+  Solving any one mode keeps the streak — `lastPlayedDate` records the day, not
+  which modes — and `freezesLeft`/`freezeWeekKey` forgive one missed day per ISO
+  week. LoLdle requires all five of its modes and the resulting all-or-nothing
+  loss is the single most complained-about thing about it.
+- **`quiz_attempts.guesses` keeps the whole guess list** so a returning player
+  sees their own board again rather than an empty one.
+- **`quiz_attempts.guesses` is also the leaderboard's source of truth.**
+  `guessCount` is derived from that list server-side as each guess is judged; no
+  client-supplied total is accepted anywhere, because the board ranks on fewest
+  guesses and a reported count is a ranking anyone could top.
+
 ---
 
 ## Academy (LA-21)

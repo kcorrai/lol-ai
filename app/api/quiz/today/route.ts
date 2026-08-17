@@ -12,6 +12,9 @@ import { logger } from "@/lib/utils/logger";
 const querySchema = z.object({
   mode: z.string().refine(isQuizMode, "Unknown quiz mode"),
   misses: z.coerce.number().int().min(0).max(100).default(0),
+  // Practice mode. Supplied by the client and never by the server, so a practice
+  // puzzle can never collide with the day's.
+  seed: z.string().min(1).max(64).optional(),
 });
 
 export async function GET(request: NextRequest) {
@@ -20,10 +23,16 @@ export async function GET(request: NextRequest) {
     const parsed = querySchema.safeParse({
       mode: searchParams.get("mode") ?? "",
       misses: searchParams.get("misses") ?? 0,
+      ...(searchParams.get("seed") ? { seed: searchParams.get("seed") } : {}),
     });
     if (!parsed.success) throw Errors.validation(parsed.error.issues[0].message);
 
-    const puzzle = buildPuzzle(parsed.data.mode, new Date(), parsed.data.misses);
+    const puzzle = buildPuzzle(
+      parsed.data.mode,
+      new Date(),
+      parsed.data.misses,
+      parsed.data.seed
+    );
     return apiSuccess({ puzzle, champions: championCatalogue() });
   } catch (err) {
     if (err instanceof ApiError) return apiError(err.code, err.message, err.statusCode);

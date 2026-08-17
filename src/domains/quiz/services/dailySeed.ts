@@ -100,3 +100,16 @@ export function pickDaily<T>(pool: readonly T[], mode: string, dateKey: string):
   const cycle = Math.floor(day / pool.length);
   return dealCycle(pool, mode, cycle)[offset];
 }
+
+/**
+ * Practice mode: any number of puzzles, off the clock and off the streak.
+ *
+ * The seed comes from the client and the answer is re-derived from it on every
+ * request, so practice needs no stored games — and cannot be used to fish for
+ * the day's answer, because the daily deck is seeded from the date and this one
+ * never is.
+ */
+export function pickBySeed<T>(pool: readonly T[], mode: string, seed: string): T {
+  if (pool.length === 0) throw new Error(`pickBySeed: empty pool for mode "${mode}"`);
+  return seededShuffle(pool, fnv1a(`${mode}:practice:${seed}`))[0];
+}

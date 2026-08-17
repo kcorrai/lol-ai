@@ -61,29 +61,44 @@ export async function getProgress(userId: string, now: Date): Promise<QuizProgre
   };
 }
 
+function puzzleDateOf(dateKey: string): Date {
+  return new Date(`${dateKey}T00:00:00.000Z`);
+}
+
 /**
- * Records a finished mode and, when it was solved, advances the streak and grants
- * XP. One transaction, because a solve that banked XP but left the streak behind
- * is worse than one that did neither.
+ * Records one guess, and on a correct one closes the mode out — streak, XP and
+ * all — in a single transaction, because a solve that banked XP but left the
+ * streak behind is worse than one that did neither.
+ *
+ * The guess is appended here rather than counted by the client. That used to be
+ * a matter of taste; with a leaderboard ranked on fewest guesses it is the whole
+ * thing, since a client-reported count is a ranking anyone can top by editing a
+ * request. `guessCount` is derived from the stored list and never trusted from
+ * outside.
  */
-export async function recordAttempt(
+export async function recordGuess(
   userId: string,
   mode: QuizMode,
-  guessCount: number,
-  solved: boolean,
+  guessId: string,
+  correct: boolean,
   now: Date
-): Promise<QuizProgress> {
+): Promise<void> {
   const dateKey = utcDateKey(now);
-  const puzzleDate = new Date(`${dateKey}T00:00:00.000Z`);
+  const puzzleDate = puzzleDateOf(dateKey);
 
   await prisma.$transaction(async (tx) => {
     const existing = await tx.quizAttempt.findUnique({
       where: { userId_puzzleDate_mode: { userId, puzzleDate, mode } },
-      select: { solved: true },
+      select: { guesses: true, solved: true, gaveUp: true },
     });
 
-    // Replaying a mode already finished today must not pay out twice.
-    if (existing?.solved) return;
+    // A mode already closed out today cannot be played again for more credit.
+    if (existing?.solved || existing?.gaveUp) return;
+
+    // Repeat guesses do not lengthen the list — the client blocks them, but the
+    // count is a score now, so the server does not take its word for it.
+    const guesses = existing?.guesses ?? [];
+    const next = guesses.includes(guessId) ? guesses : [...guesses, guessId];
 
     await tx.quizAttempt.upsert({
       where: { userId_puzzleDate_mode: { userId, puzzleDate, mode } },
@@ -91,41 +106,69 @@ export async function recordAttempt(
         userId,
         puzzleDate,
         mode,
-        guesses: [],
-        guessCount,
-        solved,
-        gaveUp: !solved,
-        completedAt: now,
+        guesses: next,
+        guessCount: next.length,
+        solved: correct,
+        completedAt: correct ? now : null,
       },
-      update: { guessCount, solved, gaveUp: !solved, completedAt: now },
+      update: {
+        guesses: next,
+        guessCount: next.length,
+        solved: correct,
+        completedAt: correct ? now : null,
+      },
     });
 
-    if (!solved) return;
+    if (!correct) return;
 
     const streakRow = await tx.quizStreak.findUnique({ where: { userId } });
-    const next = advanceStreak(toState(streakRow), dateKey);
+    const advanced = advanceStreak(toState(streakRow), dateKey);
 
     await tx.quizStreak.upsert({
       where: { userId },
       create: {
         userId,
-        current: next.current,
-        longest: next.longest,
+        current: advanced.current,
+        longest: advanced.longest,
         lastPlayedDate: puzzleDate,
-        freezesLeft: next.freezesLeft,
-        freezeWeekKey: next.freezeWeekKey,
+        freezesLeft: advanced.freezesLeft,
+        freezeWeekKey: advanced.freezeWeekKey,
       },
       update: {
-        current: next.current,
-        longest: next.longest,
+        current: advanced.current,
+        longest: advanced.longest,
         lastPlayedDate: puzzleDate,
-        freezesLeft: next.freezesLeft,
-        freezeWeekKey: next.freezeWeekKey,
+        freezesLeft: advanced.freezesLeft,
+        freezeWeekKey: advanced.freezeWeekKey,
       },
     });
 
-    await awardXp(tx, userId, xpForSolve(guessCount));
+    await awardXp(tx, userId, xpForSolve(next.length));
   });
+}
 
-  return getProgress(userId, now);
+/** Closes a mode out unsolved. No streak, no XP, and no leaderboard standing. */
+export async function recordGiveUp(userId: string, mode: QuizMode, now: Date): Promise<void> {
+  const puzzleDate = puzzleDateOf(utcDateKey(now));
+
+  const existing = await prisma.quizAttempt.findUnique({
+    where: { userId_puzzleDate_mode: { userId, puzzleDate, mode } },
+    select: { solved: true, guesses: true },
+  });
+  if (existing?.solved) return;
+
+  await prisma.quizAttempt.upsert({
+    where: { userId_puzzleDate_mode: { userId, puzzleDate, mode } },
+    create: {
+      userId,
+      puzzleDate,
+      mode,
+      guesses: [],
+      guessCount: 0,
+      solved: false,
+      gaveUp: true,
+      completedAt: now,
+    },
+    update: { gaveUp: true, completedAt: now },
+  });
 }

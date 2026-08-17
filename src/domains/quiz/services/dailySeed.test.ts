@@ -3,6 +3,7 @@ import {
   dayNumber,
   fnv1a,
   nextResetAt,
+  pickBySeed,
   pickDaily,
   puzzleNumber,
   secondsUntilReset,
@@ -157,5 +158,32 @@ describe("pickDaily", () => {
 
   it("refuses an empty pool rather than returning undefined", () => {
     expect(() => pickDaily([], "classic", "2026-08-17")).toThrow(/empty pool/);
+  });
+});
+
+describe("pickBySeed", () => {
+  it("is stable for a seed", () => {
+    expect(pickBySeed(POOL, "classic", "abc")).toBe(pickBySeed(POOL, "classic", "abc"));
+  });
+
+  it("gives different seeds different puzzles", () => {
+    const drawn = new Set(
+      Array.from({ length: 40 }, (_, i) => pickBySeed(POOL, "classic", `seed-${i}`))
+    );
+    expect(drawn.size).toBeGreaterThan(20);
+  });
+
+  it("cannot be used to fish for the day's answer", () => {
+    // Practice never consults the date, so no seed can be crafted to reproduce
+    // the daily deck's pick — the two draws share no input at all.
+    const daily = pickDaily(POOL, "classic", "2026-08-17");
+    const seeds = Array.from({ length: 200 }, (_, i) => `2026-08-17-${i}`);
+    const matches = seeds.filter((s) => pickBySeed(POOL, "classic", s) === daily).length;
+    // Chance hits are expected at roughly 200/173; a leak would be all of them.
+    expect(matches).toBeLessThan(10);
+  });
+
+  it("refuses an empty pool", () => {
+    expect(() => pickBySeed([], "classic", "abc")).toThrow(/empty pool/);
   });
 });
