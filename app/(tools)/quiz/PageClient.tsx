@@ -34,10 +34,21 @@ export default function QuizPage(): React.JSX.Element {
 
   const { data: progress, refetch } = useQuizProgress();
 
+  // Both are set after mount: they read the viewer's clock, and rendering them
+  // on the server would guarantee a hydration mismatch.
+  const [nextResetAt, setNextResetAt] = useState<string>();
+
   useEffect(() => {
-    const today = new Date().toISOString().slice(0, 10);
+    const now = new Date();
+    const today = now.toISOString().slice(0, 10);
     setDateKey(today);
     setResults(readDay(today));
+    // Derived here rather than taken from /api/quiz/progress, which anonymous
+    // visitors never get — the countdown is the reason to come back tomorrow and
+    // they are exactly who it needs to reach.
+    setNextResetAt(
+      new Date((Math.floor(now.getTime() / 86_400_000) + 1) * 86_400_000).toISOString()
+    );
   }, []);
 
   const onFinished = useCallback(
@@ -95,7 +106,7 @@ export default function QuizPage(): React.JSX.Element {
             {solvedToday}/{QUIZ_MODES.length} solved today
           </span>
         </div>
-        {progress?.nextResetAt && <ResetCountdown nextResetAt={progress.nextResetAt} />}
+        {nextResetAt && <ResetCountdown nextResetAt={nextResetAt} />}
       </HudPanel>
 
       <div className="mb-4">
