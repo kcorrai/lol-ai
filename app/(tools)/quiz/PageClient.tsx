@@ -5,6 +5,7 @@ import { Flame } from "lucide-react";
 import { HudPanel } from "@/components/dashboard/laneiq/HudPanel";
 import { QUIZ_MODES, type ModeResult, type QuizMode } from "@/domains/quiz";
 import { ModeTabs } from "@/domains/quiz/components/ModeTabs";
+import { PersonalQuiz } from "@/domains/quiz/components/PersonalQuiz";
 import { QuizBoard } from "@/domains/quiz/components/QuizBoard";
 import { ResetCountdown } from "@/domains/quiz/components/ResetCountdown";
 import { useQuizProgress } from "@/hooks/useQuizProgress";
@@ -27,8 +28,13 @@ function readDay(dateKey: string): ModeResult[] {
   }
 }
 
+/** The personal quiz is a seventh tab, but not a QuizMode — it has no daily
+ *  answer to guess and no share grid, only questions about your own games. */
+type Tab = QuizMode | "personal";
+
 export default function QuizPage(): React.JSX.Element {
-  const [mode, setMode] = useState<QuizMode>("classic");
+  const [tab, setTab] = useState<Tab>("classic");
+  const mode: QuizMode = tab === "personal" ? "classic" : tab;
   const [results, setResults] = useState<ModeResult[]>([]);
   const [dateKey, setDateKey] = useState<string>();
 
@@ -109,11 +115,35 @@ export default function QuizPage(): React.JSX.Element {
         {nextResetAt && <ResetCountdown nextResetAt={nextResetAt} />}
       </HudPanel>
 
-      <div className="mb-4">
-        <ModeTabs active={mode} done={done} onSelect={setMode} />
+      <div className="mb-4 flex flex-wrap items-center gap-1.5">
+        <ModeTabs active={tab === "personal" ? undefined : tab} done={done} onSelect={setTab} />
+        <span className="mx-1 hidden h-5 w-px bg-line-2 sm:block" />
+        <button
+          role="tab"
+          type="button"
+          aria-selected={tab === "personal"}
+          onClick={() => setTab("personal")}
+          className={`notch-sm border px-3 py-1.5 font-mono text-[11px] uppercase tracking-label transition-colors ${
+            tab === "personal"
+              ? "border-accent bg-accent/15 text-accent"
+              : "border-line-2 bg-surface-dark text-fg-3 hover:text-fg-1"
+          }`}
+        >
+          Yours
+        </button>
       </div>
 
-      <QuizBoard key={mode} mode={mode} streak={streak} allResults={results} onFinished={onFinished} />
+      {tab === "personal" ? (
+        <PersonalQuiz />
+      ) : (
+        <QuizBoard
+          key={mode}
+          mode={mode}
+          streak={streak}
+          allResults={results}
+          onFinished={onFinished}
+        />
+      )}
 
       <p className="mt-5 text-center font-mono text-[10.5px] text-fg-4">
         Solving any one mode keeps your streak alive — you do not need all six.

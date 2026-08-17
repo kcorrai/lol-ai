@@ -12,7 +12,8 @@ export const MODE_LABELS: Record<QuizMode, string> = {
 };
 
 interface ModeTabsProps {
-  active: QuizMode;
+  /** Undefined while the personal tab holds the selection. */
+  active: QuizMode | undefined;
   /** Modes already finished today, marked so the day's progress is visible at a glance. */
   done: Partial<Record<QuizMode, "solved" | "failed">>;
   onSelect: (mode: QuizMode) => void;
