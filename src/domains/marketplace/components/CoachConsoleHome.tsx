@@ -60,10 +60,10 @@ export function CoachConsoleHome({ profile }: Props): React.ReactElement {
           description="What you sell, how long it takes, and what it costs."
         />
         <Tile
+          href="/coach/availability"
           icon={CalendarClock}
           title="Availability"
           description="The hours you are bookable, in your own timezone."
-          soon
         />
         <Tile
           icon={ClipboardList}

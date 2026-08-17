@@ -31,6 +31,7 @@ export default async function MarketLayout({ children }: { children: React.React
       ? [
           { href: "/coach", label: "Coach console" },
           { href: "/coach/listings", label: "Listings" },
+          { href: "/coach/availability", label: "Availability" },
         ]
       : signedIn
         ? [{ href: "/coach/apply", label: "Become a coach" }]

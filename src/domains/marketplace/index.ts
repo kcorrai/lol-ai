@@ -75,6 +75,7 @@ export type { CheckableAccount } from "@/domains/marketplace/services/rankBadgeS
 export {
   getOwnProfile,
   hasCoachProfile,
+  ownCoachProfileId,
   isApprovedCoach,
   approvedCoachProfileId,
   saveOwnProfile,
@@ -103,6 +104,43 @@ export {
   searchCoaches,
   sortPageByPrice,
 } from "@/domains/marketplace/services/coachDiscoveryService";
+
+export { computeFreeSlots, openWindows } from "@/domains/marketplace/slots";
+export type { WeeklyRule, DateException, SlotRequest } from "@/domains/marketplace/slots";
+
+export { merge, subtractAll, subtractOne } from "@/domains/marketplace/intervals";
+export type { Interval } from "@/domains/marketplace/intervals";
+
+export {
+  wallTimeIn,
+  offsetMsAt,
+  instantFromWallTime,
+  existsInZone,
+  isValidTimeZone,
+  localDatesBetween,
+} from "@/domains/marketplace/timezone";
+export type { WallTime } from "@/domains/marketplace/timezone";
+
+export {
+  getAvailability,
+  replaceRules,
+  upsertException,
+  deleteException,
+  isSchedulableTimeZone,
+  timeToMinutes,
+  minutesToTime,
+  dateToKey,
+  keyToDate,
+} from "@/domains/marketplace/services/availabilityService";
+export type {
+  AvailabilityView,
+  RuleInput,
+  ExceptionInput,
+  AvailabilityOutcome,
+} from "@/domains/marketplace/services/availabilityService";
+
+export { freeSlots, isSlotFree, coachSlotsBySlug } from "@/domains/marketplace/services/slotService";
+export type { SlotQuery } from "@/domains/marketplace/services/slotService";
 
 export { marketplaceSitemapEntries } from "@/domains/marketplace/services/marketplaceSitemapService";
 export type { MarketplaceSitemapEntry } from "@/domains/marketplace/services/marketplaceSitemapService";

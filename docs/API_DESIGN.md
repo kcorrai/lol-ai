@@ -1753,3 +1753,70 @@ theirs. `404` when nothing matched.
   "take off sale" instead. The booking snapshots its own price and terms, but
   the listing row is what tells a dispute what was actually being sold.
 - `404` when the listing is not the caller's.
+
+### `GET /api/coaches/me/availability`
+
+The caller's weekly hours, their date exceptions, and the IANA zone all of it
+is written in.
+
+```json
+{ "data": { "timeZone": "Europe/Istanbul",
+  "rules": [ { "id": "…", "days": [1,2,3,4,5], "startMinute": 1080, "endMinute": 1260 } ],
+  "exceptions": [ { "id": "…", "date": "2026-09-03", "isBlocked": true, "startMinute": null, "endMinute": null, "note": null } ] } }
+```
+
+Minutes since local midnight, **not** instants. A weekly rule is wall-clock
+time in the coach's own zone; resolving it to a UTC instant is a read-time job
+done per calendar day, because collapsing it to one fixed offset is exactly
+what breaks on the day the clocks move (ADR-022).
+
+### `PUT /api/coaches/me/availability`
+
+Replace the whole weekly schedule: `{ "rules": [ { days, startMinute, endMinute } ] }`.
+
+**Replaced, not patched.** A schedule is read as a set, and a partial update
+leaves behind a window nobody meant to keep. Applied in one transaction, so a
+failed save cannot leave a coach with no hours at all. Answers with the new
+state, so the client needs no second request.
+
+`422` when a row has no days, when hours fall outside a single day, or when the
+finish is not after the start — a window crossing midnight has to be two rows,
+and accepting one silently produces no hours.
+
+### `POST /api/coaches/me/availability/exceptions`
+
+One date that does not follow the weekly rules:
+`{ date: "YYYY-MM-DD", isBlocked, startMinute, endMinute }`.
+
+An exception **replaces** that day rather than adding to it, which is what lets
+one concept express both "closed on the 3rd" and "open this Sunday for once".
+Keyed by date, so saving twice is one row.
+
+### `DELETE /api/coaches/me/availability/exceptions?date=YYYY-MM-DD`
+
+Puts the day back on the weekly rules. Both exception endpoints answer with the
+whole availability view.
+
+### `GET /api/coaches/[slug]/slots?listingId=&days=`
+
+**Public.** A student has to see when a coach is free before deciding to sign
+up, so this answers without a session. Rate limited at 60/min per IP — it is a
+computed answer over a month of calendar, not a table lookup.
+
+```json
+{ "data": { "slots": [ { "start": "2026-08-18T15:00:00.000Z", "end": "2026-08-18T16:00:00.000Z" } ],
+  "timeZone": "Europe/Istanbul", "durationMinutes": 60 } }
+```
+
+- **The listing decides the length.** A request cannot ask for a 15-minute slot
+  on a 60-minute product.
+- **A `VOD_REVIEW` listing returns an empty list**, and that is the right
+  answer rather than a missing one: an async review runs against a deadline and
+  has no calendar at all.
+- **Pending requests block time the same as confirmed ones.** The coach has 48
+  hours to answer, and offering that hour to somebody else meanwhile is a
+  double booking waiting for the coach to accept both.
+- Nothing is cached: a slot list goes stale the moment anybody books, and
+  serving a slot that has just gone is how two students end up holding the same
+  hour.
+- `404` for an unknown coach or listing, `422` without a listing id.

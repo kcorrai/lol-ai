@@ -80,6 +80,22 @@ export async function getOwnProfile(userId: string): Promise<OwnCoachProfile | n
 }
 
 /**
+ * The caller's coach profile id whatever its status.
+ *
+ * What every coach-side write starts from, and deliberately not
+ * `approvedCoachProfileId`: a coach may set their hours and build their
+ * listings while an application is still in review, because the storefront
+ * filters on status and nothing they prepare is visible until it passes.
+ */
+export async function ownCoachProfileId(userId: string): Promise<string | null> {
+  const row = await prisma.coachProfile.findUnique({
+    where: { userId },
+    select: { id: true },
+  });
+  return row?.id ?? null;
+}
+
+/**
  * Whether this user has a coach profile at all, whatever state it is in.
  *
  * What the section's nav keys off, rather than approval: an application sitting

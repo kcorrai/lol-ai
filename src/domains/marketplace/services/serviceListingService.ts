@@ -1,5 +1,6 @@
 import type { SessionKind } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
+import { ownCoachProfileId } from "@/domains/marketplace/services/coachProfileService";
 import {
   MIN_PRICE_CENTS,
   MAX_PRICE_CENTS,
@@ -43,7 +44,7 @@ export type ListingOutcome =
 export async function listOwnListings(
   userId: string
 ): Promise<(Listing & { isActive: boolean })[]> {
-  const profileId = await ownProfileId(userId);
+  const profileId = await ownCoachProfileId(userId);
   if (!profileId) return [];
 
   const rows = await prisma.coachListing.findMany({
@@ -68,7 +69,7 @@ export async function createListing(
   userId: string,
   input: ListingInput
 ): Promise<ListingOutcome> {
-  const profileId = await ownProfileId(userId);
+  const profileId = await ownCoachProfileId(userId);
   if (!profileId) return { ok: false, reason: "no-profile" };
 
   const invalid = validate(input);
@@ -91,7 +92,7 @@ export async function updateListing(
   listingId: string,
   input: ListingInput
 ): Promise<ListingOutcome> {
-  const profileId = await ownProfileId(userId);
+  const profileId = await ownCoachProfileId(userId);
   if (!profileId) return { ok: false, reason: "no-profile" };
 
   const invalid = validate(input);
@@ -124,7 +125,7 @@ export async function setListingActive(
   listingId: string,
   isActive: boolean
 ): Promise<boolean> {
-  const profileId = await ownProfileId(userId);
+  const profileId = await ownCoachProfileId(userId);
   if (!profileId) return false;
 
   const { count } = await prisma.coachListing.updateMany({
@@ -142,7 +143,7 @@ export async function setListingActive(
  * dispute what was actually being sold.
  */
 export async function deleteListing(userId: string, listingId: string): Promise<ListingOutcome> {
-  const profileId = await ownProfileId(userId);
+  const profileId = await ownCoachProfileId(userId);
   if (!profileId) return { ok: false, reason: "no-profile" };
 
   const owned = await prisma.coachListing.findFirst({
@@ -161,15 +162,6 @@ export async function deleteListing(userId: string, listingId: string): Promise<
 
   await prisma.coachListing.delete({ where: { id: listingId } });
   return { ok: true, listing: owned };
-}
-
-/** The caller's profile id whatever its status — a coach may prepare listings before approval. */
-async function ownProfileId(userId: string): Promise<string | null> {
-  const row = await prisma.coachProfile.findUnique({
-    where: { userId },
-    select: { id: true },
-  });
-  return row?.id ?? null;
 }
 
 /** The first thing wrong with a listing, phrased for the coach. Null when it is fine. */
