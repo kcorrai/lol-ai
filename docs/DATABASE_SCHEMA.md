@@ -739,3 +739,40 @@ progress and whether the XP has been paid.
   still reads correctly after the catalogue changes.
 - `partnerPuuid` is part of the key: switching duo mid-week starts a fresh set rather than
   inheriting the previous partner's progress.
+
+---
+
+## 11. Followed Esports Teams (TASK-313)
+
+### `followed_teams`
+
+The one table the esports section owns. Everything else there is a cache over a
+feed we do not control (ADR-016), and stays that way — what is stored here is a
+reader's choice, not the feed's data.
+
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `userId` | `uuid` | NOT NULL — FK → `users(id)` ON DELETE CASCADE |
+| `teamId` | `text` | NOT NULL — the feed's own team id |
+| `teamName` | `text` | NOT NULL — copy, see below |
+| `teamSlug` | `text` | NOT NULL — copy, see below |
+| `createdAt` | `timestamp(3)` | NOT NULL, default `now()` |
+
+**Indexes:**
+- `UNIQUE (userId, teamId)`
+- `INDEX (userId, createdAt DESC)`
+
+**Notes:**
+- **The follow hangs on `teamId`, never the slug.** Team slugs are not unique —
+  53 are reused across teams, 17 with more than one active entry — and
+  resolution has to rank candidates. Display names also change between splits.
+  The feed's id is the only stable handle.
+- **`teamName` and `teamSlug` are deliberate copies.** They let a follow list
+  render without reading the feed, and let a follow survive its team dropping
+  out of it: only 440 of 1175 active teams carry both a league and a roster, and
+  that set moves. The cost is that a renamed team shows its old name until the
+  reader re-follows, which is the better of the two failures.
+- **The follow limit (20) is not in the schema.** It is a product decision that
+  moves, and a constraint on a row count needs a trigger. `followService` counts.
+- Nothing prunes this table; a deleted user takes their follows with them.

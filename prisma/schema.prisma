@@ -112,43 +112,44 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  xp               Int @default(0)
-  level            Int @default(1)
+  xp    Int @default(0)
+  level Int @default(1)
 
-  profileSlug      String?  @unique
-  profilePublic    Boolean  @default(true)
-  profileSettings  Json?
+  profileSlug     String? @unique
+  profilePublic   Boolean @default(true)
+  profileSettings Json?
 
-  proTrialEndsAt   DateTime?
-  emailOptOut      Boolean   @default(false)
+  proTrialEndsAt DateTime?
+  emailOptOut    Boolean   @default(false)
 
-  totpEnabled      Boolean   @default(false)
-  totpSecret       String?   // AES-encrypted TOTP secret
-  totpBackupCodes  String[]  // bcrypt-hashed backup codes
+  totpEnabled     Boolean  @default(false)
+  totpSecret      String? // AES-encrypted TOTP secret
+  totpBackupCodes String[] // bcrypt-hashed backup codes
 
-  sessionVersion   Int       @default(0) // incremented to invalidate all active sessions
+  sessionVersion Int @default(0) // incremented to invalidate all active sessions
 
-  accounts         Account[]
-  sessions         Session[]
-  userSessions     UserSession[]
-  profile          Profile?
-  subscription     Subscription?
-  riotAccounts     RiotAccount[]
-  notifications    Notification[]
-  shareableCards   ShareableCard[]
-  tiltAlerts       TiltAlert[]
-  userAchievements UserAchievement[]
-  seasonRecaps     SeasonRecap[]
-  challenges          Challenge[]
-  userChallenges      UserChallenge[]
-  discordIntegration  DiscordIntegration?
-  referralsGiven      Referral[] @relation("ReferralsGiven")
-  referralReceived    Referral?  @relation("ReferralsReceived")
-  ownedTeams          Team[]     @relation("TeamOwner")
-  teamMemberships     TeamMember[]
-  auditLogs           AuditLog[]
-  pushSubscriptions   PushSubscription[]
-  draftSeries         DraftSeries[]
+  accounts           Account[]
+  sessions           Session[]
+  userSessions       UserSession[]
+  followedTeams      FollowedTeam[]
+  profile            Profile?
+  subscription       Subscription?
+  riotAccounts       RiotAccount[]
+  notifications      Notification[]
+  shareableCards     ShareableCard[]
+  tiltAlerts         TiltAlert[]
+  userAchievements   UserAchievement[]
+  seasonRecaps       SeasonRecap[]
+  challenges         Challenge[]
+  userChallenges     UserChallenge[]
+  discordIntegration DiscordIntegration?
+  referralsGiven     Referral[]          @relation("ReferralsGiven")
+  referralReceived   Referral?           @relation("ReferralsReceived")
+  ownedTeams         Team[]              @relation("TeamOwner")
+  teamMemberships    TeamMember[]
+  auditLogs          AuditLog[]
+  pushSubscriptions  PushSubscription[]
+  draftSeries        DraftSeries[]
 
   @@map("users")
 }
@@ -201,19 +202,19 @@ model VerificationToken {
 // ============================================================
 
 model Profile {
-  id                 String    @id @default(uuid()) @db.Uuid
-  userId             String    @unique @db.Uuid
-  preferredRole      Position?
-  coachingStyle      String    @default("balanced")
-  rankGoal           String?
-  weeklyPlayHours    Int?
-  timezone           String    @default("UTC")
-  language           String    @default("en")
-  emailWeeklyReport  Boolean   @default(true)
+  id                    String    @id @default(uuid()) @db.Uuid
+  userId                String    @unique @db.Uuid
+  preferredRole         Position?
+  coachingStyle         String    @default("balanced")
+  rankGoal              String?
+  weeklyPlayHours       Int?
+  timezone              String    @default("UTC")
+  language              String    @default("en")
+  emailWeeklyReport     Boolean   @default(true)
   // Set once the forced first-journey onboarding is completed (TASK-217). Null = not done.
   onboardingCompletedAt DateTime?
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -249,24 +250,24 @@ model Subscription {
 // ============================================================
 
 model RiotAccount {
-  id            String    @id @default(uuid()) @db.Uuid
-  userId        String    @db.Uuid
-  puuid         String
-  summonerId    String?
-  accountId     String?
-  gameName      String
-  tagLine       String
-  summonerLevel Int
-  profileIconId Int
-  region        String
-  isPrimary     Boolean    @default(false)
-  lastSyncedAt  DateTime?
+  id              String     @id @default(uuid()) @db.Uuid
+  userId          String     @db.Uuid
+  puuid           String
+  summonerId      String?
+  accountId       String?
+  gameName        String
+  tagLine         String
+  summonerLevel   Int
+  profileIconId   Int
+  region          String
+  isPrimary       Boolean    @default(false)
+  lastSyncedAt    DateTime?
   syncStatus      SyncStatus @default(IDLE)
   syncStartedAt   DateTime?
   syncCompletedAt DateTime?
   lastSyncError   String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
 
   user                 User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   matchParticipants    MatchParticipant[]
@@ -367,20 +368,20 @@ model PlayerIndex {
 // ============================================================
 
 model Match {
-  id           String    @id @default(uuid()) @db.Uuid
-  matchId      String    @unique
-  region       String
-  queueId      Int
-  queueType    QueueType
-  gameMode     String
-  gameDuration Int
-  gameStart    DateTime
-  gameEnd      DateTime
-  gameVersion  String
-  winningTeam     Int
-  teamObjectives  Json?
-  rawDataHash     String
-  createdAt    DateTime  @default(now())
+  id             String    @id @default(uuid()) @db.Uuid
+  matchId        String    @unique
+  region         String
+  queueId        Int
+  queueType      QueueType
+  gameMode       String
+  gameDuration   Int
+  gameStart      DateTime
+  gameEnd        DateTime
+  gameVersion    String
+  winningTeam    Int
+  teamObjectives Json?
+  rawDataHash    String
+  createdAt      DateTime  @default(now())
 
   participants MatchParticipant[]
   deathEvents  MatchDeathEvent[]
@@ -391,45 +392,45 @@ model Match {
 }
 
 model MatchParticipant {
-  id                 String   @id @default(uuid()) @db.Uuid
-  matchId            String   @db.Uuid
-  riotAccountId      String?  @db.Uuid
-  puuid              String
-  teamId             Int
-  championId         Int
-  championName       String
-  position           Position
-  kills              Int
-  deaths             Int
-  assists            Int
-  cs                 Int
-  csPerMinute        Decimal  @db.Decimal(5, 2)
-  goldEarned         Int
-  goldPerMinute      Decimal  @db.Decimal(7, 2)
-  damageDealt        Int
-  damageTaken        Int
-  damageHealed       Int
-  visionScore        Int
-  wardsPlaced        Int
-  wardsKilled        Int
-  controlWardsBought Int
-  turretsDestroyed   Int
-  objectivesStolen   Int
-  firstBlood         Boolean
-  won                Boolean
-  timeSpentDead      Int
-  totalTimeCCDealt   Int
-  itemIds            Int[]
-  runePrimaryPath    Int?
+  id                  String        @id @default(uuid()) @db.Uuid
+  matchId             String        @db.Uuid
+  riotAccountId       String?       @db.Uuid
+  puuid               String
+  teamId              Int
+  championId          Int
+  championName        String
+  position            Position
+  kills               Int
+  deaths              Int
+  assists             Int
+  cs                  Int
+  csPerMinute         Decimal       @db.Decimal(5, 2)
+  goldEarned          Int
+  goldPerMinute       Decimal       @db.Decimal(7, 2)
+  damageDealt         Int
+  damageTaken         Int
+  damageHealed        Int
+  visionScore         Int
+  wardsPlaced         Int
+  wardsKilled         Int
+  controlWardsBought  Int
+  turretsDestroyed    Int
+  objectivesStolen    Int
+  firstBlood          Boolean
+  won                 Boolean
+  timeSpentDead       Int
+  totalTimeCCDealt    Int
+  itemIds             Int[]
+  runePrimaryPath     Int?
   runePrimaryKeystone Int?
-  runeSecondaryPath  Int?
-  summonerSpell1     Int
-  summonerSpell2     Int
-  rankTier           RankTier?
-  rankDivision       RankDivision?
-  rankLp             Int?
-  gameName           String?
-  tagLine            String?
+  runeSecondaryPath   Int?
+  summonerSpell1      Int
+  summonerSpell2      Int
+  rankTier            RankTier?
+  rankDivision        RankDivision?
+  rankLp              Int?
+  gameName            String?
+  tagLine             String?
 
   match       Match        @relation(fields: [matchId], references: [id], onDelete: Cascade)
   riotAccount RiotAccount? @relation(fields: [riotAccountId], references: [id])
@@ -469,30 +470,30 @@ model Champion {
 // ============================================================
 
 model ChampionStat {
-  id             String    @id @default(uuid()) @db.Uuid
-  riotAccountId  String    @db.Uuid
-  championId     Int
-  gamesPlayed    Int       @default(0)
-  wins           Int       @default(0)
-  losses         Int       @default(0)
-  avgKda         Decimal   @db.Decimal(5, 2)
-  avgKills       Decimal   @db.Decimal(4, 2)
-  avgDeaths      Decimal   @db.Decimal(4, 2)
-  avgAssists     Decimal   @db.Decimal(4, 2)
-  avgCs          Decimal   @db.Decimal(6, 2)
-  avgCsPerMinute Decimal   @db.Decimal(5, 2)
-  avgVisionScore Decimal   @db.Decimal(5, 2)
-  avgDamageDealt Decimal   @db.Decimal(10, 2)
-  avgGoldPerMin  Decimal   @db.Decimal(7, 2)
-  masteryLevel       Int?
-  masteryPoints      BigInt?
-  masteryScore       Int?
-  masterySubScores   Json?
-  masteryScoreAt     DateTime?
-  queueType          QueueType
-  computedAt         DateTime
-  coachingSummary    String?   @db.Text
-  coachingSummaryAt  DateTime?
+  id                String    @id @default(uuid()) @db.Uuid
+  riotAccountId     String    @db.Uuid
+  championId        Int
+  gamesPlayed       Int       @default(0)
+  wins              Int       @default(0)
+  losses            Int       @default(0)
+  avgKda            Decimal   @db.Decimal(5, 2)
+  avgKills          Decimal   @db.Decimal(4, 2)
+  avgDeaths         Decimal   @db.Decimal(4, 2)
+  avgAssists        Decimal   @db.Decimal(4, 2)
+  avgCs             Decimal   @db.Decimal(6, 2)
+  avgCsPerMinute    Decimal   @db.Decimal(5, 2)
+  avgVisionScore    Decimal   @db.Decimal(5, 2)
+  avgDamageDealt    Decimal   @db.Decimal(10, 2)
+  avgGoldPerMin     Decimal   @db.Decimal(7, 2)
+  masteryLevel      Int?
+  masteryPoints     BigInt?
+  masteryScore      Int?
+  masterySubScores  Json?
+  masteryScoreAt    DateTime?
+  queueType         QueueType
+  computedAt        DateTime
+  coachingSummary   String?   @db.Text
+  coachingSummaryAt DateTime?
 
   riotAccount RiotAccount @relation(fields: [riotAccountId], references: [id], onDelete: Cascade)
   champion    Champion    @relation(fields: [championId], references: [id])
@@ -522,20 +523,20 @@ model RankedHistory {
 }
 
 model PerformanceSnapshot {
-  id                     String   @id @default(uuid()) @db.Uuid
-  riotAccountId          String   @db.Uuid
-  periodStart            DateTime
-  periodEnd              DateTime
-  gamesAnalyzed          Int
-  winRate                Decimal  @db.Decimal(5, 2)
-  avgKda                 Decimal  @db.Decimal(5, 2)
-  avgCsPerMinute         Decimal  @db.Decimal(5, 2)
-  avgVisionScore         Decimal  @db.Decimal(5, 2)
-  tiltScore              Decimal? @db.Decimal(5, 2)
-  mostPlayedChampionIds  Int[]
-  strongestArea          String?
-  weakestArea            String?
-  createdAt              DateTime @default(now())
+  id                    String   @id @default(uuid()) @db.Uuid
+  riotAccountId         String   @db.Uuid
+  periodStart           DateTime
+  periodEnd             DateTime
+  gamesAnalyzed         Int
+  winRate               Decimal  @db.Decimal(5, 2)
+  avgKda                Decimal  @db.Decimal(5, 2)
+  avgCsPerMinute        Decimal  @db.Decimal(5, 2)
+  avgVisionScore        Decimal  @db.Decimal(5, 2)
+  tiltScore             Decimal? @db.Decimal(5, 2)
+  mostPlayedChampionIds Int[]
+  strongestArea         String?
+  weakestArea           String?
+  createdAt             DateTime @default(now())
 
   riotAccount RiotAccount @relation(fields: [riotAccountId], references: [id], onDelete: Cascade)
 
@@ -548,26 +549,26 @@ model PerformanceSnapshot {
 // ============================================================
 
 model CoachingReport {
-  id                     String       @id @default(uuid()) @db.Uuid
-  riotAccountId          String       @db.Uuid
-  reportType             ReportType
-  focusArea              String?
-  status                 ReportStatus @default(pending)
-  matchesAnalyzed        String[]
-  summary                String?      @db.Text
-  strengths              Json?
-  weaknesses             Json?
-  actionItems            Json?
+  id                      String       @id @default(uuid()) @db.Uuid
+  riotAccountId           String       @db.Uuid
+  reportType              ReportType
+  focusArea               String?
+  status                  ReportStatus @default(pending)
+  matchesAnalyzed         String[]
+  summary                 String?      @db.Text
+  strengths               Json?
+  weaknesses              Json?
+  actionItems             Json?
   championRecommendations Json?
-  estimatedRankPotential String?
-  coachPersonaResponse   String?      @db.Text
-  userRating             Int?
-  userFeedback           String?      @db.Text
-  aiModelUsed            String?
-  processingTimeMs       Int?
-  shareToken             String?      @unique
-  createdAt              DateTime     @default(now())
-  completedAt            DateTime?
+  estimatedRankPotential  String?
+  coachPersonaResponse    String?      @db.Text
+  userRating              Int?
+  userFeedback            String?      @db.Text
+  aiModelUsed             String?
+  processingTimeMs        Int?
+  shareToken              String?      @unique
+  createdAt               DateTime     @default(now())
+  completedAt             DateTime?
 
   riotAccount RiotAccount  @relation(fields: [riotAccountId], references: [id], onDelete: Cascade)
   aiAnalyses  AiAnalysis[]
@@ -648,8 +649,8 @@ model ImprovementPlan {
 model PlayerHabit {
   id            String    @id @default(uuid()) @db.Uuid
   riotAccountId String    @db.Uuid
-  habitType     String    // see habitDetectionService.ts for values
-  severity      String    // 'high' | 'medium' | 'low'
+  habitType     String // see habitDetectionService.ts for values
+  severity      String // 'high' | 'medium' | 'low'
   weekCount     Int
   firstDetected DateTime
   lastDetected  DateTime
@@ -672,9 +673,9 @@ model PlayerHabit {
 // ============================================================
 
 model PatchVersion {
-  id          String   @id @default(uuid()) @db.Uuid
-  version     String   @unique  // e.g. "15.14.1"
-  detectedAt  DateTime @default(now())
+  id            String   @id @default(uuid()) @db.Uuid
+  version       String   @unique // e.g. "15.14.1"
+  detectedAt    DateTime @default(now())
   patchNotesUrl String? // optional link shown in widget
 
   @@index([detectedAt(sort: Desc)])
@@ -709,9 +710,9 @@ model TiltAlert {
 // ============================================================
 
 model MatchDeathEvent {
-  id            String   @id @default(uuid()) @db.Uuid
-  matchId       String   @db.Uuid
-  riotAccountId String   @db.Uuid
+  id            String @id @default(uuid()) @db.Uuid
+  matchId       String @db.Uuid
+  riotAccountId String @db.Uuid
   positionX     Int
   positionY     Int
   gameTimeMs    Int
@@ -722,7 +723,7 @@ model MatchDeathEvent {
 
   @@index([riotAccountId, championName])
   @@index([riotAccountId, gameTimeMs])
-  @@index([matchId, riotAccountId])      // fast dedup check: "has this match been processed?"
+  @@index([matchId, riotAccountId]) // fast dedup check: "has this match been processed?"
   @@map("match_death_events")
 }
 
@@ -733,11 +734,11 @@ model MatchDeathEvent {
 // ============================================================
 
 model Achievement {
-  id          String  @id                    // slug e.g. "cs_machine"
+  id          String  @id // slug e.g. "cs_machine"
   name        String
   description String
-  iconSlug    String                         // emoji or asset key shown in UI
-  tier        String                         // 'bronze' | 'silver' | 'gold' | 'platinum'
+  iconSlug    String // emoji or asset key shown in UI
+  tier        String // 'bronze' | 'silver' | 'gold' | 'platinum'
   isSecret    Boolean @default(false)
 
   userAchievements UserAchievement[]
@@ -750,7 +751,7 @@ model UserAchievement {
   userId        String   @db.Uuid
   achievementId String
   earnedAt      DateTime @default(now())
-  seen          Boolean  @default(false)     // toast shown to user?
+  seen          Boolean  @default(false) // toast shown to user?
 
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   achievement Achievement @relation(fields: [achievementId], references: [id])
@@ -769,7 +770,7 @@ model UserAchievement {
 model SeasonRecap {
   id          String   @id @default(uuid()) @db.Uuid
   userId      String   @db.Uuid
-  seasonLabel String   // "2026-S1"
+  seasonLabel String // "2026-S1"
   shareToken  String   @unique @default(cuid())
   data        Json
   generatedAt DateTime @default(now())
@@ -789,8 +790,8 @@ model SeasonRecap {
 // ============================================================
 
 model WebhookEvent {
-  id       String @id @default(uuid()) @db.Uuid
-  eventKey String @unique
+  id          String    @id @default(uuid()) @db.Uuid
+  eventKey    String    @unique
   // Null means "claimed but not finished" — the row is inserted before the
   // handler runs (so concurrent deliveries dedupe) and stamped afterwards. A
   // crashed or failed attempt leaves it null, which lets the retry reprocess
@@ -811,7 +812,7 @@ model WebhookEvent {
 model AiCache {
   id        String   @id @default(cuid())
   cacheKey  String   @unique
-  type      String   // matchup | counter | otp | draft | build-explanation
+  type      String // matchup | counter | otp | draft | build-explanation
   content   Json
   hitCount  Int      @default(0)
   createdAt DateTime @default(now())
@@ -830,7 +831,7 @@ model AiCache {
 model ShareableCard {
   id        String   @id @default(uuid()) @db.Uuid
   userId    String   @db.Uuid
-  cardType  String   // 'weekly' | 'mastery'
+  cardType  String // 'weekly' | 'mastery'
   token     String   @unique @default(cuid())
   data      Json
   viewCount Int      @default(0)
@@ -850,19 +851,19 @@ model ShareableCard {
 // ============================================================
 
 model Challenge {
-  id           String   @id @default(uuid()) @db.Uuid
-  userId       String   @db.Uuid
-  type         String   // 'daily' | 'weekly'
-  metric       String   // 'cs_per_min' | 'deaths' | 'vision_score' | 'win_streak' | 'kda'
-  targetValue  Float
-  description  String
-  xpReward     Int
-  validFrom    DateTime
-  validUntil   DateTime
-  createdAt    DateTime @default(now())
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @db.Uuid
+  type        String // 'daily' | 'weekly'
+  metric      String // 'cs_per_min' | 'deaths' | 'vision_score' | 'win_streak' | 'kda'
+  targetValue Float
+  description String
+  xpReward    Int
+  validFrom   DateTime
+  validUntil  DateTime
+  createdAt   DateTime @default(now())
 
   userChallenges UserChallenge[]
-  user           User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, type, validFrom])
   @@map("challenges")
@@ -890,16 +891,16 @@ model UserChallenge {
 // ============================================================
 
 model DiscordIntegration {
-  id               String   @id @default(uuid()) @db.Uuid
-  userId           String   @unique @db.Uuid
-  discordUserId    String?
-  discordUsername  String?
-  webhookUrl       String
-  notifyRankUp     Boolean  @default(true)
-  notifyBadge      Boolean  @default(false)
-  notifyWeekly     Boolean  @default(true)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @unique @db.Uuid
+  discordUserId   String?
+  discordUsername String?
+  webhookUrl      String
+  notifyRankUp    Boolean  @default(true)
+  notifyBadge     Boolean  @default(false)
+  notifyWeekly    Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -915,8 +916,8 @@ model Referral {
   createdAt   DateTime  @default(now())
   completedAt DateTime?
 
-  referrer    User      @relation("ReferralsGiven", fields: [referrerId], references: [id], onDelete: Cascade)
-  referee     User?     @relation("ReferralsReceived", fields: [refereeId], references: [id], onDelete: SetNull)
+  referrer User  @relation("ReferralsGiven", fields: [referrerId], references: [id], onDelete: Cascade)
+  referee  User? @relation("ReferralsReceived", fields: [refereeId], references: [id], onDelete: SetNull)
 
   @@map("referrals")
 }
@@ -1165,4 +1166,35 @@ model DraftAction {
   @@unique([gameId, step])
   @@index([gameId])
   @@map("draft_actions")
+}
+
+// ============================================================
+// ESPORTS FOLLOWS (TASK-313 — see docs/ESPORTS_PLAN.md)
+// The one place the esports section writes to Postgres. Everything else in
+// that section is a cache over a feed we do not own and stays that way
+// (ADR-016) — this is user state about esports, not esports data.
+// ============================================================
+
+model FollowedTeam {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+
+  // The feed's own team id. Slugs are not unique — 53 are reused across teams
+  // — and display names change between splits, so the id is the only stable
+  // handle a follow can be hung on.
+  teamId String
+
+  // Denormalised on purpose. A follow list then renders without a feed read,
+  // and a follow survives its team dropping out of the feed: only 440 of 1175
+  // active teams carry both a league and a roster, and that set moves.
+  teamName String
+  teamSlug String
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, teamId])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("followed_teams")
 }
