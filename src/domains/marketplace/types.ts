@@ -2,6 +2,7 @@ import type {
   AnnotationCategory,
   BookingStatus,
   CoachStatus,
+  PaymentStatus,
   Position,
   RankDivision,
   RankProofMethod,
@@ -171,6 +172,8 @@ export interface BookingDetail extends BookingSummary {
   deliveredAt: string | null;
   /** When delivery stops being challengeable. ISO. */
   autoCompleteAt: string | null;
+  /** Null only for a booking written before the ledger existed. */
+  payment: BookingPaymentView | null;
 }
 
 /** One recorded transition, as the session page shows it. */
@@ -181,4 +184,17 @@ export interface BookingEventRow {
   reason: string | null;
   createdAt: string;
   actor: { id: string; name: string | null } | null;
+}
+
+/** A booking's money, as the session page shows it. Null while a booking has no ledger row. */
+export interface BookingPaymentView {
+  provider: string;
+  status: PaymentStatus;
+  amountCents: number;
+  platformFeeCents: number;
+  coachAmountCents: number;
+  currency: string;
+  capturedAt: Date | null;
+  releasedAt: Date | null;
+  refundedAt: Date | null;
 }

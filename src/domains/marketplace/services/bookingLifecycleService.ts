@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
 import { autoCompleteFrom, canCancelFreely } from "@/domains/marketplace/policy";
 import { transition } from "@/domains/marketplace/services/bookingEventService";
+import { settleForStatus } from "@/domains/marketplace/services/payments/paymentService";
 
 // Moving a booking through its life. Creating one is `bookingService`.
 //
@@ -188,6 +189,7 @@ export async function autoComplete(
     data: { completedAt: now },
   });
 
+  if (result.ok) await settleForStatus(bookingId, "COMPLETED");
   return toOutcome(result);
 }
 
@@ -202,6 +204,7 @@ export async function expireBooking(bookingId: string, now = new Date()): Promis
     data: { cancelledAt: now, cancelReason: "No answer from the coach." },
   });
 
+  if (result.ok) await settleForStatus(bookingId, "EXPIRED");
   return toOutcome(result);
 }
 
@@ -222,6 +225,9 @@ async function apply(
   });
 
   if (result.ok) {
+    // Driven by where the booking ended up rather than decided here, so the
+    // money and the booking can never disagree about what happened.
+    await settleForStatus(actor.bookingId, to);
     logger.info("[marketplace] booking moved", {
       bookingId: actor.bookingId,
       from: actor.status,

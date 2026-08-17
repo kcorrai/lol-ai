@@ -9,6 +9,7 @@ import {
 } from "@/domains/marketplace/policy";
 import { isSlotFree } from "@/domains/marketplace/services/slotService";
 import { recordCreation } from "@/domains/marketplace/services/bookingEventService";
+import { openPayment } from "@/domains/marketplace/services/payments/paymentService";
 
 // Creating a booking. Moving one afterwards is `bookingLifecycleService`.
 
@@ -147,6 +148,21 @@ export async function createBooking(request: BookingRequest): Promise<CreateOutc
     });
 
     await recordCreation(booking.id, request.studentId, tx);
+
+    // Opened in the same transaction as the booking, so a booking without a
+    // payment row is a bug rather than a state the lifecycle has to handle.
+    await openPayment(
+      {
+        id: booking.id,
+        priceCents: listing.priceCents,
+        platformFeeCents,
+        coachEarningsCents,
+        currency: listing.currency,
+        coachProfileId: listing.coachProfileId,
+      },
+      tx
+    );
+
     return booking;
   });
 

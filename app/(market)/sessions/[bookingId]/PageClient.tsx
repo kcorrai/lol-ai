@@ -11,6 +11,7 @@ import type { BookingDetail, BookingEventRow } from "@/domains/marketplace/types
 import { BookingActions } from "@/domains/marketplace/components/BookingActions";
 import { BookingTimeline } from "@/domains/marketplace/components/BookingTimeline";
 import { StatusBadge, whenLabel } from "@/domains/marketplace/components/BookingRow";
+import type { BookingPaymentView } from "@/domains/marketplace/types";
 
 interface Data {
   booking: BookingDetail;
@@ -101,6 +102,30 @@ export default function SessionPage({ bookingId }: { bookingId: string }): React
         </CardContent>
       </Card>
 
+      {booking.payment && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Money</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-1 text-sm">
+            <p className="text-text">
+              {money(booking.payment.amountCents, booking.payment.currency)}
+              <span className="ml-2 text-text-muted">
+                — coach {money(booking.payment.coachAmountCents, booking.payment.currency)}, platform{" "}
+                {money(booking.payment.platformFeeCents, booking.payment.currency)}
+              </span>
+            </p>
+            <p className="text-xs text-text-muted">{paymentLine(booking.payment)}</p>
+            {booking.payment.provider === "manual" && (
+              <p className="text-xs text-warning">
+                No payment provider is connected yet, so nothing has actually been charged or paid
+                out. The ledger records what would have moved.
+              </p>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle>History</CardTitle>
@@ -111,4 +136,23 @@ export default function SessionPage({ bookingId }: { bookingId: string }): React
       </Card>
     </div>
   );
+}
+
+function money(cents: number, currency: string): string {
+  return new Intl.NumberFormat(undefined, { style: "currency", currency }).format(cents / 100);
+}
+
+function paymentLine(payment: BookingPaymentView): string {
+  switch (payment.status) {
+    case "HELD":
+      return "Held until the session is settled.";
+    case "RELEASED":
+      return "Released to the coach.";
+    case "REFUNDED":
+      return "Returned to the student.";
+    case "FAILED":
+      return "The payment failed.";
+    default:
+      return "Not taken yet.";
+  }
 }

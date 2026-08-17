@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { paymentFor } from "@/domains/marketplace/services/payments/paymentService";
 import type { BookingSummary } from "@/domains/marketplace/types";
 
 // Reading bookings, for the two lists that exist: a student's sessions and a
@@ -105,6 +106,7 @@ export async function getBookingFor(bookingId: string, userId: string) {
 
   return {
     ...toSummary(row as unknown as Row),
+    payment: await paymentFor(bookingId),
     role: row.studentId === userId ? ("student" as const) : ("coach" as const),
     studentGoal: row.studentGoal,
     meetingUrl: row.meetingUrl,

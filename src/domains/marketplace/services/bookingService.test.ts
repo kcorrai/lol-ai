@@ -16,6 +16,11 @@ vi.mock("@/domains/marketplace/services/slotService", () => ({ isSlotFree: vi.fn
 vi.mock("@/domains/marketplace/services/bookingEventService", () => ({
   recordCreation: vi.fn(),
 }));
+// The ledger has its own tests; here it only needs to not be the thing that
+// fails, so that the booking assertions stay about the booking.
+vi.mock("@/domains/marketplace/services/payments/paymentService", () => ({
+  openPayment: vi.fn(),
+}));
 vi.mock("@/lib/utils/logger", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));

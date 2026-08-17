@@ -159,6 +159,22 @@ export { transition, recordCreation, bookingHistory } from "@/domains/marketplac
 export type { TransitionInput, TransitionOutcome } from "@/domains/marketplace/services/bookingEventService";
 
 export { listBookings, getBookingFor } from "@/domains/marketplace/services/bookingQueryService";
+
+export {
+  openPayment,
+  settleForStatus,
+  paymentFor,
+  setPaymentProvider,
+  currentPaymentProvider,
+} from "@/domains/marketplace/services/payments/paymentService";
+export { manualProvider } from "@/domains/marketplace/services/payments/manualProvider";
+export type {
+  PaymentProvider,
+  ChargeRequest,
+  ChargeResult,
+  ReleaseResult,
+  RefundResult,
+} from "@/domains/marketplace/services/payments/paymentProvider";
 export type { SlotQuery } from "@/domains/marketplace/services/slotService";
 
 export { marketplaceSitemapEntries } from "@/domains/marketplace/services/marketplaceSitemapService";

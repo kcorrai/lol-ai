@@ -1929,3 +1929,33 @@ is what an automatic refund keys off.
 
 `deliver` settles nothing: it starts the window the student can challenge it in
 (`autoCompleteAt`).
+
+### Payments (M8)
+
+There is no payment endpoint, and that is the design. The ledger is opened in
+the same transaction as the booking and settled by whatever status the booking
+reaches — so a booking without a payment row is a bug rather than a state, and
+the money and the booking can never disagree about what happened.
+
+`GET /api/bookings/[bookingId]` carries the ledger as `payment`:
+
+```json
+{ "provider": "manual", "status": "HELD", "amountCents": 4500,
+  "platformFeeCents": 900, "coachAmountCents": 3600, "currency": "USD",
+  "capturedAt": "…", "releasedAt": null, "refundedAt": null }
+```
+
+| Booking reaches | Money becomes |
+|---|---|
+| `PENDING_COACH`, `CONFIRMED`, `DELIVERED`, `DISPUTED` | stays `HELD` |
+| `COMPLETED` | `RELEASED` |
+| `DECLINED`, `EXPIRED`, either cancellation, `REFUNDED` | `REFUNDED` |
+
+**No money moves.** The only driver is `manual`, which advances these states
+and settles nothing, and the session page says so in as many words rather than
+letting a student believe they have been charged. Adding Stripe is a driver
+registration, not an edit: the provider interface is four verbs that map
+directly onto a destination charge with an `application_fee_amount`, a manual
+payout schedule for the hold, `Payout.create` for the release and
+`Refund.create({ reverse_transfer: true, refund_application_fee: true })` for
+the return. See ADR-020.
