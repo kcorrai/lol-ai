@@ -1,79 +1,75 @@
 "use client";
 
-import Image from "next/image";
-import { TrendingUp, TrendingDown } from "lucide-react";
-import { rankEmblemUrl } from "@/lib/ddragon";
-import { cn } from "@/lib/utils";
-
-// Rank crest colours are game data, not brand — see tailwind.config.ts `rank.*`.
-const TIER_COLORS: Record<string, string> = {
-  IRON: "text-rank-iron", BRONZE: "text-rank-bronze", SILVER: "text-rank-silver",
-  GOLD: "text-rank-gold", PLATINUM: "text-rank-platinum", EMERALD: "text-rank-emerald",
-  DIAMOND: "text-rank-diamond", MASTER: "text-rank-master",
-  GRANDMASTER: "text-rank-grandmaster", CHALLENGER: "text-rank-challenger",
-};
-
-function formatRank(tier: string, division: string, lp: number): string {
-  const highElo = ["MASTER", "GRANDMASTER", "CHALLENGER"];
-  const tierDisplay = tier.charAt(0) + tier.slice(1).toLowerCase();
-  if (highElo.includes(tier)) return `${tierDisplay} ${lp} LP`;
-  return `${tierDisplay} ${division} ${lp} LP`;
+interface Rank {
+  tier: string;
+  division: string;
+  lp: number;
 }
 
-interface RankSnapshot { tier: string; division: string; lp: number }
-
-interface Props {
-  rankStart: RankSnapshot | null;
-  rankEnd: RankSnapshot | null;
+interface MilestoneRankJourneyProps {
+  rankStart: Rank | null;
+  rankEnd: Rank | null;
   lpChange: number;
 }
 
-export function MilestoneRankJourney({ rankStart, rankEnd, lpChange }: Props) {
+function format(rank: Rank | null): string {
+  return rank ? `${rank.tier} ${rank.division} · ${rank.lp} LP` : "Unranked";
+}
+
+/**
+ * Where the month started, what it netted, where it left you.
+ *
+ * Three figures on one line rather than a card each: the whole point is the
+ * relationship between them, and a reader should not have to hold two numbers
+ * in their head to see whether the month went anywhere.
+ */
+export function MilestoneRankJourney({
+  rankStart,
+  rankEnd,
+  lpChange,
+}: MilestoneRankJourneyProps): React.JSX.Element | null {
+  if (!rankStart && !rankEnd) return null;
+
+  const climbed = lpChange > 0;
+  const lpClass = climbed ? "text-acid-500" : lpChange < 0 ? "text-danger" : "text-fg-3";
+  const note = climbed ? "Gained ground" : lpChange < 0 ? "Lost ground" : "No net change";
+
   return (
-    <div className="gaming-card p-4">
-      <p className="mb-4 text-xs font-bold uppercase tracking-wider text-text-muted">Rank Journey</p>
-      <div className="flex items-center gap-4">
-        <div className="flex flex-1 flex-col items-center gap-1">
-          {rankStart ? (
-            <>
-              <Image src={rankEmblemUrl(rankStart.tier)} alt={rankStart.tier} width={48} height={48} unoptimized className="opacity-80" />
-              <p className={cn("text-xs font-semibold", TIER_COLORS[rankStart.tier] ?? "text-text-muted")}>
-                {formatRank(rankStart.tier, rankStart.division, rankStart.lp)}
-              </p>
-              <p className="text-[10px] text-text-muted">Month start</p>
-            </>
-          ) : (
-            <p className="text-xs text-text-muted">No data</p>
-          )}
+    <section className="notch border border-border bg-surface">
+      <div className="flex items-center justify-between gap-3 border-b border-line-1 px-5 py-3">
+        <span className="font-mono text-[10.5px] uppercase tracking-label text-text-muted">
+          {"// RANK JOURNEY"}
+        </span>
+        <span className={`font-mono text-[10.5px] uppercase tracking-wide ${lpClass}`}>{note}</span>
+      </div>
+
+      <div className="flex flex-wrap items-center justify-between gap-5 px-5 py-5">
+        <div>
+          <div className="font-mono text-[9.5px] uppercase tracking-label text-text-muted">
+            Month start
+          </div>
+          <div className="mt-1.5 font-display text-lg font-extrabold uppercase tracking-wide text-fg-2">
+            {format(rankStart)}
+          </div>
         </div>
 
-        <div className="flex flex-col items-center gap-1">
-          {lpChange > 0 ? (
-            <TrendingUp className="h-5 w-5 text-success" />
-          ) : lpChange < 0 ? (
-            <TrendingDown className="h-5 w-5 text-danger" />
-          ) : (
-            <div className="h-5 w-5 rounded-full border border-border" />
-          )}
-          <span className={cn("text-sm font-bold", lpChange > 0 ? "text-success" : lpChange < 0 ? "text-danger" : "text-text-muted")}>
-            {lpChange > 0 ? "+" : ""}{lpChange} LP
-          </span>
+        <div className="text-center">
+          <div className={`font-mono text-2xl font-bold tabular-nums ${lpClass}`}>
+            {climbed ? "+" : ""}
+            {lpChange}
+          </div>
+          <div className="mt-1 font-mono text-[9.5px] uppercase tracking-label text-fg-4">
+            net LP
+          </div>
         </div>
 
-        <div className="flex flex-1 flex-col items-center gap-1">
-          {rankEnd ? (
-            <>
-              <Image src={rankEmblemUrl(rankEnd.tier)} alt={rankEnd.tier} width={48} height={48} unoptimized className={lpChange >= 0 ? "opacity-100" : "opacity-60"} />
-              <p className={cn("text-xs font-semibold", TIER_COLORS[rankEnd.tier] ?? "text-text-muted")}>
-                {formatRank(rankEnd.tier, rankEnd.division, rankEnd.lp)}
-              </p>
-              <p className="text-[10px] text-text-muted">Now</p>
-            </>
-          ) : (
-            <p className="text-xs text-text-muted">No data</p>
-          )}
+        <div className="text-right">
+          <div className="font-mono text-[9.5px] uppercase tracking-label text-text-muted">Now</div>
+          <div className="mt-1.5 font-display text-lg font-extrabold uppercase tracking-wide text-acid-500">
+            {format(rankEnd)}
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
