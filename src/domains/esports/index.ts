@@ -23,6 +23,7 @@ export {
   getProBuild,
   getCachedProBuild,
   getProChampionIds,
+  getCachedProChampionIds,
   getProPresence,
 } from "@/domains/esports/services/proMetaService";
 export type { ProMetaQuery, ProBuildResult } from "@/domains/esports/services/proMetaService";

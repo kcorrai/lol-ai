@@ -16,7 +16,7 @@ const getTeams = vi.fn<() => Promise<EsportsTeam[]>>();
 const getPlayerIndex = vi.fn<() => Promise<PlayerEntry[]>>();
 const getUpcoming = vi.fn<(query?: unknown) => Promise<EsportsEvent[]>>();
 const getCompleted = vi.fn<(query?: unknown) => Promise<EsportsEvent[]>>();
-const getProChampionIds = vi.fn<() => Promise<string[]>>();
+const getCachedProChampionIds = vi.fn<() => Promise<string[]>>();
 const getTournamentIndex = vi.fn<() => Promise<{ tournament: { slug: string } }[]>>();
 
 // `prominentLeagues` is the rule under test here, so the real one runs.
@@ -35,7 +35,7 @@ vi.mock("@/domains/esports/services/playerService", () => ({
   getPlayerIndex: () => getPlayerIndex(),
 }));
 vi.mock("@/domains/esports/services/proMetaService", () => ({
-  getProChampionIds: () => getProChampionIds(),
+  getCachedProChampionIds: () => getCachedProChampionIds(),
 }));
 vi.mock("@/domains/esports/services/scheduleService", () => ({
   getUpcoming: (query?: unknown) => getUpcoming(query),
@@ -114,7 +114,7 @@ beforeEach(() => {
   getPlayerIndex.mockResolvedValue([entry("faker", "mid", team())]);
   getUpcoming.mockResolvedValue([]);
   getCompleted.mockResolvedValue([]);
-  getProChampionIds.mockResolvedValue([]);
+  getCachedProChampionIds.mockResolvedValue([]);
   getTournamentIndex.mockResolvedValue([]);
 });
 
@@ -205,7 +205,7 @@ describe("esportsSitemapEntries", () => {
   });
 
   it("publishes only champions with pro games", async () => {
-    getProChampionIds.mockResolvedValue(["Azir", "Jinx"]);
+    getCachedProChampionIds.mockResolvedValue(["Azir", "Jinx"]);
 
     const result = paths(await esportsSitemapEntries());
     expect(result).toContain("/esports/champions/Azir");
@@ -213,6 +213,18 @@ describe("esportsSitemapEntries", () => {
     // The rest render an honest empty page and mark themselves noindex, so they
     // have no business in the file.
     expect(result).not.toContain("/esports/champions/Teemo");
+  });
+
+  it("still publishes the rest of the file when the pro sample is cold", async () => {
+    // The sitemap reads the pro sample cache-only, so a cold cache is a normal
+    // answer rather than a reason to walk the feed (LA-17). Losing one section
+    // for a round is the trade; losing the file is not.
+    getCachedProChampionIds.mockResolvedValue([]);
+
+    const result = paths(await esportsSitemapEntries());
+    expect(result.some((path) => path.startsWith("/esports/champions/"))).toBe(false);
+    expect(result).toContain("/esports");
+    expect(result).toContain("/esports/leagues/lck");
   });
 
   it("publishes a page per tournament", async () => {

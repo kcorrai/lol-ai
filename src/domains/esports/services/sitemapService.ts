@@ -7,7 +7,7 @@ import {
 import { getTeams, indexableTeams } from "@/domains/esports/services/teamService";
 import { getPlayerIndex } from "@/domains/esports/services/playerService";
 import { getUpcoming, getCompleted } from "@/domains/esports/services/scheduleService";
-import { getProChampionIds } from "@/domains/esports/services/proMetaService";
+import { getCachedProChampionIds } from "@/domains/esports/services/proMetaService";
 import type { EsportsLeague, EsportsTeam, PlayerEntry } from "@/domains/esports/types";
 
 /** Deliberately not Next's `MetadataRoute` — the domain does not know about the app shell. */
@@ -100,7 +100,9 @@ export async function esportsSitemapEntries(): Promise<EsportsSitemapEntry[]> {
       getCompleted({ limit: MATCH_WINDOW }),
       // Champions nobody has picked have an honest empty page, and the page
       // marks itself `noindex` — so only the ones with games belong in the file.
-      getProChampionIds(),
+      // Cache-only: building the sample here is what timed the sitemap out of
+      // the build (LA-17), and a file missing one section beats no file at all.
+      getCachedProChampionIds(),
       // Already bounded to the prominent leagues; a split with nothing
       // published noindexes itself on the page.
       getTournamentIndex(),

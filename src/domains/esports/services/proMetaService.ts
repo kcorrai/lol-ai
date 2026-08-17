@@ -45,6 +45,24 @@ export async function getProChampionIds(query: ProMetaQuery = {}): Promise<strin
 }
 
 /**
+ * The same ids, but only if the sample is already built.
+ *
+ * What the sitemap reads (LA-17). `getProChampionIds` fills a cold cache by
+ * walking thirty series, and the one caller that cannot afford that is the
+ * sitemap: it is rendered during the build, where `esportsCache` reaches Redis
+ * over a `no-store` fetch that a static export refuses outright. Every read
+ * misses, the walk runs live against the feed, and the route dies on the
+ * static-generation timeout — taking the whole build with it.
+ *
+ * A cold cache therefore costs this round's file its pro-champion URLs rather
+ * than the build; the warm job (TASK-305) puts them in the next one.
+ */
+export async function getCachedProChampionIds(): Promise<string[]> {
+  const sample = await getCachedProSample();
+  return sample ? Object.keys(sample.builds).sort() : [];
+}
+
+/**
  * What pro play has to say about one champion, but only if it is already known.
  *
  * The champion cluster's entry point (TASK-310). Returns null on a cold cache
