@@ -776,3 +776,103 @@ reader's choice, not the feed's data.
 - **The follow limit (20) is not in the schema.** It is a product decision that
   moves, and a constraint on a row count needs a trigger. `followService` counts.
 - Nothing prunes this table; a deleted user takes their follows with them.
+
+---
+
+## 12. Coach Marketplace (LA-19 — see `docs/MARKETPLACE_PLAN.md`)
+
+Human coaches, sold by the session. Fifteen tables, all added by
+`20260817184434_add_coach_marketplace`.
+
+Deliberately separate from `coaching_reports` and `ai_analyses`, which are the
+AI pipeline: no table in this section references one, and no code path in
+`src/domains/marketplace/` calls an AI provider. The product on sale here is a
+person.
+
+**There is no `role` column on `users`, and there is not going to be one.**
+Being a coach *is* having an approved `coach_profiles` row. That keeps the
+NextAuth adapter contract (ADR-003) untouched, and lets one account be a student
+and a coach at once — which is the normal case, because coaches queue too. See
+ADR-019.
+
+### New enums
+
+| Enum | Values |
+|---|---|
+| `CoachStatus` | `DRAFT`, `PENDING`, `APPROVED`, `REJECTED`, `SUSPENDED` |
+| `SessionKind` | `VOD_REVIEW`, `LIVE_SESSION`, `LIVE_SPECTATE` |
+| `BookingStatus` | `PENDING_COACH`, `CONFIRMED`, `DECLINED`, `EXPIRED`, `CANCELLED_BY_STUDENT`, `CANCELLED_BY_COACH`, `DELIVERED`, `COMPLETED`, `DISPUTED`, `REFUNDED` |
+| `PaymentStatus` | `REQUIRES_PAYMENT`, `HELD`, `RELEASED`, `REFUNDED`, `FAILED` |
+| `PayoutAccountStatus` | `NONE`, `PENDING`, `VERIFIED`, `RESTRICTED` |
+| `DisputeStatus` | `OPEN`, `RESOLVED_REFUND`, `RESOLVED_RELEASE`, `REJECTED` |
+| `RankProofMethod` | `SELF_REPORTED`, `PLATFORM_CHECKED`, `RIOT_VERIFIED` |
+| `ReviewAuthorRole` | `STUDENT`, `COACH` |
+| `AnnotationCategory` | `LANING`, `MACRO`, `MICRO`, `VISION`, `DRAFT`, `POSITIONING`, `MENTAL` |
+
+### Tables
+
+| Table | Holds | Key constraints |
+|---|---|---|
+| `coach_profiles` | one per coach, 1:1 with `users` | `UNIQUE userId`, `UNIQUE slug`, `INDEX (status, ratingWilson DESC)`, `INDEX (status, acceptingStudents)` |
+| `coach_rank_proofs` | what we can say about a coach's rank, and how we know | `UNIQUE (coachProfileId, queueType)`, `INDEX (staleAt)` |
+| `coach_listings` | one thing a coach sells | `INDEX (coachProfileId, isActive, sortOrder)` |
+| `coach_availability` | recurring weekly windows, wall-clock in the coach's zone | `INDEX (coachProfileId, isActive)` |
+| `coach_availability_exceptions` | one date that does not follow the weekly rule | `UNIQUE (coachProfileId, date)` |
+| `bookings` | the transaction | `INDEX (coachProfileId, status, startTime)`, `INDEX (studentId, createdAt DESC)`, `INDEX (status, respondByAt)`, `INDEX (status, autoCompleteAt)` |
+| `booking_events` | append-only status transitions | `INDEX (bookingId, createdAt)` |
+| `vod_reviews` | the async deliverable | `UNIQUE bookingId` |
+| `vod_annotations` | timestamped notes on one | `INDEX (vodReviewId, timestampSeconds)` |
+| `session_reviews` | two-sided, blind until both are in | `UNIQUE (bookingId, authorRole)`, `INDEX (coachProfileId, revealedAt DESC)` |
+| `conversations` | one thread per coach/student pair | `UNIQUE (coachProfileId, studentId)`, `INDEX (studentId, lastMessageAt DESC)` |
+| `messages` | already-redacted message bodies | `INDEX (conversationId, createdAt)` |
+| `booking_payments` | provider-neutral money ledger | `UNIQUE bookingId`, `UNIQUE providerPaymentId`, `INDEX (status)` |
+| `coach_payout_accounts` | where a coach's money would go | `UNIQUE coachProfileId` |
+| `booking_disputes` | a challenge and its resolution | `UNIQUE bookingId`, `INDEX (status, createdAt)` |
+
+### Notes
+
+- **`bookings` snapshots its own economics.** `priceCents`, `commissionBps`,
+  `platformFeeCents`, `coachEarningsCents` and `cancellationHours` are copied in
+  at creation and never joined for. A coach raising their rate, or a change to
+  the platform's cut, must not retroactively rewrite what a settled booking was
+  worth. Both timezones are captured for the same reason: so a coach moving
+  country does not change what a past booking said.
+- **`booking_events` is the table this section is built around.** The most
+  common complaint about every competitor is a session paid for and never
+  delivered, followed by a refusal nobody can reconstruct — which is what having
+  no record of the transitions costs. `bookings.status` is where a booking is;
+  `booking_events` is how it got there, with the actor (null for a scheduled
+  sweep) and a reason. The allowed transitions live in
+  `src/domains/marketplace/transitions.ts` as a table, not as scattered `if`s.
+- **`coach_availability` stores wall-clock time, not instants.** `startTime` and
+  `endTime` are `time` (no zone); the zone is `coach_profiles.timezone`, an IANA
+  name, and the offset is resolved **per calendar day** at read time. Baking a
+  weekly rule down to one fixed UTC offset is exactly what breaks on the day the
+  clocks move. `bookings.startTime`/`endTime` are the opposite — a booking is a
+  single event with no recurrence, so it is stored as a resolved UTC instant.
+  See ADR-022.
+- **`days` is an `int[]`, not a row per weekday.** "Mon, Wed, Fri 18:00–21:00"
+  is one row. Same shape Cal.com settled on, and it avoids an RRULE parser for a
+  pattern that never needs one.
+- **`booking_payments` is a ledger, not a mirror of a provider's object.** No
+  money moves today: the only driver is `manual`, which advances these states
+  and settles nothing. The provider columns already hold what a Stripe
+  destination charge needs — `providerPaymentId` ↔ `PaymentIntent.id`,
+  `platformFeeCents` ↔ `application_fee_amount`, `providerTransferId` ↔
+  `Transfer.id` — so adding Stripe is a driver, not a migration. See ADR-020.
+- **`coach_profiles` carries two rating aggregates and they disagree on
+  purpose.** `ratingBayes` is what a profile displays — a mean pulled toward the
+  platform average until the sample is real. `ratingWilson` is what search
+  orders by, so a 5.0 from two people does not outrank a 4.8 from ninety. Below
+  three revealed reviews a coach shows a "New" badge and no number at all.
+- **`session_reviews` can only exist for a booking that completed**, and neither
+  side's row is visible until both exist or the 14-day window closes —
+  `revealedAt` is set on both at the same moment. `coachReply` carries no rating
+  and never moves an aggregate.
+- **`coach_rank_proofs.method` is the honesty column.** `PLATFORM_CHECKED` means
+  we read the rank from Riot for a linked account and dated it; it does **not**
+  mean the account was proven to belong to that person. That is
+  `RIOT_VERIFIED`, which needs an RSO invitation we do not have. See ADR-023.
+- **Nothing here cascades from a Riot account.** `coach_rank_proofs.riotAccountId`
+  and `bookings.riotAccountId` are both `ON DELETE SET NULL`: unlinking a Riot
+  account must not delete a coach's profile or a settled booking.

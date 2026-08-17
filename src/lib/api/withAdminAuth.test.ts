@@ -40,7 +40,19 @@ describe("withAdminAuth", () => {
 
     await guarded(req);
 
-    expect(handler).toHaveBeenCalledWith(req);
+    expect(handler).toHaveBeenCalledWith(req, expect.anything());
+  });
+
+  // Routes that record a decision need to name who made it, and the wrapper has
+  // already resolved the session by this point — so it hands the identity over
+  // rather than making the handler read the session a second time.
+  it("hands the handler the admin's identity", async () => {
+    await guarded(request());
+
+    expect(handler).toHaveBeenCalledWith(expect.anything(), {
+      adminId: "admin-1",
+      adminEmail: ADMIN,
+    });
   });
 
   /**

@@ -20,6 +20,10 @@ const PROTECTED_PATHS = [
   "/analysis",
   "/onboarding",
   "/champion-pool",
+  // The coach's own side of the marketplace. `/coaches` (plural) is the public
+  // storefront and stays open — that is the acquisition surface.
+  "/coach",
+  "/sessions",
 ];
 
 const AUTH_PATHS = ["/login", "/register", "/forgot-password", "/reset-password"];
@@ -36,8 +40,15 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
-  // Protected routes require authentication
-  const isProtected = PROTECTED_PATHS.some((p) => pathname.startsWith(p));
+  // Protected routes require authentication.
+  //
+  // Matched on a path boundary rather than a bare prefix: `/coaches` — the
+  // public storefront, and the acquisition surface for the whole marketplace —
+  // starts with `/coach`, so a plain `startsWith` would put a login wall in
+  // front of it the moment the matcher below grew to cover it.
+  const isProtected = PROTECTED_PATHS.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`)
+  );
   if (isProtected && !isAuthenticated) {
     const loginUrl = new URL("/login", req.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
@@ -66,6 +77,8 @@ export const config = {
     "/analysis/:path*",
     "/onboarding/:path*",
     "/champion-pool/:path*",
+    "/coach/:path*",
+    "/sessions/:path*",
     "/admin/:path*",
     "/login",
     "/register",

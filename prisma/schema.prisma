@@ -151,6 +151,19 @@ model User {
   pushSubscriptions  PushSubscription[]
   draftSeries        DraftSeries[]
 
+  // Coach marketplace. `coachProfile` is what makes this account a coach — there
+  // is no role column, by design (ADR-019). Everything else here is the same
+  // account acting as a student, which is the common case: coaches queue too.
+  coachProfile        CoachProfile?    @relation("CoachProfileUser")
+  coachProfilesReviewed CoachProfile[] @relation("CoachProfileReviewer")
+  bookingsAsStudent   Booking[]        @relation("BookingStudent")
+  bookingEvents       BookingEvent[]   @relation("BookingEventActor")
+  sessionReviews      SessionReview[]  @relation("SessionReviewStudent")
+  conversations       Conversation[]   @relation("ConversationStudent")
+  messagesSent        Message[]        @relation("MessageSender")
+  disputesOpened      BookingDispute[] @relation("DisputeOpener")
+  disputesResolved    BookingDispute[] @relation("DisputeResolver")
+
   @@map("users")
 }
 
@@ -280,9 +293,17 @@ model RiotAccount {
   deathEvents          MatchDeathEvent[]
   duoPartners          DuoPartner[]
   duoQuests            DuoQuest[]
+  // Marketplace: the account a rank badge was read from, and the account a
+  // student asked a coach to look at. Both are SetNull — unlinking a Riot
+  // account must not delete a coach's profile or a settled booking.
+  coachRankProofs      CoachRankProof[]
+  bookingsUnderReview  Booking[]
 
   @@unique([userId, puuid])
   @@index([userId])
+  // Raw-SQL index from 20260607000012_analytics_indexes (admin DAU/MAU proxy), mirrored here so
+  // the next `migrate dev` stops proposing to drop it — see LA-15.
+  @@index([updatedAt(sort: Desc)], map: "idx_riot_accounts_updated_at")
   @@map("riot_accounts")
 }
 
@@ -358,8 +379,18 @@ model PlayerIndex {
   lastSeenAt    DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  @@index([searchKey(ops: raw("text_pattern_ops"))])
-  @@index([region, searchKey(ops: raw("text_pattern_ops"))])
+  // Declared plain here, but created with `text_pattern_ops` by
+  // 20260816000001_add_player_index — and that is deliberate, not a mistake to fix (LA-15).
+  //
+  // Prisma 5.22 cannot introspect a non-default operator class: `db pull` reads both of these
+  // back as plain `@@index([searchKey])`. So while the model said `ops: raw("text_pattern_ops")`
+  // every `migrate dev` proposed dropping and recreating them — identical SQL, forever, because
+  // the two sides can never agree. Declaring them plain makes Prisma see a match and leave them
+  // alone, and the operator class survives where it actually lives: in the migration that
+  // creates the index. Never let Prisma regenerate these; the migration SQL is their source of
+  // truth. See the comment on `searchKey` for why the operator class matters at all.
+  @@index([searchKey])
+  @@index([region, searchKey])
   @@map("player_index")
 }
 
@@ -519,6 +550,10 @@ model RankedHistory {
   riotAccount RiotAccount @relation(fields: [riotAccountId], references: [id], onDelete: Cascade)
 
   @@index([riotAccountId, queueType, recordedAt(sort: Desc)])
+  // Added as raw SQL by 20260607000012_analytics_indexes for the leaderboard query and never
+  // mirrored here, which is how schema.prisma and the migration history drifted apart (LA-15).
+  // The `map` keeps the hand-written name the database already has.
+  @@index([riotAccountId, recordedAt(sort: Desc)], map: "idx_ranked_history_account_recorded")
   @@map("ranked_history")
 }
 
@@ -575,6 +610,9 @@ model CoachingReport {
 
   @@index([riotAccountId, createdAt(sort: Desc)])
   @@index([status])
+  // Raw-SQL index from 20260607000012_analytics_indexes (admin feature-usage counts), mirrored
+  // here so the next `migrate dev` stops proposing to drop it — see LA-15.
+  @@index([createdAt(sort: Desc)], map: "idx_coaching_reports_created_at")
   @@map("coaching_reports")
 }
 
@@ -717,6 +755,11 @@ model MatchDeathEvent {
   positionY     Int
   gameTimeMs    Int
   championName  String
+  // Present in the database since 20260607000004_add_death_events and missing from this model,
+  // which is why `migrate dev` wanted to drop the column outright (LA-15). Kept, not dropped:
+  // the rows are cheap and knowing when a death was ingested is the only way to tell a
+  // re-processed match from a freshly synced one.
+  createdAt     DateTime    @default(now())
 
   match       Match       @relation(fields: [matchId], references: [id], onDelete: Cascade)
   riotAccount RiotAccount @relation(fields: [riotAccountId], references: [id], onDelete: Cascade)
@@ -840,7 +883,9 @@ model ShareableCard {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([token])
+  // No `@@index([token])`: `token` is already `@unique`, and a unique constraint is a btree index.
+  // The duplicate was in the model but never in any migration, so it was one of the differences
+  // that made `migrate dev` untrustworthy (LA-15). Dropped in the model, not added to the database.
   @@index([userId, createdAt(sort: Desc)])
   @@map("shareable_cards")
 }
@@ -1197,4 +1242,571 @@ model FollowedTeam {
   @@unique([userId, teamId])
   @@index([userId, createdAt(sort: Desc)])
   @@map("followed_teams")
+}
+
+// ============================================================
+// COACH MARKETPLACE (see docs/MARKETPLACE_PLAN.md)
+//
+// Human coaches, sold by the session. Deliberately separate from everything
+// under `coaching_reports`, which is the AI pipeline — no model here touches
+// an AI table and nothing in this section calls an AI provider.
+//
+// There is no `role` column on `User`, and there is not going to be one: being
+// a coach *is* having an approved `coach_profiles` row. That keeps the NextAuth
+// contract (ADR-003) untouched and lets one account be a student and a coach at
+// the same time, which is the normal case — coaches queue too. See ADR-019.
+// ============================================================
+
+enum CoachStatus {
+  DRAFT // being filled in, never seen by a student
+  PENDING // submitted, waiting on review
+  APPROVED // live on /coaches
+  REJECTED // reviewed and declined, with a reason
+  SUSPENDED // was live, taken down; existing bookings still resolve
+}
+
+enum SessionKind {
+  VOD_REVIEW // async: student supplies a match or a video link, coach annotates it
+  LIVE_SESSION // scheduled 1:1 call on a meeting link the coach supplies
+  LIVE_SPECTATE // coach watches the student's live games and debriefs after
+}
+
+// The booking lifecycle. Every transition between these is written to
+// `booking_events` — see the comment on that model for why that is not optional.
+enum BookingStatus {
+  PENDING_COACH // requested and paid for, waiting on the coach to accept
+  CONFIRMED // coach accepted
+  DECLINED // coach declined
+  EXPIRED // coach never answered before `respondByAt`
+  CANCELLED_BY_STUDENT
+  CANCELLED_BY_COACH
+  DELIVERED // the session happened / the review was published
+  COMPLETED // delivery went unchallenged; the coach's money is releasable
+  DISPUTED // student says it was not delivered as sold
+  REFUNDED // resolved back to the student
+}
+
+// Deliberately provider-neutral. The only driver today is `manual`, which moves
+// rows and no money; a Stripe driver implements the same transitions. See ADR-020.
+enum PaymentStatus {
+  REQUIRES_PAYMENT
+  HELD // taken from the student, not yet the coach's
+  RELEASED // the coach's to withdraw
+  REFUNDED
+  FAILED
+}
+
+enum PayoutAccountStatus {
+  NONE
+  PENDING
+  VERIFIED
+  RESTRICTED
+}
+
+enum DisputeStatus {
+  OPEN
+  RESOLVED_REFUND
+  RESOLVED_RELEASE
+  REJECTED
+}
+
+// How much a rank claim is actually worth. The distinction is the point: every
+// competitor displays `SELF_REPORTED` and calls it a rank. See ADR-023.
+enum RankProofMethod {
+  SELF_REPORTED // the coach typed it. Proves nothing, never gets a badge
+  PLATFORM_CHECKED // we read it from Riot for a linked account, and refresh it daily
+  RIOT_VERIFIED // RSO proved the account belongs to this person. Not yet reachable
+}
+
+enum ReviewAuthorRole {
+  STUDENT
+  COACH
+}
+
+enum AnnotationCategory {
+  LANING
+  MACRO
+  MICRO
+  VISION
+  DRAFT
+  POSITIONING
+  MENTAL
+}
+
+model CoachProfile {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @unique @db.Uuid
+
+  // The public handle. Set at approval rather than at signup, so a rejected
+  // application never burns a slug and an impersonating name never gets a URL.
+  slug   String?     @unique
+  status CoachStatus @default(DRAFT)
+
+  displayName String
+  headline    String // one line under the name on a search card
+  bio         String @db.Text
+
+  // What a student filters on. Arrays rather than join tables: these are short,
+  // read together, and never queried on their own.
+  languages   String[] // ISO 639-1
+  regions     String[] // Riot platform routes the coach plays on: EUW, NA, TR…
+  roles       Position[]
+  championIds Int[]
+
+  // IANA zone. Every weekly availability row is wall-clock time in *this* zone
+  // and is resolved to UTC per calendar day, never once — see CoachAvailability.
+  timezone String @default("UTC")
+
+  // Basis points, so 2000 = 20%. Per coach rather than global because the rate
+  // is a deal, and deals differ; the platform default lives in policy.ts.
+  commissionBps Int @default(2000)
+
+  // The coach's own switch, distinct from `status`. A coach going on holiday is
+  // not a coach being taken down, and conflating the two loses the reason.
+  acceptingStudents Boolean @default(true)
+
+  // Two aggregates, because they answer different questions and disagree on
+  // purpose: `ratingBayes` is what a profile shows (a mean pulled toward the
+  // platform average until the sample is real), `ratingWilson` is what search
+  // orders by (the lower bound of the score's confidence interval, so a 5.0
+  // from two people does not outrank a 4.8 from ninety). See rating.ts.
+  ratingBayes       Float @default(0)
+  ratingWilson      Float @default(0)
+  ratingCount       Int   @default(0)
+  sessionsCompleted Int   @default(0)
+
+  submittedAt  DateTime?
+  reviewedById String?   @db.Uuid
+  reviewedAt   DateTime?
+  reviewNote   String?   @db.Text
+  publishedAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  user          User                        @relation("CoachProfileUser", fields: [userId], references: [id], onDelete: Cascade)
+  reviewedBy    User?                       @relation("CoachProfileReviewer", fields: [reviewedById], references: [id])
+  rankProofs    CoachRankProof[]
+  listings      CoachListing[]
+  availability  CoachAvailability[]
+  exceptions    CoachAvailabilityException[]
+  bookings      Booking[]
+  reviews       SessionReview[]
+  conversations Conversation[]
+  payoutAccount CoachPayoutAccount?
+
+  // The search index. Status first because every public query starts by
+  // excluding everyone who is not approved.
+  @@index([status, ratingWilson(sort: Desc)])
+  @@index([status, acceptingStudents])
+  @@map("coach_profiles")
+}
+
+// What we can actually say about a coach's rank, and how we know.
+//
+// One row per queue per coach. `checkedAt`/`staleAt` are on the row rather than
+// derived because the badge shows the reader when it was last true — a rank we
+// last read in March is not a claim we should still be making in August.
+model CoachRankProof {
+  id             String @id @default(uuid()) @db.Uuid
+  coachProfileId String @db.Uuid
+
+  // Null for SELF_REPORTED. Set to the linked account the rank was read from,
+  // which is also what makes the claim re-checkable without asking the coach.
+  riotAccountId String? @db.Uuid
+
+  method    RankProofMethod
+  queueType QueueType
+
+  tier          RankTier
+  division      RankDivision
+  leaguePoints  Int          @default(0)
+  peakTier      RankTier?
+  peakDivision  RankDivision?
+
+  checkedAt DateTime @default(now())
+  staleAt   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  coachProfile CoachProfile @relation(fields: [coachProfileId], references: [id], onDelete: Cascade)
+  riotAccount  RiotAccount? @relation(fields: [riotAccountId], references: [id], onDelete: SetNull)
+
+  @@unique([coachProfileId, queueType])
+  @@index([staleAt])
+  @@map("coach_rank_proofs")
+}
+
+// One thing a coach sells. A coach has several — an hour of VOD review and a
+// 90-minute live session are different products at different prices.
+model CoachListing {
+  id             String      @id @default(uuid()) @db.Uuid
+  coachProfileId String      @db.Uuid
+  kind           SessionKind
+  title          String
+  description    String      @db.Text
+
+  durationMinutes Int
+  priceCents      Int
+  currency        String @default("USD")
+
+  // Async only: how long the coach promises to take. Null for live kinds, where
+  // the promise is a calendar slot instead.
+  deliveryHours Int?
+
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  coachProfile CoachProfile @relation(fields: [coachProfileId], references: [id], onDelete: Cascade)
+  bookings     Booking[]
+
+  @@index([coachProfileId, isActive, sortOrder])
+  @@map("coach_listings")
+}
+
+// A recurring weekly window, as wall-clock time in the coach's own zone.
+//
+// `@db.Time` and not a `DateTime` instant, and `days` as an array so "Mon, Wed,
+// Fri 18:00-21:00" is one row. The zone is *not* baked in here on purpose:
+// resolving a weekly rule to a fixed UTC offset once is exactly what breaks on
+// the day the clocks move, so the offset is computed per calendar day at read
+// time instead. See ADR-022 and slots.ts.
+model CoachAvailability {
+  id             String   @id @default(uuid()) @db.Uuid
+  coachProfileId String   @db.Uuid
+  days           Int[] // 0 = Sunday … 6 = Saturday
+  startTime      DateTime @db.Time
+  endTime        DateTime @db.Time
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  coachProfile CoachProfile @relation(fields: [coachProfileId], references: [id], onDelete: Cascade)
+
+  @@index([coachProfileId, isActive])
+  @@map("coach_availability")
+}
+
+// One calendar date that does not follow the weekly rule — a holiday, or extra
+// hours on a Sunday. `isBlocked` with no override closes the day entirely.
+model CoachAvailabilityException {
+  id                String    @id @default(uuid()) @db.Uuid
+  coachProfileId    String    @db.Uuid
+  date              DateTime  @db.Date
+  isBlocked         Boolean   @default(true)
+  overrideStartTime DateTime? @db.Time
+  overrideEndTime   DateTime? @db.Time
+  note              String?
+  createdAt         DateTime  @default(now())
+
+  coachProfile CoachProfile @relation(fields: [coachProfileId], references: [id], onDelete: Cascade)
+
+  @@unique([coachProfileId, date])
+  @@map("coach_availability_exceptions")
+}
+
+model Booking {
+  id             String      @id @default(uuid()) @db.Uuid
+  studentId      String      @db.Uuid
+  coachProfileId String      @db.Uuid
+  listingId      String      @db.Uuid
+  kind           SessionKind
+
+  status BookingStatus @default(PENDING_COACH)
+
+  // Null for VOD_REVIEW, which has a deadline rather than a slot. Stored as a
+  // resolved UTC instant — unlike availability, a booking is a single event and
+  // has no recurrence to re-resolve.
+  startTime DateTime?
+  endTime   DateTime?
+
+  // Both zones, captured at booking time. Not for arithmetic — the instants
+  // above already settle that — but so a rescheduling email can name the hour
+  // each side actually saw, and so a coach moving country later does not
+  // rewrite what a past booking said.
+  studentTimezone String
+  coachTimezone   String
+
+  // Copied from the listing and the profile, never joined for. A coach raising
+  // their rate or a change to the platform's cut must not retroactively rewrite
+  // what a settled booking was worth.
+  priceCents        Int
+  currency          String @default("USD")
+  commissionBps     Int
+  platformFeeCents  Int
+  coachEarningsCents Int
+
+  // What the coach is being asked to look at. `riotAccountId` is the account
+  // under review, which is not necessarily the student's primary one.
+  riotAccountId String?  @db.Uuid
+  matchIds      String[]
+  vodUrl        String?
+  studentGoal   String   @db.Text
+
+  // Live kinds only. We host no video (ADR-021): the coach supplies a link and
+  // `meetingProvider` records what it is, which is also the seam an embedded
+  // provider would slot into later.
+  meetingUrl      String?
+  meetingProvider String  @default("external")
+
+  // A request the coach never answers must not sit on a student's money for
+  // ever, so it has a deadline and expires itself.
+  respondByAt DateTime
+
+  // Snapshotted from policy at booking time, for the same reason as the money.
+  cancellationHours Int
+
+  // When delivery stops being challengeable and the money becomes the coach's.
+  autoCompleteAt DateTime?
+
+  deliveredAt    DateTime?
+  completedAt    DateTime?
+  cancelledAt    DateTime?
+  cancelReason   String?
+  reminderSentAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student      User         @relation("BookingStudent", fields: [studentId], references: [id], onDelete: Cascade)
+  coachProfile CoachProfile @relation(fields: [coachProfileId], references: [id], onDelete: Cascade)
+  listing      CoachListing @relation(fields: [listingId], references: [id])
+  riotAccount  RiotAccount? @relation(fields: [riotAccountId], references: [id], onDelete: SetNull)
+
+  events     BookingEvent[]
+  messages   Message[]
+  reviews    SessionReview[]
+  vodReview  VodReview?
+  payment    BookingPayment?
+  dispute    BookingDispute?
+
+  @@index([coachProfileId, status, startTime])
+  @@index([studentId, createdAt(sort: Desc)])
+  // The two sweeps: expire unanswered requests, and complete unchallenged
+  // deliveries. Both scan by status and a timestamp, so they index together.
+  @@index([status, respondByAt])
+  @@index([status, autoCompleteAt])
+  @@map("bookings")
+}
+
+// Append-only. Every status change lands here with who did it and why.
+//
+// This is the table the whole section is built around. The single most common
+// complaint about every competitor is a session that was paid for and never
+// delivered, followed by a refusal nobody can reconstruct — and that is what
+// having no record of the transitions costs. A booking's `status` is where it
+// is; this is how it got there.
+model BookingEvent {
+  id         String        @id @default(uuid()) @db.Uuid
+  bookingId  String        @db.Uuid
+  actorId    String?       @db.Uuid // null when a scheduled sweep did it
+  fromStatus BookingStatus?
+  toStatus   BookingStatus
+  reason     String?
+  createdAt  DateTime      @default(now())
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  actor   User?   @relation("BookingEventActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([bookingId, createdAt])
+  @@map("booking_events")
+}
+
+// The deliverable for a VOD_REVIEW booking.
+model VodReview {
+  id        String @id @default(uuid()) @db.Uuid
+  bookingId String @unique @db.Uuid
+
+  summary String @db.Text
+
+  // What was reviewed. Either a link the student gave us or one of our own
+  // match ids — we host no video, so there is never a file here (ADR-021).
+  sourceUrl String?
+  matchId   String?
+
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  booking     Booking         @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  annotations VodAnnotation[]
+
+  @@map("vod_reviews")
+}
+
+// One timestamped note on a VOD review. Ordering is by `timestampSeconds`, not
+// by insertion — a coach writes these out of order as they scrub.
+model VodAnnotation {
+  id               String             @id @default(uuid()) @db.Uuid
+  vodReviewId      String             @db.Uuid
+  timestampSeconds Int
+  title            String
+  body             String             @db.Text
+  category         AnnotationCategory
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  vodReview VodReview @relation(fields: [vodReviewId], references: [id], onDelete: Cascade)
+
+  @@index([vodReviewId, timestampSeconds])
+  @@map("vod_annotations")
+}
+
+// Two-sided and blind until both are in.
+//
+// Neither side sees the other's review until both have written one or the
+// window closes, whichever comes first. Airbnb published the result of making
+// this change: more reviews, and more honest negative ones, because a student
+// writing the truth is no longer risking the reply. One row per side per
+// booking, and a row can only exist for a booking that completed.
+model SessionReview {
+  id             String           @id @default(uuid()) @db.Uuid
+  bookingId      String           @db.Uuid
+  coachProfileId String           @db.Uuid
+  studentId      String           @db.Uuid
+  authorRole     ReviewAuthorRole
+
+  rating Int // 1..5
+  body   String? @db.Text
+
+  // Null until the blind lifts. Both rows get the same value at that moment.
+  revealedAt DateTime?
+
+  // The coach's public answer to a student review. Not a review itself, so it
+  // carries no rating and never moves an aggregate.
+  coachReply     String?   @db.Text
+  coachRepliedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  booking      Booking      @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  coachProfile CoachProfile @relation(fields: [coachProfileId], references: [id], onDelete: Cascade)
+  student      User         @relation("SessionReviewStudent", fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([bookingId, authorRole])
+  @@index([coachProfileId, revealedAt(sort: Desc)])
+  @@map("session_reviews")
+}
+
+// One thread per coach/student pair, not per booking: the relationship outlives
+// any single session, and splitting it would scatter the history that makes a
+// repeat booking worth having.
+model Conversation {
+  id             String   @id @default(uuid()) @db.Uuid
+  coachProfileId String   @db.Uuid
+  studentId      String   @db.Uuid
+  lastMessageAt  DateTime @default(now())
+  createdAt      DateTime @default(now())
+
+  coachProfile CoachProfile @relation(fields: [coachProfileId], references: [id], onDelete: Cascade)
+  student      User         @relation("ConversationStudent", fields: [studentId], references: [id], onDelete: Cascade)
+  messages     Message[]
+
+  @@unique([coachProfileId, studentId])
+  @@index([studentId, lastMessageAt(sort: Desc)])
+  @@map("conversations")
+}
+
+model Message {
+  id             String  @id @default(uuid()) @db.Uuid
+  conversationId String  @db.Uuid
+  senderId       String  @db.Uuid
+  bookingId      String? @db.Uuid
+
+  // Already redacted. We store what was sent, not what was typed, so a contact
+  // detail cannot be recovered from the row later.
+  body        String  @db.Text
+  wasRedacted Boolean @default(false)
+
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  booking      Booking?     @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+  @@index([conversationId, createdAt])
+  @@map("messages")
+}
+
+// The money, as a ledger rather than as a provider's object.
+//
+// No money moves today: the only driver is `manual`, which advances these
+// states and settles nothing. The states are real anyway, because the point of
+// building them first is that adding Stripe later is a driver, not a schema
+// change — the provider columns already hold what a destination charge needs.
+// See ADR-020 for the mapping.
+model BookingPayment {
+  id        String @id @default(uuid()) @db.Uuid
+  bookingId String @unique @db.Uuid
+
+  provider String        @default("manual")
+  status   PaymentStatus @default(REQUIRES_PAYMENT)
+
+  amountCents      Int
+  platformFeeCents Int
+  coachAmountCents Int
+  currency         String @default("USD")
+
+  providerPaymentId  String? @unique
+  providerTransferId String?
+
+  capturedAt    DateTime?
+  releasedAt    DateTime?
+  refundedAt    DateTime?
+  failureReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@map("booking_payments")
+}
+
+// Where a coach's money would go. Empty until there is a payment provider —
+// it exists now so the profile and payout identities do not have to be
+// retrofitted onto live rows later.
+model CoachPayoutAccount {
+  id             String @id @default(uuid()) @db.Uuid
+  coachProfileId String @unique @db.Uuid
+
+  provider          String              @default("manual")
+  providerAccountId String?
+  status            PayoutAccountStatus @default(NONE)
+  payoutsEnabled    Boolean             @default(false)
+  chargesEnabled    Boolean             @default(false)
+  country           String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  coachProfile CoachProfile @relation(fields: [coachProfileId], references: [id], onDelete: Cascade)
+
+  @@map("coach_payout_accounts")
+}
+
+model BookingDispute {
+  id         String        @id @default(uuid()) @db.Uuid
+  bookingId  String        @unique @db.Uuid
+  openedById String        @db.Uuid
+  reason     String        @db.Text
+  status     DisputeStatus @default(OPEN)
+
+  resolutionNote String?   @db.Text
+  resolvedById   String?   @db.Uuid
+  resolvedAt     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  booking    Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  openedBy   User    @relation("DisputeOpener", fields: [openedById], references: [id], onDelete: Cascade)
+  resolvedBy User?   @relation("DisputeResolver", fields: [resolvedById], references: [id])
+
+  @@index([status, createdAt])
+  @@map("booking_disputes")
 }
