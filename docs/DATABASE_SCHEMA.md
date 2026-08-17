@@ -876,3 +876,33 @@ ADR-019.
 - **Nothing here cascades from a Riot account.** `coach_rank_proofs.riotAccountId`
   and `bookings.riotAccountId` are both `ON DELETE SET NULL`: unlinking a Riot
   account must not delete a coach's profile or a settled booking.
+
+---
+
+## Academy (LA-21)
+
+Three tables, all keyed on `users.id` and all cascading from it.
+
+| Table | Holds |
+|---|---|
+| `academy_progress` | One row per player per lesson: status, attempts, best score, timestamps |
+| `academy_enrollments` | One row per player per track: when they started it and what placement said |
+| `academy_assignments` | Proof of Practice — the lesson's field assignment pinned to the player's own baseline |
+
+Notes on the shape:
+
+- **No lesson table.** The curriculum is TypeScript in `src/domains/academy/content`, so it
+  is typechecked and unit-tested rather than seeded. See ADR-025.
+- **`lessonId` is the string `track/slug` and deliberately not a foreign key.** A renamed
+  slug should surface as one missing lesson in `curriculum.ts`, not as a constraint
+  violation on every write. Slugs are only unique inside a track, which is why the stored
+  id carries the track.
+- **`academy_assignments.baseline` is stored, not recomputed.** The target is a *movement*
+  from where the player was when they finished the lesson — recomputing the baseline later
+  would move the goalposts every time they played a game.
+- **`AcademyLessonStatus.mastered` cannot be set by the drill endpoint.** Drills prove you
+  read the lesson; mastery is meant to be proved by matches, which is what
+  `academy_assignments` exists to judge. That judgement is not built yet — the column and
+  the status are the seat it will sit in.
+- **`review` is unused today.** It is the seat for spaced repetition: a mastered lesson whose
+  metric slips back should come round again.

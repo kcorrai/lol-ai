@@ -1820,3 +1820,51 @@ computed answer over a month of calendar, not a table lookup.
   serving a slot that has just gone is how two students end up holding the same
   hour.
 - `404` for an unknown coach or listing, `422` without a listing id.
+---
+
+## Academy (LA-21)
+
+The Academy's read side is entirely server-rendered — lessons, tracks and the hub are
+public pages, not endpoints. Only progress is written over HTTP.
+
+### `POST /api/academy/progress`
+
+One endpoint, two actions, discriminated on `action`. Auth required; anonymous readers
+can read and drill, they simply have nowhere to record it.
+
+```jsonc
+// Mark a lesson opened. Never demotes a lesson that is already finished.
+{ "action": "open", "lessonId": "laning/wave-states" }
+
+// Grade an attempt and store it.
+{
+  "action": "submit",
+  "lessonId": "laning/wave-states",
+  "attempts": [
+    { "drillId": "wave-state-quiz", "answer": ["a"] },
+    { "drillId": "wave-state-decision", "answer": ["a"] }
+  ]
+}
+```
+
+`answer` is an array because an `order` drill answers with a sequence; `quiz` and
+`decision` send a single option id.
+
+Response for `submit`:
+
+```jsonc
+{
+  "data": {
+    "score": { "results": [...], "correct": 2, "total": 2, "score": 100, "passed": true },
+    "progress": { "lessonId": "…", "status": "completed", "attempts": 1, "bestScore": 100, "completedAt": "…" }
+  }
+}
+```
+
+- **Grading respects the pro gate.** The server scores against
+  `visibleDrills(lesson, hasPro)`, not the whole lesson — failing a free reader for drills
+  they were never shown would be a bug, not a paywall.
+- **`404 NOT_FOUND` for an unknown `lessonId`.** The curriculum is code (ADR-025), so an id
+  that does not resolve is a client sending something we never published.
+- **`completed` is the ceiling this endpoint can set.** `mastered` is earned from real match
+  data, so a lesson already mastered stays mastered no matter what a later attempt scores.

@@ -22,6 +22,7 @@ import {
   Snowflake,
   Radio,
   Handshake,
+  GraduationCap,
 } from "lucide-react";
 
 export interface NavItemConfig {
@@ -95,6 +96,12 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     label: "Esports",
     items: [{ href: "/esports", icon: Radio, label: "Live & Schedule" }],
+  },
+  // The Academy is its own section with its own shell too (LA-21): the sidebar is the
+  // way in, the curriculum itself does not belong in a dashboard nav.
+  {
+    label: "Learn",
+    items: [{ href: "/academy", icon: GraduationCap, label: "Academy" }],
   },
   // One link out to the coaching section, which has its own shell — the same
   // shape as Esports. A coach console belongs in this sidebar about as much as
