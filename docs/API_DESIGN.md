@@ -2258,3 +2258,24 @@ booked three weeks out would blow straight through. `reminderSentAt` is stamped
 before the notifications go out, so overlapping runs cannot send twice — a
 missed reminder is a much smaller problem than one arriving every five minutes
 until the session starts.
+
+### Abuse limits (M19)
+
+| Endpoint | Limit | Why |
+|---|---|---|
+| `POST /api/bookings` | 20/hour per **user** | a session is already required, so what is worth bounding is one account's appetite |
+| `POST /api/threads/[id]` | 60/5min per user | generous for a real conversation, tight enough that a compromised account cannot use the inbox as a delivery mechanism |
+| `POST /api/threads` | 30/hour per user | thread creation |
+| `GET /api/coaches/[slug]/slots` | 60/min per IP | public, and a computed answer over a month of calendar |
+
+**The slot-squatting defence is a domain rule, not a rate limit.** A pending
+request blocks a slot for up to 48 hours, so one account could quietly take a
+coach's whole week and never pay for any of it. A student may hold at most
+**three** unanswered requests against one coach; the fourth is a `409` naming
+the reason. A rate limit would not have fixed this — twenty bookings an hour is
+still a week of somebody's calendar.
+
+`policy.ts`, `transitions.ts`, `rating.ts` and `redact.ts` are pinned at 100%
+coverage in `vitest.config.ts`, alongside the existing security-critical files.
+Those four decide who gets paid, what may move where, what a rating means and
+what leaves the platform.

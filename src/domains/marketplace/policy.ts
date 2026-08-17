@@ -55,6 +55,16 @@ export { MIN_REVIEWS_FOR_SCORE } from "@/domains/marketplace/rating";
  */
 export const MIN_BIO_LENGTH = 120;
 
+/**
+ * How many unanswered requests one student may hold against one coach.
+ *
+ * The real slot-squatting defence, and better than a rate limit for it: a
+ * pending request blocks a slot for up to 48 hours, so without a cap one
+ * account can quietly take a coach's whole week and never pay for any of it.
+ * Three is more than anybody books in good faith at once.
+ */
+export const MAX_PENDING_PER_COACH = 3;
+
 /** Bounds on what a coach may charge for one session, in cents. */
 export const MIN_PRICE_CENTS = 500;
 export const MAX_PRICE_CENTS = 100_000;

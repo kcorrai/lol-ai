@@ -3,6 +3,7 @@ import { withUserLock } from "@/lib/db/userLock";
 import { logger } from "@/lib/utils/logger";
 import {
   DEFAULT_CANCELLATION_HOURS,
+  MAX_PENDING_PER_COACH,
   isScheduled,
   respondByFrom,
   splitPrice,
@@ -38,7 +39,8 @@ export type CreateOutcome =
         | "slot-required"
         | "slot-taken"
         | "material-required"
-        | "account-not-owned";
+        | "account-not-owned"
+        | "too-many-pending";
     };
 
 /**
@@ -90,6 +92,17 @@ export async function createBooking(request: BookingRequest): Promise<CreateOutc
   if (!scheduled && (request.matchIds ?? []).length === 0 && !request.vodUrl) {
     return { ok: false, reason: "material-required" };
   }
+
+  // Slot squatting: a pending request blocks a slot for up to 48 hours, so
+  // without this one account can take a coach's whole week for free.
+  const pending = await prisma.booking.count({
+    where: {
+      studentId: request.studentId,
+      coachProfileId: listing.coachProfileId,
+      status: "PENDING_COACH",
+    },
+  });
+  if (pending >= MAX_PENDING_PER_COACH) return { ok: false, reason: "too-many-pending" };
 
   if (request.riotAccountId) {
     const owned = await prisma.riotAccount.findFirst({

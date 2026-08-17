@@ -10,6 +10,7 @@ vi.mock("@/lib/db/prisma", () => ({
     coachListing: { findFirst: vi.fn() },
     riotAccount: { findFirst: vi.fn() },
     user: { findUnique: vi.fn() },
+    booking: { count: vi.fn() },
   },
 }));
 vi.mock("@/lib/db/userLock", () => ({ withUserLock: vi.fn() }));
@@ -67,6 +68,7 @@ beforeEach(() => {
   mockSlotFree.mockResolvedValue(true);
   mockPrisma.coachListing.findFirst.mockResolvedValue(LIVE_LISTING as never);
   mockPrisma.user.findUnique.mockResolvedValue({ name: "TestStudent" } as never);
+  mockPrisma.booking.count.mockResolvedValue(0 as never);
 });
 
 describe("createBooking", () => {
@@ -153,6 +155,27 @@ describe("createBooking", () => {
     } as never);
 
     expect(await createBooking(REQUEST)).toEqual({ ok: false, reason: "not-accepting" });
+  });
+
+  // A pending request blocks a slot for up to 48 hours, so without a cap one
+  // account can quietly take a coach's whole week and never pay for any of it.
+  it("refuses a fourth unanswered request against the same coach", async () => {
+    mockPrisma.booking.count.mockResolvedValue(3 as never);
+
+    expect(await createBooking(REQUEST)).toEqual({ ok: false, reason: "too-many-pending" });
+    expect(tx.booking.create).not.toHaveBeenCalled();
+  });
+
+  it("counts only unanswered requests with that one coach", async () => {
+    await createBooking(REQUEST);
+
+    expect(mockPrisma.booking.count).toHaveBeenCalledWith({
+      where: {
+        studentId: "student-1",
+        coachProfileId: "coach-1",
+        status: "PENDING_COACH",
+      },
+    });
   });
 
   // Booking yourself would settle money in a circle and pollute your own

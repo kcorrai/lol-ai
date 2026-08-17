@@ -4,8 +4,13 @@ import { getThread, sendMessage } from "@/domains/marketplace";
 import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
 import { Errors } from "@/lib/api/errors";
+import { checkRateLimit, rateLimitResponse } from "@/lib/api/rateLimit";
 
 export const dynamic = "force-dynamic";
+
+// Generous enough for a real conversation, tight enough that a compromised
+// account cannot use the inbox as a delivery mechanism.
+const MESSAGE_LIMIT = { limit: 60, windowMs: 300_000 };
 
 const SendBody = z.object({
   body: z.string().trim().min(1).max(4000),
@@ -31,6 +36,9 @@ export function POST(
   { params }: { params: { conversationId: string } }
 ): Promise<NextResponse> {
   return withAuth(async (r, { userId }): Promise<NextResponse> => {
+    const rl = await checkRateLimit(`message:${userId}`, MESSAGE_LIMIT);
+    if (!rl.allowed) return rateLimitResponse(rl.retryAfterMs, rl.limit);
+
     const parsed = SendBody.safeParse(await r.json().catch(() => null));
     if (!parsed.success) throw Errors.validation("A message is required.");
 
