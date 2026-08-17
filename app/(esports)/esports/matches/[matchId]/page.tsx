@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -21,6 +20,8 @@ import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
 import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
 import { WatchLinks } from "@/domains/esports/components/WatchLinks";
+import { SeriesHeader } from "@/domains/esports/components/SeriesHeader";
+import { SeriesRail } from "@/domains/esports/components/SeriesRail";
 import { vodLinks, streamLinks } from "@/domains/esports/watch";
 import { embedParent, primaryStreamEmbed, primaryVodEmbed } from "@/domains/esports/watchEmbed";
 
@@ -94,76 +95,6 @@ function GameSwitcher({
   );
 }
 
-function SeriesHeader({
-  match,
-  teamSlugs,
-}: {
-  match: MatchDetail;
-  teamSlugs: Map<string, string>;
-}): React.ReactElement {
-  const [home, away] = match.teams;
-
-  return (
-    <header className="mb-6">
-      <p className="hud-label mb-2">
-        {match.league.slug ? (
-          <Link href={`/esports/leagues/${match.league.slug}`} className="hover:text-accent">
-            {match.league.name}
-          </Link>
-        ) : (
-          match.league.name
-        )}
-        {match.bestOf ? ` · Bo${match.bestOf}` : ""}
-      </p>
-      <div className="flex items-center justify-between gap-4">
-        {[home, away].map((team, index) => {
-          if (!team) {
-            return (
-              <span key={index} className="hud-label flex-1">
-                TBD
-              </span>
-            );
-          }
-
-          const slug = teamSlugs.get(team.id);
-          return (
-            <div
-              key={team.id}
-              className={`flex min-w-0 flex-1 items-center gap-3 ${index === 1 ? "flex-row-reverse text-right" : ""}`}
-            >
-              {team.image && (
-                <Image
-                  src={team.image}
-                  alt=""
-                  width={44}
-                  height={44}
-                  className="h-11 w-11 shrink-0 object-contain"
-                  aria-hidden
-                  unoptimized
-                />
-              )}
-              <h1 className="min-w-0 truncate font-display text-xl font-black uppercase text-text md:text-2xl">
-                {slug ? (
-                  <Link href={`/esports/teams/${slug}`} className="hover:text-accent">
-                    {team.name}
-                  </Link>
-                ) : (
-                  team.name
-                )}
-              </h1>
-            </div>
-          );
-        })}
-        <span className="shrink-0 font-mono text-2xl font-bold text-text">
-          {home?.gameWins ?? 0}
-          <span className="mx-1.5 text-text-faint">–</span>
-          {away?.gameWins ?? 0}
-        </span>
-      </div>
-    </header>
-  );
-}
-
 /**
  * Names the side that actually played it.
  *
@@ -222,12 +153,10 @@ export default async function MatchPage({
 
   const [home, away] = match.teams;
   const record =
-    home && away
-      ? headToHead(leagueResults, home, away, { excludeMatchId: match.matchId })
-      : null;
+    home && away ? headToHead(leagueResults, home, away, { excludeMatchId: match.matchId }) : null;
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 md:py-14">
+    <div className="mx-auto max-w-[1240px] px-4 py-10 md:px-8 md:py-12">
       <EsportsJsonLd schema={{ kind: "match", match, startTime }} />
 
       <EsportsBreadcrumb
@@ -239,92 +168,99 @@ export default async function MatchPage({
         ]}
       />
 
-      <SeriesHeader match={match} teamSlugs={teamSlugs} />
-      {game && <GameSwitcher match={match} activeId={game.id} />}
+      <SeriesHeader match={match} teamSlugs={teamSlugs} startTime={startTime} />
 
-      {/* While a series is on, the live broadcast is what someone wants; the
+      <div className="mt-5 grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_306px]">
+        <div className="grid min-w-0 gap-5">
+          {game && <GameSwitcher match={match} activeId={game.id} />}
+
+          {/* While a series is on, the live broadcast is what someone wants; the
           VODs of the games already played are what they want afterwards. Both
           can be true mid-series, so both render. */}
-      <div className="mb-6 grid gap-4">
-        <WatchLinks
-          links={streamLinks(liveStreams)}
-          label="Watch live"
-          embed={primaryStreamEmbed(liveStreams, parent)}
-        />
-        {game && (
-          // Per game, not per series: the feed marks where each game starts
-          // inside the series video, so both the link and the player open on
-          // the game being read about rather than at the beginning of a
-          // six-hour broadcast.
-          <WatchLinks
-            links={vodLinks(game.vods)}
-            label={`Watch game ${game.number}`}
-            embed={primaryVodEmbed(game.vods, parent)}
-          />
-        )}
+          <div className="grid gap-4">
+            <WatchLinks
+              links={streamLinks(liveStreams)}
+              label="Watch live"
+              embed={primaryStreamEmbed(liveStreams, parent)}
+            />
+            {game && (
+              // Per game, not per series: the feed marks where each game starts
+              // inside the series video, so both the link and the player open on
+              // the game being read about rather than at the beginning of a
+              // six-hour broadcast.
+              <WatchLinks
+                links={vodLinks(game.vods)}
+                label={`Watch game ${game.number}`}
+                embed={primaryVodEmbed(game.vods, parent)}
+              />
+            )}
+          </div>
+
+          {!game && (
+            <p className="gaming-card notch-sm px-4 py-5 text-sm text-text-muted">
+              This series has not started yet. Drafts and scoreboards appear here once the first
+              game is under way.
+            </p>
+          )}
+
+          {game && !stats && (
+            <p className="gaming-card notch-sm px-4 py-5 text-sm text-text-muted">
+              {game.state === "unstarted"
+                ? "Game not started yet."
+                : "Riot publishes no game stats for this match. The series result above is all that is recorded."}
+            </p>
+          )}
+
+          {stats && game && !stats.finished && (
+            // A game still being played refreshes itself; a finished one is static
+            // and stays a server component.
+            <LiveGameStats
+              gameId={game.id}
+              initial={stats}
+              blueName={sideName(match, game, stats.blue)}
+              redName={sideName(match, game, stats.red)}
+            />
+          )}
+
+          {stats && game && stats.finished && (
+            <FinishedGame
+              stats={stats}
+              timeline={timeline}
+              blueName={sideName(match, game, stats.blue)}
+              redName={sideName(match, game, stats.red)}
+            />
+          )}
+
+          {record && record.meetings.length > 0 && (
+            <section>
+              <h2 className="mb-3 font-display text-xl font-extrabold uppercase text-text md:text-2xl">
+                Head to head
+              </h2>
+              <HeadToHead
+                record={record}
+                aName={match.teams[0].name}
+                bName={match.teams[1].name}
+                windowLabel={`the ${match.league.name}'s recent schedule`}
+              />
+            </section>
+          )}
+
+          {match.league.slug && (
+            <p className="text-sm text-text-muted">
+              More from the{" "}
+              <Link
+                href={`/esports/leagues/${match.league.slug}`}
+                className="text-accent hover:underline"
+              >
+                {match.league.name}
+              </Link>
+              .
+            </p>
+          )}
+        </div>
+
+        <SeriesRail match={match} activeGameId={game?.id ?? null} />
       </div>
-
-      {!game && (
-        <p className="gaming-card notch-sm px-4 py-5 text-sm text-text-muted">
-          This series has not started yet. Drafts and scoreboards appear here once the first game is
-          under way.
-        </p>
-      )}
-
-      {game && !stats && (
-        <p className="gaming-card notch-sm px-4 py-5 text-sm text-text-muted">
-          {game.state === "unstarted"
-            ? "Game not started yet."
-            : "Riot publishes no game stats for this match. The series result above is all that is recorded."}
-        </p>
-      )}
-
-      {stats && game && !stats.finished && (
-        // A game still being played refreshes itself; a finished one is static
-        // and stays a server component.
-        <LiveGameStats
-          gameId={game.id}
-          initial={stats}
-          blueName={sideName(match, game, stats.blue)}
-          redName={sideName(match, game, stats.red)}
-        />
-      )}
-
-      {stats && game && stats.finished && (
-        <FinishedGame
-          stats={stats}
-          timeline={timeline}
-          blueName={sideName(match, game, stats.blue)}
-          redName={sideName(match, game, stats.red)}
-        />
-      )}
-
-      {record && record.meetings.length > 0 && (
-        <section className="mt-12">
-          <h2 className="mb-3 font-display text-xl font-extrabold uppercase text-text md:text-2xl">
-            Head to head
-          </h2>
-          <HeadToHead
-            record={record}
-            aName={match.teams[0].name}
-            bName={match.teams[1].name}
-            windowLabel={`the ${match.league.name}'s recent schedule`}
-          />
-        </section>
-      )}
-
-      {match.league.slug && (
-        <p className="mt-12 text-sm text-text-muted">
-          More from the{" "}
-          <Link
-            href={`/esports/leagues/${match.league.slug}`}
-            className="text-accent hover:underline"
-          >
-            {match.league.name}
-          </Link>
-          .
-        </p>
-      )}
 
       <DataCredit className="mt-8" />
     </div>
