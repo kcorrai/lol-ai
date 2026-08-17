@@ -92,7 +92,7 @@ are independently shippable once the spine exists.
 | TASK-310 | Cross-linking into builds, champions, tier lists | funnel |
 | TASK-311 | "You vs the pros" comparison | conversion |
 | TASK-312 | AI match previews and recaps (cached, top leagues) | content depth |
-| TASK-313 | Follow teams and match reminders — **needs schema approval** | retention |
+| TASK-313 | Follow teams — `followed_teams`, approved 17 Aug 2026 | retention |
 | TASK-314 | E2E coverage, docs, launch checklist | launch readiness — `docs/ESPORTS_LAUNCH_CHECKLIST.md` |
 
 ## 5. Non-goals for this section
@@ -105,8 +105,10 @@ are independently shippable once the spine exists.
   Whether to *embed* the official Twitch and YouTube players in-page rather than
   link to them is an open decision, not a settled non-goal — it needs `frame-src`
   opened for two hosts, which CLAUDE.md puts behind review.
-- **No writing esports data into Postgres** before TASK-313 is approved. Phase 1
-  is a cache over a feed; keeping it that way is what makes it cheap.
+- **No writing esports *data* into Postgres.** TASK-313 was approved and added
+  `followed_teams`, and that is the whole of it: a reader's choice of team, not
+  a copy of the feed. The section stays a cache over a feed, which is what makes
+  it cheap.
 
 ## 6. Risks
 

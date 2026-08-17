@@ -104,6 +104,7 @@ export type {
   EsportsEventTeam,
   EsportsLeague,
   EsportsTeamRef,
+  FollowedTeamEntry,
   EsportsTournament,
   EventState,
   LeagueDisplayStatus,
@@ -111,6 +112,15 @@ export type {
   StandingsRow,
   StandingsStage,
 } from "@/domains/esports/types";
+export {
+  listFollows,
+  followedTeamIds,
+  followTeam,
+  unfollowTeam,
+  followsWithTeams,
+  MAX_FOLLOWS,
+} from "@/domains/esports/services/followService";
+export type { FollowOutcome } from "@/domains/esports/services/followService";
 export {
   getTeams,
   getTeam,

@@ -321,6 +321,22 @@ export interface EsportsTeam {
   players: EsportsPlayer[];
 }
 
+/**
+ * A team a reader follows (TASK-313).
+ *
+ * Name and slug are the copies stored beside the follow, not a live read — so
+ * this shape is answerable with the feed unreachable, which is the point of
+ * keeping them.
+ */
+export interface FollowedTeamEntry {
+  /** The feed's team id, which is what the follow is actually hung on. */
+  teamId: string;
+  name: string;
+  slug: string;
+  /** ISO 8601. */
+  followedAt: string;
+}
+
 /** A team as standings and rosters refer to it: identity only, no result. */
 export interface EsportsTeamRef {
   id: string;

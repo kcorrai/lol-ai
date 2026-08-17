@@ -71,7 +71,7 @@ rather than rendered as a nought.
 ### 3.4 Still open on LA-2
 
 TASK-312 (AI previews and recaps) is not being built — Kaan's call, 17 Aug 2026.
-TASK-313 (follow teams) is approved and separate. The tier list's pro-presence
+TASK-313 (follow teams) is built; match reminders are not — that half needs a scheduled job and a notification channel, and is not started. The tier list's pro-presence
 column is built. Embedding VODs in-page rather than linking out is an open
 decision, not a task; §5 of `ESPORTS_PLAN.md` currently rules it out.
 

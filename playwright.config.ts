@@ -75,8 +75,11 @@ export default defineConfig({
     // Smoke tests requiring authentication — depend on setup project
     {
       name: "smoke",
-      testMatch: /\/(riot|coaching|share|guided-onboarding)\.spec\.ts$/,
+      testMatch: /\/(riot|coaching|share|guided-onboarding|esports-follows)\.spec\.ts$/,
       dependencies: ["setup"],
+      // Following a team walks the same feed the esports project does, and pays
+      // the same first-compile cost under `next dev`.
+      timeout: 120_000,
       use: {
         ...devices["Desktop Chrome"],
         storageState: "tests/e2e/.auth/user.json",

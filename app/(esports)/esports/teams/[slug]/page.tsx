@@ -13,6 +13,7 @@ import {
   recentForm,
 } from "@/domains/esports";
 import type { EsportsTeam } from "@/domains/esports";
+import { FollowTeamButton } from "@/domains/esports/components/FollowTeamButton";
 import { MatchRow } from "@/domains/esports/components/MatchRow";
 import { RosterCard } from "@/domains/esports/components/RosterCard";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
@@ -110,7 +111,8 @@ function TeamHeader({
           {team.status === "archived" ? " · Archived" : ""}
         </p>
       </div>
-      <div className="mt-1">
+      <div className="mt-1 flex flex-wrap items-center gap-3">
+        <FollowTeamButton teamId={team.id} slug={team.slug} name={team.name} />
         <FormStrip form={form} />
       </div>
     </header>

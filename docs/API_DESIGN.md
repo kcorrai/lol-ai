@@ -1485,3 +1485,67 @@ This week's three duo quests with progress. Rate limit 60/hour.
   that have just completed. That is safe because the quest set is a pure function of the week and
   the unique index makes the write idempotent — `xpAwarded` is non-zero only on the read that
   actually completes a quest, and `0` on every read after.
+
+---
+
+## Following an esports team (TASK-313)
+
+The only authenticated surface in the esports section, and the only one that
+writes. Everything else there is a public cache over a feed (ADR-016).
+
+### `GET /api/esports/follows`
+
+The reader's followed teams, most recently followed first. Requires a session.
+
+```json
+{
+  "data": {
+    "follows": [
+      {
+        "teamId": "98767991866488695",
+        "name": "Fnatic",
+        "slug": "fnatic",
+        "followedAt": "2026-08-17T09:00:00.000Z"
+      }
+    ],
+    "limit": 20
+  }
+}
+```
+
+- **Answers without touching the feed.** `name` and `slug` are copies stored
+  beside the follow, so the list renders with the feed unreachable and a follow
+  outlives its team leaving the feed. Only 440 of 1175 active teams carry both a
+  league and a roster, and that set moves between splits.
+- `limit` is in the response because the button has to know when to stop
+  offering, rather than discovering it from a 403.
+
+### `POST /api/esports/follows`
+
+| Field | Required | Notes |
+|---|---|---|
+| `slug` | yes | 1–120 chars. The team's slug — what the page the button sits on already has in its URL. |
+
+Answers `{ "data": { "follow": … } }` with the same entry shape as above.
+
+- **Idempotent.** Following a team already followed returns the original entry
+  and its original `followedAt`, and writes nothing. A reader who double-clicks
+  has not done anything wrong.
+- **Takes a slug, stores an id.** Slugs are reused across 53 teams and
+  resolution ranks candidates, so the row hangs on the feed's team id.
+- `404` when the feed publishes no such team. `403` at the follow limit — a
+  refusal, not a malformed request. `422` when the body carries no slug.
+
+### `DELETE /api/esports/follows/[teamId]`
+
+By **team id**, not slug: a reader has to be able to undo a follow whose team
+has since dropped out of the feed, and resolving a slug first would make exactly
+that case impossible.
+
+```json
+{ "data": { "removed": true } }
+```
+
+`removed` is `false` when there was nothing to delete. Still `200` — the reader
+wanted it gone and it is gone, and a `404` would make a double-click look like a
+failure.

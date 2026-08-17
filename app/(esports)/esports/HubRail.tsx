@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { roleLabel } from "@/domains/esports";
 import type { ProMeta, StandingsRow } from "@/domains/esports";
+import { HubFollowedTeams } from "./HubFollowedTeams";
 
 interface HubRailProps {
   standings: { leagueName: string; leagueSlug: string; rows: StandingsRow[] } | null;
@@ -29,6 +30,8 @@ function recordTone(row: StandingsRow): string {
 export function HubRail({ standings, proMeta }: HubRailProps): React.ReactElement {
   return (
     <div className="grid gap-4 lg:sticky lg:top-6">
+      {/* Renders nothing for a reader who follows nobody, which is most of them. */}
+      <HubFollowedTeams />
       {standings && standings.rows.length > 0 && (
         <section className={PANEL}>
           <div className={PANEL_HEAD}>{`// ${standings.leagueName} standings`}</div>
