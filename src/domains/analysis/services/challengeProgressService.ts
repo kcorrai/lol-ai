@@ -66,7 +66,10 @@ async function computeProgress(c: ChallengeWithProgress, riotAccountId: string):
 
 // Takes the transaction client so the increment and the level update cannot land separately —
 // a failure between them would leave XP granted at a stale level.
-async function awardXp(
+//
+// Exported through the domain's index so the quiz can grant XP without copying
+// the level-up rule; the threshold living in two places is how they drift.
+export async function awardXp(
   tx: Prisma.TransactionClient,
   userId: string,
   amount: number
