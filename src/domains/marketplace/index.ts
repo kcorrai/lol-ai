@@ -158,7 +158,8 @@ export type { LifecycleOutcome, ActorRole } from "@/domains/marketplace/services
 export { transition, recordCreation, bookingHistory } from "@/domains/marketplace/services/bookingEventService";
 export type { TransitionInput, TransitionOutcome } from "@/domains/marketplace/services/bookingEventService";
 
-export { listBookings, getBookingFor } from "@/domains/marketplace/services/bookingQueryService";
+export { listBookings, getBookingFor, coachWorkload } from "@/domains/marketplace/services/bookingQueryService";
+export type { CoachWorkload } from "@/domains/marketplace/services/bookingQueryService";
 
 export {
   openPayment,

@@ -116,3 +116,56 @@ export async function getBookingFor(bookingId: string, userId: string) {
     autoCompleteAt: row.autoCompleteAt?.toISOString() ?? null,
   };
 }
+
+export interface CoachWorkload {
+  /** Requests waiting on an answer. The number that should nag. */
+  pending: number;
+  /** Confirmed sessions still ahead. */
+  upcoming: number;
+  /** Delivered work still inside its challenge window. */
+  awaitingConfirmation: number;
+  /** Money the ledger says is the coach's, in the platform's smallest unit. */
+  releasedCents: number;
+  /** Money still held against live bookings. */
+  heldCents: number;
+  currency: string;
+}
+
+/**
+ * The numbers a coach's console opens on.
+ *
+ * Counted rather than listed: the console needs to say "three people are
+ * waiting on you", and loading three bookings to say it would be the same
+ * query the sessions page already runs.
+ */
+export async function coachWorkload(coachProfileId: string): Promise<CoachWorkload> {
+  const now = new Date();
+
+  const [pending, upcoming, awaitingConfirmation, released, held] = await Promise.all([
+    prisma.booking.count({ where: { coachProfileId, status: "PENDING_COACH" } }),
+    prisma.booking.count({
+      where: { coachProfileId, status: "CONFIRMED", startTime: { gte: now } },
+    }),
+    prisma.booking.count({ where: { coachProfileId, status: "DELIVERED" } }),
+    prisma.bookingPayment.aggregate({
+      where: { booking: { coachProfileId }, status: "RELEASED" },
+      _sum: { coachAmountCents: true },
+    }),
+    prisma.bookingPayment.aggregate({
+      where: { booking: { coachProfileId }, status: "HELD" },
+      _sum: { coachAmountCents: true },
+    }),
+  ]);
+
+  return {
+    pending,
+    upcoming,
+    awaitingConfirmation,
+    releasedCents: released._sum.coachAmountCents ?? 0,
+    heldCents: held._sum.coachAmountCents ?? 0,
+    // One currency for now. A coach selling in two would need this per
+    // currency, and the aggregate above would be wrong — worth saying out loud
+    // before somebody adds a second one.
+    currency: "USD",
+  };
+}
