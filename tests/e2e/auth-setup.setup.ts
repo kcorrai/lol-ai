@@ -11,8 +11,14 @@ setup("authenticate", async ({ page }) => {
   await page.fill("#password", E2E_USER.password);
   await page.click('button[type="submit"]');
 
-  // Wait until the dashboard confirms we're authenticated
-  await page.waitForURL("**/dashboard", { timeout: 15_000 });
+  // Wait until the dashboard confirms we're authenticated.
+  //
+  // Generous because this is the first thing to reach the dashboard under
+  // `next dev`, where a route pays its whole compile on the request that gets
+  // there first. Warm, this takes about two seconds; cold it has blown a 15s
+  // budget, and when it does the entire suite is skipped for a reason that has
+  // nothing to do with the product.
+  await page.waitForURL("**/dashboard", { timeout: 60_000 });
 
   await page.context().storageState({ path: AUTH_FILE });
 });
