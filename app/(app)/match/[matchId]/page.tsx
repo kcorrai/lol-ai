@@ -1,18 +1,18 @@
 "use client";
 
+import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { ErrorState } from "@/components/ui/error-state";
 import { useMatchDetail } from "@/hooks/useMatchDetail";
 import { useSubscription } from "@/hooks/useSubscription";
 import { BuildExplanationPanel } from "@/domains/match/components/BuildExplanationPanel";
-import { MatchTeamTable } from "@/domains/match/components/MatchTeamTable";
-import { MatchPerformanceCards } from "@/domains/match/components/MatchPerformanceCards";
-import { MatchAiInsight } from "@/domains/match/components/MatchAiInsight";
+import { MatchResultHeader } from "@/domains/match/components/MatchResultHeader";
+import { MatchKpiStrip } from "@/domains/match/components/MatchKpiStrip";
+import { MatchScoreboard } from "@/domains/match/components/MatchScoreboard";
+import { MatchDetailRail } from "@/domains/match/components/MatchDetailRail";
 
-export default function MatchDetailPage() {
+export default function MatchDetailPage(): React.JSX.Element {
   const { matchId } = useParams<{ matchId: string }>();
   const { data: match, isLoading, error } = useMatchDetail(matchId);
   const { data: subscription } = useSubscription();
@@ -22,53 +22,66 @@ export default function MatchDetailPage() {
   if (error || !match) {
     return (
       <div className="mx-auto max-w-6xl p-6">
-        <ErrorState title="Match not found" message="This match doesn't exist or you didn't participate in it." />
+        <ErrorState
+          title="Match not found"
+          message="This match doesn't exist or you didn't participate in it."
+        />
       </div>
     );
   }
 
-  const durationMin = Math.floor(match.gameDuration / 60);
-  const durationSec = match.gameDuration % 60;
-  const userParticipant = match.participants.find((p) => p.puuid === match.userPuuid);
-  const userWon = userParticipant?.won;
+  const me = match.participants.find((p) => p.puuid === match.userPuuid);
 
   return (
-    <div className="mx-auto max-w-6xl space-y-5 p-6">
-      <PageHeader
-        title={match.gameMode}
-        subtitle={`${new Date(match.gameStart).toLocaleString("en-US")} · ${durationMin}:${String(durationSec).padStart(2, "0")}`}
-        backHref="/dashboard"
-        backLabel="Dashboard"
-        action={userWon !== undefined ? (
-          <Badge variant={userWon ? "success" : "destructive"}>{userWon ? "Victory" : "Defeat"}</Badge>
-        ) : undefined}
-      />
+    <div className="min-h-screen">
+      <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b border-line-1 bg-surface/70 px-5 backdrop-blur md:px-8">
+        <Link
+          href="/dashboard"
+          className="font-mono text-[10.5px] uppercase tracking-label text-fg-3 hover:text-fg-1"
+        >
+          ← Dashboard
+        </Link>
+        <span className="h-4 w-px bg-line-2" />
+        <span className="font-display text-sm font-bold uppercase tracking-wide text-fg-1">
+          Match detail
+        </span>
+        {match.aiInsight && (
+          <Link
+            href={`/coaching/${match.aiInsight.reportId}`}
+            className="notch-sm ml-auto inline-flex items-center gap-2 border border-line-2 px-3 py-1.5 font-mono text-[10.5px] uppercase tracking-label text-fg-2 transition-colors hover:border-acid-500 hover:text-acid-500"
+          >
+            Full AI report →
+          </Link>
+        )}
+      </header>
 
-      <MatchPerformanceCards match={match} />
+      <MatchResultHeader match={match} me={me} />
 
-      <div className="space-y-4">
-        <MatchTeamTable
-          participants={match.participants} teamId={100}
-          userPuuid={match.userPuuid}
-          objectives={match.teamObjectives?.["100"] ?? null}
-        />
-        <MatchTeamTable
-          participants={match.participants} teamId={200}
-          userPuuid={match.userPuuid}
-          objectives={match.teamObjectives?.["200"] ?? null}
-        />
-      </div>
+      <main className="mx-auto max-w-[1240px] px-5 pb-16 pt-5 md:px-8">
+        <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_306px]">
+          <div className="grid min-w-0 gap-4">
+            {me && <MatchKpiStrip me={me} participants={match.participants} />}
 
-      <MatchAiInsight insight={match.aiInsight} />
+            <MatchScoreboard
+              participants={match.participants}
+              userPuuid={match.userPuuid}
+              winningTeam={match.winningTeam}
+              objectives={match.teamObjectives}
+            />
 
-      {userParticipant && (
-        <BuildExplanationPanel
-          matchId={match.id}
-          puuid={userParticipant.puuid}
-          isPro={isPro}
-          itemIds={userParticipant.itemIds}
-        />
-      )}
+            {me && (
+              <BuildExplanationPanel
+                matchId={match.id}
+                puuid={me.puuid}
+                isPro={isPro}
+                itemIds={me.itemIds}
+              />
+            )}
+          </div>
+
+          <MatchDetailRail match={match} me={me} />
+        </div>
+      </main>
     </div>
   );
 }
