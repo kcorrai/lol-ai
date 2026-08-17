@@ -1,22 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { CoachingChatView } from "@/domains/coaching/components/CoachingChatView";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { PageSkeleton } from "@/components/layout/PageSkeleton";
 
-export default function CoachingChatPage() {
+export default function CoachingChatPage(): React.JSX.Element {
   const { data: accounts, isLoading } = useRiotAccounts();
 
   if (isLoading) return <PageSkeleton />;
 
-  const primary = accounts?.[0];
+  const primary = accounts?.find((a) => a.isPrimary) ?? accounts?.[0];
   if (!primary) {
     return (
       <div className="mx-auto max-w-2xl p-6 text-center">
         <p className="text-sm text-text-muted">First, connect a Riot account.</p>
-        <Link href="/settings/accounts" className="mt-2 text-sm text-accent underline">
+        <Link href="/settings/accounts" className="mt-2 text-sm text-acid-500 underline">
           Connect Account
         </Link>
       </div>
@@ -25,24 +24,11 @@ export default function CoachingChatPage() {
 
   const playerLabel = `${primary.gameName}#${primary.tagLine} · ${primary.region.toUpperCase()}`;
 
+  // The chat owns the viewport below the app chrome: the composer is pinned to
+  // the bottom and only the thread scrolls, so the page itself must not.
   return (
-    <div className="mx-auto flex h-[calc(100vh-4rem)] max-w-2xl flex-col">
-      <div className="border-b border-border px-4 py-3">
-        <Link
-          href="/dashboard"
-          className="flex items-center gap-1.5 text-xs text-text-muted hover:text-text"
-        >
-          <ArrowLeft className="h-3 w-3" />
-          Back to Dashboard
-        </Link>
-      </div>
-
-      <div className="flex-1 overflow-hidden">
-        <CoachingChatView
-          riotAccountId={primary.id}
-          playerLabel={playerLabel}
-        />
-      </div>
+    <div className="h-[calc(100vh-4rem)]">
+      <CoachingChatView riotAccountId={primary.id} playerLabel={playerLabel} />
     </div>
   );
 }

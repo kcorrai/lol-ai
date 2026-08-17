@@ -1,24 +1,21 @@
 "use client";
 
-import { useRef, useEffect, useState, type KeyboardEvent } from "react";
+import { useRef, useEffect, useState } from "react";
+import Link from "next/link";
 import { useCoachingChat } from "@/hooks/useCoachingChat";
-import { ChatBubble } from "@/domains/coaching/components/ChatBubble";
+import { usePerformanceProfile } from "@/hooks/usePerformanceProfile";
+import { useRankedData } from "@/hooks/useRankedData";
+import { ChatContextHeader } from "@/domains/coaching/components/chat/ChatContextHeader";
+import { ChatMessages } from "@/domains/coaching/components/chat/ChatMessages";
+import { ChatComposer } from "@/domains/coaching/components/chat/ChatComposer";
+import { ChatContextRail } from "@/domains/coaching/components/chat/ChatContextRail";
 import type { CoachPersona } from "@/lib/ai/chatSystemPrompt";
 import { cn } from "@/lib/utils";
 
-const SUGGESTED = [
-  "What's my biggest weakness right now?",
-  "Why am I losing despite being ahead?",
-  "How should I play when my team is behind?",
-  "Which champion should I focus on this week?",
-  "Why is my CS so low?",
-  "When should I roam?",
-];
-
 const PERSONAS: { value: CoachPersona; label: string; description: string }[] = [
-  { value: "direct",       label: "Direct",        description: "Straight to the point, concise and clear" },
-  { value: "analytical",   label: "Analytical",    description: "Data-driven, numerical analysis" },
-  { value: "motivational", label: "Motivational",  description: "Encouraging and positive" },
+  { value: "direct", label: "Direct", description: "Straight to the point, concise and clear" },
+  { value: "analytical", label: "Analytical", description: "Data-driven, numerical analysis" },
+  { value: "motivational", label: "Motivational", description: "Encouraging and positive" },
 ];
 
 interface CoachingChatViewProps {
@@ -26,149 +23,109 @@ interface CoachingChatViewProps {
   playerLabel: string;
 }
 
-export function CoachingChatView({ riotAccountId, playerLabel }: CoachingChatViewProps) {
+export function CoachingChatView({
+  riotAccountId,
+  playerLabel,
+}: CoachingChatViewProps): React.JSX.Element {
   const [persona, setPersona] = useState<CoachPersona>("direct");
-  const { messages, isStreaming, remaining, dailyLimit, error, submit, clear } =
-    useCoachingChat(riotAccountId, persona);
-  const [input, setInput] = useState("");
+  const { messages, isStreaming, remaining, dailyLimit, error, submit, clear } = useCoachingChat(
+    riotAccountId,
+    persona
+  );
+  const { data: profile } = usePerformanceProfile(riotAccountId);
+  const { data: ranked } = useRankedData(riotAccountId);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isStreaming]);
 
-  function handleSubmit() {
-    const val = input.trim();
-    if (!val || isStreaming) return;
-    setInput("");
-    void submit(val);
-  }
-
-  function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit();
-    }
-  }
-
   const limitReached = remaining !== null && remaining <= 0;
+  const quota =
+    dailyLimit !== null && remaining !== null ? `${remaining} of ${dailyLimit} left today` : null;
 
   return (
-    <div className="flex h-full flex-col">
-      {/* Header */}
-      <div className="border-b border-border px-4 py-3 space-y-2">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-semibold text-text">Your AI Coach</p>
-            <p className="text-xs text-text-muted">{playerLabel}</p>
-          </div>
-          <div className="flex items-center gap-3">
-            {dailyLimit !== null && (
-              <span className="text-xs text-text-muted">
-                {remaining}/{dailyLimit} messages remaining
-              </span>
-            )}
-            {messages.length > 0 && (
-              <button
-                onClick={clear}
-                className="text-xs text-text-muted underline-offset-2 hover:text-text hover:underline"
-              >
-                New Chat
-              </button>
-            )}
-          </div>
-        </div>
-        {/* Persona selector — only shown before first message */}
-        {messages.length === 0 && (
-          <div className="flex gap-1.5 flex-wrap">
+    <div className="flex h-full min-h-0 flex-col">
+      <header className="flex h-14 flex-none flex-wrap items-center gap-3 border-b border-line-1 bg-surface/70 px-5 backdrop-blur md:px-8">
+        <Link
+          href="/dashboard"
+          className="font-mono text-[10.5px] uppercase tracking-label text-fg-3 hover:text-fg-1"
+        >
+          ← Dashboard
+        </Link>
+        <span className="h-4 w-px bg-line-2" />
+        <span className="font-display text-sm font-bold uppercase tracking-wide text-fg-1">
+          Coach Chat
+        </span>
+        <span className="hidden font-mono text-[10.5px] uppercase tracking-wide text-fg-4 lg:inline">
+          {playerLabel}
+        </span>
+
+        <span className="ml-auto flex items-center gap-2.5">
+          {messages.length > 0 && (
+            <button
+              onClick={clear}
+              className="font-mono text-[9.5px] uppercase tracking-label text-fg-4 hover:text-fg-1"
+            >
+              New chat
+            </button>
+          )}
+          <span className="hidden font-mono text-[10px] uppercase tracking-label text-text-muted sm:inline">
+            Tone
+          </span>
+          <span className="flex gap-1">
             {PERSONAS.map((p) => (
               <button
                 key={p.value}
                 onClick={() => setPersona(p.value)}
                 title={p.description}
                 className={cn(
-                  "rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors",
+                  "tag-cut border px-2 py-1 font-mono text-[9.5px] uppercase tracking-wide transition-colors",
                   persona === p.value
-                    ? "border-accent bg-accent/10 text-accent"
-                    : "border-border text-text-muted hover:border-accent/40 hover:text-text"
+                    ? "border-acid-500 bg-acid-500/10 text-acid-500"
+                    : "border-line-2 text-fg-3 hover:text-fg-1"
                 )}
               >
                 {p.label}
               </button>
             ))}
-          </div>
-        )}
-      </div>
+          </span>
+        </span>
+      </header>
 
-      {/* Messages */}
-      <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
-        {messages.length === 0 ? (
-          <div className="space-y-3">
-            <p className="text-center text-xs text-text-muted">
-              Ask me anything about your performance, champion pool, or growth plan.
-            </p>
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              {SUGGESTED.map((q) => (
-                <button
-                  key={q}
-                  onClick={() => void submit(q)}
-                  disabled={isStreaming}
-                  className="rounded-xl border border-border bg-surface px-3 py-2.5 text-left text-xs text-text-muted transition-colors hover:border-accent/50 hover:text-text disabled:opacity-50"
-                >
-                  {q}
-                </button>
-              ))}
+      <div className="grid min-h-0 flex-1 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <div className="flex min-w-0 flex-col border-line-1 lg:border-r">
+          <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-2 pt-6 md:px-8">
+            <div className="mx-auto grid max-w-[760px] gap-4">
+              <ChatContextHeader profile={profile} />
+              <ChatMessages messages={messages} isStreaming={isStreaming} />
+              {error && <p className="text-center text-xs text-danger">{error}</p>}
+              <div ref={bottomRef} />
             </div>
           </div>
-        ) : (
-          messages.map((msg, i) => (
-            <ChatBubble
-              key={i}
-              message={msg}
-              isStreaming={isStreaming && i === messages.length - 1 && msg.role === "assistant"}
-            />
-          ))
-        )}
 
-        {error && (
-          <p className="text-center text-xs text-danger">{error}</p>
-        )}
-        <div ref={bottomRef} />
-      </div>
-
-      {/* Input */}
-      <div className="border-t border-border px-4 py-3">
-        {limitReached ? (
-          <p className="text-center text-xs text-text-muted">
-            Daily limit reached.{" "}
-            <a href="/settings/billing" className="text-accent underline">
-              Upgrade to Pro
-            </a>{" "}
-            — 50 messages per day.
-          </p>
-        ) : (
-          <div className="flex items-end gap-2">
-            <textarea
-              ref={inputRef}
-              data-tour="chat-input"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              disabled={isStreaming || limitReached}
-              placeholder="Ask your coach…"
-              rows={1}
-              className="flex-1 resize-none rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text placeholder:text-text-muted focus:border-accent focus:outline-none disabled:opacity-50"
+          {limitReached ? (
+            <div className="border-t border-line-1 bg-surface-dark px-5 py-5 text-center md:px-8">
+              <p className="text-xs text-text-muted">
+                Daily limit reached.{" "}
+                <Link href="/settings/billing" className="text-acid-500 underline">
+                  Upgrade to Pro
+                </Link>{" "}
+                — 50 messages per day.
+              </p>
+            </div>
+          ) : (
+            <ChatComposer
+              onSubmit={(value) => void submit(value)}
+              disabled={isStreaming}
+              quota={quota}
             />
-            <button
-              onClick={handleSubmit}
-              disabled={isStreaming || !input.trim()}
-              className="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
-            >
-              Send
-            </button>
-          </div>
-        )}
+          )}
+        </div>
+
+        <aside className="hidden min-w-0 lg:block">
+          <ChatContextRail profile={profile} rank={ranked?.rank} />
+        </aside>
       </div>
     </div>
   );
