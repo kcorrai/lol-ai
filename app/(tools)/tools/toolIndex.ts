@@ -8,6 +8,7 @@ import {
   Snowflake,
   TrendingUp,
   Radio,
+  Brain,
   type LucideIcon,
 } from "lucide-react";
 
@@ -123,6 +124,19 @@ export const TOOL_GROUPS: ToolGroup[] = [
         title: "Draft room",
         description: "Run a full pick/ban with your team. Fearless series in one link.",
         Icon: Target,
+      },
+    ],
+  },
+  {
+    title: "For the fun of it",
+    note: "New every day at midnight UTC",
+    tools: [
+      {
+        href: "/quiz",
+        title: "LaneIQ Daily",
+        description:
+          "Six champion puzzles a day — ability icons, splash crops, redacted lore, voice lines and emoji.",
+        Icon: Brain,
       },
     ],
   },
