@@ -161,6 +161,13 @@ export {
   autoComplete,
   expireBooking,
 } from "@/domains/marketplace/services/bookingSweepService";
+
+export {
+  runBookingSweeps,
+  expireUnanswered,
+  completeUnchallenged,
+} from "@/domains/marketplace/services/bookingSweeps";
+export type { SweepReport } from "@/domains/marketplace/services/bookingSweeps";
 export type {
   LifecycleOutcome,
   ActorRole,

@@ -2174,3 +2174,28 @@ nothing to do with how good the coaching was. Two aggregates are recomputed on
 reveal: a Bayesian average for display (withheld below three reviews) and a
 Wilson lower bound for search ordering, so a 5.0 from two people does not
 outrank a 4.8 from ninety.
+
+### Scheduled sweeps (M16)
+
+No endpoint — an Inngest cron every five minutes (`marketplace-sweeps`) runs
+three things the marketplace has promised:
+
+| Sweep | Closes |
+|---|---|
+| `expireUnanswered` | a request sitting on a student's money because nobody answered it |
+| `completeUnchallenged` | a delivery that never settles because nobody clicked |
+| `revealExpired` | a review hidden for ever because the other side never wrote one |
+
+Five minutes rather than hourly because all three are deadlines somebody is
+waiting on — an hourly sweep means a coach's money sitting unreleased for up to
+an hour after it was due, and a student staring at a request that expired fifty
+minutes ago and still looks live.
+
+Inngest rather than Vercel cron: Vercel caps a project at 100 jobs and at
+once-a-day on Hobby, and this section needs more than one schedule.
+
+Each sweep is bounded per run — one that tries to do everything on a bad day
+does none of it — and one throwing does not stop the others, because a stuck
+expiry leaving deliveries unsettled would turn one problem into two. The money
+follows automatically, because settlement is driven by the booking's status
+rather than called separately.
