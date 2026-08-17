@@ -21,6 +21,7 @@ import {
   BookOpen,
   Snowflake,
   Radio,
+  Handshake,
 } from "lucide-react";
 
 export interface NavItemConfig {
@@ -94,6 +95,14 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     label: "Esports",
     items: [{ href: "/esports", icon: Radio, label: "Live & Schedule" }],
+  },
+  // One link out to the coaching section, which has its own shell — the same
+  // shape as Esports. A coach console belongs in this sidebar about as much as
+  // a shop's till belongs on its shopfront, so the entry point is here and the
+  // section is not.
+  {
+    label: "Coaching marketplace",
+    items: [{ href: "/coaches", icon: Handshake, label: "Find a coach" }],
   },
 ];
 

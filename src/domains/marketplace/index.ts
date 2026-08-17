@@ -74,6 +74,7 @@ export type { CheckableAccount } from "@/domains/marketplace/services/rankBadgeS
 
 export {
   getOwnProfile,
+  hasCoachProfile,
   isApprovedCoach,
   approvedCoachProfileId,
   saveOwnProfile,
@@ -91,6 +92,11 @@ export {
   firstMissingField,
 } from "@/domains/marketplace/services/coachApplicationService";
 export type { SubmitOutcome } from "@/domains/marketplace/services/coachApplicationService";
+
+export {
+  listCoaches,
+  getCoachBySlug,
+} from "@/domains/marketplace/services/coachSearchService";
 
 export {
   listApplications,
