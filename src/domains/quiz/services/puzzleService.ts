@@ -2,6 +2,7 @@ import { allChampions, splashPool } from "@/domains/quiz/services/championPool";
 import {
   fnv1a,
   nextResetAt,
+  pickBySeed,
   pickDaily,
   puzzleNumber,
   utcDateKey,
@@ -37,10 +38,20 @@ function poolFor(mode: QuizMode): readonly QuizChampion[] {
   }
 }
 
-/** The answer for a mode on a given UTC day. Server-side only — never serialised
- *  into a response until the player has solved or given up. */
-export function answerFor(mode: QuizMode, dateKey: string): QuizChampion {
-  return pickDaily(poolFor(mode), mode, dateKey);
+/**
+ * The answer for a mode. Server-side only — never serialised into a response
+ * until the player has solved or given up.
+ *
+ * With a practice seed the answer comes off that seed instead of the date, which
+ * is what keeps practice from being a way to fish for today's puzzle.
+ */
+export function answerFor(
+  mode: QuizMode,
+  dateKey: string,
+  practiceSeed?: string
+): QuizChampion {
+  const pool = poolFor(mode);
+  return practiceSeed ? pickBySeed(pool, mode, practiceSeed) : pickDaily(pool, mode, dateKey);
 }
 
 /**
@@ -48,14 +59,24 @@ export function answerFor(mode: QuizMode, dateKey: string): QuizChampion {
  * is stable through the day, and separately from the champion pick so the same
  * champion dealt again next cycle is unlikely to show the same icon.
  */
-export function abilityFor(champion: QuizChampion, dateKey: string): ChampionAbility {
-  const index = fnv1a(`ability-slot:${dateKey}:${champion.id}`) % champion.abilities.length;
+export function abilityFor(
+  champion: QuizChampion,
+  dateKey: string,
+  practiceSeed?: string
+): ChampionAbility {
+  const scope = practiceSeed ?? dateKey;
+  const index = fnv1a(`ability-slot:${scope}:${champion.id}`) % champion.abilities.length;
   return champion.abilities[index];
 }
 
 /** Which skin's splash art to crop. Base art is the giveaway, so skins are fair game. */
-export function skinNumFor(champion: QuizChampion, dateKey: string): number {
-  const index = fnv1a(`splash-skin:${dateKey}:${champion.id}`) % champion.skinNums.length;
+export function skinNumFor(
+  champion: QuizChampion,
+  dateKey: string,
+  practiceSeed?: string
+): number {
+  const scope = practiceSeed ?? dateKey;
+  const index = fnv1a(`splash-skin:${scope}:${champion.id}`) % champion.skinNums.length;
   return champion.skinNums[index];
 }
 
@@ -126,16 +147,27 @@ export function hintFor(mode: QuizMode, answer: QuizChampion, misses: number): s
   }
 }
 
-function promptFor(mode: QuizMode, answer: QuizChampion, misses: number): QuizPrompt {
+/** Practice assets need the seed in the URL; the daily ones must never carry one. */
+function assetUrl(mode: "ability" | "splash", practiceSeed?: string): string {
+  const base = `/api/quiz/asset/${mode}`;
+  return practiceSeed ? `${base}?seed=${encodeURIComponent(practiceSeed)}` : base;
+}
+
+function promptFor(
+  mode: QuizMode,
+  answer: QuizChampion,
+  misses: number,
+  practiceSeed?: string
+): QuizPrompt {
   switch (mode) {
     case "classic":
       return { kind: "classic" };
     case "ability":
-      return { kind: "ability", assetUrl: "/api/quiz/asset/ability" };
+      return { kind: "ability", assetUrl: assetUrl("ability", practiceSeed) };
     case "splash":
       // The crop tightens and loosens client-side; the bytes are the same all day,
       // which is what lets the response be cached until the next reset.
-      return { kind: "splash", assetUrl: "/api/quiz/asset/splash" };
+      return { kind: "splash", assetUrl: assetUrl("splash", practiceSeed) };
     case "lore":
       return { kind: "lore", text: redactLore(answer) };
     case "quote":
@@ -150,14 +182,20 @@ function promptFor(mode: QuizMode, answer: QuizChampion, misses: number): QuizPr
  * prompt reveals (emoji), so passing an inflated count cannot uncover anything a
  * player could not have reached by guessing that many times anyway.
  */
-export function buildPuzzle(mode: QuizMode, now: Date, misses = 0): DailyPuzzle {
+export function buildPuzzle(
+  mode: QuizMode,
+  now: Date,
+  misses = 0,
+  practiceSeed?: string
+): DailyPuzzle {
   const dateKey = utcDateKey(now);
-  const answer = answerFor(mode, dateKey);
+  const answer = answerFor(mode, dateKey, practiceSeed);
   return {
     mode,
     dateKey,
     puzzleNumber: puzzleNumber(dateKey),
-    prompt: promptFor(mode, answer, misses),
+    practiceSeed,
+    prompt: promptFor(mode, answer, misses, practiceSeed),
     nextResetAt: nextResetAt(now).toISOString(),
   };
 }

@@ -35,6 +35,9 @@ type Tab = QuizMode | "personal";
 export default function QuizPage(): React.JSX.Element {
   const [tab, setTab] = useState<Tab>("classic");
   const mode: QuizMode = tab === "personal" ? "classic" : tab;
+  // Practice is off the clock and off the streak. A new seed is a new puzzle;
+  // undefined means the daily one.
+  const [practiceSeed, setPracticeSeed] = useState<string>();
   const [results, setResults] = useState<ModeResult[]>([]);
   const [dateKey, setDateKey] = useState<string>();
 
@@ -137,12 +140,26 @@ export default function QuizPage(): React.JSX.Element {
         <PersonalQuiz />
       ) : (
         <QuizBoard
-          key={mode}
+          key={`${mode}:${practiceSeed ?? "daily"}`}
           mode={mode}
           streak={streak}
           allResults={results}
           onFinished={onFinished}
+          practiceSeed={practiceSeed}
+          onNextPractice={() => setPracticeSeed(newSeed())}
         />
+      )}
+
+      {tab !== "personal" && (
+        <div className="mt-3 text-center">
+          <button
+            type="button"
+            onClick={() => setPracticeSeed(practiceSeed ? undefined : newSeed())}
+            className="font-mono text-[10.5px] uppercase tracking-label text-fg-4 underline-offset-2 hover:text-fg-2 hover:underline"
+          >
+            {practiceSeed ? "Back to today's puzzle" : "Practice — unlimited, no streak"}
+          </button>
+        </div>
       )}
 
       <p className="mt-5 text-center font-mono text-[10.5px] text-fg-4">
@@ -150,6 +167,11 @@ export default function QuizPage(): React.JSX.Element {
       </p>
     </div>
   );
+}
+
+/** Random enough that two players are not handed the same practice puzzle. */
+function newSeed(): string {
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
 async function recordSolve(result: ModeResult): Promise<void> {

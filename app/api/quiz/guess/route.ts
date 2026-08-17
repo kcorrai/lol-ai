@@ -18,11 +18,13 @@ const bodySchema = z.object({
   mode: z.string().refine(isQuizMode, "Unknown quiz mode"),
   guess: z.string().min(1).max(40),
   previousGuesses: z.array(z.string().max(40)).max(200).default([]),
+  practiceSeed: z.string().min(1).max(64).optional(),
 });
 
 const revealSchema = z.object({
   mode: z.string().refine(isQuizMode, "Unknown quiz mode"),
   giveUp: z.literal(true),
+  practiceSeed: z.string().min(1).max(64).optional(),
 });
 
 export async function POST(request: NextRequest) {
@@ -35,14 +37,16 @@ export async function POST(request: NextRequest) {
 
     const giveUp = revealSchema.safeParse(raw);
     if (giveUp.success) {
-      return apiSuccess({ answer: revealAnswer(giveUp.data.mode, new Date()) });
+      return apiSuccess({
+        answer: revealAnswer(giveUp.data.mode, new Date(), giveUp.data.practiceSeed),
+      });
     }
 
     const parsed = bodySchema.safeParse(raw);
     if (!parsed.success) throw Errors.validation(parsed.error.issues[0].message);
 
-    const { mode, guess, previousGuesses } = parsed.data;
-    return apiSuccess(judgeGuess(mode, guess, new Date(), previousGuesses));
+    const { mode, guess, previousGuesses, practiceSeed } = parsed.data;
+    return apiSuccess(judgeGuess(mode, guess, new Date(), previousGuesses, practiceSeed));
   } catch (err) {
     if (err instanceof UnknownChampionError) {
       return apiError("UNKNOWN_CHAMPION", `"${err.guess}" is not a champion`, 422);

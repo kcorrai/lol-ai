@@ -34,12 +34,13 @@ export function judgeGuess(
   mode: QuizMode,
   rawGuess: string,
   now: Date,
-  previousGuesses: readonly string[] = []
+  previousGuesses: readonly string[] = [],
+  practiceSeed?: string
 ): GuessResult {
   const guess = resolveGuess(rawGuess);
   if (!guess) throw new UnknownChampionError(rawGuess);
 
-  const answer = answerFor(mode, utcDateKey(now));
+  const answer = answerFor(mode, utcDateKey(now), practiceSeed);
   const correct = guess.id === answer.id;
 
   const result: GuessResult = { guess: guess.id, correct };
@@ -62,9 +63,9 @@ export function judgeGuess(
   return result;
 }
 
-/** Gives up on today's puzzle and reveals the answer. */
-export function revealAnswer(mode: QuizMode, now: Date): RevealedAnswer {
-  return reveal(answerFor(mode, utcDateKey(now)));
+/** Gives up on the puzzle and reveals the answer. */
+export function revealAnswer(mode: QuizMode, now: Date, practiceSeed?: string): RevealedAnswer {
+  return reveal(answerFor(mode, utcDateKey(now), practiceSeed));
 }
 
 /** How many wrong guesses precede a solve — what the share grid counts. */
