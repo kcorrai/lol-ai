@@ -100,6 +100,26 @@ export {
 } from "@/domains/marketplace/services/coachSearchService";
 
 export {
+  searchCoaches,
+  sortPageByPrice,
+} from "@/domains/marketplace/services/coachDiscoveryService";
+
+export { marketplaceSitemapEntries } from "@/domains/marketplace/services/marketplaceSitemapService";
+export type { MarketplaceSitemapEntry } from "@/domains/marketplace/services/marketplaceSitemapService";
+
+export { coachProfileJsonLd, coachesIndexJsonLd } from "@/domains/marketplace/jsonLd";
+
+export {
+  parseSearchQuery,
+  buildSearchParams,
+  canonicalPath,
+  isFiltered,
+  pageOf,
+  PAGE_SIZE,
+  SORTS,
+} from "@/domains/marketplace/searchQuery";
+
+export {
   listOwnListings,
   publicListings,
   createListing,

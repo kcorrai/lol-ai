@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { getCoachProfilePage } from "@/domains/marketplace";
 import { ListingCard } from "@/domains/marketplace/components/ListingCard";
+import { coachProfileJsonLd } from "@/domains/marketplace/jsonLd";
 import { regionLabel } from "@/lib/riot/regions";
 import { RankBadgeChip } from "@/domains/marketplace/components/RankBadgeChip";
 import { languageLabel, roleLabel } from "@/domains/marketplace/components/options";
@@ -20,6 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${coach.displayName} — League of Legends Coach`,
     description: coach.headline,
+    alternates: { canonical: `/coaches/${params.slug}` },
   };
 }
 
@@ -29,8 +31,15 @@ export default async function CoachProfilePage({ params }: Props) {
   const coach = await getCoachProfilePage(params.slug);
   if (!coach) notFound();
 
+  const url = `${process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg"}/coaches/${params.slug}`;
+
   return (
     <div className="mx-auto max-w-3xl space-y-6 p-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(coachProfileJsonLd({ coach, url })) }}
+      />
+
       <header className="space-y-3">
         <h1 className="font-display text-3xl font-bold text-text">{coach.displayName}</h1>
         <p className="text-sm text-text-body">{coach.headline}</p>
