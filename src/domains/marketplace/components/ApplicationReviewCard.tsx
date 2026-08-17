@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { regionLabel } from "@/lib/riot/regions";
 import type { ApplicationRow } from "@/domains/marketplace";
 import { languageLabel, roleLabel } from "@/domains/marketplace/components/options";
 
@@ -72,7 +73,7 @@ export function ApplicationReviewCard({
           ))}
           {application.regions.map((region) => (
             <Badge key={region} variant="outline">
-              {region.toUpperCase()}
+              {regionLabel(region)}
             </Badge>
           ))}
           {application.languages.map((lang) => (

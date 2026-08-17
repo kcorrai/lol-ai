@@ -1,14 +1,12 @@
 import { prisma } from "@/lib/db/prisma";
 import { audit } from "@/lib/audit/auditService";
+import { MIN_BIO_LENGTH } from "@/domains/marketplace/policy";
 
 // The applicant's side of the gate: submitting a profile for review.
 //
 // Deliberately holds nothing that can approve anybody — that is
 // `coachReviewService`, and an endpoint reachable by an applicant must not be
 // able to reach a decision.
-
-/** The minimum a profile must carry before a reviewer is asked to look at it. */
-export const MIN_BIO_LENGTH = 120;
 
 export type SubmitOutcome =
   | { ok: true }

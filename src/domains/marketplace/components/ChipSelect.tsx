@@ -10,7 +10,15 @@ export interface ChipOption {
 interface ChipSelectProps {
   options: ChipOption[];
   selected: string[];
-  onChange: (next: string[]) => void;
+  /**
+   * Takes an updater, not the next array — pass a `useState` setter straight in.
+   *
+   * Deliberately not `(next: string[]) => void`. Computing the next array here
+   * would have to read the `selected` prop, and two toggles inside one batch
+   * both see the same render's value, so the second silently discards the
+   * first. Two chips clicked quickly used to lose one.
+   */
+  onChange: (updater: (prev: string[]) => string[]) => void;
   /** Refuses further selections once reached. Undefined means no ceiling. */
   max?: number;
   disabled?: boolean;
@@ -36,12 +44,13 @@ export function ChipSelect({
   const atCeiling = max !== undefined && selected.length >= max;
 
   function toggle(value: string): void {
-    if (selected.includes(value)) {
-      onChange(selected.filter((v) => v !== value));
-      return;
-    }
-    if (atCeiling) return;
-    onChange([...selected, value]);
+    onChange((prev) => {
+      if (prev.includes(value)) return prev.filter((v) => v !== value);
+      // Re-checked against `prev` rather than the render's `selected`, for the
+      // same reason the updater exists at all.
+      if (max !== undefined && prev.length >= max) return prev;
+      return [...prev, value];
+    });
   }
 
   return (

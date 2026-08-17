@@ -9,6 +9,12 @@
 //     `src/domains/coaching/`.
 //   - It moves no money. `paymentService` keeps a ledger and a state machine,
 //     and the only driver today settles nothing (ADR-020).
+//
+// **Server side only.** This file re-exports the services, which import Prisma,
+// so a *value* imported through it from a client component ships the database
+// client to the browser and the page fails to compile. Components in this
+// domain import `policy.ts`, `types.ts` and the rest on their direct paths;
+// the barrel exists for route handlers and other domains.
 
 export {
   DEFAULT_COMMISSION_BPS,
@@ -18,6 +24,7 @@ export {
   DISPUTE_WINDOW_HOURS,
   REVIEW_BLIND_DAYS,
   MIN_REVIEWS_FOR_SCORE,
+  MIN_BIO_LENGTH,
   MIN_PRICE_CENTS,
   MAX_PRICE_CENTS,
   MIN_DURATION_MINUTES,
@@ -59,7 +66,6 @@ export {
   submitApplication,
   withdrawApplication,
   firstMissingField,
-  MIN_BIO_LENGTH,
 } from "@/domains/marketplace/services/coachApplicationService";
 export type { SubmitOutcome } from "@/domains/marketplace/services/coachApplicationService";
 

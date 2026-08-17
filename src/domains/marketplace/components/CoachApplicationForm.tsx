@@ -7,8 +7,16 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { RIOT_REGION_OPTIONS } from "@/domains/riot";
-import { MIN_BIO_LENGTH } from "@/domains/marketplace";
+// From `src/lib/`, not from the riot domain's `index.ts`. That barrel pulls in
+// the Riot API client, whose logger reaches for `async_hooks` — importing it
+// from a client component drags server-only code into the browser bundle and
+// the page 500s. This module is a plain list with no imports of its own.
+import { REGIONS } from "@/lib/riot/regions";
+// Straight at `policy`, not at the domain's `index.ts`. That barrel also
+// exports the services, which import Prisma, so a *value* taken through it from
+// a client component ships the database client to the browser. Type imports
+// below are erased at compile time and are safe either way.
+import { MIN_BIO_LENGTH } from "@/domains/marketplace/policy";
 import type { CoachProfileInput, OwnCoachProfile } from "@/domains/marketplace";
 import { ChipSelect } from "@/domains/marketplace/components/ChipSelect";
 import { LANGUAGE_OPTIONS, ROLE_OPTIONS } from "@/domains/marketplace/components/options";
@@ -79,7 +87,9 @@ export function CoachApplicationForm({ profile, saving, onSave }: Props): React.
       <CardHeader>
         <CardTitle>Your coaching profile</CardTitle>
         <CardDescription>
-          This is what students see. Nothing is public until it has been reviewed.
+          {profile?.status === "APPROVED"
+            ? "This is what students see. Changes go live as soon as you save them."
+            : "This is what students see. Nothing is public until it has been reviewed."}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -129,7 +139,7 @@ export function CoachApplicationForm({ profile, saving, onSave }: Props): React.
             <p className="text-sm text-text-muted">Regions you play on</p>
             <ChipSelect
               aria-label="Regions"
-              options={RIOT_REGION_OPTIONS.map(({ value, label }) => ({ value, label }))}
+              options={REGIONS.map(({ value, label }) => ({ value, label }))}
               selected={regions}
               onChange={setRegions}
               max={8}

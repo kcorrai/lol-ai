@@ -40,6 +40,15 @@ export const REVIEW_BLIND_DAYS = 14;
 /** Below this many revealed reviews a coach shows a "New" badge instead of a score. */
 export const MIN_REVIEWS_FOR_SCORE = 3;
 
+/**
+ * The shortest bio a reviewer will be asked to read.
+ *
+ * Lives here rather than beside the submit check that enforces it, because the
+ * form has to show the same number and the form is a client component — and the
+ * module holding the submit check reaches for Prisma.
+ */
+export const MIN_BIO_LENGTH = 120;
+
 /** Bounds on what a coach may charge for one session, in cents. */
 export const MIN_PRICE_CENTS = 500;
 export const MAX_PRICE_CENTS = 100_000;

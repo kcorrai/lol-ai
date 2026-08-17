@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { prisma } from "@/lib/db/prisma";
 import { audit } from "@/lib/audit/auditService";
+import { MIN_BIO_LENGTH } from "@/domains/marketplace/policy";
 import {
   submitApplication,
   withdrawApplication,
   firstMissingField,
-  MIN_BIO_LENGTH,
 } from "@/domains/marketplace/services/coachApplicationService";
 
 vi.mock("@/lib/db/prisma", () => ({

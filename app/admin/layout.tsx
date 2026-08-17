@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
+import { QueryProvider } from "@/components/providers/QueryProvider";
 
 export default async function AdminLayout({
   children,
@@ -29,7 +30,17 @@ export default async function AdminLayout({
           </nav>
         </div>
       </header>
-      <main className="mx-auto max-w-5xl p-6">{children}</main>
+      {/*
+        `admin/` sits outside the `(app)` route group, so it never inherited a
+        QueryClient and any admin page using a hook from `src/hooks/` threw on
+        render. The pages written before this one reach for `fetch` in a
+        `useEffect` instead, which is what CLAUDE.md's "data fetching goes
+        through React Query hooks" exists to prevent. Providing the client here
+        is inert for those pages and lets new ones follow the rule.
+      */}
+      <QueryProvider>
+        <main className="mx-auto max-w-5xl p-6">{children}</main>
+      </QueryProvider>
     </div>
   );
 }
