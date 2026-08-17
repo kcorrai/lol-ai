@@ -1868,3 +1868,64 @@ Response for `submit`:
   that does not resolve is a client sending something we never published.
 - **`completed` is the ceiling this endpoint can set.** `mastered` is earned from real match
   data, so a lesson already mastered stays mastered no matter what a later attempt scores.
+
+### `POST /api/bookings`
+
+Request a session. Body: `listingId`, `startTime` (ISO, null for the async
+kind), `studentGoal`, `studentTimezone`, `riotAccountId`, `matchIds[]`,
+`vodUrl`.
+
+Creates a **request**, not a confirmed session — the coach has 48 hours
+(`respondByAt`) to accept or decline, and nothing is charged.
+
+- The whole thing runs under an advisory lock on the coach, because checking a
+  slot is free and taking it are two statements. Without it, two students both
+  read "free" and both insert, and the coach wakes up double-booked with no way
+  to tell which request was first.
+- The economics are **snapshotted** onto the row — price, commission, fee, the
+  coach's share and the cancellation window. A coach raising their rate later
+  must not rewrite what this session was worth.
+- Both timezones are captured, so a rescheduling email can name the hour each
+  side actually saw.
+- `409` when the slot went between the page loading and the request, with a
+  message telling the client to refresh rather than retry.
+- `403` on booking your own listing — it would settle money in a circle and
+  pollute the coach's own review count.
+- `422` for a scheduled kind with no time, or an async kind with neither a match
+  id nor a video link (a review with nothing to review is a session the coach
+  cannot start).
+
+### `GET /api/bookings?as=student|coach`
+
+The caller's own bookings on one side. Scoped in the query, never filtered
+afterwards. The coach's view carries the student's **name and not their email**:
+a coach needs to know who they are talking to, not how to reach them off the
+platform.
+
+### `GET /api/bookings/[bookingId]`
+
+One booking and **its whole history** — every transition, with who made it and
+why. Both sides see the same record, which is what a dispute is settled
+against.
+
+### `PATCH /api/bookings/[bookingId]`
+
+One move: `accept` (+ optional `meetingUrl`), `decline`, `cancel`, `deliver`,
+`confirm`.
+
+Who may do what is established **from the row**, never from the request, and
+the move itself is checked against the state machine in `transitions.ts`.
+
+| Refusal | Meaning |
+|---|---|
+| `404` | No such booking — **and** what a stranger probing ids gets, so one cannot be told from the other |
+| `403` | Not your side of this booking |
+| `409 too late` | A student cancelling inside the window they agreed to |
+| `409 stale` | It already moved; the update is guarded on the status that was read, so two requests racing to accept cannot both win |
+
+A coach may always cancel. The session cannot happen without them and refusing
+just produces a no-show instead — it is recorded as *their* cancellation, which
+is what an automatic refund keys off.
+
+`deliver` settles nothing: it starts the window the student can challenge it in
+(`autoCompleteAt`).

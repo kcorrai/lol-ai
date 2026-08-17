@@ -23,10 +23,9 @@ export default async function MarketLayout({ children }: { children: React.React
   // their way back to it.
   const isCoach = signedIn ? await hasCoachProfile(session!.user.id) : false;
 
-  // Only what exists. "My sessions" joins this list when M9 builds it — a nav
-  // that advertises a page which 404s is worse than a short nav.
   const nav: MarketNavItem[] = [
     { href: "/coaches", label: "Find a coach" },
+    ...(signedIn ? [{ href: "/sessions", label: "My sessions" }] : []),
     ...(isCoach
       ? [
           { href: "/coach", label: "Coach console" },

@@ -66,10 +66,10 @@ export function CoachConsoleHome({ profile }: Props): React.ReactElement {
           description="The hours you are bookable, in your own timezone."
         />
         <Tile
+          href="/sessions"
           icon={ClipboardList}
           title="Requests and sessions"
           description="Accept or decline bookings, and deliver the work."
-          soon
         />
       </div>
     </div>

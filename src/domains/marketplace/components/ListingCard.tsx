@@ -1,18 +1,23 @@
 import { Badge } from "@/components/ui/badge";
 import type { Listing } from "@/domains/marketplace/types";
 import { kindLabel } from "@/domains/marketplace/components/options";
+import { ListingBookPanel } from "@/domains/marketplace/components/ListingBookPanel";
 
 interface Props {
   listing: Listing;
+  coachSlug: string;
+  acceptingStudents: boolean;
 }
 
 /**
  * One thing a coach sells, as a student reads it.
  *
- * A server component: nothing here is interactive yet. The booking button
- * arrives with M7 and will be the only client boundary on this card.
+ * Still a server component. `ListingBookPanel` is the only client boundary on
+ * the card, so the page keeps rendering for search engines and for anyone with
+ * JavaScript off — which matters, because this is the page the section is
+ * trying to get found on.
  */
-export function ListingCard({ listing }: Props): React.ReactElement {
+export function ListingCard({ listing, coachSlug, acceptingStudents }: Props): React.ReactElement {
   return (
     <article className="rounded-lg border border-border bg-surface p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -36,6 +41,12 @@ export function ListingCard({ listing }: Props): React.ReactElement {
       </div>
 
       <p className="mt-3 whitespace-pre-wrap text-sm text-text-body">{listing.description}</p>
+
+      <ListingBookPanel
+        coachSlug={coachSlug}
+        listing={listing}
+        acceptingStudents={acceptingStudents}
+      />
     </article>
   );
 }

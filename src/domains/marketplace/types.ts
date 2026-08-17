@@ -159,3 +159,26 @@ export interface CoachSearchResult {
   nextCursor: string | null;
   total: number;
 }
+
+/** One booking as the two people on it see it, with the extra detail a list omits. */
+export interface BookingDetail extends BookingSummary {
+  /** Which side the reader is on. Established from the row, never from the request. */
+  role: "student" | "coach";
+  studentGoal: string;
+  meetingUrl: string | null;
+  matchIds: string[];
+  vodUrl: string | null;
+  deliveredAt: string | null;
+  /** When delivery stops being challengeable. ISO. */
+  autoCompleteAt: string | null;
+}
+
+/** One recorded transition, as the session page shows it. */
+export interface BookingEventRow {
+  id: string;
+  fromStatus: BookingStatus | null;
+  toStatus: BookingStatus;
+  reason: string | null;
+  createdAt: string;
+  actor: { id: string; name: string | null } | null;
+}

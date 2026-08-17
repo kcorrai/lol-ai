@@ -84,7 +84,12 @@ export default async function CoachProfilePage({ params }: Props) {
         ) : (
           <div className="space-y-3">
             {coach.listings.map((listing) => (
-              <ListingCard key={listing.id} listing={listing} />
+              <ListingCard
+                key={listing.id}
+                listing={listing}
+                coachSlug={params.slug}
+                acceptingStudents={coach.acceptingStudents}
+              />
             ))}
           </div>
         )}

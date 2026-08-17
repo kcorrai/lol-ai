@@ -140,6 +140,25 @@ export type {
 } from "@/domains/marketplace/services/availabilityService";
 
 export { freeSlots, isSlotFree, coachSlotsBySlug } from "@/domains/marketplace/services/slotService";
+
+export { createBooking } from "@/domains/marketplace/services/bookingService";
+export type { BookingRequest, CreateOutcome } from "@/domains/marketplace/services/bookingService";
+
+export {
+  acceptBooking,
+  declineBooking,
+  cancelBooking,
+  markDelivered,
+  confirmDelivery,
+  autoComplete,
+  expireBooking,
+} from "@/domains/marketplace/services/bookingLifecycleService";
+export type { LifecycleOutcome, ActorRole } from "@/domains/marketplace/services/bookingLifecycleService";
+
+export { transition, recordCreation, bookingHistory } from "@/domains/marketplace/services/bookingEventService";
+export type { TransitionInput, TransitionOutcome } from "@/domains/marketplace/services/bookingEventService";
+
+export { listBookings, getBookingFor } from "@/domains/marketplace/services/bookingQueryService";
 export type { SlotQuery } from "@/domains/marketplace/services/slotService";
 
 export { marketplaceSitemapEntries } from "@/domains/marketplace/services/marketplaceSitemapService";
@@ -186,6 +205,8 @@ export type {
 export type {
   Annotation,
   BookingSummary,
+  BookingDetail,
+  BookingEventRow,
   CoachApplicationState,
   CoachCard,
   CoachPublicProfile,
