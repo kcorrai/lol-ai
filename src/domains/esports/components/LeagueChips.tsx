@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Chip } from "@/domains/esports/components/Chip";
 import type { EsportsLeague } from "@/domains/esports/types";
 
 /**
@@ -19,23 +19,15 @@ export function LeagueChips({
 
   return (
     <nav aria-label="Leagues" className="flex flex-wrap gap-1.5">
-      {leagues.map((league) => {
-        const active = league.slug === activeSlug;
-        return (
-          <Link
-            key={league.id}
-            href={`/esports/leagues/${league.slug}`}
-            aria-current={active ? "page" : undefined}
-            className={`tag-cut px-2.5 py-1 font-mono text-[11px] uppercase tracking-label transition-colors ${
-              active
-                ? "bg-accent text-background"
-                : "bg-surface-2 text-text-body hover:bg-surface hover:text-text"
-            }`}
-          >
-            {league.name}
-          </Link>
-        );
-      })}
+      {leagues.map((league) => (
+        <Chip
+          key={league.id}
+          href={`/esports/leagues/${league.slug}`}
+          active={league.slug === activeSlug}
+        >
+          {league.name}
+        </Chip>
+      ))}
     </nav>
   );
 }

@@ -13,6 +13,21 @@ export const ROLE_LABEL: Record<PlayerRole, string> = {
   support: "Support",
 };
 
+/**
+ * The same five lanes in the width a column header or a chip has for them.
+ *
+ * Separate from `ROLE_LABEL` rather than derived from it: "Bot laner" truncated
+ * is "Bot lan…", and a table that has to abbreviate its own labels at render
+ * time abbreviates them differently in every column.
+ */
+export const ROLE_SHORT: Record<PlayerRole, string> = {
+  top: "Top",
+  jungle: "Jungle",
+  mid: "Mid",
+  bottom: "Bot",
+  support: "Support",
+};
+
 export function roleLabel(role: PlayerRole | null): string | null {
   return role ? ROLE_LABEL[role] : null;
 }
