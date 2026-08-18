@@ -12,13 +12,17 @@ export interface ModeResult {
   solved: boolean;
 }
 
+// Unpadded: LABEL_WIDTH below pads them, and hand-padded literals silently
+// misalign the moment a longer label joins — as IMPOSTOR just did.
 const MODE_LABELS: Record<QuizMode, string> = {
   classic: "CLASSIC",
   ability: "ABILITY",
-  splash: "SPLASH ",
-  lore: "LORE   ",
-  quote: "QUOTE  ",
-  emoji: "EMOJI  ",
+  splash: "SPLASH",
+  lore: "LORE",
+  quote: "QUOTE",
+  emoji: "EMOJI",
+  build: "BUILD",
+  impostor: "IMPOSTOR",
 };
 
 const LABEL_WIDTH = Math.max(...Object.values(MODE_LABELS).map((l) => l.length));
