@@ -4,7 +4,7 @@ import type { WaveGoal, WaveState } from "@/domains/academy/drills/waveSim";
 // curriculum is typechecked, unit-testable and free to reuse the app's own primitives
 // (ChampionIcon, ItemIcon) inside a block — see docs/adr/ADR-019-academy-content-model.md.
 
-export type TrackId = "foundations" | "laning";
+export type TrackId = "foundations" | "laning" | "vision";
 
 export type TrackLevel = "foundation" | "core" | "advanced";
 

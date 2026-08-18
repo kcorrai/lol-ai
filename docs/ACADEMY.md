@@ -61,7 +61,16 @@ Track  →  Lesson  →  Blocks + Drills + Field assignment
 5. Jungle Tracking From Lane
 6. The First Back
 
-Planned: Vision & Map, Macro, Teamfighting, Mental & Consistency, Role Paths, Champion Mastery.
+**Vision & Map** — lesson 1 free, rest Pro, 6 lessons. Knowing what is not on your screen.
+
+1. Where the Ward Actually Goes
+2. Denial: The Sweeper and the Control Ward
+3. The Minimap Rhythm
+4. The Danger Triangle
+5. Vision Is Not the Support's Job
+6. Thirty Seconds Before the Objective
+
+Planned: Macro, Teamfighting, Mental & Consistency, Role Paths, Champion Mastery.
 
 ## Proof of Practice
 

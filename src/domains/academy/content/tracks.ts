@@ -14,6 +14,13 @@ import { tradingPatterns } from "./laning/tradingPatterns";
 import { jungleTracking } from "./laning/jungleTracking";
 import { theFirstBack } from "./laning/theFirstBack";
 
+import { wardPlacementsByPhase } from "./vision/wardPlacementsByPhase";
+import { sweeperAndControlWards } from "./vision/sweeperAndControlWards";
+import { minimapRhythm } from "./vision/minimapRhythm";
+import { theDangerTriangle } from "./vision/theDangerTriangle";
+import { wardingAsATeam } from "./vision/wardingAsATeam";
+import { visionBeforeObjectives } from "./vision/visionBeforeObjectives";
+
 // Lesson order inside a track is the teaching order and the recommendation order.
 // It is deliberate: nothing in a lesson may depend on a lesson listed after it.
 export const TRACKS: readonly Track[] = [
@@ -41,5 +48,21 @@ export const TRACKS: readonly Track[] = [
       "The single biggest skill gap between ranks. Read the wave, build one on purpose, trade only when the maths is already in your favour, and know where the enemy jungler is without warding for it.",
     level: "core",
     lessons: [waveStates, slowPushAndCrash, freezing, tradingPatterns, jungleTracking, theFirstBack],
+  },
+  {
+    id: "vision",
+    title: "Vision & Map",
+    tagline: "Knowing what is not on your screen",
+    description:
+      "The players with map awareness are not seeing more than you — they are inferring more. Where each ward goes and what it asks, how to take theirs away, the rhythm that makes looking free, and the shape of where an invisible jungler can be.",
+    level: "core",
+    lessons: [
+      wardPlacementsByPhase,
+      sweeperAndControlWards,
+      minimapRhythm,
+      theDangerTriangle,
+      wardingAsATeam,
+      visionBeforeObjectives,
+    ],
   },
 ];

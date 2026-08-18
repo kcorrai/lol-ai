@@ -6,13 +6,14 @@ import { test, expect } from "@playwright/test";
 test.use({ storageState: { cookies: [], origins: [] } });
 
 test.describe("Academy", () => {
-  test("hub is reachable without login and lists both tracks", async ({ page }) => {
+  test("hub is reachable without login and lists every track", async ({ page }) => {
     await page.goto("/academy");
     await expect(page).not.toHaveURL(/\/login/);
 
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Learn the game");
-    await expect(page.getByRole("link", { name: /Foundations/ }).first()).toBeVisible();
-    await expect(page.getByRole("link", { name: /Laning/ }).first()).toBeVisible();
+    for (const track of ["Foundations", "Laning", "Vision & Map"]) {
+      await expect(page.getByRole("link", { name: new RegExp(track) }).first()).toBeVisible();
+    }
   });
 
   test("hub recommends a first lesson and links to it", async ({ page }) => {
