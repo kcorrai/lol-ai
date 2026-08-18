@@ -2,7 +2,15 @@
 // the ones the Classic grid compares against, so they double as the contract
 // between scripts/syncQuizChampionData.ts and everything that reads the data.
 
-export type QuizMode = "classic" | "ability" | "splash" | "lore" | "quote" | "emoji";
+export type QuizMode =
+  | "classic"
+  | "ability"
+  | "splash"
+  | "lore"
+  | "quote"
+  | "emoji"
+  | "build"
+  | "impostor";
 
 export const QUIZ_MODES: readonly QuizMode[] = [
   "classic",
@@ -11,6 +19,8 @@ export const QUIZ_MODES: readonly QuizMode[] = [
   "lore",
   "quote",
   "emoji",
+  "build",
+  "impostor",
 ] as const;
 
 export function isQuizMode(value: string): value is QuizMode {
@@ -74,6 +84,21 @@ export interface ChampionBuildEntry {
   skillMax: string[];
 }
 
+/** One item as the Build prompt shows it: the icon URL carries the id, the name
+ *  is the alt text and the reveal. */
+export interface BuildItem {
+  id: number;
+  name: string;
+}
+
+/** A summoner spell as the Build prompt shows it. `image` is the Data Dragon
+ *  filename, which is what `spellIconUrl` needs. */
+export interface BuildSpell {
+  id: number;
+  name: string;
+  image: string;
+}
+
 /** Everything a build references, named, so nothing has to be looked up live. */
 export interface BuildDataFile {
   version: string;
@@ -124,7 +149,25 @@ export type QuizPrompt =
   | { kind: "splash"; assetUrl: string }
   | { kind: "lore"; text: string }
   | { kind: "quote"; text: string }
-  | { kind: "emoji"; emojis: string[] };
+  | { kind: "emoji"; emojis: string[] }
+  | {
+      kind: "build";
+      /** The opening items, always present. Everything below arrives with misses. */
+      core: BuildItem[];
+      boots?: BuildItem[];
+      starter?: BuildItem[];
+      spells?: BuildSpell[];
+      /** Ability max order, e.g. ["Q", "E", "W"]. */
+      skillMax?: string[];
+    }
+  | {
+      kind: "impostor";
+      /** Eight champions, one of which is the answer. Named, because reading
+       *  splash art is not the puzzle and a button needs an accessible name. */
+      candidates: { id: string; name: string }[];
+      /** Null until three misses; `value` stays null until five. */
+      trait: { category: string; value: string | null } | null;
+    };
 
 /** What the server sends back for one guess. */
 export interface GuessResult {

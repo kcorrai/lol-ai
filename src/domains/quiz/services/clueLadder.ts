@@ -50,6 +50,22 @@ const LADDERS: Record<LadderMode, readonly { at: number; text: string }[]> = {
     { at: 4, text: "The fifth emoji" },
     { at: 5, text: "The champion's position" },
   ],
+  // The compiled build data gives every champion in the pool all five groups,
+  // so the ladder can promise them without checking today's answer.
+  build: [
+    { at: 0, text: "The core items" },
+    { at: 1, text: "The boots" },
+    { at: 2, text: "The starting items" },
+    { at: 3, text: "The summoner spells" },
+    { at: 4, text: "The skill max order" },
+    { at: 5, text: "The champion's position" },
+  ],
+  // Eight portraits are a one-in-eight blind guess, so this one pays out slowly.
+  impostor: [
+    { at: 0, text: "Eight champions — seven share something" },
+    { at: 3, text: "What kind of thing they share" },
+    { at: 5, text: "The shared value itself" },
+  ],
 };
 
 /** How many emoji clues one champion has — the same for all of them. */

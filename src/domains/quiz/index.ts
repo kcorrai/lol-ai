@@ -4,6 +4,8 @@
 
 export type {
   AbilitySlot,
+  BuildItem,
+  BuildSpell,
   CellMatch,
   ChampionAbility,
   ClassicCell,

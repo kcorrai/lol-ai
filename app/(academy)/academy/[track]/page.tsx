@@ -3,10 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Check, Lock, RotateCcw, Star } from "lucide-react";
 import {
-  TRACKS,
+  coreTracks,
   getLessonStatuses,
   getTrack,
+  isRolePath,
   lessonId,
+  roleTracks,
   trackIds,
   trackMinutes,
   type LessonStatus,
@@ -144,16 +146,20 @@ export default async function TrackPage({ params }: PageProps): Promise<React.Re
         })}
       </ol>
 
+      {/* Siblings, not every track: a role path's neighbours are the other four roles, and
+          the core curriculum's are each other. Eleven links here would read as a site map. */}
       <nav className="mt-10 flex flex-wrap gap-4 border-t border-line-1 pt-5">
-        {TRACKS.filter((t) => t.id !== track.id).map((other) => (
-          <Link
-            key={other.id}
-            href={`/academy/${other.id}`}
-            className="font-mono text-[11px] uppercase tracking-label text-text-muted hover:text-accent"
-          >
-            {other.title} →
-          </Link>
-        ))}
+        {(isRolePath(track) ? roleTracks() : coreTracks())
+          .filter((t) => t.id !== track.id)
+          .map((other) => (
+            <Link
+              key={other.id}
+              href={`/academy/${other.id}`}
+              className="font-mono text-[11px] uppercase tracking-label text-text-muted hover:text-accent"
+            >
+              {other.title} →
+            </Link>
+          ))}
       </nav>
     </div>
   );

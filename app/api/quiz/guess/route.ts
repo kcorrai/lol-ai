@@ -6,7 +6,7 @@ import { apiSuccess, apiError } from "@/lib/api/response";
 import { ApiError, Errors } from "@/lib/api/errors";
 import { checkRateLimit, rateLimitResponse, getIp } from "@/lib/api/rateLimit";
 import { UnknownChampionError, isQuizMode, judgeGuess, revealAnswer } from "@/domains/quiz";
-import { recordGiveUp, recordGuess } from "@/domains/quiz/services/streakService";
+import { recordBestEffort, recordGiveUp, recordGuess } from "@/domains/quiz/services/streakService";
 import { logger } from "@/lib/utils/logger";
 
 // Guesses are judged here rather than in the browser. The answer is never sent
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     const giveUp = revealSchema.safeParse(raw);
     if (giveUp.success) {
       if (userId && !giveUp.data.practiceSeed) {
-        await recordGiveUp(userId, giveUp.data.mode, now);
+        await recordBestEffort(() => recordGiveUp(userId, giveUp.data.mode, now));
       }
       return apiSuccess({ answer: revealAnswer(giveUp.data.mode, now, giveUp.data.practiceSeed) });
     }
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     const result = judgeGuess(mode, guess, now, previousGuesses, practiceSeed);
 
     if (userId && !practiceSeed) {
-      await recordGuess(userId, mode, result.guess, result.correct, now);
+      await recordBestEffort(() => recordGuess(userId, mode, result.guess, result.correct, now));
     }
 
     return apiSuccess(result);

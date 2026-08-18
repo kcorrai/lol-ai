@@ -4,7 +4,9 @@ import { DEFAULT_PLACEMENT, placeFromProfile, type Placement } from "@/domains/a
 import { chooseNextLesson, type Recommendation } from "@/domains/academy/recommendation";
 import { getLessonStatuses } from "@/domains/academy/services/progressService";
 import { getActiveAssignments, type AssignmentView } from "@/domains/academy/services/assignmentService";
-import type { LeakTag, LessonStatus } from "@/domains/academy/types";
+import { primaryPositionForAccount } from "@/domains/academy/services/assignmentReadings";
+import { roleFromPosition } from "@/domains/academy/roles";
+import type { LeakTag, LessonStatus, RoleId } from "@/domains/academy/types";
 
 /** Habit types the habit detector raises that the curriculum knows how to teach to. */
 const TEACHABLE: readonly string[] = [
@@ -24,6 +26,8 @@ export interface AcademyOverview {
   assignments: AssignmentView[];
   /** False when there is nothing to personalise from — no account, or no synced matches. */
   personalised: boolean;
+  /** The role the player actually queues, which decides whose role path is theirs. */
+  role: RoleId | null;
 }
 
 /**
@@ -40,9 +44,11 @@ export async function getAcademyOverview(userId: string | null): Promise<Academy
         statuses: new Map(),
         placement: DEFAULT_PLACEMENT,
         detectedLeaks: [],
+        role: null,
       }),
       assignments: [],
       personalised: false,
+      role: null,
     };
   }
 
@@ -52,15 +58,27 @@ export async function getAcademyOverview(userId: string | null): Promise<Academy
     primaryRiotAccountId(userId),
   ]);
 
-  const { placement, detectedLeaks, personalised } = await personalise(riotAccountId);
+  const { placement, detectedLeaks, personalised, role } = await personalise(riotAccountId);
 
   return {
     statuses,
     placement,
-    recommendation: chooseNextLesson({ statuses, placement, detectedLeaks }),
+    recommendation: chooseNextLesson({ statuses, placement, detectedLeaks, role }),
     assignments,
     personalised,
+    role,
   };
+}
+
+/**
+ * Just the role, for surfaces that need to know whose path is whose and nothing else. The hub
+ * gets it from `getAcademyOverview`; this spares the role-paths page a placement it never renders.
+ */
+export async function getPlayerRole(userId: string | null): Promise<RoleId | null> {
+  if (!userId) return null;
+  const riotAccountId = await primaryRiotAccountId(userId);
+  if (!riotAccountId) return null;
+  return roleFromPosition(await primaryPositionForAccount(riotAccountId).catch(() => null));
 }
 
 async function primaryRiotAccountId(userId: string): Promise<string | null> {
@@ -73,18 +91,23 @@ interface Personalisation {
   placement: Placement;
   detectedLeaks: LeakTag[];
   personalised: boolean;
+  role: RoleId | null;
 }
 
 async function personalise(riotAccountId: string | null): Promise<Personalisation> {
   if (!riotAccountId) {
-    return { placement: DEFAULT_PLACEMENT, detectedLeaks: [], personalised: false };
+    return { placement: DEFAULT_PLACEMENT, detectedLeaks: [], personalised: false, role: null };
   }
 
   // A linked account with no synced matches throws from the profile builder. That is a
   // normal state on day one, not an error — fall back to the default placement.
-  const [profile, habits] = await Promise.all([
+  // The role is read off ranked games only, so it can be known for a player whose profile
+  // is too thin to place — and unknown for one whose profile is fine but who has never
+  // queued ranked. The two are independent, which is why neither falls back to the other.
+  const [profile, habits, position] = await Promise.all([
     getPlayerPerformanceProfile(riotAccountId, 20).catch(() => null),
     getActiveHabits(riotAccountId).catch(() => []),
+    primaryPositionForAccount(riotAccountId).catch(() => null),
   ]);
 
   const detectedLeaks = habits
@@ -95,5 +118,6 @@ async function personalise(riotAccountId: string | null): Promise<Personalisatio
     placement: profile ? placeFromProfile(profile) : DEFAULT_PLACEMENT,
     detectedLeaks,
     personalised: profile !== null,
+    role: roleFromPosition(position),
   };
 }

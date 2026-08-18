@@ -60,6 +60,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // The curriculum is code, so these are exact and never go stale against the routes.
   const academyRoutes: MetadataRoute.Sitemap = [
     { url: `${BASE_URL}/academy`, changeFrequency: "weekly" as const, priority: 0.9 },
+    { url: `${BASE_URL}/academy/roles`, changeFrequency: "weekly" as const, priority: 0.7 },
     ...TRACKS.map((track) => ({
       url: `${BASE_URL}/academy/${track.id}`,
       changeFrequency: "monthly" as const,

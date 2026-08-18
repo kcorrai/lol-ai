@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Lock, RotateCcw, Star } from "lucide-react";
 import { lessonId, trackMinutes } from "@/domains/academy/curriculum";
+import { ROLE_LABEL } from "@/domains/academy/roles";
 import type { LessonStatus, Track } from "@/domains/academy/types";
 
 interface TrackCardProps {
@@ -8,6 +9,8 @@ interface TrackCardProps {
   statuses: Map<string, LessonStatus>;
   /** 0–1. Rendered as a meter across the top of the card. */
   completion: number;
+  /** Marks the one role path that belongs to this player's own role. */
+  yours?: boolean;
 }
 
 const LEVEL_LABEL: Record<Track["level"], string> = {
@@ -18,7 +21,12 @@ const LEVEL_LABEL: Record<Track["level"], string> = {
 
 const DONE: readonly LessonStatus[] = ["completed", "mastered"];
 
-export function TrackCard({ track, statuses, completion }: TrackCardProps): React.ReactElement {
+export function TrackCard({
+  track,
+  statuses,
+  completion,
+  yours = false,
+}: TrackCardProps): React.ReactElement {
   const done = track.lessons.filter((l) => DONE.includes(statuses.get(lessonId(l)) ?? "available"));
   const mastered = track.lessons.filter((l) => statuses.get(lessonId(l)) === "mastered").length;
   // A mastery the nightly check took back (ADR-027). Counted separately from `done` on purpose:
@@ -36,7 +44,9 @@ export function TrackCard({ track, statuses, completion }: TrackCardProps): Reac
 
       <div className="flex flex-1 flex-col p-5">
         <div className="flex items-center justify-between gap-3">
-          <span className="hud-label text-accent">{LEVEL_LABEL[track.level]}</span>
+          <span className="hud-label text-accent">
+            {yours ? "Your role" : track.role ? ROLE_LABEL[track.role] : LEVEL_LABEL[track.level]}
+          </span>
           <span className="font-mono text-[11px] text-text-muted">
             {done.length}/{track.lessons.length}
           </span>
