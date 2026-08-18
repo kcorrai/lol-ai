@@ -53,8 +53,11 @@ export function OverlayAccent({ children }: { children: ReactNode }): JSX.Elemen
  * (ADR-026).
  */
 export function OverlayBadge(): JSX.Element {
+  // fg-3 rather than fg-4. At fg-4 it was legible on the dark card in a browser
+  // and effectively invisible once composited over stream footage — which
+  // defeats the one thing it is there to do.
   return (
-    <span className="mt-0.5 text-[9px] font-medium uppercase tracking-[0.22em] text-fg-4">
+    <span className="mt-0.5 text-[9px] font-medium uppercase tracking-[0.22em] text-fg-3">
       laneiq.gg
     </span>
   );
