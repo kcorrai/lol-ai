@@ -56,6 +56,13 @@ from has expired and the drills the player is holding no longer exist — gradin
 against a newly generated set would mark right answers wrong. A miss is an error the reader can
 act on ("this lesson has been refreshed"), not a silent regeneration.
 
+**The assignment is measured on that champion, in that champion's role.** The champion filter is
+the obvious half. The role is not: `rankedBaseline` derives the account's main role, and an
+account whose last twenty ranked games were eleven support and seven mid reads as a support main
+— so a Veigar lesson backed by 43 ranked mid games measured zero of them and opened nothing.
+`resolveLesson` therefore carries the lesson's own role and `rankedBaseline` uses it rather than
+deriving one. This is the same class of finding as the role fix in LA-22, one level further in.
+
 **It is not in the registry.** `TrackId` gains `"champion"`, the one member with no `Track`
 behind it. No sitemap entry, no `generateStaticParams`, no place in `TRACKS`, and
 `getLessonById` returns null for it — champion lesson ids resolve through the service instead.

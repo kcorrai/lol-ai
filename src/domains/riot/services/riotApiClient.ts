@@ -8,6 +8,7 @@ import type {
   RankedEntryDTO,
   MatchDTO,
   MatchTimelineDTO,
+  ChampionMasteryDTO,
 } from "@/domains/riot/types/riot.types";
 
 // Region → routing cluster (for Account and Match v5 APIs)
@@ -188,6 +189,41 @@ export async function getRankedEntriesByPuuidDirect(
     return await getRankedEntries(summoner.id, region);
   } catch (err) {
     logger.warn(`[RiotClient] summonerId fallback also failed for ${puuid.slice(0, 8)}…: ${err instanceof Error ? err.message : String(err)}`);
+    return [];
+  }
+}
+
+/**
+ * Every champion this account has mastery on, all-time.
+ *
+ * One request per account, and the only place the app can see past the two years
+ * match-v5 retains — a player with 480k points on a champion was playing it long
+ * before we started recording anything.
+ *
+ * Cached for a day: mastery moves by a few thousand points a game and nothing in
+ * the product reads it often enough to justify a fresher copy.
+ */
+export async function getChampionMastery(
+  puuid: string,
+  region: string
+): Promise<ChampionMasteryDTO[]> {
+  const url = `https://${region}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/${puuid}`;
+  try {
+    return await riotClient.get<ChampionMasteryDTO[]>(url, {
+      cacheTtl: 86_400,
+      cacheKey: CacheKeys.championMastery(puuid, region),
+    });
+  } catch (err) {
+    // Soft-fail, like the other lookups here: an account with no mastery and a
+    // failed call are the same shape to a caller, and mastery is decoration on
+    // every screen that reads it — never the reason a page exists.
+    //
+    // There is deliberately no by-summoner fallback the way ranked has one:
+    // Summoner-v4 stopped returning the encrypted `id`, so that route resolves
+    // to nothing anyway (see getRankedEntriesByPuuidDirect above).
+    logger.warn(
+      `[RiotClient] mastery failed for ${puuid.slice(0, 8)}…: ${err instanceof Error ? err.message : String(err)}`
+    );
     return [];
   }
 }

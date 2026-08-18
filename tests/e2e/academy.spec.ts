@@ -122,6 +122,19 @@ test.describe("Academy", () => {
     await expect(page.getByRole("listitem")).toHaveCount(5);
   });
 
+  // Champion lessons are generated, so the guard that matters is who can cause a generation:
+  // only a signed-in player, and only for a champion of their own (ADR-030).
+  test("champion mastery is signed-in only, and a stranger cannot summon a lesson", async ({
+    page,
+  }) => {
+    await page.goto("/academy/champion");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("one champion");
+    await expect(page.getByText(/Sign in and link a Riot account/)).toBeVisible();
+
+    const response = await page.goto("/academy/champion/ahri");
+    expect(response?.status()).toBe(404);
+  });
+
   test("the section rail moves between tracks", async ({ page }) => {
     await page.goto("/academy");
 

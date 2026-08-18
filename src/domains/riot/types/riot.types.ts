@@ -17,6 +17,20 @@ export interface SummonerDTO {
   summonerLevel: number;
 }
 
+/**
+ * Champion mastery — the only signal Riot serves that predates our match window.
+ * match-v5 keeps roughly two years; mastery points have been accumulating since the
+ * account was made, which is what makes them worth a request on a career page.
+ */
+export interface ChampionMasteryDTO {
+  puuid: string;
+  championId: number;
+  championLevel: number;
+  championPoints: number;
+  /** Epoch milliseconds. Riot gives no *first* play, only the most recent one. */
+  lastPlayTime: number;
+}
+
 export interface RankedEntryDTO {
   leagueId: string;
   summonerId: string;

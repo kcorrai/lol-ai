@@ -195,9 +195,17 @@ Four rules give it its shape:
   `champion/…` id to `getCachedOtpAnalysis`, which never generates. A miss is a 404 the reader
   can act on: the drills they are holding no longer exist, and grading them against a newly
   generated set would mark right answers wrong.
-- **The assignment is locked to the champion.** `academy_assignments.championId` is set for a
-  champion lesson and the readings filter on it, so a Yasuo lesson is judged on Yasuo games.
-  Null — every assignment the authored curriculum opens — means champion-blind.
+- **The assignment is locked to the champion, and to that champion's role.**
+  `academy_assignments.championId` is set for a champion lesson and the readings filter on it, so
+  a Yasuo lesson is judged on Yasuo games. Null — every assignment the authored curriculum opens
+  — means champion-blind.
+
+  The role is the second half and it was found against real data: a champion lesson measures in
+  the role that *champion* is played in, not the account's main role. An account whose last
+  twenty ranked games were eleven support and seven mid reads as a support main, so its Veigar
+  lesson — 43 ranked games, all mid — found zero of them and opened no assignment at all. The
+  role now comes from the lesson (`resolveLesson` carries it), and `rankedBaseline` uses it
+  instead of deriving one. `championAssignment.test.ts` holds that.
 
 Not in the registry: `TrackId` gains `"champion"`, the one member with no `Track` behind it. No
 sitemap entry, no `generateStaticParams`, `noindex`, and no certificate — a certificate is for a
