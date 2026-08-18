@@ -49,6 +49,17 @@ export function LoginForm(): React.ReactElement {
       return;
     }
 
+    // NextAuth rejects a sign-in two different ways. Bad credentials set `error`;
+    // a CSRF mismatch answers 200 with `ok: true`, no error, and a url pointing
+    // back at its own sign-in page. Without this second check the form reads that
+    // as success and pushes to /dashboard, where middleware bounces the visitor
+    // straight back to /login having been told nothing at all. Submitting again
+    // works, because by then the CSRF cookie has settled.
+    if (result?.url?.includes("/api/auth/signin")) {
+      setServerError("Your login session expired before it was sent. Please try again.");
+      return;
+    }
+
     router.push("/dashboard");
     router.refresh();
   }

@@ -1,16 +1,26 @@
 import { defineConfig, devices } from "@playwright/test";
+import { loadE2EEnv } from "./tests/e2e/helpers/env";
 
-// E2E tests run on port 3001 to avoid clashing with the dev server on 3000.
+// Before anything reads process.env: the config, global-setup and the helpers
+// are plain Node, so nothing has loaded .env.local for them the way the dev
+// server loads it for itself.
+loadE2EEnv();
+
+// E2E runs on 3002. It used to be 3001 — the same port `npm run dev` uses — and
+// because `reuseExistingServer` is on outside CI, a suite started while a dev
+// server was up silently bound to *that* server instead. It has none of the E2E
+// env below (no `E2E_MOCK`, a different `NEXTAUTH_URL`), so half the suite fails
+// on a config nobody changed. A port of its own removes the whole class.
 // Set E2E_DATABASE_URL to a separate test DB; falls back to DATABASE_URL for
 // local development where a single DB is acceptable.
-const BASE_URL = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3001";
+const BASE_URL = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3002";
 
 // The server has to come up on the port the tests are pointed at. Hardcoding
-// 3001 here while `baseURL` follows the override means a run on another port
+// the port here while `baseURL` follows the override means a run on another port
 // silently reuses whatever is already listening — which is how a suite ends up
 // testing a different checkout, or failing to log in because that server's
 // NEXTAUTH_URL names a third port.
-const PORT = new URL(BASE_URL).port || "3001";
+const PORT = new URL(BASE_URL).port || "3002";
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -19,6 +29,13 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   // Sequential execution: all tests share DB state seeded in global-setup
   workers: 1,
+  // The suite is served by `next dev`, which compiles a route on the request that
+  // reaches it first — tens of seconds for the heavier pages. Playwright's 30s
+  // default is a budget, not an assertion, and leaving it there means whichever
+  // spec happens to touch a route first fails on the compile rather than on the
+  // product. Individual expects keep their own tight budgets, so a real hang is
+  // still reported by the assertion that is actually waiting.
+  timeout: 90_000,
   reporter: process.env.CI
     ? [["github"], ["html", { open: "never", outputFolder: "playwright-report" }]]
     : [["list"], ["html", { open: "never", outputFolder: "playwright-report" }]],
@@ -143,6 +160,17 @@ export default defineConfig({
       NEXT_PUBLIC_APP_URL: BASE_URL,
       RIOT_API_KEY: "e2e-fake-riot-api-key",
       CRON_SECRET: "e2e-fake-cron-secret",
+      // No shared Redis for a test run. Next loads `.env.local` for the dev
+      // server, so without this the suite writes into the real Upstash instance:
+      // the brute-force counter, the rate limiters and the caches all live
+      // there. The brute-force one is the fatal case — `auth.spec.ts` submits a
+      // wrong password on purpose, five of those inside fifteen minutes lock the
+      // seeded user out, and every later run fails to log in against state left
+      // behind by an earlier one. Blank means the in-memory fallback, which dies
+      // with the server.
+      KV_REST_API_URL: "",
+      KV_REST_API_TOKEN: "",
+      KV_URL: "",
       // Prevent Sentry from emitting noise during tests
       NEXT_PUBLIC_SENTRY_DSN: "",
     },

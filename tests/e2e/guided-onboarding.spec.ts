@@ -21,6 +21,23 @@ test.describe("Forced first-journey onboarding", () => {
     }
   });
 
+  // Put the gate back even when the test above fails partway. Opening the forced
+  // journey is a change to the shared seeded account, and an unfinished tour leaves
+  // a full-screen overlay on every page: `riot.spec` and `share.spec` then fail on
+  // clicks that land on the backdrop instead of the control, which reads as seven
+  // broken features rather than one test that did not clean up after itself.
+  test.afterEach(async () => {
+    const prisma = createTestPrisma();
+    try {
+      await prisma.profile.updateMany({
+        where: { user: { email: E2E_USER.email } },
+        data: { onboardingCompletedAt: new Date() },
+      });
+    } finally {
+      await prisma.$disconnect();
+    }
+  });
+
   test("drives the user across pages and completion is persisted", async ({ page }) => {
     await page.goto("/dashboard");
     await page.evaluate((k) => localStorage.removeItem(k), GUIDE_KEY);

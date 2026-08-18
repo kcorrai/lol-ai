@@ -134,7 +134,6 @@ export function DraftRoomShell({ code }: Props): React.ReactElement {
             state={state}
             game={game}
             role={role}
-            onReady={actions.setReady}
             onSwapSides={actions.setBlueTeam}
             pending={actions.pending}
           />

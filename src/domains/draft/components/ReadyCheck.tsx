@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { teamOnSide } from "@/domains/draft";
 import type { DraftGameState, DraftSeriesState, TeamNumber, ViewerRole } from "@/domains/draft";
 
@@ -8,7 +7,6 @@ interface Props {
   state: DraftSeriesState;
   game: DraftGameState;
   role: ViewerRole;
-  onReady: (ready: boolean) => void;
   onSwapSides: (blueTeam: TeamNumber) => void;
   pending: boolean;
 }
@@ -22,7 +20,6 @@ export function ReadyCheck({
   state,
   game,
   role,
-  onReady,
   onSwapSides,
   pending,
 }: Props): React.ReactElement {
@@ -45,16 +42,10 @@ export function ReadyCheck({
           </p>
         </div>
 
-        {isDrafter ? (
-          <Button
-            type="button"
-            variant={myReady ? "outline" : "default"}
-            onClick={() => onReady(!myReady)}
-            disabled={pending}
-          >
-            {myReady ? "Cancel ready" : "Ready"}
-          </Button>
-        ) : (
+        {/* The Ready button lives in the action bar and only there — see
+            DraftActionBar. A second one here meant two controls for one piece
+            of state, and a drafter who could not tell which was live. */}
+        {!isDrafter && (
           <span className="text-[12px] text-text-muted">
             {game.blueReady && game.redReady ? "Starting…" : "Waiting for both sides"}
           </span>

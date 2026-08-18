@@ -7,6 +7,15 @@ import { E2E_USER, AUTH_FILE } from "./helpers/constants";
 setup("authenticate", async ({ page }) => {
   await page.goto("/login");
 
+  // The login page fires its own /api/auth/session and /api/auth/providers calls
+  // on mount, and NextAuth mints the CSRF cookie on whichever /api/auth request
+  // reaches it first. Cold, those are still in flight when a script can already
+  // type, so a submit that overlaps them posts one response's token against
+  // another's cookie — rejected, and the page bounces back here. A person cannot
+  // fill a form that fast; waiting for the page to settle is what keeps this a
+  // test of logging in rather than of a cold-start race.
+  await page.waitForLoadState("networkidle");
+
   await page.fill("#email", E2E_USER.email);
   await page.fill("#password", E2E_USER.password);
   await page.click('button[type="submit"]');
