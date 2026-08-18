@@ -1,4 +1,6 @@
 import { allChampions, splashPool } from "@/domains/quiz/services/championPool";
+import { buildPool, visibleBuild } from "@/domains/quiz/services/buildMode";
+import { impostorPool, impostorPrompt } from "@/domains/quiz/services/impostorMode";
 import {
   fnv1a,
   nextResetAt,
@@ -33,6 +35,10 @@ function poolFor(mode: QuizMode): readonly QuizChampion[] {
       return allChampions().filter((c) => Boolean(QUOTES[c.id]));
     case "emoji":
       return allChampions().filter((c) => (EMOJI[c.id]?.length ?? 0) > 0);
+    case "build":
+      return buildPool();
+    case "impostor":
+      return impostorPool();
     default:
       return allChampions();
   }
@@ -141,6 +147,7 @@ export function hintFor(mode: QuizMode, answer: QuizChampion, misses: number): s
     case "ability":
     case "splash":
     case "emoji":
+    case "build":
       return answer.positions.join(", ");
     default:
       return undefined;
@@ -157,6 +164,7 @@ function promptFor(
   mode: QuizMode,
   answer: QuizChampion,
   misses: number,
+  dateKey: string,
   practiceSeed?: string
 ): QuizPrompt {
   switch (mode) {
@@ -174,13 +182,18 @@ function promptFor(
       return { kind: "quote", text: quoteFor(answer) };
     case "emoji":
       return { kind: "emoji", emojis: visibleEmoji(answer, misses) };
+    case "build":
+      return visibleBuild(answer, misses);
+    case "impostor":
+      return impostorPrompt(answer, practiceSeed ?? dateKey, misses);
   }
 }
 
 /**
  * Today's puzzle for one mode, carrying no answer. `misses` only widens what the
- * prompt reveals (emoji), so passing an inflated count cannot uncover anything a
- * player could not have reached by guessing that many times anyway.
+ * prompt reveals (emoji, build, impostor), so passing an inflated count cannot
+ * uncover anything a player could not have reached by guessing that many times
+ * anyway.
  */
 export function buildPuzzle(
   mode: QuizMode,
@@ -195,7 +208,7 @@ export function buildPuzzle(
     dateKey,
     puzzleNumber: puzzleNumber(dateKey),
     practiceSeed,
-    prompt: promptFor(mode, answer, misses, practiceSeed),
+    prompt: promptFor(mode, answer, misses, dateKey, practiceSeed),
     nextResetAt: nextResetAt(now).toISOString(),
   };
 }
