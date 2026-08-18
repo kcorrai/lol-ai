@@ -1,17 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { HudPanel, HudRule } from "@/components/dashboard/laneiq/HudPanel";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDailyQuiz } from "@/hooks/useDailyQuiz";
 import { useQuizGame, type QuizGameState } from "@/hooks/useQuizGame";
 import type { ModeResult, QuizMode } from "@/domains/quiz";
 import { ChampionGuessInput } from "./ChampionGuessInput";
 import { ClassicGrid } from "./ClassicGrid";
+import { ClueLadder } from "./ClueLadder";
 import { GuessList } from "./GuessList";
-import { MODE_LABELS } from "./ModeTabs";
+import { MODE_ICONS, MODE_LABELS } from "./ModeStrip";
 import { PuzzlePrompt } from "./PuzzlePrompt";
 import { ResultPanel } from "./ResultPanel";
+import { StageShell, StageHeader } from "./StageShell";
 
 interface QuizBoardProps {
   mode: QuizMode;
@@ -19,6 +20,7 @@ interface QuizBoardProps {
   /** Every mode finished today, so the share card is a scorecard not one row. */
   allResults: ModeResult[];
   onFinished: (result: ModeResult) => void;
+  onNextMode: () => void;
   /** Set in practice mode. No streak, no share card, no record kept. */
   practiceSeed?: string;
   onNextPractice?: () => void;
@@ -29,6 +31,7 @@ export function QuizBoard({
   streak,
   allResults,
   onFinished,
+  onNextMode,
   practiceSeed,
   onNextPractice,
 }: QuizBoardProps): React.JSX.Element {
@@ -41,6 +44,7 @@ export function QuizBoard({
   const { data, isLoading, isError } = useDailyQuiz(mode, game.misses, practiceSeed);
 
   const finished = game.state.solved || game.state.gaveUp;
+  const Icon = MODE_ICONS[mode];
 
   function report(next: QuizGameState | null): void {
     // A practice round is not part of the day: it must not touch the scorecard,
@@ -51,55 +55,66 @@ export function QuizBoard({
 
   if (isLoading) {
     return (
-      <HudPanel className="space-y-3 p-4 md:p-5">
-        <Skeleton className="h-6 w-40" />
-        <Skeleton className="h-40 w-full" />
-        <Skeleton className="h-10 w-full" />
-      </HudPanel>
+      <StageShell>
+        <div className="grid gap-3 p-5">
+          <Skeleton className="h-6 w-40" />
+          <Skeleton className="h-48 w-full" />
+          <Skeleton className="h-11 w-full" />
+        </div>
+      </StageShell>
     );
   }
 
   if (isError || !data) {
     return (
-      <HudPanel className="p-5">
-        <p className="text-sm text-fg-2">
+      <StageShell>
+        <p className="p-5 text-sm text-fg-2">
           Today&apos;s {MODE_LABELS[mode]} puzzle could not be loaded. Refresh to try again.
         </p>
-      </HudPanel>
+      </StageShell>
     );
   }
 
-  const { puzzle, champions } = data;
+  const { puzzle } = data;
+  const hints = [...new Set(game.state.results.map((r) => r.hint).filter(Boolean))] as string[];
 
   return (
-    <HudPanel className="space-y-4 p-4 md:p-5">
-      <div className="flex items-baseline justify-between gap-3">
-        <h2 className="font-display text-base font-bold uppercase tracking-wide text-fg-1">
-          {MODE_LABELS[mode]}
-        </h2>
-        <span className="font-mono text-[10.5px] text-fg-4">
-          {practiceSeed ? "PRACTICE" : `#${puzzle.puzzleNumber}`}
-        </span>
+    <StageShell solved={game.state.solved}>
+      <StageHeader
+        icon={Icon}
+        label={MODE_LABELS[mode]}
+        tag={practiceSeed ? "PRACTICE" : `#${puzzle.puzzleNumber}`}
+        guessCount={game.state.results.length}
+        misses={game.misses}
+      />
+
+      <div className="grid lg:grid-cols-[minmax(0,1fr)_264px]">
+        <div key={mode} className="grid min-w-0 animate-quiz-stage gap-4 p-5">
+          <PuzzlePrompt prompt={puzzle.prompt} misses={game.misses} revealed={finished} />
+          {mode === "classic" ? (
+            <ClassicGrid results={game.state.results} />
+          ) : (
+            <GuessList results={game.state.results} />
+          )}
+        </div>
+        <ClueLadder mode={mode} misses={game.misses} hints={hints} />
       </div>
 
-      <PuzzlePrompt prompt={puzzle.prompt} misses={game.misses} revealed={finished} />
-
       {!finished && (
-        <>
-          <HudRule label="// YOUR GUESS" />
+        <div className="border-t border-line-1 px-5 py-4">
           <ChampionGuessInput
-            champions={champions}
+            champions={data.champions}
             alreadyGuessed={game.state.results.map((r) => r.guess)}
             disabled={game.pending}
             onGuess={(name) => void game.submit(name).then(report)}
           />
           {game.error && (
-            <p role="alert" className="text-[12px] text-danger">
+            <p role="alert" className="mt-2.5 text-[12px] text-danger">
               {game.error}
             </p>
           )}
-          <div className="flex items-center justify-between gap-3">
-            <span className="font-mono text-[10.5px] text-fg-4">
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+            <span className="font-mono text-[10px] uppercase tracking-label text-fg-4">
               {game.misses === 0
                 ? "Unlimited guesses — each miss reveals a little more"
                 : `${game.misses} ${game.misses === 1 ? "miss" : "misses"}`}
@@ -107,16 +122,16 @@ export function QuizBoard({
             <button
               type="button"
               onClick={() => void game.giveUp().then(report)}
-              className="font-mono text-[10.5px] uppercase tracking-label text-fg-4 underline-offset-2 hover:text-fg-2 hover:underline"
+              className="font-mono text-[10px] uppercase tracking-label text-fg-3 underline-offset-2 hover:text-fg-1 hover:underline"
             >
               Give up
             </button>
           </div>
-        </>
+        </div>
       )}
 
       {finished && practiceSeed && game.state.answer && (
-        <div className="notch flex flex-wrap items-center justify-between gap-3 border border-line-2 bg-surface-dark p-4">
+        <div className="flex animate-quiz-rise flex-wrap items-center justify-between gap-3 border-t border-line-2 bg-surface-dark px-5 py-4">
           <div>
             <p className="hud-label">
               {game.state.solved ? `Solved in ${game.state.results.length}` : "The answer was"}
@@ -128,7 +143,7 @@ export function QuizBoard({
           <button
             type="button"
             onClick={onNextPractice}
-            className="notch-sm border border-accent/50 bg-accent/12 px-3.5 py-2 font-mono text-[11px] uppercase tracking-label text-accent hover:bg-accent/20"
+            className="tag-cut btn-glow border border-accent bg-accent px-3.5 py-2 font-mono text-[11px] font-bold uppercase tracking-label text-ink-1000 hover:bg-acid-400"
           >
             Next puzzle
           </button>
@@ -137,21 +152,15 @@ export function QuizBoard({
 
       {finished && !practiceSeed && game.state.answer && (
         <ResultPanel
-          mode={mode}
           puzzleNumber={puzzle.puzzleNumber}
           answer={game.state.answer}
           guessCount={game.state.results.length}
           solved={game.state.solved}
           streak={streak}
           allResults={allResults}
+          onNextMode={onNextMode}
         />
       )}
-
-      {mode === "classic" ? (
-        <ClassicGrid results={game.state.results} />
-      ) : (
-        <GuessList results={game.state.results} />
-      )}
-    </HudPanel>
+    </StageShell>
   );
 }

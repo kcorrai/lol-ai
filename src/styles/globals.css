@@ -214,4 +214,15 @@
   /* Accent controls go lighter on hover, darker on press — never scale. */
   .btn-glow:hover { box-shadow: var(--glow-accent-soft); }
   .btn-glow:active { transform: translateY(1px); }
+
+  /* The LaneIQ Daily stage leans on motion to narrate a guess (cells flip, the
+     crop widens, the solve sweeps). Scoped rather than global: the rest of the
+     app still animates through the --dur-* vars, which reduced motion zeroes. */
+  @media (prefers-reduced-motion: reduce) {
+    [data-quiz],
+    [data-quiz] * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
 }

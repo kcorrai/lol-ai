@@ -30,6 +30,13 @@ export {
   utcDateKey,
 } from "./services/dailySeed";
 
+// The one component other areas of the app render: the landing page's Daily
+// band needs the same clock the quiz hero shows.
+export { ResetCountdown } from "./components/ResetCountdown";
+
+export { EMOJI_PER_CHAMPION, clueLadder, nextClueNote } from "./services/clueLadder";
+export type { ClueStep } from "./services/clueLadder";
+
 export { CLASSIC_COLUMNS, compareClassic, isSolvedRow } from "./services/classicMode";
 export type { ClassicColumnKey } from "./services/classicMode";
 

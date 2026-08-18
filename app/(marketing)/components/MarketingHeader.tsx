@@ -9,6 +9,7 @@ import { Wordmark } from "./laneiq/Wordmark";
 
 const NAV: ReadonlyArray<{ href: string; label: string }> = [
   { href: "/tools", label: "Tools" },
+  { href: "/quiz", label: "Daily" },
   { href: "/tools/tier-list", label: "Tier list" },
   { href: "/champions", label: "Champions" },
   { href: "/academy", label: "Academy" },

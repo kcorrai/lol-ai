@@ -56,6 +56,33 @@ export interface QuizChampion {
   abilities: ChampionAbility[];
 }
 
+/**
+ * One champion's signature item path, as `scripts/syncQuizBuildData.ts` compiles
+ * it from op.gg. Baked into the repo for the same reason the champion facts are:
+ * the quiz must not depend on a third party being up at request time (LA-13).
+ *
+ * `boots` is legitimately empty for the champions who never buy them, and that
+ * absence is itself a clue rather than missing data.
+ */
+export interface ChampionBuildEntry {
+  position: Position;
+  core: number[];
+  boots: number[];
+  starter: number[];
+  spells: number[];
+  /** Ability max priority, e.g. ["Q", "E", "W"]. */
+  skillMax: string[];
+}
+
+/** Everything a build references, named, so nothing has to be looked up live. */
+export interface BuildDataFile {
+  version: string;
+  items: Record<string, { name: string }>;
+  /** Keyed by summoner spell id; `image` is the Data Dragon filename. */
+  spells: Record<string, { name: string; image: string }>;
+  builds: Record<string, ChampionBuildEntry>;
+}
+
 /** A single Classic-grid cell verdict. */
 export type CellMatch = "exact" | "partial" | "none";
 

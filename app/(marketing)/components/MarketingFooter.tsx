@@ -46,6 +46,7 @@ export async function MarketingFooter(): Promise<React.ReactElement> {
   ];
 
   const tools: FooterLink[] = [
+    { href: "/quiz", label: "LaneIQ Daily" },
     { href: "/tools/counter-picker", label: "Counter picker" },
     { href: "/tools/draft-analyzer", label: "Draft analyzer" },
     { href: "/builds", label: "Builds" },
