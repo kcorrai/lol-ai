@@ -1,18 +1,28 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { getLeagues, getProMeta, prominentLeagues } from "@/domains/esports";
-import type { ProMeta } from "@/domains/esports";
+import {
+  filterByRole,
+  getLeagues,
+  getProMeta,
+  parseProMetaRole,
+  parseProMetaSort,
+  prominentLeagues,
+  sortChampions,
+} from "@/domains/esports";
+import type { PlayerRole, ProMeta, ProMetaSort } from "@/domains/esports";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
 import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
+import { EsportsPageHeader } from "@/domains/esports/components/EsportsPageHeader";
+import { ProMetaFilters } from "@/domains/esports/components/ProMetaFilters";
+import { ProMetaPodium } from "@/domains/esports/components/ProMetaPodium";
+import { ProMetaSummary } from "@/domains/esports/components/ProMetaSummary";
 import { ProMetaTable } from "@/domains/esports/components/ProMetaTable";
-import { PRO_META_SORTS, parseProMetaSort } from "@/domains/esports/proMetaSort";
-import type { ProMetaSort } from "@/domains/esports/proMetaSort";
+import { StatBlock } from "@/domains/esports/components/StatBlock";
 
 export const revalidate = 3600;
 
 interface PageProps {
-  searchParams: { league?: string; sort?: string };
+  searchParams: { league?: string; sort?: string; role?: string };
 }
 
 /**
@@ -27,7 +37,10 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const league = searchParams.league
     ? prominentLeagues(leagues, SCOPE_LEAGUES).find((entry) => entry.slug === searchParams.league)
     : undefined;
-  const scoped = Boolean(league) || parseProMetaSort(searchParams.sort) !== "picks";
+  const scoped =
+    Boolean(league) ||
+    parseProMetaSort(searchParams.sort) !== "picks" ||
+    parseProMetaRole(searchParams.role) !== null;
 
   return {
     title: league
@@ -43,60 +56,24 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   };
 }
 
-function scopeHref(leagueSlug: string | undefined, sort: ProMetaSort): string {
+function scopeHref(
+  leagueSlug: string | undefined,
+  sort: ProMetaSort,
+  role: PlayerRole | null
+): string {
   const params = new URLSearchParams();
   if (leagueSlug) params.set("league", leagueSlug);
   if (sort !== "picks") params.set("sort", sort);
+  if (role) params.set("role", role);
   const query = params.toString();
   return query ? `/esports/champions?${query}` : "/esports/champions";
 }
 
-function Chip({
-  href,
-  active,
-  children,
-}: {
-  href: string;
-  active: boolean;
-  children: React.ReactNode;
-}): React.ReactElement {
-  return (
-    <Link
-      href={href}
-      aria-current={active ? "page" : undefined}
-      className={`tag-cut px-2.5 py-1 font-mono text-[11px] uppercase tracking-label transition-colors ${
-        active
-          ? "bg-accent text-background"
-          : "bg-surface-2 text-text-body hover:bg-surface hover:text-text"
-      }`}
-    >
-      {children}
-    </Link>
-  );
-}
-
-/**
- * What the table is made of, stated before the table.
- *
- * A pick rate is meaningless without its sample, and this one is a rolling
- * window of recent series rather than a whole split — so it says how many games,
- * which patches and how recent.
- */
-function SampleLine({ meta }: { meta: ProMeta }): React.ReactElement {
-  const patches =
-    meta.patches.length === 0
-      ? null
-      : meta.patches.length === 1
-        ? `patch ${meta.patches[0]}`
-        : `patches ${meta.patches[0]}–${meta.patches[meta.patches.length - 1]}`;
-
-  return (
-    <p className="hud-label">
-      {meta.games} {meta.games === 1 ? "game" : "games"}
-      {patches ? ` · ${patches}` : ""}
-      {meta.lastGameAt ? ` · to ${meta.lastGameAt.slice(0, 10)}` : ""}
-    </p>
-  );
+/** The sample's patch window, written the way a patch note names it. */
+function patchWindow(meta: ProMeta): string {
+  if (meta.patches.length === 0) return "—";
+  if (meta.patches.length === 1) return meta.patches[0];
+  return `${meta.patches[0]}–${meta.patches[meta.patches.length - 1]}`;
 }
 
 export default async function ProChampionsPage({
@@ -108,16 +85,21 @@ export default async function ProChampionsPage({
     ? scopes.find((entry) => entry.slug === searchParams.league)
     : undefined;
   const sort = parseProMetaSort(searchParams.sort);
+  const role = parseProMetaRole(searchParams.role);
 
   const meta = await getProMeta(league ? { leagueId: league.id } : {});
+  // Sorted here rather than only inside the table, because the win-rate order
+  // also drops champions with too few picks to rank — and the count under the
+  // table has to say how many rows there actually are.
+  const champions = sortChampions(filterByRole(meta?.champions ?? [], role), sort);
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 md:py-14">
+    <div className="mx-auto max-w-[1240px] px-5 pb-20 pt-7 md:px-8">
       <EsportsJsonLd
         schema={{
           kind: "list",
           name: league ? `${league.name} champion meta` : "Champions in pro play",
-          items: (meta?.champions ?? []).slice(0, 30).map((champion) => ({
+          items: champions.slice(0, 30).map((champion) => ({
             name: champion.championId,
             href: `/builds/${champion.championId}`,
           })),
@@ -126,81 +108,84 @@ export default async function ProChampionsPage({
 
       <EsportsBreadcrumb items={[{ name: "Champions", href: "/esports/champions" }]} />
 
-      <header className="mb-6">
-        <h1 className="font-display text-3xl font-black uppercase text-text md:text-4xl">
-          {league ? `${league.name} Champion Meta` : "Pro Champion Meta"}
-        </h1>
-        <p className="mt-2 max-w-2xl text-text-body">
-          Every champion pro teams have picked in the most recent series, how often, and how those
-          games ended.
-        </p>
-      </header>
-
-      <div className="mb-3 flex flex-wrap gap-1.5">
-        <Chip href={scopeHref(undefined, sort)} active={!league}>
-          All leagues
-        </Chip>
-        {scopes.map((scope) => (
-          <Chip key={scope.id} href={scopeHref(scope.slug, sort)} active={league?.id === scope.id}>
-            {scope.name}
-          </Chip>
-        ))}
+      <div className="mt-4">
+        <EsportsPageHeader
+          title={league ? `${league.name} champion meta` : "Pro champion meta"}
+          lede="What pro teams actually picked in the most recent series, how often, and how those games ended. Stage games with a full draft behind them — not solo queue."
+          stats={
+            meta && (
+              <>
+                <StatBlock label="Games" value={String(meta.games)} />
+                <StatBlock label="Patches" value={patchWindow(meta)} />
+                <StatBlock
+                  label="Through"
+                  value={meta.lastGameAt ? meta.lastGameAt.slice(0, 10) : "—"}
+                />
+              </>
+            )
+          }
+        />
       </div>
 
-      <div className="mb-6 flex flex-wrap items-baseline justify-between gap-3">
-        <nav aria-label="Sort" className="flex flex-wrap gap-1.5">
-          {PRO_META_SORTS.map((option) => (
-            <Chip
-              key={option.key}
-              href={scopeHref(league?.slug, option.key)}
-              active={sort === option.key}
-            >
-              {option.label}
-            </Chip>
-          ))}
-        </nav>
-        {meta && <SampleLine meta={meta} />}
+      {champions.length > 0 && sort === "picks" && (
+        <section className="mt-6">
+          <div className="mb-3 flex items-center gap-3">
+            <span className="h-[7px] w-[7px] bg-accent" aria-hidden />
+            <h2 className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-text">
+              Most contested this window
+            </h2>
+            <span className="h-px flex-1 bg-line-1" aria-hidden />
+            <span className="hud-label hidden sm:inline">Pick rate across the sample</span>
+          </div>
+          <ProMetaPodium champions={champions} />
+        </section>
+      )}
+
+      <div className="mt-6">
+        <ProMetaFilters
+          scopes={scopes}
+          league={league}
+          sort={sort}
+          role={role}
+          href={scopeHref}
+        />
       </div>
 
-      {!meta || meta.champions.length === 0 ? (
-        <p className="gaming-card notch-sm px-4 py-5 text-sm text-text-muted">
-          No recorded games in this scope yet. Riot publishes per-game stats for most leagues and,
-          for some of the smaller ones, not at all — so a split between games leaves this table empty
-          rather than wrong.
+      {!meta || champions.length === 0 ? (
+        <p className="gaming-card notch-sm mt-5 px-4 py-5 text-sm text-text-muted">
+          {meta
+            ? "Nothing in this sample survives that filter. Clear the role, widen the league scope, or sort by picks — the win-rate order leaves out champions with too few picks to rank."
+            : "No recorded games in this scope yet. Riot publishes per-game stats for most leagues and, for some of the smaller ones, not at all — so a split between games leaves this table empty rather than wrong."}
         </p>
       ) : (
         <>
           {meta.thinSample && (
-            <p className="gaming-card notch-sm mb-4 px-4 py-3 text-sm text-text-muted">
+            <p className="gaming-card notch-sm mt-5 px-4 py-3 text-sm text-text-muted">
               Only {meta.games} {meta.games === 1 ? "game" : "games"} in this sample. The table is
               here because hiding it would be worse, but a pick rate over this few games is an
               anecdote, not a trend.
             </p>
           )}
 
-          <ProMetaTable champions={meta.champions} sort={sort} />
+          <div className="mt-5">
+            <ProMetaTable champions={champions} sort={sort} />
+          </div>
 
-          {/* Bans are the obvious missing column, and their absence is a fact
-              about the feed rather than an oversight — better said than left
-              for a reader to wonder about. */}
-          <p className="mt-4 text-xs text-text-faint">
-            Picks only. Riot publishes the ten champions played in a game and nothing about what was
-            banned, so no ban or presence figure is claimed here.
-          </p>
+          <div className="mt-3.5 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 font-mono text-[10px] uppercase tracking-[0.12em] text-text-faint">
+            <span>{champions.length} champions shown</span>
+            {/* Bans are the obvious missing column, and their absence is a fact
+                about the feed rather than an oversight — better said than left
+                for a reader to wonder about. */}
+            <span>Picks only · Riot publishes no ban data, so none is claimed here</span>
+          </div>
         </>
       )}
 
-      <p className="mt-12 text-sm text-text-muted">
-        Wondering what wins in your own games instead? The{" "}
-        <Link href="/tools/tier-list" className="text-accent hover:underline">
-          ranked tier list
-        </Link>{" "}
-        and every{" "}
-        <Link href="/builds" className="text-accent hover:underline">
-          champion build
-        </Link>{" "}
-        are built from solo queue, where the answer is often a different one.
-      </p>
+      <ProMetaSummary
+        meta={meta}
+        patches={meta ? patchWindow(meta) : "—"}
+        scope={league ? league.name : "All leagues"}
+      />
 
       <DataCredit className="mt-8" />
     </div>

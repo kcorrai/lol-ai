@@ -32,10 +32,18 @@ export { aggregateProBuilds, MIN_BUILD_ITEM_GOLD } from "@/domains/esports/proBu
 export type { BuildItemCatalogue, BuildItemFacts } from "@/domains/esports/proBuild";
 export { sortChampions, parseProMetaSort, PRO_META_SORTS } from "@/domains/esports/proMetaSort";
 export type { ProMetaSort } from "@/domains/esports/proMetaSort";
+export { filterByRole, parseProMetaRole, PRO_META_ROLES } from "@/domains/esports/proMetaRole";
 export { gameWinner } from "@/domains/esports/gameOutcome";
+export { teamsPlayingSoon } from "@/domains/esports/playingSoon";
+export type { PlayingTeam } from "@/domains/esports/playingSoon";
 export { headToHead } from "@/domains/esports/headToHead";
 export type { HeadToHeadMeeting, HeadToHeadRecord, TeamKey } from "@/domains/esports/headToHead";
-export { elapsedSeconds, formatDuration, meanDuration, perMinute } from "@/domains/esports/duration";
+export {
+  elapsedSeconds,
+  formatDuration,
+  meanDuration,
+  perMinute,
+} from "@/domains/esports/duration";
 export { bracketLayout, bracketWinner } from "@/domains/esports/bracket";
 export type { BracketLayout, BracketRound } from "@/domains/esports/bracket";
 export {

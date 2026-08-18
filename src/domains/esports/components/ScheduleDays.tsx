@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MatchRow } from "@/domains/esports/components/MatchRow";
+import { SeriesRow } from "@/domains/esports/components/SeriesRow";
 import { groupByDay } from "@/domains/esports/dayGroups";
 import type { EsportsEvent } from "@/domains/esports/types";
 
@@ -9,6 +9,27 @@ interface ScheduleDaysProps {
   events: EsportsEvent[];
   /** Most recent day first — for results rather than fixtures. */
   descending?: boolean;
+  /** Puts the accent rail on the very first fixture. Off for results. */
+  highlightNext?: boolean;
+}
+
+/**
+ * "18 Aug · Tue", from a YYYY-MM-DD group key.
+ *
+ * Parsed and formatted in UTC on both sides of hydration: the key names a
+ * calendar day, not an instant, so shifting it into the reader's zone would move
+ * the caption a day away from the heading it sits next to.
+ */
+function calendarDate(key: string): string {
+  const date = new Date(`${key}T00:00:00Z`);
+  if (Number.isNaN(date.getTime())) return "";
+  const day = date.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    timeZone: "UTC",
+  });
+  const weekday = date.toLocaleDateString("en-GB", { weekday: "short", timeZone: "UTC" });
+  return `${day} · ${weekday}`;
 }
 
 /**
@@ -22,6 +43,7 @@ interface ScheduleDaysProps {
 export function ScheduleDays({
   events,
   descending = false,
+  highlightNext = false,
 }: ScheduleDaysProps): React.ReactElement {
   const [groups, setGroups] = useState(() =>
     groupByDay(events, { zone: "utc", now: new Date(), descending })
@@ -32,19 +54,28 @@ export function ScheduleDays({
   }, [events, descending]);
 
   return (
-    <div className="grid gap-6">
-      {groups.map((group) => (
+    <div className="grid gap-5">
+      {groups.map((group, groupIndex) => (
         <section key={group.key}>
-          <h3 className="sticky top-0 z-10 -mx-1 mb-2 bg-background/95 px-1 py-1.5 font-mono text-[11px] uppercase tracking-label text-text-body backdrop-blur">
-            {group.label}
-            <span className="ml-2 text-text-faint">{group.events.length}</span>
+          <h3 className="sticky top-[var(--esports-sticky-top,0px)] z-30 flex items-center gap-3 border border-border bg-[var(--surface-glass)] px-4 py-2.5 backdrop-blur-[14px]">
+            <span
+              className={`shrink-0 font-display text-[15px] font-extrabold uppercase tracking-[0.08em] ${
+                group.label === "Today" ? "text-accent" : "text-text"
+              }`}
+            >
+              {group.label}
+            </span>
+            <span className="hud-label hidden shrink-0 sm:inline">{calendarDate(group.key)}</span>
+            <span className="h-px flex-1 bg-line-1" aria-hidden />
+            <span className="hud-label shrink-0">{group.events.length} series</span>
           </h3>
-          <div className="grid gap-2">
-            {group.events.map((event) => (
-              <MatchRow
+          <div className="border border-t-0 border-border bg-surface">
+            {group.events.map((event, index) => (
+              <SeriesRow
                 key={event.matchId}
                 event={event}
                 href={`/esports/matches/${event.matchId}`}
+                highlight={highlightNext && groupIndex === 0 && index === 0}
               />
             ))}
           </div>

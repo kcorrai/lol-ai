@@ -1,24 +1,28 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
+  getCurrentTournament,
+  getLeagues,
+  getStandings,
   getTeam,
   getTeams,
   getTeamMatches,
   getTeamPlayerEntries,
-  getLeagues,
+  headToHead,
   indexableTeams,
   isThinTeam,
+  primaryTable,
   recentForm,
 } from "@/domains/esports";
-import type { EsportsTeam } from "@/domains/esports";
-import { FollowTeamButton } from "@/domains/esports/components/FollowTeamButton";
-import { MatchRow } from "@/domains/esports/components/MatchRow";
-import { RosterCard } from "@/domains/esports/components/RosterCard";
+import type { EsportsLeague, StandingsRow } from "@/domains/esports";
+import { teamRecord } from "@/domains/esports/teamRecord";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
 import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
+import { TeamHero } from "@/domains/esports/components/TeamHero";
+import { TeamMain } from "@/domains/esports/components/TeamMain";
+import { TeamRail } from "@/domains/esports/components/TeamRail";
+import { TeamSeasonStrip } from "@/domains/esports/components/TeamSeasonStrip";
 
 export const revalidate = 86400;
 
@@ -52,71 +56,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-function FormStrip({ form }: { form: ("W" | "L")[] }): React.ReactElement | null {
-  if (form.length === 0) return null;
-
-  // `form` arrives newest-first. Rendered left to right that reads backwards
-  // against every league table people already know, so it is flipped: oldest on
-  // the left, the most recent result nearest the label.
-  const chronological = [...form].reverse();
-
-  return (
-    <span
-      className="flex items-center gap-1"
-      aria-label={`Form, oldest to most recent: ${chronological.join(", ")}`}
-    >
-      <span className="hud-label mr-1">Form</span>
-      {chronological.map((result, index) => (
-        <span
-          key={index}
-          aria-hidden
-          className={`flex h-5 w-5 items-center justify-center font-mono text-[10px] font-bold ${
-            result === "W" ? "bg-accent/15 text-accent" : "bg-surface-2 text-text-muted"
-          }`}
-        >
-          {result}
-        </span>
-      ))}
-    </span>
-  );
-}
-
-function TeamHeader({
-  team,
-  form,
-}: {
-  team: EsportsTeam;
-  form: ("W" | "L")[];
-}): React.ReactElement {
-  return (
-    <header className="mb-8 flex flex-wrap items-start gap-4">
-      {team.image && (
-        <Image
-          src={team.image}
-          alt=""
-          width={64}
-          height={64}
-          className="h-16 w-16 shrink-0 object-contain"
-          aria-hidden
-          unoptimized
-        />
-      )}
-      <div className="min-w-0 flex-1">
-        <h1 className="font-display text-3xl font-black uppercase text-text md:text-4xl">
-          {team.name}
-        </h1>
-        <p className="mt-1 font-mono text-[11px] uppercase tracking-label text-text-muted">
-          {team.code}
-          {team.league ? ` · ${team.league.name}` : ""}
-          {team.status === "archived" ? " · Archived" : ""}
-        </p>
-      </div>
-      <div className="mt-1 flex flex-wrap items-center gap-3">
-        <FollowTeamButton teamId={team.id} slug={team.slug} name={team.name} />
-        <FormStrip form={form} />
-      </div>
-    </header>
-  );
+/**
+ * The team's own league table, when the section can resolve one.
+ *
+ * Three lookups deep — league by name, its current tournament, that tournament's
+ * table — and any of them can come back empty, which is why the rail is optional
+ * rather than a section the page assumes it can fill.
+ */
+async function leagueStandings(league: EsportsLeague | undefined): Promise<StandingsRow[]> {
+  if (!league) return [];
+  const tournament = await getCurrentTournament(league.id);
+  if (!tournament) return [];
+  return primaryTable(await getStandings(tournament.id))?.rows ?? [];
 }
 
 export default async function TeamPage({ params }: PageProps): Promise<React.ReactElement> {
@@ -130,125 +81,77 @@ export default async function TeamPage({ params }: PageProps): Promise<React.Rea
   ]);
   // The team payload names its league but does not slug it, so the link up to
   // the league hub is resolved the same way `getTeamMatches` resolves fixtures.
-  const leagueSlug = team.league
-    ? leagues.find((league) => league.name.toLowerCase() === team.league?.name.toLowerCase())?.slug
+  const league = team.league
+    ? leagues.find((entry) => entry.name.toLowerCase() === team.league?.name.toLowerCase())
     : undefined;
+  const standings = await leagueStandings(league);
+
   const form = recentForm(team, matches.results).slice(0, 5);
+  const record = teamRecord(team, matches.results);
+  const placement = standings.find((row) => row.team.id === team.id);
   const playerHref = new Map(
     playerEntries.map((entry) => [entry.player.id, `/esports/players/${entry.slug}`])
   );
-  const starters = team.players.filter((player) => player.role !== null);
-  const others = team.players.filter((player) => player.role === null);
+
+  const next = matches.upcoming[0];
+  const opponent = next?.teams.find(
+    (entry) => entry.code.toLowerCase() !== team.code.toLowerCase()
+  );
+  const meetings =
+    next && opponent
+      ? headToHead(matches.results, { name: team.name, code: team.code }, opponent, {
+          excludeMatchId: next.matchId,
+        })
+      : null;
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 md:py-14">
-      <EsportsJsonLd schema={{ kind: "team", team, roster: playerEntries }} />
+    <>
+      <TeamHero
+        team={team}
+        form={form}
+        stats={
+          matches.results.length > 0 || placement ? (
+            <TeamSeasonStrip
+              record={record}
+              placement={placement}
+              tableSize={standings.length}
+              rosterSize={team.players.length}
+            />
+          ) : undefined
+        }
+      >
+        <EsportsBreadcrumb
+          items={[
+            { name: "Teams", href: "/esports/teams" },
+            { name: team.name, href: `/esports/teams/${team.slug}` },
+          ]}
+        />
+      </TeamHero>
 
-      <EsportsBreadcrumb
-        items={[
-          { name: "Teams", href: "/esports/teams" },
-          { name: team.name, href: `/esports/teams/${team.slug}` },
-        ]}
-      />
+      <div className="mx-auto max-w-[1240px] px-5 pb-20 pt-6 md:px-8">
+        <EsportsJsonLd schema={{ kind: "team", team, roster: playerEntries }} />
 
-      <TeamHeader team={team} form={form} />
-
-      {team.status === "archived" && (
-        <p className="gaming-card notch-sm mb-8 px-4 py-3 text-sm text-text-muted">
-          This team is no longer active in Riot&apos;s published data. What follows is its last
-          recorded roster and results.
-        </p>
-      )}
-
-      {team.players.length > 0 && (
-        <section>
-          <h2 className="mb-3 font-display text-xl font-extrabold uppercase text-text md:text-2xl">
-            Roster
-          </h2>
-          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {starters.map((player) => (
-              <RosterCard key={player.id} player={player} href={playerHref.get(player.id)} />
-            ))}
-          </div>
-
-          {others.length > 0 && (
-            <>
-              <h3 className="hud-label mb-2 mt-5">Substitutes &amp; staff</h3>
-              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                {others.map((player) => (
-                  <RosterCard key={player.id} player={player} href={playerHref.get(player.id)} />
-                ))}
-              </div>
-            </>
-          )}
-        </section>
-      )}
-
-      {matches.upcoming.length > 0 && (
-        <section className="mt-12">
-          <h2 className="mb-3 font-display text-xl font-extrabold uppercase text-text md:text-2xl">
-            Next matches
-          </h2>
-          <div className="grid gap-2">
-            {matches.upcoming.map((event) => (
-              <MatchRow
-                key={event.matchId}
-                event={event}
-                href={`/esports/matches/${event.matchId}`}
-                showLeague={false}
-                withDate
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {matches.results.length > 0 && (
-        <section className="mt-12">
-          <h2 className="mb-3 font-display text-xl font-extrabold uppercase text-text md:text-2xl">
-            Recent results
-          </h2>
-          <div className="grid gap-2">
-            {matches.results.map((event) => (
-              <MatchRow
-                key={event.matchId}
-                event={event}
-                href={`/esports/matches/${event.matchId}`}
-                showLeague={false}
-                withDate
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {team.players.length === 0 &&
-        matches.upcoming.length === 0 &&
-        matches.results.length === 0 && (
-          <p className="gaming-card notch-sm px-4 py-5 text-sm text-text-muted">
-            Riot publishes no roster or recent matches for this team. If it is competing again, this
-            page fills in on its own.
+        {team.status === "archived" && (
+          <p className="gaming-card notch-sm mb-6 px-4 py-3 text-sm text-text-muted">
+            This team is no longer active in Riot&apos;s published data. What follows is its last
+            recorded roster and results.
           </p>
         )}
 
-      {team.league && (
-        <p className="mt-12 text-sm text-text-muted">
-          See the full {team.league.name} standings and schedule on the{" "}
-          <Link
-            href={leagueSlug ? `/esports/leagues/${leagueSlug}` : "/esports/leagues"}
-            className="text-accent hover:underline"
-          >
-            {leagueSlug ? `${team.league.name} page` : "league pages"}
-          </Link>
-          , or what is on next across every league in the{" "}
-          <Link href="/esports/schedule" className="text-accent hover:underline">
-            esports schedule
-          </Link>
-          .
-        </p>
-      )}
+        <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_20rem]">
+          <TeamMain
+            team={team}
+            upcoming={matches.upcoming}
+            results={matches.results}
+            playerHref={playerHref}
+            meetings={meetings}
+          />
 
-      <DataCredit className="mt-8" />
-    </div>
+          <TeamRail team={team} league={league} standings={standings} />
+        </div>
+
+        <DataCredit className="mt-10" />
+      </div>
+    </>
   );
 }
