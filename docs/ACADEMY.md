@@ -70,7 +70,16 @@ Track  →  Lesson  →  Blocks + Drills + Field assignment
 5. Vision Is Not the Support's Job
 6. Thirty Seconds Before the Objective
 
-Planned: Macro, Teamfighting, Mental & Consistency, Role Paths, Champion Mastery.
+**Macro** — lesson 1 free, rest Pro, 6 lessons. Being somewhere else, on purpose.
+
+1. Tempo and Priority
+2. Setting Up an Objective Without Saying a Word
+3. Who Goes to the Side Lane
+4. Trading Objectives
+5. Plates, Turrets and the Map They Open
+6. Closing a Won Game
+
+Planned: Teamfighting, Mental & Consistency, Role Paths, Champion Mastery.
 
 ## Proof of Practice
 

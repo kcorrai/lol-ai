@@ -21,6 +21,13 @@ import { theDangerTriangle } from "./vision/theDangerTriangle";
 import { wardingAsATeam } from "./vision/wardingAsATeam";
 import { visionBeforeObjectives } from "./vision/visionBeforeObjectives";
 
+import { tempoAndPriority } from "./macro/tempoAndPriority";
+import { objectiveSetup } from "./macro/objectiveSetup";
+import { sideLaneAssignment } from "./macro/sideLaneAssignment";
+import { tradingObjectives } from "./macro/tradingObjectives";
+import { towerPriorityAndPlates } from "./macro/towerPriorityAndPlates";
+import { closingTheGame } from "./macro/closingTheGame";
+
 // Lesson order inside a track is the teaching order and the recommendation order.
 // It is deliberate: nothing in a lesson may depend on a lesson listed after it.
 export const TRACKS: readonly Track[] = [
@@ -63,6 +70,22 @@ export const TRACKS: readonly Track[] = [
       theDangerTriangle,
       wardingAsATeam,
       visionBeforeObjectives,
+    ],
+  },
+  {
+    id: "macro",
+    title: "Macro",
+    tagline: "Being somewhere else, on purpose",
+    description:
+      "One question asked all game: something is happening elsewhere — do I get to go? Priority and what to spend it on, the minute before an objective, who takes which side lane, when to trade instead of contest, and the four ways a won game gets thrown.",
+    level: "advanced",
+    lessons: [
+      tempoAndPriority,
+      objectiveSetup,
+      sideLaneAssignment,
+      tradingObjectives,
+      towerPriorityAndPlates,
+      closingTheGame,
     ],
   },
 ];
