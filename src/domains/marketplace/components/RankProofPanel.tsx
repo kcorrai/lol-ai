@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { regionLabel } from "@/lib/riot/regions";
+import { tierColorClass } from "@/lib/riot/rankDisplay";
+import { formatRank } from "@/domains/marketplace/rank";
 import { useCoachRank, useCheckRank } from "@/hooks/useCoachRank";
-import { RankBadgeChip } from "@/domains/marketplace/components/RankBadgeChip";
+import { HudPanel } from "@/domains/marketplace/components/hud/HudPanel";
+import { StatusChip } from "@/domains/marketplace/components/hud/StatusChip";
 
 /**
  * Where a coach turns a linked account into a rank badge.
@@ -30,58 +33,104 @@ export function RankProofPanel(): React.ReactElement {
     });
   }
 
+  const badge = data?.badge ?? null;
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Your rank</CardTitle>
-        <CardDescription>
-          Read from a Riot account you have linked, and refreshed for you. Students see the date it
-          was last checked — you never type a rank in.
-        </CardDescription>
-      </CardHeader>
+    <HudPanel
+      label="Step 1 · Your rank"
+      tone={badge ? "accent" : "warn"}
+      action={
+        <StatusChip tone={badge ? "good" : "warn"}>
+          {badge ? "Checked" : check.isPending ? "Reading…" : "Required"}
+        </StatusChip>
+      }
+    >
+      {isLoading && <Skeleton className="h-10 w-64" />}
 
-      <CardContent className="space-y-4">
-        {isLoading && <Skeleton className="h-10 w-64" />}
+      {badge && (
+        <div className="flex flex-wrap items-center gap-4">
+          <span className="flex items-center gap-2.5 text-accent">
+            <ShieldCheck className="h-5 w-5" aria-hidden />
+            <span className="font-mono text-[9.5px] uppercase tracking-[0.18em]">
+              Checked by LaneIQ
+            </span>
+          </span>
+          <span className="h-6 w-px bg-line-1" aria-hidden />
+          <span
+            className={`font-mono text-xl font-bold tracking-[0.05em] ${tierColorClass(badge.tier)}`}
+          >
+            {formatRank({
+              tier: badge.tier,
+              division: badge.division,
+              leaguePoints: badge.leaguePoints,
+            })}
+          </span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-text-faint">
+            {badge.peakTier &&
+              `peak ${formatRank({ tier: badge.peakTier, division: badge.peakDivision ?? "I" })} · `}
+            {badge.stale ? "needs a refresh" : `checked ${day(badge.checkedAt)}`}
+          </span>
+        </div>
+      )}
 
-        {data?.badge && <RankBadgeChip badge={data.badge} detailed />}
-
-        {data !== undefined && !data.badge && (
-          <p className="text-sm text-text-muted">
-            No rank checked yet. Pick an account below and we will read it.
+      {data !== undefined && !badge && (
+        <>
+          <p className="font-display text-[18px] font-extrabold uppercase tracking-[0.03em] text-text">
+            Link the account you actually play on
           </p>
-        )}
-
-        {data !== undefined && data.accounts.length === 0 && (
-          <p className="rounded-md border border-warning/30 bg-warning/10 px-3 py-2 text-sm text-warning">
-            You have no Riot account linked yet, so there is nothing to read a rank from.{" "}
-            <Link href="/settings/accounts" className="underline">
-              Link one first
-            </Link>
-            .
+          <p className="mt-2.5 max-w-[62ch] text-[14.5px] text-text-body">
+            We read the rank from it and re-check it for you. Students see the rank and the date —
+            never a number you typed. There is no field here to type one into.
           </p>
-        )}
+        </>
+      )}
 
-        {error && (
-          <p className="rounded-md border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">
-            {error}
-          </p>
-        )}
+      {badge && (
+        <p className="mt-3.5 max-w-[62ch] text-[13.5px] text-text-body">
+          This is what students see, alongside the date. It refreshes on its own — if you drop, the
+          profile drops with you.
+        </p>
+      )}
 
-        <ul className="space-y-2">
-          {data?.accounts.map((account) => (
+      {data !== undefined && data.accounts.length === 0 && (
+        <p className="mt-3.5 border-l-2 border-warning bg-warning/10 px-4 py-3 text-sm text-warning">
+          {/* A badge with no account behind it is a rank nobody can refresh —
+              it will go stale on the profile and there is no way back from
+              here, so say which of the two problems this is. */}
+          {badge
+            ? "There is no linked Riot account to refresh this badge from any more, so it will go stale on your profile."
+            : "You have no Riot account linked yet, so there is nothing to read a rank from."}{" "}
+          <Link href="/settings/accounts" className="underline">
+            {badge ? "Link one again" : "Link one first"}
+          </Link>
+          .
+        </p>
+      )}
+
+      {error && (
+        <p className="mt-3.5 border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">
+          {error}
+        </p>
+      )}
+
+      {data !== undefined && data.accounts.length > 0 && (
+        <ul className="mt-4 grid gap-2">
+          {data.accounts.map((account) => (
             <li
               key={account.id}
-              className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border bg-surface-2 px-3 py-2"
+              className="flex flex-wrap items-center justify-between gap-3 border border-line-2 bg-surface-dark px-4 py-2.5"
             >
               <span className="font-mono text-sm text-text">
                 {account.gameName}
                 <span className="text-text-muted">#{account.tagLine}</span>
-                <span className="ml-2 text-xs text-text-faint">{regionLabel(account.region)}</span>
+                <span className="ml-2 font-mono text-[9.5px] uppercase tracking-[0.14em] text-text-faint">
+                  {regionLabel(account.region)}
+                </span>
               </span>
 
               <Button
                 size="sm"
-                variant={account.isBadgeSource ? "secondary" : "default"}
+                variant={account.isBadgeSource ? "ghost" : "default"}
                 disabled={check.isPending}
                 onClick={() => handleCheck(account.id)}
               >
@@ -94,7 +143,15 @@ export function RankProofPanel(): React.ReactElement {
             </li>
           ))}
         </ul>
-      </CardContent>
-    </Card>
+      )}
+
+      <p className="mt-3.5 font-mono text-[9.5px] uppercase tracking-[0.14em] text-text-faint">
+        Read-only &middot; we never ask for your Riot password
+      </p>
+    </HudPanel>
   );
+}
+
+function day(iso: string): string {
+  return new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short" });
 }
