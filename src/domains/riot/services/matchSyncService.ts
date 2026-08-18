@@ -7,6 +7,7 @@ import { deleteCached, buildCacheKey } from "@/lib/ai/aiCache";
 import { getMatchIds, getMatch } from "@/domains/riot/services/riotApiClient";
 import { mapMatch } from "@/domains/riot/mappers/matchMapper";
 import { refreshChampionStats } from "@/domains/champions/services/championCacheService";
+import { refreshChampionMastery } from "@/domains/champions/services/championMasteryService";
 import { getPlanLimits } from "@/lib/auth/authorization";
 import { indexPlayers, type IndexablePlayer } from "@/domains/riot/services/playerIndexService";
 import { enrichParticipantRanks, syncRankedSnapshot } from "@/domains/riot/services/matchSyncRankedService";
@@ -159,7 +160,12 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   await prisma.riotAccount.update({ where: { id: account.id }, data: { lastSyncedAt: new Date() } });
   await invalidateAccountCache(account.puuid, account.summonerId ?? "", account.region);
 
-  refreshChampionStats(account.id).catch((err) => logger.warn("[sync] Champion cache refresh failed", err));
+  // Mastery is chained rather than fired alongside: it annotates the rows the stats
+  // refresh creates, so running the two in parallel would update a set that does not
+  // exist yet on a champion played for the first time this session.
+  refreshChampionStats(account.id)
+    .then(() => refreshChampionMastery(account.id))
+    .catch((err) => logger.warn("[sync] Champion cache refresh failed", err));
 
   if (newCount >= 3) inngest.send({ name: "match/session.synced", data: { riotAccountId: account.id } }).catch((err) => logger.warn("[sync] Failed to fire session.synced event", err));
   inngest.send({ name: "tilt/check-streak", data: { riotAccountId: account.id, userId: account.userId } }).catch((err) => logger.warn("[sync] Failed to fire tilt/check-streak event", err));
