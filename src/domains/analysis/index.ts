@@ -10,3 +10,13 @@ export { getPlayerPerformanceProfile } from "./services/matchAnalysisService";
 export { getActiveHabits } from "./services/habitDetectionService";
 export type { DetectedHabit, HabitSeverity } from "./services/habitDetectionService";
 export type { PlayerPerformanceProfile, PerformanceMetrics } from "./types/analysis.types";
+
+// The career card is built from the same timeline /timeline renders, so the coaching
+// domain needs a sanctioned way in (LA-37).
+export { getCareerTimeline } from "./services/careerTimelineService";
+export type {
+  CareerTimeline,
+  CareerSummary,
+  CareerBand,
+  CareerEvent,
+} from "./services/careerTimeline.types";

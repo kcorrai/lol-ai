@@ -1,9 +1,21 @@
 import { prisma } from "@/lib/db/prisma";
 import { toJsonInput, fromJsonValue } from "@/types/json";
-import { buildWeeklyData, buildMasteryData, buildAcademyData } from "./cardDataBuilders";
+import {
+  buildWeeklyData,
+  buildMasteryData,
+  buildAcademyData,
+  buildCareerData,
+} from "./cardDataBuilders";
 import type { CardType, CardData } from "./card.types";
 
-export type { CardType, WeeklyCardData, MasteryCardData, AcademyCardData, CardData } from "./card.types";
+export type {
+  CardType,
+  WeeklyCardData,
+  MasteryCardData,
+  AcademyCardData,
+  CareerCardData,
+  CardData,
+} from "./card.types";
 
 interface GenerateCardOptions {
   userId: string;
@@ -23,6 +35,9 @@ export async function generateShareableCard(
   if (opts.cardType === "academy") {
     if (!opts.trackId) throw new Error("trackId required for academy card");
     data = await buildAcademyData(opts.userId, opts.trackId);
+  } else if (opts.cardType === "career") {
+    if (!opts.riotAccountId) throw new Error("riotAccountId required for career card");
+    data = await buildCareerData(opts.riotAccountId, opts.userId, opts.isPro);
   } else if (opts.cardType === "mastery") {
     if (!opts.championId) throw new Error("championId required for mastery card");
     if (!opts.riotAccountId) throw new Error("riotAccountId required for mastery card");

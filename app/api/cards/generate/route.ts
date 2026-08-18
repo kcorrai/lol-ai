@@ -7,7 +7,7 @@ import { assertOwnsRiotAccount, getPlanLimits } from "@/lib/auth/authorization";
 import { generateShareableCard } from "@/domains/coaching/services/cardService";
 
 const bodySchema = z.object({
-  cardType: z.enum(["weekly", "mastery", "academy"]),
+  cardType: z.enum(["weekly", "mastery", "academy", "career"]),
   // An academy certificate is built from lesson progress, which belongs to the user rather than
   // to a linked account — so it asks for a track instead.
   riotAccountId: z.string().uuid().optional(),
@@ -48,6 +48,10 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
     // request problem, not a server one.
     if (err instanceof Error && err.message === "TRACK_NOT_FINISHED") {
       throw Errors.validation("That track is not finished yet");
+    }
+    // A career with no games in it is a request problem too — there is nothing to draw.
+    if (err instanceof Error && err.message === "NO_CAREER_YET") {
+      throw Errors.validation("There are no tracked games to build a career card from yet");
     }
     throw err;
   }

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CareerCardShare } from "@/components/timeline/CareerCardShare";
 import { CareerHeader } from "@/components/timeline/CareerHeader";
 import { EraBand } from "@/components/timeline/EraBand";
 import { TimelineFilters } from "@/components/timeline/TimelineFilters";
@@ -87,7 +88,10 @@ export default function CareerTimelinePage(): React.JSX.Element {
         />
       ) : (
         <>
-          <TimelineFilters active={filter} onChange={setFilter} />
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <TimelineFilters active={filter} onChange={setFilter} />
+            <CareerCardShare riotAccountId={riotAccountId} />
+          </div>
 
           <div className="flex flex-col gap-6">
             {bands.map((band) => (
