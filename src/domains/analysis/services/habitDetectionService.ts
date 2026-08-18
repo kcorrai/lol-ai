@@ -25,7 +25,9 @@ export interface DetectedHabit {
 
 // ── Habit catalogue ───────────────────────────────────────────────────────────
 
-const HABIT_META: Record<string, { displayName: string }> = {
+// Exported so the career timeline can name a habit the same way this service does —
+// a second copy of these labels is a second copy that drifts.
+export const HABIT_META: Record<string, { displayName: string }> = {
   low_vision:        { displayName: "Low Vision Score" },
   high_deaths:       { displayName: "High Death Count" },
   low_cs:            { displayName: "Low CS Per Minute" },
