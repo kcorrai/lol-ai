@@ -28,6 +28,13 @@ import { tradingObjectives } from "./macro/tradingObjectives";
 import { towerPriorityAndPlates } from "./macro/towerPriorityAndPlates";
 import { closingTheGame } from "./macro/closingTheGame";
 
+import { positioningBasics } from "./teamfighting/positioningBasics";
+import { targetSelection } from "./teamfighting/targetSelection";
+import { cooldownTracking } from "./teamfighting/cooldownTracking";
+import { engageAndDisengage } from "./teamfighting/engageAndDisengage";
+import { peelingAndProtecting } from "./teamfighting/peelingAndProtecting";
+import { fightingAroundObjectives } from "./teamfighting/fightingAroundObjectives";
+
 // Lesson order inside a track is the teaching order and the recommendation order.
 // It is deliberate: nothing in a lesson may depend on a lesson listed after it.
 export const TRACKS: readonly Track[] = [
@@ -86,6 +93,22 @@ export const TRACKS: readonly Track[] = [
       tradingObjectives,
       towerPriorityAndPlates,
       closingTheGame,
+    ],
+  },
+  {
+    id: "teamfighting",
+    title: "Teamfighting",
+    tagline: "Decided before anyone presses anything",
+    description:
+      "Where you stand ten seconds early, who you are actually allowed to press, the three cooldowns that decide whether a fight exists, who owns the engage, when peeling is the losing play, and why a hole in the ground beats most of your items.",
+    level: "advanced",
+    lessons: [
+      positioningBasics,
+      targetSelection,
+      cooldownTracking,
+      engageAndDisengage,
+      peelingAndProtecting,
+      fightingAroundObjectives,
     ],
   },
 ];

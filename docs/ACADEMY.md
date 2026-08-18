@@ -79,7 +79,16 @@ Track  →  Lesson  →  Blocks + Drills + Field assignment
 5. Plates, Turrets and the Map They Open
 6. Closing a Won Game
 
-Planned: Teamfighting, Mental & Consistency, Role Paths, Champion Mastery.
+**Teamfighting** — lesson 1 free, rest Pro, 6 lessons. Decided before anyone presses anything.
+
+1. Where You Stand Before Anything Happens
+2. Who You Actually Press
+3. The Three Cooldowns Worth Counting
+4. Who Starts It, and When You Leave
+5. The Peel Decision
+6. Fighting Around a Pit
+
+Planned: Mental & Consistency, Role Paths, Champion Mastery.
 
 ## Proof of Practice
 
