@@ -54,6 +54,12 @@ import { gankConditions } from "./jungle/gankConditions";
 import { ninetySecondsBefore } from "./jungle/ninetySecondsBefore";
 import { invading } from "./jungle/invading";
 
+import { priorityIsTheJob } from "./mid/priorityIsTheJob";
+import { roamingCostsAWave } from "./mid/roamingCostsAWave";
+import { theTwoRivers } from "./mid/theTwoRivers";
+import { comingBackToTheLane } from "./mid/comingBackToTheLane";
+import { whichObjectiveHappens } from "./mid/whichObjectiveHappens";
+
 // Lesson order inside a track is the teaching order and the recommendation order.
 // It is deliberate: nothing in a lesson may depend on a lesson listed after it.
 export const TRACKS: readonly Track[] = [
@@ -174,6 +180,22 @@ export const TRACKS: readonly Track[] = [
       gankConditions,
       ninetySecondsBefore,
       invading,
+    ],
+  },
+  {
+    id: "mid",
+    role: "mid",
+    title: "Mid Path",
+    tagline: "The right to leave, and what it costs",
+    description:
+      "The shortest lane and the only one in reach of both halves of the map. What priority actually is, the arithmetic behind every roam, surviving the most gankable lane in the game, coming back to a wave worth returning to, and deciding which objective your team gets.",
+    level: "core",
+    lessons: [
+      priorityIsTheJob,
+      roamingCostsAWave,
+      theTwoRivers,
+      comingBackToTheLane,
+      whichObjectiveHappens,
     ],
   },
 ];

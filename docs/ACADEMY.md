@@ -121,6 +121,14 @@ the curriculum is padding.
 4. The Ninety Seconds Before a Pit
 5. What a Stolen Camp Actually Costs
 
+**Mid Path** — the right to leave, and what it costs.
+
+1. Priority Is the Whole Job
+2. A Roam Costs a Wave, So It Has to Buy One
+3. The Most Gankable Lane on the Map
+4. Coming Back to a Lane You Left
+5. Mid Decides Which Objective Happens
+
 A role path is an ordinary `Track` that carries a `role`; that one optional field is what
 separates it from the curriculum (ADR-028). Consequences worth knowing:
 
