@@ -28,7 +28,9 @@ test.describe("Coach marketplace", () => {
       await page.goto("/coaches");
 
       await expect(page).not.toHaveURL(/\/login/);
-      await expect(page.getByRole("heading", { name: "Find a coach", level: 1 })).toBeVisible();
+      await expect(
+        page.getByRole("heading", { name: /rank they claim/i, level: 1 })
+      ).toBeVisible();
     });
 
     /**
@@ -99,10 +101,11 @@ test.describe("Coach marketplace", () => {
 
       await page.getByRole("button", { name: "Save profile" }).click();
 
-      // Saved as a draft — nothing is public yet.
-      await expect(page.getByText("Not submitted yet", { exact: false })).toBeVisible();
+      // Saved as a draft — nothing is public yet. Asserted on the status chip
+      // rather than on prose, which is the part that carries the meaning.
+      await expect(page.getByText("Draft", { exact: true })).toBeVisible();
 
-      await page.getByRole("button", { name: "Submit for review" }).click();
+      await page.getByRole("button", { name: "Send application" }).click();
       await expect(page.getByText("In review", { exact: false })).toBeVisible();
 
       // Approval is an admin act, and the E2E user is not the admin. Doing it

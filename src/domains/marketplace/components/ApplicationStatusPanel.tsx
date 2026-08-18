@@ -14,8 +14,13 @@ interface Props {
   onSubmit: () => void;
   onWithdraw: () => void;
   error: string | null;
-  /** Each requirement and whether it is met, so the button explains itself. */
-  checklist: { text: string; ok: boolean }[];
+  /**
+   * Each requirement and whether it is met, so the button explains itself.
+   * `blocking` marks the ones the submit endpoint actually enforces — a rank is
+   * advice here, because the server accepts an application without one and a
+   * button that refuses what the server allows is its own kind of lie.
+   */
+  checklist: { text: string; ok: boolean; blocking: boolean }[];
 }
 
 /**
@@ -35,9 +40,10 @@ export function ApplicationStatusPanel({
   error,
   checklist,
 }: Props): React.ReactElement {
-  const ready = checklist.every((item) => item.ok);
+  const ready = checklist.every((item) => item.ok || !item.blocking);
   const canSend = profile.status === "DRAFT" || profile.status === "REJECTED";
-  const blocker = checklist.find((item) => !item.ok);
+  const blocker = checklist.find((item) => !item.ok && item.blocking);
+  const advice = checklist.find((item) => !item.ok && !item.blocking);
 
   return (
     <HudPanel
@@ -100,10 +106,14 @@ export function ApplicationStatusPanel({
             </Button>
             <span
               className={`font-mono text-[9.5px] uppercase tracking-[0.14em] ${
-                ready ? "text-accent" : "text-text-faint"
+                !ready ? "text-text-faint" : advice ? "text-warning" : "text-accent"
               }`}
             >
-              {ready ? "Ready · a human reads it next" : blocker?.text}
+              {!ready
+                ? blocker?.text
+                : advice
+                  ? "You can send it, but it will almost certainly be declined"
+                  : "Ready · a human reads it next"}
             </span>
           </>
         )}
