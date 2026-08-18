@@ -1,4 +1,5 @@
-import type { Drill, DrillOption } from "@/domains/academy/types";
+import { isChoiceDrill, type Drill, type DrillOption, type WaveSimDrill } from "@/domains/academy/types";
+import { isWaveAction, meetsGoal, simulateWave } from "./waveSim";
 
 /** One attempt at one drill. `answer` is an option id, or the ordered ids for an order drill. */
 export interface DrillAttempt {
@@ -35,11 +36,26 @@ function gradeOrder(
   return { correct, explanation: explain };
 }
 
+/**
+ * The player's cycle-by-cycle plan, replayed through the same reducer the drill animates with,
+ * and judged only on where the wave ended up. A plan that reaches the goal early and holds it
+ * is as correct as one that arrives on the last cycle — the goal is a state, not a route.
+ */
+function gradeWaveSim(drill: WaveSimDrill, answer: string[]): { correct: boolean; explanation: string } {
+  if (answer.length !== drill.cycles || !answer.every(isWaveAction)) {
+    return { correct: false, explanation: drill.explain };
+  }
+
+  const states = simulateWave(drill.start, answer.filter(isWaveAction));
+  return { correct: meetsGoal(states[states.length - 1], drill.goal), explanation: drill.explain };
+}
+
 export function gradeDrill(drill: Drill, answer: string[]): DrillResult {
-  const graded =
-    drill.kind === "order"
+  const graded = isChoiceDrill(drill)
+    ? gradeChoice(drill.options, answer)
+    : drill.kind === "order"
       ? gradeOrder(drill.correctOrder, drill.explain, answer)
-      : gradeChoice(drill.options, answer);
+      : gradeWaveSim(drill, answer);
 
   return { drillId: drill.id, ...graded };
 }

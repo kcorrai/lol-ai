@@ -30,8 +30,12 @@ Track  →  Lesson  →  Blocks + Drills + Field assignment
   on a lesson listed after it.
 - **Lesson** — 4–6 minutes of reading, one or two drills, one measurable field assignment.
 - **Drill** — `quiz` (multiple choice), `decision` (a scenario with the facts a player would
-  actually have) or `order` (put the steps in sequence). Every option carries its own
-  explanation: a wrong answer has to teach, not just be wrong.
+  actually have), `order` (put the steps in sequence), `map` (click the spot on a schematic of
+  the Rift) or `wave-sim` (drive a wave into a named state, one decision per cycle). Every
+  option carries its own explanation: a wrong answer has to teach, not just be wrong. `map` is
+  graded as a choice — a click is only a nicer way of naming one of the authored options —
+  while `wave-sim` is replayed through the pure reducer in `drills/waveSim.ts` and judged on
+  where the wave ended up.
 - **Field assignment** — Proof of Practice. Written as a *movement* ("0.5 more CS per minute
   over 3 games"), never an absolute, and resolved against the player's own baseline so a
   Bronze and a Diamond player reading the same lesson get the same instruction and different
@@ -140,7 +144,16 @@ Content decisions and the client-import rule are recorded in
 3. Run `npx vitest run src/domains/academy`. `curriculum.test.ts` checks the structure:
    unique id, every drill block resolves, exactly one correct option per choice drill, every
    option explained, a gate in every pro lesson and none in a free one, objectives and an
-   assignment present.
+   assignment present, every `map` spot inside the map, and every `wave-sim` puzzle solvable
+   in the cycles it gives the player — that last one is brute-forced, so an unwinnable drill
+   cannot ship.
+
+### Adding a drill kind
+
+A member of the `Drill` union in `types.ts`, a scoring branch in `drills/scoring.ts` with its
+test, and a body component wired into `DrillCard.tsx`. The answer serialises as `string[]` and
+grading stays pure and total — the body decides nothing, which is why the same reducer can
+animate a wave and judge it. Do not add a kind before a lesson uses it.
 
 The route, the sitemap entry and the track page all derive from the registry — there is
 nothing else to register.
@@ -149,4 +162,4 @@ nothing else to register.
 
 - **Spaced repetition.** `review` status exists; nothing demotes a mastered lesson when the
   metric slips back.
-- Certificates/transcript, Academy XP and streak, `map` and `wave-sim` drill types.
+- Certificates/transcript and Academy XP.

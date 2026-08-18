@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { Check, X } from "lucide-react";
 import { gradeDrill, type DrillResult } from "@/domains/academy/drills/scoring";
-import type { Drill } from "@/domains/academy/types";
+import { isChoiceDrill, type Drill } from "@/domains/academy/types";
+import { MapDrillBody } from "./MapDrillBody";
 import { OrderDrillBody } from "./OrderDrillBody";
+import { WaveSimDrillBody } from "./WaveSimDrillBody";
 
 interface DrillCardProps {
   drill: Drill;
@@ -15,6 +17,8 @@ const KIND_LABEL: Record<Drill["kind"], string> = {
   quiz: "Check",
   decision: "Decision",
   order: "Sequence",
+  map: "On the map",
+  "wave-sim": "Wave",
 };
 
 /**
@@ -70,6 +74,10 @@ export function DrillCard({ drill, onAnswered }: DrillCardProps): React.ReactEle
 
         {drill.kind === "order" ? (
           <OrderDrillBody drill={drill} locked={result !== null} onSubmit={answer} />
+        ) : drill.kind === "wave-sim" ? (
+          <WaveSimDrillBody drill={drill} locked={result !== null} onSubmit={answer} />
+        ) : drill.kind === "map" ? (
+          <MapDrillBody drill={drill} picked={picked} locked={result !== null} onPick={answer} />
         ) : (
           <ul className="mt-4 flex flex-col gap-2">
             {drill.options.map((option) => {
@@ -102,7 +110,9 @@ export function DrillCard({ drill, onAnswered }: DrillCardProps): React.ReactEle
           </ul>
         )}
 
-        {result && drill.kind === "order" && (
+        {/* The choice kinds explain themselves through the option the player picked; these two
+            carry one explanation for the whole drill, so it goes here. */}
+        {result && !isChoiceDrill(drill) && (
           <p className="mt-3 text-[12.5px] leading-relaxed text-text-muted">{result.explanation}</p>
         )}
       </div>

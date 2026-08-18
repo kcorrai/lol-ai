@@ -14,7 +14,24 @@ import {
   visibleBlocks,
   visibleDrills,
 } from "./curriculum";
-import type { LessonStatus } from "./types";
+import { isChoiceDrill, type LessonStatus, type WaveSimDrill } from "./types";
+import { meetsGoal, simulateWave, WAVE_ACTIONS, type WaveAction } from "./drills/waveSim";
+
+/** Every plan the player could type, played out — true if any of them reaches the goal. */
+function solvable(drill: WaveSimDrill): boolean {
+  const plans: WaveAction[][] = [[]];
+  for (let cycle = 0; cycle < drill.cycles; cycle += 1) {
+    const grown: WaveAction[][] = [];
+    for (const plan of plans) for (const action of WAVE_ACTIONS) grown.push([...plan, action]);
+    plans.length = 0;
+    plans.push(...grown);
+  }
+
+  return plans.some((plan) => {
+    const states = simulateWave(drill.start, plan);
+    return meetsGoal(states[states.length - 1], drill.goal);
+  });
+}
 
 describe("curriculum integrity", () => {
   it("gives every lesson a globally unique id", () => {
@@ -46,7 +63,7 @@ describe("curriculum integrity", () => {
   it("gives every choice drill exactly one correct option", () => {
     for (const lesson of allLessons()) {
       for (const drill of lesson.drills) {
-        if (drill.kind === "order") continue;
+        if (!isChoiceDrill(drill)) continue;
         expect(drill.options.filter((o) => o.correct)).toHaveLength(1);
       }
     }
@@ -55,8 +72,38 @@ describe("curriculum integrity", () => {
   it("explains every option, including the wrong ones", () => {
     for (const lesson of allLessons()) {
       for (const drill of lesson.drills) {
-        if (drill.kind === "order") continue;
+        if (!isChoiceDrill(drill)) continue;
         for (const option of drill.options) expect(option.explain.length).toBeGreaterThan(20);
+      }
+    }
+  });
+
+  // A spot outside the box is unclickable, and one the size of the map is unmissable.
+  it("keeps every map spot inside the map and small enough to aim at", () => {
+    for (const lesson of allLessons()) {
+      for (const drill of lesson.drills) {
+        if (drill.kind !== "map") continue;
+        for (const { at } of drill.options) {
+          expect(at.x).toBeGreaterThanOrEqual(0);
+          expect(at.x).toBeLessThanOrEqual(1);
+          expect(at.y).toBeGreaterThanOrEqual(0);
+          expect(at.y).toBeLessThanOrEqual(1);
+          expect(at.r).toBeGreaterThan(0);
+          expect(at.r).toBeLessThanOrEqual(0.15);
+        }
+      }
+    }
+  });
+
+  // Content, not code, decides the starting wave and how many cycles the player gets — so the
+  // contract has to prove the puzzle can actually be solved in them. Brute force is affordable
+  // because a wave-sim drill is a handful of cycles by design.
+  it("leaves every wave-sim drill solvable inside its own cycles", () => {
+    for (const lesson of allLessons()) {
+      for (const drill of lesson.drills) {
+        if (drill.kind !== "wave-sim") continue;
+        expect(drill.cycles).toBeLessThanOrEqual(5);
+        expect(solvable(drill)).toBe(true);
       }
     }
   });

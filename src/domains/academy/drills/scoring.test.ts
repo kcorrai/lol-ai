@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { gradeDrill, scoreLesson, PASS_RATIO } from "./scoring";
-import type { OrderDrill, QuizDrill } from "@/domains/academy/types";
+import type { MapDrill, OrderDrill, QuizDrill, WaveSimDrill } from "@/domains/academy/types";
 
 const quiz: QuizDrill = {
   id: "q1",
@@ -22,6 +22,38 @@ const order: OrderDrill = {
   ],
   correctOrder: ["x", "y"],
   explain: "X then Y.",
+};
+
+const map: MapDrill = {
+  id: "m1",
+  kind: "map",
+  prompt: "Where does the ward go?",
+  options: [
+    {
+      id: "river",
+      label: "River brush",
+      explain: "It watches the path they have to walk.",
+      correct: true,
+      at: { x: 0.5, y: 0.5, r: 0.06 },
+    },
+    {
+      id: "base",
+      label: "Your fountain",
+      explain: "Nothing you need to know happens there.",
+      correct: false,
+      at: { x: 0.1, y: 0.9, r: 0.06 },
+    },
+  ],
+};
+
+const waveSim: WaveSimDrill = {
+  id: "w1",
+  kind: "wave-sim",
+  prompt: "Crash the wave.",
+  start: { advantage: 0, position: 0 },
+  goal: "crash",
+  cycles: 2,
+  explain: "Clearing every cycle sends it into their turret.",
 };
 
 describe("gradeDrill", () => {
@@ -60,6 +92,28 @@ describe("gradeDrill", () => {
 
   it("explains an order drill the same way whether right or wrong", () => {
     expect(gradeDrill(order, ["y", "x"]).explanation).toBe("X then Y.");
+  });
+
+  // A click on the map is a choice, so it grades down the choice branch — no second way to
+  // be right about the same thing.
+  it("grades a map drill on which spot was picked", () => {
+    expect(gradeDrill(map, ["river"])).toEqual({
+      drillId: "m1",
+      correct: true,
+      explanation: "It watches the path they have to walk.",
+    });
+    expect(gradeDrill(map, ["base"]).correct).toBe(false);
+  });
+
+  it("grades a wave-sim drill on where the wave ended up", () => {
+    expect(gradeDrill(waveSim, ["clear", "clear"]).correct).toBe(true);
+    expect(gradeDrill(waveSim, ["hold", "hold"]).correct).toBe(false);
+  });
+
+  it("rejects a wave-sim answer of the wrong length or with an invented action", () => {
+    expect(gradeDrill(waveSim, ["clear"]).correct).toBe(false);
+    expect(gradeDrill(waveSim, ["clear", "clear", "clear"]).correct).toBe(false);
+    expect(gradeDrill(waveSim, ["clear", "teleport"]).correct).toBe(false);
   });
 });
 

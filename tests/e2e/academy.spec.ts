@@ -50,8 +50,16 @@ test.describe("Academy", () => {
     // The correct option is revealed alongside it.
     await expect(page.getByText(/Six minions kill three faster/)).toBeVisible();
 
-    // Answering every drill on the page completes the lesson.
     await page.getByRole("button", { name: /Recall on the crash/ }).click();
+
+    // The wave drill is played, not picked: four cycles that let their wave build, walk it to
+    // your side, then hold it there. The same reducer animates it and grades it.
+    await page.getByRole("button", { name: "Leave it alone" }).click();
+    await page.getByRole("button", { name: "Leave it alone" }).click();
+    await page.getByRole("button", { name: "Last-hit only" }).click();
+    await page.getByRole("button", { name: "Kill two early" }).click();
+
+    // Answering every drill on the page completes the lesson.
     await expect(page.getByText("Lesson complete")).toBeVisible();
     await expect(page.getByText("Field assignment")).toBeVisible();
     await expect(page.getByRole("link", { name: /Next: Slow Push/ })).toBeVisible();
@@ -64,6 +72,18 @@ test.describe("Academy", () => {
     await correct.click();
     await expect(page.getByText("Correct", { exact: true })).toBeVisible();
     await expect(correct).toBeDisabled();
+  });
+
+  // The spots exist only on the schematic — the option text is the accessible name, and the
+  // words appear on the page only after the click, which is what keeps this a map question.
+  test("a map drill is answered by clicking the map", async ({ page }) => {
+    await page.goto("/academy/foundations/vision-basics");
+
+    await expect(page.getByText("River brush on the dragon side of mid")).toHaveCount(0);
+    await page.getByRole("button", { name: "River brush on the dragon side of mid" }).click();
+
+    await expect(page.getByText("Correct", { exact: true })).toBeVisible();
+    await expect(page.getByText(/He has to walk this/)).toBeVisible();
   });
 
   test("a pro lesson stops at the gate for a signed-out reader", async ({ page }) => {

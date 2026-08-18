@@ -1,3 +1,5 @@
+import type { WaveGoal, WaveState } from "@/domains/academy/drills/waveSim";
+
 // The Academy content model. Lessons are typed TypeScript objects rather than MDX so the
 // curriculum is typechecked, unit-testable and free to reuse the app's own primitives
 // (ChampionIcon, ItemIcon) inside a block — see docs/adr/ADR-019-academy-content-model.md.
@@ -112,9 +114,52 @@ export interface OrderDrill {
   explain: string;
 }
 
-export type Drill = QuizDrill | DecisionDrill | OrderDrill;
+/** Where an option sits on the Rift schematic, in fractions of its box. `r` is the hit radius. */
+export interface MapPoint {
+  x: number;
+  y: number;
+  r: number;
+}
+
+export interface MapDrillOption extends DrillOption {
+  at: MapPoint;
+}
+
+/**
+ * Pick a spot on the map — a ward, a danger zone, where the enemy jungler is. The answer is
+ * still a choice between authored options, so this grades down the same path a quiz does; a
+ * click is just a nicer way to say which one. The options are never listed as text, which is
+ * the whole point: reading four ward descriptions is not the skill being tested.
+ */
+export interface MapDrill {
+  id: string;
+  kind: "map";
+  prompt: string;
+  options: MapDrillOption[];
+}
+
+/** Drive a wave to a named state, one decision per cycle. Graded by `drills/waveSim.ts`. */
+export interface WaveSimDrill {
+  id: string;
+  kind: "wave-sim";
+  prompt: string;
+  start: WaveState;
+  goal: WaveGoal;
+  /** How many cycles the player gets. */
+  cycles: number;
+  explain: string;
+}
+
+export type Drill = QuizDrill | DecisionDrill | OrderDrill | MapDrill | WaveSimDrill;
 
 export type DrillKind = Drill["kind"];
+
+/** Drills answered by picking one authored option, whatever the surface looks like. */
+export type ChoiceDrill = QuizDrill | DecisionDrill | MapDrill;
+
+export function isChoiceDrill(drill: Drill): drill is ChoiceDrill {
+  return drill.kind === "quiz" || drill.kind === "decision" || drill.kind === "map";
+}
 
 // ── Field assignment (Proof of Practice) ──────────────────────────────────────
 

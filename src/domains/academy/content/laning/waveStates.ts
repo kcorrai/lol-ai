@@ -79,10 +79,26 @@ export const waveStates: Lesson = {
     { kind: "drill", drillId: "wave-state-decision" },
     {
       kind: "prose",
+      text: "Reading a state is half of it. The other half is putting the wave into the state you want, which is four decisions in a row and no single one of them obvious. The drill below is exactly that: the wave starts even in the middle of the lane, and you have four cycles to park it outside your own turret.",
+    },
+    { kind: "drill", drillId: "wave-state-sim" },
+    {
+      kind: "prose",
       text: "The next three lessons take one state each and turn it into something you can do on purpose: building a slow push and cashing it in, holding a freeze, and trading inside a wave you control. This lesson is the vocabulary. The rest is grammar.",
     },
   ],
   drills: [
+    {
+      id: "wave-state-sim",
+      kind: "wave-sim",
+      prompt:
+        "The wave is even and sitting in the middle of the lane. Freeze it just outside your own turret. Four cycles, one decision each.",
+      start: { advantage: 0, position: 0 },
+      goal: "freeze",
+      cycles: 4,
+      explain:
+        "A freeze is built in two moves, not one. First you let their wave outnumber yours — leave it alone — so it walks toward your turret. Then, before it arrives, you start killing again to hold the gap at one minion, which is the point where nothing pushes anything. Keep leaving it alone the whole way and it does not freeze, it crashes into your own turret and bounces back at them.",
+    },
     {
       id: "wave-state-quiz",
       kind: "quiz",

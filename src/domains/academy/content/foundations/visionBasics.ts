@@ -59,9 +59,50 @@ export const visionBasics: Lesson = {
         "If you cannot ward, do not push. Those are the only two options.",
       ],
     },
+    { kind: "drill", drillId: "vision-map" },
     { kind: "drill", drillId: "vision-quiz" },
   ],
   drills: [
+    {
+      id: "vision-map",
+      kind: "map",
+      prompt:
+        "You are mid at 6:00, about to shove the wave past the middle of the lane. The enemy jungler was last seen taking their own dragon-side buff. Click where the ward goes.",
+      options: [
+        {
+          id: "drake-river",
+          label: "River brush on the dragon side of mid",
+          explain:
+            "Correct. He has to walk this to reach you from where you last saw him, and it is far enough up the river to give you the second of warning that a ward is for.",
+          correct: true,
+          at: { x: 0.58, y: 0.64, r: 0.07 },
+        },
+        {
+          id: "baron-river",
+          label: "River brush on the baron side of mid",
+          explain:
+            "This is the half of the river he is not on. It is the right kind of ward on the wrong side, which buys you nothing on the gank that is actually coming.",
+          correct: false,
+          at: { x: 0.44, y: 0.38, r: 0.07 },
+        },
+        {
+          id: "deep-jungle",
+          label: "Deep in their jungle, past their turret",
+          explain:
+            "A deep ward is for hunting a jungler you already have priority on. Placed while you are about to be the one caught, it watches a place nothing is going to happen to you.",
+          correct: false,
+          at: { x: 0.8, y: 0.3, r: 0.07 },
+        },
+        {
+          id: "home-brush",
+          label: "The brush by your own turret",
+          explain:
+            "Safe to place and safe to ignore. By the time this ward sees him you are already in the fight it was supposed to warn you about.",
+          correct: false,
+          at: { x: 0.2, y: 0.74, r: 0.07 },
+        },
+      ],
+    },
     {
       id: "vision-decision",
       kind: "decision",
