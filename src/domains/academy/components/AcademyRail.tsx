@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GraduationCap } from "lucide-react";
-import { TRACKS } from "@/domains/academy/curriculum";
+import { coreTracks, roleTracks } from "@/domains/academy/curriculum";
 
 const LINK =
   "font-mono text-[11px] uppercase tracking-label transition-colors whitespace-nowrap";
@@ -15,9 +15,14 @@ const LINK =
 export function AcademyRail(): React.ReactElement {
   const pathname = usePathname();
 
+  // The five role paths share one entry. Listing them would put eleven links in a rail that
+  // has to stay one line, and only one of the five is ever the reader's own anyway.
+  const rolePaths = new Set(roleTracks().map((track) => `/academy/${track.id}`));
+
   const items = [
     { href: "/academy", label: "Overview" },
-    ...TRACKS.map((track) => ({ href: `/academy/${track.id}`, label: track.title })),
+    ...coreTracks().map((track) => ({ href: `/academy/${track.id}`, label: track.title })),
+    { href: "/academy/roles", label: "Roles" },
   ];
 
   return (
@@ -33,7 +38,12 @@ export function AcademyRail(): React.ReactElement {
         <nav className="flex items-center gap-5">
           {items.map((item) => {
             const active =
-              item.href === "/academy" ? pathname === "/academy" : pathname.startsWith(item.href);
+              item.href === "/academy"
+                ? pathname === "/academy"
+                : item.href === "/academy/roles"
+                  ? pathname.startsWith("/academy/roles") ||
+                    [...rolePaths].some((path) => pathname.startsWith(path))
+                  : pathname.startsWith(item.href);
             return (
               <Link
                 key={item.href}

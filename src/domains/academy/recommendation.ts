@@ -1,5 +1,5 @@
 import { allLessons, getTrack, lessonId } from "@/domains/academy/curriculum";
-import type { LeakTag, Lesson, LessonStatus } from "@/domains/academy/types";
+import type { LeakTag, Lesson, LessonStatus, RoleId } from "@/domains/academy/types";
 import type { Placement } from "@/domains/academy/placement";
 
 /** Why this lesson is the one being recommended — shown to the player verbatim. */
@@ -16,12 +16,29 @@ export interface RecommendationInput {
   placement: Placement;
   /** Leaks the habit detector has confirmed over multiple weeks, most severe first. */
   detectedLeaks: LeakTag[];
+  /** The role the player actually queues. Null when there is nothing to read it from. */
+  role?: RoleId | null;
 }
 
 const FINISHED: readonly LessonStatus[] = ["completed", "mastered"];
 
 function isFinished(lesson: Lesson, statuses: Map<string, LessonStatus>): boolean {
   return FINISHED.includes(statuses.get(lessonId(lesson)) ?? "available");
+}
+
+/**
+ * Whether the Academy may put this lesson in front of this player unprompted. A role path is
+ * only ever offered to the role it is about, and to nobody at all while we cannot read a role
+ * — teaching jungle pathing to a support main is worse than teaching nothing (ADR-028).
+ *
+ * This gates the steps where the Academy *chooses*. Resuming and reviewing are deliberately
+ * exempt below: those are lessons the player already opened, and a player whose main role has
+ * drifted should still be handed back the thing they left half-finished.
+ */
+function offerable(lesson: Lesson, role: RoleId | null): boolean {
+  const track = getTrack(lesson.trackId);
+  if (!track?.role) return true;
+  return track.role === role;
 }
 
 const LEAK_LABEL: Record<LeakTag, string> = {
@@ -41,6 +58,7 @@ const LEAK_LABEL: Record<LeakTag, string> = {
  */
 export function chooseNextLesson(input: RecommendationInput): Recommendation | null {
   const { statuses, placement, detectedLeaks } = input;
+  const role = input.role ?? null;
 
   // 1. Something already open.
   const open = allLessons().find((l) => statuses.get(lessonId(l)) === "in_progress");
@@ -63,7 +81,9 @@ export function chooseNextLesson(input: RecommendationInput): Recommendation | n
   // 3. A confirmed leak, then a leak the placement check raised. Confirmed ones come from
   //    several weeks of data, so they outrank a single 20-game snapshot.
   for (const leak of [...detectedLeaks, ...placement.leaks]) {
-    const lesson = allLessons().find((l) => l.fixes.includes(leak) && !isFinished(l, statuses));
+    const lesson = allLessons().find(
+      (l) => l.fixes.includes(leak) && !isFinished(l, statuses) && offerable(l, role)
+    );
     if (lesson) {
       return {
         lesson,
@@ -88,7 +108,7 @@ export function chooseNextLesson(input: RecommendationInput): Recommendation | n
   }
 
   // 5. Anything left anywhere.
-  const remaining = allLessons().find((l) => !isFinished(l, statuses));
+  const remaining = allLessons().find((l) => !isFinished(l, statuses) && offerable(l, role));
   return remaining
     ? { lesson: remaining, source: "next", reason: "Next up in the curriculum." }
     : null;

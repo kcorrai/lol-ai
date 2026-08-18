@@ -106,6 +106,22 @@ test.describe("Academy", () => {
     await expect(page.getByText(/Freezing while ahead/)).toHaveCount(0);
   });
 
+  // Role paths are deliberately not in the hub grid: only one of the five is ever the reader's
+  // own, so they get a section, an index and a single rail entry instead (ADR-028).
+  test("role paths have their own section, index and pages", async ({ page }) => {
+    await page.goto("/academy");
+    await expect(page.getByText("Role paths").first()).toBeVisible();
+
+    await page.getByRole("link", { name: /All five/ }).click();
+    await expect(page).toHaveURL(/\/academy\/roles$/, { timeout: 30_000 });
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("only your role plays");
+
+    await page.getByRole("link", { name: /Top Path/ }).first().click();
+    await expect(page).toHaveURL(/\/academy\/top$/, { timeout: 30_000 });
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Top Path");
+    await expect(page.getByRole("listitem")).toHaveCount(5);
+  });
+
   test("the section rail moves between tracks", async ({ page }) => {
     await page.goto("/academy");
 

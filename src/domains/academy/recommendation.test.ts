@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { chooseNextLesson } from "./recommendation";
-import { allLessons, getTrack, lessonId } from "./curriculum";
+import { allLessons, getTrack, lessonId, roleTracks } from "./curriculum";
 import { DEFAULT_PLACEMENT, type Placement } from "./placement";
 import type { LessonStatus } from "./types";
 
@@ -163,6 +163,66 @@ describe("chooseNextLesson", () => {
         detectedLeaks: ["low_cs"],
       })
     ).toBeNull();
+  });
+
+  // A role path is a supplement for one role. Offering a jungle lesson to a support main is
+  // worse than offering nothing, so the Academy only ever picks the reader's own (ADR-028).
+  it("never offers a role path belonging to somebody else's role", () => {
+    const path = roleTracks()[0];
+    const target = path.lessons[0];
+    const other = roleTracks().find((t) => t.role !== path.role);
+
+    const result = chooseNextLesson({
+      statuses: allDoneExcept(lessonId(target)),
+      placement: CORE,
+      detectedLeaks: [],
+      role: other ? other.role : null,
+    });
+
+    expect(result).toBeNull();
+  });
+
+  it("offers a role path to the role it is about", () => {
+    const path = roleTracks()[0];
+    const target = path.lessons[0];
+
+    const result = chooseNextLesson({
+      statuses: allDoneExcept(lessonId(target)),
+      placement: CORE,
+      detectedLeaks: [],
+      role: path.role,
+    });
+
+    expect(result?.lesson).toBe(target);
+  });
+
+  it("offers no role path at all when the player's role is unknown", () => {
+    const target = roleTracks()[0].lessons[0];
+
+    expect(
+      chooseNextLesson({
+        statuses: allDoneExcept(lessonId(target)),
+        placement: CORE,
+        detectedLeaks: [],
+        role: null,
+      })
+    ).toBeNull();
+  });
+
+  // Exempt on purpose: this is a lesson the player opened themselves, and a main role that has
+  // drifted since should not strand it half-finished.
+  it("still resumes a role path the player already opened, whatever their role reads as now", () => {
+    const target = roleTracks()[0].lessons[1];
+
+    const result = chooseNextLesson({
+      statuses: statuses([[lessonId(target), "in_progress"]]),
+      placement: CORE,
+      detectedLeaks: [],
+      role: null,
+    });
+
+    expect(result?.lesson).toBe(target);
+    expect(result?.source).toBe("resume");
   });
 
   it("counts a mastered lesson as finished", () => {

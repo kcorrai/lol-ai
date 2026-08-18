@@ -42,6 +42,12 @@ import { playingFromBehind } from "./mental/playingFromBehind";
 import { communicationAndMute } from "./mental/communicationAndMute";
 import { sessionDiscipline } from "./mental/sessionDiscipline";
 
+import { theIsland } from "./top/theIsland";
+import { teleport } from "./top/teleport";
+import { losingMatchups } from "./top/losingMatchups";
+import { splitPushing } from "./top/splitPushing";
+import { arrivingLate } from "./top/arrivingLate";
+
 // Lesson order inside a track is the teaching order and the recommendation order.
 // It is deliberate: nothing in a lesson may depend on a lesson listed after it.
 export const TRACKS: readonly Track[] = [
@@ -133,5 +139,19 @@ export const TRACKS: readonly Track[] = [
       communicationAndMute,
       sessionDiscipline,
     ],
+  },
+
+  // Role paths. Everything above is the same job in every role; these five cover only what is
+  // left over once you know where the player stands (ADR-028). Five lessons rather than six,
+  // deliberately — a role path that repeats the curriculum is padding.
+  {
+    id: "top",
+    role: "top",
+    title: "Top Path",
+    tagline: "The island, and the two ways off it",
+    description:
+      "The lane furthest from everything that wins the game. Why nobody comes to help, what teleport is actually for, how to survive a matchup you cannot win, and the trade a split push is really making at twenty-eight minutes.",
+    level: "core",
+    lessons: [theIsland, teleport, losingMatchups, splitPushing, arrivingLate],
   },
 ];

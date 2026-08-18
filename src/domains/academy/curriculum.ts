@@ -1,5 +1,13 @@
 import { TRACKS } from "@/domains/academy/content/tracks";
-import type { LeakTag, Lesson, LessonBlock, LessonStatus, Track, TrackId } from "@/domains/academy/types";
+import type {
+  LeakTag,
+  Lesson,
+  LessonBlock,
+  LessonStatus,
+  RoleId,
+  Track,
+  TrackId,
+} from "@/domains/academy/types";
 
 export { TRACKS };
 
@@ -97,4 +105,39 @@ export function lessonsForLeak(leak: LeakTag): Lesson[] {
 
 export function trackIds(): TrackId[] {
   return TRACKS.map((t) => t.id);
+}
+
+// ── Role paths ────────────────────────────────────────────────────────────────
+// Two shelves, not one list. The core curriculum is what every player reads in order; a role
+// path is a supplement for the role the player actually queues, and mixing them into one grid
+// would tell a support player that five of eleven tracks are not for them (ADR-028).
+
+/** A track that is a role path. Narrowed so callers can read `role` without a cast. */
+export type RoleTrack = Track & { role: RoleId };
+
+export function isRolePath(track: Track): track is RoleTrack {
+  return track.role !== undefined;
+}
+
+/** The curriculum proper, in teaching order. */
+export function coreTracks(): Track[] {
+  return TRACKS.filter((t) => !isRolePath(t));
+}
+
+export function roleTracks(): RoleTrack[] {
+  return TRACKS.filter(isRolePath);
+}
+
+export function trackForRole(role: RoleId): RoleTrack | null {
+  return roleTracks().find((t) => t.role === role) ?? null;
+}
+
+/**
+ * The role paths in the order this player should see them: their own role first, because it is
+ * the only one of the five that is about the games they are actually playing.
+ */
+export function roleTracksFor(role: RoleId | null): RoleTrack[] {
+  const tracks = roleTracks();
+  if (!role) return tracks;
+  return [...tracks].sort((a, b) => Number(b.role === role) - Number(a.role === role));
 }

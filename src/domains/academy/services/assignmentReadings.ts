@@ -108,6 +108,16 @@ async function primaryPosition(puuid: string): Promise<Position | null> {
   return best;
 }
 
+/**
+ * The same reading, from a linked account rather than a puuid. The Academy hub needs it to
+ * decide which role path is the player's own, which is a question about them and not about
+ * any one assignment.
+ */
+export async function primaryPositionForAccount(riotAccountId: string): Promise<Position | null> {
+  const puuid = await getAccountPuuid(riotAccountId).catch(() => null);
+  return puuid ? primaryPosition(puuid) : null;
+}
+
 export interface Baseline {
   value: number;
   position: Position;
