@@ -60,6 +60,12 @@ import { theTwoRivers } from "./mid/theTwoRivers";
 import { comingBackToTheLane } from "./mid/comingBackToTheLane";
 import { whichObjectiveHappens } from "./mid/whichObjectiveHappens";
 
+import { farmingForTheItem } from "./adc/farmingForTheItem";
+import { theTwoPlayerLane } from "./adc/theTwoPlayerLane";
+import { oneStepBack } from "./adc/oneStepBack";
+import { aloneInLane } from "./adc/aloneInLane";
+import { damageIsADuration } from "./adc/damageIsADuration";
+
 // Lesson order inside a track is the teaching order and the recommendation order.
 // It is deliberate: nothing in a lesson may depend on a lesson listed after it.
 export const TRACKS: readonly Track[] = [
@@ -196,6 +202,22 @@ export const TRACKS: readonly Track[] = [
       theTwoRivers,
       comingBackToTheLane,
       whichObjectiveHappens,
+    ],
+  },
+  {
+    id: "adc",
+    role: "adc",
+    title: "ADC Path",
+    tagline: "Range is a stat, and seconds are the score",
+    description:
+      "The role that is weak until it is not. Farming toward an item rather than a kill, the only lane with four people in it, the spacing that is worth more than any defensive item, the window where your support leaves, and why your damage is measured in seconds alive.",
+    level: "core",
+    lessons: [
+      farmingForTheItem,
+      theTwoPlayerLane,
+      oneStepBack,
+      aloneInLane,
+      damageIsADuration,
     ],
   },
 ];
