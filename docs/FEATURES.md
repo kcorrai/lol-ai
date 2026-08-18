@@ -542,3 +542,34 @@ streak that a player who only has fifteen minutes can still keep.
 **Difficulty:** Medium
 **Dependencies:** Daily challenge generator (challenges), quiz attempts, Academy
 progress, coaching reports, shareable cards
+
+### F-042 — Your LoL Career Timeline (shipped: LA-37)
+
+`/timeline` — a player's whole tracked history as one chronological spine.
+
+**What it does:**
+
+- **Reads in order, which nothing else here did.** Months descend newest first, each
+  carrying what it was worth — games, win rate, rank at close, LP moved — with its
+  events hanging off a single spine beneath it.
+- **Finds the moments rather than listing games.** Promotions and demotions, the peak,
+  the champion each stretch of the career belonged to, the games that still hold a
+  personal record, habits that appeared and habits that stopped, lessons mastered,
+  achievements, past recaps.
+- **Keeps six events a month.** An active month is otherwise forty rows that all look
+  the same, which is a log rather than a story. What was cut is counted, not hidden.
+- **Shows all-time mastery as its own thing** — the one figure on the page that predates
+  everything else, labelled as counted since the account was made.
+- **Says where the record starts.** Riot serves about two years of matches and no past
+  seasons at all, so the header reads "Tracking since" and means exactly that.
+- **Stores nothing** (ADR-031). Every event is derived on read from the table that owns
+  the fact, so a corrected source corrects the timeline and the page can never disagree
+  with the data behind it.
+- **Shares as a card** — games, hours, rank now against peak, signature champion and the
+  best game on record, on one image.
+
+**User Benefit:** Everything else in the product is about the last twenty games. This is
+the only place that answers "how far have I actually come".
+**Difficulty:** Medium
+**Dependencies:** Match history, `ranked_history` sampling (LA-10), champion mastery,
+achievements, habit detection, Academy progress, season recaps
