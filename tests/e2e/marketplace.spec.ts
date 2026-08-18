@@ -71,11 +71,18 @@ test.describe("Coach marketplace", () => {
       // reaching React state — the next render then throws it away. A chip is
       // pure state, so it cannot report itself checked until React is live;
       // waiting on that is the one signal here that actually means "hydrated".
+      //
+      // The click has to be retried, not just the assertion: `toBeChecked` polls
+      // the DOM, so a click swallowed before hydration is never replayed and the
+      // test fails for good. Guarded by `isChecked` so a retry cannot toggle a
+      // chip that already took.
       const english = page
         .getByRole("group", { name: "Languages" })
         .getByRole("checkbox", { name: "English" });
-      await english.click();
-      await expect(english).toBeChecked();
+      await expect(async () => {
+        if (!(await english.isChecked())) await english.click();
+        await expect(english).toBeChecked({ timeout: 1_000 });
+      }).toPass({ timeout: 15_000 });
 
       await page.getByRole("group", { name: "Regions" }).getByRole("checkbox", { name: "EUW" }).click();
       await page.getByRole("group", { name: "Roles" }).getByRole("checkbox", { name: "Jungle" }).click();
