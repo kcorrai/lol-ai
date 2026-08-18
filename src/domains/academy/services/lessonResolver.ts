@@ -1,4 +1,6 @@
+import type { Position } from "@prisma/client";
 import { getLessonById } from "@/domains/academy/curriculum";
+import { positionFromRole } from "@/domains/academy/roles";
 import { CHAMPION_TRACK_ID } from "@/domains/academy/championLesson";
 import { resolveChampionLesson } from "@/domains/academy/services/championLessonService";
 import type { Lesson } from "@/domains/academy/types";
@@ -14,6 +16,12 @@ export interface ResolvedLesson {
    * alone: a lesson about Yasuo judged on every game in the role is not about Yasuo.
    */
   championId: number | null;
+  /**
+   * The role a champion lesson is about — the role that champion is played in, which is not
+   * always the account's main role, and is the population its assignment has to be judged from.
+   * Null for the authored curriculum, whose assignments read the account's main role.
+   */
+  position: Position | null;
 }
 
 export function isChampionLessonId(lessonId: string): boolean {
@@ -31,9 +39,15 @@ export async function resolveLesson(
 ): Promise<ResolvedLesson | null> {
   if (!isChampionLessonId(lessonId)) {
     const lesson = getLessonById(lessonId);
-    return lesson ? { lesson, championId: null } : null;
+    return lesson ? { lesson, championId: null, position: null } : null;
   }
 
   const resolved = await resolveChampionLesson(userId, lessonId);
-  return resolved ? { lesson: resolved.lesson, championId: resolved.championId } : null;
+  if (!resolved) return null;
+
+  return {
+    lesson: resolved.lesson,
+    championId: resolved.championId,
+    position: positionFromRole(resolved.role),
+  };
 }

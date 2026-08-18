@@ -84,7 +84,7 @@ export async function getChampionLesson(
 export async function resolveChampionLesson(
   userId: string,
   lessonId: string
-): Promise<{ lesson: Lesson; championId: number } | null> {
+): Promise<{ lesson: Lesson; championId: number; role: RoleId } | null> {
   const [trackId, slug] = lessonId.split("/");
   if (trackId !== CHAMPION_TRACK_ID || !slug) return null;
 
@@ -99,7 +99,7 @@ export async function resolveChampionLesson(
   if (!analysis) return null;
 
   const lesson = buildChampionLesson({ champion: option.champion, role: option.role, analysis });
-  return lesson ? { lesson, championId: option.championId } : null;
+  return lesson ? { lesson, championId: option.championId, role: option.role } : null;
 }
 
 export interface ChampionLessonName {
