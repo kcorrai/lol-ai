@@ -1,3 +1,4 @@
+import type { BookingStatus } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { redactContacts, redactionNotice } from "@/domains/marketplace/redact";
 
@@ -31,9 +32,18 @@ export interface ThreadSummary {
   coachSlug: string | null;
   lastMessageAt: string;
   unread: number;
+  /** The last thing said, for the list. Null on a thread with no messages. */
+  preview: string | null;
+  /**
+   * The state of the most recent booking between these two, which is what the
+   * thread is nearly always about. Null when they have never had one — which
+   * cannot happen today, because a thread needs a booking to exist.
+   */
+  bookingStatus: BookingStatus | null;
 }
 
-export interface ThreadView extends ThreadSummary {
+/** An open thread. The list-only fields are not repeated — they are in it. */
+export interface ThreadView extends Omit<ThreadSummary, "preview" | "bookingStatus"> {
   messages: MessageView[];
 }
 
@@ -76,8 +86,34 @@ export async function listThreads(userId: string): Promise<ThreadSummary[]> {
       student: { select: { name: true } },
       coachProfile: { select: { userId: true, slug: true, displayName: true } },
       _count: { select: { messages: { where: { senderId: { not: userId }, readAt: null } } } },
+      // One message and one booking per row, not a join per thread — the list
+      // is capped at 100 and both are ordered reads off an existing index.
+      messages: {
+        orderBy: { createdAt: "desc" as const },
+        take: 1,
+        select: { body: true },
+      },
+      coachProfileId: true,
     },
   });
+
+  // The latest booking for each pair, in one query rather than one per row.
+  const bookings = await prisma.booking.findMany({
+    where: {
+      OR: rows.map((row) => ({
+        coachProfileId: row.coachProfileId,
+        studentId: row.studentId,
+      })),
+    },
+    orderBy: { createdAt: "desc" },
+    select: { coachProfileId: true, studentId: true, status: true },
+  });
+
+  const latest = new Map<string, BookingStatus>();
+  for (const booking of bookings) {
+    const key = `${booking.coachProfileId}:${booking.studentId}`;
+    if (!latest.has(key)) latest.set(key, booking.status);
+  }
 
   return rows.map((row) => ({
     id: row.id,
@@ -88,6 +124,8 @@ export async function listThreads(userId: string): Promise<ThreadSummary[]> {
     coachSlug: row.coachProfile.slug,
     lastMessageAt: row.lastMessageAt.toISOString(),
     unread: row._count.messages,
+    preview: row.messages[0]?.body ?? null,
+    bookingStatus: latest.get(`${row.coachProfileId}:${row.studentId}`) ?? null,
   }));
 }
 
