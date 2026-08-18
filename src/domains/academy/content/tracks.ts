@@ -35,6 +35,13 @@ import { engageAndDisengage } from "./teamfighting/engageAndDisengage";
 import { peelingAndProtecting } from "./teamfighting/peelingAndProtecting";
 import { fightingAroundObjectives } from "./teamfighting/fightingAroundObjectives";
 
+import { tiltAndTheNextGame } from "./mental/tiltAndTheNextGame";
+import { theDodgeDecision } from "./mental/theDodgeDecision";
+import { warmUpAndFirstGame } from "./mental/warmUpAndFirstGame";
+import { playingFromBehind } from "./mental/playingFromBehind";
+import { communicationAndMute } from "./mental/communicationAndMute";
+import { sessionDiscipline } from "./mental/sessionDiscipline";
+
 // Lesson order inside a track is the teaching order and the recommendation order.
 // It is deliberate: nothing in a lesson may depend on a lesson listed after it.
 export const TRACKS: readonly Track[] = [
@@ -109,6 +116,22 @@ export const TRACKS: readonly Track[] = [
       engageAndDisengage,
       peelingAndProtecting,
       fightingAroundObjectives,
+    ],
+  },
+  {
+    id: "mental",
+    title: "Mental & Consistency",
+    tagline: "The games around the game",
+    description:
+      "Tilt is not a mood, it is a measurable change in the decisions you make — and it costs you the next game, not the one you are angry about. What to do about that, plus dodging, warming up, playing from behind, and the session length nobody sets on purpose.",
+    level: "core",
+    lessons: [
+      tiltAndTheNextGame,
+      theDodgeDecision,
+      warmUpAndFirstGame,
+      playingFromBehind,
+      communicationAndMute,
+      sessionDiscipline,
     ],
   },
 ];

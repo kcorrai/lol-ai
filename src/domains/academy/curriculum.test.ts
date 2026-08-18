@@ -235,9 +235,17 @@ describe("leak mapping", () => {
     );
   });
 
-  // Every habit habitDetectionService can raise needs somewhere to send the player.
+  // Every habit habitDetectionService can raise needs somewhere to send the player. All six
+  // are covered now that Macro answers `late_game_throw` and Mental answers `tilt_prone`.
   it("covers the leaks the habit detector actually raises", () => {
-    for (const leak of ["low_cs", "low_vision", "high_deaths", "objective_neglect"] as const) {
+    for (const leak of [
+      "low_cs",
+      "low_vision",
+      "high_deaths",
+      "objective_neglect",
+      "late_game_throw",
+      "tilt_prone",
+    ] as const) {
       expect(lessonsForLeak(leak).length).toBeGreaterThan(0);
     }
   });

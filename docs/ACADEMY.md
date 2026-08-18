@@ -88,7 +88,18 @@ Track  →  Lesson  →  Blocks + Drills + Field assignment
 5. The Peel Decision
 6. Fighting Around a Pit
 
-Planned: Mental & Consistency, Role Paths, Champion Mastery.
+**Mental & Consistency** — lesson 1 free, rest Pro, 6 lessons. The games around the game.
+
+1. What Tilt Actually Costs
+2. The Dodge Decision
+3. The First Game of the Session
+4. Playing From Behind Without Making It Worse
+5. Pings, Chat and the Mute Button
+6. How Long to Play, and When to Stop
+
+Planned: Role Paths, Champion Mastery.
+
+All six `LeakTag` values now have lessons behind them — `curriculum.test.ts` enforces it.
 
 ## Proof of Practice
 
