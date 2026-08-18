@@ -97,9 +97,56 @@ Track  →  Lesson  →  Blocks + Drills + Field assignment
 5. Pings, Chat and the Mute Button
 6. How Long to Play, and When to Stop
 
-Planned: Role Paths, Champion Mastery.
-
 All six `LeakTag` values now have lessons behind them — `curriculum.test.ts` enforces it.
+
+## Role paths
+
+Everything above is the same job in every role. The five role paths are what is left once you
+know where the player stands — **five lessons each, not six**, because a role path that repeats
+the curriculum is padding.
+
+**Top Path** — the island, and the two ways off it.
+
+1. The Island
+2. Teleport Is a Map Resource, Not a Recall
+3. The Matchup You Cannot Win
+4. Splitting Is a Trade, Not a Duel
+5. You Arrive From the Side
+
+**Jungle Path** — time is the resource, camps are the clock.
+
+1. The Clear Is the Plan
+2. Where Their Jungler Has to Be
+3. A Gank Has Three Conditions
+4. The Ninety Seconds Before a Pit
+5. What a Stolen Camp Actually Costs
+
+**Mid Path** — the right to leave, and what it costs.
+
+1. Priority Is the Whole Job
+2. A Roam Costs a Wave, So It Has to Buy One
+3. The Most Gankable Lane on the Map
+4. Coming Back to a Lane You Left
+5. Mid Decides Which Objective Happens
+
+A role path is an ordinary `Track` that carries a `role`; that one optional field is what
+separates it from the curriculum (ADR-028). Consequences worth knowing:
+
+- The hub renders `coreTracks()` in its grid and the role paths in their own section, showing
+  the player's own as a card and the other four as links. `/academy/roles` is the index for all
+  five and the section rail carries one **Roles** entry rather than eleven.
+- **The Academy never offers a role path to a role it is not about.** `chooseNextLesson` filters
+  by the player's own role — the same `primaryPosition` reading an assignment is judged with —
+  and offers no role path at all when there is no role to read. Resuming and reviewing are
+  exempt: those are lessons the player opened themselves.
+- Progress, XP, mastery, decay, the transcript and certificates all reached role paths without a
+  line of change, because a role path is a `Track` and its lessons are `Lesson`s.
+
+Roles are named in the Academy's own vocabulary — `RoleId` is `top | jungle | mid | adc |
+support`, never Prisma's `Position`, because `types.ts` is imported by client components. The
+translation lives in `roles.ts`.
+
+Planned: Champion Mastery.
 
 ## Proof of Practice
 
@@ -162,6 +209,7 @@ drills behind the gate.
 | Types | `src/domains/academy/types.ts` |
 | Lesson content | `src/domains/academy/content/<track>/<lesson>.ts` |
 | Track registry | `src/domains/academy/content/tracks.ts` |
+| Role vocabulary | `src/domains/academy/roles.ts` |
 | Lookup & gating | `src/domains/academy/curriculum.ts` |
 | Drill grading | `src/domains/academy/drills/scoring.ts` |
 | Placement / recommendation / assignments | `src/domains/academy/{placement,recommendation,assignments}.ts` |
@@ -171,6 +219,7 @@ drills behind the gate.
 | Services (Prisma) | `src/domains/academy/services/` |
 | Components | `src/domains/academy/components/` |
 | Routes | `app/(academy)/academy/` |
+| Role path index | `app/(academy)/academy/roles/page.tsx` |
 | API | `app/api/academy/progress/route.ts` |
 
 Content decisions and the client-import rule are recorded in

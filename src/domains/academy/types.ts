@@ -4,13 +4,24 @@ import type { WaveGoal, WaveState } from "@/domains/academy/drills/waveSim";
 // curriculum is typechecked, unit-testable and free to reuse the app's own primitives
 // (ChampionIcon, ItemIcon) inside a block — see docs/adr/ADR-019-academy-content-model.md.
 
-export type TrackId =
+/**
+ * The five positions in the Academy's own vocabulary. Deliberately not Prisma's `Position`:
+ * this module is imported by client components (ADR-025), and a value import of the Prisma
+ * enum drags `async_hooks` into the browser bundle. The mapping lives in `roles.ts`.
+ */
+export type RoleId = "top" | "jungle" | "mid" | "adc" | "support";
+
+/** The curriculum everyone reads, in teaching order. */
+export type CoreTrackId =
   | "foundations"
   | "laning"
   | "vision"
   | "macro"
   | "teamfighting"
   | "mental";
+
+/** A role path carries its role as its id — there is exactly one path per role. */
+export type TrackId = CoreTrackId | RoleId;
 
 export type TrackLevel = "foundation" | "core" | "advanced";
 
@@ -210,6 +221,12 @@ export interface Track {
   description: string;
   level: TrackLevel;
   lessons: Lesson[];
+  /**
+   * Set on a role path, absent on a core track. Role paths sit *beside* the curriculum rather
+   * than inside it: they only cover what is specific to the role, and the Academy never picks
+   * one for a player whose own games are in a different role (ADR-028).
+   */
+  role?: RoleId;
 }
 
 // ── Progress ──────────────────────────────────────────────────────────────────

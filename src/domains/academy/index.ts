@@ -4,13 +4,18 @@
 export {
   TRACKS,
   allLessons,
+  coreTracks,
   getLesson,
   getLessonById,
   getTrack,
   isGated,
+  isRolePath,
   lessonId,
   lessonNeighbours,
   lessonsForLeak,
+  roleTracks,
+  roleTracksFor,
+  trackForRole,
   trackCompletion,
   trackIds,
   trackMinutes,
@@ -21,6 +26,8 @@ export type { LessonNeighbours } from "./curriculum";
 
 export { gradeDrill, scoreLesson, PASS_RATIO } from "./drills/scoring";
 export type { DrillAttempt, DrillResult, LessonScore } from "./drills/scoring";
+
+export { ROLE_IDS, ROLE_LABEL, roleFromPosition } from "./roles";
 
 export { DEFAULT_PLACEMENT, placeFromProfile } from "./placement";
 export type { Placement, PlacementLevel, PlacementSignal } from "./placement";
@@ -55,7 +62,7 @@ export type { DecayResult } from "./services/decayService";
 export { buildCertificate, getTranscript } from "./services/transcriptService";
 export type { Certificate, Transcript, TranscriptLesson, TranscriptTrack } from "./services/transcriptService";
 
-export { getAcademyOverview } from "./services/academyService";
+export { getAcademyOverview, getPlayerRole } from "./services/academyService";
 export type { AcademyOverview } from "./services/academyService";
 export {
   getLessonProgress,
@@ -82,6 +89,7 @@ export type {
   LessonBlock,
   LessonProgress,
   LessonStatus,
+  RoleId,
   Track,
   TrackId,
   TrackLevel,

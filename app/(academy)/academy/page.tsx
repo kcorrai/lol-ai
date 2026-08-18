@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { TRACKS, getAcademyOverview, trackCompletion } from "@/domains/academy";
+import { coreTracks, getAcademyOverview, trackCompletion } from "@/domains/academy";
 import { ActiveAssignments } from "@/domains/academy/components/ActiveAssignments";
 import { NextUpPanel } from "@/domains/academy/components/NextUpPanel";
+import { RolePathsSection } from "@/domains/academy/components/RolePathsSection";
 import { TrackCard } from "@/domains/academy/components/TrackCard";
 import { getSession } from "@/lib/auth/session";
 
@@ -77,7 +78,7 @@ export default async function AcademyHubPage(): Promise<React.ReactElement> {
         </div>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2">
-          {TRACKS.map((track) => (
+          {coreTracks().map((track) => (
             <TrackCard
               key={track.id}
               track={track}
@@ -87,6 +88,8 @@ export default async function AcademyHubPage(): Promise<React.ReactElement> {
           ))}
         </div>
       </section>
+
+      <RolePathsSection role={overview.role} statuses={overview.statuses} />
 
       <section className="mt-12">
         <div className="flex items-center gap-3.5">

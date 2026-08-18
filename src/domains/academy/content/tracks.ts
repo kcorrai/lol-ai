@@ -42,6 +42,24 @@ import { playingFromBehind } from "./mental/playingFromBehind";
 import { communicationAndMute } from "./mental/communicationAndMute";
 import { sessionDiscipline } from "./mental/sessionDiscipline";
 
+import { theIsland } from "./top/theIsland";
+import { teleport } from "./top/teleport";
+import { losingMatchups } from "./top/losingMatchups";
+import { splitPushing } from "./top/splitPushing";
+import { arrivingLate } from "./top/arrivingLate";
+
+import { theClearIsThePlan } from "./jungle/theClearIsThePlan";
+import { whereTheirJunglerIs } from "./jungle/whereTheirJunglerIs";
+import { gankConditions } from "./jungle/gankConditions";
+import { ninetySecondsBefore } from "./jungle/ninetySecondsBefore";
+import { invading } from "./jungle/invading";
+
+import { priorityIsTheJob } from "./mid/priorityIsTheJob";
+import { roamingCostsAWave } from "./mid/roamingCostsAWave";
+import { theTwoRivers } from "./mid/theTwoRivers";
+import { comingBackToTheLane } from "./mid/comingBackToTheLane";
+import { whichObjectiveHappens } from "./mid/whichObjectiveHappens";
+
 // Lesson order inside a track is the teaching order and the recommendation order.
 // It is deliberate: nothing in a lesson may depend on a lesson listed after it.
 export const TRACKS: readonly Track[] = [
@@ -132,6 +150,52 @@ export const TRACKS: readonly Track[] = [
       playingFromBehind,
       communicationAndMute,
       sessionDiscipline,
+    ],
+  },
+
+  // Role paths. Everything above is the same job in every role; these five cover only what is
+  // left over once you know where the player stands (ADR-028). Five lessons rather than six,
+  // deliberately — a role path that repeats the curriculum is padding.
+  {
+    id: "top",
+    role: "top",
+    title: "Top Path",
+    tagline: "The island, and the two ways off it",
+    description:
+      "The lane furthest from everything that wins the game. Why nobody comes to help, what teleport is actually for, how to survive a matchup you cannot win, and the trade a split push is really making at twenty-eight minutes.",
+    level: "core",
+    lessons: [theIsland, teleport, losingMatchups, splitPushing, arrivingLate],
+  },
+  {
+    id: "jungle",
+    role: "jungle",
+    title: "Jungle Path",
+    tagline: "Time is the resource, camps are the clock",
+    description:
+      "The role where the decisions are the route, not the ganks. What a clear is actually buying, how to know which half of the map their jungler is allowed to be on, the three conditions a gank needs, the ninety seconds that decide a pit, and what a stolen camp really costs.",
+    level: "core",
+    lessons: [
+      theClearIsThePlan,
+      whereTheirJunglerIs,
+      gankConditions,
+      ninetySecondsBefore,
+      invading,
+    ],
+  },
+  {
+    id: "mid",
+    role: "mid",
+    title: "Mid Path",
+    tagline: "The right to leave, and what it costs",
+    description:
+      "The shortest lane and the only one in reach of both halves of the map. What priority actually is, the arithmetic behind every roam, surviving the most gankable lane in the game, coming back to a wave worth returning to, and deciding which objective your team gets.",
+    level: "core",
+    lessons: [
+      priorityIsTheJob,
+      roamingCostsAWave,
+      theTwoRivers,
+      comingBackToTheLane,
+      whichObjectiveHappens,
     ],
   },
 ];
