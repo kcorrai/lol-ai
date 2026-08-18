@@ -10,6 +10,7 @@ import {
   seededShuffle,
   utcDateKey,
 } from "./dailySeed";
+import { QUIZ_MODES } from "@/domains/quiz/types/quiz.types";
 
 const POOL = Array.from({ length: 173 }, (_, i) => `champ-${i}`);
 
@@ -134,7 +135,7 @@ describe("pickDaily", () => {
   it("never serves the same champion two days running, including across decks", () => {
     // The deck boundary is the one place a naive reshuffle can repeat, so walk
     // several cycles' worth of days and check every adjacent pair.
-    for (const mode of ["classic", "ability", "splash", "lore", "quote", "emoji"]) {
+    for (const mode of QUIZ_MODES) {
       let previous = pickDaily(POOL, mode, "2024-01-01");
       for (let i = 1; i < POOL.length * 4; i++) {
         const current = pickDaily(POOL, mode, addDays("2024-01-01", i));

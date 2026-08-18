@@ -10,7 +10,7 @@ interface ModeTile {
   splash: string;
 }
 
-// Marketing's own copy for the six modes, not the quiz's internal tile list:
+// Marketing's own copy for the eight modes, not the quiz's internal tile list:
 // the landing page says what a mode *is* to someone who has never played it,
 // and it should not change shape because the game's strip did. The art is a
 // fixed champion per mode, the same one the quiz uses, and never an answer.
@@ -21,6 +21,8 @@ const MODES: readonly ModeTile[] = [
   { name: "Lore", hint: "Names redacted", splash: "Swain" },
   { name: "Quote", hint: "One voice line", splash: "Karthus" },
   { name: "Emoji", hint: "Five clues", splash: "Kennen" },
+  { name: "Build", hint: "Read the items", splash: "Jax" },
+  { name: "Impostor", hint: "Odd one out", splash: "Neeko" },
 ];
 
 /**
@@ -57,12 +59,13 @@ export function DailyQuizStrip(): React.ReactElement {
             <div>
               <DailyStatus />
               <h3 className="mt-3 max-w-[18ch] font-display text-[28px] font-black uppercase leading-[0.98] text-text md:text-[36px]">
-                Six champion puzzles. One a day.
+                Eight champion puzzles. One a day.
               </h3>
               <p className="mt-3.5 max-w-[52ch] text-[15px] leading-relaxed text-text-body">
                 Guess the champion from an ability icon, a cropped splash, a redacted lore entry, a
-                voice line or a string of emoji. Unlimited guesses — every miss hands you a little
-                more. Solve any one mode to keep your streak.
+                voice line, a string of emoji or the item path they build. Or find the impostor:
+                eight champions, seven of whom share something. Unlimited guesses — every miss hands
+                you a little more. Solve any one mode to keep your streak.
               </p>
               <div className="mt-6 flex flex-wrap items-center gap-4">
                 <Link

@@ -2,11 +2,13 @@
 
 import {
   AudioLines,
+  Ghost,
   Grid3x3,
   ImageIcon,
   ScrollText,
   Smile,
   Sparkles,
+  Swords,
   Trophy,
   UserRound,
   type LucideIcon,
@@ -25,6 +27,8 @@ export const MODE_LABELS: Record<QuizMode, string> = {
   lore: "Lore",
   quote: "Quote",
   emoji: "Emoji",
+  build: "Build",
+  impostor: "Impostor",
 };
 
 interface Tile {
@@ -43,6 +47,8 @@ export const QUIZ_TILES: readonly Tile[] = [
   { key: "lore", label: "Lore", hint: "Names redacted", icon: ScrollText, art: "Swain" },
   { key: "quote", label: "Quote", hint: "One voice line", icon: AudioLines, art: "Karthus" },
   { key: "emoji", label: "Emoji", hint: "Clues drip in", icon: Smile, art: "Kennen" },
+  { key: "build", label: "Build", hint: "Read the items", icon: Swords, art: "Jax" },
+  { key: "impostor", label: "Impostor", hint: "Odd one out", icon: Ghost, art: "Neeko" },
   { key: "personal", label: "Yours", hint: "Your own games", icon: UserRound, art: "Ahri" },
   { key: "board", label: "Board", hint: "Today's ranking", icon: Trophy, art: "Thresh" },
 ] as const;

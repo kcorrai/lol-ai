@@ -5,9 +5,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useDailyQuiz } from "@/hooks/useDailyQuiz";
 import { useQuizGame, type QuizGameState } from "@/hooks/useQuizGame";
 import type { ModeResult, QuizMode } from "@/domains/quiz";
-import { ChampionGuessInput } from "./ChampionGuessInput";
 import { ClassicGrid } from "./ClassicGrid";
 import { ClueLadder } from "./ClueLadder";
+import { GuessArea } from "./GuessArea";
 import { GuessList } from "./GuessList";
 import { MODE_ICONS, MODE_LABELS } from "./ModeStrip";
 import { PuzzlePrompt } from "./PuzzlePrompt";
@@ -102,7 +102,8 @@ export function QuizBoard({
 
       {!finished && (
         <div className="border-t border-line-1 px-5 py-4">
-          <ChampionGuessInput
+          <GuessArea
+            puzzle={puzzle}
             champions={data.champions}
             alreadyGuessed={game.state.results.map((r) => r.guess)}
             disabled={game.pending}

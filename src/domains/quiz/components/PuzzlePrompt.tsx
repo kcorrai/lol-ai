@@ -2,6 +2,7 @@
 
 import type { QuizPrompt } from "@/domains/quiz";
 import { EMOJI_PER_CHAMPION } from "@/domains/quiz/services/clueLadder";
+import { BuildPrompt } from "./BuildPrompt";
 
 interface PuzzlePromptProps {
   prompt: QuizPrompt;
@@ -151,5 +152,35 @@ export function PuzzlePrompt({ prompt, misses, revealed }: PuzzlePromptProps): R
         </div>
       );
     }
+
+    case "build":
+      return (
+        <div className="grid gap-4">
+          <BuildPrompt prompt={prompt} />
+          <Caption>Whose build is this? Each miss adds a line of it</Caption>
+        </div>
+      );
+
+    case "impostor":
+      return (
+        <div className="grid animate-quiz-stage gap-4">
+          <div className="notch bg-scanline relative overflow-hidden border border-line-1 border-l-2 border-l-accent bg-surface-dark px-6 py-5">
+            <p className="font-mono text-[10px] uppercase tracking-label text-accent">
+              {"// Odd one out"}
+            </p>
+            <p className="mt-3 max-w-[38ch] font-display text-[21px] font-bold leading-[1.3] text-fg-1">
+              Seven of these eight champions share something. One does not.
+            </p>
+            <p className="mt-3.5 font-mono text-[10px] uppercase tracking-label text-fg-4">
+              {prompt.trait
+                ? prompt.trait.value
+                  ? `The other seven share this ${prompt.trait.category}: ${prompt.trait.value}`
+                  : `The other seven share a ${prompt.trait.category}`
+                : "What they share arrives after three misses"}
+            </p>
+          </div>
+          <Caption>Pick the impostor from the board below</Caption>
+        </div>
+      );
   }
 }
