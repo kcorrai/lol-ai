@@ -27,22 +27,26 @@ export function SlotPicker({ slots, loading, selected, onSelect }: Props): React
 
   if (slots.length === 0) {
     return (
-      <p className="rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-text-muted">
+      <p className="border border-line-2 bg-surface-dark px-3 py-2 text-sm text-text-muted">
         No free times in the next month. This coach may have their hours unset — try asking them.
       </p>
     );
   }
 
   return (
-    <div className="space-y-3">
-      <p className="text-xs text-text-faint">
-        Times are in your own timezone ({Intl.DateTimeFormat().resolvedOptions().timeZone}).
-      </p>
-
+    <div className="grid gap-3">
       <div className="max-h-72 space-y-3 overflow-y-auto pr-1">
         {byDay.map(([day, daySlots]) => (
-          <div key={day} className="space-y-1.5">
-            <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">{day}</p>
+          <div key={day}>
+            <div className="mb-1.5 flex items-center gap-2.5">
+              <span className="font-mono text-[9.5px] uppercase tracking-[0.18em] text-text-body">
+                {day}
+              </span>
+              <span className="h-px flex-1 bg-line-1" aria-hidden />
+              <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-text-faint">
+                {daySlots.length} open
+              </span>
+            </div>
             <div className="flex flex-wrap gap-1.5">
               {daySlots.map((slot) => (
                 <button
@@ -51,10 +55,10 @@ export function SlotPicker({ slots, loading, selected, onSelect }: Props): React
                   onClick={() => onSelect(slot.start)}
                   aria-pressed={selected === slot.start}
                   className={cn(
-                    "rounded-md border px-2.5 py-1 font-mono text-xs transition-colors",
+                    "tag-cut border px-2.5 py-1.5 font-mono text-[11.5px] tracking-[0.06em] transition-colors",
                     selected === slot.start
-                      ? "border-accent bg-accent/15 text-accent"
-                      : "border-border bg-surface-2 text-text-muted hover:text-text"
+                      ? "glow-accent-soft border-accent bg-accent text-background"
+                      : "border-line-2 bg-surface-dark text-text-muted hover:border-accent hover:text-text"
                   )}
                 >
                   {timeLabel(slot.start)}
