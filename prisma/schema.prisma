@@ -176,6 +176,10 @@ model User {
   academyEnrollments AcademyEnrollment[]
   academyAssignments AcademyAssignment[]
 
+  // Streamer Kit (ADR-026). Optional, like coachProfile — its existence is what
+  // makes this account a creator.
+  creatorProfile CreatorProfile?
+
   @@map("users")
 }
 
@@ -310,6 +314,9 @@ model RiotAccount {
   // account must not delete a coach's profile or a settled booking.
   coachRankProofs      CoachRankProof[]
   bookingsUnderReview  Booking[]
+  // Also SetNull: unlinking the account an overlay reads must not delete the
+  // creator's kit, it just falls back to the primary account (ADR-026).
+  creatorProfiles      CreatorProfile[]
 
   @@unique([userId, puuid])
   @@index([userId])
@@ -1975,4 +1982,67 @@ model AcademyAssignment {
   @@index([userId, status])
   @@index([userId, lessonId])
   @@map("academy_assignments")
+}
+
+// ---------------------------------------------------------------------------
+// STREAMER KIT (ADR-026)
+// ---------------------------------------------------------------------------
+
+// A creator's broadcast settings. Its existence is what makes an account a
+// creator — no role column, the same shape as CoachProfile (ADR-019).
+model CreatorProfile {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @unique @db.Uuid
+
+  // Which account the overlays read. Null means "whichever is primary", so a
+  // creator who re-links or swaps their main does not have to come back here.
+  riotAccountId String? @db.Uuid
+
+  // Capability key. Whoever holds it can read this creator's overlay payload,
+  // which is how OBS and Nightbot — neither of which can carry a session —
+  // authenticate at all. Same idea as DraftSeries.blueToken.
+  overlayKey String  @unique
+  enabled    Boolean @default(true)
+
+  // What the widgets print instead of the Riot ID. Falls back to the Riot ID
+  // when null and streamSafe is off.
+  displayName String?
+
+  // Riot's own Streamer Mode hides the Riot ID from viewers on third-party
+  // trackers but not from opponents in the game. This redacts it from every
+  // overlay and chat response we serve, which is the half we control.
+  streamSafe Boolean @default(false)
+
+  // The broadcast delay, in seconds. Every widget computes its numbers as of
+  // `now - delaySeconds`, so a stream sniper reading the overlay learns nothing
+  // the video has not already shown. Without this the overlay would contradict
+  // the delay the streamer set in OBS and leak that a game just ended.
+  delaySeconds Int @default(0)
+
+  theme       String @default("dark")
+  accentColor String @default("#22d3ee")
+
+  // Start of the current session. Null means "since the start of today in the
+  // creator's timezone" — the common case, so nobody has to press anything to
+  // get a working session counter.
+  sessionStartedAt DateTime?
+
+  // The rank the goal widget counts toward. Both null means no goal set.
+  goalTier     RankTier?
+  goalDivision RankDivision?
+
+  // Cosmetic only in v1 — no OAuth, nothing is verified. They label the kit and
+  // seed the referral copy.
+  twitchHandle  String?
+  kickHandle    String?
+  youtubeHandle String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  riotAccount RiotAccount? @relation(fields: [riotAccountId], references: [id], onDelete: SetNull)
+
+  @@index([riotAccountId])
+  @@map("creator_profiles")
 }
