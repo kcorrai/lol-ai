@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import type { VodReviewDelivery } from "@/domains/marketplace/types";
 import { ANNOTATION_CATEGORIES, secondsToClock } from "@/domains/marketplace/vodClock";
 
@@ -13,45 +12,65 @@ const LABELS = new Map(ANNOTATION_CATEGORIES.map((c) => [c.value, c.label]));
 /** The delivered review, as the student reads it. */
 export function VodReviewReader({ review }: Props): React.ReactElement {
   return (
-    <div className="space-y-4">
-      <p className="whitespace-pre-wrap text-sm text-text-body">{review.summary}</p>
-
-      {(review.sourceUrl || review.matchId) && (
-        <p className="break-all text-xs text-text-muted">
-          Reviewed:{" "}
-          {review.sourceUrl ? (
-            <a href={review.sourceUrl} className="text-accent underline" target="_blank" rel="noreferrer noopener">
-              {review.sourceUrl}
-            </a>
-          ) : (
-            <span className="font-mono">{review.matchId}</span>
-          )}
-        </p>
-      )}
+    <div>
+      <p className="max-w-[68ch] whitespace-pre-wrap text-[14.5px] text-text-body">
+        {review.summary}
+      </p>
 
       {review.annotations.length === 0 ? (
-        <p className="text-xs text-text-faint">No timestamped notes on this one.</p>
+        <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.14em] text-text-faint">
+          No timestamped notes on this one
+        </p>
       ) : (
-        <ol className="space-y-3">
+        <ol className="mt-5 grid gap-2.5">
           {review.annotations.map((annotation) => (
-            <li key={annotation.id} className="rounded-md border border-border bg-surface-2 p-3">
-              <div className="flex flex-wrap items-center gap-2">
+            <li
+              key={annotation.id}
+              className="border border-l-2 border-line-2 border-l-accent bg-surface-dark p-4 transition-colors hover:border-accent hover:bg-surface-2"
+            >
+              <div className="flex flex-wrap items-center gap-2.5">
                 {/* The clock, not a link. We host no video, so there is nothing
                     to seek — the student scrubs their own replay to it. */}
-                <span className="rounded bg-surface px-2 py-0.5 font-mono text-xs text-accent">
+                <span className="tag-cut border border-accent/40 bg-accent/10 px-2.5 py-1 font-mono text-xs font-bold tracking-[0.06em] text-accent">
                   {secondsToClock(annotation.timestampSeconds)}
                 </span>
-                <Badge variant="outline">{LABELS.get(annotation.category) ?? annotation.category}</Badge>
-                <p className="font-semibold text-text">{annotation.title}</p>
+                <span className="tag-cut border border-line-2 bg-surface px-2 py-1 font-mono text-[8.5px] uppercase tracking-[0.16em] text-text-muted">
+                  {LABELS.get(annotation.category) ?? annotation.category}
+                </span>
+                <span className="font-display text-[15px] font-bold uppercase tracking-[0.03em] text-text">
+                  {annotation.title}
+                </span>
               </div>
 
               {annotation.body && (
-                <p className="mt-2 whitespace-pre-wrap text-sm text-text-body">{annotation.body}</p>
+                <p className="mt-2.5 max-w-[68ch] whitespace-pre-wrap text-sm text-text-body">
+                  {annotation.body}
+                </p>
               )}
             </li>
           ))}
         </ol>
       )}
+
+      <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-line-1 pt-3.5 font-mono text-[9.5px] uppercase tracking-[0.14em] text-text-faint">
+        <span>Scrub your own replay to each timestamp</span>
+        {(review.sourceUrl || review.matchId) && (
+          <span className="ml-auto break-all">
+            {review.sourceUrl ? (
+              <a
+                href={review.sourceUrl}
+                className="text-accent hover:text-acid-400"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                Reviewed VOD &rarr;
+              </a>
+            ) : (
+              <span>Match {review.matchId}</span>
+            )}
+          </span>
+        )}
+      </div>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api/fetcher";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/domains/marketplace/components/hud/panelCard";
 import type { BookingDetail } from "@/domains/marketplace/types";
 import { whenLabel } from "@/domains/marketplace/components/BookingRow";
 

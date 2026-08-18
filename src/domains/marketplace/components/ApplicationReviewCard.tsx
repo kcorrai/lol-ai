@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/domains/marketplace/components/hud/panelCard";
 import { regionLabel } from "@/lib/riot/regions";
 import type { ApplicationRow } from "@/domains/marketplace";
 import { languageLabel, roleLabel } from "@/domains/marketplace/components/options";

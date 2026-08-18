@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/domains/marketplace/components/hud/panelCard";
 import type { DisputeRow } from "@/domains/marketplace";
 import { whenLabel } from "@/domains/marketplace/components/BookingRow";
 
