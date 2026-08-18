@@ -129,6 +129,22 @@ the curriculum is padding.
 4. Coming Back to a Lane You Left
 5. Mid Decides Which Objective Happens
 
+**ADC Path** — range is a stat, and seconds are the score.
+
+1. You Are Farming for an Item, Not a Kill
+2. The Only Two-Player Lane
+3. Spacing: One Step Back
+4. Alone After Your Support Leaves
+5. Your Damage Is a Duration
+
+**Support Path** — the cheapest body on the map.
+
+1. The Role With No Farm
+2. Roaming Is Your Farm
+3. You Choose When the Fight Exists
+4. Walk First
+5. Dying for the Right Reason
+
 A role path is an ordinary `Track` that carries a `role`; that one optional field is what
 separates it from the curriculum (ADR-028). Consequences worth knowing:
 

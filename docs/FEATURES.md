@@ -513,3 +513,32 @@ A column of the dashboard about the person you queue with, rather than about you
 product had an opinion about that person.
 **Difficulty:** Medium
 **Dependencies:** Duo detection (TASK-244), match participants for all ten players
+
+### F-041 — Personal Daily Quest (shipped: LA-35)
+
+TODAY'S QUEST: one small personal objective, at the top of the dashboard, every day.
+
+**What it does:**
+
+- **Gives the day a shape.** A strip above the readiness verdict with what to do
+  today, how far in the player is, and what it is worth — rather than a challenge
+  card buried under the match log where nobody scrolls.
+- **Asks for two things, one of them off the rift.** The in-game leg is the
+  existing daily challenge, generated off the player's own weakest stat. The
+  on-site leg rotates through solving the daily puzzle, finishing an Academy
+  lesson, pulling a coaching report and building a share card — so a day with no
+  time to queue is still a day the quest can be finished.
+- **Runs a streak that means something.** A day counts when everything issued
+  that day is done. Today is graded but never breaks the run; yesterday does.
+- **Stores nothing** (ADR-029). The task is derived from the player and the date,
+  completion is read back out of the tables each action already writes, and the
+  streak replays the last 30 days over those signals. No table, no nightly job,
+  and every existing player's streak is correct the day it ships.
+- **Gets out of the way.** Dismissing it hides it for that day only; tomorrow's
+  arrives on its own.
+
+**User Benefit:** A reason to open the site on a day with no games in it — and a
+streak that a player who only has fifteen minutes can still keep.
+**Difficulty:** Medium
+**Dependencies:** Daily challenge generator (challenges), quiz attempts, Academy
+progress, coaching reports, shareable cards

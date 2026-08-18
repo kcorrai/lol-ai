@@ -14,14 +14,30 @@ function extractJson(raw: string): string {
   return raw.trim();
 }
 
+function otpCacheKey(champion: string, role: Position): string {
+  return buildCacheKey("otp", { champion: champion.toLowerCase(), role });
+}
+
+/**
+ * The stored analysis, or null — never a generation. Callers that need to reproduce something
+ * built from an earlier analysis use this: regenerating would silently answer with a different
+ * one, and anything derived from the first would no longer match.
+ */
+export async function getCachedOtpAnalysis(
+  champion: string,
+  role: Position
+): Promise<OtpAnalysis | null> {
+  const cached = await getCached(otpCacheKey(champion, role));
+  if (cached === null) return null;
+  const parsed = otpAnalysisSchema.safeParse(cached);
+  return parsed.success ? parsed.data : null;
+}
+
 export async function getOtpAnalysis(
   champion: string,
   role: Position
 ): Promise<OtpAnalysis> {
-  const cacheKey = buildCacheKey("otp", {
-    champion: champion.toLowerCase(),
-    role,
-  });
+  const cacheKey = otpCacheKey(champion, role);
 
   const cached = await getCached(cacheKey);
   if (cached !== null) {

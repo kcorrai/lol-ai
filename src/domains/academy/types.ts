@@ -20,8 +20,12 @@ export type CoreTrackId =
   | "teamfighting"
   | "mental";
 
-/** A role path carries its role as its id — there is exactly one path per role. */
-export type TrackId = CoreTrackId | RoleId;
+/**
+ * A role path carries its role as its id — there is exactly one path per role. `"champion"` is
+ * the one member with no `Track` behind it: champion lessons are generated per player and never
+ * enter the registry (ADR-030).
+ */
+export type TrackId = CoreTrackId | RoleId | "champion";
 
 export type TrackLevel = "foundation" | "core" | "advanced";
 

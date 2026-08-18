@@ -2397,3 +2397,55 @@ a moment."
 
 Lines are flattened to one line and capped at 400 characters — Twitch's limit is
 500 bytes and a bot prepends "@viewer -> " to it.
+
+## Daily quest (LA-35 — see [ADR-029](./adr/ADR-029-daily-quest-derivation.md))
+
+### `GET /api/daily-quest`
+
+Today's quest for the caller: up to two objectives, whether the quest is
+finished, and the quest streak. Auth required.
+
+```jsonc
+{
+  "dateKey": "2026-08-18",          // UTC day the quest belongs to
+  "objectives": [
+    {
+      "kind": "in_game",            // the day's generated daily challenge
+      "id": "cs_per_min",
+      "title": "Hit 6.8 CS/min in your next 3 games",
+      "hint": "Ranked Solo/Duo · 3 games today",
+      "href": "/improvement",
+      "ctaLabel": "Drill this",
+      "xpReward": 50,
+      "progress": 0.66,             // 0..1
+      "completed": false
+    },
+    {
+      "kind": "on_site",            // finishable without queuing
+      "id": "quiz",
+      "title": "Solve today's champion puzzle",
+      "hint": "One puzzle, one guess ladder. Keeps your quiz streak alive too.",
+      "href": "/quiz",
+      "ctaLabel": "Play the daily",
+      "xpReward": 20,
+      "progress": 0,
+      "completed": false
+    }
+  ],
+  "completed": false,
+  "streak": 5,
+  "xpReward": 70,
+  "expiresAt": "2026-08-19T00:00:00.000Z"
+}
+```
+
+**Read-only, and it stores nothing.** The on-site objective is a pure function of
+`(userId, dateKey)`; completion is read back out of the tables the action already
+writes (`quiz_attempts`, `academy_progress`, `coaching_reports`,
+`shareable_cards`, `user_challenges`). There is therefore no endpoint that
+marks a quest done — nothing to assert, nothing to forge.
+
+The `in_game` objective is only present when the challenge generator has issued a
+daily challenge for that user; a player with no linked Riot account still gets a
+quest, and still has a streak. XP is granted by the systems that own each action,
+never twice by this endpoint.
