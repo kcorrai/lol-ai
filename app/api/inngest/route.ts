@@ -28,8 +28,9 @@ import { rtbfComplianceChecker } from "@/inngest/functions/rtbfComplianceChecker
 import { refreshCoachRanks } from "@/inngest/functions/refreshCoachRanks";
 import { marketplaceSweeps } from "@/inngest/functions/marketplaceSweeps";
 import { academyAssignmentChecker } from "@/inngest/functions/academyAssignmentChecker";
+import { academyDecayChecker } from "@/inngest/functions/academyDecayChecker";
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
-  functions: [runCoachingJob, matchSyncWorker, autoSessionReview, sendRankChangeEmail, sendWeeklyReportEmails, tiltStreakCheck, patchVersionPoller, achievementChecker, timelineFetcher, dailyChallengeGenerator, weeklyChallengeGenerator, challengeProgressChecker, sendReengagementEmails, sendActivationEmail, sendReportReadyEmail, teamInviteEmail, teamSubscriptionCancelledNotification, teamSubscriptionExpiredNotification, gdprErasure, gdprExport, performanceSnapshotWorker, planExpiryChecker, planRenewalWorker, referralReward, teamWeeklyReport, cartAbandonmentReminder, rtbfComplianceChecker, warmEsportsCache, refreshCoachRanks, marketplaceSweeps, academyAssignmentChecker],
+  functions: [runCoachingJob, matchSyncWorker, autoSessionReview, sendRankChangeEmail, sendWeeklyReportEmails, tiltStreakCheck, patchVersionPoller, achievementChecker, timelineFetcher, dailyChallengeGenerator, weeklyChallengeGenerator, challengeProgressChecker, sendReengagementEmails, sendActivationEmail, sendReportReadyEmail, teamInviteEmail, teamSubscriptionCancelledNotification, teamSubscriptionExpiredNotification, gdprErasure, gdprExport, performanceSnapshotWorker, planExpiryChecker, planRenewalWorker, referralReward, teamWeeklyReport, cartAbandonmentReminder, rtbfComplianceChecker, warmEsportsCache, refreshCoachRanks, marketplaceSweeps, academyAssignmentChecker, academyDecayChecker],
 });

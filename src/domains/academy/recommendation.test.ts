@@ -39,6 +39,36 @@ describe("chooseNextLesson", () => {
     expect(result?.source).toBe("resume");
   });
 
+  // A mastery the decay check took back outranks a leak: the player has already proved they
+  // can hold this habit, and their own games say it stopped.
+  it("puts a decayed lesson ahead of a detected leak", () => {
+    const target = getTrack("laning")!.lessons[1];
+    const result = chooseNextLesson({
+      statuses: statuses([[lessonId(target), "review"]]),
+      placement: CORE,
+      detectedLeaks: ["low_vision"],
+    });
+
+    expect(result?.lesson).toBe(target);
+    expect(result?.source).toBe("review");
+    expect(result?.reason).toMatch(/gone back/);
+  });
+
+  it("still resumes an open lesson before a decayed one", () => {
+    const open = getTrack("laning")!.lessons[3];
+    const decayed = getTrack("laning")!.lessons[1];
+    const result = chooseNextLesson({
+      statuses: statuses([
+        [lessonId(open), "in_progress"],
+        [lessonId(decayed), "review"],
+      ]),
+      placement: CORE,
+      detectedLeaks: [],
+    });
+
+    expect(result?.source).toBe("resume");
+  });
+
   it("sends a confirmed leak to a lesson that fixes it", () => {
     const result = chooseNextLesson({
       statuses: statuses(),

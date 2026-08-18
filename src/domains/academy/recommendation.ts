@@ -3,7 +3,7 @@ import type { LeakTag, Lesson, LessonStatus } from "@/domains/academy/types";
 import type { Placement } from "@/domains/academy/placement";
 
 /** Why this lesson is the one being recommended — shown to the player verbatim. */
-export type RecommendationSource = "resume" | "leak" | "placement" | "next";
+export type RecommendationSource = "resume" | "review" | "leak" | "placement" | "next";
 
 export interface Recommendation {
   lesson: Lesson;
@@ -48,7 +48,19 @@ export function chooseNextLesson(input: RecommendationInput): Recommendation | n
     return { lesson: open, source: "resume", reason: "You started this one and did not finish it." };
   }
 
-  // 2. A confirmed leak, then a leak the placement check raised. Confirmed ones come from
+  // 2. A mastery that came undone (ADR-027). It outranks a leak the detector raised because
+  //    this one is a habit the player has already proved they can hold — and the wording says
+  //    the measurement moved, never that they failed.
+  const decayed = allLessons().find((l) => statuses.get(lessonId(l)) === "review");
+  if (decayed) {
+    return {
+      lesson: decayed,
+      source: "review",
+      reason: "You had this one. Your last few games have gone back the other way.",
+    };
+  }
+
+  // 3. A confirmed leak, then a leak the placement check raised. Confirmed ones come from
   //    several weeks of data, so they outrank a single 20-game snapshot.
   for (const leak of [...detectedLeaks, ...placement.leaks]) {
     const lesson = allLessons().find((l) => l.fixes.includes(leak) && !isFinished(l, statuses));
@@ -61,7 +73,7 @@ export function chooseNextLesson(input: RecommendationInput): Recommendation | n
     }
   }
 
-  // 3. The next unfinished lesson in the track placement opened.
+  // 4. The next unfinished lesson in the track placement opened.
   const track = getTrack(placement.recommendedTrackId);
   const inTrack = track?.lessons.find((l) => !isFinished(l, statuses));
   if (inTrack) {
@@ -75,7 +87,7 @@ export function chooseNextLesson(input: RecommendationInput): Recommendation | n
     };
   }
 
-  // 4. Anything left anywhere.
+  // 5. Anything left anywhere.
   const remaining = allLessons().find((l) => !isFinished(l, statuses));
   return remaining
     ? { lesson: remaining, source: "next", reason: "Next up in the curriculum." }

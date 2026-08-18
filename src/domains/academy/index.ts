@@ -31,7 +31,7 @@ export type { Recommendation, RecommendationSource } from "./recommendation";
 export { buildAssignmentTarget, formatMetric, METRIC_LABEL } from "./assignments";
 export type { AssignmentTarget } from "./assignments";
 
-export { ASSIGNMENT_EXPIRY_DAYS, judgeAssignment, metricValue } from "./verification";
+export { ASSIGNMENT_EXPIRY_DAYS, judgeAssignment, meetsTarget, metricValue } from "./verification";
 export type { AssignmentOutcome, Judgement, MatchReading } from "./verification";
 
 export {
@@ -43,6 +43,11 @@ export {
   restartAssignment,
 } from "./services/assignmentService";
 export type { AssignmentStatus, AssignmentView, CheckResult } from "./services/assignmentService";
+
+export { DECAY_CHECK_DAYS, isDecayDue, judgeDecay } from "./decay";
+export type { DecayVerdict } from "./decay";
+export { checkMasteryDecay } from "./services/decayService";
+export type { DecayResult } from "./services/decayService";
 
 export { getAcademyOverview } from "./services/academyService";
 export type { AcademyOverview } from "./services/academyService";
@@ -59,8 +64,11 @@ export type {
   Drill,
   DrillKind,
   DrillOption,
+  MapDrill,
+  MapDrillOption,
   OrderDrill,
   QuizDrill,
+  WaveSimDrill,
   FieldAssignment,
   LeakTag,
   Lesson,

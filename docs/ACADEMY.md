@@ -117,6 +117,7 @@ then judges it from their matches — nothing is self-reported.
 | **Expiry** | 14 days without collecting N games | An assignment that never resolves is worse than none |
 | **Pass** | `academy_progress.status → mastered` | The only thing in the product that can set `mastered` |
 | **Fail** | Lesson stays `completed`; the player can restart with a fresh baseline | A miss is not a punishment |
+| **Decay** | 21 days after mastery, re-measured against the **same** target; below it drops to `review` | Mastery that cannot come undone is a certificate, not a habit |
 
 Both filters were learned against real data and both matter:
 
@@ -196,8 +197,28 @@ animate a wave and judge it. Do not add a kind before a lesson uses it.
 The route, the sitemap entry and the track page all derive from the registry — there is
 nothing else to register.
 
+## Mastery decays, and the decay is measured
+
+`academyDecayChecker` runs nightly at 06:00 UTC. Three weeks after a lesson was mastered — or
+three weeks after the last check — it re-reads the same metric, in the same role, against the
+same target the assignment already stored, using `judgeAssignment`'s comparison unchanged. Below
+the target, the lesson drops to `review`. Recovery is the ordinary path: redo it, which opens a
+fresh assignment, which can restore `mastered`.
+
+Three consequences, all deliberate (ADR-027):
+
+- **Not a spaced-repetition timer.** Duolingo fades a skill on a clock because it cannot see
+  whether you still speak the language. We can see the ranked games, so a player who has held
+  the habit for a year is never sent back.
+- **The target is the stored one.** Re-deriving a baseline would move the goalposts every time
+  the player improved, quietly making a mastery harder to keep the better they got.
+- **Silence is not regression.** No ranked games in that role since the last check means the row
+  is left alone — and not stamped, so tomorrow's run looks again rather than sleeping another
+  three weeks.
+
+A player can lose a status they earned. That is the point, and it is the one place the Academy
+takes something away — so the wording says the measurement moved, never that the player failed.
+
 ## Not built yet
 
-- **Spaced repetition.** `review` status exists; nothing demotes a mastered lesson when the
-  metric slips back.
 - Certificates/transcript and Academy XP.

@@ -66,6 +66,19 @@ function mean(values: number[]): number {
   return values.reduce((sum, v) => sum + v, 0) / values.length;
 }
 
+/**
+ * Whether an average clears the target in the direction the assignment asked for. Exported
+ * because the decay check has to ask the identical question weeks later — a second copy of
+ * this comparison is a second definition of what holding a habit means.
+ */
+export function meetsTarget(
+  direction: FieldAssignment["direction"],
+  average: number,
+  target: number
+): boolean {
+  return direction === "increase" ? average >= target : average <= target;
+}
+
 function expired(startedAt: Date, now: Date): boolean {
   const days = (now.getTime() - startedAt.getTime()) / 86_400_000;
   return days > ASSIGNMENT_EXPIRY_DAYS;
@@ -91,10 +104,9 @@ export function judgeAssignment(input: JudgeInput): Judgement {
   }
 
   const average = mean(counted.map((r) => r.value));
-  const met = direction === "increase" ? average >= target : average <= target;
 
   return {
-    outcome: met ? "passed" : "failed",
+    outcome: meetsTarget(direction, average, target) ? "passed" : "failed",
     gamesObserved: counted.length,
     average,
     counted,

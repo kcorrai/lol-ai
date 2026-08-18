@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Check, Lock, Star } from "lucide-react";
+import { Check, Lock, RotateCcw, Star } from "lucide-react";
 import {
   TRACKS,
   getLessonStatuses,
@@ -70,6 +70,9 @@ export default async function TrackPage({ params }: PageProps): Promise<React.Re
           const done = DONE.includes(status);
           // Mastered is a different claim from completed: you read it versus you did it in game.
           const mastered = status === "mastered";
+          // And `review` is a mastery the nightly check took back (ADR-027) — a lesson to redo,
+          // so it reads as unfinished here rather than as a lesser kind of done.
+          const review = status === "review";
 
           return (
             <li key={lesson.slug}>
@@ -81,13 +84,17 @@ export default async function TrackPage({ params }: PageProps): Promise<React.Re
                   className={`notch-sm mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center font-mono text-[12px] font-bold ${
                     mastered
                       ? "bg-accent text-background glow-accent-soft"
-                      : done
-                        ? "bg-accent text-background"
-                        : "border border-line-2 text-text-muted"
+                      : review
+                        ? "border border-warning text-warning"
+                        : done
+                          ? "bg-accent text-background"
+                          : "border border-line-2 text-text-muted"
                   }`}
                 >
                   {mastered ? (
                     <Star className="h-4 w-4 fill-current" strokeWidth={2} />
+                  ) : review ? (
+                    <RotateCcw className="h-4 w-4" strokeWidth={2.5} />
                   ) : done ? (
                     <Check className="h-4 w-4" strokeWidth={2.5} />
                   ) : (
@@ -114,6 +121,12 @@ export default async function TrackPage({ params }: PageProps): Promise<React.Re
                     {status === "in_progress" && (
                       <span className="font-mono text-[10px] uppercase tracking-label text-warning">
                         In progress
+                      </span>
+                    )}
+                    {/* Says the measurement moved, never that the player failed. */}
+                    {review && (
+                      <span className="font-mono text-[10px] uppercase tracking-label text-warning">
+                        Numbers slipped — redo
                       </span>
                     )}
                   </span>

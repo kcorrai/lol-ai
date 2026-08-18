@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Lock, Star } from "lucide-react";
+import { Lock, RotateCcw, Star } from "lucide-react";
 import { lessonId, trackMinutes } from "@/domains/academy/curriculum";
 import type { LessonStatus, Track } from "@/domains/academy/types";
 
@@ -21,6 +21,9 @@ const DONE: readonly LessonStatus[] = ["completed", "mastered"];
 export function TrackCard({ track, statuses, completion }: TrackCardProps): React.ReactElement {
   const done = track.lessons.filter((l) => DONE.includes(statuses.get(lessonId(l)) ?? "available"));
   const mastered = track.lessons.filter((l) => statuses.get(lessonId(l)) === "mastered").length;
+  // A mastery the nightly check took back (ADR-027). Counted separately from `done` on purpose:
+  // it is a lesson to redo, and folding it into the progress number would hide that.
+  const review = track.lessons.filter((l) => statuses.get(lessonId(l)) === "review").length;
 
   return (
     <Link
@@ -59,6 +62,12 @@ export function TrackCard({ track, statuses, completion }: TrackCardProps): Reac
             <span className="flex items-center gap-1 font-mono text-[11px] text-accent">
               <Star className="h-3 w-3 fill-current" strokeWidth={2} />
               {mastered} mastered
+            </span>
+          )}
+          {review > 0 && (
+            <span className="flex items-center gap-1 font-mono text-[11px] text-warning">
+              <RotateCcw className="h-3 w-3" strokeWidth={2} />
+              {review} to redo
             </span>
           )}
           {track.lessons.some((l) => l.access === "pro") && (

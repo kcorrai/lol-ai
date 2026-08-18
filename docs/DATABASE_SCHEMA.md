@@ -930,5 +930,11 @@ Notes on the shape:
   a role-blind baseline sets a target no support can reach and every mid clears by accident. It
   is stored rather than re-derived because a player's main role can shift between the lesson and
   the verdict. Nullable: rows written before the fix are judged role-blind.
-- **`review` is unused today.** It is the seat for spaced repetition: a mastered lesson whose
-  metric slips back should come round again.
+- **`academy_progress.decayCheckedAt` is when the nightly job last re-measured a mastery**
+  (ADR-027). Null means never, and the 21-day window then counts from `masteredAt`. Without the
+  column the job re-judges every mastered lesson every night. It is stamped only when a verdict
+  was actually reached: a player with too few games in that role since the last check is left
+  alone, so the row stays due and is retried rather than sleeping another three weeks.
+- **`review` is written by the decay job and by nothing else.** A `mastered` lesson whose metric
+  has gone back below the same stored target drops to `review`; recovery is the ordinary path —
+  redo the lesson, which opens a fresh assignment, which can restore `mastered`.
