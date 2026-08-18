@@ -133,7 +133,7 @@ export default function QuizPage(): React.JSX.Element {
             ) : (
               <span />
             )}
-            <span>Solving any one mode keeps your streak alive — you do not need all six</span>
+            <span>Solving any one mode keeps your streak alive — you do not need all eight</span>
           </div>
         </div>
       </main>

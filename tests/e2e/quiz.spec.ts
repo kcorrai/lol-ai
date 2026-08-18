@@ -4,7 +4,7 @@ import { test, expect } from "@playwright/test";
 // funnel — so every test here runs with no auth state.
 test.use({ storageState: { cookies: [], origins: [] } });
 
-const MODES = ["Classic", "Ability", "Splash", "Lore", "Quote", "Emoji"];
+const MODES = ["Classic", "Ability", "Splash", "Lore", "Quote", "Emoji", "Build", "Impostor"];
 
 test.describe("LaneIQ Daily", () => {
   test("is playable without logging in", async ({ page }) => {
@@ -78,6 +78,40 @@ test.describe("LaneIQ Daily", () => {
     // Whatever today's answer is, it must not be in the block a player pastes.
     const answer = await page.locator("p.font-display").last().innerText();
     await expect(share).not.toContainText(answer);
+  });
+
+  test("hands out one more rung of the build with each miss", async ({ page }) => {
+    await page.goto("/quiz");
+    await page.getByRole("tab", { name: "Build", exact: true }).click();
+
+    // The core items are the opening prompt; everything below is still locked.
+    const row = (name: string) => page.getByRole("group", { name, exact: true });
+    await expect(row("Core").getByRole("img")).not.toHaveCount(0);
+    await expect(row("Boots").getByRole("img")).toHaveCount(0);
+
+    await page.getByLabel("Guess a champion").fill("Teemo");
+    await page.getByLabel("Guess a champion").press("Enter");
+
+    // One miss buys the boots — and nothing beyond them.
+    await expect(row("Boots").getByRole("img")).toHaveCount(1);
+    await expect(row("Summoners").getByRole("img")).toHaveCount(0);
+  });
+
+  test("puts eight champions on the impostor board and keeps the answer quiet", async ({
+    page,
+  }) => {
+    await page.goto("/quiz");
+    await page.getByRole("tab", { name: "Impostor", exact: true }).click();
+
+    await expect(page.getByText(/Seven of these eight champions share something/i)).toBeVisible();
+    await expect(page.getByText(/What they share arrives after three misses/i)).toBeVisible();
+
+    const board = page.locator("div.grid-cols-4 > button");
+    await expect(board).toHaveCount(8);
+
+    // A wrong pick is a miss, not a reveal.
+    await board.first().click();
+    await expect(page.getByText(/The answer was/i)).toBeHidden();
   });
 
   test("prompts anonymous visitors to sign in for the personal quiz", async ({ page }) => {

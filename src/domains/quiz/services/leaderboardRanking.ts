@@ -32,7 +32,7 @@ export interface RankedPlayer {
  * earlier.
  *
  * Modes-before-guesses is the order that matters: ranking on guesses alone would
- * put someone who solved one puzzle in two above someone who solved all six in
+ * put someone who solved one puzzle in two above someone who solved every mode in
  * three each, which is the wrong way round for a game about solving puzzles.
  */
 export function rankPlayers(players: readonly PlayerResults[]): RankedPlayer[] {

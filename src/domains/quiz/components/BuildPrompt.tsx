@@ -69,7 +69,11 @@ function Row({
   children: React.ReactNode;
 }): React.JSX.Element {
   return (
-    <div className="flex flex-wrap items-start gap-x-3 gap-y-2 border-t border-line-2 py-3 first:border-t-0 first:pt-0">
+    <div
+      role="group"
+      aria-label={label}
+      className="flex flex-wrap items-start gap-x-3 gap-y-2 border-t border-line-2 py-3 first:border-t-0 first:pt-0"
+    >
       <span
         className={`mt-4 w-[74px] shrink-0 font-mono text-[9px] uppercase tracking-label ${
           locked ? "text-fg-4" : "text-accent"

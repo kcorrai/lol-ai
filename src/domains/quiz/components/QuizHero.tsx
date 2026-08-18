@@ -62,7 +62,7 @@ export function QuizHero({
             LaneIQ Daily
           </h1>
           <p className="mt-3.5 max-w-[52ch] text-[15px] leading-relaxed text-fg-2">
-            Six puzzles, one champion each, new at midnight UTC. Unlimited guesses — every miss
+            Eight puzzles, one champion each, new at midnight UTC. Unlimited guesses — every miss
             hands you a little more. Solve any one mode to keep the streak.
           </p>
         </div>
