@@ -37,8 +37,8 @@ jobs:
       E2E_MOCK: "true"
       AUTH_SECRET: ci-e2e-secret-not-for-production
       NEXTAUTH_SECRET: ci-e2e-secret-not-for-production
-      NEXTAUTH_URL: http://localhost:3001
-      NEXT_PUBLIC_APP_URL: http://localhost:3001
+      NEXTAUTH_URL: http://localhost:3002
+      NEXT_PUBLIC_APP_URL: http://localhost:3002
       RIOT_API_KEY: ci-fake-riot-api-key
       CRON_SECRET: ci-fake-cron-secret
       NEXT_PUBLIC_SENTRY_DSN: ""
@@ -69,8 +69,8 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/lolai_e2e
           AUTH_SECRET: ci-e2e-secret-not-for-production
           NEXTAUTH_SECRET: ci-e2e-secret-not-for-production
-          NEXTAUTH_URL: http://localhost:3001
-          NEXT_PUBLIC_APP_URL: http://localhost:3001
+          NEXTAUTH_URL: http://localhost:3002
+          NEXT_PUBLIC_APP_URL: http://localhost:3002
 
       - name: Run E2E tests
         run: npm run test:e2e

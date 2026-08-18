@@ -2,7 +2,13 @@ import { execSync } from "child_process";
 import { mkdirSync, writeFileSync } from "fs";
 import bcrypt from "bcryptjs";
 import { createTestPrisma } from "./helpers/db";
-import { E2E_USER, E2E_RIOT_PRE, E2E_SHARE_TOKEN, STATE_FILE } from "./helpers/constants";
+import {
+  E2E_USER,
+  E2E_RIOT_PRE,
+  E2E_SHARE_TOKEN,
+  E2E_MATCH_PREFIX,
+  STATE_FILE,
+} from "./helpers/constants";
 
 // Module-level global setup — runs BEFORE the webServer starts.
 // Responsibilities: run DB migrations, seed test data, write state file.
@@ -43,6 +49,14 @@ async function seedTestData(prisma: Awaited<ReturnType<typeof createTestPrisma>>
     await prisma.account.deleteMany({ where: { userId: existing.id } });
     await prisma.user.delete({ where: { id: existing.id } });
   }
+
+  // Matches are not owned by the user, so deleting the user leaves them behind
+  // and the next run collides on `matchId`. They are synthetic and named for it,
+  // so clear them by prefix — unconditionally, since they outlive the user row.
+  await prisma.matchParticipant.deleteMany({
+    where: { match: { matchId: { startsWith: E2E_MATCH_PREFIX } } },
+  });
+  await prisma.match.deleteMany({ where: { matchId: { startsWith: E2E_MATCH_PREFIX } } });
 
   // ── Create test user ─────────────────────────────────────────────────────
   const passwordHash = await bcrypt.hash(E2E_USER.password, 10);
@@ -94,7 +108,7 @@ async function seedTestData(prisma: Awaited<ReturnType<typeof createTestPrisma>>
     const gameStart = new Date(Date.now() - (5 - i) * 4 * 60 * 60 * 1000);
     const match = await prisma.match.create({
       data: {
-        matchId: `E2E_SMOKE_${i.toString().padStart(3, "0")}`,
+        matchId: `${E2E_MATCH_PREFIX}${i.toString().padStart(3, "0")}`,
         region: "euw1",
         queueId: 420,
         queueType: "RANKED_SOLO_5x5",
@@ -172,6 +186,11 @@ async function seedTestData(prisma: Awaited<ReturnType<typeof createTestPrisma>>
       processingTimeMs: 3200,
       completedAt: new Date(),
       shareToken: E2E_SHARE_TOKEN,
+      // Dated two days back on purpose. A free plan allows one report a day, so a
+      // seeded report stamped *now* spends the quota before the suite starts and
+      // `coaching.spec`'s generate case can only ever be answered 429. The report
+      // stands for work already done, which is what an older date says anyway.
+      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
     },
     select: { id: true },
   });

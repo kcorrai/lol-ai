@@ -21,7 +21,11 @@ test.describe("Academy", () => {
     await expect(page.getByText("Next up for you")).toBeVisible();
     await page.getByRole("link", { name: "Start lesson" }).click();
 
-    await expect(page).toHaveURL(/\/academy\/[a-z-]+\/[a-z-]+/);
+    // This click is the first request to reach the lesson route, which under
+    // `next dev` pays that route's whole compile before the app-router
+    // navigation commits — the URL does not move until the RSC payload lands.
+    // The 5s default expect budget is a cold-compile failure, not a product one.
+    await expect(page).toHaveURL(/\/academy\/[a-z-]+\/[a-z-]+/, { timeout: 30_000 });
     await expect(page.getByText("What you will be able to do")).toBeVisible();
   });
 
