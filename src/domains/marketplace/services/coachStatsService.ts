@@ -140,3 +140,86 @@ export async function coachConsoleStats(
     openDisputes,
   };
 }
+
+/** How one listing is actually selling. Every figure is counted, never estimated. */
+export interface ListingPerformance {
+  listingId: string;
+  /** Requests this listing has had, lifetime. */
+  requests: number;
+  /** Share of decided requests the coach accepted, 0–1. Null before the first. */
+  acceptRate: number | null;
+  /** Sessions that reached delivery. */
+  delivered: number;
+  /** Mean revealed rating on this listing. Null until one is revealed. */
+  rating: number | null;
+}
+
+/**
+ * Per-listing numbers for the coach's own listings page.
+ *
+ * Deliberately not "profile views": nothing in this product counts a view, and
+ * a listing card is exactly the place where an invented metric would start
+ * being used to set prices.
+ */
+export async function listingPerformance(
+  coachProfileId: string
+): Promise<Map<string, ListingPerformance>> {
+  const [byListing, byStatus, reviews] = await Promise.all([
+    prisma.booking.groupBy({
+      by: ["listingId"],
+      where: { coachProfileId },
+      _count: { _all: true },
+    }),
+    prisma.booking.groupBy({
+      by: ["listingId", "status"],
+      where: { coachProfileId },
+      _count: { _all: true },
+    }),
+    prisma.sessionReview.findMany({
+      where: {
+        coachProfileId,
+        authorRole: "STUDENT",
+        revealedAt: { not: null },
+      },
+      select: { rating: true, booking: { select: { listingId: true } } },
+      take: 500,
+    }),
+  ]);
+
+  // Anything past PENDING_COACH other than a verdict against it was accepted.
+  const REFUSED: string[] = ["DECLINED", "EXPIRED"];
+  const ratings = new Map<string, number[]>();
+  for (const review of reviews) {
+    const list = ratings.get(review.booking.listingId) ?? [];
+    list.push(review.rating);
+    ratings.set(review.booking.listingId, list);
+  }
+
+  const countOf = (listingId: string, predicate: (status: string) => boolean): number =>
+    byStatus
+      .filter((row) => row.listingId === listingId && predicate(row.status))
+      .reduce((sum, row) => sum + row._count._all, 0);
+
+  return new Map(
+    byListing.map((row) => {
+      const refused = countOf(row.listingId, (s) => REFUSED.includes(s));
+      const pending = countOf(row.listingId, (s) => s === "PENDING_COACH");
+      const decided = row._count._all - pending;
+      const scores = ratings.get(row.listingId) ?? [];
+
+      return [
+        row.listingId,
+        {
+          listingId: row.listingId,
+          requests: row._count._all,
+          acceptRate: decided === 0 ? null : (decided - refused) / decided,
+          delivered: countOf(row.listingId, (s) => s === "DELIVERED" || s === "COMPLETED"),
+          rating:
+            scores.length === 0
+              ? null
+              : scores.reduce((sum, n) => sum + n, 0) / scores.length,
+        },
+      ];
+    })
+  );
+}

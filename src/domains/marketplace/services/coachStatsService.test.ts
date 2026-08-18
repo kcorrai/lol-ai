@@ -1,10 +1,14 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { prisma } from "@/lib/db/prisma";
-import { coachConsoleStats } from "@/domains/marketplace/services/coachStatsService";
+import {
+  coachConsoleStats,
+  listingPerformance,
+} from "@/domains/marketplace/services/coachStatsService";
 
 vi.mock("@/lib/db/prisma", () => ({
   prisma: {
-    booking: { findMany: vi.fn(), aggregate: vi.fn() },
+    booking: { findMany: vi.fn(), aggregate: vi.fn(), groupBy: vi.fn() },
+    sessionReview: { findMany: vi.fn() },
     bookingEvent: { groupBy: vi.fn(), findMany: vi.fn() },
     bookingDispute: { count: vi.fn() },
   },
@@ -22,6 +26,8 @@ beforeEach(() => {
   mockPrisma.bookingEvent.groupBy.mockResolvedValue([] as never);
   mockPrisma.bookingEvent.findMany.mockResolvedValue([] as never);
   mockPrisma.bookingDispute.count.mockResolvedValue(0 as never);
+  mockPrisma.booking.groupBy.mockResolvedValue([] as never);
+  mockPrisma.sessionReview.findMany.mockResolvedValue([] as never);
 });
 
 describe("coachConsoleStats", () => {
@@ -119,5 +125,79 @@ describe("coachConsoleStats", () => {
 
     expect(stats.platformFeeCents).toBe(3900);
     expect(mockPrisma.booking.aggregate.mock.calls[0][0].where).not.toHaveProperty("deliveredAt");
+  });
+});
+
+describe("listingPerformance", () => {
+  // The two groupBy calls run in the order the service issues them.
+  function withBookings(
+    byListing: { listingId: string; count: number }[],
+    byStatus: { listingId: string; status: string; count: number }[]
+  ): void {
+    mockPrisma.booking.groupBy
+      .mockResolvedValueOnce(
+        byListing.map((r) => ({ listingId: r.listingId, _count: { _all: r.count } })) as never
+      )
+      .mockResolvedValueOnce(
+        byStatus.map((r) => ({
+          listingId: r.listingId,
+          status: r.status,
+          _count: { _all: r.count },
+        })) as never
+      );
+  }
+
+  it("leaves an undecided request out of the accept rate entirely", async () => {
+    withBookings(
+      [{ listingId: "l1", count: 5 }],
+      [
+        { listingId: "l1", status: "PENDING_COACH", count: 2 },
+        { listingId: "l1", status: "COMPLETED", count: 3 },
+      ]
+    );
+
+    const perf = await listingPerformance("coach-1");
+
+    expect(perf.get("l1")).toMatchObject({ requests: 5, acceptRate: 1, delivered: 3 });
+  });
+
+  it("counts a declined and an expired request against the listing", async () => {
+    withBookings(
+      [{ listingId: "l1", count: 4 }],
+      [
+        { listingId: "l1", status: "COMPLETED", count: 2 },
+        { listingId: "l1", status: "DECLINED", count: 1 },
+        { listingId: "l1", status: "EXPIRED", count: 1 },
+      ]
+    );
+
+    const perf = await listingPerformance("coach-1");
+
+    expect(perf.get("l1")?.acceptRate).toBe(0.5);
+  });
+
+  it("has no rate and no rating on a listing nobody has booked", async () => {
+    withBookings([{ listingId: "l1", count: 0 }], []);
+
+    const perf = await listingPerformance("coach-1");
+
+    expect(perf.get("l1")).toMatchObject({ acceptRate: null, rating: null });
+  });
+
+  it("averages only the revealed student reviews on that listing", async () => {
+    withBookings([{ listingId: "l1", count: 2 }], [{ listingId: "l1", status: "COMPLETED", count: 2 }]);
+    mockPrisma.sessionReview.findMany.mockResolvedValue([
+      { rating: 5, booking: { listingId: "l1" } },
+      { rating: 4, booking: { listingId: "l1" } },
+      { rating: 1, booking: { listingId: "other" } },
+    ] as never);
+
+    const perf = await listingPerformance("coach-1");
+
+    expect(perf.get("l1")?.rating).toBe(4.5);
+    expect(mockPrisma.sessionReview.findMany.mock.calls[0][0]?.where).toMatchObject({
+      authorRole: "STUDENT",
+      revealedAt: { not: null },
+    });
   });
 });
