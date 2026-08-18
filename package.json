@@ -16,6 +16,7 @@
     "test:coverage": "vitest run --coverage",
     "sync:champions": "tsx scripts/syncChampions.ts",
     "sync:quiz-data": "tsx scripts/syncQuizChampionData.ts",
+    "sync:quiz-builds": "tsx scripts/syncQuizBuildData.ts",
     "backfill:player-index": "tsx scripts/backfillPlayerIndex.ts",
     "db:migrate": "prisma migrate deploy",
     "db:migrate:dev": "prisma migrate dev",
