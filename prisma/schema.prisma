@@ -180,6 +180,9 @@ model User {
   // makes this account a creator.
   creatorProfile CreatorProfile?
 
+  // Personal match database (ADR-032)
+  savedSearches SavedSearch[]
+
   @@map("users")
 }
 
@@ -1922,8 +1925,8 @@ model AcademyProgress {
   // src/domains/academy/xp.ts — XP is never clawed back when a mastery decays.
   xpAwarded Int                 @default(0)
 
-  completedAt DateTime?
-  masteredAt  DateTime?
+  completedAt    DateTime?
+  masteredAt     DateTime?
   // When the decay job last re-measured this mastery (ADR-027). Null means never, and the
   // window then counts from `masteredAt`. Without it the nightly job re-judges every mastered
   // lesson every night.
@@ -2059,4 +2062,32 @@ model CreatorProfile {
 
   @@index([riotAccountId])
   @@map("creator_profiles")
+}
+
+// ============================================================
+// PERSONAL MATCH DATABASE (ADR-032)
+// ============================================================
+
+// A filter set the player named and kept, so a question worth asking twice does not have to be
+// rebuilt from the controls each time.
+model SavedSearch {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+  name   String
+
+  // The facets, exactly as `archiveFilterSchema` produces them. Deliberately JSON rather than a
+  // column per facet: a saved search written before a facet existed still loads, because it is
+  // re-validated through that same schema on the way out and unknown keys simply fall away. A
+  // column per facet would instead need a migration every time the console grows a control.
+  filters Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // One name per player — saving over a name replaces it, which is what "save" means here.
+  @@unique([userId, name])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("saved_searches")
 }
