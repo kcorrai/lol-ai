@@ -16,6 +16,7 @@ import { DevRestartOnboarding } from "@/components/dashboard/DevRestartOnboardin
 import { ClaimAccountOnArrival } from "@/components/dashboard/ClaimAccountOnArrival";
 import { resolveDashboardView } from "@/components/dashboard/dashboardView";
 import { DashboardHeader } from "@/components/dashboard/laneiq/DashboardHeader";
+import { DailyQuestStrip } from "@/components/dashboard/laneiq/DailyQuestStrip";
 import { ReadinessVerdict } from "@/components/dashboard/laneiq/ReadinessVerdict";
 import { FocusColumn } from "@/components/dashboard/laneiq/FocusColumn";
 import { LastGameColumn } from "@/components/dashboard/laneiq/LastGameColumn";
@@ -90,6 +91,11 @@ export default function DashboardPage(): React.ReactElement {
       <DevRestartOnboarding />
 
       <DashboardHeader account={primaryAccount} isPro={isPro} />
+
+      {/* Above the verdict on purpose: the quest is the reason to come back today, and it
+          reads as an afterthought anywhere below the fold. Outside the profile branch too —
+          its on-site leg is finishable while the match sync is still catching up. */}
+      <DailyQuestStrip />
 
       {profileError ? (
         <SyncErrorState />

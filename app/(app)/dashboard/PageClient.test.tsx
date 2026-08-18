@@ -42,6 +42,9 @@ vi.mock("@/components/dashboard/ClaimAccountOnArrival", () => ({
 vi.mock("@/components/dashboard/laneiq/EngagementStrip", () => ({
   EngagementStrip: () => <div data-testid="EngagementStrip" />,
 }));
+vi.mock("@/components/dashboard/laneiq/DailyQuestStrip", () => ({
+  DailyQuestStrip: () => <div data-testid="DailyQuestStrip" />,
+}));
 vi.mock("@/components/ui/EmailVerificationBanner", () => ({
   EmailVerificationBanner: () => <div data-testid="EmailVerificationBanner" />,
 }));
