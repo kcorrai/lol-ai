@@ -219,6 +219,24 @@ Three consequences, all deliberate (ADR-027):
 A player can lose a status they earned. That is the point, and it is the one place the Academy
 takes something away — so the wording says the measurement moved, never that the player failed.
 
+## XP, and deliberately no streak
+
+Lessons pay into the same XP the rest of the product uses — `awardXp` from
+`@/domains/analysis`, so the level-up threshold is not duplicated. 40 for completing a lesson,
+120 more for mastering it: reading is worth something, doing it in your own ranked games is
+worth three times as much.
+
+`academy_progress.xpAwarded` is the running total a lesson has paid out, and every grant is the
+difference between that and what the new status is worth. This makes the arithmetic answer every
+path on its own — passing the drills twice pays once, and a lesson that decayed to `review` and
+was mastered again pays nothing, because XP is never clawed back when a mastery decays.
+
+Both grants happen inside the transaction that writes the row, so XP cannot be paid for a
+completion that failed to store.
+
+**No Academy streak.** LaneIQ Daily (LA-20) owns the only streak counter in the product. Two
+streaks read to a player as two separate debts, so the Academy pays XP and nothing else.
+
 ## Not built yet
 
-- Certificates/transcript and Academy XP.
+- Certificates and a shareable transcript.

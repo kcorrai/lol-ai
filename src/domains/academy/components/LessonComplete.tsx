@@ -14,6 +14,8 @@ interface LessonCompleteProps {
   saveFailed: boolean;
   /** True when a stored assignment is already being tracked below this panel. */
   liveAssignment: boolean;
+  /** XP this attempt earned. Zero for a lesson that has already been paid for. */
+  xpAwarded: number;
 }
 
 /**
@@ -28,6 +30,7 @@ export function LessonComplete({
   saving,
   saveFailed,
   liveAssignment,
+  xpAwarded,
 }: LessonCompleteProps): React.ReactElement {
   return (
     <section className="notch mt-10 border border-acid-500 bg-surface glow-accent-soft">
@@ -36,6 +39,9 @@ export function LessonComplete({
         <span className="font-mono text-sm font-bold text-text">
           {score.correct}/{score.total} drills
         </span>
+        {xpAwarded > 0 && (
+          <span className="font-mono text-[11px] font-bold text-accent">+{xpAwarded} XP</span>
+        )}
         {saving && <span className="font-mono text-[11px] text-text-muted">Saving…</span>}
         {saveFailed && (
           <span className="font-mono text-[11px] text-warning">

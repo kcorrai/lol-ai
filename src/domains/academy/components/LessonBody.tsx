@@ -88,6 +88,7 @@ export function LessonBody({
           isAuthenticated={isAuthenticated}
           saving={submit.isPending}
           saveFailed={submit.isError}
+          xpAwarded={submit.data?.xpAwarded ?? 0}
           liveAssignment={liveAssignment}
         />
       )}

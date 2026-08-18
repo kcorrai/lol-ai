@@ -9,15 +9,19 @@ vi.mock("@/lib/db/prisma", () => ({
       update: vi.fn(),
       deleteMany: vi.fn(),
     },
-    academyProgress: { updateMany: vi.fn() },
+    academyProgress: { findUnique: vi.fn(), update: vi.fn() },
+    // Mastery and its XP land together, so the service runs them in one transaction.
+    $transaction: vi.fn(),
     matchParticipant: { findMany: vi.fn() },
   },
 }));
 
 vi.mock("@/domains/riot", () => ({ listAccounts: vi.fn(), getAccountPuuid: vi.fn() }));
+vi.mock("@/domains/analysis", () => ({ awardXp: vi.fn() }));
 
 import { prisma } from "@/lib/db/prisma";
 import { getAccountPuuid, listAccounts } from "@/domains/riot";
+import { awardXp } from "@/domains/analysis";
 import { checkAssignments, openAssignment, restartAssignment } from "./assignmentService";
 
 const USER = "user-1";
@@ -76,6 +80,11 @@ beforeEach(() => {
   vi.mocked(listAccounts).mockResolvedValue([{ id: ACCOUNT, isPrimary: true }] as never);
   vi.mocked(getAccountPuuid).mockResolvedValue(PUUID);
   vi.mocked(prisma.academyAssignment.findFirst).mockResolvedValue(null as never);
+  // Run the transaction body against the same mocked client.
+  vi.mocked(prisma.$transaction).mockImplementation(
+    (async (fn: (tx: unknown) => Promise<unknown>) => fn(prisma)) as never
+  );
+  vi.mocked(prisma.academyProgress.findUnique).mockResolvedValue({ xpAwarded: 40 } as never);
   // Baseline sample: five ranked games averaging 5.1 CS/min.
   withMatchRows(4.9, 5.0, 5.1, 5.2, 5.3);
   vi.mocked(prisma.academyAssignment.create).mockImplementation(
@@ -199,7 +208,7 @@ describe("checkAssignments", () => {
       where: { id: "asg-1" },
       data: { gamesObserved: 2 },
     });
-    expect(prisma.academyProgress.updateMany).not.toHaveBeenCalled();
+    expect(prisma.academyProgress.update).not.toHaveBeenCalled();
   });
 
   // Passing is the only thing in the product that can mark a lesson mastered.
@@ -215,9 +224,30 @@ describe("checkAssignments", () => {
         data: expect.objectContaining({ status: "passed", gamesObserved: 3 }),
       })
     );
-    expect(prisma.academyProgress.updateMany).toHaveBeenCalledWith({
-      where: { userId: USER, lessonId: LESSON },
-      data: { status: "mastered", masteredAt: expect.any(Date) },
+    expect(prisma.academyProgress.update).toHaveBeenCalledWith({
+      where: { userId_lessonId: { userId: USER, lessonId: LESSON } },
+      data: expect.objectContaining({
+        status: "mastered",
+        masteredAt: expect.any(Date),
+        decayCheckedAt: null,
+        xpAwarded: { increment: 120 },
+      }),
+    });
+    expect(awardXp).toHaveBeenCalledWith(prisma, USER, 120);
+  });
+
+  // XP is never clawed back when a mastery decays, so re-earning it must not pay again.
+  it("pays no XP for a mastery the lesson has already been paid for", async () => {
+    vi.mocked(prisma.academyProgress.findUnique).mockResolvedValue({ xpAwarded: 160 } as never);
+    withOpen([assignmentRow()]);
+    withMatches(5.4, 6.0, 5.6);
+
+    await checkAssignments(USER, ACCOUNT);
+
+    expect(awardXp).not.toHaveBeenCalled();
+    expect(prisma.academyProgress.update).toHaveBeenCalledWith({
+      where: { userId_lessonId: { userId: USER, lessonId: LESSON } },
+      data: expect.not.objectContaining({ xpAwarded: expect.anything() }),
     });
   });
 
@@ -228,7 +258,7 @@ describe("checkAssignments", () => {
     const result = await checkAssignments(USER, ACCOUNT);
 
     expect(result.failed).toEqual([LESSON]);
-    expect(prisma.academyProgress.updateMany).not.toHaveBeenCalled();
+    expect(prisma.academyProgress.update).not.toHaveBeenCalled();
   });
 
   it("writes the games that decided the verdict as evidence", async () => {
@@ -251,7 +281,7 @@ describe("checkAssignments", () => {
     const result = await checkAssignments(USER, ACCOUNT);
 
     expect(result.expired).toEqual([LESSON]);
-    expect(prisma.academyProgress.updateMany).not.toHaveBeenCalled();
+    expect(prisma.academyProgress.update).not.toHaveBeenCalled();
   });
 
   it("counts only ranked games in the assignment's role", async () => {

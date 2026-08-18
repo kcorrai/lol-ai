@@ -935,6 +935,10 @@ Notes on the shape:
   column the job re-judges every mastered lesson every night. It is stamped only when a verdict
   was actually reached: a player with too few games in that role since the last check is left
   alone, so the row stays due and is retried rather than sleeping another three weeks.
+- **`academy_progress.xpAwarded` is the running total of XP a lesson has paid out**, not a flag.
+  Every grant is the difference between it and what the reached status is worth (40 completed,
+  160 mastered), so completing twice pays once and re-earning a decayed mastery pays nothing —
+  XP is never clawed back, so it must not be re-earnable either.
 - **`review` is written by the decay job and by nothing else.** A `mastered` lesson whose metric
   has gone back below the same stored target drops to `review`; recovery is the ordinary path —
   redo the lesson, which opens a fresh assignment, which can restore `mastered`.

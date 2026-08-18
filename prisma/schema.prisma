@@ -1918,6 +1918,9 @@ model AcademyProgress {
   status    AcademyLessonStatus @default(available)
   attempts  Int                 @default(0)
   bestScore Int                 @default(0)
+  // Running total of XP this lesson has paid out, so a redo cannot pay twice. See
+  // src/domains/academy/xp.ts — XP is never clawed back when a mastery decays.
+  xpAwarded Int                 @default(0)
 
   completedAt DateTime?
   masteredAt  DateTime?

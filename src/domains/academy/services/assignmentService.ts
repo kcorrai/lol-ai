@@ -1,10 +1,12 @@
 import type { Position } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { getAccountPuuid } from "@/domains/riot";
+import { awardXp } from "@/domains/analysis";
 import { getLessonById } from "@/domains/academy/curriculum";
 import { buildAssignmentTarget, type AssignmentTarget } from "@/domains/academy/assignments";
 import { buildEvidence, judgeAssignment } from "@/domains/academy/verification";
 import { loadReadings, rankedBaseline } from "@/domains/academy/services/assignmentReadings";
+import { xpToAward } from "@/domains/academy/xp";
 import type { AssignmentMetric } from "@/domains/academy/types";
 import { fromJsonValue, toJsonInput } from "@/types/json";
 import { logger } from "@/lib/utils/logger";
@@ -152,6 +154,35 @@ export interface CheckResult {
 }
 
 /**
+ * Marks a lesson mastered and pays the XP for it in one transaction. The amount comes from what
+ * the row has already been paid, so a lesson that decayed to `review` and was mastered a second
+ * time does not pay twice — XP is never taken back, so it must not be re-earnable either.
+ */
+async function grantMastery(userId: string, lessonId: string, now: Date): Promise<void> {
+  await prisma.$transaction(async (tx) => {
+    const row = await tx.academyProgress.findUnique({
+      where: { userId_lessonId: { userId, lessonId } },
+      select: { xpAwarded: true },
+    });
+    if (!row) return;
+
+    const owed = xpToAward(row.xpAwarded, "mastered");
+    await tx.academyProgress.update({
+      where: { userId_lessonId: { userId, lessonId } },
+      data: {
+        status: "mastered",
+        masteredAt: now,
+        // A mastery earned again starts its own decay window, so the old check is cleared.
+        decayCheckedAt: null,
+        ...(owed > 0 ? { xpAwarded: { increment: owed } } : {}),
+      },
+    });
+
+    if (owed > 0) await awardXp(tx, userId, owed);
+  });
+}
+
+/**
  * Measures every open assignment against the player's real matches. Runs after a match sync,
  * so it sees the games the moment they land. Passing is the only thing in the product that can
  * mark a lesson `mastered` — drills prove you read it, matches prove you did it.
@@ -211,10 +242,7 @@ export async function checkAssignments(userId: string, riotAccountId: string): P
     });
 
     if (judgement.outcome === "passed") {
-      await prisma.academyProgress.updateMany({
-        where: { userId, lessonId: row.lessonId },
-        data: { status: "mastered", masteredAt: now },
-      });
+      await grantMastery(userId, row.lessonId, now);
       result.passed.push(row.lessonId);
       logger.info(`[academy] ${row.lessonId} mastered by user ${userId}`);
     } else {

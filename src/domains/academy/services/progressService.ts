@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
+import { awardXp } from "@/domains/analysis";
 import { getLessonById, visibleDrills } from "@/domains/academy/curriculum";
+import { xpToAward } from "@/domains/academy/xp";
 import { scoreLesson, type DrillAttempt, type LessonScore } from "@/domains/academy/drills/scoring";
 import type { LessonProgress, LessonStatus } from "@/domains/academy/types";
 
@@ -41,6 +43,8 @@ export async function markLessonOpened(userId: string, lessonId: string): Promis
 export interface SubmitResult {
   score: LessonScore;
   progress: LessonProgress;
+  /** XP granted by this attempt. Zero for a lesson that has already been paid for. */
+  xpAwarded: number;
 }
 
 /**
@@ -61,7 +65,7 @@ export async function submitLessonAttempt(
   const score = scoreLesson(visibleDrills(lesson, hasPro), attempts);
   const existing = await prisma.academyProgress.findUnique({
     where: { userId_lessonId: { userId, lessonId } },
-    select: { bestScore: true, status: true, completedAt: true },
+    select: { bestScore: true, status: true, completedAt: true, xpAwarded: true },
   });
 
   // Mastery is earned from real matches, not from a drill — a completed lesson stays
@@ -73,27 +77,39 @@ export async function submitLessonAttempt(
       ? "completed"
       : "in_progress";
 
-  const row = await prisma.academyProgress.upsert({
-    where: { userId_lessonId: { userId, lessonId } },
-    create: {
-      userId,
-      lessonId,
-      status,
-      attempts: 1,
-      bestScore: score.score,
-      completedAt: score.passed ? new Date() : null,
-    },
-    update: {
-      status,
-      attempts: { increment: 1 },
-      bestScore: Math.max(existing?.bestScore ?? 0, score.score),
-      completedAt: existing?.completedAt ?? (score.passed ? new Date() : null),
-      lastSeenAt: new Date(),
-    },
+  // XP and the row move together or not at all: granting XP for a completion the upsert then
+  // failed to store would pay a player for a lesson that still reads as unfinished.
+  const owed = status === "in_progress" ? 0 : xpToAward(existing?.xpAwarded ?? 0, status);
+
+  const row = await prisma.$transaction(async (tx) => {
+    const saved = await tx.academyProgress.upsert({
+      where: { userId_lessonId: { userId, lessonId } },
+      create: {
+        userId,
+        lessonId,
+        status,
+        attempts: 1,
+        bestScore: score.score,
+        completedAt: score.passed ? new Date() : null,
+        xpAwarded: owed,
+      },
+      update: {
+        status,
+        attempts: { increment: 1 },
+        bestScore: Math.max(existing?.bestScore ?? 0, score.score),
+        completedAt: existing?.completedAt ?? (score.passed ? new Date() : null),
+        lastSeenAt: new Date(),
+        ...(owed > 0 ? { xpAwarded: { increment: owed } } : {}),
+      },
+    });
+
+    if (owed > 0) await awardXp(tx, userId, owed);
+    return saved;
   });
 
   return {
     score,
+    xpAwarded: owed,
     progress: {
       lessonId: row.lessonId,
       status: row.status,

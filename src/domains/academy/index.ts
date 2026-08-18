@@ -44,6 +44,9 @@ export {
 } from "./services/assignmentService";
 export type { AssignmentStatus, AssignmentView, CheckResult } from "./services/assignmentService";
 
+export { COMPLETION_XP, MASTERY_XP, xpEarnedAt, xpToAward } from "./xp";
+export type { EarningStatus } from "./xp";
+
 export { DECAY_CHECK_DAYS, isDecayDue, judgeDecay } from "./decay";
 export type { DecayVerdict } from "./decay";
 export { checkMasteryDecay } from "./services/decayService";
