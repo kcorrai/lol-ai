@@ -76,6 +76,24 @@ each guess to the attempt row and derives the count from the stored list, and
 the endpoint that accepted a total is gone. The cost is a write per guess for
 signed-in players.
 
+**Build data follows the same compile-and-commit rule, and pays for it by
+exclusion.** `scripts/syncQuizBuildData.ts` pulls each champion's most played
+opening, boots, starters, summoner spells and skill max order from op.gg for
+their primary lane and writes `championBuilds.json` (LA-29). op.gg is unofficial
+and the slowest feed the app reads, so a request-time call would be the worst
+version of the failure ADR-024 already rules out. The cost this one adds is that
+two champions with an identical build make a puzzle with two answers: ten of them
+share a full signature and are dropped, leaving 163 of 173 in the pool. A shared
+*opening* is kept and logged — boots, starters, spells and skill order still
+separate them as the misses arrive.
+
+**Item icons need no asset proxy, and splash art still does.** The proxy exists
+because a Data Dragon path names the champion. An item icon's path names the
+*item*, so the Build board can load it straight from Data Dragon without solving
+itself in the network tab. Impostor's portraits are deliberately public for the
+same reason: recognising eight champions is not the puzzle, and a button needs an
+accessible name anyway.
+
 **Quote coverage is partial and will stay that way.** Voice lines have no
 programmatic source at all, so each is hand-entered; the mode deals only from
 champions that have one. A half-remembered quote costs a player an unanswerable

@@ -1830,15 +1830,20 @@ endpoints authenticate nothing — an anonymous visitor plays the whole game.
 ### `GET /api/quiz/today?mode=<mode>&misses=<n>&seed=<seed>`
 
 Today's puzzle for one mode (`classic`, `ability`, `splash`, `lore`, `quote`,
-`emoji`), plus the champion catalogue the guess box needs.
+`emoji`, `build`, `impostor`), plus the champion catalogue the guess box needs.
 
 **The response deliberately contains no answer.** `prompt` is mode-specific and
 carries only what a player is entitled to see: redacted lore text, a voice line,
 the emoji revealed so far, or a proxied asset URL.
 
-- `misses` widens the emoji prompt by one clue per miss. It cannot reveal
-  anything a player could not have reached by guessing that many times, which is
-  why it is safe to accept from the client.
+- `misses` widens the emoji, build and impostor prompts by one rung per miss:
+  Build adds boots, then starters, then summoner spells, then the skill max
+  order; Impostor names the shared trait's category at three misses and its value
+  at five. It cannot reveal anything a player could not have reached by guessing
+  that many times, which is why it is safe to accept from the client.
+- `impostor` returns eight candidates by id and name, one of whom is the answer.
+  The display order is seeded on the day rather than on the answer, so the
+  impostor's slot carries no information.
 - `seed` switches to practice mode: the answer is derived from the seed instead
   of the date. Practice never consults the date, so no seed reproduces the day's
   puzzle.
