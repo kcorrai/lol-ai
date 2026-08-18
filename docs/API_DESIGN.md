@@ -2297,3 +2297,103 @@ The third action restarts a resolved assignment:
 Deletes the `failed`/`expired` row and opens a fresh one from today's baseline, so a miss is a
 retry rather than a permanent mark. An `active` assignment is left alone — restarting one mid-flight
 would let a player reroll a verdict they could already see coming.
+
+---
+
+## Streamer Kit (LA-25 — see [ADR-026](./adr/ADR-026-streamer-kit.md))
+
+Two sets of endpoints with two different ideas of who is calling.
+
+`/api/creator/*` is the creator configuring their own kit, behind the session
+like everything else. `/api/overlay/*` is **the kit being consumed** — by an OBS
+Browser Source and by the streamer's chat bot, neither of which can carry a
+cookie. Those authenticate with the overlay key in the path and nothing else:
+the key *is* the capability, the same way `DraftSeries.blueToken` is.
+
+Unknown key, disabled kit and no-linked-Riot-account all answer identically, so
+a probe cannot learn that a key exists.
+
+### `GET /api/creator/me`
+
+The caller's kit, or `{ "kit": null }` if creator mode was never turned on —
+which is a state the page renders, not an error.
+
+### `POST /api/creator/me`
+
+Turns creator mode on, minting the overlay key the first time. **Idempotent**: a
+second call returns the existing key rather than a new one, because a double
+click must not break an OBS source that has already been pasted. `201`.
+Rate limited to 10/hour per user.
+
+### `PUT /api/creator/me`
+
+Saves settings. Body is the whole `CreatorSettings` shape — stream-safe flag,
+`delaySeconds`, display name, theme, accent, climb goal, channel handles.
+
+- `accentColor` is validated as `^#[0-9a-fA-F]{6}$`. It is interpolated into a
+  style attribute on a page the streamer's viewers are watching, so anything
+  looser is a CSS injection with an audience.
+- **A goal is both halves or neither.** A tier without a division cannot be
+  placed on the ladder, so the widget would have nothing to count toward —
+  `422` naming that.
+- `riotAccountId` must be an account the caller owns, or `422`. Without the
+  check the kit would read someone else's rank onto their stream.
+- `delaySeconds` is rejected outside 0…900 by the route, and clamped again in
+  the service before it reaches any arithmetic.
+
+Rate limited to 60/hour per user.
+
+### `POST /api/creator/me/key`
+
+Rolls the key. **This breaks every OBS source and every chat command at once**,
+because one key covers both — the UI says so before it offers the button. Rate
+limited to 5/hour per user; each one costs the creator a re-paste.
+
+### `POST /api/creator/me/session`
+
+`{ "action": "start" }` opens a session from now; `{ "action": "clear" }` returns
+the counters to "since local midnight", which is the default a creator who never
+touches this gets. 60/hour per user.
+
+### `GET /api/overlay/[key]`
+
+The whole overlay payload — identity, rank, session, last game, champions, goal,
+theme, accent, delay, `asOf`. No auth.
+
+**One payload rather than a per-widget slice**, because a scene with four
+sources then costs one request instead of four. The widgets poll this every 30s
+by default (`?refresh=` on the page, clamped to 5…300s).
+
+- `Cache-Control: no-store`. The delay is a correctness property, not a
+  freshness one — a cache in front of this would defeat it.
+- `Access-Control-Allow-Origin: *`, deliberately: this is public data behind a
+  capability key, and a creator may want it in their own scene HTML. `OPTIONS`
+  is answered for the preflight.
+- Rate limited 120/min keyed on **the key *and* the caller IP**. Keyed on the key
+  alone, anyone holding it could freeze the creator's own scene; on the IP alone,
+  two co-streamers on one connection would eat each other's budget.
+- `404 RESOURCE_NOT_FOUND` for unknown, disabled or unlinked.
+
+Everything in the response has already passed through the broadcast delay and
+the stream-safe redaction, server-side. There is no raw variant — a widget never
+receives a Riot ID it must not print, or a game it must not show yet.
+
+### `GET /api/overlay/[key]/chat/[command]`
+
+`text/plain`, one line, no envelope. Commands: `rank`, `session`, `lastgame`,
+`champs`, `laneiq`.
+
+Fetched by the streamer's existing bot through `$(urlfetch …)` — Nightbot,
+StreamElements, Fossabot and Kick's Botrix all support it — which is how one
+endpoint covers **Twitch, Kick and YouTube from day one** with no socket held
+open per channel and no OAuth.
+
+**Every failure answers `200` with a readable sentence.** A bot pastes the body
+of whatever it fetched straight into chat, so a JSON envelope or a 404 body is
+what a broken command looks like to viewers. Unknown key → "This LaneIQ command
+is not set up correctly."; unknown command → "Unknown LaneIQ command."; rate
+limited (60/min per key and IP) → "LaneIQ is catching its breath — try again in
+a moment."
+
+Lines are flattened to one line and capped at 400 characters — Twitch's limit is
+500 bytes and a bot prepends "@viewer -> " to it.

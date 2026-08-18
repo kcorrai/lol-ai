@@ -129,6 +129,21 @@ export default defineConfig({
       },
     },
 
+    // The Streamer Kit spans both sides of the session boundary: the dashboard
+    // needs the seeded login, and the overlay and chat endpoints must work with
+    // no session at all, since OBS and Nightbot cannot carry one. Both run in
+    // one project — `creator-overlay.spec.ts` drops the stored state itself with
+    // a file-level `test.use`, which is the assertion rather than a shortcut.
+    {
+      name: "creator",
+      testMatch: /creator(-overlay)?\.spec\.ts$/,
+      dependencies: ["setup"],
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: "tests/e2e/.auth/user.json",
+      },
+    },
+
     // Smoke tests requiring authentication — depend on setup project
     {
       name: "smoke",
