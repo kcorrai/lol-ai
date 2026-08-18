@@ -127,10 +127,22 @@ export interface Baseline {
   position: Position;
 }
 
+export interface BaselineScope {
+  /** Set for a champion lesson: only games on that champion count (ADR-030). */
+  championId?: number;
+  /**
+   * The role to measure in, when the caller knows it better than the account does. A champion
+   * lesson is about the role that champion is played in, which is not the account's main role:
+   * an account whose last twenty ranked games were eleven support and seven mid reads as a
+   * support main, and its Veigar lesson — 43 games, all mid — would have measured zero of them.
+   */
+  position?: Position;
+}
+
 /**
- * The player's current value for a metric, averaged over their recent ranked games **in their
- * main role** — the same population the verdict will be read from. Null when there are too few
- * to be honest about.
+ * The player's current value for a metric, averaged over their recent ranked games **in one
+ * role** — the same population the verdict will be read from. Null when there are too few to be
+ * honest about.
  *
  * Two filters, both learned the hard way against real data. Not `getPlayerPerformanceProfile`,
  * which averages the last 20 matches of any queue: an ARAM-inclusive baseline against a
@@ -141,7 +153,7 @@ export interface Baseline {
 export async function rankedBaseline(
   userId: string,
   metric: AssignmentMetric,
-  championId?: number
+  scope: BaselineScope = {}
 ): Promise<Baseline | null> {
   const riotAccountId = await primaryRiotAccountId(userId);
   if (!riotAccountId) return null;
@@ -149,14 +161,14 @@ export async function rankedBaseline(
   const puuid = await getAccountPuuid(riotAccountId).catch(() => null);
   if (!puuid) return null;
 
-  const position = await primaryPosition(puuid);
+  const position = scope.position ?? (await primaryPosition(puuid));
   if (!position) return null;
 
   const readings = await loadReadings({
     puuid,
     metric,
     position,
-    championId,
+    championId: scope.championId,
     limit: BASELINE_SAMPLE,
     order: "desc",
   });

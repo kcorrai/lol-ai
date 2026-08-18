@@ -95,8 +95,11 @@ export async function previewAssignmentTarget(
   const resolved = await resolveLesson(userId, lessonId);
   if (!resolved) return null;
 
-  const { lesson, championId } = resolved;
-  const baseline = await rankedBaseline(userId, lesson.assignment.metric, championId ?? undefined);
+  const { lesson, championId, position } = resolved;
+  const baseline = await rankedBaseline(userId, lesson.assignment.metric, {
+    championId: championId ?? undefined,
+    position: position ?? undefined,
+  });
   return baseline === null ? null : buildAssignmentTarget(lesson, baseline.value);
 }
 
@@ -109,13 +112,16 @@ export async function openAssignment(userId: string, lessonId: string): Promise<
   const resolved = await resolveLesson(userId, lessonId);
   if (!resolved) return null;
 
-  const { lesson, championId } = resolved;
+  const { lesson, championId, position } = resolved;
   const existing = await prisma.academyAssignment.findFirst({
     where: { userId, lessonId, status: "active" },
   });
   if (existing) return toView(existing);
 
-  const baseline = await rankedBaseline(userId, lesson.assignment.metric, championId ?? undefined);
+  const baseline = await rankedBaseline(userId, lesson.assignment.metric, {
+    championId: championId ?? undefined,
+    position: position ?? undefined,
+  });
   if (baseline === null) return null;
 
   const target = buildAssignmentTarget(lesson, baseline.value);
