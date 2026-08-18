@@ -1,4 +1,4 @@
-export type CardType = "weekly" | "mastery" | "academy";
+export type CardType = "weekly" | "mastery" | "academy" | "career";
 
 export interface WeeklyCardData {
   cardType: "weekly";
@@ -36,4 +36,25 @@ export interface AcademyCardData {
   finishedAt: string;
 }
 
-export type CardData = WeeklyCardData | MasteryCardData | AcademyCardData;
+/**
+ * A whole tracked career on one image. Deliberately says how deep the record goes
+ * rather than implying it covers the player's whole time in the game — Riot serves
+ * about two years of matches and no past seasons at all.
+ */
+export interface CareerCardData {
+  cardType: "career";
+  gameName: string;
+  tagLine: string;
+  summonerLevel: number;
+  trackedFrom: string;
+  totalGames: number;
+  totalHours: number;
+  currentRank: string;
+  peakRank: string;
+  signatureChampion: string | null;
+  signatureChampionGames: number;
+  headline: string | null;
+  isPro: boolean;
+}
+
+export type CardData = WeeklyCardData | MasteryCardData | AcademyCardData | CareerCardData;

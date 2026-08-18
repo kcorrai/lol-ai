@@ -1,7 +1,13 @@
 import { prisma } from "@/lib/db/prisma";
 import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 import { buildCertificate } from "@/domains/academy";
-import type { WeeklyCardData, MasteryCardData, AcademyCardData } from "./card.types";
+import { getCareerTimeline } from "@/domains/analysis";
+import type {
+  WeeklyCardData,
+  MasteryCardData,
+  AcademyCardData,
+  CareerCardData,
+} from "./card.types";
 
 // ── Weekly card data builder ───────────────────────────────────────────────────
 
@@ -190,5 +196,55 @@ export async function buildAcademyData(
     lessonsTotal: certificate.lessonsTotal,
     lessonsMastered: certificate.lessonsMastered,
     finishedAt: certificate.finishedAt,
+  };
+}
+
+// ── Career card data builder ───────────────────────────────────────────────────
+
+/**
+ * The career card is built from the same timeline the page renders rather than from a
+ * second set of queries. A card that disagreed with the page it was shared from would
+ * be the one thing nobody could explain.
+ */
+export async function buildCareerData(
+  riotAccountId: string,
+  userId: string,
+  isPro: boolean
+): Promise<CareerCardData> {
+  const timeline = await getCareerTimeline(userId, riotAccountId);
+  const { summary } = timeline;
+
+  if (summary.totalGames === 0) throw new Error("NO_CAREER_YET");
+
+  // Read from champion stats rather than parsing the era headline back out of its own
+  // display string — a reworded title should not silently empty this field.
+  const signature = await prisma.championStat.findFirst({
+    where: { riotAccountId, queueType: "RANKED_SOLO_5x5" },
+    orderBy: { gamesPlayed: "desc" },
+    select: { gamesPlayed: true, champion: { select: { name: true } } },
+  });
+
+  // Prefer the best-game record: of everything a career produces it is the line a
+  // person actually wants under their name. Falls back to whatever record exists.
+  const records = timeline.bands
+    .flatMap((band) => band.events)
+    .filter((event) => event.kind === "record");
+  const headline =
+    (records.find((r) => r.id.startsWith("record:kda")) ?? records[0])?.detail ?? null;
+
+  return {
+    cardType: "career",
+    gameName: summary.gameName,
+    tagLine: summary.tagLine,
+    summonerLevel: summary.summonerLevel,
+    trackedFrom: summary.firstTrackedAt ?? "",
+    totalGames: summary.totalGames,
+    totalHours: summary.totalHours,
+    currentRank: summary.currentRank ?? "Unranked",
+    peakRank: summary.peakRank ?? "Unranked",
+    signatureChampion: signature?.champion?.name ?? null,
+    signatureChampionGames: signature?.gamesPlayed ?? 0,
+    headline,
+    isPro,
   };
 }
