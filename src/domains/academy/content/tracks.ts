@@ -48,6 +48,12 @@ import { losingMatchups } from "./top/losingMatchups";
 import { splitPushing } from "./top/splitPushing";
 import { arrivingLate } from "./top/arrivingLate";
 
+import { theClearIsThePlan } from "./jungle/theClearIsThePlan";
+import { whereTheirJunglerIs } from "./jungle/whereTheirJunglerIs";
+import { gankConditions } from "./jungle/gankConditions";
+import { ninetySecondsBefore } from "./jungle/ninetySecondsBefore";
+import { invading } from "./jungle/invading";
+
 // Lesson order inside a track is the teaching order and the recommendation order.
 // It is deliberate: nothing in a lesson may depend on a lesson listed after it.
 export const TRACKS: readonly Track[] = [
@@ -153,5 +159,21 @@ export const TRACKS: readonly Track[] = [
       "The lane furthest from everything that wins the game. Why nobody comes to help, what teleport is actually for, how to survive a matchup you cannot win, and the trade a split push is really making at twenty-eight minutes.",
     level: "core",
     lessons: [theIsland, teleport, losingMatchups, splitPushing, arrivingLate],
+  },
+  {
+    id: "jungle",
+    role: "jungle",
+    title: "Jungle Path",
+    tagline: "Time is the resource, camps are the clock",
+    description:
+      "The role where the decisions are the route, not the ganks. What a clear is actually buying, how to know which half of the map their jungler is allowed to be on, the three conditions a gank needs, the ninety seconds that decide a pit, and what a stolen camp really costs.",
+    level: "core",
+    lessons: [
+      theClearIsThePlan,
+      whereTheirJunglerIs,
+      gankConditions,
+      ninetySecondsBefore,
+      invading,
+    ],
   },
 ];

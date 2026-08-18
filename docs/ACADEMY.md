@@ -113,6 +113,14 @@ the curriculum is padding.
 4. Splitting Is a Trade, Not a Duel
 5. You Arrive From the Side
 
+**Jungle Path** — time is the resource, camps are the clock.
+
+1. The Clear Is the Plan
+2. Where Their Jungler Has to Be
+3. A Gank Has Three Conditions
+4. The Ninety Seconds Before a Pit
+5. What a Stolen Camp Actually Costs
+
 A role path is an ordinary `Track` that carries a `role`; that one optional field is what
 separates it from the curriculum (ADR-028). Consequences worth knowing:
 
