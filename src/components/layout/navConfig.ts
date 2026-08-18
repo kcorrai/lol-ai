@@ -23,6 +23,7 @@ import {
   Radio,
   Handshake,
   GraduationCap,
+  Radio as RadioIcon,
 } from "lucide-react";
 
 export interface NavItemConfig {
@@ -107,6 +108,12 @@ export const NAV_SECTIONS: NavSection[] = [
   // shape as Esports. A coach console belongs in this sidebar about as much as
   // a shop's till belongs on its shopfront, so the entry point is here and the
   // section is not.
+  // The Streamer Kit produces URLs that get pasted into OBS and into a chat
+  // bot, so it is a place you go to set things up rather than a place you read.
+  {
+    label: "Create",
+    items: [{ href: "/creator", icon: RadioIcon, label: "Streamer Kit" }],
+  },
   {
     label: "Coaching marketplace",
     items: [{ href: "/coaches", icon: Handshake, label: "Find a coach" }],

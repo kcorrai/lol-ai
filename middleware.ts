@@ -23,6 +23,9 @@ const PROTECTED_PATHS = [
   // The coach's own side of the marketplace. `/coaches` (plural) is the public
   // storefront and stays open — that is the acquisition surface.
   "/coach",
+  // The Streamer Kit. `/overlay` is deliberately NOT here: OBS cannot carry a
+  // session, and the overlay key is what authenticates it instead (ADR-026).
+  "/creator",
   "/sessions",
   "/messages",
 ];
@@ -79,6 +82,7 @@ export const config = {
     "/onboarding/:path*",
     "/champion-pool/:path*",
     "/coach/:path*",
+    "/creator/:path*",
     "/sessions/:path*",
     "/messages/:path*",
     "/admin/:path*",
