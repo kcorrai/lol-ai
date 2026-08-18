@@ -137,6 +137,14 @@ the curriculum is padding.
 4. Alone After Your Support Leaves
 5. Your Damage Is a Duration
 
+**Support Path** — the cheapest body on the map.
+
+1. The Role With No Farm
+2. Roaming Is Your Farm
+3. You Choose When the Fight Exists
+4. Walk First
+5. Dying for the Right Reason
+
 A role path is an ordinary `Track` that carries a `role`; that one optional field is what
 separates it from the curriculum (ADR-028). Consequences worth knowing:
 

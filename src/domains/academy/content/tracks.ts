@@ -66,6 +66,12 @@ import { oneStepBack } from "./adc/oneStepBack";
 import { aloneInLane } from "./adc/aloneInLane";
 import { damageIsADuration } from "./adc/damageIsADuration";
 
+import { theRoleWithNoFarm } from "./support/theRoleWithNoFarm";
+import { roamingIsYourFarm } from "./support/roamingIsYourFarm";
+import { youChooseTheFight } from "./support/youChooseTheFight";
+import { walkFirst } from "./support/walkFirst";
+import { dyingForTheRightReason } from "./support/dyingForTheRightReason";
+
 // Lesson order inside a track is the teaching order and the recommendation order.
 // It is deliberate: nothing in a lesson may depend on a lesson listed after it.
 export const TRACKS: readonly Track[] = [
@@ -218,6 +224,22 @@ export const TRACKS: readonly Track[] = [
       oneStepBack,
       aloneInLane,
       damageIsADuration,
+    ],
+  },
+  {
+    id: "support",
+    role: "support",
+    title: "Support Path",
+    tagline: "The cheapest body on the map",
+    description:
+      "The only role with no farm, which is exactly what makes it free to move. What your income is really for, why roaming is your version of CS, the fights that exist because you pressed something, walking first through every corner, and the deaths that are purchases rather than mistakes.",
+    level: "core",
+    lessons: [
+      theRoleWithNoFarm,
+      roamingIsYourFarm,
+      youChooseTheFight,
+      walkFirst,
+      dyingForTheRightReason,
     ],
   },
 ];

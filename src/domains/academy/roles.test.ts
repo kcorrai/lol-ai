@@ -26,6 +26,12 @@ describe("role paths", () => {
     for (const track of roleTracks()) expect(track.id).toBe(track.role);
   });
 
+  // Five, not six. A role path only covers what is specific to the role; anything true in
+  // every lane is taught once in the core curriculum, and repeating it is padding (ADR-028).
+  it("keeps every role path to five lessons", () => {
+    for (const track of roleTracks()) expect(track.lessons).toHaveLength(5);
+  });
+
   it("splits the registry into the curriculum and the paths, with nothing left over", () => {
     expect(coreTracks().length + roleTracks().length).toBe(TRACKS.length);
     expect(coreTracks().some(isRolePath)).toBe(false);
