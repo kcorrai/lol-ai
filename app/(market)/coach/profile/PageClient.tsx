@@ -142,10 +142,6 @@ export default function CoachApplyPage(): React.ReactElement {
                 checklist={checklist}
               />
             )}
-
-            {!profile && (
-              <CoachApplicationForm profile={null} saving={save.isPending} onSave={handleSave} />
-            )}
           </div>
 
           <div className="grid gap-3.5 lg:sticky lg:top-20">
@@ -187,13 +183,16 @@ export default function CoachApplyPage(): React.ReactElement {
 /**
  * What still has to be true before this can be sent.
  *
- * Mirrors `firstMissingField` on the server plus the rank gate, so the button
- * is disabled for exactly the reasons the submit endpoint would refuse for.
+ * The `blocking` rows mirror `firstMissingField` exactly, so the button is
+ * disabled for precisely the reasons the submit endpoint would refuse for. The
+ * rank is not one of them: the server accepts an application with no checked
+ * rank, and a reviewer declines it. Saying so is honest; disabling the button
+ * would be this page inventing a rule the product does not have.
  */
 function buildChecklist(
   profile: OwnCoachProfile | null,
   hasBadge: boolean
-): { text: string; ok: boolean }[] {
+): { text: string; ok: boolean; blocking: boolean }[] {
   const named = Boolean(profile?.displayName.trim() && profile?.headline.trim());
   const written = (profile?.bio.trim().length ?? 0) >= MIN_BIO_LENGTH;
   const picked =
@@ -205,19 +204,26 @@ function buildChecklist(
     {
       text: hasBadge
         ? "Riot account linked and rank checked"
-        : "Link a Riot account — nothing is reviewed without one",
+        : "No checked rank — an application without one is nearly always declined",
       ok: hasBadge,
+      blocking: false,
     },
-    { text: named ? "Name and headline written" : "Add a display name and a headline", ok: named },
+    {
+      text: named ? "Name and headline written" : "Add a display name and a headline",
+      ok: named,
+      blocking: true,
+    },
     {
       text: written
         ? "How you coach written"
         : `Say what a session with you is like — at least ${MIN_BIO_LENGTH} characters`,
       ok: written,
+      blocking: true,
     },
     {
       text: picked ? "Roles, languages and regions picked" : "Pick a role, a language and a region",
       ok: picked,
+      blocking: true,
     },
   ];
 }
