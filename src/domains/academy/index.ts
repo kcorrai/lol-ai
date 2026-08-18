@@ -27,7 +27,16 @@ export type { LessonNeighbours } from "./curriculum";
 export { gradeDrill, scoreLesson, PASS_RATIO } from "./drills/scoring";
 export type { DrillAttempt, DrillResult, LessonScore } from "./drills/scoring";
 
-export { ROLE_IDS, ROLE_LABEL, roleFromPosition } from "./roles";
+export { ROLE_IDS, ROLE_LABEL, positionFromRole, roleFromPosition } from "./roles";
+
+export { CHAMPION_TRACK_ID, buildChampionLesson, championLessonId, championSlug } from "./championLesson";
+
+export {
+  getChampionLesson,
+  listChampionOptions,
+  resolveChampionLesson,
+} from "./services/championLessonService";
+export type { ChampionLessonView, ChampionOption } from "./services/championLessonService";
 
 export { DEFAULT_PLACEMENT, placeFromProfile } from "./placement";
 export type { Placement, PlacementLevel, PlacementSignal } from "./placement";

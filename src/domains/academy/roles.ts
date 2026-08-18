@@ -25,6 +25,18 @@ export const ROLE_LABEL: Record<RoleId, string> = {
   support: "Support",
 };
 
+const TO_POSITION: Record<RoleId, Position> = {
+  top: "TOP",
+  jungle: "JUNGLE",
+  mid: "MIDDLE",
+  adc: "BOTTOM",
+  support: "UTILITY",
+};
+
 export function roleFromPosition(position: Position | null): RoleId | null {
   return position ? FROM_POSITION[position] : null;
+}
+
+export function positionFromRole(role: RoleId): Position {
+  return TO_POSITION[role];
 }
