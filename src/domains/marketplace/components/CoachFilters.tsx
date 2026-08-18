@@ -5,11 +5,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { REGIONS } from "@/lib/riot/regions";
-import { LANGUAGE_OPTIONS, ROLE_OPTIONS, KIND_OPTIONS } from "@/domains/marketplace/components/options";
+import {
+  LANGUAGE_OPTIONS,
+  ROLE_OPTIONS,
+  KIND_OPTIONS,
+} from "@/domains/marketplace/components/options";
 
 const TIER_OPTIONS = [
   { value: "", label: "Any rank" },
-  { value: "PLATINUM", label: "Platinum+" },
+  { value: "PLATINUM", label: "Plat+" },
   { value: "EMERALD", label: "Emerald+" },
   { value: "DIAMOND", label: "Diamond+" },
   { value: "MASTER", label: "Master+" },
@@ -36,6 +40,9 @@ interface Props {
  * first place. Changing a filter always returns to page one; staying on page
  * four of a search that no longer has four pages is the classic way to land
  * somebody on an empty grid.
+ *
+ * Chips rather than dropdowns: the option sets are short enough to show, and a
+ * row of chips says what the alternatives are without being opened.
  */
 export function CoachFilters({ filtered, total }: Props): React.ReactElement {
   const router = useRouter();
@@ -55,82 +62,159 @@ export function CoachFilters({ filtered, total }: Props): React.ReactElement {
   );
 
   return (
-    <div className="space-y-3 rounded-lg border border-border bg-surface p-4">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <Select label="Role" value={params.get("role") ?? ""} onChange={(v) => setParam("role", v)}
-          options={[{ value: "", label: "Any role" }, ...ROLE_OPTIONS]} />
+    <section className="notch grid gap-3 border border-border bg-surface p-4">
+      <ChipRow
+        groups={[
+          {
+            label: "Role",
+            param: "role",
+            options: [{ value: "", label: "Any role" }, ...ROLE_OPTIONS],
+          },
+          {
+            label: "Type",
+            param: "kind",
+            options: [{ value: "", label: "Any type" }, ...KIND_OPTIONS],
+          },
+        ]}
+        params={params}
+        onSet={setParam}
+      />
 
-        <Select label="Session type" value={params.get("kind") ?? ""} onChange={(v) => setParam("kind", v)}
-          options={[{ value: "", label: "Any type" }, ...KIND_OPTIONS]} />
+      <ChipRow
+        bordered
+        groups={[
+          {
+            label: "Region",
+            param: "region",
+            options: [{ value: "", label: "Any region" }, ...REGIONS],
+          },
+          { label: "Rank", param: "minTier", options: TIER_OPTIONS },
+        ]}
+        params={params}
+        onSet={setParam}
+      />
 
-        <Select label="Rank" value={params.get("minTier") ?? ""} onChange={(v) => setParam("minTier", v)}
-          options={TIER_OPTIONS} />
+      <ChipRow
+        bordered
+        groups={[
+          {
+            label: "Language",
+            param: "lang",
+            options: [{ value: "", label: "Any language" }, ...LANGUAGE_OPTIONS],
+          },
+        ]}
+        params={params}
+        onSet={setParam}
+      />
 
-        <Select label="Language" value={params.get("lang") ?? ""} onChange={(v) => setParam("lang", v)}
-          options={[{ value: "", label: "Any language" }, ...LANGUAGE_OPTIONS]} />
+      <div className="flex flex-wrap items-center gap-4 border-t border-line-1 pt-3">
+        <div className="flex gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {SORT_OPTIONS.map((option) => (
+            <Chip
+              key={option.value}
+              active={(params.get("sort") ?? "rating") === option.value}
+              onClick={() => setParam("sort", option.value === "rating" ? "" : option.value)}
+            >
+              {option.label}
+            </Chip>
+          ))}
+        </div>
 
-        <Select label="Region" value={params.get("region") ?? ""} onChange={(v) => setParam("region", v)}
-          options={[{ value: "", label: "Any region" }, ...REGIONS]} />
+        <label className="flex cursor-pointer items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-text-muted">
+          <input
+            type="checkbox"
+            checked={params.get("all") === "1"}
+            onChange={(e) => setParam("all", e.target.checked ? "1" : "")}
+            className="h-3.5 w-3.5 accent-accent"
+          />
+          Include coaches not taking students
+        </label>
 
-        <Select label="Sort" value={params.get("sort") ?? "rating"} onChange={(v) => setParam("sort", v)}
-          options={SORT_OPTIONS} />
-      </div>
-
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="font-mono text-xs text-text-muted">
-          {total} {total === 1 ? "coach" : "coaches"}
-        </p>
-
-        <div className="flex items-center gap-3">
-          <label className="flex items-center gap-2 text-xs text-text-muted">
-            <input
-              type="checkbox"
-              checked={params.get("all") === "1"}
-              onChange={(e) => setParam("all", e.target.checked ? "1" : "")}
-              className="h-3.5 w-3.5 accent-accent"
-            />
-            Include coaches not taking students
-          </label>
-
+        <span className="ml-auto flex items-center gap-3.5">
+          <span className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-text-muted">
+            {total} {total === 1 ? "coach" : "coaches"}
+          </span>
           {filtered && (
-            <Link href="/coaches" className="text-xs text-accent hover:underline">
+            <Link
+              href="/coaches"
+              className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-accent hover:text-acid-400"
+            >
               Clear filters
             </Link>
           )}
-        </div>
+        </span>
       </div>
+    </section>
+  );
+}
+
+interface Group {
+  label: string;
+  param: string;
+  options: { value: string; label: string }[];
+}
+
+function ChipRow({
+  groups,
+  params,
+  onSet,
+  bordered,
+}: {
+  groups: Group[];
+  params: URLSearchParams;
+  onSet: (key: string, value: string) => void;
+  bordered?: boolean;
+}): React.ReactElement {
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-1.5 overflow-x-auto whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+        bordered && "border-t border-line-1 pt-3"
+      )}
+    >
+      {groups.map((group, i) => (
+        <div key={group.param} className="flex items-center gap-1.5">
+          {i > 0 && <span className="mx-1.5 h-5 w-px shrink-0 bg-line-1" aria-hidden />}
+          <span className="mr-1 shrink-0 font-mono text-[9.5px] uppercase tracking-[0.18em] text-text-muted">
+            {group.label}
+          </span>
+          {group.options.map((option) => (
+            <Chip
+              key={option.value || "any"}
+              active={(params.get(group.param) ?? "") === option.value}
+              onClick={() => onSet(group.param, option.value)}
+            >
+              {option.label}
+            </Chip>
+          ))}
+        </div>
+      ))}
     </div>
   );
 }
 
-function Select({
-  label,
-  value,
-  options,
-  onChange,
+function Chip({
+  active,
+  onClick,
+  children,
 }: {
-  label: string;
-  value: string;
-  options: { value: string; label: string }[];
-  onChange: (value: string) => void;
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
 }): React.ReactElement {
   return (
-    <label className="space-y-1">
-      <span className="text-xs text-text-muted">{label}</span>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className={cn(
-          "flex h-9 w-full rounded-md border border-border bg-surface-2 px-2 text-sm text-text",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        )}
-      >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-    </label>
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={cn(
+        "tag-cut shrink-0 border px-2.5 py-1 font-mono text-[9.5px] uppercase tracking-[0.14em] transition-colors",
+        active
+          ? "border-accent bg-accent/10 text-accent"
+          : "border-line-2 text-text-muted hover:border-line-3 hover:text-text"
+      )}
+    >
+      {children}
+    </button>
   );
 }

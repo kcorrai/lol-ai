@@ -3,12 +3,16 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { apiFetch } from "@/lib/api/fetcher";
-import type { Listing } from "@/domains/marketplace";
+import type { Listing, ListingPerformance } from "@/domains/marketplace";
 import type { ListingBodyInput } from "@/domains/marketplace/listingSchema";
 
 const KEY = ["marketplace", "coach-listings"];
 
-export type OwnListing = Listing & { isActive: boolean };
+export type OwnListing = Listing & {
+  isActive: boolean;
+  /** Null until the listing has been requested at least once. */
+  performance: ListingPerformance | null;
+};
 
 export function useCoachListings() {
   const { status } = useSession();

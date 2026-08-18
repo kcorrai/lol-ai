@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { getOwnProfile, saveOwnProfile } from "@/domains/marketplace";
+import { getOwnProfile, saveOwnProfile, setAcceptingStudents } from "@/domains/marketplace";
 import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
 import { Errors } from "@/lib/api/errors";
 
 export const dynamic = "force-dynamic";
+
+const AcceptingBody = z.object({ acceptingStudents: z.boolean() });
 
 const ProfileBody = z.object({
   displayName: z.string().trim().min(2).max(48),
@@ -41,4 +43,20 @@ export const PUT = withAuth(async (req: NextRequest, { userId }): Promise<NextRe
   }
 
   return apiSuccess({ profile: result.profile });
+});
+
+// PATCH /api/coaches/me — the coach's own "taking students" switch.
+//
+// Separate from PUT because it is a different decision with a different rule:
+// a profile is frozen while a reviewer is reading it, but going on holiday is
+// something an approved coach must be able to do at any moment.
+export const PATCH = withAuth(async (req: NextRequest, { userId }): Promise<NextResponse> => {
+  const parsed = AcceptingBody.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) throw Errors.validation("Expected acceptingStudents to be true or false.");
+
+  if (!(await setAcceptingStudents(userId, parsed.data.acceptingStudents))) {
+    throw Errors.conflict("Only an approved coach can open or close their books.");
+  }
+
+  return apiSuccess({ profile: await getOwnProfile(userId) });
 });

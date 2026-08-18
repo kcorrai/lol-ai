@@ -126,3 +126,37 @@ export async function getCoachBySlug(slug: string): Promise<CoachCard | null> {
     acceptingStudents: row.acceptingStudents,
   };
 }
+
+/** The three figures the storefront's masthead stands on. */
+export interface StorefrontTotals {
+  coaches: number;
+  sessionsRun: number;
+  /** Approved coaches whose rank we have actually read. */
+  ranksChecked: number;
+}
+
+/**
+ * What the storefront can claim about itself, counted rather than asserted.
+ *
+ * The "ranks checked" figure is the whole pitch of this marketplace, so it is
+ * read from the proof rows: if a coach ever slipped through without one, the
+ * masthead says so instead of rounding it up to a hundred percent.
+ */
+export async function storefrontTotals(): Promise<StorefrontTotals> {
+  const [profiles, checked] = await Promise.all([
+    prisma.coachProfile.aggregate({
+      where: { status: "APPROVED", slug: { not: null } },
+      _count: { _all: true },
+      _sum: { sessionsCompleted: true },
+    }),
+    prisma.coachProfile.count({
+      where: { status: "APPROVED", slug: { not: null }, rankProofs: { some: {} } },
+    }),
+  ]);
+
+  return {
+    coaches: profiles._count._all,
+    sessionsRun: profiles._sum.sessionsCompleted ?? 0,
+    ranksChecked: checked,
+  };
+}

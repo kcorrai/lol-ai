@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Listing } from "@/domains/marketplace/types";
 import { BookingForm } from "@/domains/marketplace/components/BookingForm";
@@ -27,7 +28,7 @@ export function ListingBookPanel({
 
   if (!acceptingStudents) {
     return (
-      <p className="mt-3 text-xs text-warning">
+      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-warning">
         This coach is not taking new students right now.
       </p>
     );
@@ -35,15 +36,12 @@ export function ListingBookPanel({
 
   if (!open) {
     return (
-      <Button className="mt-3" onClick={() => setOpen(true)}>
+      <Button size="sm" onClick={() => setOpen(true)}>
         Request this session
+        <ArrowRight className="h-4 w-4" aria-hidden />
       </Button>
     );
   }
 
-  return (
-    <div className="mt-3">
-      <BookingForm coachSlug={coachSlug} listing={listing} onCancel={() => setOpen(false)} />
-    </div>
-  );
+  return <BookingForm coachSlug={coachSlug} listing={listing} onCancel={() => setOpen(false)} />;
 }

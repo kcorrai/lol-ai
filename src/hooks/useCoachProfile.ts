@@ -51,3 +51,22 @@ export function useWithdrawApplication() {
     onSuccess: () => qc.invalidateQueries({ queryKey: KEY }),
   });
 }
+
+/**
+ * The console's "taking students" switch.
+ *
+ * Its own mutation rather than a PUT of the whole profile: sending every field
+ * back to flip one boolean would be refused outright while an application is
+ * under review, which is not what pausing your books should mean.
+ */
+export function useSetAcceptingStudents() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (acceptingStudents: boolean) =>
+      apiFetch<OwnProfileData>("/api/coaches/me", {
+        method: "PATCH",
+        body: JSON.stringify({ acceptingStudents }),
+      }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: KEY }),
+  });
+}
