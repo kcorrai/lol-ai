@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { RegisterForm } from "@/domains/identity/components/RegisterForm";
 
 export const metadata: Metadata = {
-  title: "Create Account | LoL AI Coach",
+  title: "Create Account",
 };
 
 export default function RegisterPage() {

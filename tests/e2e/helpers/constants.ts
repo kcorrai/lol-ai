@@ -31,6 +31,10 @@ export const E2E_RIOT_PRE = {
 
 export const E2E_SHARE_TOKEN = "e2e-share-tok-000000000000000000000000";
 
+// Every seeded match id starts with this, so the next run can find and clear
+// them without owning them through a user row.
+export const E2E_MATCH_PREFIX = "E2E_SMOKE_";
+
 // Paths for cross-test state files
 export const AUTH_FILE = join(process.cwd(), "tests/e2e/.auth/user.json");
 export const STATE_FILE = join(process.cwd(), "tests/e2e/.auth/state.json");
