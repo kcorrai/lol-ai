@@ -11,7 +11,14 @@ test.describe("Academy", () => {
     await expect(page).not.toHaveURL(/\/login/);
 
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Learn the game");
-    for (const track of ["Foundations", "Laning", "Vision & Map"]) {
+    for (const track of [
+      "Foundations",
+      "Laning",
+      "Vision & Map",
+      "Macro",
+      "Teamfighting",
+      "Mental & Consistency",
+    ]) {
       await expect(page.getByRole("link", { name: new RegExp(track) }).first()).toBeVisible();
     }
   });
