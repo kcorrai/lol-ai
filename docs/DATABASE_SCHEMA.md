@@ -942,3 +942,48 @@ Notes on the shape:
 - **`review` is written by the decay job and by nothing else.** A `mastered` lesson whose metric
   has gone back below the same stored target drops to `review`; recovery is the ordinary path —
   redo the lesson, which opens a fresh assignment, which can restore `mastered`.
+
+---
+
+## Streamer Kit (LA-25 — see [ADR-026](./adr/ADR-026-streamer-kit.md))
+
+One table, `creator_profiles`, one row per user.
+
+| Column | Holds |
+|---|---|
+| `userId` | Unique — the kit is per account, not per Riot account. Cascades from `users` |
+| `riotAccountId` | Which account the overlays read. Nullable, `ON DELETE SET NULL` |
+| `overlayKey` | Unique capability key, 22 base64url characters |
+| `enabled` | Whether the key resolves at all |
+| `displayName`, `streamSafe` | What a viewer is allowed to see of who this is |
+| `delaySeconds` | The broadcast delay every widget computes against |
+| `theme`, `accentColor` | Per-creator look, applied as an inline custom property |
+| `sessionStartedAt` | Start of the current session. Null means "since local midnight" |
+| `goalTier`, `goalDivision` | What the climb bar counts toward. Both null means no goal |
+| `twitchHandle`, `kickHandle`, `youtubeHandle` | Cosmetic in v1 — nothing is verified |
+
+Notes on the shape:
+
+- **`overlayKey` is the only credential the consumers can present.** An OBS
+  Browser Source and a Nightbot command cannot carry a session, so the key in the
+  URL is the whole authentication — the same trade `draft_series.blueToken`
+  makes. It is unique and indexed because every overlay poll is a lookup on it,
+  and rotating it is a single-column update that invalidates both surfaces at
+  once by design.
+- **Nothing here stores a computed figure.** Rank, session record, last game and
+  champion pool are all derived per request from `ranked_history`,
+  `match_participants` and `champion_stats`. A cached overlay row would be one
+  more thing to invalidate on every sync, and the delay makes the correct answer
+  a function of *when you ask*, not of what was last written.
+- **`delaySeconds` is stored rather than applied in the browser.** The whole
+  point is that the payload never contains a game the broadcast has not reached;
+  a client-side delay would ship it and then hide it, which anyone can read out
+  of devtools.
+- **`streamSafe` redacts on the server for the same reason.** With it on the Riot
+  ID is dropped from the payload entirely rather than hidden by a widget.
+- **`sessionStartedAt` is nullable and that is the common case.** Null means the
+  counters run from the start of today in the creator's `profiles.timezone`, so a
+  working session counter needs nobody to press anything.
+- **`riotAccountId` is `ON DELETE SET NULL`, not cascade.** Unlinking a Riot
+  account must not delete the kit and the key with it; null falls back to
+  whichever account is primary.
