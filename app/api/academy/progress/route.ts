@@ -4,9 +4,9 @@ import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
 import { Errors } from "@/lib/api/errors";
 import {
-  getLessonById,
   markLessonOpened,
   openAssignment,
+  resolveLesson,
   restartAssignment,
   submitLessonAttempt,
 } from "@/domains/academy";
@@ -32,7 +32,10 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   if (!parsed.success) throw Errors.validation("Invalid request body");
 
   const body = parsed.data;
-  if (!getLessonById(body.lessonId)) throw Errors.notFound("Lesson");
+  // Resolves both kinds: a registry lookup, or the cached analysis a champion lesson was
+  // generated from. A champion lesson whose analysis has expired is genuinely gone, and 404 is
+  // the honest answer — the drills the client is holding no longer exist to be graded.
+  if (!(await resolveLesson(userId, body.lessonId))) throw Errors.notFound("Lesson");
 
   if (body.action === "open") {
     await markLessonOpened(userId, body.lessonId);

@@ -29,6 +29,8 @@ export interface ReadingQuery {
   since?: Date;
   /** Omitted only for the sample the primary role is derived from. */
   position?: Position;
+  /** Set for a champion lesson, whose verdict is only about games on that champion (ADR-030). */
+  championId?: number;
   limit: number;
   order: "asc" | "desc";
 }
@@ -38,6 +40,7 @@ export async function loadReadings({
   metric,
   since,
   position,
+  championId,
   limit,
   order,
 }: ReadingQuery): Promise<MatchReading[]> {
@@ -45,6 +48,7 @@ export async function loadReadings({
     where: {
       puuid,
       ...(position ? { position } : {}),
+      ...(championId !== undefined ? { championId } : {}),
       match: {
         queueType: { in: [...COUNTED_QUEUES] },
         ...(since ? { gameStart: { gt: since } } : {}),
@@ -136,7 +140,8 @@ export interface Baseline {
  */
 export async function rankedBaseline(
   userId: string,
-  metric: AssignmentMetric
+  metric: AssignmentMetric,
+  championId?: number
 ): Promise<Baseline | null> {
   const riotAccountId = await primaryRiotAccountId(userId);
   if (!riotAccountId) return null;
@@ -151,6 +156,7 @@ export async function rankedBaseline(
     puuid,
     metric,
     position,
+    championId,
     limit: BASELINE_SAMPLE,
     order: "desc",
   });

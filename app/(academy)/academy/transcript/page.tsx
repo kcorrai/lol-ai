@@ -123,6 +123,51 @@ export default async function TranscriptPage(): Promise<React.ReactElement> {
             </ul>
           </section>
         ))}
+
+        {/* Generated per champion, so deliberately outside the track list and outside the
+            totals — there is no defined set to finish here (ADR-030). */}
+        {transcript.champions.length > 0 && (
+          <section className="notch border border-line-1 bg-surface">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line-1 px-5 py-3.5">
+              <div className="flex items-baseline gap-3">
+                <Link
+                  href="/academy/champion"
+                  className="font-display text-[15px] font-bold uppercase tracking-[0.02em] text-text transition-colors hover:text-accent"
+                >
+                  Champion Mastery
+                </Link>
+                <span className="font-mono text-[11px] text-text-muted">
+                  {transcript.champions.filter((l) => l.status === "mastered").length} proved in
+                  ranked
+                </span>
+              </div>
+            </div>
+
+            <ul className="flex flex-col">
+              {transcript.champions.map((lesson) => (
+                <li
+                  key={lesson.lessonId}
+                  className="flex items-center gap-3 border-b border-line-1 px-5 py-2.5 last:border-b-0"
+                >
+                  <span className="flex h-4 w-4 shrink-0 items-center justify-center">
+                    {marker(lesson.status)}
+                  </span>
+                  <span className="min-w-0 flex-1 truncate text-[13.5px] text-text-body">
+                    {lesson.title}
+                  </span>
+                  {lesson.status === "review" && (
+                    <span className="font-mono text-[10px] uppercase tracking-label text-warning">
+                      Redo
+                    </span>
+                  )}
+                  <span className="shrink-0 font-mono text-[11px] text-text-muted">
+                    {when(lesson)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </div>
     </div>
   );

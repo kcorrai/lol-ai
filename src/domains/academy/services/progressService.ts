@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { awardXp } from "@/domains/analysis";
-import { getLessonById, visibleDrills } from "@/domains/academy/curriculum";
+import { visibleDrills } from "@/domains/academy/curriculum";
+import { resolveLesson } from "@/domains/academy/services/lessonResolver";
 import { xpToAward } from "@/domains/academy/xp";
 import { scoreLesson, type DrillAttempt, type LessonScore } from "@/domains/academy/drills/scoring";
 import type { LessonProgress, LessonStatus } from "@/domains/academy/types";
@@ -57,8 +58,12 @@ export async function submitLessonAttempt(
   attempts: DrillAttempt[],
   hasPro: boolean
 ): Promise<SubmitResult> {
-  const lesson = getLessonById(lessonId);
-  if (!lesson) throw new Error(`Unknown lesson: ${lessonId}`);
+  // A champion lesson resolves from the analysis it was generated from, which is still cached.
+  // Null there means that analysis has expired and these drills no longer exist — grading the
+  // answers against a freshly generated set would mark right answers wrong.
+  const resolved = await resolveLesson(userId, lessonId);
+  if (!resolved) throw new Error(`Unknown lesson: ${lessonId}`);
+  const { lesson } = resolved;
 
   // Graded on the half the reader was shown. Grading a free reader against drills behind
   // the pro gate would fail them for content they were never offered.

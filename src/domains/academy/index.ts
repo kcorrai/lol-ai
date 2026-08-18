@@ -38,6 +38,9 @@ export {
 } from "./services/championLessonService";
 export type { ChampionLessonView, ChampionOption } from "./services/championLessonService";
 
+export { isChampionLessonId, resolveLesson } from "./services/lessonResolver";
+export type { ResolvedLesson } from "./services/lessonResolver";
+
 export { DEFAULT_PLACEMENT, placeFromProfile } from "./placement";
 export type { Placement, PlacementLevel, PlacementSignal } from "./placement";
 

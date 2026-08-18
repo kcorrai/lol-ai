@@ -23,6 +23,7 @@ export function AcademyRail(): React.ReactElement {
     { href: "/academy", label: "Overview" },
     ...coreTracks().map((track) => ({ href: `/academy/${track.id}`, label: track.title })),
     { href: "/academy/roles", label: "Roles" },
+    { href: "/academy/champion", label: "Champions" },
   ];
 
   return (
