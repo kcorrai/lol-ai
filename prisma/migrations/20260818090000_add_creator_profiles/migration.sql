@@ -17,7 +17,7 @@ CREATE TABLE "creator_profiles" (
     "streamSafe" BOOLEAN NOT NULL DEFAULT false,
     "delaySeconds" INTEGER NOT NULL DEFAULT 0,
     "theme" TEXT NOT NULL DEFAULT 'dark',
-    "accentColor" TEXT NOT NULL DEFAULT '#22d3ee',
+    "accentColor" TEXT NOT NULL DEFAULT '#C6FF3D',
     "sessionStartedAt" TIMESTAMP(3),
     "goalTier" "RankTier",
     "goalDivision" "RankDivision",

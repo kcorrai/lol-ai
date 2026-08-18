@@ -2020,7 +2020,7 @@ model CreatorProfile {
   delaySeconds Int @default(0)
 
   theme       String @default("dark")
-  accentColor String @default("#22d3ee")
+  accentColor String @default("#C6FF3D")
 
   // Start of the current session. Null means "since the start of today in the
   // creator's timezone" — the common case, so nobody has to press anything to

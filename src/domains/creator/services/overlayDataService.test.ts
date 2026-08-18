@@ -50,7 +50,7 @@ function creatorRow(overrides: Record<string, unknown> = {}): Record<string, unk
     streamSafe: false,
     delaySeconds: 0,
     theme: "dark",
-    accentColor: "#22d3ee",
+    accentColor: "#C6FF3D",
     sessionStartedAt: new Date("2026-08-18T10:00:00.000Z"),
     goalTier: null,
     goalDivision: null,
