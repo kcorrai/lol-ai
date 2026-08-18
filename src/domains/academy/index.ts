@@ -52,6 +52,9 @@ export type { DecayVerdict } from "./decay";
 export { checkMasteryDecay } from "./services/decayService";
 export type { DecayResult } from "./services/decayService";
 
+export { buildCertificate, getTranscript } from "./services/transcriptService";
+export type { Certificate, Transcript, TranscriptLesson, TranscriptTrack } from "./services/transcriptService";
+
 export { getAcademyOverview } from "./services/academyService";
 export type { AcademyOverview } from "./services/academyService";
 export {

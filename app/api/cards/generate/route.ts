@@ -7,9 +7,12 @@ import { assertOwnsRiotAccount, getPlanLimits } from "@/lib/auth/authorization";
 import { generateShareableCard } from "@/domains/coaching/services/cardService";
 
 const bodySchema = z.object({
-  cardType: z.enum(["weekly", "mastery"]),
-  riotAccountId: z.string().uuid(),
+  cardType: z.enum(["weekly", "mastery", "academy"]),
+  // An academy certificate is built from lesson progress, which belongs to the user rather than
+  // to a linked account — so it asks for a track instead.
+  riotAccountId: z.string().uuid().optional(),
   championId: z.number().int().positive().optional(),
+  trackId: z.string().min(1).optional(),
 });
 
 // POST /api/cards/generate
@@ -18,20 +21,36 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   const parsed = bodySchema.safeParse(raw);
   if (!parsed.success) throw Errors.validation(parsed.error.issues[0].message);
 
-  const { cardType, riotAccountId, championId } = parsed.data;
+  const { cardType, riotAccountId, championId, trackId } = parsed.data;
 
-  await assertOwnsRiotAccount(userId, riotAccountId);
+  if (cardType === "academy") {
+    if (!trackId) throw Errors.validation("trackId is required for an academy card");
+  } else {
+    if (!riotAccountId) throw Errors.validation("riotAccountId is required for this card");
+    await assertOwnsRiotAccount(userId, riotAccountId);
+  }
 
   const limits = await getPlanLimits(userId);
   const isPro = limits.matchupAnalysisPerDay === -1;
 
-  const result = await generateShareableCard({
-    userId,
-    cardType,
-    riotAccountId,
-    championId,
-    isPro,
-  });
+  let result: Awaited<ReturnType<typeof generateShareableCard>>;
+  try {
+    result = await generateShareableCard({
+      userId,
+      cardType,
+      riotAccountId,
+      championId,
+      trackId,
+      isPro,
+    });
+  } catch (err) {
+    // The academy domain refuses a certificate for a track that is not finished; that is a
+    // request problem, not a server one.
+    if (err instanceof Error && err.message === "TRACK_NOT_FINISHED") {
+      throw Errors.validation("That track is not finished yet");
+    }
+    throw err;
+  }
 
   const cardUrl = `/api/cards/${result.token}`;
 

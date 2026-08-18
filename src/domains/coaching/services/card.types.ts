@@ -1,4 +1,4 @@
-export type CardType = "weekly" | "mastery";
+export type CardType = "weekly" | "mastery" | "academy";
 
 export interface WeeklyCardData {
   cardType: "weekly";
@@ -26,4 +26,14 @@ export interface MasteryCardData {
   isPro: boolean;
 }
 
-export type CardData = WeeklyCardData | MasteryCardData;
+/** A finished Academy track. Built from lesson progress, so it needs no Riot account at all. */
+export interface AcademyCardData {
+  cardType: "academy";
+  displayName: string;
+  trackTitle: string;
+  lessonsTotal: number;
+  lessonsMastered: number;
+  finishedAt: string;
+}
+
+export type CardData = WeeklyCardData | MasteryCardData | AcademyCardData;

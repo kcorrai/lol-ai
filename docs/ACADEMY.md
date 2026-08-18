@@ -237,6 +237,24 @@ completion that failed to store.
 **No Academy streak.** LaneIQ Daily (LA-20) owns the only streak counter in the product. Two
 streaks read to a player as two separate debts, so the Academy pays XP and nothing else.
 
-## Not built yet
+## Transcript and certificates
 
-- Certificates and a shareable transcript.
+`/academy/transcript` is the player's own record: every lesson, its status, the date it was
+passed or mastered, and the Academy XP it paid. Signed-in only and `noindex` — it is a record,
+not a page for anybody else.
+
+A finished track can be turned into a shareable certificate from there. It rides the existing
+`ShareableCard` table (`cardType` is a free string, so no migration) and the existing
+`/api/cards/[token]` image route, which gained an `academy` branch beside `weekly` and
+`mastery`. The public view is `/academy/certificate/[token]` and needs no account.
+
+Two rules give the certificate its meaning:
+
+- **Only for a finished track.** `buildCertificate` returns null otherwise and the API answers
+  400 — a certificate for a part-read track is decoration, and the Academy already has a status
+  for "you read most of it".
+- **A lesson in `review` does not count as finished.** If the decay check has taken a mastery
+  back, the certificate would be claiming something the player's own games stopped showing.
+
+The card shows lessons read and, separately, how many were **proved in ranked** — the number
+that distinguishes this from a course completion badge.

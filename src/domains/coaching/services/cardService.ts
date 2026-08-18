@@ -1,15 +1,17 @@
 import { prisma } from "@/lib/db/prisma";
 import { toJsonInput, fromJsonValue } from "@/types/json";
-import { buildWeeklyData, buildMasteryData } from "./cardDataBuilders";
+import { buildWeeklyData, buildMasteryData, buildAcademyData } from "./cardDataBuilders";
 import type { CardType, CardData } from "./card.types";
 
-export type { CardType, WeeklyCardData, MasteryCardData, CardData } from "./card.types";
+export type { CardType, WeeklyCardData, MasteryCardData, AcademyCardData, CardData } from "./card.types";
 
 interface GenerateCardOptions {
   userId: string;
   cardType: CardType;
-  riotAccountId: string;
+  /** Not needed for an academy card — lesson progress belongs to the user, not an account. */
+  riotAccountId?: string;
   championId?: number;
+  trackId?: string;
   isPro: boolean;
 }
 
@@ -18,10 +20,15 @@ export async function generateShareableCard(
 ): Promise<{ token: string; expiresAt: string }> {
   let data: CardData;
 
-  if (opts.cardType === "mastery") {
+  if (opts.cardType === "academy") {
+    if (!opts.trackId) throw new Error("trackId required for academy card");
+    data = await buildAcademyData(opts.userId, opts.trackId);
+  } else if (opts.cardType === "mastery") {
     if (!opts.championId) throw new Error("championId required for mastery card");
+    if (!opts.riotAccountId) throw new Error("riotAccountId required for mastery card");
     data = await buildMasteryData(opts.riotAccountId, opts.championId, opts.isPro);
   } else {
+    if (!opts.riotAccountId) throw new Error("riotAccountId required for weekly card");
     data = await buildWeeklyData(opts.riotAccountId, opts.userId, opts.isPro);
   }
 

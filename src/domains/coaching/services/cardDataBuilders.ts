@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
-import type { WeeklyCardData, MasteryCardData } from "./card.types";
+import { buildCertificate } from "@/domains/academy";
+import type { WeeklyCardData, MasteryCardData, AcademyCardData } from "./card.types";
 
 // ── Weekly card data builder ───────────────────────────────────────────────────
 
@@ -166,5 +167,28 @@ export async function buildMasteryData(
     masteryTier: tierLabel(stat.masteryScore),
     gamesPlayed: stat.gamesPlayed,
     isPro,
+  };
+}
+
+// ── Academy certificate data builder ──────────────────────────────────────────
+
+/**
+ * A certificate for a finished track. The academy domain decides what "finished" means and
+ * refuses to issue one otherwise — a certificate for a part-read track would be decoration.
+ */
+export async function buildAcademyData(
+  userId: string,
+  trackId: string
+): Promise<AcademyCardData> {
+  const certificate = await buildCertificate(userId, trackId);
+  if (!certificate) throw new Error("TRACK_NOT_FINISHED");
+
+  return {
+    cardType: "academy",
+    displayName: certificate.displayName,
+    trackTitle: certificate.trackTitle,
+    lessonsTotal: certificate.lessonsTotal,
+    lessonsMastered: certificate.lessonsMastered,
+    finishedAt: certificate.finishedAt,
   };
 }

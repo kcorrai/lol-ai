@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { TRACKS, getAcademyOverview, trackCompletion } from "@/domains/academy";
 import { ActiveAssignments } from "@/domains/academy/components/ActiveAssignments";
 import { NextUpPanel } from "@/domains/academy/components/NextUpPanel";
@@ -64,6 +65,15 @@ export default async function AcademyHubPage(): Promise<React.ReactElement> {
         <div className="flex items-center gap-3.5">
           <span className="hud-label">{"// Tracks"}</span>
           <span className="h-px flex-1 bg-line-1" />
+          {/* Only offered to someone who has a record to look at. */}
+          {session?.user && (
+            <Link
+              href="/academy/transcript"
+              className="font-mono text-[11px] uppercase tracking-label text-text-muted transition-colors hover:text-accent"
+            >
+              Transcript →
+            </Link>
+          )}
         </div>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2">
