@@ -4,6 +4,7 @@ import { DataStrip } from "./components/laneiq/DataStrip";
 import { SampleReport } from "./components/laneiq/SampleReport";
 import { ChampionPoolAudit } from "./components/laneiq/ChampionPoolAudit";
 import { FreeToolsGrid } from "./components/laneiq/FreeToolsGrid";
+import { DailyQuizStrip } from "./components/laneiq/DailyQuizStrip";
 import { TierListPreview } from "./components/laneiq/TierListPreview";
 import { HowItWorksStrip } from "./components/laneiq/HowItWorksStrip";
 import { PricingStrip } from "./components/laneiq/PricingStrip";
@@ -34,6 +35,7 @@ export default function LandingPage(): React.ReactElement {
       <SampleReport />
       <ChampionPoolAudit />
       <FreeToolsGrid />
+      <DailyQuizStrip />
       <TierListPreview />
       <HowItWorksStrip />
 
