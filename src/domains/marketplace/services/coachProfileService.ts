@@ -1,6 +1,7 @@
 import type { Position } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import type { CoachApplicationState } from "@/domains/marketplace/types";
+import { MIN_REVIEWS_FOR_SCORE } from "@/domains/marketplace/policy";
 
 // The coach's own profile, before and after approval.
 //
@@ -32,7 +33,11 @@ export interface OwnCoachProfile extends CoachApplicationState {
   roles: Position[];
   championIds: number[];
   timezone: string;
+  /** Basis points the platform keeps, snapshotted per profile — 2000 is 20%. */
+  commissionBps: number;
   acceptingStudents: boolean;
+  /** Null until enough reviews have been revealed for a score to mean anything. */
+  rating: number | null;
   ratingCount: number;
   sessionsCompleted: number;
 }
@@ -49,7 +54,9 @@ const OWN_PROFILE_SELECT = {
   roles: true,
   championIds: true,
   timezone: true,
+  commissionBps: true,
   acceptingStudents: true,
+  ratingBayes: true,
   ratingCount: true,
   sessionsCompleted: true,
   submittedAt: true,
@@ -60,13 +67,17 @@ const OWN_PROFILE_SELECT = {
 type OwnProfileRow = {
   submittedAt: Date | null;
   reviewedAt: Date | null;
-} & Omit<OwnCoachProfile, "submittedAt" | "reviewedAt">;
+  ratingBayes: number;
+} & Omit<OwnCoachProfile, "submittedAt" | "reviewedAt" | "rating">;
 
 function toOwnProfile(row: OwnProfileRow): OwnCoachProfile {
+  const { ratingBayes, ...rest } = row;
   return {
-    ...row,
+    ...rest,
     submittedAt: row.submittedAt?.toISOString() ?? null,
     reviewedAt: row.reviewedAt?.toISOString() ?? null,
+    // Same threshold the public card uses: a 5.0 from one person is not a score.
+    rating: row.ratingCount >= MIN_REVIEWS_FOR_SCORE ? ratingBayes : null,
   };
 }
 

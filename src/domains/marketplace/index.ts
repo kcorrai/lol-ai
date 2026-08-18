@@ -246,6 +246,12 @@ export type { SessionPrep } from "@/domains/marketplace/services/sessionPrepServ
 export { listBookings, getBookingFor, coachWorkload } from "@/domains/marketplace/services/bookingQueryService";
 export type { CoachWorkload } from "@/domains/marketplace/services/bookingQueryService";
 
+export { coachConsoleStats } from "@/domains/marketplace/services/coachStatsService";
+export type {
+  CoachConsoleStats,
+  EarningsWeek,
+} from "@/domains/marketplace/services/coachStatsService";
+
 export {
   openPayment,
   settleForStatus,

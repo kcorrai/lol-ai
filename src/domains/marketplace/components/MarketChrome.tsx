@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowLeft, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -35,17 +35,21 @@ export function MarketChrome({ nav, children }: Props): React.ReactElement {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <header className="sticky top-0 z-40 border-b border-border bg-surface/95 backdrop-blur">
-        <div className="mx-auto flex h-14 max-w-6xl items-center gap-6 px-4">
-          <Link href="/coaches" className="flex shrink-0 items-baseline gap-1.5">
-            <span className="font-display text-sm font-bold tracking-tight text-text">LaneIQ</span>
-            <span className="font-display text-sm font-bold tracking-tight text-accent">
+    <div className="flex min-h-screen flex-col">
+      <header className="sticky top-0 z-40 border-b border-line-1 bg-[var(--surface-glass)] backdrop-blur-md">
+        <div className="mx-auto flex h-14 max-w-[1240px] items-center gap-5 px-5 md:px-8">
+          <Link href="/coaches" className="shrink-0 whitespace-nowrap">
+            <span className="font-display text-base font-extrabold uppercase tracking-[0.06em] text-text">
+              LaneIQ{" "}
+            </span>
+            <span className="font-display text-base font-extrabold uppercase tracking-[0.06em] text-accent">
               Coaching
             </span>
           </Link>
 
-          <nav className="hidden flex-1 items-center gap-1 md:flex">
+          {/* Scrolls rather than wraps: the coach nav is six items and a wrap
+              would double the header height on the exact screens with least of it. */}
+          <nav className="hidden flex-1 items-center gap-1.5 overflow-x-auto [scrollbar-width:none] md:flex [&::-webkit-scrollbar]:hidden">
             {nav.map((item) => (
               <NavLink key={item.href} item={item} pathname={pathname} />
             ))}
@@ -53,10 +57,9 @@ export function MarketChrome({ nav, children }: Props): React.ReactElement {
 
           <Link
             href="/dashboard"
-            className="ml-auto hidden items-center gap-1.5 text-xs text-text-faint transition-colors hover:text-text-muted md:flex"
+            className="ml-auto hidden shrink-0 whitespace-nowrap font-mono text-[10.5px] uppercase tracking-[0.16em] text-text-muted transition-colors hover:text-text md:block"
           >
-            <ArrowLeft className="h-3 w-3" aria-hidden />
-            Back to LaneIQ
+            &larr; Back to LaneIQ
           </Link>
 
           <button
@@ -64,23 +67,27 @@ export function MarketChrome({ nav, children }: Props): React.ReactElement {
             onClick={() => setOpen(!open)}
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
-            className="ml-auto rounded-md p-2 text-text-muted hover:bg-surface-2 hover:text-text md:hidden"
+            className="ml-auto p-2 text-text-muted hover:bg-surface-2 hover:text-text md:hidden"
           >
             {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
         </div>
 
         {open && (
-          <nav className="flex flex-col gap-1 border-t border-border px-4 py-3 md:hidden">
+          <nav className="flex flex-col gap-1 border-t border-line-1 bg-surface px-5 py-3 md:hidden">
             {nav.map((item) => (
-              <NavLink key={item.href} item={item} pathname={pathname} onClick={() => setOpen(false)} />
+              <NavLink
+                key={item.href}
+                item={item}
+                pathname={pathname}
+                onClick={() => setOpen(false)}
+              />
             ))}
             <Link
               href="/dashboard"
-              className="mt-2 flex items-center gap-1.5 px-3 py-2 text-xs text-text-faint"
+              className="mt-2 px-2.5 py-2 font-mono text-[10.5px] uppercase tracking-[0.16em] text-text-muted"
             >
-              <ArrowLeft className="h-3 w-3" aria-hidden />
-              Back to LaneIQ
+              &larr; Back to LaneIQ
             </Link>
           </nav>
         )}
@@ -88,10 +95,10 @@ export function MarketChrome({ nav, children }: Props): React.ReactElement {
 
       <main className="flex-1">{children}</main>
 
-      <footer className="border-t border-border px-4 py-5">
-        <p className="mx-auto max-w-6xl text-xs text-text-faint">
-          Coaching on LaneIQ. Every rank on a coach profile is read from a linked Riot account and
-          dated — never typed in by the coach.
+      <footer className="border-t border-line-1 px-5 py-5 md:px-8">
+        <p className="mx-auto max-w-[1240px] font-mono text-[10px] uppercase tracking-[0.12em] text-text-faint">
+          Coaching on LaneIQ &middot; every rank on a coach profile is read from a linked Riot
+          account and dated, never typed in by the coach &middot; not endorsed by Riot Games
         </p>
       </footer>
     </div>
@@ -116,8 +123,10 @@ function NavLink({
       href={item.href}
       onClick={onClick}
       className={cn(
-        "rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
-        active ? "bg-accent/15 text-accent" : "text-text-muted hover:bg-surface-2 hover:text-text"
+        "shrink-0 whitespace-nowrap px-2.5 py-1.5 font-mono text-[10.5px] uppercase tracking-[0.14em] transition-colors",
+        active
+          ? "tag-cut border border-accent/40 bg-accent/10 text-accent"
+          : "text-text-muted hover:text-text"
       )}
     >
       {item.label}

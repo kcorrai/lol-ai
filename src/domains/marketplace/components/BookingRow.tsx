@@ -1,74 +1,128 @@
 "use client";
 
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { StatusChip, type ChipTone } from "@/domains/marketplace/components/hud/StatusChip";
+import { formatMoney } from "@/domains/marketplace/money";
 import type { BookingSummary } from "@/domains/marketplace/types";
-import { kindLabel } from "@/domains/marketplace/components/options";
 
 interface Props {
   booking: BookingSummary;
   side: "student" | "coach";
 }
 
-/** One booking in a list, on either side. */
+/**
+ * One booking in a list, on either side.
+ *
+ * A ledger line rather than a card: the two lists these appear in are read by
+ * scanning one column at a time — what state is it in, when is it, what does it
+ * want from me — and cards make that scan impossible.
+ */
 export function BookingRow({ booking, side }: Props): React.ReactElement {
+  const status = statusMeta(booking.status);
+  const action = actionHint(booking, side);
+
   return (
     <Link
       href={`/sessions/${booking.id}`}
-      className="flex flex-wrap items-start justify-between gap-3 rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent/40"
+      className={cn(
+        "grid items-center gap-3.5 border-b border-line-1 px-4 py-3 transition-colors last:border-b-0 hover:bg-surface-2",
+        "grid-cols-[110px_minmax(0,1fr)] md:grid-cols-[110px_minmax(0,1fr)_120px_70px_140px]",
+        booking.status === "PENDING_COACH" ? "border-l-2 border-l-warning" : "border-l-2 border-l-transparent"
+      )}
     >
-      <div className="min-w-0">
-        <div className="flex flex-wrap items-center gap-2">
-          <p className="font-semibold text-text">{booking.listingTitle}</p>
-          <Badge variant="secondary">{kindLabel(booking.kind)}</Badge>
-          <StatusBadge status={booking.status} />
-        </div>
+      <StatusChip tone={status.tone} className="justify-center">
+        {status.label}
+      </StatusChip>
 
-        <p className="mt-1 text-xs text-text-muted">
-          {side === "student" ? `with ${booking.coachDisplayName}` : `for ${booking.studentName}`}
-          {" · "}
-          {booking.startTime ? whenLabel(booking.startTime) : "no fixed time"}
-        </p>
+      <span className="grid min-w-0 gap-0.5">
+        <span className="truncate text-sm text-text">{booking.listingTitle}</span>
+        <span className="font-mono text-[9.5px] uppercase tracking-[0.12em] text-text-faint">
+          {side === "student" ? booking.coachDisplayName : booking.studentName}
+        </span>
+      </span>
 
-        {booking.status === "PENDING_COACH" && (
-          <p className="mt-1 text-xs text-warning">
-            {side === "coach" ? "Answer by " : "The coach has until "}
-            {whenLabel(booking.respondByAt)}
-          </p>
+      <span className="hidden text-right font-mono text-[11px] tracking-[0.1em] text-text-muted md:block">
+        {booking.startTime ? whenLabel(booking.startTime) : "no fixed time"}
+      </span>
+
+      <span className="hidden text-right font-mono text-[13px] text-text md:block">
+        {formatMoney(booking.priceCents, booking.currency)}
+      </span>
+
+      <span
+        className={cn(
+          "hidden text-right font-mono text-[9.5px] uppercase tracking-[0.14em] md:block",
+          action.tone === "warn"
+            ? "text-warning"
+            : action.tone === "accent"
+              ? "text-accent"
+              : "text-text-faint"
         )}
-      </div>
-
-      <p className="shrink-0 font-mono text-sm text-text">
-        {new Intl.NumberFormat(undefined, {
-          style: "currency",
-          currency: booking.currency,
-        }).format(booking.priceCents / 100)}
-      </p>
+      >
+        {action.label}
+      </span>
     </Link>
   );
 }
 
-export function StatusBadge({ status }: { status: BookingSummary["status"] }): React.ReactElement {
+/** How a status is written and coloured, wherever it is shown. */
+export function statusMeta(status: BookingSummary["status"]): { label: string; tone: ChipTone } {
   switch (status) {
     case "PENDING_COACH":
-      return <Badge variant="warning">Waiting on the coach</Badge>;
+      return { label: "Awaiting coach", tone: "warn" };
     case "CONFIRMED":
-      return <Badge variant="success">Confirmed</Badge>;
+      return { label: "Confirmed", tone: "good" };
     case "DELIVERED":
-      return <Badge variant="secondary">Delivered</Badge>;
+      return { label: "Delivered", tone: "neutral" };
     case "COMPLETED":
-      return <Badge variant="success">Completed</Badge>;
+      return { label: "Completed", tone: "good" };
     case "DISPUTED":
-      return <Badge variant="destructive">Disputed</Badge>;
+      return { label: "Disputed", tone: "bad" };
     case "REFUNDED":
-      return <Badge variant="outline">Refunded</Badge>;
+      return { label: "Refunded", tone: "neutral" };
     case "EXPIRED":
-      return <Badge variant="outline">Expired</Badge>;
+      return { label: "Expired", tone: "neutral" };
     case "DECLINED":
-      return <Badge variant="destructive">Declined</Badge>;
+      return { label: "Declined", tone: "bad" };
     default:
-      return <Badge variant="outline">Cancelled</Badge>;
+      return { label: "Cancelled", tone: "neutral" };
   }
+}
+
+export function StatusBadge({ status }: { status: BookingSummary["status"] }): React.ReactElement {
+  const { label, tone } = statusMeta(status);
+  return <StatusChip tone={tone}>{label}</StatusChip>;
+}
+
+/**
+ * The one thing this row wants from the person reading it.
+ *
+ * Different per side on purpose — the same booking is "answer this" to a coach
+ * and "waiting on them" to a student, and a shared wording would serve neither.
+ */
+function actionHint(
+  booking: BookingSummary,
+  side: "student" | "coach"
+): { label: string; tone: "warn" | "accent" | "muted" } {
+  if (booking.status === "PENDING_COACH") {
+    return side === "coach"
+      ? { label: `Answer by ${shortDay(booking.respondByAt)}`, tone: "warn" }
+      : { label: `They have until ${shortDay(booking.respondByAt)}`, tone: "muted" };
+  }
+  if (booking.status === "CONFIRMED") {
+    return { label: side === "coach" ? "Deliver it" : "Booked in", tone: "accent" };
+  }
+  if (booking.status === "DELIVERED") {
+    return { label: side === "coach" ? "Settling" : "Confirm it happened", tone: "accent" };
+  }
+  if (booking.status === "COMPLETED") return { label: "Settled", tone: "muted" };
+  if (booking.status === "DISPUTED") return { label: "With an admin", tone: "warn" };
+  return { label: "Closed", tone: "muted" };
+}
+
+function shortDay(iso: string): string {
+  return new Date(iso).toLocaleDateString(undefined, { weekday: "short", hour: "2-digit" });
 }
 
 /** Local to whoever is reading. The instant is fixed; the clock is theirs. */
