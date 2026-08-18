@@ -1,86 +1,196 @@
-"use client";
-
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
+import { ShieldAlert, ShieldCheck } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { regionLabel } from "@/lib/riot/regions";
+import { tierColorClass } from "@/lib/riot/rankDisplay";
+import { formatRank } from "@/domains/marketplace/rank";
+import { formatMoney } from "@/domains/marketplace/money";
 import type { CoachCard } from "@/domains/marketplace/types";
-import { RankBadgeChip } from "@/domains/marketplace/components/RankBadgeChip";
+import { CoachPortrait } from "@/domains/marketplace/components/hud/CoachPortrait";
 import { languageLabel, roleLabel } from "@/domains/marketplace/components/options";
 
 interface Props {
   coach: CoachCard;
+  /** The first card on an unfiltered storefront, lit rather than merely listed. */
+  featured?: boolean;
 }
 
-/** One coach on the storefront. */
-export function CoachCardTile({ coach }: Props): React.ReactElement {
+/**
+ * One coach on the storefront.
+ *
+ * The checked rank gets its own inset strip in the middle of the card, above
+ * the tags and below the name. That placement is the argument: every competitor
+ * shows a rank somebody typed into a bio, and the whole reason to book here is
+ * that this one was read from Riot on a date we print.
+ */
+export function CoachCardTile({ coach, featured }: Props): React.ReactElement {
   return (
     <Link
       href={`/coaches/${coach.slug}`}
-      className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent/40"
+      className={cn(
+        "notch group relative block overflow-hidden p-4 transition-all hover:-translate-y-0.5 hover:border-accent hover:bg-surface-2",
+        featured
+          ? "bg-hero-fade glow-accent-soft border border-accent/40 bg-surface"
+          : "border border-border bg-surface",
+        !coach.acceptingStudents && "opacity-75"
+      )}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="truncate font-display text-base font-semibold text-text">
-            {coach.displayName}
-          </p>
-          <p className="mt-0.5 line-clamp-2 text-xs text-text-muted">{coach.headline}</p>
-        </div>
+      <span className="flex items-start gap-3">
+        <CoachPortrait name={coach.displayName} tier={coach.badge?.tier} size="sm" />
 
-        {coach.fromPriceCents !== null && (
-          <p className="shrink-0 text-right font-mono text-sm text-text">
-            {formatPrice(coach.fromPriceCents, coach.currency)}
-            <span className="block text-[10px] uppercase tracking-wide text-text-faint">from</span>
-          </p>
-        )}
-      </div>
+        <span className="min-w-0 flex-1">
+          <span className="flex items-baseline justify-between gap-3">
+            <span className="font-display text-[16.5px] font-extrabold uppercase leading-tight tracking-[0.03em] text-text">
+              {coach.displayName}
+            </span>
+            {coach.fromPriceCents !== null && (
+              <span className="shrink-0 text-right">
+                <span className="block font-mono text-[19px] font-bold leading-none text-text">
+                  {formatMoney(coach.fromPriceCents, coach.currency)}
+                </span>
+                <span className="mt-1 block font-mono text-[8.5px] uppercase tracking-[0.18em] text-text-faint">
+                  from
+                </span>
+              </span>
+            )}
+          </span>
+          <span className="mt-1.5 block line-clamp-2 text-[13.5px] text-text-muted">
+            {coach.headline}
+          </span>
+        </span>
+      </span>
 
-      {coach.badge && <RankBadgeChip badge={coach.badge} />}
+      {coach.badge ? (
+        <span
+          className={cn(
+            "tag-cut mt-3 flex items-center gap-2.5 border bg-surface-dark px-2.5 py-2",
+            coach.badge.stale ? "border-warning/30" : "border-accent/30"
+          )}
+        >
+          {coach.badge.stale ? (
+            <ShieldAlert className="h-3.5 w-3.5 shrink-0 text-warning" aria-hidden />
+          ) : (
+            <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-accent" aria-hidden />
+          )}
+          <span
+            className={cn(
+              "font-mono text-[13px] font-bold tracking-[0.06em]",
+              tierColorClass(coach.badge.tier)
+            )}
+          >
+            {formatRank({
+              tier: coach.badge.tier,
+              division: coach.badge.division,
+              leaguePoints: coach.badge.leaguePoints,
+            })}
+          </span>
+          <span className="font-mono text-[8.5px] uppercase tracking-[0.16em] text-text-faint">
+            {coach.badge.stale ? "needs a refresh" : `checked ${day(coach.badge.checkedAt)}`}
+          </span>
+        </span>
+      ) : (
+        <span className="tag-cut mt-3 flex items-center gap-2.5 border border-line-2 bg-surface-dark px-2.5 py-2">
+          <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-text-faint">
+            No rank checked yet
+          </span>
+        </span>
+      )}
 
-      <div className="flex flex-wrap gap-1.5">
+      <span className="mt-3 flex flex-wrap gap-1.5">
         {coach.roles.map((role) => (
-          <Badge key={role} variant="secondary">
+          <Tag key={role} accent>
             {roleLabel(role)}
-          </Badge>
+          </Tag>
         ))}
         {coach.regions.map((region) => (
-          <Badge key={region} variant="outline">
-            {regionLabel(region)}
-          </Badge>
+          <Tag key={region}>{regionLabel(region)}</Tag>
         ))}
         {coach.languages.map((lang) => (
-          <Badge key={lang} variant="outline">
-            {languageLabel(lang)}
-          </Badge>
+          <Tag key={lang}>{languageLabel(lang)}</Tag>
         ))}
-      </div>
+      </span>
 
-      <div className="mt-auto flex items-center gap-3 text-xs text-text-muted">
+      <span className="mt-3 flex items-center gap-3 border-t border-line-1 pt-3">
         {/* Withheld below three reviews. One five-star review is not a rating,
             and showing it as one is how a marketplace's numbers stop meaning
             anything. */}
         {coach.rating === null ? (
-          <span className="rounded border border-border px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-text-faint">
+          <span className="tag-cut mr-auto border border-warning px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-warning">
             New coach
           </span>
         ) : (
-          <span className="font-mono text-text">
-            {coach.rating.toFixed(1)}
-            <span className="ml-1 text-text-faint">({coach.ratingCount})</span>
+          <span className="flex flex-1 items-center gap-2.5">
+            <span className="font-mono text-sm font-bold text-accent">
+              {coach.rating.toFixed(1)}
+            </span>
+            <span className="h-[3px] max-w-[74px] flex-1 bg-surface-dark">
+              <span
+                className="block h-full bg-accent"
+                style={{ width: `${(coach.rating / 5) * 100}%` }}
+              />
+            </span>
+            <span className="font-mono text-[10px] tracking-[0.1em] text-text-faint">
+              ({coach.ratingCount})
+            </span>
           </span>
         )}
 
-        <span>{coach.sessionsCompleted} sessions</span>
+        <span className="whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.12em] text-text-muted">
+          {coach.sessionsCompleted} {coach.sessionsCompleted === 1 ? "session" : "sessions"}
+        </span>
+      </span>
 
-        {!coach.acceptingStudents && <span className="text-warning">Not taking students</span>}
-      </div>
+      <span className="mt-3 flex items-center justify-between gap-2.5 border-t border-line-1 pt-3">
+        <span
+          className={cn(
+            "flex items-center gap-2 font-mono text-[9.5px] uppercase tracking-[0.14em]",
+            !coach.acceptingStudents
+              ? "text-danger"
+              : coach.sessionsCompleted === 0
+                ? "text-warning"
+                : "text-text-muted"
+          )}
+        >
+          <span
+            className={cn(
+              "h-1.5 w-1.5 shrink-0",
+              !coach.acceptingStudents
+                ? "bg-danger"
+                : coach.sessionsCompleted === 0
+                  ? "bg-warning"
+                  : "animate-pulse bg-accent"
+            )}
+            aria-hidden
+          />
+          {!coach.acceptingStudents
+            ? "Not taking students"
+            : coach.sessionsCompleted === 0
+              ? "New · no sessions yet"
+              : "Taking students"}
+        </span>
+        <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-accent">
+          View &rarr;
+        </span>
+      </span>
     </Link>
   );
 }
 
-function formatPrice(cents: number, currency: string): string {
-  return new Intl.NumberFormat(undefined, {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 0,
-  }).format(cents / 100);
+function Tag({ children, accent }: { children: React.ReactNode; accent?: boolean }) {
+  return (
+    <span
+      className={cn(
+        "tag-cut border px-2 py-1 font-mono text-[9px] uppercase tracking-[0.12em]",
+        accent
+          ? "border-accent bg-accent/10 text-accent"
+          : "border-line-2 bg-surface-dark text-text-muted"
+      )}
+    >
+      {children}
+    </span>
+  );
+}
+
+function day(iso: string): string {
+  return new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short" });
 }
