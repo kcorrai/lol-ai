@@ -30,6 +30,9 @@ export {
   utcDateKey,
 } from "./services/dailySeed";
 
+export { EMOJI_PER_CHAMPION, clueLadder, nextClueNote } from "./services/clueLadder";
+export type { ClueStep } from "./services/clueLadder";
+
 export { CLASSIC_COLUMNS, compareClassic, isSolvedRow } from "./services/classicMode";
 export type { ClassicColumnKey } from "./services/classicMode";
 

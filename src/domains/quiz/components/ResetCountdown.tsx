@@ -14,6 +14,7 @@ function remaining(nextResetAt: string): string {
   return parts.map((p) => String(p).padStart(2, "0")).join(":");
 }
 
+/** The bare clock. The hero supplies its own label and typography around it. */
 export function ResetCountdown({ nextResetAt }: { nextResetAt: string }): React.JSX.Element {
   // Rendered empty on the server: the value depends on the viewer's clock, and
   // shipping the server's would guarantee a hydration mismatch every time.
@@ -25,9 +26,5 @@ export function ResetCountdown({ nextResetAt }: { nextResetAt: string }): React.
     return () => clearInterval(timer);
   }, [nextResetAt]);
 
-  return (
-    <span className="font-mono text-[11px] tabular-nums text-fg-3">
-      {label ? `NEW PUZZLES IN ${label}` : " "}
-    </span>
-  );
+  return <span className="tabular-nums">{label ?? "--:--:--"}</span>;
 }

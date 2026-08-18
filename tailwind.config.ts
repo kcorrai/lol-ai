@@ -184,6 +184,41 @@ const config: Config = {
           from: { opacity: "0", transform: "translateY(6px)" },
           to:   { opacity: "1", transform: "translateY(0)" },
         },
+
+        // LaneIQ Daily stage motion. A guess is a scoreboard event, so the
+        // cells flip open in sequence rather than fading in together.
+        "quiz-flip": {
+          "0%":   { transform: "rotateX(-92deg)", opacity: "0" },
+          "55%":  { opacity: "1" },
+          "100%": { transform: "none", opacity: "1" },
+        },
+        "quiz-stage": {
+          from: { opacity: "0", transform: "translateY(10px)" },
+          to:   { opacity: "1", transform: "none" },
+        },
+        "quiz-scan": {
+          "0%":   { transform: "translateY(-100%)" },
+          "100%": { transform: "translateY(220%)" },
+        },
+        "quiz-sweep": {
+          "0%":   { transform: "translateX(-120%)" },
+          "100%": { transform: "translateX(320%)" },
+        },
+        "quiz-rise": {
+          from: { opacity: "0", transform: "translateY(14px) scale(.985)" },
+          to:   { opacity: "1", transform: "none" },
+        },
+        "quiz-pop": {
+          "0%, 100%": { transform: "scale(1)" },
+          "40%":      { transform: "scale(1.07)" },
+        },
+        "quiz-shake": {
+          "0%, 100%": { transform: "translateX(0)" },
+          "20%":      { transform: "translateX(-4px)" },
+          "40%":      { transform: "translateX(4px)" },
+          "60%":      { transform: "translateX(-2px)" },
+          "80%":      { transform: "translateX(2px)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -195,6 +230,13 @@ const config: Config = {
         blink: "blink 4s ease-in-out infinite",
         nudge: "nudge 1s ease-in-out infinite",
         "hud-enter": "hud-enter 420ms cubic-bezier(.16,.84,.44,1) both",
+        "quiz-flip": "quiz-flip 340ms cubic-bezier(.16,.84,.44,1) both",
+        "quiz-stage": "quiz-stage 320ms cubic-bezier(.16,.84,.44,1) both",
+        "quiz-scan": "quiz-scan 3.4s linear infinite",
+        "quiz-sweep": "quiz-sweep 1.5s cubic-bezier(.16,.84,.44,1) 260ms both",
+        "quiz-rise": "quiz-rise 420ms cubic-bezier(.16,.84,.44,1) both",
+        "quiz-pop": "quiz-pop 320ms cubic-bezier(.2,1.4,.4,1) both",
+        "quiz-shake": "quiz-shake 280ms cubic-bezier(.16,.84,.44,1) both",
       },
     },
   },
