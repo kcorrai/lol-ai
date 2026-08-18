@@ -1,11 +1,17 @@
 import { NextRequest } from "next/server";
 import { ImageResponse } from "next/og";
 import { getCardByToken } from "@/domains/coaching/services/cardService";
-import type { WeeklyCardData, MasteryCardData, AcademyCardData } from "@/domains/coaching/services/cardService";
+import type {
+  WeeklyCardData,
+  MasteryCardData,
+  AcademyCardData,
+  CareerCardData,
+} from "@/domains/coaching/services/cardService";
 import { W, H } from "./cardOgTokens";
 import { WeeklyCard } from "./weeklyCardOg";
 import { MasteryCard } from "./masteryCardOg";
 import { AcademyCard } from "./academyCardOg";
+import { CareerCard } from "./careerCardOg";
 
 export async function GET(
   _req: NextRequest,
@@ -27,6 +33,8 @@ export async function GET(
   const element =
     data.cardType === "academy" ? (
       <AcademyCard d={data as AcademyCardData} />
+    ) : data.cardType === "career" ? (
+      <CareerCard d={data as CareerCardData} />
     ) : data.cardType === "mastery" ? (
       <MasteryCard d={data as MasteryCardData} />
     ) : (
