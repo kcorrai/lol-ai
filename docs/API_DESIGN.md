@@ -2449,3 +2449,71 @@ The `in_game` objective is only present when the challenge generator has issued 
 daily challenge for that user; a player with no linked Riot account still gets a
 quest, and still has a streak. XP is granted by the systems that own each action,
 never twice by this endpoint.
+
+## Career timeline (LA-37 — see [ADR-031](./adr/ADR-031-career-timeline.md))
+
+### `GET /api/career-timeline?riotAccountId=…`
+
+The whole tracked career as months of events. Auth required; the account must belong
+to the caller (`assertOwnsRiotAccount`).
+
+```jsonc
+{
+  "summary": {
+    "gameName": "kaanproak0",
+    "tagLine": "TR1",
+    "summonerLevel": 148,
+    "firstTrackedAt": "2026-07-11T14:22:00.000Z",  // where the record starts, not the player
+    "lastTrackedAt": "2026-08-09T21:03:00.000Z",
+    "totalGames": 90,
+    "totalHours": 42,
+    "currentRank": "Silver II",
+    "peakRank": "Silver I",
+    "topMastery": [                                 // all-time, the only pre-window figure
+      { "championId": 157, "championName": "Yasuo", "level": 7, "points": 482310 }
+    ]
+  },
+  "bands": [
+    {
+      "key": "2026-08",
+      "label": "August 2026",
+      "games": 22, "wins": 14, "winRate": 64,
+      "lpDelta": 21, "rankAtClose": "Silver II",
+      "events": [
+        {
+          "id": "record:cs:TR1_123",               // stable, derived from the fact
+          "kind": "record",                        // rank_change|peak|champion_era|record|
+                                                   // achievement|habit|academy|season|joined
+          "group": "records",                      // rank|champions|records|learning
+          "at": "2026-08-07T19:11:34.787Z",
+          "title": "Best farming game",
+          "detail": "10 CS/min on Veigar",
+          "tone": "good",                          // good|bad|neutral
+          "weight": 70,                            // curation cuts from the bottom
+          "href": "/match/TR1_123"
+        }
+      ]
+    }
+  ],
+  "lpSeries": [{ "at": "…", "value": 1240, "label": "Silver II" }],
+  "trimmed": 4                                     // events curation dropped
+}
+```
+
+**Read-only, and it stores nothing.** Every event is assembled from the table that owns
+the fact — `matches`, `ranked_history`, `user_achievements`, `player_habits`,
+`academy_progress`, `season_recaps`. There is no career-events table and no endpoint
+that writes one, so nothing here can disagree with the page it came from.
+
+The window is two years, which is roughly what match-v5 retains. Rank movements begin
+where `ranked_history` sampling began; past-season ranks are not available from Riot at
+all, which is why the summary says "tracking since" and not anything stronger.
+
+Each month keeps its six heaviest events and reports the rest as `trimmed`.
+
+### `POST /api/cards/generate` — `cardType: "career"`
+
+Mints a career card from the same timeline this endpoint returns. Requires
+`riotAccountId`. Answers `422` when the account has no tracked games yet — there is
+nothing to draw. The image is served by `GET /api/cards/[token]` and expires after
+seven days like every other card.
