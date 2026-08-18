@@ -149,7 +149,7 @@ describe("redactLore", () => {
 });
 
 describe("every mode has a playable puzzle today", () => {
-  it("deals an answer for all six", () => {
+  it("deals an answer for every mode", () => {
     for (const mode of QUIZ_MODES) {
       expect(answerFor(mode, "2026-08-17"), mode).toBeTruthy();
     }
