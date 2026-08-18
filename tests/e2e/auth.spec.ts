@@ -9,7 +9,7 @@ test.describe("Authentication", () => {
     const uniqueEmail = `reg-${Date.now()}@e2e-reg.test`;
 
     await page.goto("/register");
-    await expect(page).toHaveTitle(/Create account/);
+    await expect(page).toHaveTitle("Create Account | LoL AI Coach");
 
     await page.fill("#name", "New Player");
     await page.fill("#email", uniqueEmail);
@@ -19,9 +19,10 @@ test.describe("Authentication", () => {
     await page.check("#terms");
     await page.click('button[type="submit"]');
 
-    // After registration, redirected to login with success param
-    await page.waitForURL("**/login?registered=1", { timeout: 10_000 });
-    await expect(page).toHaveURL(/registered=1/);
+    // After registration, redirected to login with the success param — and with the
+    // destination in tow, which is how a claim from a public profile survives sign-up.
+    await page.waitForURL(/\/login\?registered=1/, { timeout: 10_000 });
+    await expect(page).toHaveURL(/callbackUrl=%2Fdashboard/);
   });
 
   test("Register — rejects duplicate email", async ({ page }) => {
@@ -40,7 +41,7 @@ test.describe("Authentication", () => {
 
   test("Login — valid credentials redirect to dashboard", async ({ page }) => {
     await page.goto("/login");
-    await expect(page).toHaveTitle(/Sign in/);
+    await expect(page).toHaveTitle("Log in | LoL AI Coach");
 
     await page.fill("#email", E2E_USER.email);
     await page.fill("#password", E2E_USER.password);
@@ -57,7 +58,9 @@ test.describe("Authentication", () => {
     await page.fill("#password", "definitely-wrong-password");
     await page.click('button[type="submit"]');
 
-    await expect(page.locator("text=Incorrect email or password")).toBeVisible({ timeout: 8_000 });
+    await expect(page.getByText("Email or password is incorrect. Please try again.")).toBeVisible({
+      timeout: 8_000,
+    });
   });
 
   test("Logout — clicking logout redirects to /login", async ({ page }) => {
@@ -70,8 +73,11 @@ test.describe("Authentication", () => {
 
     // Logout via sidebar button (title="Log out")
     await page.click('[title="Log out"]');
-    await page.waitForURL("**/login", { timeout: 10_000 });
-    await expect(page).toHaveURL(/\/login/);
+    // Polled rather than `waitForURL`: that waits for the *load* event of the
+    // navigation, and the login page it lands on keeps a request open long enough
+    // to blow the budget on a busy run even though the address bar already reads
+    // /login. What logging out has to do is land there, not finish loading.
+    await expect(page).toHaveURL(/\/login/, { timeout: 15_000 });
   });
 
   test("Protected route — unauthenticated access redirects to /login", async ({ page }) => {

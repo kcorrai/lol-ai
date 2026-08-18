@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { apiFetch } from "@/lib/api/fetcher";
+import { apiFetch, FetchError } from "@/lib/api/fetcher";
 import { applyAction, applyReady, applyUndo } from "@/domains/draft";
 import type { DraftSide, TeamNumber, TransitionResult } from "@/domains/draft";
 import { draftQueryKey, type DraftView } from "./useDraftSync";
@@ -35,10 +35,24 @@ export function useDraftActions(code: string, gameNumber: number, token: string 
       if (!token) return;
       setPending(true);
       setError(null);
-      apiFetch<DraftView>(`/api/draft/${code}/${path}`, {
-        method: "POST",
-        body: JSON.stringify({ token, gameNumber, ...body }),
-      })
+
+      const send = (): Promise<DraftView> =>
+        apiFetch<DraftView>(`/api/draft/${code}/${path}`, {
+          method: "POST",
+          body: JSON.stringify({ token, gameNumber, ...body }),
+        });
+
+      // A 409 is a version conflict: our copy of the board was stale because the
+      // other side wrote in the same instant. Both sides pressing Ready together
+      // is the normal case, not an edge one. The server drops its cached read
+      // model before answering 409 precisely so an immediate retry reads
+      // Postgres — without that retry the loser of the race silently stays not
+      // ready and the draft never starts.
+      send()
+        .catch((err: unknown) => {
+          if (err instanceof FetchError && err.statusCode === 409) return send();
+          throw err;
+        })
         .then((view) => queryClient.setQueryData(queryKey, view))
         .catch((err: Error) => {
           if (rollback) queryClient.setQueryData(queryKey, rollback);

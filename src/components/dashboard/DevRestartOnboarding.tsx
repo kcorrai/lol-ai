@@ -32,12 +32,14 @@ export function DevRestartOnboarding(): React.JSX.Element | null {
     }
   }
 
+  // Anchored bottom right. Bottom left is where the sidebar keeps Log out, and this
+  // sat on top of it — a click meant for Log out landed on the dev button instead.
   return (
     <button
       onClick={restart}
       disabled={busy}
       title="Dev only: reset onboarding and replay the guided tour"
-      className="fixed bottom-4 left-4 z-40 inline-flex items-center gap-2 rounded-full border border-accent/40 bg-surface/90 px-3 py-2 text-xs font-medium text-text-muted shadow-lg backdrop-blur transition-colors hover:text-accent disabled:opacity-50"
+      className="fixed bottom-4 right-4 z-40 inline-flex items-center gap-2 rounded-full border border-accent/40 bg-surface/90 px-3 py-2 text-xs font-medium text-text-muted shadow-lg backdrop-blur transition-colors hover:text-accent disabled:opacity-50"
     >
       <GraduationCap className="h-3.5 w-3.5" />
       {busy ? "Restarting…" : "Restart onboarding"}
