@@ -2,7 +2,7 @@ import type { Position } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { getAccountPuuid } from "@/domains/riot";
 import { awardXp } from "@/domains/analysis";
-import { getLessonById } from "@/domains/academy/curriculum";
+import { resolveLesson } from "@/domains/academy/services/lessonResolver";
 import { buildAssignmentTarget, type AssignmentTarget } from "@/domains/academy/assignments";
 import { buildEvidence, judgeAssignment } from "@/domains/academy/verification";
 import { loadReadings, rankedBaseline } from "@/domains/academy/services/assignmentReadings";
@@ -92,10 +92,11 @@ export async function previewAssignmentTarget(
   userId: string,
   lessonId: string
 ): Promise<AssignmentTarget | null> {
-  const lesson = getLessonById(lessonId);
-  if (!lesson) return null;
+  const resolved = await resolveLesson(userId, lessonId);
+  if (!resolved) return null;
 
-  const baseline = await rankedBaseline(userId, lesson.assignment.metric);
+  const { lesson, championId } = resolved;
+  const baseline = await rankedBaseline(userId, lesson.assignment.metric, championId ?? undefined);
   return baseline === null ? null : buildAssignmentTarget(lesson, baseline.value);
 }
 
@@ -105,15 +106,16 @@ export async function previewAssignmentTarget(
  * lesson must still complete for a player we cannot follow into their next match.
  */
 export async function openAssignment(userId: string, lessonId: string): Promise<AssignmentView | null> {
-  const lesson = getLessonById(lessonId);
-  if (!lesson) return null;
+  const resolved = await resolveLesson(userId, lessonId);
+  if (!resolved) return null;
 
+  const { lesson, championId } = resolved;
   const existing = await prisma.academyAssignment.findFirst({
     where: { userId, lessonId, status: "active" },
   });
   if (existing) return toView(existing);
 
-  const baseline = await rankedBaseline(userId, lesson.assignment.metric);
+  const baseline = await rankedBaseline(userId, lesson.assignment.metric, championId ?? undefined);
   if (baseline === null) return null;
 
   const target = buildAssignmentTarget(lesson, baseline.value);
@@ -127,6 +129,7 @@ export async function openAssignment(userId: string, lessonId: string): Promise<
       target: target.target,
       gamesRequired: target.games,
       position: baseline.position,
+      championId,
     },
   });
 
@@ -205,6 +208,8 @@ export async function checkAssignments(userId: string, riotAccountId: string): P
       since: row.startedAt,
       // Rows written before the role fix carry no position and stay role-blind.
       position: row.position ?? undefined,
+      // Set only by a champion lesson; every other assignment is champion-blind.
+      championId: row.championId ?? undefined,
       limit: row.gamesRequired,
       order: "asc",
     });

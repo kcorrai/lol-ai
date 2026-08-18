@@ -162,7 +162,47 @@ Roles are named in the Academy's own vocabulary — `RoleId` is `top | jungle | 
 support`, never Prisma's `Position`, because `types.ts` is imported by client components. The
 translation lives in `roles.ts`.
 
-Planned: Champion Mastery.
+## Champion Mastery
+
+The curriculum is finite and authored. 170 champions across five roles is not, so a champion
+lesson is **generated** — the one place the Academy steps outside ADR-025's "content lives in
+code" model, and ADR-030 records why.
+
+The source is `getOtpAnalysis` (`@/domains/otp`): a structured, schema-validated, fourteen-day
+cached analysis of one champion in one role. The generator is a **pure function** of it —
+`buildChampionLesson(analysis) → Lesson | null` — which is the decision everything else rests on,
+because it lets `championLesson.test.ts` run the same contract `curriculum.test.ts` runs over a
+fixture. Generated content cannot ship below the standard authored content is held to.
+
+Three drill shapes, chosen because the analysis can support them:
+
+| Drill | Built from | Why it works |
+|---|---|---|
+| Tier recognition (`quiz`) | One easy matchup against three hard ones | The wrong answers carry the real summary of the lane they name |
+| The plan for the hardest lane (`decision`) | That matchup's `keyTip` against three others' | Every wrong option is real advice for a *different* opponent — "right idea, wrong lane" |
+| Ban priority (`order`) | `banPriority`, which states its own priorities | The only field carrying a sequence; power spikes are deliberately a table, since nothing promises that array is chronological |
+
+Four rules give it its shape:
+
+- **A thin analysis produces no lesson.** Every builder returns null rather than a weak drill.
+  A lesson with an unanswerable drill would still be graded and still pay XP. The ban drill is
+  the exception — it is dropped alone, because a short ban list is no reason to withhold the
+  matchup half.
+- **Only champions the player actually plays.** `listChampionOptions` reads `getRecommendedOtps`
+  — their own ranked champions with at least three games — and a lesson exists only for one of
+  those, in the role they play it. That keeps an AI call off any URL a stranger can type.
+- **Grading rebuilds from the cached analysis, never a fresh one.** `resolveLesson` routes a
+  `champion/…` id to `getCachedOtpAnalysis`, which never generates. A miss is a 404 the reader
+  can act on: the drills they are holding no longer exist, and grading them against a newly
+  generated set would mark right answers wrong.
+- **The assignment is locked to the champion.** `academy_assignments.championId` is set for a
+  champion lesson and the readings filter on it, so a Yasuo lesson is judged on Yasuo games.
+  Null — every assignment the authored curriculum opens — means champion-blind.
+
+Not in the registry: `TrackId` gains `"champion"`, the one member with no `Track` behind it. No
+sitemap entry, no `generateStaticParams`, `noindex`, and no certificate — a certificate is for a
+finished *track*, and there is no defined set of champions to finish. The transcript lists them
+in their own section, outside the totals, for the same reason.
 
 ## Proof of Practice
 
@@ -226,6 +266,8 @@ drills behind the gate.
 | Lesson content | `src/domains/academy/content/<track>/<lesson>.ts` |
 | Track registry | `src/domains/academy/content/tracks.ts` |
 | Role vocabulary | `src/domains/academy/roles.ts` |
+| Champion lesson generator | `src/domains/academy/championLesson.ts`, `championDrills.ts` |
+| Lesson lookup (both kinds) | `src/domains/academy/services/lessonResolver.ts` |
 | Lookup & gating | `src/domains/academy/curriculum.ts` |
 | Drill grading | `src/domains/academy/drills/scoring.ts` |
 | Placement / recommendation / assignments | `src/domains/academy/{placement,recommendation,assignments}.ts` |
@@ -236,6 +278,7 @@ drills behind the gate.
 | Components | `src/domains/academy/components/` |
 | Routes | `app/(academy)/academy/` |
 | Role path index | `app/(academy)/academy/roles/page.tsx` |
+| Champion Mastery | `app/(academy)/academy/champion/` |
 | API | `app/api/academy/progress/route.ts` |
 
 Content decisions and the client-import rule are recorded in

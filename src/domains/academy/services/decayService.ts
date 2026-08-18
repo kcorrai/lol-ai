@@ -82,6 +82,7 @@ export async function checkMasteryDecay(now: Date = new Date()): Promise<DecayRe
         metric: assignment.metric as AssignmentMetric,
         since: row.decayCheckedAt ?? row.masteredAt,
         position: assignment.position ?? undefined,
+        championId: assignment.championId ?? undefined,
         limit: assignment.gamesRequired,
         order: "desc",
       });

@@ -1,6 +1,7 @@
 import { getCachedOtpAnalysis, getOtpAnalysis, getRecommendedOtps } from "@/domains/otp";
+import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { buildChampionLesson, championSlug, CHAMPION_TRACK_ID } from "@/domains/academy/championLesson";
-import { positionFromRole, roleFromPosition } from "@/domains/academy/roles";
+import { ROLE_IDS, positionFromRole, roleFromPosition } from "@/domains/academy/roles";
 import { primaryRiotAccountId } from "@/domains/academy/services/assignmentReadings";
 import type { Lesson, RoleId } from "@/domains/academy/types";
 
@@ -15,6 +16,7 @@ const OFFERED = 6;
 
 export interface ChampionOption {
   champion: string;
+  championId: number;
   slug: string;
   role: RoleId;
   games: number;
@@ -39,6 +41,7 @@ export async function listChampionOptions(userId: string | null): Promise<Champi
     return [
       {
         champion: entry.name,
+        championId: entry.championId,
         slug: championSlug(entry.name),
         role,
         games: entry.games,
@@ -81,7 +84,7 @@ export async function getChampionLesson(
 export async function resolveChampionLesson(
   userId: string,
   lessonId: string
-): Promise<Lesson | null> {
+): Promise<{ lesson: Lesson; championId: number } | null> {
   const [trackId, slug] = lessonId.split("/");
   if (trackId !== CHAMPION_TRACK_ID || !slug) return null;
 
@@ -95,5 +98,40 @@ export async function resolveChampionLesson(
   const analysis = await getCachedOtpAnalysis(option.champion, positionFromRole(option.role));
   if (!analysis) return null;
 
-  return buildChampionLesson({ champion: option.champion, role: option.role, analysis });
+  const lesson = buildChampionLesson({ champion: option.champion, role: option.role, analysis });
+  return lesson ? { lesson, championId: option.championId } : null;
+}
+
+export interface ChampionLessonName {
+  champion: string;
+  role: RoleId;
+}
+
+/**
+ * Display names for stored `champion/…` ids — the transcript holds ids for champions a player
+ * may have stopped queueing, so the name comes from the roster rather than from their own games.
+ * One roster fetch for the whole set; an id we cannot name is left out rather than shown as a
+ * slug, because "Kaisa" is not a champion.
+ */
+export async function describeChampionLessons(
+  lessonIds: string[]
+): Promise<Map<string, ChampionLessonName>> {
+  const named = new Map<string, ChampionLessonName>();
+  const wanted = lessonIds.filter((id) => id.startsWith(`${CHAMPION_TRACK_ID}/`));
+  if (wanted.length === 0) return named;
+
+  const roster = await fetchAllChampions().catch(() => []);
+  const bySlug = new Map(roster.map((c) => [championSlug(c.name), c.name]));
+
+  for (const id of wanted) {
+    const slug = id.slice(CHAMPION_TRACK_ID.length + 1);
+    const cut = slug.lastIndexOf("-");
+    if (cut <= 0) continue;
+
+    const champion = bySlug.get(slug.slice(0, cut));
+    const role = ROLE_IDS.find((r) => r === slug.slice(cut + 1));
+    if (champion && role) named.set(id, { champion, role });
+  }
+
+  return named;
 }

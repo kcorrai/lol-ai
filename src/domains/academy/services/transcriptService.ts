@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { TRACKS, lessonId } from "@/domains/academy/curriculum";
+import { ROLE_LABEL } from "@/domains/academy/roles";
+import { describeChampionLessons } from "@/domains/academy/services/championLessonService";
 import type { LessonStatus } from "@/domains/academy/types";
 
 // The record of what a player has actually done in the Academy: every lesson, its status, and
@@ -29,6 +31,12 @@ export interface TranscriptTrack {
 
 export interface Transcript {
   tracks: TranscriptTrack[];
+  /**
+   * Champion lessons, kept out of the track list and out of the totals. They are generated per
+   * champion with no defined set to finish, so counting them into "6 of 61" would make the
+   * denominator move every time the player picked up a champion (ADR-030).
+   */
+  champions: TranscriptLesson[];
   totalLessons: number;
   totalCompleted: number;
   totalMastered: number;
@@ -59,6 +67,22 @@ export async function getTranscript(userId: string): Promise<Transcript> {
   })) as ProgressRow[];
 
   const byLesson = new Map(rows.map((r) => [r.lessonId, r]));
+  const championNames = await describeChampionLessons(rows.map((r) => r.lessonId));
+
+  const champions: TranscriptLesson[] = rows.flatMap((row) => {
+    const named = championNames.get(row.lessonId);
+    if (!named) return [];
+    return [
+      {
+        lessonId: row.lessonId,
+        slug: row.lessonId.split("/")[1] ?? row.lessonId,
+        title: `${named.champion} — ${ROLE_LABEL[named.role]}`,
+        status: row.status,
+        completedAt: row.completedAt?.toISOString() ?? null,
+        masteredAt: row.masteredAt?.toISOString() ?? null,
+      },
+    ];
+  });
 
   const tracks = TRACKS.map((track) => {
     const lessons: TranscriptLesson[] = track.lessons.map((lesson) => {
@@ -90,6 +114,7 @@ export async function getTranscript(userId: string): Promise<Transcript> {
 
   return {
     tracks,
+    champions,
     totalLessons: tracks.reduce((sum, t) => sum + t.total, 0),
     totalCompleted: tracks.reduce((sum, t) => sum + t.completed, 0),
     totalMastered: tracks.reduce((sum, t) => sum + t.mastered, 0),

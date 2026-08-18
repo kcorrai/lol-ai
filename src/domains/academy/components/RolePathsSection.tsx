@@ -50,6 +50,12 @@ export function RolePathsSection({ role, statuses }: RolePathsSectionProps): Rea
       )}
 
       <div className="mt-4 flex flex-wrap gap-2">
+        <Link
+          href="/academy/champion"
+          className="border border-accent/40 bg-surface px-3 py-1.5 font-mono text-[11px] uppercase tracking-label text-accent transition-colors hover:border-accent"
+        >
+          Your champions →
+        </Link>
         {rest.map((track) => (
           <Link
             key={track.id}

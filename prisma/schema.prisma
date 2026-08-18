@@ -1979,6 +1979,12 @@ model AcademyAssignment {
   // re-derived, because a player's main role can shift between opening and judging.
   position Position?
 
+  // Set only for a champion lesson (ADR-030). A lesson about one champion has to be judged on
+  // games played on it — a Yasuo player's CS per minute says nothing about the Yasuo lesson if
+  // half the counted games were on a support. Null means the assignment is champion-blind,
+  // which is every assignment the authored curriculum opens.
+  championId Int?
+
   status   AcademyAssignmentStatus @default(active)
   evidence Json?
 
