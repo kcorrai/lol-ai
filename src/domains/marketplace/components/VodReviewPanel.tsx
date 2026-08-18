@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { HudPanel } from "@/domains/marketplace/components/hud/HudPanel";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { BookingDetail } from "@/domains/marketplace/types";
 import { useVodReview } from "@/hooks/useVodReview";
@@ -27,29 +27,28 @@ export function VodReviewPanel({ booking, onDelivered }: Props): React.ReactElem
   if (!isCoach && !data?.review) return null;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>The review</CardTitle>
-        <CardDescription>
+    <HudPanel
+      label="The review"
+      tone="accent"
+      action={
+        <span className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-text-faint">
           {isCoach
-            ? "Timestamps are the game clock. Save as often as you like — the student sees nothing until you publish."
-            : "Scrub your own replay to each timestamp."}
-        </CardDescription>
-      </CardHeader>
+            ? "Timestamps are the game clock \u00b7 the student sees nothing until you publish"
+            : `${data?.review?.annotations.length ?? 0} timestamped notes \u00b7 game clock`}
+        </span>
+      }
+    >
+      {isLoading && <Skeleton className="h-40 w-full" />}
 
-      <CardContent>
-        {isLoading && <Skeleton className="h-40 w-full" />}
+      {!isLoading && isCoach && (
+        <VodReviewEditor
+          bookingId={booking.id}
+          existing={data?.review ?? null}
+          onPublished={onDelivered}
+        />
+      )}
 
-        {!isLoading && isCoach && (
-          <VodReviewEditor
-            bookingId={booking.id}
-            existing={data?.review ?? null}
-            onPublished={onDelivered}
-          />
-        )}
-
-        {!isLoading && !isCoach && data?.review && <VodReviewReader review={data.review} />}
-      </CardContent>
-    </Card>
+      {!isLoading && !isCoach && data?.review && <VodReviewReader review={data.review} />}
+    </HudPanel>
   );
 }

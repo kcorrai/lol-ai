@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api/fetcher";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/domains/marketplace/components/hud/panelCard";
 import { regionLabel } from "@/lib/riot/regions";
 import type { SpectateStatus } from "@/domains/marketplace";
 

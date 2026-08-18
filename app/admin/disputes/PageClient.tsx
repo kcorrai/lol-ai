@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
-import { EmptyState } from "@/components/ui/empty-state";
 import { ErrorState } from "@/components/ui/error-state";
 import { useDisputes, useResolveDispute } from "@/hooks/useAdminDisputes";
 import type { DisputeQueueStatus } from "@/hooks/useAdminDisputes";
+import { formatMoney } from "@/domains/marketplace/money";
 import { DisputeCard } from "@/domains/marketplace/components/DisputeCard";
+import { ReviewQueueShell } from "@/domains/marketplace/components/admin/ReviewQueueShell";
 
 const TABS: { status: DisputeQueueStatus; label: string }[] = [
   { status: "OPEN", label: "Open" },
@@ -21,36 +21,41 @@ export default function AdminDisputesPage(): React.ReactElement {
   const resolve = useResolveDispute();
   const [error, setError] = useState<string | null>(null);
 
+  const disputes = data?.disputes ?? [];
+  const frozen = disputes.reduce((total, d) => total + d.amountCents, 0);
+  const oldest = disputes[disputes.length - 1];
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-xl font-bold text-text">Disputes</h1>
-        <p className="mt-1 text-sm text-text-muted">
-          Each one is decided against the booking&apos;s own recorded history, which both sides
-          have been able to read the whole time.
-        </p>
-      </div>
-
-      <nav className="flex flex-wrap gap-2">
-        {TABS.map((t) => (
-          <button
-            key={t.status}
-            type="button"
-            onClick={() => setTab(t.status)}
-            className={cn(
-              "rounded-md border px-3 py-1.5 text-xs font-medium transition-colors",
-              t.status === tab
-                ? "border-accent bg-accent/15 text-accent"
-                : "border-border bg-surface-2 text-text-muted hover:text-text"
-            )}
-          >
-            {t.label}
-          </button>
-        ))}
-      </nav>
-
+    <ReviewQueueShell
+      tabs={TABS.map((t) => ({ key: t.status, label: t.label }))}
+      active={tab}
+      onTab={(key) => setTab(key as DisputeQueueStatus)}
+      stats={[
+        {
+          label: tab === "OPEN" ? "Open" : "In this tab",
+          value: String(disputes.length),
+          tone: tab === "OPEN" && disputes.length > 0 ? "loss" : "default",
+        },
+        {
+          label: tab === "OPEN" ? "Frozen" : "Total",
+          value: formatMoney(frozen, disputes[0]?.currency ?? "USD"),
+          tone: tab === "OPEN" && frozen > 0 ? "loss" : "default",
+        },
+        {
+          label: "Oldest",
+          value: oldest ? waitingFor(oldest.openedAt) : "—",
+          tone: oldest && daysSince(oldest.openedAt) >= 3 ? "warn" : "default",
+        },
+      ]}
+      count={disputes.length}
+      empty={
+        tab === "OPEN"
+          ? "No sessions are being challenged. Money settles on its own while this stays empty."
+          : "Nothing settled this way yet."
+      }
+    >
       {error && (
-        <p className="rounded-md border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">
+        <p className="border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">
           {error}
         </p>
       )}
@@ -58,32 +63,34 @@ export default function AdminDisputesPage(): React.ReactElement {
       {isLoading && <Skeleton className="h-64 w-full" />}
       {isError && <ErrorState message="Could not load disputes." onRetry={() => void refetch()} />}
 
-      {data !== undefined && data.disputes.length === 0 && (
-        <EmptyState
-          title="Nothing here"
-          description={tab === "OPEN" ? "No sessions are being challenged." : "Nothing settled this way yet."}
+      {disputes.map((dispute) => (
+        <DisputeCard
+          key={dispute.id}
+          dispute={dispute}
+          pending={resolve.isPending}
+          onResolve={(outcome, note) => {
+            setError(null);
+            resolve.mutate(
+              { disputeId: dispute.id, outcome, note },
+              {
+                onError: (err) =>
+                  setError(err instanceof Error ? err.message : "Could not settle that."),
+              }
+            );
+          }}
         />
-      )}
-
-      <div className="space-y-4">
-        {data?.disputes.map((dispute) => (
-          <DisputeCard
-            key={dispute.id}
-            dispute={dispute}
-            pending={resolve.isPending}
-            onResolve={(outcome, note) => {
-              setError(null);
-              resolve.mutate(
-                { disputeId: dispute.id, outcome, note },
-                {
-                  onError: (err) =>
-                    setError(err instanceof Error ? err.message : "Could not settle that."),
-                }
-              );
-            }}
-          />
-        ))}
-      </div>
-    </div>
+      ))}
+    </ReviewQueueShell>
   );
+}
+
+function daysSince(iso: string): number {
+  return Math.floor((Date.now() - new Date(iso).getTime()) / 86_400_000);
+}
+
+/** How long the oldest one has been sitting there, which is the number that shames. */
+function waitingFor(iso: string): string {
+  const days = daysSince(iso);
+  if (days >= 1) return `${days}d`;
+  return `${Math.max(1, Math.floor((Date.now() - new Date(iso).getTime()) / 3_600_000))}h`;
 }

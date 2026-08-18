@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
-import { EmptyState } from "@/components/ui/empty-state";
 import { ErrorState } from "@/components/ui/error-state";
 import { useCoachQueue, useDecideCoach } from "@/hooks/useAdminCoaches";
 import type { CoachQueueStatus } from "@/hooks/useAdminCoaches";
 import { ApplicationReviewCard } from "@/domains/marketplace/components/ApplicationReviewCard";
+import { ReviewQueueShell } from "@/domains/marketplace/components/admin/ReviewQueueShell";
 
 type Decision = "approve" | "reject" | "suspend" | "reinstate";
 
@@ -27,6 +26,8 @@ export default function AdminCoachesPage(): React.ReactElement {
   const [error, setError] = useState<string | null>(null);
 
   const active = TABS.find((t) => t.status === tab) ?? TABS[0];
+  const applications = data?.applications ?? [];
+  const unchecked = applications.filter((a) => a.rankProofs.length === 0).length;
 
   function handleDecide(coachProfileId: string, decision: Decision, note: string): void {
     setError(null);
@@ -42,34 +43,32 @@ export default function AdminCoachesPage(): React.ReactElement {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-xl font-bold text-text">Coaches</h1>
-        {data !== undefined && data.pending > 0 && (
-          <p className="font-mono text-xs text-accent">{data.pending} waiting</p>
-        )}
-      </div>
-
-      <nav className="flex flex-wrap gap-2">
-        {TABS.map((t) => (
-          <button
-            key={t.status}
-            type="button"
-            onClick={() => setTab(t.status)}
-            className={cn(
-              "rounded-md border px-3 py-1.5 text-xs font-medium transition-colors",
-              t.status === tab
-                ? "border-accent bg-accent/15 text-accent"
-                : "border-border bg-surface-2 text-text-muted hover:text-text"
-            )}
-          >
-            {t.label}
-          </button>
-        ))}
-      </nav>
-
+    <ReviewQueueShell
+      tabs={TABS.map((t) => ({ key: t.status, label: t.label }))}
+      active={tab}
+      onTab={(key) => setTab(key as CoachQueueStatus)}
+      stats={[
+        {
+          label: "Waiting",
+          value: String(data?.pending ?? 0),
+          tone: (data?.pending ?? 0) > 0 ? "warn" : "accent",
+        },
+        { label: "In this tab", value: String(applications.length) },
+        {
+          label: "No rank checked",
+          value: String(unchecked),
+          tone: unchecked > 0 ? "warn" : "default",
+        },
+      ]}
+      count={applications.length}
+      empty={
+        tab === "PENDING"
+          ? "No applications are waiting on a decision. New ones land here within a minute of being sent."
+          : "No coaches in this state."
+      }
+    >
       {error && (
-        <p className="rounded-md border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">
+        <p className="border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">
           {error}
         </p>
       )}
@@ -80,28 +79,15 @@ export default function AdminCoachesPage(): React.ReactElement {
         <ErrorState message="Could not load the review queue." onRetry={() => void refetch()} />
       )}
 
-      {data !== undefined && data.applications.length === 0 && (
-        <EmptyState
-          title="Nothing here"
-          description={
-            tab === "PENDING"
-              ? "No applications are waiting on a decision."
-              : "No coaches in this state."
-          }
+      {applications.map((application) => (
+        <ApplicationReviewCard
+          key={application.id}
+          application={application}
+          decisions={active.decisions}
+          pending={decide.isPending}
+          onDecide={(decision, note) => handleDecide(application.id, decision, note)}
         />
-      )}
-
-      <div className="space-y-4">
-        {data?.applications.map((application) => (
-          <ApplicationReviewCard
-            key={application.id}
-            application={application}
-            decisions={active.decisions}
-            pending={decide.isPending}
-            onDecide={(decision, note) => handleDecide(application.id, decision, note)}
-          />
-        ))}
-      </div>
-    </div>
+      ))}
+    </ReviewQueueShell>
   );
 }
