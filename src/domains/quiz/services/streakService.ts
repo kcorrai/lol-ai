@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { logger } from "@/lib/utils/logger";
 import { awardXp } from "@/domains/analysis";
 import {
   INITIAL_STREAK,
@@ -171,4 +172,18 @@ export async function recordGiveUp(userId: string, mode: QuizMode, now: Date): P
     },
     update: { gaveUp: true, completedAt: now },
   });
+}
+
+/**
+ * Runs one of the writes above as a side effect of a round that has already been
+ * judged. A database failure costs the player a streak point; letting it escape
+ * costs them the round itself, which is the worse of the two. Loud in the log so
+ * a run of these is visible rather than silent.
+ */
+export async function recordBestEffort(write: () => Promise<void>): Promise<void> {
+  try {
+    await write();
+  } catch (err) {
+    logger.error("[quiz] Failed to record a round; the round itself stands", err);
+  }
 }
