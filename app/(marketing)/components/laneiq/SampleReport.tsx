@@ -2,6 +2,7 @@ import Image from "next/image";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { championSplashUrl } from "@/lib/ddragon";
 import { ActionRow, InsightCard, Meter } from "./ReportParts";
+import { EdgeSweep, HudStagger, HudStaggerItem } from "./motion";
 import type { Action, Grade, Insight } from "./ReportParts";
 
 const INSIGHTS: readonly Insight[] = [
@@ -52,7 +53,8 @@ function HeadStat({ label, value }: { label: string; value: string }): React.Rea
 export function SampleReport(): React.ReactElement {
   return (
     <section id="report" className="px-5 pt-16 md:px-8 md:pt-[72px]">
-      <div className="notch-lg mx-auto max-w-[1240px] overflow-hidden border border-border bg-surface">
+      <div className="notch-lg relative mx-auto max-w-[1240px] overflow-hidden border border-border bg-surface">
+        <EdgeSweep className="z-10" />
         {/* Splash header */}
         <div className="relative h-[220px] overflow-hidden">
           <Image
@@ -71,9 +73,7 @@ export function SampleReport(): React.ReactElement {
                 <p className="font-display text-xl font-extrabold uppercase tracking-[0.04em] text-text">
                   Kayjay#EUW
                 </p>
-                <p className="hud-label mt-0.5">
-                  Emerald IV · Jungle · 20 games · 9W 11L
-                </p>
+                <p className="hud-label mt-0.5">Emerald IV · Jungle · 10 games · 4W 6L</p>
               </div>
             </div>
             <div className="flex gap-6">
@@ -92,11 +92,13 @@ export function SampleReport(): React.ReactElement {
             <p className="my-3.5 max-w-[22ch] font-display text-[22px] font-bold uppercase leading-[1.24] text-text">
               You lose the 20 seconds after full clear.
             </p>
-            <div className="grid gap-2.5">
+            <HudStagger className="grid gap-2.5">
               {INSIGHTS.map((insight) => (
-                <InsightCard key={insight.headline} {...insight} />
+                <HudStaggerItem key={insight.headline}>
+                  <InsightCard {...insight} />
+                </HudStaggerItem>
               ))}
-            </div>
+            </HudStagger>
           </div>
 
           <div className="p-6 md:p-7">
@@ -109,11 +111,13 @@ export function SampleReport(): React.ReactElement {
             <span className="font-mono text-[11px] uppercase tracking-label text-accent">
               {"// Do these three"}
             </span>
-            <div className="mt-3 grid gap-2.5">
+            <HudStagger className="mt-3 grid gap-2.5">
               {ACTIONS.map((action) => (
-                <ActionRow key={action.n} {...action} />
+                <HudStaggerItem key={action.n}>
+                  <ActionRow {...action} />
+                </HudStaggerItem>
               ))}
-            </div>
+            </HudStagger>
           </div>
         </div>
       </div>
