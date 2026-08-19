@@ -15,10 +15,24 @@ const V2_PREFIX = "v2:";
 const IV_BYTES = 12; // 96 bits — the size GCM is specified for
 const TAG_BYTES = 16;
 
+/**
+ * `AUTH_ENCRYPTION_KEY`, falling back to `DISCORD_ENCRYPTION_KEY`.
+ *
+ * The old name is what the key was introduced for and is still read, so no deployment
+ * has to change anything and no stored ciphertext becomes unreadable. But this key has
+ * not been a Discord thing for a while: it also encrypts the TOTP secret behind
+ * two-factor authentication. An operator who does not use Discord had every reason to
+ * leave it unset, and the failure that produced was 2FA setup answering 500 — a
+ * security feature switched off by the absence of an integration it has nothing to
+ * do with.
+ */
 function getKey(): Buffer {
-  const keyHex = process.env.DISCORD_ENCRYPTION_KEY ?? "";
+  const keyHex = process.env.AUTH_ENCRYPTION_KEY || process.env.DISCORD_ENCRYPTION_KEY || "";
   if (!keyHex || keyHex.length < 64) {
-    throw new Error("DISCORD_ENCRYPTION_KEY must be a 32-byte hex string (64 hex chars)");
+    throw new Error(
+      "AUTH_ENCRYPTION_KEY must be a 32-byte hex string (64 hex chars). " +
+        "Generate one with: openssl rand -hex 32"
+    );
   }
   return Buffer.from(keyHex.slice(0, 64), "hex");
 }
