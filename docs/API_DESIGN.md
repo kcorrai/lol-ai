@@ -2649,3 +2649,160 @@ Mints a career card from the same timeline this endpoint returns. Requires
 `riotAccountId`. Answers `422` when the account has no tracked games yet — there is
 nothing to draw. The image is served by `GET /api/cards/[token]` and expires after
 seven days like every other card.
+
+---
+
+## Match archive — personal match database (LA-36)
+
+Faceted search over one player's whole match history. It backs `/matches`, and it is the only
+part of the app that asks a question of the archive rather than of the last twenty games.
+
+Every endpoint here is `withAuth`. The three that read match rows also take `riotAccountId` and
+run it through `assertOwnsRiotAccount` — the archive is scoped to one linked account, because
+"my Ahri games" means one account's games and merging two accounts' histories would answer a
+question nobody asked.
+
+### `GET /api/match/archive`
+
+**Auth:** Required, plus ownership of `riotAccountId`.
+
+**Query params:**
+
+| Param | Type | Notes |
+|---|---|---|
+| `riotAccountId` | uuid | **Required.** |
+| `cursor` | uuid | A `participantId` from a previous page's `nextCursor`. |
+| `limit` | int | 1–100, default 25. |
+| `champions` | string list | Comma-separated or repeated. Max 30. |
+| `positions` | `Position` list | `TOP`/`JUNGLE`/`MIDDLE`/`BOTTOM`/`UTILITY`. |
+| `queueTypes` | `QueueType` list | Values come from the Prisma enum, so LA-37's widening lands here for free. |
+| `result` | `win` \| `loss` | |
+| `from`, `to` | ISO datetime with offset | Inclusive at both ends. |
+| `patch` | string | Matched as a **prefix**: `15.14` catches every hotfix of it. |
+| `playerPuuid` | string | Another player who was in the game. |
+| `playerSide` | `with` \| `against` \| `either` | Default `either`. Meaningless without `playerPuuid`. |
+| `minKda`, `minCsPerMinute`, `minVisionScore`, `minKills`, `maxDeaths`, `minDuration`, `maxDuration` | number | Thresholds. Durations are in **minutes**; the column is seconds. |
+
+The single source of truth for the facet names and their bounds is `archiveFilterSchema` in
+`src/domains/match/services/matchArchiveFilters.ts` — it is the same schema the query string, the
+saved-search JSON column and the POST body are all parsed through.
+
+**Response 200:**
+```json
+{
+  "data": {
+    "rows": [
+      {
+        "participantId": "uuid",
+        "matchDbId": "uuid",
+        "riotMatchId": "EUW1_7412…",
+        "gameStart": "2026-08-19T17:02:11.000Z",
+        "gameDurationSeconds": 2160,
+        "queueType": "RANKED_SOLO_5x5",
+        "gameVersion": "15.14.1",
+        "championName": "Ahri",
+        "championId": 103,
+        "position": "MIDDLE",
+        "won": true,
+        "kills": 7, "deaths": 2, "assists": 14, "kda": 10.5,
+        "cs": 205, "csPerMinute": 5.7, "visionScore": 41,
+        "goldEarned": 13400, "damageDealt": 24100,
+        "itemIds": [3157, 4629, 3165, 3174, 3089, 3040]
+      }
+    ],
+    "nextCursor": "uuid|null",
+    "totals": {
+      "games": 50, "wins": 33, "losses": 17, "winRate": 66.0,
+      "avgKda": 2.76, "avgKills": 6.1, "avgDeaths": 4.4, "avgAssists": 6.0,
+      "avgCsPerMinute": 5.4, "avgVisionScore": 26.0
+    }
+  },
+  "meta": { "requestId": "uuid" }
+}
+```
+
+**Notes:**
+
+- **`totals` is `null` on every continuation page.** It describes the whole filtered set rather
+  than the page, so it does not change as you scroll and recomputing it per page bought two full
+  aggregate scans for an identical answer. It is sent once, with the first page, and the client
+  holds it — `useMatchArchive` reads it off page zero for exactly this reason. A client that reads
+  the newest page instead will paint a `null` over a number the player already had.
+- `matchDbId` is what `/match/[matchId]` wants. `riotMatchId` is for display and for Riot's own
+  URLs; handing it to the detail route 404s on a match that is very much there.
+- `avgKda` is the **ratio of sums**, `(ΣK + ΣA) / ΣD`, not the mean of each game's KDA. The mean is
+  not robust here: one deathless game scores 20+ under `computeKDA`'s `max(deaths, 1)` and drags a
+  hundred games with it.
+- The cursor orders by `(gameStart desc, id desc)`. The `id` tiebreaker is what makes it stable —
+  `gameStart` alone is not a total order and two games starting in the same second would page
+  inconsistently.
+- An empty `rows` with no facets set means the account has nothing synced; empty *with* facets set
+  means the search matched nothing. The two are different sentences on screen, so clients must
+  track whether any facet was applied.
+
+**Errors:** `400` when `riotAccountId` is missing or a facet fails validation — the message names
+the offending facet. `403` for an account the caller does not own. `404` when the account has no
+puuid.
+
+**Cache TTL:** none server-side. The client holds a search for five minutes; an archive only grows
+at the back and the rows already fetched do not change.
+
+### `GET /api/match/archive/options`
+
+**Auth:** Required, plus ownership of `riotAccountId` (the only query param).
+
+**Response 200:**
+```json
+{
+  "data": {
+    "champions": ["Ahri", "Alistar", "Ashe"],
+    "patches": ["15.14", "15.13", "14.10"],
+    "queueTypes": ["ARAM", "RANKED_FLEX_SR", "RANKED_SOLO_5x5"]
+  },
+  "meta": { "requestId": "uuid" }
+}
+```
+
+**Notes:**
+
+- These are the values **actually present in this player's archive**, not the full game. The filter
+  console offers only these, which is what stops a search being buildable that is guaranteed to
+  return nothing — offering a champion the player has never touched is offering a dead end.
+- `patches` is grouped to `major.minor`: `15.14.1` and `15.14.582` are the same patch to a player,
+  and the search endpoint matches the field as a prefix to suit.
+
+### `GET /api/match/archive/saved`
+
+**Auth:** Required. Saved searches belong to the **user**, not to a Riot account — the filters
+describe a question ("Ahri losses under 25 minutes") and the same question is worth asking of
+either linked account.
+
+**Response 200:** `{ "data": { "searches": [{ "id", "name", "filters", "createdAt", "updatedAt" }] } }`,
+newest first, capped at 50.
+
+**Note:** stored filters are re-validated through the current `archiveFilterSchema` on the way out,
+never trusted as written. A search saved before a facet existed still loads — unknown keys fall
+away and the rest survives. A row that cannot be salvaged at all is dropped from the list rather
+than failing the request, so one bad row does not cost the player every other search.
+
+### `POST /api/match/archive/saved`
+
+**Auth:** Required. **Body:** `{ "name": string (1–60), "filters": ArchiveFilters }`.
+
+**Response 201:** `{ "data": { "search": { … } } }`.
+
+**Notes:**
+
+- `(userId, name)` is unique, so saving over an existing name **replaces** it rather than adding a
+  second row. This is also the rename/update path — there is no `PATCH`.
+- 50 per user. The count is taken before the upsert, so replacing an existing name is never refused
+  for being over the cap; only a genuinely new search can be.
+
+**Errors:** `400` for an empty or over-long name, filters that fail validation, or a 51st search.
+
+### `DELETE /api/match/archive/saved/[searchId]`
+
+**Auth:** Required. **Response 200:** `{ "data": { "deleted": true } }`.
+
+Ownership is enforced inside the delete statement rather than fetch-then-check, so someone else's
+search is indistinguishable from one that does not exist: both answer `404`.
