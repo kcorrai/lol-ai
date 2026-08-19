@@ -71,7 +71,12 @@ export async function getChampionLesson(
   const analysis = await getOtpAnalysis(option.champion, positionFromRole(option.role)).catch(() => null);
   if (!analysis) return null;
 
-  const lesson = buildChampionLesson({ champion: option.champion, role: option.role, analysis });
+  const lesson = buildChampionLesson({
+    champion: option.champion,
+    role: option.role,
+    analysis,
+    championId: option.championId,
+  });
   return lesson ? { ...option, lesson } : null;
 }
 
@@ -98,7 +103,12 @@ export async function resolveChampionLesson(
   const analysis = await getCachedOtpAnalysis(option.champion, positionFromRole(option.role));
   if (!analysis) return null;
 
-  const lesson = buildChampionLesson({ champion: option.champion, role: option.role, analysis });
+  const lesson = buildChampionLesson({
+    champion: option.champion,
+    role: option.role,
+    analysis,
+    championId: option.championId,
+  });
   return lesson ? { lesson, championId: option.championId, role: option.role } : null;
 }
 

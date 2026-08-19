@@ -173,3 +173,38 @@ describe("the assignment", () => {
     expect(build()!.assignment.instruction).toContain("Ahri");
   });
 });
+
+describe("the ability clip", () => {
+  it("is left out when nobody passed a champion key", () => {
+    expect(build()!.blocks.filter((b) => b.kind === "clip")).toHaveLength(0);
+  });
+
+  it("shows the ultimate, once, for the champion it was given", () => {
+    const lesson = buildChampionLesson({
+      champion: "Ahri",
+      role: "mid",
+      analysis: analysis(),
+      championId: 103,
+    })!;
+
+    const clips = lesson.blocks.filter((b) => b.kind === "clip");
+    expect(clips).toHaveLength(1);
+    expect(clips[0]).toMatchObject({ championId: 103, championName: "Ahri", slot: "R1" });
+  });
+
+  // Riot's asset, Riot's bandwidth — so it belongs to the half of the lesson that has to make
+  // somebody want the other half.
+  it("sits in front of the gate", () => {
+    const lesson = buildChampionLesson({
+      champion: "Ahri",
+      role: "mid",
+      analysis: analysis(),
+      championId: 103,
+    })!;
+
+    const clip = lesson.blocks.findIndex((b) => b.kind === "clip");
+    const gate = lesson.blocks.findIndex((b) => b.kind === "gate");
+    expect(clip).toBeGreaterThanOrEqual(0);
+    expect(clip).toBeLessThan(gate);
+  });
+});
