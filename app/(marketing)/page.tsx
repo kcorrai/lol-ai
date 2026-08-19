@@ -4,6 +4,7 @@ import { DataStrip } from "./components/laneiq/DataStrip";
 import { HowItWorksStrip } from "./components/laneiq/HowItWorksStrip";
 import { SampleReport } from "./components/laneiq/SampleReport";
 import { ArsenalTabs } from "./components/laneiq/ArsenalTabs";
+import { ProductShowcase } from "./components/laneiq/ProductShowcase";
 import { ChampionPoolAudit } from "./components/laneiq/ChampionPoolAudit";
 import { AcademyBand } from "./components/laneiq/AcademyBand";
 import { FreeToolsGrid } from "./components/laneiq/FreeToolsGrid";
@@ -46,6 +47,10 @@ export default function LandingPage(): React.ReactElement {
       {/* The Academy, Draft Room, esports hub and streamer kit all ship, and none
           of them appeared anywhere on this page before. */}
       <ArsenalTabs />
+
+      {/* The Arsenal panels draw the product; this shows it. Placed straight
+          after them so the claim and the evidence sit together. */}
+      <ProductShowcase />
 
       <ChampionPoolAudit />
       <AcademyBand />
