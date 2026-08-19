@@ -29,7 +29,8 @@ const DailyMomentumChart = dynamic(
 import { DuoPanel } from "@/components/dashboard/laneiq/duo/DuoPanel";
 import { DevRestartOnboarding } from "@/components/dashboard/DevRestartOnboarding";
 import { ClaimAccountOnArrival } from "@/components/dashboard/ClaimAccountOnArrival";
-import { resolveDashboardView } from "@/components/dashboard/dashboardView";
+import { classifySyncError, resolveDashboardView } from "@/components/dashboard/dashboardView";
+import { resolveActiveAccountId } from "@/lib/stores/activeAccount";
 import { DashboardHeader } from "@/components/dashboard/laneiq/DashboardHeader";
 import { DailyQuestStrip } from "@/components/dashboard/laneiq/DailyQuestStrip";
 import { ReadinessVerdict } from "@/components/dashboard/laneiq/ReadinessVerdict";
@@ -61,7 +62,9 @@ export default function DashboardPage(): React.ReactElement {
   // change the dashboard — a second, locally-stated switcher did not.
   const activeAccountId = useUIStore((s) => s.activeRiotAccountId);
 
-  const primaryId = activeAccountId ?? accounts?.[0]?.id ?? null;
+  // Through the resolver rather than `activeAccountId ?? accounts[0]`: a persisted id that
+  // matches no account used to win here, and every request for it came back 403.
+  const primaryId = resolveActiveAccountId(accounts, activeAccountId);
   const primaryAccount = accounts?.find((a) => a.id === primaryId);
 
   const {
@@ -113,7 +116,7 @@ export default function DashboardPage(): React.ReactElement {
       <DailyQuestStrip />
 
       {profileError ? (
-        <SyncErrorState />
+        <SyncErrorState kind={classifySyncError(profileError)} />
       ) : profileLoading ? (
         <DashboardSkeleton />
       ) : !hasMatches ? (

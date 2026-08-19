@@ -7,6 +7,7 @@ import { profileIconUrl } from "@/lib/ddragon";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { useSyncAccount } from "@/hooks/useSyncAccount";
 import { useUIStore } from "@/lib/stores/uiStore";
+import { isStaleActiveAccountId } from "@/lib/stores/activeAccount";
 import { cn } from "@/lib/utils";
 
 function SummonerAvatar({ iconId, size = 20 }: { iconId: number; size?: number }) {
@@ -34,11 +35,14 @@ export function RiotAccountSelector() {
   const [syncMsg, setSyncMsg] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
+  // Also overwrites a *stale* selection, not just an absent one. The persisted id
+  // survives the account it names — a re-seeded database leaves one behind — and until
+  // this cleared it the dashboard stayed pointed at an account it could not read.
   useEffect(() => {
-    if (accounts.length > 0 && !activeId) {
-      const primary = accounts.find((a) => a.isPrimary) ?? accounts[0];
-      setActiveId(primary.id);
-    }
+    if (accounts.length === 0) return;
+    if (activeId && !isStaleActiveAccountId(accounts, activeId)) return;
+    const primary = accounts.find((a) => a.isPrimary) ?? accounts[0];
+    setActiveId(primary.id);
   }, [accounts, activeId, setActiveId]);
 
   useEffect(() => {

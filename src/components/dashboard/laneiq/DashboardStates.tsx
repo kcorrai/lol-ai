@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, RefreshCw, TriangleAlert } from "lucide-react";
+import type { SyncErrorKind } from "@/components/dashboard/dashboardView";
 
 /** No Riot account connected — replaces the whole dashboard. */
 export function NoAccountState(): React.ReactElement {
@@ -67,29 +68,49 @@ export function SyncingState({ gameName }: { gameName?: string }): React.ReactEl
   );
 }
 
-/** The pull failed. Everything below it is still the previous sync's data. */
-export function SyncErrorState(): React.ReactElement {
+/**
+ * The pull failed. Everything below it is still the previous sync's data.
+ *
+ * Split by cause on purpose: this banner used to read "Riot stopped responding" for
+ * every failure, including a 403 from our own ownership check, which sent players to
+ * wait out an outage that was not happening.
+ */
+export function SyncErrorState({
+  kind = "upstream",
+}: {
+  kind?: SyncErrorKind;
+}): React.ReactElement {
+  const copy =
+    kind === "account"
+      ? {
+          rule: "// Account not readable",
+          heading: "This Riot account is not linked to you any more",
+          body: "Riot was never contacted. The account this dashboard was pointed at is not one we can read for your login — reconnect it, or pick another one, and everything below refreshes.",
+          cta: "Reconnect account",
+        }
+      : {
+          rule: "// Sync failed",
+          heading: "Riot's match API stopped responding",
+          body: "Your history is safe. The most recent games could not be pulled, so everything below is from your previous sync. Reviews resume automatically when Riot is back.",
+          cta: "Re-sync",
+        };
+
   return (
     <div className="notch flex flex-wrap items-start gap-5 border border-l-[3px] border-danger bg-surface p-6">
       <TriangleAlert className="mt-0.5 h-6 w-6 shrink-0 text-danger" strokeWidth={1.75} />
       <div className="min-w-[260px] flex-1">
-        <p className="font-mono text-[11px] uppercase tracking-label text-danger">
-          {"// Sync failed"}
-        </p>
+        <p className="font-mono text-[11px] uppercase tracking-label text-danger">{copy.rule}</p>
         <h2 className="mb-2 mt-2.5 font-display text-[22px] font-extrabold uppercase text-text">
-          Riot&apos;s match API stopped responding
+          {copy.heading}
         </h2>
-        <p className="max-w-[62ch] text-sm text-text-body">
-          Your history is safe. The most recent games could not be pulled, so everything below is
-          from your previous sync. Reviews resume automatically when Riot is back.
-        </p>
+        <p className="max-w-[62ch] text-sm text-text-body">{copy.body}</p>
       </div>
       <Link
         href="/settings/accounts"
         className="tag-cut flex h-10 items-center gap-2 bg-accent px-4 font-display text-xs font-bold uppercase tracking-[0.1em] text-background transition-colors hover:bg-acid-400"
       >
         <RefreshCw className="h-4 w-4" strokeWidth={1.75} />
-        Re-sync
+        {copy.cta}
       </Link>
     </div>
   );

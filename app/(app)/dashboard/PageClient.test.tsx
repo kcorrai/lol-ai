@@ -73,6 +73,8 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { useTiltStatus } from "@/hooks/useTiltStatus";
 import { useWarmupStatus } from "@/hooks/useWarmupStatus";
 import { useTodaysFocus } from "@/hooks/useTodaysFocus";
+import { FetchError } from "@/lib/api/fetcher";
+import { useUIStore } from "@/lib/stores/uiStore";
 import DashboardPage from "./PageClient";
 
 const ACCOUNT = {
@@ -141,6 +143,9 @@ function query(data: unknown, extra: Record<string, unknown> = {}) {
 
 beforeEach(() => {
   vi.resetAllMocks();
+  // The UI store is a module singleton and persists between tests; the stale-id test
+  // writes to it, so every test starts from "nothing selected".
+  useUIStore.setState({ activeRiotAccountId: null });
   vi.mocked(useRiotAccounts).mockReturnValue(query([ACCOUNT]));
   vi.mocked(usePerformanceProfile).mockReturnValue(query(PROFILE));
   vi.mocked(useSubscription).mockReturnValue(query({ plan: "pro" }));
@@ -216,15 +221,40 @@ describe("DashboardPage", () => {
     expect(screen.getByRole("link", { name: /Get my first report/ })).toBeInTheDocument();
   });
 
-  it("shows the error state when the profile request fails", () => {
+  it("blames Riot only when the failure actually came from upstream", () => {
     vi.mocked(usePerformanceProfile).mockReturnValue(
-      query(undefined, { error: new Error("boom") })
+      query(undefined, { error: new FetchError("upstream exploded", 503) })
     );
 
     render(<DashboardPage />);
 
     expect(screen.getByText(/Riot's match API stopped responding/)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Re-sync/ })).toBeInTheDocument();
+  });
+
+  it("does not blame Riot for a 403 from our own ownership check", () => {
+    // The real case: a stale activeRiotAccountId pointed at an account from a previous
+    // database, our API correctly returned 403, and the banner reported a Riot outage.
+    vi.mocked(usePerformanceProfile).mockReturnValue(
+      query(undefined, { error: new FetchError("Forbidden", 403) })
+    );
+
+    render(<DashboardPage />);
+
+    expect(screen.getByText(/not linked to you any more/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Reconnect account/ })).toBeInTheDocument();
+    expect(screen.queryByText(/Riot's match API stopped responding/)).not.toBeInTheDocument();
+  });
+
+  it("ignores a selected account id that matches nothing, instead of querying it", () => {
+    useUIStore.setState({ activeRiotAccountId: "from-a-previous-database" });
+
+    render(<DashboardPage />);
+
+    // The dashboard falls back to the account that does exist, so the page renders
+    // rather than sitting on a permanent error.
+    expect(vi.mocked(usePerformanceProfile)).toHaveBeenCalledWith(ACCOUNT.id);
+    expect(screen.getByText("// Match log")).toBeInTheDocument();
   });
 
   it("marks a free plan in the header", () => {

@@ -11,6 +11,7 @@ import type { TimelineFilter } from "@/components/timeline/TimelineFilters";
 import { useCareerTimeline } from "@/hooks/useCareerTimeline";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { useUIStore } from "@/lib/stores/uiStore";
+import { resolveActiveAccountId } from "@/lib/stores/activeAccount";
 
 function Shell({ children }: { children: React.ReactNode }): React.JSX.Element {
   return <div className="mx-auto flex max-w-[900px] flex-col gap-5 p-5 md:p-6">{children}</div>;
@@ -28,7 +29,9 @@ function EmptyState({ title, body }: { title: string; body: string }): React.JSX
 export default function CareerTimelinePage(): React.JSX.Element {
   const { data: accounts, isLoading: accountsLoading } = useRiotAccounts();
   const activeAccountId = useUIStore((s) => s.activeRiotAccountId);
-  const riotAccountId = activeAccountId ?? accounts?.[0]?.id ?? null;
+  // Same resolver as the dashboard: a persisted id that names no account must not win
+  // over the real list, or every request for it 403s (LA-5).
+  const riotAccountId = resolveActiveAccountId(accounts, activeAccountId);
 
   const [filter, setFilter] = useState<TimelineFilter>("all");
   const { data, isLoading, isError } = useCareerTimeline(riotAccountId);
