@@ -14,7 +14,10 @@ import { Frame, Row } from "./ArsenalFrame";
 // ── Draft Room ────────────────────────────────────────────────────────────
 // 30s is the real default turn timer and 5 the maximum series length
 // (app/api/draft/route.ts:14,17).
-const BLUE = ["Ksante", "Sejuani", "Orianna"];
+// Display names, not Data Dragon keys: `normalizeChampionKey` owns the mapping
+// and only recognises the apostrophe form ("K'Sante" → KSante). Writing the key
+// by hand as "Ksante" 403s and silently falls back to a letter tile.
+const BLUE = ["K'Sante", "Sejuani", "Orianna"];
 const RED = ["Aatrox", "Vi", "Ahri"];
 
 /** Picks land one after another, the way they do in a real draft. */

@@ -116,6 +116,12 @@ export function ArsenalTabs(): React.ReactElement {
                 </button>
               );
             })}
+
+            {/* The rail is stretched to the panel's height, and the `bg-line-1`
+                that draws the 1px dividers shows through whatever the five tabs
+                do not fill — which read as a blank sixth tab. This fills the
+                remainder with the panel ground instead. */}
+            <span aria-hidden className="hidden flex-1 bg-background lg:block" />
           </div>
 
           {/* Panel */}
