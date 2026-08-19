@@ -15,14 +15,20 @@ interface Props {
 /**
  * Riot's official ability clip, playing on hover or focus.
  *
- * `preload="none"` and no `autoPlay` are the point: the meta report shows twenty champions, and
- * eagerly loading twenty webm files would cost megabytes for clips most readers never look at.
- * The splash image carries the page until someone actually points at a card.
+ * `preload="none"` and no `autoPlay` are the point: the meta report shows twenty champions at
+ * once, and eagerly loading twenty webm files would cost megabytes for clips most readers never
+ * look at. The poster image carries the page until someone actually points at a card.
  *
  * Not every champion has a clip on Riot's CDN, so a load error falls back to the image rather than
  * leaving a black rectangle.
  */
-export function AbilityClip({ videoUrl, posterUrl, alt, className = "", priority }: Props) {
+export function AbilityClip({
+  videoUrl,
+  posterUrl,
+  alt,
+  className = "",
+  priority,
+}: Props): React.ReactElement {
   const [failed, setFailed] = useState(false);
   const [playing, setPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
