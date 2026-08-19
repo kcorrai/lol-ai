@@ -2,7 +2,7 @@ import Link from "next/link";
 import { championLoadingUrl, abilityVideoUrl } from "@/lib/ddragon";
 import { tierLetter } from "@/domains/meta/tierLetter";
 import type { MetaMover } from "@/domains/meta";
-import { AbilityClip } from "./AbilityClip";
+import { AbilityClip } from "@/components/ui/AbilityClip";
 
 interface HeroCardProps {
   mover: MetaMover;

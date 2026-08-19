@@ -52,6 +52,12 @@ interface ChampionLessonInput {
   champion: string;
   role: RoleId;
   analysis: OtpAnalysis;
+  /**
+   * Data Dragon's numeric key, which is the only thing an ability clip needs. Optional because
+   * the generator stays usable without it — a lesson with no clip is the lesson we shipped
+   * before, not a broken one.
+   */
+  championId?: number;
 }
 
 /**
@@ -59,7 +65,12 @@ interface ChampionLessonInput {
  * Returning null is the important half: an analysis that came back thin would otherwise
  * produce a lesson with unanswerable drills, and it would still be graded and still pay XP.
  */
-export function buildChampionLesson({ champion, role, analysis }: ChampionLessonInput): Lesson | null {
+export function buildChampionLesson({
+  champion,
+  role,
+  analysis,
+  championId,
+}: ChampionLessonInput): Lesson | null {
   const tier = buildTierDrill(champion, analysis);
   const matchup = buildMatchupDrill(champion, analysis);
   if (!tier || !matchup) return null;
@@ -83,7 +94,7 @@ export function buildChampionLesson({ champion, role, analysis }: ChampionLesson
     // Deliberately empty. A champion lesson does not claim to fix a habit the detector raised,
     // and it is not in the registry, so nothing routes a leak here.
     fixes: [],
-    blocks: buildBlocks({ champion, role, analysis, drills }),
+    blocks: buildBlocks({ champion, role, analysis, championId, drills }),
     drills,
     assignment: assignment(champion, role, hardest),
   };
@@ -93,7 +104,7 @@ interface BlockInput extends ChampionLessonInput {
   drills: Drill[];
 }
 
-function buildBlocks({ champion, role, analysis, drills }: BlockInput): LessonBlock[] {
+function buildBlocks({ champion, role, analysis, championId, drills }: BlockInput): LessonBlock[] {
   const { metaRating, matchupTierList, laneStrategies, hiddenMechanics, powerSpikes } = analysis;
   const hard = matchupTierList.hard.filter((m) => usable(m.opponent) && usable(m.keyTip, 20));
 
@@ -111,6 +122,20 @@ function buildBlocks({ champion, role, analysis, drills }: BlockInput): LessonBl
       text: usable(metaRating.patchContext, 15)
         ? `${metaRating.reasoning} ${metaRating.patchContext}`
         : metaRating.reasoning,
+    });
+  }
+
+  // Riot's own preview of the ultimate, before the gate on purpose: it is a public asset, it
+  // costs us no bandwidth, and the free half of a champion lesson is the half that has to make
+  // someone want the rest. The power spike the whole lesson argues about is the one on screen.
+  if (championId !== undefined) {
+    blocks.push({
+      kind: "clip",
+      caption: `${champion} — ultimate`,
+      championId,
+      championName: champion,
+      slot: "R1",
+      note: `This is the spike the rest of the lesson keeps pointing at, and it is also what the enemy sees a moment before it lands. Watch what it commits: the range you have to be inside, and how long ${champion} is standing still to use it.`,
     });
   }
 
