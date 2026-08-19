@@ -1,4 +1,6 @@
+import type { LessonAssetRef } from "@/domains/academy/assets";
 import type { WaveGoal, WaveState } from "@/domains/academy/drills/waveSim";
+import type { AbilitySlot } from "@/lib/ddragon";
 
 // The Academy content model. Lessons are typed TypeScript objects rather than MDX so the
 // curriculum is typechecked, unit-testable and free to reuse the app's own primitives
@@ -79,6 +81,58 @@ export interface TableBlock {
   rows: string[][];
 }
 
+/** One thing a figure shows, and the single line of teaching that justifies showing it. */
+export interface FigureAsset {
+  ref: LessonAssetRef;
+  /** What to call it here — usually its own name, sometimes its job ("the 2:30 ward"). */
+  label: string;
+  note: string;
+}
+
+/**
+ * A row of real game assets: the four trinkets side by side, the three starting items, the
+ * keystone that rewards a trading pattern. The notes render as text beneath the icons, so the
+ * teaching survives an image that never loads.
+ */
+export interface FigureBlock {
+  kind: "figure";
+  caption: string;
+  assets: FigureAsset[];
+}
+
+export interface MapAnnotation {
+  at: MapPoint;
+  label: string;
+  /** Colours the pin: somewhere to be, somewhere to avoid, or somewhere merely named. */
+  tone: "good" | "bad" | "neutral";
+  note: string;
+}
+
+/**
+ * The Rift schematic with numbered pins on it — the same map and the same coordinate space the
+ * map drills use, standing still. This is what replaces "the ward goes in the tri-brush".
+ */
+export interface MapFigureBlock {
+  kind: "mapFigure";
+  caption: string;
+  annotations: MapAnnotation[];
+}
+
+/**
+ * Riot's own ability preview clip. Emitted only by the champion lesson generator, which is the
+ * one place that knows a champion's numeric key; a hand-written lesson may not carry one, and
+ * `curriculum.test.ts` enforces that.
+ */
+export interface ClipBlock {
+  kind: "clip";
+  caption: string;
+  /** Data Dragon's numeric champion key, which `abilityVideoUrl` pads and looks up. */
+  championId: number;
+  championName: string;
+  slot: AbilitySlot;
+  note: string;
+}
+
 /** Renders the drill with this id inline; the drill itself lives on `Lesson.drills`. */
 export interface DrillBlock {
   kind: "drill";
@@ -96,6 +150,9 @@ export type LessonBlock =
   | ChecklistBlock
   | MistakeBlock
   | TableBlock
+  | FigureBlock
+  | MapFigureBlock
+  | ClipBlock
   | DrillBlock
   | GateBlock;
 
