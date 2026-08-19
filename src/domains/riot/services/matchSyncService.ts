@@ -127,11 +127,18 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
     logger.info(`[sync] Indexed ${indexed} players for search`);
   }
 
-  // Link existing matches to our user's participant
-  for (const [riotMatchId, dbMatchId] of existingByRiotId) {
-    if (!matchIds.includes(riotMatchId)) continue;
+  // Link existing matches to our user's participant.
+  //
+  // One statement rather than one per match. The per-match version could never do anything the
+  // single one cannot: every key in existingByRiotId came from a query already scoped to
+  // `matchId: { in: matchIds }`, so its `matchIds.includes` guard was always true, and the where
+  // clauses differed only by matchId. What it cost was up to a hundred sequential round trips per
+  // sync, nearly all of them matching zero rows — `riotAccountId: null` is satisfiable once per
+  // account per match, so after the first successful sync the whole loop was pure waste.
+  const knownMatchDbIds = [...existingByRiotId.values()];
+  if (knownMatchDbIds.length > 0) {
     await prisma.matchParticipant.updateMany({
-      where: { matchId: dbMatchId, puuid: account.puuid, riotAccountId: null },
+      where: { matchId: { in: knownMatchDbIds }, puuid: account.puuid, riotAccountId: null },
       data: { riotAccountId: account.id },
     });
   }
