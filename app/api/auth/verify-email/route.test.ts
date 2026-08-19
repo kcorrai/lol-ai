@@ -2,8 +2,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/db/prisma", () => ({
   prisma: {
-    verificationToken: { findUnique: vi.fn(), delete: vi.fn() },
-    user: { update: vi.fn() },
+    verificationToken: { findUnique: vi.fn(), deleteMany: vi.fn() },
+    user: { updateMany: vi.fn() },
   },
 }));
 vi.mock("@/lib/api/rateLimit", async (importOriginal) => ({
@@ -32,8 +32,8 @@ beforeEach(() => {
     identifier: "player@lolai.test",
     expires: FUTURE,
   } as never);
-  vi.mocked(prisma.verificationToken.delete).mockResolvedValue({} as never);
-  vi.mocked(prisma.user.update).mockResolvedValue({} as never);
+  vi.mocked(prisma.verificationToken.deleteMany).mockResolvedValue({ count: 1 } as never);
+  vi.mocked(prisma.user.updateMany).mockResolvedValue({ count: 1 } as never);
 });
 
 describe("GET /api/auth/verify-email", () => {
@@ -41,10 +41,10 @@ describe("GET /api/auth/verify-email", () => {
     const res = await verify();
 
     expect(res.headers.get("location")).toContain("email_verified=1");
-    expect(prisma.user.update).toHaveBeenCalledWith(
+    expect(prisma.user.updateMany).toHaveBeenCalledWith(
       expect.objectContaining({ where: { email: "player@lolai.test" } })
     );
-    expect(prisma.verificationToken.delete).toHaveBeenCalledWith({ where: { token: TOKEN } });
+    expect(prisma.verificationToken.deleteMany).toHaveBeenCalledWith({ where: { token: TOKEN } });
   });
 
   it("rejects an unknown token without verifying anyone", async () => {
@@ -53,7 +53,7 @@ describe("GET /api/auth/verify-email", () => {
     const res = await verify("nope");
 
     expect(res.headers.get("location")).toContain("email_error=invalid_token");
-    expect(prisma.user.update).not.toHaveBeenCalled();
+    expect(prisma.user.updateMany).not.toHaveBeenCalled();
   });
 
   // An expired token must be consumed, not left to be retried.
@@ -67,8 +67,19 @@ describe("GET /api/auth/verify-email", () => {
     const res = await verify();
 
     expect(res.headers.get("location")).toContain("email_error=expired_token");
-    expect(prisma.user.update).not.toHaveBeenCalled();
-    expect(prisma.verificationToken.delete).toHaveBeenCalledOnce();
+    expect(prisma.user.updateMany).not.toHaveBeenCalled();
+    expect(prisma.verificationToken.deleteMany).toHaveBeenCalledOnce();
+  });
+
+  // A mail client that pre-fetches the link and a reader who then clicks it are two
+  // requests for one token. The second must not 500 on a row that is already gone.
+  it("answers the second use of a token without touching the user", async () => {
+    vi.mocked(prisma.verificationToken.deleteMany).mockResolvedValue({ count: 0 } as never);
+
+    const res = await verify();
+
+    expect(res.headers.get("location")).toContain("email_error=invalid_token");
+    expect(prisma.user.updateMany).not.toHaveBeenCalled();
   });
 
   /**

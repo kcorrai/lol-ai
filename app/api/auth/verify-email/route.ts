@@ -27,16 +27,29 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   }
 
   if (verificationToken.expires < new Date()) {
-    await prisma.verificationToken.delete({ where: { token } });
+    await prisma.verificationToken.deleteMany({ where: { token } });
     return NextResponse.redirect(`${APP_URL}/dashboard?email_error=expired_token`);
   }
 
-  await prisma.user.update({
+  // The token is consumed first, and its deletion is what wins the race: two clicks on
+  // the same link (a mail client that pre-fetches, then the reader) both used to reach
+  // the update. `deleteMany` reports how many rows it removed, so the second caller
+  // sees zero and stops. Previously the second one 500'd on a row that was already gone.
+  const consumed = await prisma.verificationToken.deleteMany({ where: { token } });
+  if (consumed.count === 0) {
+    return NextResponse.redirect(`${APP_URL}/dashboard?email_error=invalid_token`);
+  }
+
+  // `updateMany`, not `update`: the address may no longer exist — the account can have
+  // been deleted between the mail going out and the link being followed — and `update`
+  // throws on a missing row, which reached the reader as a 500.
+  const verified = await prisma.user.updateMany({
     where: { email: verificationToken.identifier },
     data: { emailVerified: new Date() },
   });
-
-  await prisma.verificationToken.delete({ where: { token } });
+  if (verified.count === 0) {
+    return NextResponse.redirect(`${APP_URL}/dashboard?email_error=invalid_token`);
+  }
 
   return NextResponse.redirect(`${APP_URL}/dashboard?email_verified=1`);
 }

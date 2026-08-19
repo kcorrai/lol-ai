@@ -1,6 +1,7 @@
 import { randomBytes } from "crypto";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db/prisma";
+import { normalizeEmail } from "@/lib/security/email";
 import { applyReferralCode } from "@/domains/identity/services/referralService";
 import { getEmailClient, EMAIL_FROM } from "@/lib/email/client";
 import { buildEmailVerificationEmail } from "@/lib/email/templates/emailVerification";
@@ -41,7 +42,11 @@ async function sendVerificationEmail(email: string, userId: string): Promise<voi
 // Subscription, applies an optional referral code, and fires the verification
 // email. Returns EMAIL_TAKEN when the address already exists.
 export async function registerUser(input: RegisterInput): Promise<RegisterResult> {
-  const { email, password, name, refCode } = input;
+  const { password, name, refCode } = input;
+  // Folded before the uniqueness check, not after. `User.email` is unique on the exact
+  // string, so without this the same address in two casings produced two accounts —
+  // and only one of them could ever be logged into.
+  const email = normalizeEmail(input.email);
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) return { ok: false, code: "EMAIL_TAKEN" };
