@@ -35,6 +35,24 @@ export const theIsland: Lesson = {
         ["Roams are short", "Roams cost you the lane", "Leave only with a wave that survives without you"],
       ],
     },
+    {
+      kind: "mapFigure",
+      caption: "Top lane in the map: the isolated corner",
+      annotations: [
+        {
+          at: { x: 0.09, y: 0.40, r: 0.055 },
+          label: "Your top lane",
+          tone: "neutral",
+          note: "Where you farm alone. Forty seconds from your team at best, and often nobody is coming at all.",
+        },
+        {
+          at: { x: 0.22, y: 0.41, r: 0.055 },
+          label: "Topside river mouth",
+          tone: "bad",
+          note: "Where your jungler enters if he comes, which is why this is the first place you ward.",
+        },
+      ],
+    },
     { kind: "drill", drillId: "island-quiz" },
     {
       kind: "mistake",

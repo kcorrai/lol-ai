@@ -25,6 +25,17 @@ export const teleport: Lesson = {
       text: "Teleporting to a lane you were going to reach anyway buys you seconds. Teleporting into a fight your team is already in, onto a wave you can convert into a turret, or behind an objective the enemy has committed to, buys you an event that would not have happened. One of those wins games and the other saves a walk.",
     },
     {
+      kind: "figure",
+      caption: "What you are actually holding",
+      assets: [
+        {
+          ref: { of: "summoner", spell: "teleport" },
+          label: "Teleport",
+          note: "Five-minute cooldown that is worth the wait only when it moves you toward something that could not happen without you, not toward somewhere you would have walked eventually.",
+        },
+      ],
+    },
+    {
       kind: "table",
       caption: "What the spell is for",
       head: ["Use", "What it actually buys", "When"],

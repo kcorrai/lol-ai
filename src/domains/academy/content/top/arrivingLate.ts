@@ -35,6 +35,24 @@ export const arrivingLate: Lesson = {
         ["When it is right", "You are the tank and they need one", "Almost every other time"],
       ],
     },
+    {
+      kind: "mapFigure",
+      caption: "Arriving from the side: the angle only a top laner has",
+      annotations: [
+        {
+          at: { x: 0.69, y: 0.75, r: 0.055 },
+          label: "Drake pit — your team is here",
+          tone: "neutral",
+          note: "Already positioned, already counted. Walking here makes you a second frontline.",
+        },
+        {
+          at: { x: 0.1, y: 0.45, r: 0.055 },
+          label: "Top lane — where you are coming from",
+          tone: "good",
+          note: "Arriving from the side puts you behind their line while their cooldowns are pointed forward. Same champion, completely different fight.",
+        },
+      ],
+    },
     { kind: "drill", drillId: "arriving-quiz" },
     { kind: "gate" },
     {

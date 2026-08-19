@@ -11,6 +11,7 @@ import { MatchResultHeader } from "@/domains/match/components/MatchResultHeader"
 import { MatchKpiStrip } from "@/domains/match/components/MatchKpiStrip";
 import { MatchScoreboard } from "@/domains/match/components/MatchScoreboard";
 import { MatchDetailRail } from "@/domains/match/components/MatchDetailRail";
+import { LanePhaseChart } from "@/domains/match/components/LanePhaseChart";
 
 export default function MatchDetailPage(): React.JSX.Element {
   const { matchId } = useParams<{ matchId: string }>();
@@ -61,6 +62,8 @@ export default function MatchDetailPage(): React.JSX.Element {
         <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_306px]">
           <div className="grid min-w-0 gap-4">
             {me && <MatchKpiStrip me={me} participants={match.participants} />}
+
+            {me && <LanePhaseChart matchId={match.id} />}
 
             <MatchScoreboard
               participants={match.participants}

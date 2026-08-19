@@ -987,3 +987,80 @@ Notes on the shape:
 - **`riotAccountId` is `ON DELETE SET NULL`, not cascade.** Unlinking a Riot
   account must not delete the kit and the key with it; null falls back to
   whichever account is primary.
+
+---
+
+## Match Timeline (LA-45 — see [ADR-033](./adr/ADR-033-match-timeline-capture.md))
+
+The rest of the Match-V5 timeline payload. We were already fetching it in full for every synced
+ranked match and keeping only the `CHAMPION_KILL` events belonging to one player; these two tables
+keep the remainder.
+
+Both are keyed on the **match**, unlike `match_death_events`, which is keyed on
+`(match_id, riot_account_id)` and stays as it is. A match is therefore captured once whoever is in
+it, and a fact involving two players at once — "your gold against your lane opponent's" — becomes
+expressible, which a per-player capture cannot do.
+
+### `match_timeline_frames`
+
+One participant's state at one minute, for all ten players. Riot samples on `frameInterval`
+(60000 ms), so `minute` is the frame ordinal.
+
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `matchId` | `uuid` | NOT NULL — FK → `matches.id` ON DELETE CASCADE |
+| `participantId` | `integer` | NOT NULL — timeline-local, 1–10 |
+| `puuid` | `text` | NOT NULL — denormalised; what joins to `match_participants` |
+| `minute` | `integer` | NOT NULL — frame ordinal |
+| `timestampMs` | `integer` | NOT NULL |
+| `currentGold` | `integer` | NOT NULL — gold in hand |
+| `totalGold` | `integer` | NOT NULL — earned across the game, monotonic |
+| `xp` | `integer` | NOT NULL |
+| `level` | `integer` | NOT NULL |
+| `minionsKilled` | `integer` | NOT NULL |
+| `jungleMinionsKilled` | `integer` | NOT NULL |
+
+**Indexes:**
+- `UNIQUE (matchId, participantId, minute)`
+- `INDEX (matchId, puuid)`
+
+### `match_timeline_events`
+
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `matchId` | `uuid` | NOT NULL — FK → `matches.id` ON DELETE CASCADE |
+| `kind` | `TimelineEventKind` | NOT NULL — enum, eleven values |
+| `timestampMs` | `integer` | NOT NULL |
+| `participantId` | `integer` | nullable — the subject, where there is one |
+| `puuid` | `text` | nullable — resolved from `participantId` |
+| `positionX` | `integer` | nullable |
+| `positionY` | `integer` | nullable |
+| `payload` | `jsonb` | NOT NULL — the kind-specific tail |
+
+**Indexes:**
+- `INDEX (matchId, kind)`
+- `INDEX (matchId, puuid)`
+
+**Notes:**
+
+- **`minute` is the frame ordinal, not a value derived from `timestampMs`.** The unique constraint
+  is built on it, and dividing a timestamp would let two frames round to the same minute — where
+  `skipDuplicates` would silently drop one rather than fail.
+- **The unique index is load-bearing.** With `createMany({ skipDuplicates: true })` it makes the
+  capture idempotent, so a repeated or concurrent run needs no transaction and cannot double-write.
+- **`CHAMPION_KILL` is keyed to the victim**, not the killer, with the killer moved into `payload`.
+  It matches how `match_death_events` already reads, so "my deaths" stays an indexed lookup rather
+  than a jsonb search. Every other kind is keyed to the acting participant — and `WARD_PLACED` is
+  the one kind Riot names that actor `creatorId` rather than `killerId` or `participantId`.
+- **`participantId` is null for a building taken by minions.** Riot reports `killerId: 0`, which is
+  not a participant; a null subject is the honest row.
+- **`payload` is jsonb rather than a column per facet.** The eleven kinds share almost no fields, so
+  columns would mean forty mostly-null ones plus a migration for every new Riot event kind. It is
+  re-validated on read, the same contract `saved_searches.filters` uses.
+- **Riot's per-minute `position` is not captured.** A movement track is a dataset of its own and has
+  no column to land in.
+- **Nothing is backfilled.** Matches synced before LA-45 have death events and no frames; the lane
+  phase endpoint answers 404 for them and the page renders an empty state.
+- **This adds no Riot requests.** The payload was already fetched in full — 95% of it was discarded.

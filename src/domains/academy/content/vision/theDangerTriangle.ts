@@ -46,6 +46,30 @@ export const theDangerTriangle: Lesson = {
       fix: "Last seen has an expiry date, and the date is about thirty seconds. Past that the position is not stale information, it is no information — the honest read is 'unknown', and unknown means you stand where being wrong costs you nothing.",
     },
     {
+      kind: "mapFigure",
+      caption: "One sighting, twenty seconds ago, and what it is worth",
+      annotations: [
+        {
+          at: { x: 0.8, y: 0.56, r: 0.055 },
+          label: "Where you saw him",
+          tone: "neutral",
+          note: "Their bottom-side jungle, twenty seconds ago. This is the only fact you own. Everything else on this map is arithmetic done on top of it.",
+        },
+        {
+          at: { x: 0.58, y: 0.42, r: 0.06 },
+          label: "Twenty seconds of walking",
+          tone: "bad",
+          note: "Not a point — a spread, and this is its middle. By the time the wave you are about to shove reaches their turret, he is somewhere in here, and the triangle points at whoever is pushed furthest.",
+        },
+        {
+          at: { x: 0.21, y: 0.47, r: 0.055 },
+          label: "The half twenty seconds cannot buy",
+          tone: "good",
+          note: "Your own top side. Standing here is not cowardice — it is the part of the map where being wrong about him is free, which is the only thing a guess is allowed to cost.",
+        },
+      ],
+    },
+    {
       kind: "prose",
       text: "There is a third input, and it is the one strong players use most: your own lane pressure. A jungler ganks lanes where the gank works. If your wave is sitting under your own turret, you are close to worthless as a target and the triangle effectively skips you — which is exactly why freezing is defensively strong. If your wave is crashing into their turret, you are the best gank on the map and the triangle points at you regardless of what the clock says.",
     },

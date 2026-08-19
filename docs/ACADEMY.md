@@ -36,6 +36,9 @@ Track  →  Lesson  →  Blocks + Drills + Field assignment
   graded as a choice — a click is only a nicer way of naming one of the authored options —
   while `wave-sim` is replayed through the pure reducer in `drills/waveSim.ts` and judged on
   where the wave ended up.
+- **Figure** — a picture that teaches. `figure` is a row of Riot's own icons; `mapFigure` is
+  the Rift schematic with numbered pins on it; `clip` is Riot's official ability preview and is
+  generated, never written. See *Visual language* below.
 - **Field assignment** — Proof of Practice. Written as a *movement* ("0.5 more CS per minute
   over 3 games"), never an absolute, and resolved against the player's own baseline so a
   Bronze and a Diamond player reading the same lesson get the same instruction and different
@@ -302,6 +305,30 @@ Content decisions and the client-import rule are recorded in
    assignment present, every `map` spot inside the map, and every `wave-sim` puzzle solvable
    in the cycles it gives the player — that last one is brute-forced, so an unwinnable drill
    cannot ship.
+
+### Adding a figure
+
+A lesson gets a picture only where a picture teaches something the prose cannot. There is no
+quota, and the Mental track deliberately has none — there is no honest picture of tilt.
+
+- **`figure`** — one to six game assets, each with the single line of teaching that justifies
+  showing it. The asset is named by **slug** from the catalogue in `assets.ts`
+  (`{ of: "item", item: "control-ward" }`), never by a numeric id and never by a URL, so a typo
+  fails the typecheck rather than rendering a hole. Champions are the one open set and are
+  checked against the Data Dragon snapshot by `figures.test.ts` instead. An asset the catalogue
+  does not have is a line added to `assets.ts`, with its id verified against Data Dragon.
+- **`mapFigure`** — two to six pins on `RiftMap`, in the same 0–1 space the `map` drills use.
+  `x` grows right and `y` grows **down**; your base is bottom-left at 0.07/0.93, Baron sits at
+  0.34/0.27 and Drake at 0.69/0.75, and a point with `y > x` is on your half of the river. The
+  schematic has no brushes or camps, so pins name shapes — a river mouth, an approach, a half —
+  and never claim precision the drawing does not have.
+- **`clip`** — not authorable. Only `championLesson.ts` emits one, because only it holds the
+  champion's numeric key; `figures.test.ts` fails if a hand-written lesson carries one.
+
+Two rules bind all three. The notes render as text beside the picture, so a lesson read with
+images off loses nothing but the pictures — that is why `RiftMap` is `aria-hidden` and the
+numbered list beneath it is the content. And a figure must never give away a drill on the same
+lesson: check the drills before placing a pin. Invariants live in `figures.test.ts`.
 
 ### Adding a drill kind
 

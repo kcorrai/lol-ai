@@ -44,6 +44,27 @@ export const shopAndPowerSpikes: Lesson = {
       text: "You have 900g and your item costs 1,300. You hold the gold, walk back to lane, and die to a champion who bought two components with the same money.",
       fix: "Buy the strongest thing you can afford right now unless you are within roughly one wave of the completion. Gold on your person does not fight.",
     },
+    {
+      kind: "figure",
+      caption: "Three purchases, three different kinds of moment",
+      assets: [
+        {
+          ref: { of: "item", item: "dorans-blade" },
+          label: "The 450g start",
+          note: "Bought before a minion has died, and already a spike: damage, health and sustain at a point in the game where nobody has any of the three. This is why the shop matters at 0:00, not at 8:00.",
+        },
+        {
+          ref: { of: "item", item: "sheen" },
+          label: "A component that is a spike on its own",
+          note: "Not everything you buy on the way to an item is a step toward one. This changes how a trade goes the moment it is in your inventory, which is why buying it early beats holding gold for the thing it builds into.",
+        },
+        {
+          ref: { of: "item", item: "kraken-slayer" },
+          label: "The completion you were saving for",
+          note: "The threshold the whole lesson is about. Worth waiting for only if you are within about one wave of it — and worth nothing at all if you died at 900 gold holding out for it.",
+        },
+      ],
+    },
     { kind: "drill", drillId: "spike-quiz" },
     {
       kind: "prose",

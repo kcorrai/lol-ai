@@ -436,8 +436,10 @@ model Match {
   rawDataHash    String
   createdAt      DateTime  @default(now())
 
-  participants MatchParticipant[]
-  deathEvents  MatchDeathEvent[]
+  participants   MatchParticipant[]
+  deathEvents    MatchDeathEvent[]
+  timelineFrames MatchTimelineFrame[]
+  timelineEvents MatchTimelineEvent[]
 
   @@index([gameStart])
   @@index([queueType, gameStart])
@@ -790,6 +792,91 @@ model MatchDeathEvent {
   @@index([riotAccountId, gameTimeMs])
   @@index([matchId, riotAccountId]) // fast dedup check: "has this match been processed?"
   @@map("match_death_events")
+}
+
+// ============================================================
+// MATCH TIMELINE (ADR-033)
+// The rest of the Match-V5 timeline payload, which we were already fetching in full and
+// discarding all but CHAMPION_KILL from.
+//
+// Scoped to the match, not to a riot account — unlike match_death_events above. A match is
+// captured once whoever is in it, and a fact that involves two players at once ("your gold
+// against your lane opponent's") is expressible at all, which a per-player capture cannot do.
+// ============================================================
+
+// One participant's state at one minute. ~10 rows per match-minute, ~350 per match.
+model MatchTimelineFrame {
+  id      String @id @default(uuid()) @db.Uuid
+  matchId String @db.Uuid
+
+  // Timeline-local, 1..10. Not the same identifier as anything on match_participants — the
+  // puuid below is what joins the two, which is why it is denormalised here.
+  participantId Int
+  puuid         String
+
+  // Frame index. Riot samples on `frameInterval`, which is 60_000ms, so this is minutes.
+  minute      Int
+  timestampMs Int
+
+  // Gold in hand — drops to ~0 on a back, so it reads as a spending curve.
+  currentGold Int
+  // Earned across the whole game, monotonic. This is the one to difference between players.
+  totalGold           Int
+  xp                  Int
+  level               Int
+  minionsKilled       Int
+  jungleMinionsKilled Int
+
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  // What makes the write idempotent: the capture re-runs against createMany(skipDuplicates)
+  // and cannot double-write, so it needs no transaction.
+  @@unique([matchId, participantId, minute])
+  @@index([matchId, puuid]) // the chart reads exactly two players out of a match
+  @@map("match_timeline_frames")
+}
+
+// The eleven event kinds we persist. Anything Riot sends outside this set is dropped.
+enum TimelineEventKind {
+  CHAMPION_KILL
+  CHAMPION_SPECIAL_KILL
+  WARD_PLACED
+  WARD_KILL
+  ITEM_PURCHASED
+  ITEM_SOLD
+  SKILL_LEVEL_UP
+  LEVEL_UP
+  ELITE_MONSTER_KILL
+  BUILDING_KILL
+  TURRET_PLATE_DESTROYED
+}
+
+model MatchTimelineEvent {
+  id      String            @id @default(uuid()) @db.Uuid
+  matchId String            @db.Uuid
+  kind    TimelineEventKind
+
+  timestampMs Int
+
+  // The actor, where the event has one. Null for a building taken by minions, whose killerId
+  // Riot reports as 0.
+  participantId Int?
+  puuid         String?
+
+  positionX Int?
+  positionY Int?
+
+  // The kind-specific tail: item id, monster subtype, skill slot, ward type, assist ids. JSON
+  // rather than a column per facet because the eleven kinds share almost no fields — that would
+  // be forty mostly-null columns, and a migration for every new Riot event kind. Re-validated
+  // through a zod schema on read, the same contract saved_searches.filters uses (ADR-032).
+  payload Json
+
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@index([matchId, kind])
+  @@index([matchId, puuid])
+  @@map("match_timeline_events")
 }
 
 // ============================================================

@@ -46,6 +46,27 @@ export const tradingPatterns: Lesson = {
       text: "You catch the enemy with a clean combo and win the ability exchange, then walk away at 40% health because six of their minions were hitting you the whole time.",
       fix: "Look at the wave before you press anything. If their minions outnumber yours, either wait for the wave to even out or force the trade at the very edge of the minions where fewer of them can reach you.",
     },
+    {
+      kind: "figure",
+      caption: "Your keystone already decided which trade you are allowed to take",
+      assets: [
+        {
+          ref: { of: "keystone", keystone: "electrocute" },
+          label: "The short one",
+          note: "Pays out on a burst and then stops. It rewards walking up with everything available, spending it, and leaving — a trade that lasts four seconds has already gone wrong.",
+        },
+        {
+          ref: { of: "keystone", keystone: "press-the-attack" },
+          label: "The one that needs three hits",
+          note: "Nothing happens until the third auto lands, which means the trade has to be long enough to land three. Starting one you intend to walk out of after two is starting one for free.",
+        },
+        {
+          ref: { of: "keystone", keystone: "conqueror" },
+          label: "The long one",
+          note: "Worth almost nothing at the start of a trade and a great deal at the end of it. It belongs to champions who can stand in one, and it is the reason those champions lose short trades and win the fight anyway.",
+        },
+      ],
+    },
     { kind: "drill", drillId: "trading-quiz" },
     {
       kind: "prose",
