@@ -47,6 +47,36 @@ export const objectiveSetup: Lesson = {
       fix: "Shove first, always, even if it means arriving ten seconds later than you would like. A player who arrives on time with an unshoved wave has paid for the fight twice — once in the wave, once in being outnumbered by the person whose wave was shoved.",
     },
     {
+      kind: "mapFigure",
+      caption: "Forty seconds before drake, every player is already somewhere on purpose",
+      annotations: [
+        {
+          at: { x: 0.69, y: 0.75, r: 0.055 },
+          label: "Where it happens",
+          tone: "neutral",
+          note: "Nothing about the setup happens here. The pit is where the timer runs out, and by then every decision that mattered has been taken.",
+        },
+        {
+          at: { x: 0.78, y: 0.85, r: 0.055 },
+          label: "Bot: shove, then walk",
+          tone: "good",
+          note: "The shortest walk, which is why bot shoves first and leaves last. A wave crashing into their turret keeps the enemy duo in lane for the seconds you need to arrive first.",
+        },
+        {
+          at: { x: 0.50, y: 0.48, r: 0.055 },
+          label: "Mid: shove, then walk",
+          tone: "good",
+          note: "About twenty seconds away, and the only lane that can leave late and still be on time. Shove it anyway — a mid turret taking free damage while you are at drake is how a won objective becomes an even trade.",
+        },
+        {
+          at: { x: 0.65, y: 0.11, r: 0.055 },
+          label: "Top: stay, and be a problem",
+          tone: "good",
+          note: "Too far to arrive and too valuable to waste. Pushing into their turret pins the enemy top laner in place, which is the same as being at the pit — it is four against four instead of five against five.",
+        },
+      ],
+    },
+    {
       kind: "keyPoint",
       title: "Starting it alone",
       text: "You cannot make four strangers rotate. You can shove your own lane at minus sixty, ping the objective once, and walk. Very often that is enough: the jungler follows the ping, the nearest lane follows the jungler, and a team that arrives at an objective with cleared waves plays the fight correctly without anyone having agreed to anything. The pings that do not work are the ones sent from the pit at zero.",

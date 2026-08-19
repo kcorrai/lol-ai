@@ -44,6 +44,22 @@ export const sweeperAndControlWards: Lesson = {
       text: "It sits in your inventory through three fights and a Baron, because there was never an obviously perfect moment. At the end of the game it is worth exactly nothing, and you paid for it.",
       fix: "A control ward in your inventory is a ward that is not working. Place it on the way back to lane, every time. If it dies in ninety seconds, buy another one — you have already had 75 gold of value out of the ninety seconds where they could not walk into that bush safely.",
     },
+    {
+      kind: "figure",
+      caption: "The two that take vision away, and how they differ",
+      assets: [
+        {
+          ref: { of: "item", item: "control-ward" },
+          label: "Control ward",
+          note: "Stands still and works forever. It denies one place permanently, which is why it belongs somewhere the enemy has to keep coming back to rather than somewhere you happen to be.",
+        },
+        {
+          ref: { of: "item", item: "oracle-lens" },
+          label: "Sweeper",
+          note: "Walks with you and works for a few seconds. It denies a route, not a place — which is why it is used on the way to an objective and is worth nothing standing in your own lane.",
+        },
+      ],
+    },
     { kind: "gate" },
     {
       kind: "prose",

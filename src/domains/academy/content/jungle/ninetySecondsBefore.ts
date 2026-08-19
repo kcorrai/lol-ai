@@ -59,6 +59,24 @@ export const ninetySecondsBefore: Lesson = {
         "If their jungler shows up first, am I fighting or leaving? Decide now",
       ],
     },
+    {
+      kind: "mapFigure",
+      caption: "Ninety seconds out: clear toward the objective",
+      annotations: [
+        {
+          at: { x: 0.69, y: 0.75, r: 0.055 },
+          label: "Drake will spawn here",
+          tone: "neutral",
+          note: "In ninety seconds. Everything you do before then should be on this half of the map.",
+        },
+        {
+          at: { x: 0.55, y: 0.65, r: 0.055 },
+          label: "Bot-side camps",
+          tone: "good",
+          note: "Same gold as top-side farms, but finishing here leaves you standing next to Drake with vision and a level.",
+        },
+      ],
+    },
   ],
   drills: [
     {

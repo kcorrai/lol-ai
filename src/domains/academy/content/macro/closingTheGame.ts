@@ -68,6 +68,27 @@ export const closingTheGame: Lesson = {
       title: "Structures, then kills, in that order",
       text: "After every won fight the first question is which structure is now free — turret, inhibitor, Baron. Answer it before anyone looks for another fight. This single rule closes more games than any amount of mechanical skill, because it converts a temporary advantage into a permanent one before it expires.",
     },
+    {
+      kind: "figure",
+      caption: "500 gold each, three minutes each, and almost nobody buys one",
+      assets: [
+        {
+          ref: { of: "item", item: "elixir-of-iron" },
+          label: "Iron",
+          note: "Health and tenacity for three minutes. A team closing a game is walking into a defended base, and the reason that walk fails is usually that somebody got caught, not that the damage was short.",
+        },
+        {
+          ref: { of: "item", item: "elixir-of-sorcery" },
+          label: "Sorcery",
+          note: "Ability power, and extra damage against turrets and champions. If you are full build and sitting on 900 gold, this is the only remaining thing that gold can turn into.",
+        },
+        {
+          ref: { of: "item", item: "elixir-of-wrath" },
+          label: "Wrath",
+          note: "Attack damage and omnivamp for three minutes. Three minutes is roughly one attempt at ending — which is the point: an elixir is not an investment, it is the last purchase before a fight you intend to win.",
+        },
+      ],
+    },
     { kind: "drill", drillId: "closing-quiz" },
   ],
   drills: [

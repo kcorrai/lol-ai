@@ -59,6 +59,24 @@ export const splitPushing: Lesson = {
         "If two of them come, am I leaving, or am I fighting? Decide now, not then",
       ],
     },
+    {
+      kind: "mapFigure",
+      caption: "Split away from the objective",
+      annotations: [
+        {
+          at: { x: 0.69, y: 0.75, r: 0.055 },
+          label: "Drake is live",
+          tone: "neutral",
+          note: "The objective your team is taking. You split on the opposite side of the map to force them into a choice.",
+        },
+        {
+          at: { x: 0.1, y: 0.15, r: 0.055 },
+          label: "Where you split",
+          tone: "good",
+          note: "Top lane is the furthest corner from Drake. Answering you means giving up the objective; ignoring you means a turret.",
+        },
+      ],
+    },
   ],
   drills: [
     {

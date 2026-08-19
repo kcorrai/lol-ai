@@ -51,6 +51,36 @@ export const mapAndWinCondition: Lesson = {
       text: "You win a 2v2 in bot lane, both enemies die, and your team immediately recalls or walks back to lane to farm. The 20 seconds you just bought expire unused.",
       fix: "Ask 'what is free right now?' the instant a fight ends. Turret plates, the wave, drake, deep vision, a recall on a crashed wave — take the most valuable one you can reach before they respawn.",
     },
+    {
+      kind: "mapFigure",
+      caption: "The map layout and where the chain leads",
+      annotations: [
+        {
+          at: { x: 0.07, y: 0.93, r: 0.055 },
+          label: "Your base",
+          tone: "neutral",
+          note: "Where the chain starts. Gold and experience come in, and converted pressure goes out.",
+        },
+        {
+          at: { x: 0.34, y: 0.27, r: 0.055 },
+          label: "Baron pit",
+          tone: "good",
+          note: "The largest objective conversion from 20 minutes on. A completed Baron becomes a siege window large enough to end the game.",
+        },
+        {
+          at: { x: 0.69, y: 0.75, r: 0.055 },
+          label: "Drake pit",
+          tone: "good",
+          note: "The stacking objective. Each drake is a permanent stat; the soul at four stacks can decide games on its own.",
+        },
+        {
+          at: { x: 0.93, y: 0.07, r: 0.055 },
+          label: "Their base and Nexus",
+          tone: "neutral",
+          note: "The only place the chain ends. No scoreboard number ends a game except this one.",
+        },
+      ],
+    },
     { kind: "drill", drillId: "win-condition-quiz" },
     {
       kind: "checklist",

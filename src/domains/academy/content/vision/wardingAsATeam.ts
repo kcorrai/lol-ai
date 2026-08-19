@@ -25,6 +25,42 @@ export const wardingAsATeam: Lesson = {
       text: "The rule is not 'everybody wards more'. It is that the vision covering a piece of the map belongs to whoever is nearest to it. Your support cannot ward your top-side river from bottom lane; you can, in four seconds, from where you already are. Every role has a piece, and the piece changes as the game moves.",
     },
     {
+      kind: "mapFigure",
+      caption: "Five people, five pieces, and one support who can reach one of them",
+      annotations: [
+        {
+          at: { x: 0.24, y: 0.42, r: 0.055 },
+          label: "Top's piece",
+          tone: "good",
+          note: "Your own top-side river. Four seconds from where the top laner is already standing, and a full minute of walking for anybody else.",
+        },
+        {
+          at: { x: 0.48, y: 0.52, r: 0.055 },
+          label: "Mid's piece",
+          tone: "good",
+          note: "Both river entrances. Mid is the only role on the map that reaches both without leaving the lane, which is why mid has no excuse and usually the worst vision score.",
+        },
+        {
+          at: { x: 0.62, y: 0.84, r: 0.055 },
+          label: "The jungler's piece",
+          tone: "good",
+          note: "Whatever he is about to take, before he takes it. A jungler warding the pit he is standing in is warding a thing he can already see.",
+        },
+        {
+          at: { x: 0.32, y: 0.86, r: 0.055 },
+          label: "The carry's piece",
+          tone: "good",
+          note: "The ground behind him, which is the ground he retreats through. Nobody else is ever standing there at the moment it matters.",
+        },
+        {
+          at: { x: 0.85, y: 0.68, r: 0.055 },
+          label: "The support's piece",
+          tone: "good",
+          note: "Their walk into your lane. This is the one piece a support can genuinely own — and it is the piece most teams expect one person to cover all five of.",
+        },
+      ],
+    },
+    {
       kind: "table",
       caption: "Whose piece is whose",
       head: ["Role", "Early", "After 20 minutes"],

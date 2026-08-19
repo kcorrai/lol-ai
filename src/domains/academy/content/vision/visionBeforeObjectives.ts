@@ -48,6 +48,30 @@ export const visionBeforeObjectives: Lesson = {
       fix: "Timer zero is when the setup pays out, not when it starts. If you are still walking at zero you have already lost the setup — and losing the setup is not the same as losing the objective, provided you notice in time to do the other thing.",
     },
     {
+      kind: "mapFigure",
+      caption: "Forty seconds before Baron: the three pieces of the setup",
+      annotations: [
+        {
+          at: { x: 0.52, y: 0.31, r: 0.055 },
+          label: "Their walk in",
+          tone: "bad",
+          note: "They do not appear in the pit, they walk to it, and this is the side they walk from. Everything the setup buys you is thirty seconds of warning about this one line.",
+        },
+        {
+          at: { x: 0.44, y: 0.19, r: 0.055 },
+          label: "Sweep, then ward, thirty seconds early",
+          tone: "good",
+          note: "In that order. A ward placed into their control ward is 75 gold given away, which is why the sweeper walks the route first and the ward follows it.",
+        },
+        {
+          at: { x: 0.2, y: 0.36, r: 0.055 },
+          label: "Where you stand once it is lit",
+          tone: "good",
+          note: "Your own side of the pit, grouped, waiting. Standing here before the sweep is standing in the dark next to an objective, which is the fight they want.",
+        },
+      ],
+    },
+    {
       kind: "keyPoint",
       title: "The other thing: trade, do not contest",
       text: "If they set up first and you cannot see their approach, contesting is a coin flip you are paying for. The alternative is to take something else with the time they have spent standing still — the other side's turret, the opposite objective, a full wave of gold each. A drake traded for two turrets is a trade you win, and a drake contested blind is a lost fight plus the drake.",
