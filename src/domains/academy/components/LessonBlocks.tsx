@@ -1,5 +1,8 @@
 import { AlertTriangle, Check } from "lucide-react";
 import type { LessonBlock } from "@/domains/academy/types";
+import { LessonClip } from "./LessonClip";
+import { LessonFigure } from "./LessonFigure";
+import { LessonMapFigure } from "./LessonMapFigure";
 
 /** Renders one non-interactive lesson block. Drill blocks are handled by the lesson body. */
 export function LessonBlockView({ block }: { block: LessonBlock }): React.ReactElement | null {
@@ -83,6 +86,15 @@ export function LessonBlockView({ block }: { block: LessonBlock }): React.ReactE
           </figcaption>
         </figure>
       );
+
+    case "figure":
+      return <LessonFigure block={block} />;
+
+    case "mapFigure":
+      return <LessonMapFigure block={block} />;
+
+    case "clip":
+      return <LessonClip block={block} />;
 
     // Drill blocks are placeholders resolved by the lesson body; the gate marker never renders.
     case "drill":
