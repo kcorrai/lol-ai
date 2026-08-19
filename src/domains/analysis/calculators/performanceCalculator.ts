@@ -1,8 +1,8 @@
 import type { DeathCluster, ConsistencyLevel, NotableEvent } from "@/domains/analysis/types/analysis.types";
 
-export function computeKDA(kills: number, deaths: number, assists: number): number {
-  return parseFloat(((kills + assists) / Math.max(deaths, 1)).toFixed(2));
-}
+// Re-exported rather than redefined: the shared definition lives in lib because five domains use
+// it (CLAUDE.md §4). Kept exported from here so the existing callers do not all have to move.
+export { computeKDA, kdaRatio } from "@/lib/kda";
 
 export function computeDamageShare(playerDamage: number, teamDamage: number): number {
   if (teamDamage === 0) return 0;
