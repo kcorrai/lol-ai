@@ -40,6 +40,17 @@ const CSP = [
 ].join("; ");
 
 const nextConfig = {
+  experimental: {
+    // lucide-react is imported by 187 files, all in named-import form; without this its barrel is
+    // re-resolved at every one of them. The other three are large packages with few consumers, so
+    // what they mainly buy is not pulling the whole package in for the handful of exports used.
+    optimizePackageImports: [
+      "lucide-react",
+      "recharts",
+      "framer-motion",
+      "@radix-ui/react-dialog",
+    ],
+  },
   images: {
     remotePatterns: [
       {

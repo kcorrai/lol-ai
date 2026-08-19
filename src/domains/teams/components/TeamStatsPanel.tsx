@@ -1,8 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { Loader2 } from "lucide-react";
-import { TeamWinRateTrend } from "@/domains/teams/components/TeamWinRateTrend";
+// Same reasoning as the dashboard's momentum chart: recharts is heavy, this panel is one tab of a
+// team page, and the component is client-only. The fallback matches the panel's own loading height
+// so switching to this tab does not jump.
+const TeamWinRateTrend = dynamic(
+  () => import("@/domains/teams/components/TeamWinRateTrend").then((m) => m.TeamWinRateTrend),
+  {
+    ssr: false,
+    loading: () => <div className="h-40 animate-pulse rounded-xl bg-border/40" />,
+  }
+);
 import { useTeamStats } from "@/hooks/useTeamStats";
 import { cn } from "@/lib/utils";
 
