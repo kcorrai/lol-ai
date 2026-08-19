@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { championSplashUrl } from "@/lib/ddragon";
 import { AnalyzeForm } from "./AnalyzeForm";
+import { HudReveal } from "./motion";
 
 // The hero's ask, repeated at the bottom for readers who scrolled the whole page.
 // It renders its own result — sending the reader back up to the hero for it was
@@ -18,10 +19,14 @@ export function ClosingSplash(): React.ReactElement {
       />
       <div className="absolute inset-0 bg-[linear-gradient(90deg,var(--ink-1000)_12%,rgba(6,10,9,.35)_100%)]" />
       <div className="relative mx-auto w-full max-w-[1240px] px-5 py-12 md:px-8">
-        <h2 className="mb-[18px] max-w-[16ch] font-display text-[32px] font-black uppercase text-text md:text-[42px]">
-          Stop guessing what to fix
-        </h2>
-        <AnalyzeForm />
+        <HudReveal>
+          <h2 className="mb-[18px] max-w-[16ch] font-display text-[32px] font-black uppercase text-text md:text-[42px]">
+            Stop guessing what to fix
+          </h2>
+        </HudReveal>
+        <HudReveal index={1}>
+          <AnalyzeForm />
+        </HudReveal>
       </div>
     </section>
   );

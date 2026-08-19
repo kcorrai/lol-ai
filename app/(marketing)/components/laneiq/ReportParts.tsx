@@ -1,3 +1,6 @@
+"use client";
+
+import { motion, useReducedMotion } from "framer-motion";
 import { Eye, Flame, Timer } from "lucide-react";
 
 type Severity = "critical" | "warn" | "info";
@@ -46,7 +49,14 @@ const TONE_FILL = {
   danger: "bg-danger",
 } as const;
 
+/**
+ * The fill runs 0 → value when the meter scrolls into view, so a grade reads as a
+ * measurement being taken rather than a bar that was always there. Under reduced
+ * motion it renders at its final width with no transition.
+ */
 export function Meter({ label, value, tone = "accent" }: Grade): React.ReactElement {
+  const reduced = useReducedMotion();
+
   return (
     <div>
       <div className="mb-1.5 flex items-baseline justify-between gap-3">
@@ -54,9 +64,13 @@ export function Meter({ label, value, tone = "accent" }: Grade): React.ReactElem
         <span className="font-mono text-[13px] font-bold text-text">{value}</span>
       </div>
       <div className="h-1.5 w-full overflow-hidden rounded-full bg-line-1">
-        <div
+        <motion.div
           className={`h-full rounded-full ${TONE_FILL[tone]}`}
-          style={{ width: `${value}%` }}
+          initial={reduced ? false : { width: 0 }}
+          whileInView={{ width: `${value}%` }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.9, ease: [0.16, 0.84, 0.44, 1] }}
+          style={reduced ? { width: `${value}%` } : undefined}
         />
       </div>
     </div>
