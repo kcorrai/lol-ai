@@ -12,6 +12,7 @@ export const CacheKeys = {
   summoner: (puuid: string) => `riot:summoner:${puuid}`,
   matchIds: (puuid: string, region: string) => `riot:matchids:${puuid}:${region}`,
   matchDetail: (matchId: string) => `riot:match:${matchId}`,
+  matchTimeline: (matchId: string) => `riot:timeline:${matchId}`,
   rankedEntries: (summonerId: string, region: string) =>
     `riot:ranked:${summonerId}:${region}`,
   championMastery: (puuid: string, region: string) =>

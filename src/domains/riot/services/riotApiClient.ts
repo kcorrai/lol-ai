@@ -45,13 +45,27 @@ export async function assertRiotApiReachable(region = "euw1"): Promise<void> {
   await riotClient.get<unknown>(url, { cacheTtl: 60, cacheKey: `riot:status:${region}` });
 }
 
+/**
+ * The frame-by-frame timeline for one match.
+ *
+ * Deduplicated, like getMatch below and for the same reason only more so: a timeline is the
+ * largest thing Riot serves — megabytes of frames — and it is fetched per *player*, not per match.
+ * Two tracked accounts in the same game asked for the same document twice, and a concurrent sync
+ * asked for it twice more.
+ *
+ * Still uncached beyond the in-flight window. The default riot cache is an in-process Map, and a
+ * multi-megabyte document is precisely what should not be parked in it; the death events extracted
+ * from this are what gets persisted (matchDeathEvent), never the raw DTO.
+ */
 export async function getMatchTimeline(
   matchId: string,
   region: string
 ): Promise<MatchTimelineDTO> {
   const routing = getRouting(region);
   const url = `https://${routing}.api.riotgames.com/lol/match/v5/matches/${matchId}/timeline`;
-  return riotClient.get<MatchTimelineDTO>(url, { cacheTtl: 0 });
+  return dedup(CacheKeys.matchTimeline(matchId), () =>
+    riotClient.get<MatchTimelineDTO>(url, { cacheTtl: 0 })
+  );
 }
 
 export async function getAccountByRiotId(
