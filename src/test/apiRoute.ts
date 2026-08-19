@@ -53,12 +53,14 @@ interface SessionUser {
   id: string;
   email?: string | null;
   name?: string | null;
+  /** A sign-in that has passed the password but not the second factor. */
+  twoFactorPending?: boolean;
 }
 
 /** Makes `withAuth` see an authenticated user and forward `{ userId, userEmail }` to the handler. */
 export function authenticateAs(user: SessionUser): void {
   vi.mocked(getServerSession).mockResolvedValue({
-    user: { email: null, name: null, ...user },
+    user: { email: null, name: null, twoFactorPending: false, ...user },
     expires: "2099-01-01T00:00:00.000Z",
   } as never);
 }

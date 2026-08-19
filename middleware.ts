@@ -16,6 +16,9 @@ const PROTECTED_PATHS = [
   "/teams",
   "/achievements",
   "/recap",
+  // Lives in the `(app)` group whose layout says "unauthenticated requests are
+  // redirected by middleware" — which was true of every sibling except this one.
+  "/timeline",
   "/otp",
   "/analysis",
   "/onboarding",
@@ -32,16 +35,26 @@ const PROTECTED_PATHS = [
 
 const AUTH_PATHS = ["/login", "/register", "/forgot-password", "/reset-password"];
 
+// Where a session that has passed the password but not the second factor is sent.
+// Deliberately not under `/login`: `AUTH_PATHS` bounces an authenticated visitor
+// away from anything there, and a half-authenticated one counts as authenticated.
+const TWO_FACTOR_PATH = "/two-factor";
+
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // getToken is lightweight — reads and verifies the session cookie without a DB call
   const token = await getToken({ req, secret: process.env.AUTH_SECRET });
   const isAuthenticated = Boolean(token);
+  const twoFactorPending = token?.twoFactorPending === true;
 
   // Authenticated users should be redirected away from auth pages
   if (AUTH_PATHS.some((p) => pathname.startsWith(p)) && isAuthenticated) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+    // Sent to the challenge, not the dashboard: the dashboard would only bounce
+    // them here anyway, and the round trip loses the message about what is missing.
+    return NextResponse.redirect(
+      new URL(twoFactorPending ? TWO_FACTOR_PATH : "/dashboard", req.url)
+    );
   }
 
   // Protected routes require authentication.
@@ -57,6 +70,22 @@ export async function middleware(req: NextRequest) {
     const loginUrl = new URL("/login", req.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
+  }
+
+  // A correct password gets you exactly as far as the challenge page. Everything
+  // else behind the login wall stays shut until the second factor is answered.
+  if (isProtected && twoFactorPending) {
+    const challengeUrl = new URL(TWO_FACTOR_PATH, req.url);
+    challengeUrl.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(challengeUrl);
+  }
+
+  // Having answered it, there is nothing on that page to come back for.
+  if (pathname === TWO_FACTOR_PATH && isAuthenticated && !twoFactorPending) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
+  if (pathname === TWO_FACTOR_PATH && !isAuthenticated) {
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
   return NextResponse.next();
@@ -77,6 +106,7 @@ export const config = {
     "/teams/:path*",
     "/achievements/:path*",
     "/recap/:path*",
+    "/timeline/:path*",
     "/otp/:path*",
     "/analysis/:path*",
     "/onboarding/:path*",
@@ -86,6 +116,7 @@ export const config = {
     "/sessions/:path*",
     "/messages/:path*",
     "/admin/:path*",
+    "/two-factor",
     "/login",
     "/register",
     "/forgot-password",

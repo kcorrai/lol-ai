@@ -14,6 +14,13 @@ export const Errors = {
   unauthorized: () =>
     new ApiError("UNAUTHORIZED", "Authentication required", 401),
 
+  twoFactorRequired: () =>
+    new ApiError(
+      "TWO_FACTOR_REQUIRED",
+      "Enter your two-factor code to finish signing in",
+      401
+    ),
+
   forbidden: (detail = "Access denied") =>
     new ApiError("FORBIDDEN", detail, 403),
 

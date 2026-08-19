@@ -5,7 +5,36 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db/prisma";
 import { recordFailedAttempt, clearFailedAttempts } from "@/lib/security/bruteForce";
+import { normalizeEmail } from "@/lib/security/email";
 import "@/types/auth.types";
+
+// A real bcrypt hash of a value nobody can supply. Only ever used to spend the same
+// time on a missing account as on a present one.
+const ABSENT_ACCOUNT_HASH =
+  "$2a$12$C6UzMDM.H6dfI/f/IKcEe.7Ee3l9y1lQ3TCkyz0h1qhX6kPFVvHNu";
+
+/**
+ * Whether this sign-in still owes a second factor.
+ *
+ * The challenge endpoint records `profileSettings.totpVerifiedAt` when it passes.
+ * Anything stamped before this session began belongs to an earlier login, so it is
+ * ignored — otherwise one challenge answered last week would satisfy every future
+ * login on the account.
+ */
+async function isTwoFactorStillPending(userId: string, loginAt: number): Promise<boolean> {
+  const dbUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { totpEnabled: true, profileSettings: true },
+  });
+  if (!dbUser?.totpEnabled) return false;
+
+  const settings = dbUser.profileSettings as Record<string, unknown> | null;
+  const stamp = typeof settings?.totpVerifiedAt === "string" ? settings.totpVerifiedAt : null;
+  if (!stamp) return true;
+
+  const verifiedAt = Date.parse(stamp);
+  return !Number.isFinite(verifiedAt) || verifiedAt < loginAt;
+}
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -42,7 +71,10 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        const identifier = credentials.email.toLowerCase();
+        // Addresses are stored lower-cased (see registrationService). Looking up the
+        // raw input made the login case-sensitive while the lockout counter was not,
+        // so "Player@x.com" could never sign in to the account it had created.
+        const identifier = normalizeEmail(credentials.email);
 
         try {
           await recordFailedAttempt(identifier);
@@ -50,23 +82,25 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
-        });
-        if (!user) return null;
+        const user = await prisma.user.findUnique({ where: { email: identifier } });
 
         // Password hash is stored in Account.access_token for credentials provider
         // See ADR-003 for the reasoning behind this design
-        const credentialsAccount = await prisma.account.findFirst({
-          where: { userId: user.id, provider: "credentials" },
-        });
-        if (!credentialsAccount?.access_token) return null;
+        const credentialsAccount = user
+          ? await prisma.account.findFirst({
+              where: { userId: user.id, provider: "credentials" },
+            })
+          : null;
 
+        // Compared against a fixed decoy hash when the account does not exist, so an
+        // unknown address costs the same as a known one. Skipping bcrypt on the miss
+        // made the two answer at visibly different speeds, which is a working account
+        // oracle for anyone with a stopwatch.
         const passwordValid = await bcrypt.compare(
           credentials.password,
-          credentialsAccount.access_token
+          credentialsAccount?.access_token ?? ABSENT_ACCOUNT_HASH
         );
-        if (!passwordValid) return null;
+        if (!user || !credentialsAccount?.access_token || !passwordValid) return null;
 
         await clearFailedAttempts(identifier);
         return user;
@@ -78,12 +112,17 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
+        // Stamped once per sign-in. `totpVerifiedAt` is compared against it, so a
+        // challenge answered during an earlier session cannot vouch for this one.
+        token.loginAt = Date.now();
         const dbUser = await prisma.user.findUnique({
           where: { id: user.id },
-          select: { emailVerified: true, sessionVersion: true },
+          select: { emailVerified: true, sessionVersion: true, totpEnabled: true },
         });
         token.emailVerified = dbUser?.emailVerified ?? null;
         token.sessionVersion = dbUser?.sessionVersion ?? 0;
+        // A correct password is not a completed login when a second factor is on.
+        token.twoFactorPending = dbUser?.totpEnabled === true;
       }
       // Re-fetch after explicit session update (e.g., post email verification, session revocation)
       if (trigger === "update" && token.id) {
@@ -105,6 +144,15 @@ export const authOptions: NextAuthOptions = {
           return null as never;
         }
       }
+      // Resolved from the database on every read rather than only when the client
+      // asks for an update, so an API call cannot be served off a cookie that still
+      // claims the challenge is outstanding — or, worse, that it is not.
+      if (token.id && token.twoFactorPending) {
+        token.twoFactorPending = await isTwoFactorStillPending(
+          token.id as string,
+          token.loginAt ?? 0
+        );
+      }
       return token;
     },
     session({ session, token }) {
@@ -114,6 +162,7 @@ export const authOptions: NextAuthOptions = {
           ...session.user,
           id: token.id,
           emailVerified: token.emailVerified,
+          twoFactorPending: token.twoFactorPending === true,
         },
       };
     },
