@@ -51,6 +51,30 @@ export const sideLaneAssignment: Lesson = {
       title: "The side laner's actual job is threat, not damage",
       text: "You are not there to take the turret alone. You are there so that ignoring you costs a turret, which forces one or two of them to walk away from mid — and the fight your team wanted becomes four-versus-three. If you die, you have done the opposite: your team is now fighting four-versus-five and you have given them the tempo you were supposed to be taking.",
     },
+    {
+      kind: "mapFigure",
+      caption: "Three in the middle, one on each side — and the two sides are not the same job",
+      annotations: [
+        {
+          at: { x: 0.48, y: 0.50, r: 0.055 },
+          label: "The three",
+          tone: "good",
+          note: "Mid, holding the objective and the fight that might happen at it. This is the part everybody already does — the lesson is that it is three people and not five.",
+        },
+        {
+          at: { x: 0.70, y: 0.15, r: 0.055 },
+          label: "The side they are near",
+          tone: "bad",
+          note: "Whichever side lane is closest to where the enemy is standing. It goes to the player who wins a 1v1 outright, because he is the only one for whom two of them walking over is a good outcome rather than a death.",
+        },
+        {
+          at: { x: 0.55, y: 0.85, r: 0.055 },
+          label: "The side they are far from",
+          tone: "good",
+          note: "The other one, nearest your own turrets. Fast wave clear and no duel goes here: clear it, take what is free, and leave before anyone can arrive. Never fight for this lane.",
+        },
+      ],
+    },
     { kind: "drill", drillId: "side-lane-decision" },
     {
       kind: "checklist",

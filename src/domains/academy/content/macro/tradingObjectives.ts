@@ -41,6 +41,30 @@ export const tradingObjectives: Lesson = {
     },
     { kind: "gate" },
     {
+      kind: "mapFigure",
+      caption: "The trade only exists because the two pits are in opposite corners",
+      annotations: [
+        {
+          at: { x: 0.34, y: 0.27, r: 0.055 },
+          label: "Baron",
+          tone: "neutral",
+          note: "Top corner. A team standing here is five champions who are not anywhere else, and they cannot be anywhere else for the next thirty seconds.",
+        },
+        {
+          at: { x: 0.69, y: 0.75, r: 0.055 },
+          label: "Drake",
+          tone: "neutral",
+          note: "The far corner from it. This is the whole reason a trade is possible: the map is not big, but it is big enough that nobody can answer both.",
+        },
+        {
+          at: { x: 0.78, y: 0.85, r: 0.055 },
+          label: "What you take instead",
+          tone: "good",
+          note: "Their bottom turrets, while they are in the Baron pit. This is what the key point means by 'two turrets and three waves' — it is on the map, it is undefended for exactly as long as they are committed, and nobody has to fight for it.",
+        },
+      ],
+    },
+    {
       kind: "mistake",
       title: "Trading badly and calling it macro",
       text: "They take Baron. You take their bottom turret. That sounds like a trade until you count it: a Baron is five empowered pushes and a free run at your base, and a bottom turret is 500 gold split five ways. You did not trade, you conceded with extra steps.",

@@ -47,6 +47,30 @@ export const jungleTracking: Lesson = {
       text: "You think their jungler is probably top because that is where they were a while ago, so you shove bot. They arrive from the river 15 seconds later, because 'a while ago' was 70 seconds and a jungler crosses the map in 25.",
       fix: "Convert time into distance. A jungler covers most of the map in about 25–30 seconds. Any sighting older than that is not a sighting, it is a memory.",
     },
+    {
+      kind: "mapFigure",
+      caption: "Their jungler starts on one of two sides, and the first camp tells you which",
+      annotations: [
+        {
+          at: { x: 0.75, y: 0.65, r: 0.055 },
+          label: "Started bottom side",
+          tone: "neutral",
+          note: "He clears away from top lane, so top is safe for roughly three minutes and bottom is not. You did not need to see him to know this — you needed to see which camp died first.",
+        },
+        {
+          at: { x: 0.4, y: 0.2, r: 0.055 },
+          label: "Started top side",
+          tone: "neutral",
+          note: "The mirror. The clear runs toward the bottom half, so the lane that gets the first visit is the one furthest from where he began.",
+        },
+        {
+          at: { x: 0.55, y: 0.32, r: 0.055 },
+          label: "The crossing",
+          tone: "bad",
+          note: "Whichever side he started, this is the ground he covers to reach the other half, and it takes him about thirty seconds. That number is the whole lesson: a sighting is worth something for thirty seconds and nothing at all after.",
+        },
+      ],
+    },
     { kind: "drill", drillId: "tracking-quiz" },
     {
       kind: "prose",
