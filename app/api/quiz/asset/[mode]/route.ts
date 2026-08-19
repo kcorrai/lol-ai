@@ -55,7 +55,14 @@ export async function GET(request: NextRequest, { params }: { params: { mode: st
     if (urls.length === 0) return apiError("NOT_FOUND", "No asset for that mode", 404);
 
     for (const url of urls) {
-      const res = await fetch(url, { next: { revalidate: 86_400 } });
+      // Not `next: { revalidate }`: a deferred refresh that rejects destroys the
+      // response being piped, so an unreachable Data Dragon 500s this route instead of
+      // moving to the next candidate (LA-13). The Cache-Control below is what actually
+      // caches the image, at the edge.
+      const res = await fetch(url, {
+        cache: "no-store",
+        signal: AbortSignal.timeout(8000),
+      });
       if (!res.ok) {
         logger.warn(`[quiz/asset] Data Dragon returned ${res.status} for ${params.mode}`);
         continue;

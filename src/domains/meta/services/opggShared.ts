@@ -8,6 +8,8 @@ export const USER_AGENT = "lol-ai-coach (+https://lolaicoach.gg)";
 export const FRESH_TTL_DAYS = 0.5; // 12h
 export const SNAPSHOT_TTL_DAYS = 365; // effectively permanent fallback
 export const MIN_MATCHUP_GAMES = 200; // ignore tiny, noisy matchup samples
+// An unofficial endpoint with no SLA: a hung connection must not hold the request open.
+const OPGG_TIMEOUT_MS = 8000;
 
 export type SnapshotMode = "ranked" | "aram";
 // op.gg rank brackets, low → high. Default (no param) == emerald_plus.
@@ -65,9 +67,17 @@ export const CounterSchema = z.object({
   win: z.number(),
 });
 
+/**
+ * Deliberately not cached by the framework. `next: { revalidate }` made Next refresh a
+ * stale entry after the render, and a refresh that rejects destroys the response being
+ * piped — an unreachable op.gg 500'd the page instead of falling through to the cache
+ * (LA-13). Nothing is lost: both callers already sit on the Redis/Postgres fresh +
+ * last-good pair above this, which is where the caching that matters happens.
+ */
 export function opggFetch(url: string): Promise<Response> {
   return fetch(url, {
     headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
-    next: { revalidate: 43200 },
+    cache: "no-store",
+    signal: AbortSignal.timeout(OPGG_TIMEOUT_MS),
   });
 }

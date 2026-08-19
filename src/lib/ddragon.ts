@@ -1,4 +1,5 @@
 import { DDRAGON_VERSION } from "@/lib/ddragonVersion";
+import { fetchJsonLastGood } from "@/lib/http/lastGoodJson";
 
 export { DDRAGON_VERSION } from "@/lib/ddragonVersion";
 
@@ -23,14 +24,10 @@ export async function getLatestDdragonVersion(): Promise<string> {
   // version feed is unavailable anyway, so a test run simply starts there.
   if (process.env.E2E_MOCK === "true") return DDRAGON_VERSION;
 
-  try {
-    const res = await fetch(DDRAGON_VERSIONS_URL, { next: { revalidate: 43200 } });
-    if (!res.ok) return DDRAGON_VERSION;
-    const versions = (await res.json()) as string[];
-    return versions[0] ?? DDRAGON_VERSION;
-  } catch {
-    return DDRAGON_VERSION;
-  }
+  const versions = await fetchJsonLastGood<string[]>(DDRAGON_VERSIONS_URL, {
+    ttlSeconds: 43200,
+  });
+  return versions?.[0] ?? DDRAGON_VERSION;
 }
 
 // Data Dragon ids are not derivable from display names. Apostrophe champions are

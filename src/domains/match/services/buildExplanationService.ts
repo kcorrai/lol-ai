@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db/prisma";
 import { getCached, setCached, buildCacheKey } from "@/lib/ai/aiCache";
 import { getAiClient } from "@/lib/ai/client";
 import { DDRAGON_VERSION } from "@/lib/ddragon";
+import { fetchJsonLastGood } from "@/lib/http/lastGoodJson";
 import {
   buildBuildExplanationSystemPrompt,
   buildBuildExplanationUserPrompt,
@@ -16,16 +17,12 @@ let itemDataCache: Record<string, { name: string }> | null = null;
 
 async function fetchItemNames(itemIds: number[]): Promise<Record<number, string>> {
   if (!itemDataCache) {
-    try {
-      const res = await fetch(
-        `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/data/en_US/item.json`,
-        { next: { revalidate: 3600 } }
-      );
-      const json = (await res.json()) as { data: Record<string, { name: string }> };
-      itemDataCache = json.data;
-    } catch {
-      return {};
-    }
+    const json = await fetchJsonLastGood<{ data: Record<string, { name: string }> }>(
+      `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/data/en_US/item.json`,
+      { ttlSeconds: 3600 }
+    );
+    if (!json) return {};
+    itemDataCache = json.data;
   }
   const result: Record<number, string> = {};
   for (const id of itemIds) {

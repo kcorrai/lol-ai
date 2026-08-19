@@ -1,4 +1,5 @@
 import { getLatestDdragonVersion } from "@/lib/ddragon";
+import { fetchJsonLastGood } from "@/lib/http/lastGoodJson";
 
 export interface ItemInfo {
   id: number;
@@ -34,13 +35,13 @@ export async function fetchItems(): Promise<Map<number, ItemInfo>> {
   if (process.env.E2E_MOCK === "true") return new Map();
 
   const version = await getLatestDdragonVersion();
-  const res = await fetch(
+  const json = await fetchJsonLastGood<{ data: Record<string, RawItem> }>(
     `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/item.json`,
-    { next: { revalidate: 86400 } }
+    { ttlSeconds: 86400 }
   );
-  const json = (await res.json()) as { data: Record<string, RawItem> };
 
   const map = new Map<number, ItemInfo>();
+  if (!json) return map;
   for (const [idStr, raw] of Object.entries(json.data)) {
     const id = Number(idStr);
     map.set(id, {

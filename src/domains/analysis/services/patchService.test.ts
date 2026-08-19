@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { getOrCreateCurrentPatch, getPatchImpact } from "./patchService";
+import { __clearLastGoodJson } from "@/lib/http/lastGoodJson";
 
 vi.mock("@/lib/db/prisma", () => ({
   prisma: {
@@ -17,11 +18,15 @@ import { prisma } from "@/lib/db/prisma";
 // ── getOrCreateCurrentPatch ───────────────────────────────────────────────────
 
 describe("getOrCreateCurrentPatch", () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+    __clearLastGoodJson();
+  });
 
   it("returns existing patch without creating a new one", async () => {
     const existingPatch = { version: "14.21.1", detectedAt: new Date("2024-10-30"), isNew: false };
     global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
       json: vi.fn().mockResolvedValue(["14.21.1", "14.20.1"]),
     } as never);
     vi.mocked(prisma.patchVersion.findUnique).mockResolvedValue({
@@ -40,6 +45,7 @@ describe("getOrCreateCurrentPatch", () => {
 
   it("creates a new patch record when version is unseen", async () => {
     global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
       json: vi.fn().mockResolvedValue(["15.1.1", "14.21.1"]),
     } as never);
     vi.mocked(prisma.patchVersion.findUnique).mockResolvedValue(null);
@@ -78,11 +84,14 @@ describe("getOrCreateCurrentPatch", () => {
     global.fetch = vi.fn().mockRejectedValue(new Error("Network error"));
     vi.mocked(prisma.patchVersion.findFirst).mockResolvedValue(null);
 
-    await expect(getOrCreateCurrentPatch()).rejects.toThrow("Network error");
+    await expect(getOrCreateCurrentPatch()).rejects.toThrow(
+      "No patch version available from Data Dragon or the database"
+    );
   });
 
   it("generates correct patch notes URL", async () => {
     global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
       json: vi.fn().mockResolvedValue(["14.21.1"]),
     } as never);
     vi.mocked(prisma.patchVersion.findUnique).mockResolvedValue(null);
@@ -112,7 +121,9 @@ describe("getPatchImpact", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    __clearLastGoodJson();
     global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
       json: vi.fn().mockResolvedValue(["14.21.1"]),
     } as never);
     vi.mocked(prisma.patchVersion.findUnique).mockResolvedValue({

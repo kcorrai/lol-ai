@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
 import { patchNotesUrl } from "@/lib/lolPatch";
+import { fetchJsonLastGood } from "@/lib/http/lastGoodJson";
 import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 
 const DDRAGON_VERSIONS_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
@@ -27,18 +28,14 @@ export interface PatchImpactResult {
 // Fetches latest DDragon version and upserts into DB if new.
 // Returns the current tracked version.
 export async function getOrCreateCurrentPatch(): Promise<{ version: string; detectedAt: Date; isNew: boolean }> {
-  let latestVersion: string;
-  try {
-    const res = await fetch(DDRAGON_VERSIONS_URL, { next: { revalidate: 3600 } });
-    const versions = await res.json() as string[];
-    latestVersion = versions[0];
-    if (!latestVersion) throw new Error("Empty version list");
-  } catch (err) {
-    logger.warn(`[patchService] DDragon version fetch failed: ${err instanceof Error ? err.message : String(err)}`);
-    // Fall back to whatever is in the DB
+  const versions = await fetchJsonLastGood<string[]>(DDRAGON_VERSIONS_URL, { ttlSeconds: 3600 });
+  const latestVersion = versions?.[0];
+
+  if (!latestVersion) {
+    logger.warn("[patchService] DDragon version feed unavailable, falling back to the DB");
     const fallback = await prisma.patchVersion.findFirst({ orderBy: { detectedAt: "desc" } });
     if (fallback) return { version: fallback.version, detectedAt: fallback.detectedAt, isNew: false };
-    throw err;
+    throw new Error("No patch version available from Data Dragon or the database");
   }
 
   const existing = await prisma.patchVersion.findUnique({ where: { version: latestVersion } });

@@ -20,7 +20,7 @@ Each of these has been verified as stated, or is named as not yet done.
 | 1.3 | The live island makes zero browser requests to any Riot host | **Verified** at TASK-304 |
 | 1.4 | Nothing in the section sits behind the paywall | **Verified** — every route is under `(esports)` with the public chrome branch |
 | 1.5 | Cache warming runs and the pro sample is warm before a reader arrives | **Verified** at TASK-305 (`377cd6e`); the Inngest cron must be confirmed live in the target environment |
-| 1.6 | A Data Dragon outage cannot take a page down | **Not true today.** See §3.1 |
+| 1.6 | A Data Dragon outage cannot take a page down | **Verified.** Fixed at LA-13 / ADR-034: third-party catalogues no longer go through the framework fetch cache, so there is no deferred revalidation left to reject |
 | 1.7 | `NEXT_PUBLIC_APP_URL` matches the deployed host | Check at deploy. Twitch refuses to play in an iframe whose `parent` does not match; a wrong value degrades to the link the reader had before, not a break (ADR-018) |
 | 1.8 | `LOLESPORTS_API_KEY` set in the environment, or the pinned public web key still accepted | Check at deploy. The key is public and not a credential (ADR-016), but it is repointable for the day Riot rotates it |
 
@@ -35,7 +35,7 @@ Each of these has been verified as stated, or is named as not yet done.
 
 ## 3. Known, not blocking, filed
 
-### 3.1 A Data Dragon outage 500s the esports hub
+### 3.1 A Data Dragon outage 500s the esports hub — fixed
 
 Found while building the E2E for this task, with Data Dragon unreachable from
 the machine running it.
@@ -53,6 +53,13 @@ section — anything on a `next: { revalidate }` path over a third-party host ha
 the same exposure — which is why it wants its own task rather than a patch here.
 
 E2E does not hit it: both functions short-circuit under `E2E_MOCK`.
+
+**Fixed (LA-13, ADR-034).** Every third-party catalogue read now goes through
+`fetchJsonLastGood()`, which owns its TTL, its timeout and its last-good copy and
+never rejects; `opggFetch` and the quiz asset route keep their shape but drop the
+framework cache for `cache: "no-store"` plus a timeout. There is no deferred
+revalidation left anywhere over a host we do not operate — `grep -rn "next: {
+revalidate" src app` matches only the comments that say why.
 
 ### 3.2 Match pages carry two `<h1>` elements
 

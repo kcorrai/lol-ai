@@ -1,4 +1,5 @@
 import { getLatestDdragonVersion } from "@/lib/ddragon";
+import { fetchJsonLastGood } from "@/lib/http/lastGoodJson";
 
 export interface RuneInfo {
   id: number;
@@ -36,14 +37,13 @@ export const STAT_SHARDS: Record<number, RuneInfo> = {
 // Cached catalog of every rune AND rune path (id → name/icon), plus stat shards.
 export async function fetchRunes(): Promise<Map<number, RuneInfo>> {
   const version = await getLatestDdragonVersion();
-  const res = await fetch(
+  const paths = await fetchJsonLastGood<RawRune[]>(
     `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/runesReforged.json`,
-    { next: { revalidate: 86400 } }
+    { ttlSeconds: 86400 }
   );
-  const paths = (await res.json()) as RawRune[];
 
   const map = new Map<number, RuneInfo>();
-  for (const path of paths) {
+  for (const path of paths ?? []) {
     map.set(path.id, { id: path.id, name: path.name, iconUrl: runeIconUrl(path.icon) });
     for (const slot of path.slots ?? []) {
       for (const rune of slot.runes) {

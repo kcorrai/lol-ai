@@ -43,6 +43,7 @@ export interface DdragonChampionDetail extends DdragonChampionSummary {
 }
 
 import { getLatestDdragonVersion } from "@/lib/ddragon";
+import { fetchJsonLastGood } from "@/lib/http/lastGoodJson";
 
 // Data Dragon ability text carries `{{ var }}` template placeholders and HTML
 // markup (<br>, <font>, <scaleAP> …). Strip both to plain, readable prose.
@@ -60,22 +61,20 @@ export function cleanAbilityText(raw: string): string {
 
 export async function fetchAllChampions(): Promise<DdragonChampionSummary[]> {
   const version = await getLatestDdragonVersion();
-  const res = await fetch(
+  const json = await fetchJsonLastGood<{ data: Record<string, DdragonChampionSummary> }>(
     `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`,
-    { next: { revalidate: 86400 } }
+    { ttlSeconds: 86400 }
   );
-  const json = (await res.json()) as { data: Record<string, DdragonChampionSummary> };
-  return Object.values(json.data);
+  return json ? Object.values(json.data) : [];
 }
 
 export async function fetchChampionDetail(id: string): Promise<DdragonChampionDetail | null> {
   const version = await getLatestDdragonVersion();
-  const res = await fetch(
+  const json = await fetchJsonLastGood<{ data: Record<string, DdragonChampionDetail> }>(
     `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion/${id}.json`,
-    { next: { revalidate: 86400 } }
+    { ttlSeconds: 86400 }
   );
-  if (!res.ok) return null;
-  const json = (await res.json()) as { data: Record<string, DdragonChampionDetail> };
+  if (!json) return null;
   const detail = Object.values(json.data)[0];
   return detail ?? null;
 }
