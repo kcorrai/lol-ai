@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { httpUrl } from "@/lib/security/url";
 import { getReview, saveReview, publishReview } from "@/domains/marketplace";
 import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
@@ -9,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 const ReviewBody = z.object({
   summary: z.string().trim().min(30).max(8000),
-  sourceUrl: z.string().url().max(500).nullish(),
+  sourceUrl: httpUrl.nullish(),
   annotations: z
     .array(
       z.object({

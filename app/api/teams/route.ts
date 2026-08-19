@@ -2,7 +2,18 @@ import { NextRequest } from "next/server";
 import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
 import { Errors } from "@/lib/api/errors";
+import { z } from "zod";
+import { httpUrl } from "@/lib/security/url";
 import { createTeam, getMyTeams } from "@/domains/teams/services/teamService";
+
+// `logoUrl` is validated the same way PATCH on this resource validates it. POST took
+// any string, so a team could be created with a `javascript:` or `data:` logo that the
+// update endpoint would have refused — a rule enforced on one half of a resource is
+// not a rule. A malformed body threw out of the handler as a 500 as well.
+const CreateTeamSchema = z.object({
+  name: z.string().trim().min(2).max(64),
+  logoUrl: httpUrl.optional(),
+});
 
 export const GET = withAuth(async (_req, { userId }) => {
   const teams = await getMyTeams(userId);
@@ -10,14 +21,11 @@ export const GET = withAuth(async (_req, { userId }) => {
 });
 
 export const POST = withAuth(async (req: NextRequest, { userId }) => {
-  const body = await req.json() as Record<string, unknown>;
-  const name = typeof body.name === "string" ? body.name.trim() : "";
-  const logoUrl = typeof body.logoUrl === "string" ? body.logoUrl.trim() : undefined;
-
-  if (!name || name.length < 2 || name.length > 64) {
-    throw Errors.validation("Team name must be between 2 and 64 characters");
+  const parsed = CreateTeamSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    throw Errors.validation(parsed.error.issues[0]?.message ?? "Invalid team");
   }
 
-  const team = await createTeam(userId, { name, logoUrl });
+  const team = await createTeam(userId, parsed.data);
   return apiSuccess(team, 201);
 });

@@ -9,6 +9,7 @@ import { COACH_RESPONSE_HOURS } from "@/domains/marketplace/policy";
 import type { BookingDetail } from "@/domains/marketplace/types";
 import type { BookingAction } from "@/hooks/useBookings";
 import { whenLabel } from "@/domains/marketplace/components/BookingRow";
+import { safeHref } from "@/lib/security/url";
 
 interface Props {
   booking: BookingDetail;
@@ -94,11 +95,14 @@ export function BookingActions({ booking, pending, onAct }: Props): React.ReactE
             : `The coach has until ${whenLabel(booking.respondByAt)}. Nothing has been charged.`
         }
       >
-        {booking.meetingUrl && (
+        {/* Read through `safeHref` because the coach typed it. Rows written before the
+            schema rejected non-http schemes were never checked, so a stored
+            `javascript:` link would still run in the student's browser on a click. */}
+        {safeHref(booking.meetingUrl) && (
           <p className="break-all text-sm text-text-body">
             Meet here:{" "}
             <a
-              href={booking.meetingUrl}
+              href={safeHref(booking.meetingUrl) ?? undefined}
               className="text-accent underline"
               rel="noreferrer noopener"
               target="_blank"
