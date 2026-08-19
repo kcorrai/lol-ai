@@ -10,6 +10,7 @@ import { patchVersionPoller } from "@/inngest/functions/patchVersionPoller";
 import { warmEsportsCache } from "@/inngest/functions/warmEsportsCache";
 import { achievementChecker } from "@/inngest/functions/achievementChecker";
 import { timelineFetcher } from "@/inngest/functions/timelineFetcher";
+import { rankEnricher } from "@/inngest/functions/rankEnricher";
 import { dailyChallengeGenerator, weeklyChallengeGenerator } from "@/inngest/functions/challengeGenerator";
 import { challengeProgressChecker } from "@/inngest/functions/challengeProgressChecker";
 import { sendReengagementEmails } from "@/inngest/functions/sendReengagementEmails";
@@ -32,5 +33,5 @@ import { academyDecayChecker } from "@/inngest/functions/academyDecayChecker";
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
-  functions: [runCoachingJob, matchSyncWorker, autoSessionReview, sendRankChangeEmail, sendWeeklyReportEmails, tiltStreakCheck, patchVersionPoller, achievementChecker, timelineFetcher, dailyChallengeGenerator, weeklyChallengeGenerator, challengeProgressChecker, sendReengagementEmails, sendActivationEmail, sendReportReadyEmail, teamInviteEmail, teamSubscriptionCancelledNotification, teamSubscriptionExpiredNotification, gdprErasure, gdprExport, performanceSnapshotWorker, planExpiryChecker, planRenewalWorker, referralReward, teamWeeklyReport, cartAbandonmentReminder, rtbfComplianceChecker, warmEsportsCache, refreshCoachRanks, marketplaceSweeps, academyAssignmentChecker, academyDecayChecker],
+  functions: [runCoachingJob, matchSyncWorker, autoSessionReview, sendRankChangeEmail, sendWeeklyReportEmails, tiltStreakCheck, patchVersionPoller, achievementChecker, timelineFetcher, rankEnricher, dailyChallengeGenerator, weeklyChallengeGenerator, challengeProgressChecker, sendReengagementEmails, sendActivationEmail, sendReportReadyEmail, teamInviteEmail, teamSubscriptionCancelledNotification, teamSubscriptionExpiredNotification, gdprErasure, gdprExport, performanceSnapshotWorker, planExpiryChecker, planRenewalWorker, referralReward, teamWeeklyReport, cartAbandonmentReminder, rtbfComplianceChecker, warmEsportsCache, refreshCoachRanks, marketplaceSweeps, academyAssignmentChecker, academyDecayChecker],
 });

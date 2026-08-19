@@ -1,6 +1,11 @@
 import { createHash } from "crypto";
 import { prisma } from "@/lib/db/prisma";
-import { redisCacheGet, redisCacheSet, redisCacheDelete } from "@/lib/cache/redisCache";
+import {
+  redisCacheGet,
+  redisCacheSet,
+  redisCacheDelete,
+  redisCacheDeleteMany,
+} from "@/lib/cache/redisCache";
 
 const SECONDS_PER_DAY = 24 * 60 * 60;
 
@@ -69,6 +74,19 @@ export async function deleteCached(cacheKey: string): Promise<void> {
   // by the fallback above. Deleting one copy would leave the other to be found.
   await redisCacheDelete(cacheKey);
   await prisma.aiCache.deleteMany({ where: { cacheKey } }).catch(() => undefined);
+}
+
+/**
+ * Drops a set of entries in two round trips rather than two per key.
+ *
+ * Busting a cache is rarely one key — the matchup matrix alone is six, one per position — and
+ * deleteCached does a Redis command and a Postgres statement each time. Twelve round trips to
+ * forget six things, where one DEL and one deleteMany say the same.
+ */
+export async function deleteCachedMany(cacheKeys: string[]): Promise<void> {
+  if (cacheKeys.length === 0) return;
+  await redisCacheDeleteMany(cacheKeys);
+  await prisma.aiCache.deleteMany({ where: { cacheKey: { in: cacheKeys } } }).catch(() => undefined);
 }
 
 export function buildCacheKey(type: string, inputs: Record<string, string>): string {

@@ -1,16 +1,18 @@
+import { randomUUID } from "crypto";
 import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
 import { Errors } from "@/lib/api/errors";
 import { isDataStale, invalidateAccountCache } from "@/lib/riot/lifecycle";
 import { inngest } from "@/inngest/client";
-import { deleteCached, buildCacheKey } from "@/lib/ai/aiCache";
+import { deleteCachedMany, buildCacheKey } from "@/lib/ai/aiCache";
 import { getMatchIds, getMatch } from "@/domains/riot/services/riotApiClient";
 import { mapMatch } from "@/domains/riot/mappers/matchMapper";
 import { refreshChampionStats } from "@/domains/champions/services/championCacheService";
 import { refreshChampionMastery } from "@/domains/champions/services/championMasteryService";
 import { getPlanLimits } from "@/lib/auth/authorization";
 import { indexPlayers, type IndexablePlayer } from "@/domains/riot/services/playerIndexService";
-import { enrichParticipantRanks, syncRankedSnapshot } from "@/domains/riot/services/matchSyncRankedService";
+import { mapWithConcurrency } from "@/lib/utils/concurrency";
+import { syncRankedSnapshot } from "@/domains/riot/services/matchSyncRankedService";
 export { backfillMatchNicknames } from "@/domains/riot/services/matchSyncRankedService";
 
 export type SyncResult = {
@@ -86,39 +88,58 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   // autocomplete without a Riot endpoint that can do it (TASK-308).
   const seenPlayers: IndexablePlayer[] = [];
 
-  for (const riotMatchId of newMatchIds) {
+  // Eight at a time, not one. Each iteration is a Riot round trip plus a short transaction, and
+  // done strictly in sequence a hundred of them is well over half a minute of a user watching a
+  // spinner — while the limiter directly underneath allows twenty requests a second and sat almost
+  // idle. Eight keeps that budget usefully busy without opening a hundred Postgres transactions at
+  // once; the ceiling that matters is the connection pool, not the rate limit.
+  //
+  // Bounded rather than Promise.all deliberately: see mapWithConcurrency.
+  const INGEST_CONCURRENCY = 8;
+
+  // `account` is reassigned further down (the ranked snapshot can repair a missing summonerId), so
+  // the ingest tasks read from a fixed binding rather than closing over a mutable one.
+  const { region, puuid, id: accountId } = account;
+
+  // Each task swallows its own failure, so one unreadable match cannot end the run — the same
+  // guarantee the sequential loop gave, kept inside the task rather than around the pool.
+  const outcomes = await mapWithConcurrency(newMatchIds, INGEST_CONCURRENCY, async (riotMatchId) => {
     try {
-      const dto = await getMatch(riotMatchId, account.region);
-      const { randomUUID } = await import("crypto");
+      const dto = await getMatch(riotMatchId, region);
       const matchDbId = randomUUID();
-      const mapped = mapMatch(dto, matchDbId, account.puuid, account.id);
-      if (!mapped) { skipped++; continue; }
+      const mapped = mapMatch(dto, matchDbId, puuid, accountId);
+      if (!mapped) return { kind: "skipped" as const };
 
       await prisma.$transaction(async (tx) => {
         await tx.match.create({ data: mapped.match });
         await tx.matchParticipant.createMany({ data: mapped.participants });
       });
 
-      for (const p of mapped.participants) {
+      return { kind: "ingested" as const, participants: mapped.participants };
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      logger.warn(`[sync] Failed for match ${riotMatchId}: ${msg}`);
+      return { kind: "failed" as const, error: `${riotMatchId}: ${msg}` };
+    }
+  });
+
+  // Folded after the fact rather than mutated from inside the tasks, so the counts do not depend
+  // on the order things happened to finish in.
+  for (const outcome of outcomes) {
+    if (outcome.kind === "skipped") {
+      skipped++;
+    } else if (outcome.kind === "failed") {
+      errors.push(outcome.error);
+    } else {
+      newCount++;
+      for (const p of outcome.participants) {
         seenPlayers.push({
           puuid: p.puuid,
           gameName: p.gameName ?? null,
           tagLine: p.tagLine ?? null,
-          region: account.region,
+          region,
         });
       }
-
-      if (mapped.match.queueType === "RANKED_SOLO_5x5") {
-        const puuids = mapped.participants.map((p) => p.puuid);
-        enrichParticipantRanks(matchDbId, puuids, account.region).catch((err) =>
-          logger.warn(`[sync] Rank enrichment failed for ${riotMatchId}: ${err instanceof Error ? err.message : String(err)}`)
-        );
-      }
-      newCount++;
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      logger.warn(`[sync] Failed for match ${riotMatchId}: ${msg}`);
-      errors.push(`${riotMatchId}: ${msg}`);
     }
   }
 
@@ -143,21 +164,6 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
     });
   }
 
-  // Backfill ranks for existing ranked matches missing participant rank data
-  try {
-    const unrankedMatches = await prisma.match.findMany({
-      where: { queueType: "RANKED_SOLO_5x5", participants: { some: { riotAccountId: account.id } }, AND: { participants: { some: { rankTier: null } } } },
-      select: { id: true, participants: { select: { puuid: true } } },
-      take: 15,
-    });
-    for (const m of unrankedMatches) {
-      await enrichParticipantRanks(m.id, m.participants.map((p) => p.puuid), account.region);
-    }
-    if (unrankedMatches.length > 0) logger.info(`[sync] Backfilled ranks for ${unrankedMatches.length} existing matches`);
-  } catch (err) {
-    logger.warn(`[sync] Rank backfill failed: ${err instanceof Error ? err.message : String(err)}`);
-  }
-
   // ── Ranked snapshot ────────────────────────────────────────────────────────
   const { rankedSnapshotted, errors: rankedErrors, updatedAccount } = await syncRankedSnapshot(account);
   account = updatedAccount;
@@ -174,18 +180,40 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
     .then(() => refreshChampionMastery(account.id))
     .catch((err) => logger.warn("[sync] Champion cache refresh failed", err));
 
-  if (newCount >= 3) inngest.send({ name: "match/session.synced", data: { riotAccountId: account.id } }).catch((err) => logger.warn("[sync] Failed to fire session.synced event", err));
-  inngest.send({ name: "tilt/check-streak", data: { riotAccountId: account.id, userId: account.userId } }).catch((err) => logger.warn("[sync] Failed to fire tilt/check-streak event", err));
-  inngest.send({ name: "achievement/check", data: { riotAccountId: account.id, userId: account.userId } }).catch((err) => logger.warn("[sync] Failed to fire achievement/check event", err));
-  if (newCount > 0) inngest.send({ name: "timeline/fetch-for-account", data: { riotAccountId: account.id } }).catch((err) => logger.warn("[sync] Failed to fire timeline/fetch-for-account event", err));
-  inngest.send({ name: "challenge/check-progress", data: { riotAccountId: account.id, userId: account.userId } }).catch((err) => logger.warn("[sync] Failed to fire challenge/check-progress event", err));
-  inngest.send({ name: "snapshot/compute", data: { riotAccountId: account.id } }).catch((err) => logger.warn("[sync] Failed to fire snapshot/compute event", err));
-  if (newCount > 0) inngest.send({ name: "academy/check-assignments", data: { riotAccountId: account.id, userId: account.userId } }).catch((err) => logger.warn("[sync] Failed to fire academy/check-assignments event", err));
+  // One send, and awaited.
+  //
+  // These were seven separate calls, each its own HTTP round trip, and none of them awaited. On
+  // Vercel a promise that is neither awaited nor handed to waitUntil can be dropped when the
+  // response returns, so the durable work these exist to start was silently not always starting —
+  // the opposite of what a durable execution layer is for. The SDK takes an array.
+  const forNewMatches = newCount > 0;
+  const events = [
+    { name: "tilt/check-streak", data: { riotAccountId: account.id, userId: account.userId } },
+    { name: "achievement/check", data: { riotAccountId: account.id, userId: account.userId } },
+    { name: "challenge/check-progress", data: { riotAccountId: account.id, userId: account.userId } },
+    { name: "snapshot/compute", data: { riotAccountId: account.id } },
+    ...(newCount >= 3
+      ? [{ name: "match/session.synced", data: { riotAccountId: account.id } }]
+      : []),
+    ...(forNewMatches
+      ? [
+          { name: "timeline/fetch-for-account", data: { riotAccountId: account.id } },
+          { name: "academy/check-assignments", data: { riotAccountId: account.id, userId: account.userId } },
+          // Replaces both the per-match fan-out that used to sit in the ingest loop and the
+          // fifteen-match backfill sweep that used to run here. The sweep only existed because
+          // the fan-out kept losing its work.
+          { name: "match/enrich-ranks", data: { riotAccountId: account.id, region: account.region } },
+        ]
+      : []),
+  ];
+  await inngest.send(events).catch((err) => logger.warn("[sync] Event dispatch failed", err));
 
-  if (newCount > 0) {
+  if (forNewMatches) {
+    // Six keys, one per position. deleteCached would do a Redis command and a Postgres statement
+    // for each — twelve round trips to forget six things.
     const positions = ["all", "TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"];
-    await Promise.all(
-      positions.map((pos) => deleteCached(buildCacheKey("matchup-matrix", { riotAccountId: account.id, position: pos })))
+    await deleteCachedMany(
+      positions.map((pos) => buildCacheKey("matchup-matrix", { riotAccountId: account.id, position: pos }))
     ).catch((err) => logger.warn("[sync] Cache bust failed", err));
   }
 
