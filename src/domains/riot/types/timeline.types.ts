@@ -20,7 +20,9 @@ export interface ParticipantFrameDTO {
   level: number;
   minionsKilled: number;
   jungleMinionsKilled: number;
-  position: { x: number; y: number };
+  // Riot also sends a per-minute `position` here. Left out deliberately: a movement track is a
+  // dataset of its own and has no column to land in (ADR-033), so typing it would claim a
+  // capture that does not happen.
 }
 
 export interface MatchTimelineFrameDTO {
