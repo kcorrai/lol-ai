@@ -14,6 +14,7 @@ import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
 import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
+import { kdaRatio } from "@/lib/kda";
 
 export const revalidate = 86400;
 
@@ -49,8 +50,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 function kda(kills: number, deaths: number, assists: number): string {
-  const ratio = (kills + assists) / Math.max(deaths, 1);
-  return ratio.toFixed(1);
+  // The raw ratio, formatted here: rounding to two places first and then to one rounds twice.
+  return kdaRatio(kills, deaths, assists).toFixed(1);
 }
 
 function PlayerHeader({ entry }: { entry: PlayerEntry }): React.ReactElement {

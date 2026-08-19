@@ -2,13 +2,14 @@ import { prisma } from "@/lib/db/prisma";
 import { buildAccountPreview, getAccountPuuid } from "@/domains/riot";
 import { meanDuration, perMinute } from "@/domains/esports/duration";
 import type { PlayerChampionAverages } from "@/domains/esports/comparison";
+import { kdaRatio } from "@/lib/kda";
 
 /** How far back a player's own games are read. The same window the profile uses. */
 const GAMES_TO_READ = 20;
 
-function kdaOf(kills: number, deaths: number, assists: number): number {
-  return (kills + assists) / Math.max(deaths, 1);
-}
+// kdaRatio, not computeKDA: these are averaged by meanOfPresent below, and rounding each reading
+// before taking a mean rounds twice.
+const kdaOf = kdaRatio;
 
 /** Mean of the readings that exist, or null when none do. */
 function meanOfPresent(values: (number | null)[]): number | null {

@@ -1,3 +1,4 @@
+import { computeKDA } from "@/lib/kda";
 import type { CreatorProfile, Prisma, RankDivision, RankTier } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { requestSyncIfStale } from "@/domains/riot/services/syncFreshness";
@@ -125,9 +126,7 @@ async function buildSession(
     kills,
     deaths,
     assists,
-    // Perfect games divide by zero, so deaths floor at one — the same convention
-    // the rest of the app uses for KDA.
-    kda: games > 0 ? Math.round(((kills + assists) / Math.max(deaths, 1)) * 100) / 100 : null,
+    kda: games > 0 ? computeKDA(kills, deaths, assists) : null,
     startedAt: window.start.toISOString(),
   };
 }

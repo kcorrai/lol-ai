@@ -1,4 +1,5 @@
 import type { RecapData } from "../../services/recapService";
+import { kdaRatio } from "@/lib/kda";
 
 export type RecapTone = "good" | "bad" | "neutral";
 
@@ -52,7 +53,7 @@ export function buildRecapChapters(data: RecapData, gameName: string): RecapChap
   const assists = data.totalAssists ?? 0;
   const hours = data.estimatedHours ?? Math.round((data.totalMatches * 30) / 60);
   const climbed = data.lpDelta >= 0;
-  const kda = deaths > 0 ? (kills + assists) / deaths : kills + assists;
+  const kda = kdaRatio(kills, deaths, assists);
   const art = (i: number): string => champs[i % champs.length]?.name ?? data.topChampion.name;
 
   const chapters: RecapChapter[] = [

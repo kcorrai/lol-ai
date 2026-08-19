@@ -1,3 +1,4 @@
+import { kdaRatio } from "@/lib/kda";
 import { meanDuration, perMinute } from "@/domains/esports/duration";
 import { gameWinner } from "@/domains/esports/gameOutcome";
 import type {
@@ -262,7 +263,7 @@ function averages(entries: Appearance[]): ProChampionAverages {
     kills,
     deaths,
     assists,
-    kda: (kills + assists) / Math.max(deaths, 1),
+    kda: kdaRatio(kills, deaths, assists),
     creepScore: mean((p) => p.creepScore),
     gold: mean((p) => p.gold),
     gameLengthSeconds: meanDuration(entries.map((entry) => entry.game.stats.durationSeconds)),
