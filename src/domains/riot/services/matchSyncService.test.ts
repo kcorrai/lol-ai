@@ -45,8 +45,8 @@ vi.mock("@/domains/riot/services/playerIndexService", () => ({
 }));
 
 vi.mock("@/lib/ai/aiCache", () => ({
-  deleteCached: vi.fn().mockResolvedValue(undefined),
-  buildCacheKey: vi.fn().mockReturnValue("cache-key"),
+  deleteCachedMany: vi.fn().mockResolvedValue(undefined),
+  buildCacheKey: vi.fn((type: string, i: Record<string, string>) => `${type}:${i.position}`),
 }));
 
 vi.mock("@/inngest/client", () => ({
@@ -280,6 +280,46 @@ describe("syncAccount", () => {
 
     // Asserted on the interleaving of start/end events rather than on wall-clock overlap, so it
     // cannot flake when the suite runs the whole file under load.
+    // Seven separate sends, none awaited. On Vercel an unawaited promise can be dropped when the
+    // response returns, so the durable work these start was not reliably starting.
+    it("dispatches every post-sync event in one awaited send", async () => {
+      const { inngest } = await import("@/inngest/client");
+      await ingest(["A", "B", "C"], ok);
+
+      expect(inngest.send).toHaveBeenCalledTimes(1);
+      const sent = vi.mocked(inngest.send).mock.calls[0][0] as Array<{ name: string }>;
+      expect(Array.isArray(sent)).toBe(true);
+      expect(sent.map((e) => e.name).sort()).toEqual([
+        "academy/check-assignments",
+        "achievement/check",
+        "challenge/check-progress",
+        "match/enrich-ranks",
+        "match/session.synced",
+        "snapshot/compute",
+        "tilt/check-streak",
+        "timeline/fetch-for-account",
+      ]);
+    });
+
+    it("omits the new-match events when nothing was ingested", async () => {
+      const { inngest } = await import("@/inngest/client");
+      await ingest([], ok);
+
+      const sent = vi.mocked(inngest.send).mock.calls[0][0] as Array<{ name: string }>;
+      const names = sent.map((e) => e.name);
+      expect(names).not.toContain("match/enrich-ranks");
+      expect(names).not.toContain("timeline/fetch-for-account");
+      expect(names).toContain("snapshot/compute");
+    });
+
+    it("busts the six matchup-matrix keys in one call", async () => {
+      const { deleteCachedMany } = await import("@/lib/ai/aiCache");
+      await ingest(["A"], ok);
+
+      expect(deleteCachedMany).toHaveBeenCalledTimes(1);
+      expect(vi.mocked(deleteCachedMany).mock.calls[0][0]).toHaveLength(6);
+    });
+
     it("does not run the matches strictly one after another", async () => {
       const events: string[] = [];
       let inFlight = 0;

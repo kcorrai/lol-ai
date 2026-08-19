@@ -4,7 +4,7 @@ import { logger } from "@/lib/utils/logger";
 import { Errors } from "@/lib/api/errors";
 import { isDataStale, invalidateAccountCache } from "@/lib/riot/lifecycle";
 import { inngest } from "@/inngest/client";
-import { deleteCached, buildCacheKey } from "@/lib/ai/aiCache";
+import { deleteCachedMany, buildCacheKey } from "@/lib/ai/aiCache";
 import { getMatchIds, getMatch } from "@/domains/riot/services/riotApiClient";
 import { mapMatch } from "@/domains/riot/mappers/matchMapper";
 import { refreshChampionStats } from "@/domains/champions/services/championCacheService";
@@ -180,21 +180,40 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
     .then(() => refreshChampionMastery(account.id))
     .catch((err) => logger.warn("[sync] Champion cache refresh failed", err));
 
-  if (newCount >= 3) inngest.send({ name: "match/session.synced", data: { riotAccountId: account.id } }).catch((err) => logger.warn("[sync] Failed to fire session.synced event", err));
-  inngest.send({ name: "tilt/check-streak", data: { riotAccountId: account.id, userId: account.userId } }).catch((err) => logger.warn("[sync] Failed to fire tilt/check-streak event", err));
-  inngest.send({ name: "achievement/check", data: { riotAccountId: account.id, userId: account.userId } }).catch((err) => logger.warn("[sync] Failed to fire achievement/check event", err));
-  if (newCount > 0) inngest.send({ name: "timeline/fetch-for-account", data: { riotAccountId: account.id } }).catch((err) => logger.warn("[sync] Failed to fire timeline/fetch-for-account event", err));
-  // Replaces both the per-match fan-out in the ingest loop and the fifteen-match backfill sweep
-  // that used to run here. The sweep only existed because the fan-out kept losing its work.
-  if (newCount > 0) inngest.send({ name: "match/enrich-ranks", data: { riotAccountId: account.id, region: account.region } }).catch((err) => logger.warn("[sync] Failed to fire match/enrich-ranks event", err));
-  inngest.send({ name: "challenge/check-progress", data: { riotAccountId: account.id, userId: account.userId } }).catch((err) => logger.warn("[sync] Failed to fire challenge/check-progress event", err));
-  inngest.send({ name: "snapshot/compute", data: { riotAccountId: account.id } }).catch((err) => logger.warn("[sync] Failed to fire snapshot/compute event", err));
-  if (newCount > 0) inngest.send({ name: "academy/check-assignments", data: { riotAccountId: account.id, userId: account.userId } }).catch((err) => logger.warn("[sync] Failed to fire academy/check-assignments event", err));
+  // One send, and awaited.
+  //
+  // These were seven separate calls, each its own HTTP round trip, and none of them awaited. On
+  // Vercel a promise that is neither awaited nor handed to waitUntil can be dropped when the
+  // response returns, so the durable work these exist to start was silently not always starting —
+  // the opposite of what a durable execution layer is for. The SDK takes an array.
+  const forNewMatches = newCount > 0;
+  const events = [
+    { name: "tilt/check-streak", data: { riotAccountId: account.id, userId: account.userId } },
+    { name: "achievement/check", data: { riotAccountId: account.id, userId: account.userId } },
+    { name: "challenge/check-progress", data: { riotAccountId: account.id, userId: account.userId } },
+    { name: "snapshot/compute", data: { riotAccountId: account.id } },
+    ...(newCount >= 3
+      ? [{ name: "match/session.synced", data: { riotAccountId: account.id } }]
+      : []),
+    ...(forNewMatches
+      ? [
+          { name: "timeline/fetch-for-account", data: { riotAccountId: account.id } },
+          { name: "academy/check-assignments", data: { riotAccountId: account.id, userId: account.userId } },
+          // Replaces both the per-match fan-out that used to sit in the ingest loop and the
+          // fifteen-match backfill sweep that used to run here. The sweep only existed because
+          // the fan-out kept losing its work.
+          { name: "match/enrich-ranks", data: { riotAccountId: account.id, region: account.region } },
+        ]
+      : []),
+  ];
+  await inngest.send(events).catch((err) => logger.warn("[sync] Event dispatch failed", err));
 
-  if (newCount > 0) {
+  if (forNewMatches) {
+    // Six keys, one per position. deleteCached would do a Redis command and a Postgres statement
+    // for each — twelve round trips to forget six things.
     const positions = ["all", "TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"];
-    await Promise.all(
-      positions.map((pos) => deleteCached(buildCacheKey("matchup-matrix", { riotAccountId: account.id, position: pos })))
+    await deleteCachedMany(
+      positions.map((pos) => buildCacheKey("matchup-matrix", { riotAccountId: account.id, position: pos }))
     ).catch((err) => logger.warn("[sync] Cache bust failed", err));
   }
 

@@ -13,7 +13,7 @@ import { logger } from "@/lib/utils/logger";
 type RedisClient = {
   get: (key: string) => Promise<unknown>;
   set: (key: string, value: unknown, opts: { ex: number }) => Promise<unknown>;
-  del: (key: string) => Promise<unknown>;
+  del: (...keys: string[]) => Promise<unknown>;
 };
 
 let client: RedisClient | null = null;
@@ -96,13 +96,20 @@ export async function redisCacheSet(
 }
 
 export async function redisCacheDelete(key: string): Promise<void> {
+  return redisCacheDeleteMany([key]);
+}
+
+// One DEL for the whole set rather than one per key. Upstash speaks REST, so each command is its
+// own HTTPS round trip from the function's region — six keys was six of them.
+export async function redisCacheDeleteMany(keys: string[]): Promise<void> {
+  if (keys.length === 0) return;
   const redis = await getClient();
   if (!redis) return;
 
   try {
-    await redis.del(key);
+    await redis.del(...keys);
   } catch (err) {
-    logger.warn(`[cache] Redis delete failed for ${key}`, err);
+    logger.warn(`[cache] Redis delete failed for ${keys.length} key(s)`, err);
   }
 }
 
