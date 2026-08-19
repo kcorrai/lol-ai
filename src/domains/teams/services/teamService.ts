@@ -11,6 +11,15 @@ import type {
 
 const MAX_TEAMS_PER_USER = 5;
 
+/**
+ * The seat cap, enforced on both ways into a team.
+ *
+ * `inviteMember` has always checked it. The invite *link* did not, so the one route
+ * that hands out a reusable URL was also the one that ignored the limit the plan is
+ * sold on — a team could be any size as long as everybody joined through the link.
+ */
+export const MAX_TEAM_MEMBERS = 5;
+
 export async function assertTeamAccess(
   teamId: string,
   userId: string
@@ -213,6 +222,11 @@ export async function acceptLinkInvite(token: string, userId: string): Promise<{
 
   const existing = await repo.findMembership(invite.teamId, userId);
   if (existing) return { teamId: invite.teamId };
+
+  const memberCount = await prismaReadonly.teamMember.count({ where: { teamId: invite.teamId } });
+  if (memberCount >= MAX_TEAM_MEMBERS) {
+    throw Errors.conflict(`Team is at maximum capacity (${MAX_TEAM_MEMBERS} members)`);
+  }
 
   await repo.addMember(invite.teamId, userId, "PLAYER");
   const newMember = await prismaReadonly.user.findUnique({ where: { id: userId }, select: { name: true, email: true } });

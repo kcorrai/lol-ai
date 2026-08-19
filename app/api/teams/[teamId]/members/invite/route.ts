@@ -13,7 +13,8 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   const teamId = segments.at(-3) ?? "";
   if (!teamId) throw Errors.validation("Missing teamId");
 
-  const body = await req.json() as Record<string, unknown>;
+  // Guarded: an unparseable body threw out of the handler and answered 500.
+  const body = ((await req.json().catch(() => null)) ?? {}) as Record<string, unknown>;
   const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
   const role = (body.role as TeamRole) ?? "PLAYER";
 

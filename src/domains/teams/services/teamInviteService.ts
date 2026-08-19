@@ -4,11 +4,17 @@ import { prisma } from "@/lib/db/prisma";
 import { Errors } from "@/lib/api/errors";
 import { logger } from "@/lib/utils/logger";
 import * as repo from "@/domains/teams/repositories/teamRepository";
-import { assertCoachAccess, assertOwnerAccess, assertTeamPlan } from "@/domains/teams/services/teamService";
+import {
+  MAX_TEAM_MEMBERS,
+  assertCoachAccess,
+  assertOwnerAccess,
+  assertTeamPlan,
+} from "@/domains/teams/services/teamService";
 import type { InviteMemberInput, PendingInvite } from "@/domains/teams/types/teams.types";
 
 const INVITE_TTL_HOURS = 48;
-const MAX_MEMBERS = 5;
+// One definition, shared with the invite-link path that used to have none.
+const MAX_MEMBERS = MAX_TEAM_MEMBERS;
 
 function generateToken(): string {
   return randomBytes(24).toString("hex");

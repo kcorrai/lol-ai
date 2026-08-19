@@ -46,7 +46,15 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 422 });
 
   const { id, ...data } = parsed.data;
-  const flag = await prisma.featureFlag.update({ where: { id }, data });
+  // `updateMany`/`deleteMany` report a count. `update`/`delete` throw on a row that is
+  // not there, and nothing here catches that — so editing a flag another admin had just
+  // removed answered "internal error" instead of "not found".
+  const updated = await prisma.featureFlag.updateMany({ where: { id }, data });
+  if (updated.count === 0) {
+    return NextResponse.json({ error: "Flag not found" }, { status: 404 });
+  }
+
+  const flag = await prisma.featureFlag.findUnique({ where: { id } });
   return NextResponse.json({ data: flag });
 }
 
@@ -57,6 +65,9 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
   const id = searchParams.get("id");
   if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
 
-  await prisma.featureFlag.delete({ where: { id } });
+  const deleted = await prisma.featureFlag.deleteMany({ where: { id } });
+  if (deleted.count === 0) {
+    return NextResponse.json({ error: "Flag not found" }, { status: 404 });
+  }
   return NextResponse.json({ deleted: true });
 }

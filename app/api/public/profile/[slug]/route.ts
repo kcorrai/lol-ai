@@ -1,6 +1,5 @@
 import { NextRequest } from "next/server";
-import { apiSuccess } from "@/lib/api/response";
-import { Errors } from "@/lib/api/errors";
+import { apiError, apiSuccess } from "@/lib/api/response";
 import { checkRateLimit, getIp, rateLimitResponse } from "@/lib/api/rateLimit";
 import { getPublicProfile } from "@/domains/identity/services/profileService";
 
@@ -15,7 +14,11 @@ export async function GET(
   if (!rl.allowed) return rateLimitResponse(rl.retryAfterMs, rl.limit);
 
   const profile = await getPublicProfile(params.slug);
-  if (!profile) throw Errors.notFound("Profile");
+  // Returned rather than thrown. Only `withAuth` turns an `ApiError` into a response,
+  // and this route deliberately has no session — so the throw reached the client as a
+  // 500, and every unknown slug read as "the site is broken" rather than "no such
+  // player". Same reasoning as `/api/overlay/[key]`.
+  if (!profile) return apiError("RESOURCE_NOT_FOUND", "Profile not found", 404);
 
   return apiSuccess(profile);
 }

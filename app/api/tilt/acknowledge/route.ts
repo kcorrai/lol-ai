@@ -8,8 +8,8 @@ export const dynamic = "force-dynamic";
 
 // POST /api/tilt/acknowledge — marks a tilt alert as acknowledged
 export const POST = withAuth(async (req: NextRequest, { userId }) => {
-  const body = await req.json() as { alertId?: string };
-  if (!body.alertId) throw Errors.validation("alertId is required");
+  const body = (await req.json().catch(() => null)) as { alertId?: string } | null;
+  if (!body?.alertId) throw Errors.validation("alertId is required");
 
   const alert = await prisma.tiltAlert.findUnique({ where: { id: body.alertId } });
   if (!alert) throw Errors.notFound("TiltAlert");

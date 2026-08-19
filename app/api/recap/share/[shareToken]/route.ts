@@ -1,6 +1,5 @@
 import { NextRequest } from "next/server";
-import { apiSuccess } from "@/lib/api/response";
-import { Errors } from "@/lib/api/errors";
+import { apiError, apiSuccess } from "@/lib/api/response";
 import { prisma } from "@/lib/db/prisma";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +14,10 @@ export async function GET(
     select: { data: true, seasonLabel: true, generatedAt: true, isPublic: true },
   });
 
-  if (!recap || !recap.isPublic) throw Errors.notFound("Recap");
+  // Returned, not thrown: this route has no `withAuth` to catch an ApiError, so the
+  // throw surfaced as a 500. A recap that was never shared and one that does not exist
+  // answer the same way, so a token cannot be probed for existence.
+  if (!recap || !recap.isPublic) return apiError("RESOURCE_NOT_FOUND", "Recap not found", 404);
   const data = recap.data as Record<string, unknown>;
   return apiSuccess({ ...data, seasonLabel: recap.seasonLabel, generatedAt: recap.generatedAt });
 }
