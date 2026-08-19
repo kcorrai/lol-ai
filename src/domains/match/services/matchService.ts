@@ -125,8 +125,10 @@ export async function getMatchDetail(
       id: p.id,
       riotAccountId: p.riotAccountId,
       puuid: p.puuid,
-      gameName: p.gameName ?? null,
-      tagLine: p.tagLine ?? null,
+      // `|| null` rather than `?? null`: a participant Riot will not name is stored as an empty
+      // string so the backfill below knows it already asked, and that sentinel must not leak out.
+      gameName: p.gameName || null,
+      tagLine: p.tagLine || null,
       championName: p.championName,
       position: p.position,
       teamId: p.teamId,
@@ -175,8 +177,13 @@ export async function getMatchDetail(
       }
     : null;
 
-  // Lazily backfill missing nicknames for pre-migration matches (fire-and-forget)
-  if (participants.some((p) => !p.gameName)) {
+  // Lazily backfill missing nicknames for pre-migration matches (fire-and-forget).
+  //
+  // Keyed on the stored value being null, not on the mapped one being empty. A participant Riot
+  // itself will not name — a bot, a deactivated account — comes back nameless every time, so
+  // triggering on "looks nameless" meant every view of such a match re-fetched the whole match
+  // from Riot and rewrote ten rows, for ever. Those rows now carry a sentinel, so this asks once.
+  if (match.participants.some((p) => p.gameName === null)) {
     backfillMatchNicknames(match.id, match.matchId, match.region).catch(() => undefined);
   }
 

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { backfillMatchNicknames, syncAccount } from "./matchSyncService";
+import { NO_RIOT_NAME } from "./matchSyncRankedService";
 
 vi.mock("@/lib/db/prisma", () => ({
   prisma: {
@@ -85,7 +86,11 @@ describe("backfillMatchNicknames", () => {
     );
   });
 
-  it("skips participants with no riotIdGameName", async () => {
+  // Used to `continue` past these, leaving the rows null. The caller's trigger is "any participant
+  // has no name", so for a match containing a bot or a deactivated account the condition could
+  // never become false: every view re-fetched the whole match from Riot and rewrote ten rows, for
+  // ever, spending a rate-limit token the sync needs. The sentinel is what lets it settle.
+  it("marks participants Riot will not name, so it does not ask again", async () => {
     vi.mocked(getMatch).mockResolvedValue({
       info: {
         participants: [
@@ -94,10 +99,52 @@ describe("backfillMatchNicknames", () => {
         ],
       },
     } as never);
+    vi.mocked(prisma.matchParticipant.updateMany).mockResolvedValue({ count: 2 } as never);
 
     await backfillMatchNicknames("db-match-1", "TR1_abc", "euw1");
 
-    expect(prisma.matchParticipant.updateMany).not.toHaveBeenCalled();
+    expect(prisma.matchParticipant.updateMany).toHaveBeenCalledTimes(1);
+    expect(prisma.matchParticipant.updateMany).toHaveBeenCalledWith({
+      where: { matchId: "db-match-1", puuid: { in: ["p1", "p2"] }, gameName: null },
+      data: { gameName: NO_RIOT_NAME },
+    });
+  });
+
+  it("marks the unnamed in one statement while naming the rest", async () => {
+    vi.mocked(getMatch).mockResolvedValue({
+      info: {
+        participants: [
+          { puuid: "p1", riotIdGameName: "KaaN", riotIdTagline: "TR1" },
+          { puuid: "p2", riotIdGameName: null, riotIdTagline: null },
+          { puuid: "p3", riotIdGameName: null, riotIdTagline: null },
+        ],
+      },
+    } as never);
+    vi.mocked(prisma.matchParticipant.updateMany).mockResolvedValue({ count: 1 } as never);
+
+    await backfillMatchNicknames("db-match-1", "TR1_abc", "euw1");
+
+    // One for the named participant, one covering both unnamed — not one per participant.
+    expect(prisma.matchParticipant.updateMany).toHaveBeenCalledTimes(2);
+    expect(prisma.matchParticipant.updateMany).toHaveBeenCalledWith({
+      where: { matchId: "db-match-1", puuid: { in: ["p2", "p3"] }, gameName: null },
+      data: { gameName: NO_RIOT_NAME },
+    });
+  });
+
+  // Only rows that were never asked about. A row already carrying the sentinel is not null and is
+  // therefore not rewritten, which is what makes the marker terminal.
+  it("only ever touches rows whose name is still null", async () => {
+    vi.mocked(getMatch).mockResolvedValue({
+      info: { participants: [{ puuid: "p1", riotIdGameName: null, riotIdTagline: null }] },
+    } as never);
+    vi.mocked(prisma.matchParticipant.updateMany).mockResolvedValue({ count: 0 } as never);
+
+    await backfillMatchNicknames("db-match-1", "TR1_abc", "euw1");
+
+    for (const call of vi.mocked(prisma.matchParticipant.updateMany).mock.calls) {
+      expect((call[0] as { where: { gameName: unknown } }).where.gameName).toBeNull();
+    }
   });
 
   it("swallows errors without throwing", async () => {

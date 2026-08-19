@@ -87,16 +87,45 @@ export async function enrichParticipantRanks(matchDbId: string, participantPuuid
   }
 }
 
+/** Written for a participant Riot itself will not name, so the backfill knows it already asked. */
+export const NO_RIOT_NAME = "";
+
+/**
+ * Fills in the Riot IDs of a pre-migration match.
+ *
+ * The `continue` on a missing riotIdGameName used to make this unbounded. Bots, deactivated
+ * accounts and older matches come back from Riot with no name at all, so those rows stayed null —
+ * and the caller's trigger is "any participant has no name". The condition could therefore never
+ * become false: every single view of such a match fetched the whole match DTO from Riot again
+ * (getMatch is deliberately uncached) and issued ten writes, for ever, spending a rate-limit token
+ * the sync needs.
+ *
+ * A participant Riot declines to name is now written as NO_RIOT_NAME rather than left null, which
+ * is what lets the trigger settle. Readers map it back to null so nothing downstream sees the
+ * sentinel.
+ */
 export async function backfillMatchNicknames(matchDbId: string, riotMatchId: string, region: string): Promise<void> {
   try {
     const dto = await getMatch(riotMatchId, region);
-    for (const p of dto.info.participants) {
-      if (!p.riotIdGameName) continue;
-      await prisma.matchParticipant.updateMany({
-        where: { matchId: matchDbId, puuid: p.puuid, gameName: null },
-        data: { gameName: p.riotIdGameName, tagLine: p.riotIdTagline ?? null },
-      });
-    }
+
+    // Grouped by the name they get, so this is two statements rather than one per participant.
+    const named = dto.info.participants.filter((p) => p.riotIdGameName);
+    const unnamed = dto.info.participants.filter((p) => !p.riotIdGameName).map((p) => p.puuid);
+
+    await Promise.all([
+      ...named.map((p) =>
+        prisma.matchParticipant.updateMany({
+          where: { matchId: matchDbId, puuid: p.puuid, gameName: null },
+          data: { gameName: p.riotIdGameName, tagLine: p.riotIdTagline ?? null },
+        })
+      ),
+      unnamed.length > 0
+        ? prisma.matchParticipant.updateMany({
+            where: { matchId: matchDbId, puuid: { in: unnamed }, gameName: null },
+            data: { gameName: NO_RIOT_NAME },
+          })
+        : Promise.resolve(),
+    ]);
   } catch (err) {
     logger.warn(`[sync] Nickname backfill failed for ${riotMatchId}: ${err instanceof Error ? err.message : String(err)}`);
   }
