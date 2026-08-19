@@ -25,6 +25,32 @@ export const wardPlacementsByPhase: Lesson = {
       text: "Before the trinket leaves your hand you should be able to finish this sentence: 'this ward tells me whether ______'. If you cannot, you are not warding, you are decorating. A ward with no question behind it is a ward you will not look at, and a ward you do not look at may as well be in your inventory.",
     },
     {
+      kind: "figure",
+      caption: "The four pieces of vision you own, and what each one is for",
+      assets: [
+        {
+          ref: { of: "item", item: "stealth-ward" },
+          label: "Yellow trinket",
+          note: "Two charges that refill on their own, and the only vision most players ever place. Free, invisible, ninety seconds — it exists to be spent, not saved.",
+        },
+        {
+          ref: { of: "item", item: "control-ward" },
+          label: "Control ward",
+          note: "75 gold, permanent until killed, and the only ward that also deletes theirs. This is the one that decides whether an objective is contestable, and the one nobody buys.",
+        },
+        {
+          ref: { of: "item", item: "oracle-lens" },
+          label: "Sweeper",
+          note: "Trades your own vision for taking theirs away. Swap to it when the map has stopped being about whether you get ganked and started being about whether you can walk somewhere.",
+        },
+        {
+          ref: { of: "item", item: "farsight-alteration" },
+          label: "Blue trinket",
+          note: "Places from a screen away and is killed in one hit. It is not safety, it is a question asked from behind cover: is the Baron pit occupied right now.",
+        },
+      ],
+    },
+    {
       kind: "table",
       caption: "The three wards that carry the game",
       head: ["When", "Where", "The question"],
@@ -59,6 +85,30 @@ export const wardPlacementsByPhase: Lesson = {
     {
       kind: "prose",
       text: "The early-game ward has a timing as well as a place. Level 2 and level 3 ganks come between 3:00 and 4:30 on the side the jungler started; the second wave of pressure comes after their first clear, around 5:30 to 6:30. Those are the two windows where the river ward pays. Between them, if you are not pushing past the middle of the lane, the ward can wait — and holding a charge for the moment you actually commit is worth more than spending it on schedule.",
+    },
+    {
+      kind: "mapFigure",
+      caption: "The early ward: which river mouth depends on where their jungler started",
+      annotations: [
+        {
+          at: { x: 0.22, y: 0.41, r: 0.055 },
+          label: "Topside river mouth",
+          tone: "good",
+          note: "If their jungler started on their own top side, this is where he comes out. The ward answers the only early question worth asking: is he on me in the next fifteen seconds.",
+        },
+        {
+          at: { x: 0.57, y: 0.85, r: 0.055 },
+          label: "Botside river mouth",
+          tone: "good",
+          note: "The mirror of it. You do not need both — you need the one on the side he started, which the first camp he cleared already told you.",
+        },
+        {
+          at: { x: 0.55, y: 0.22, r: 0.055 },
+          label: "Deep in their jungle at 3:30",
+          tone: "bad",
+          note: "The brave ward. It shows you a jungler who has already left the camp, a full screen from your lane, and you cannot act on any of it. Depth is not information.",
+        },
+      ],
     },
     {
       kind: "checklist",

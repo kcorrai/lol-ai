@@ -25,6 +25,22 @@ export const visionBasics: Lesson = {
       text: "Early game (0–14): vision is a jungler alarm. Mid game (14–20): vision is objective setup. Late game (20+): vision is permission to move. Three different jobs, three different places on the map. Placing an early-game ward at minute 30 is the same mistake as placing a late-game ward at minute 3.",
     },
     {
+      kind: "figure",
+      caption: "The two you will use in every single game",
+      assets: [
+        {
+          ref: { of: "item", item: "stealth-ward" },
+          label: "Your trinket",
+          note: "Free, on a cooldown, and in your inventory from the moment the game starts. Nothing in this lesson costs you gold — a charge you did not spend is not saved, it is wasted.",
+        },
+        {
+          ref: { of: "item", item: "control-ward" },
+          label: "Control ward, 75 gold",
+          note: "Bought, permanent until somebody kills it, and the only one that also removes theirs. Buy one on every back you can afford it on; the Vision track is largely an argument about this item.",
+        },
+      ],
+    },
+    {
       kind: "table",
       caption: "Where the ward goes and why",
       head: ["Phase", "Where", "The question it answers"],
