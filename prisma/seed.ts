@@ -116,6 +116,35 @@ async function main() {
   console.log(`  ✓ ${rankedSnapshots.length} ranked snapshots created`);
 
   // ── 5 Sample Matches ──────────────────────────────────────────
+  // Both teams get all five positions: without a MIDDLE on team 200 the tracked
+  // player (always mid) has no lane opponent, and every matchup query reads empty.
+  const MOCK_ROSTER = [
+    { key: "Maokai", position: Position.TOP },
+    { key: "LeeSin", position: Position.JUNGLE },
+    { key: "Jinx", position: Position.BOTTOM },
+    { key: "Thresh", position: Position.UTILITY },
+    { key: "Yasuo", position: Position.TOP },
+    { key: "MasterYi", position: Position.JUNGLE },
+    { key: "Lux", position: Position.MIDDLE },
+    { key: "Senna", position: Position.BOTTOM },
+    { key: "Leona", position: Position.UTILITY },
+  ] as const;
+
+  const rosterChampions = await prisma.champion.findMany({
+    where: { key: { in: MOCK_ROSTER.map((r) => r.key) } },
+    select: { id: true, key: true, name: true },
+  });
+
+  const championsByKey = new Map(rosterChampions.map((c) => [c.key, c]));
+
+  for (const key of MOCK_ROSTER.map((r) => r.key)) {
+    if (!championsByKey.has(key)) {
+      throw new Error(
+        `Champion key "${key}" not found in database. Ensure syncChampions() populated the database.`
+      );
+    }
+  }
+
   const matchData = [
     { champion: 103, champName: "Ahri", won: true, k: 9, d: 2, a: 11, cs: 198, vis: 32 },
     { champion: 103, champName: "Ahri", won: false, k: 3, d: 6, a: 5, cs: 154, vis: 21 },
@@ -128,10 +157,17 @@ async function main() {
     const d = matchData[i];
     const gameStart = new Date(Date.now() - (5 - i) * 3 * 60 * 60 * 1000);
     const gameEnd = new Date(gameStart.getTime() + 32 * 60 * 1000);
+    const matchId = `EUW1_${7000000000 + i}`;
 
-    const match = await prisma.match.create({
-      data: {
-        matchId: `EUW1_${7000000000 + i}`,
+    const match = await prisma.match.upsert({
+      where: { matchId },
+      update: {
+        winningTeam: d.won ? 100 : 200,
+        gameStart,
+        gameEnd,
+      },
+      create: {
+        matchId,
         region: "euw1",
         queueId: 420,
         queueType: QueueType.RANKED_SOLO_5x5,
@@ -143,6 +179,12 @@ async function main() {
         winningTeam: d.won ? 100 : 200,
         rawDataHash: `mock-hash-${i.toString().padStart(3, "0")}`,
       },
+    });
+
+    // Rebuilt rather than upserted: participants have no natural key to match on, and a
+    // second run must be able to correct a roster the first run got wrong.
+    await prisma.matchParticipant.deleteMany({
+      where: { matchId: match.id },
     });
 
     // Our tracked player (team 100)
@@ -186,17 +228,23 @@ async function main() {
 
     // 9 other participants (mocked, no riotAccountId)
     for (let j = 1; j < 10; j++) {
+      const rosterEntry = MOCK_ROSTER[j - 1];
+      const champion = championsByKey.get(rosterEntry.key);
+      if (!champion) {
+        throw new Error(`Champion key "${rosterEntry.key}" not found in loaded roster`);
+      }
+
       const isBlueTeam = j < 5;
-      const positions = [Position.TOP, Position.JUNGLE, Position.BOTTOM, Position.UTILITY];
+
       await prisma.matchParticipant.create({
         data: {
           matchId: match.id,
           riotAccountId: null,
           puuid: `mock-puuid-other-${i}-${j}`,
           teamId: isBlueTeam ? 100 : 200,
-          championId: [64, 412, 222, 57, 99, 11, 235, 157, 99][j - 1],
-          championName: ["LeeSin", "Thresh", "Jinx", "Maokai", "Lux", "MasterYi", "Senna", "Yasuo", "Lux"][j - 1],
-          position: j === 1 ? Position.TOP : j === 2 ? Position.JUNGLE : j === 3 ? Position.BOTTOM : j === 4 ? Position.UTILITY : positions[(j - 5) % 4],
+          championId: champion.id,
+          championName: champion.name,
+          position: rosterEntry.position,
           kills: Math.floor(Math.random() * 8),
           deaths: Math.floor(Math.random() * 7) + 1,
           assists: Math.floor(Math.random() * 12),
