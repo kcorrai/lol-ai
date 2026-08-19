@@ -40,6 +40,10 @@ vi.mock("@/lib/auth/authorization", () => ({
   getPlanLimits: vi.fn().mockResolvedValue({ matchHistoryDepth: 20 }),
 }));
 
+vi.mock("@/domains/riot/services/playerIndexService", () => ({
+  indexPlayers: vi.fn().mockResolvedValue(0),
+}));
+
 vi.mock("@/lib/ai/aiCache", () => ({
   deleteCached: vi.fn().mockResolvedValue(undefined),
   buildCacheKey: vi.fn().mockReturnValue("cache-key"),
@@ -185,6 +189,124 @@ describe("syncAccount", () => {
     await syncAccount("acc-1", true);
 
     expect(prisma.matchParticipant.updateMany).not.toHaveBeenCalled();
+  });
+
+  // The ingest loop was strictly serial: one Riot round trip plus a transaction at a time, up to a
+  // hundred of them, against a limiter that allows twenty a second. These assert the concurrent
+  // version reports exactly what the sequential one did.
+  describe("concurrent ingestion", () => {
+    async function ingest(
+      ids: string[],
+      mapper: (id: string) => unknown,
+      onFetch?: (id: string) => Promise<void>
+    ) {
+      vi.mocked(prisma.riotAccount.findUnique).mockResolvedValue({
+        id: "acc-1", lastSyncedAt: null, gameName: "KaaN", tagLine: "TR1",
+        puuid: "puuid-1", region: "euw1", summonerId: "sum-1", userId: "user-1",
+      } as never);
+      vi.mocked(isDataStale).mockReturnValue(true);
+
+      const { getMatchIds, getRankedEntriesByPuuidDirect } = await import(
+        "@/domains/riot/services/riotApiClient"
+      );
+      const { mapMatch } = await import("@/domains/riot/mappers/matchMapper");
+
+      vi.mocked(getMatchIds).mockResolvedValue(ids);
+      vi.mocked(prisma.match.findMany).mockResolvedValue([] as never);
+      vi.mocked(prisma.matchParticipant.findMany).mockResolvedValue([] as never);
+      vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([] as never);
+      vi.mocked(getRankedEntriesByPuuidDirect).mockResolvedValue([] as never);
+      vi.mocked(prisma.riotAccount.update).mockResolvedValue({} as never);
+      vi.mocked(prisma.$transaction).mockImplementation(async (fn: unknown) =>
+        typeof fn === "function"
+          ? (fn as (tx: unknown) => unknown)({
+              match: { create: vi.fn() },
+              matchParticipant: { createMany: vi.fn() },
+            })
+          : undefined
+      );
+      vi.mocked(getMatch).mockImplementation(async (id: string) => {
+        if (onFetch) await onFetch(id);
+        return { id } as never;
+      });
+      vi.mocked(mapMatch).mockImplementation((dto: unknown) =>
+        mapper((dto as { id: string }).id) as never
+      );
+
+      return syncAccount("acc-1", true);
+    }
+
+    const ok = (id: string) => ({
+      match: { queueType: "RANKED_SOLO_5x5" },
+      participants: [{ puuid: `p-${id}`, gameName: "A", tagLine: "1" }],
+    });
+
+    it("counts every ingested match", async () => {
+      const result = await ingest(["A", "B", "C", "D", "E"], ok);
+
+      expect(result.newMatches).toBe(5);
+      expect(result.skipped).toBe(0);
+      expect(result.errors).toEqual([]);
+    });
+
+    it("counts an unmappable match as skipped, not ingested", async () => {
+      const result = await ingest(["A", "B", "C"], (id) => (id === "B" ? null : ok(id)));
+
+      expect(result.newMatches).toBe(2);
+      expect(result.skipped).toBe(1);
+    });
+
+    // One unreadable match must not end the run — the same guarantee the sequential loop's
+    // per-iteration try/catch gave.
+    it("keeps going when one match throws, and names it in the errors", async () => {
+      const result = await ingest(["A", "B", "C"], (id) => {
+        if (id === "B") throw new Error("riot 500");
+        return ok(id);
+      });
+
+      expect(result.newMatches).toBe(2);
+      expect(result.errors).toHaveLength(1);
+      expect(result.errors[0]).toContain("B");
+      expect(result.errors[0]).toContain("riot 500");
+    });
+
+    it("indexes the players of every ingested match exactly once", async () => {
+      const { indexPlayers } = await import("@/domains/riot/services/playerIndexService");
+      await ingest(["A", "B", "C"], ok);
+
+      const indexed = vi.mocked(indexPlayers).mock.calls[0][0] as unknown as Array<{ puuid: string }>;
+      expect(indexed.map((p) => p.puuid).sort()).toEqual(["p-A", "p-B", "p-C"]);
+    });
+
+    // Asserted on the interleaving of start/end events rather than on wall-clock overlap, so it
+    // cannot flake when the suite runs the whole file under load.
+    it("does not run the matches strictly one after another", async () => {
+      const events: string[] = [];
+      let inFlight = 0;
+      let peak = 0;
+
+      await ingest(Array.from({ length: 16 }, (_, i) => `M${i}`), ok, async (id) => {
+        events.push(`start:${id}`);
+        inFlight++;
+        peak = Math.max(peak, inFlight);
+        // One microtask turn is enough to let a sibling task start, and needs no timer.
+        await Promise.resolve();
+        await Promise.resolve();
+        inFlight--;
+        events.push(`end:${id}`);
+      });
+
+      // Strictly sequential work reads start,end,start,end… A second start before the matching end
+      // is only possible if two are in flight together.
+      const overlapped = events.some(
+        (e, i) => i > 0 && e.startsWith("start:") && events[i - 1].startsWith("start:")
+      );
+      expect(overlapped).toBe(true);
+
+      // Concurrent, but bounded: the Riot limiter is a fixed budget every caller draws on, so an
+      // unbounded fan-out would spend it all at once.
+      expect(peak).toBeLessThanOrEqual(8);
+    });
   });
 
   it("force=true bypasses staleness check", async () => {

@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
 import { Errors } from "@/lib/api/errors";
@@ -10,6 +11,7 @@ import { refreshChampionStats } from "@/domains/champions/services/championCache
 import { refreshChampionMastery } from "@/domains/champions/services/championMasteryService";
 import { getPlanLimits } from "@/lib/auth/authorization";
 import { indexPlayers, type IndexablePlayer } from "@/domains/riot/services/playerIndexService";
+import { mapWithConcurrency } from "@/lib/utils/concurrency";
 import { syncRankedSnapshot } from "@/domains/riot/services/matchSyncRankedService";
 export { backfillMatchNicknames } from "@/domains/riot/services/matchSyncRankedService";
 
@@ -86,35 +88,58 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   // autocomplete without a Riot endpoint that can do it (TASK-308).
   const seenPlayers: IndexablePlayer[] = [];
 
-  for (const riotMatchId of newMatchIds) {
+  // Eight at a time, not one. Each iteration is a Riot round trip plus a short transaction, and
+  // done strictly in sequence a hundred of them is well over half a minute of a user watching a
+  // spinner — while the limiter directly underneath allows twenty requests a second and sat almost
+  // idle. Eight keeps that budget usefully busy without opening a hundred Postgres transactions at
+  // once; the ceiling that matters is the connection pool, not the rate limit.
+  //
+  // Bounded rather than Promise.all deliberately: see mapWithConcurrency.
+  const INGEST_CONCURRENCY = 8;
+
+  // `account` is reassigned further down (the ranked snapshot can repair a missing summonerId), so
+  // the ingest tasks read from a fixed binding rather than closing over a mutable one.
+  const { region, puuid, id: accountId } = account;
+
+  // Each task swallows its own failure, so one unreadable match cannot end the run — the same
+  // guarantee the sequential loop gave, kept inside the task rather than around the pool.
+  const outcomes = await mapWithConcurrency(newMatchIds, INGEST_CONCURRENCY, async (riotMatchId) => {
     try {
-      const dto = await getMatch(riotMatchId, account.region);
-      const { randomUUID } = await import("crypto");
+      const dto = await getMatch(riotMatchId, region);
       const matchDbId = randomUUID();
-      const mapped = mapMatch(dto, matchDbId, account.puuid, account.id);
-      if (!mapped) { skipped++; continue; }
+      const mapped = mapMatch(dto, matchDbId, puuid, accountId);
+      if (!mapped) return { kind: "skipped" as const };
 
       await prisma.$transaction(async (tx) => {
         await tx.match.create({ data: mapped.match });
         await tx.matchParticipant.createMany({ data: mapped.participants });
       });
 
-      for (const p of mapped.participants) {
+      return { kind: "ingested" as const, participants: mapped.participants };
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      logger.warn(`[sync] Failed for match ${riotMatchId}: ${msg}`);
+      return { kind: "failed" as const, error: `${riotMatchId}: ${msg}` };
+    }
+  });
+
+  // Folded after the fact rather than mutated from inside the tasks, so the counts do not depend
+  // on the order things happened to finish in.
+  for (const outcome of outcomes) {
+    if (outcome.kind === "skipped") {
+      skipped++;
+    } else if (outcome.kind === "failed") {
+      errors.push(outcome.error);
+    } else {
+      newCount++;
+      for (const p of outcome.participants) {
         seenPlayers.push({
           puuid: p.puuid,
           gameName: p.gameName ?? null,
           tagLine: p.tagLine ?? null,
-          region: account.region,
+          region,
         });
       }
-
-      // Rank enrichment used to be fired here, unawaited, once per match. See the
-      // `match/enrich-ranks` event at the end of this function.
-      newCount++;
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      logger.warn(`[sync] Failed for match ${riotMatchId}: ${msg}`);
-      errors.push(`${riotMatchId}: ${msg}`);
     }
   }
 
