@@ -15,11 +15,11 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const parsed = parseMatchupSlug(params.slug);
-  if (!parsed) return { title: "Matchup not found | LoL AI Coach" };
+  if (!parsed) return { title: "Matchup not found" };
   const data = await loadMatchupData(parsed.first, parsed.second);
-  if (!data) return { title: "Matchup not found | LoL AI Coach" };
+  if (!data) return { title: "Matchup not found" };
   return {
-    title: `${data.a.name} vs ${data.b.name} — ${data.laneLabel} Matchup & Win Rate (Patch ${data.gamePatch}) | LoL AI Coach`,
+    title: `${data.a.name} vs ${data.b.name} — ${data.laneLabel} Matchup & Win Rate (Patch ${data.gamePatch})`,
     description: `Who wins ${data.a.name} vs ${data.b.name}? Real ranked win rate, scaling comparison and lane tips for the ${data.laneLabel} matchup on patch ${data.gamePatch}. Free, updated every patch.`,
     alternates: { canonical: `/matchups/${parsed.canonical}` },
   };

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PricingContent } from "../components/PricingContent";
 
 export const metadata: Metadata = {
-  title: "Pricing — LoL AI Coach",
+  title: "Pricing",
   description: "Start free, upgrade when ready. Transparent pricing.",
 };
 

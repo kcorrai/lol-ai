@@ -10,7 +10,7 @@ import { championLane, championMovers, hoursAgo } from "@/components/champions/c
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
-  title: "Champion Guides — LoL AI Coach",
+  title: "Champion Guides",
   description:
     "League of Legends champion guides: abilities, base stats, matchups and win rates for every champion, with AI coach analysis of your own games.",
   alternates: { canonical: "/champions" },

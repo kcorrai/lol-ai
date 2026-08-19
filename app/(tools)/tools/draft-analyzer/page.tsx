@@ -25,7 +25,7 @@ export function generateMetadata({ searchParams }: PageProps): Metadata {
   // out of the index and canonicalise to the clean tool page.
   const hasParams = Boolean(searchParams.blue || searchParams.red);
   return {
-    title: "LoL Draft Analyzer — Team Composition Checker | LoL AI Coach",
+    title: "LoL Draft Analyzer — Team Composition Checker",
     description:
       "Analyze any League of Legends 5v5 draft: damage profile, frontline, scaling, meta strength and lane matchups from real ranked data. Free, no login.",
     alternates: { canonical: "/tools/draft-analyzer" },

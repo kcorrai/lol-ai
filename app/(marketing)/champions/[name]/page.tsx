@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const pageUrl = `${BASE_URL}/champions/${params.name}`;
   const abilityNames = [champ.passive.name, ...champ.spells.map((s) => s.name)].join(", ");
   return {
-    title: `${champ.name} Guide — Abilities, Skins & Counters | LoL AI Coach`,
+    title: `${champ.name} Guide — Abilities, Skins & Counters`,
     description: `${champ.name}, ${champ.title}: full ability breakdown (${abilityNames}) with videos, skins gallery, base stats and the best counter picks by real ranked win rate.`,
     alternates: { canonical: pageUrl },
     openGraph: {

@@ -8,7 +8,7 @@ import { ToolsConversion } from "./ToolsConversion";
 import { jsonLdProps } from "@/lib/security/jsonLd";
 
 export const metadata: Metadata = {
-  title: "Free LoL Tools — Counters, Matchups, Draft & Tier List | LoL AI Coach",
+  title: "Free LoL Tools — Counters, Matchups, Draft & Tier List",
   description:
     "Free League of Legends tools, no login required: counter picker, matchup analyzer, draft analyzer and tier list — all powered by real ranked data, updated every patch.",
   alternates: { canonical: "/tools" },

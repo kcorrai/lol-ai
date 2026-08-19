@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? `${TIER_LABELS[profile.rank.tier] ?? profile.rank.tier} ${profile.rank.division} · ${profile.rank.lp} LP`
     : "Unranked";
   return {
-    title: `${profile.displayName} — LoL AI Coach`,
+    title: profile.displayName,
     description: `${profile.displayName} | ${rankStr} | ${profile.badges.length} badges`,
     openGraph: { images: [`/api/og/profile/${params.slug}`] },
     twitter: { card: "summary_large_image", images: [`/api/og/profile/${params.slug}`] },

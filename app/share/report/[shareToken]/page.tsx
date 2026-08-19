@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   try {
     const report = await getPublicReport(params.shareToken);
-    const title = `${report.gameName}'s AI Coaching Report — LoL AI Coach`;
+    const title = `${report.gameName}'s AI Coaching Report`;
     const description = report.summary ?? "AI-powered League of Legends coaching report.";
 
     return {
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   } catch {
     return {
-      title: "Coaching Report — LoL AI Coach",
+      title: "Coaching Report",
       alternates: { canonical: canonicalUrl },
     };
   }

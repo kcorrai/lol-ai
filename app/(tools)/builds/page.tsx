@@ -17,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const snapshot = await getMetaSnapshot();
   const patch = snapshot ? formatGamePatch(snapshot.patch) : "";
   return {
-    title: `LoL Champion Builds${patch ? ` — Patch ${patch}` : ""} | LoL AI Coach`,
+    title: `LoL Champion Builds${patch ? ` — Patch ${patch}` : ""}`,
     description:
       "Highest win rate League of Legends builds: runes, items and skill order for every champion, from real ranked games. Free, updated every patch.",
     alternates: { canonical: "/builds" },

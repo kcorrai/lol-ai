@@ -16,7 +16,7 @@ import { PricingStrip } from "./components/laneiq/PricingStrip";
 import { ClosingSplash } from "./components/laneiq/ClosingSplash";
 
 export const metadata: Metadata = {
-  title: "LoL AI Coach — Free LoL Tools & AI-Powered Coaching",
+  title: { absolute: "LoL AI Coach — Free LoL Tools & AI-Powered Coaching" },
   description:
     "Paste your Riot ID and get the one habit costing you LP. Free League of Legends tools — counters, matchups, draft analysis and tier lists from real ranked data. Plus a 61-lesson academy, a fearless draft room and live esports. No login required for the tools.",
   openGraph: {

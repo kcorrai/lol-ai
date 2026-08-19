@@ -24,10 +24,10 @@ export async function generateMetadata({
   params: { champion: string };
 }): Promise<Metadata> {
   const data = await loadBuildData(params.champion);
-  if (!data) return { title: "Champion build not found | LoL AI Coach" };
+  if (!data) return { title: "Champion build not found" };
   const lane = POSITION_LABELS[data.position];
   return {
-    title: `${data.name} Build, Runes & Skill Order — ${lane} Patch ${data.gamePatch} | LoL AI Coach`,
+    title: `${data.name} Build, Runes & Skill Order — ${lane} Patch ${data.gamePatch}`,
     description: `The highest win rate ${data.name} ${lane} build for patch ${data.gamePatch}: runes, item build, skill order, summoner spells and counters from real ranked games. Free, updated every patch.`,
     alternates: { canonical: `/builds/${data.championKey}` },
   };

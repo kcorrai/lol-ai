@@ -20,12 +20,12 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const position = parsePosition(params.role);
-  if (!position) return { title: "Champion build not found | LoL AI Coach" };
+  if (!position) return { title: "Champion build not found" };
   const data = await loadBuildData(params.champion, position);
-  if (!data) return { title: "Champion build not found | LoL AI Coach" };
+  if (!data) return { title: "Champion build not found" };
   const lane = POSITION_LABELS[data.position];
   return {
-    title: `${data.name} ${lane} Build, Runes & Skill Order — Patch ${data.gamePatch} | LoL AI Coach`,
+    title: `${data.name} ${lane} Build, Runes & Skill Order — Patch ${data.gamePatch}`,
     description: `The highest win rate ${data.name} ${lane} build for patch ${data.gamePatch}: runes, items, skill order, spells and counters from real ranked games. Free, updated every patch.`,
     alternates: { canonical: `/builds/${data.championKey}/${params.role.toLowerCase()}` },
   };

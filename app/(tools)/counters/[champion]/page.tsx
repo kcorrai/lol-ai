@@ -52,13 +52,13 @@ function counterHref(
 
 export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
   const detail = await fetchChampionDetail(params.champion);
-  if (!detail) return { title: "Champion not found | LoL AI Coach" };
+  if (!detail) return { title: "Champion not found" };
   const data = await getCounterData(detail.id);
   const patch = data ? ` (Patch ${formatGamePatch(data.patch)})` : "";
   // Rank/lane-filtered views are near-duplicates — keep them out of the index.
   const filtered = Boolean(parseTier(searchParams.tier) || parsePosition(searchParams.role));
   return {
-    title: `${detail.name} Counters — Best Champions to Beat ${detail.name}${patch} | LoL AI Coach`,
+    title: `${detail.name} Counters — Best Champions to Beat ${detail.name}${patch}`,
     description: `The best champions to counter ${detail.name} and the matchups ${detail.name} wins, ranked by real ranked win rate. Free counter picks, updated every patch.`,
     alternates: { canonical: `/counters/${detail.id}` },
     ...(filtered ? { robots: { index: false, follow: true } } : {}),
