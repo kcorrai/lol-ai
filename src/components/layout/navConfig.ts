@@ -24,6 +24,7 @@ import {
   Handshake,
   GraduationCap,
   History,
+  Search,
   Radio as RadioIcon,
 } from "lucide-react";
 
@@ -70,6 +71,7 @@ export const NAV_SECTIONS: NavSection[] = [
     label: "My Performance",
     items: [
       { href: "/champion-pool", icon: Shield, label: "Champions", tourId: "nav-champions" },
+      { href: "/matches", icon: Search, label: "Match Search" },
       { href: "/analysis", icon: Map, label: "Heat Map" },
       { href: "/timeline", icon: History, label: "Career Timeline" },
       { href: "/recap", icon: Film, label: "Season Recap" },
