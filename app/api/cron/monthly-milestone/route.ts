@@ -1,20 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendMonthlyMilestoneReports } from "@/domains/coaching/services/monthlyMilestoneService";
+import { checkCronAuth } from "@/lib/api/cronAuth";
 import { logger } from "@/lib/utils/logger";
 
 export const dynamic = "force-dynamic";
 
 // Vercel Cron — 1st of each month at 09:00 UTC
 export async function GET(req: NextRequest): Promise<NextResponse> {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    logger.error("[cron] CRON_SECRET not set");
-    return NextResponse.json({ error: "Cron is not configured" }, { status: 500 });
-  }
-
-  if (req.headers.get("authorization") !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const auth = checkCronAuth(req);
+  if (!auth.ok) return NextResponse.json({ error: auth.message }, { status: auth.status });
 
   logger.info("[cron] monthly-milestone: starting");
   const result = await sendMonthlyMilestoneReports();

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
+import { checkCronAuth } from "@/lib/api/cronAuth";
 import { prisma } from "@/lib/db/prisma";
 import { apiError, apiSuccess } from "@/lib/api/response";
 import { logger } from "@/lib/utils/logger";
@@ -12,9 +13,9 @@ import { logger } from "@/lib/utils/logger";
 const bodySchema = z.object({ email: z.string().email().optional() });
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  const cronSecret = process.env.CRON_SECRET;
-  const authHeader = req.headers.get("authorization");
-  const isCronAuth = Boolean(cronSecret) && authHeader === `Bearer ${cronSecret}`;
+  // Constant-time, and shared with the scheduled endpoints: a `===` on a bearer token
+  // returns at the first differing byte, which an attacker can retry against for free.
+  const isCronAuth = checkCronAuth(req).ok;
 
   const session = isCronAuth ? null : await getServerSession(authOptions);
 

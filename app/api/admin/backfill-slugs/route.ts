@@ -1,15 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
+import { checkCronAuth } from "@/lib/api/cronAuth";
 import { prisma } from "@/lib/db/prisma";
 import { toProfileSlug } from "@/domains/identity/services/profileService";
 
 // POST /api/admin/backfill-slugs
 // Sets profileSlug for all users who have a primary Riot account but no slug yet.
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  const cronSecret = process.env.CRON_SECRET;
-  const authHeader = req.headers.get("authorization");
-  const isCronAuth = cronSecret && authHeader === `Bearer ${cronSecret}`;
+  // Constant-time, and shared with the scheduled endpoints: a `===` on a bearer token
+  // returns at the first differing byte, which an attacker can retry against for free.
+  const isCronAuth = checkCronAuth(req).ok;
 
   const session = isCronAuth ? null : await getServerSession(authOptions);
 

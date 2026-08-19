@@ -1,12 +1,26 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
+import { logger } from "@/lib/utils/logger";
 
 export const dynamic = "force-dynamic";
 
 interface ServiceStatus {
   ok: boolean;
   latencyMs?: number;
-  error?: string;
+}
+
+/**
+ * The reason a check failed goes to the log, never to the caller.
+ *
+ * This endpoint is unauthenticated — an uptime probe has to reach it — and the
+ * failures it reports are database and Redis client errors. Those carry hosts,
+ * ports, database names and sometimes the connection string itself, so returning
+ * the message handed an anonymous visitor a map of the infrastructure precisely
+ * when the infrastructure was in trouble. A monitor only needs ok/degraded.
+ */
+function failed(service: string, err: unknown): ServiceStatus {
+  logger.error(`[health] ${service} check failed`, err);
+  return { ok: false };
 }
 
 async function checkDatabase(): Promise<ServiceStatus> {
@@ -15,7 +29,7 @@ async function checkDatabase(): Promise<ServiceStatus> {
     await prisma.$queryRaw`SELECT 1`;
     return { ok: true, latencyMs: Date.now() - start };
   } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : "unknown" };
+    return failed("database", err);
   }
 }
 
@@ -34,7 +48,7 @@ async function checkRedis(): Promise<ServiceStatus> {
     await redis.ping();
     return { ok: true, latencyMs: Date.now() - start };
   } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : "unknown" };
+    return failed("redis", err);
   }
 }
 
