@@ -5,6 +5,7 @@ import { TOOL_GROUPS, TOOL_COUNT } from "./toolIndex";
 import { ToolsHero } from "./ToolsHero";
 import { ToolGroupList } from "./ToolGroupList";
 import { ToolsConversion } from "./ToolsConversion";
+import { jsonLdProps } from "@/lib/security/jsonLd";
 
 export const metadata: Metadata = {
   title: "Free LoL Tools — Counters, Matchups, Draft & Tier List | LoL AI Coach",
@@ -64,7 +65,7 @@ export default async function ToolsHubPage(): Promise<React.JSX.Element> {
     <div className="mx-auto max-w-[1240px] px-5 pb-16 pt-8 md:px-8">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareJsonLd) }}
+        dangerouslySetInnerHTML={jsonLdProps(softwareJsonLd)}
       />
 
       <ToolsHero stats={heroStats} />

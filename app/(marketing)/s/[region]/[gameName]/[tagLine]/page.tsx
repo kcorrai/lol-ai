@@ -10,6 +10,7 @@ import { ProfileRoles } from "../../../components/ProfileRoles";
 import { ProfileMatches } from "../../../components/ProfileMatches";
 import { ProfileNotFound } from "../../../components/ProfileNotFound";
 import { ClaimProfileButton } from "../../../components/ClaimProfileButton";
+import { jsonLdProps } from "@/lib/security/jsonLd";
 
 export const dynamic = "force-dynamic";
 
@@ -125,7 +126,7 @@ export default async function SummonerPage({ params }: Props): Promise<React.Rea
 
   return (
     <div className="mx-auto max-w-[980px] space-y-4 px-4 py-7">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdProps(jsonLd)} />
 
       {/* Searching the next player is the most likely next action on this page, so the box is
           here rather than only in the header. */}

@@ -17,6 +17,7 @@ import { CoachCardTile } from "@/domains/marketplace/components/CoachCardTile";
 import { CoachFilters } from "@/domains/marketplace/components/CoachFilters";
 import { CoachPagination } from "@/domains/marketplace/components/CoachPagination";
 import { coachesIndexJsonLd } from "@/domains/marketplace/jsonLd";
+import { jsonLdProps } from "@/lib/security/jsonLd";
 
 export const metadata: Metadata = {
   title: "Find a League of Legends Coach",
@@ -54,9 +55,7 @@ export default async function CoachesPage({ searchParams }: Props) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(coachesIndexJsonLd(`${baseUrl}/coaches`, result.total)),
-        }}
+        dangerouslySetInnerHTML={jsonLdProps(coachesIndexJsonLd(`${baseUrl}/coaches`, result.total))}
       />
 
       <section className="relative overflow-hidden border-b border-line-1">

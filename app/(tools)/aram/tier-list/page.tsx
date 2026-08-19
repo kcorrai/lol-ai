@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getAramTierList, formatGamePatch } from "@/domains/meta";
 import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { TierListView } from "../../tools/tier-list/TierListView";
+import { jsonLdProps } from "@/lib/security/jsonLd";
 
 export const revalidate = 43200; // 12h ISR
 
@@ -35,7 +36,7 @@ export default async function AramTierListPage() {
       {itemListJsonLd && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+          dangerouslySetInnerHTML={jsonLdProps(itemListJsonLd)}
         />
       )}
 

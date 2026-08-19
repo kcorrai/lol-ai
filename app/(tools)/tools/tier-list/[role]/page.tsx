@@ -14,6 +14,7 @@ import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { TierListView } from "../TierListView";
 import { tierBlurb } from "../tierBlurb";
 import { PublicOnly } from "@/components/tools/PublicOnly";
+import { jsonLdProps } from "@/lib/security/jsonLd";
 
 export const revalidate = 43200; // 12h ISR
 export const dynamicParams = false;
@@ -76,7 +77,7 @@ export default async function RoleTierListPage({ params, searchParams }: PagePro
       {itemListJsonLd && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+          dangerouslySetInnerHTML={jsonLdProps(itemListJsonLd)}
         />
       )}
 

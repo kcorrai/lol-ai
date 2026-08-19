@@ -4,6 +4,7 @@ import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { MatchupCurveCompare } from "@/domains/meta/components/MatchupCurveCompare";
 import { DataFreshness } from "@/domains/meta/components/DataFreshness";
 import type { MatchupPageData } from "./loadMatchupData";
+import { jsonLdProps } from "@/lib/security/jsonLd";
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
 
@@ -64,8 +65,8 @@ export function MatchupPageView({ d }: { d: MatchupPageData }) {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdProps(jsonLd)} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdProps(breadcrumb)} />
 
       <Breadcrumb
         items={[

@@ -18,6 +18,7 @@ import { ChampionTips } from "./ChampionTips";
 import { ChampionLore } from "./ChampionLore";
 import { buildAbilityViews } from "./abilityViews";
 import { laneLabelOf, railMatchups } from "./championMatchups";
+import { jsonLdProps } from "@/lib/security/jsonLd";
 
 export const revalidate = 86400;
 
@@ -104,7 +105,7 @@ export default async function ChampionDetailPage({ params }: Props): Promise<Rea
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={jsonLdProps(faqSchema)}
       />
 
       <div className="mx-auto max-w-[1240px] px-5 pt-6 md:px-8">

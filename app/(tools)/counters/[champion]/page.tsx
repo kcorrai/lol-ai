@@ -20,6 +20,7 @@ import { CounterInsights } from "./CounterInsights";
 import { ProPlayStrip } from "@/domains/esports/components/ProPlayStrip";
 import { fetchAllChampions, fetchChampionDetail } from "@/lib/ddragon/championsData";
 import { championSplashUrl } from "@/lib/ddragon";
+import { jsonLdProps } from "@/lib/security/jsonLd";
 
 export const revalidate = 43200; // 12h ISR
 export const dynamicParams = true;
@@ -104,8 +105,8 @@ export default async function ChampionCountersPage({ params, searchParams }: Pag
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-12">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdProps(breadcrumbJsonLd)} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdProps(faqJsonLd)} />
 
       <nav className="mb-6 text-xs text-text-muted">
         <Link href="/tools" className="hover:text-text">Free Tools</Link>

@@ -8,6 +8,7 @@ import { MoverList } from "./MoverList";
 import { MetaHero } from "./MetaHero";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { metaSummary, metaFaq } from "./metaReportText";
+import { jsonLdProps } from "@/lib/security/jsonLd";
 
 export const revalidate = 43200; // 12h ISR
 
@@ -78,7 +79,7 @@ export default async function MetaReportPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-14">
       {jsonLd.map((ld, i) => (
-        <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
+        <script key={i} type="application/ld+json" dangerouslySetInnerHTML={jsonLdProps(ld)} />
       ))}
 
       <Breadcrumb

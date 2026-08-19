@@ -1,4 +1,5 @@
 import { buildJsonLd, type EsportsSchema } from "@/domains/esports/jsonLd";
+import { jsonLdProps } from "@/lib/security/jsonLd";
 
 /**
  * Emits a page's structured data. Every esports page type states what it is
@@ -11,7 +12,7 @@ export function EsportsJsonLd({ schema }: { schema: EsportsSchema }): React.Reac
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      dangerouslySetInnerHTML={jsonLdProps(data)}
     />
   );
 }

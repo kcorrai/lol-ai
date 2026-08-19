@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { jsonLdProps } from "@/lib/security/jsonLd";
 
 export interface Crumb {
   name: string;
@@ -32,7 +33,7 @@ export function Breadcrumb({ items }: { items: Crumb[] }): React.ReactElement {
     <nav aria-label="Breadcrumb" className="mb-6 text-xs text-text-muted">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={jsonLdProps(jsonLd)}
       />
       {items.map((crumb, index) => {
         const last = index === items.length - 1;
