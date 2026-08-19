@@ -20,6 +20,30 @@ export const whichObjectiveHappens: Lesson = {
       text: "Late in the laning phase there are usually two things available — a drake at one end, a herald or a turret at the other — and both teams can only really commit to one. The team that gets to choose is the team whose mid laner is already moving, because everybody else is a full lane's walk from at least one of them. That choice is the most valuable thing the role produces and most mid laners hand it over by being late.",
     },
     {
+      kind: "mapFigure",
+      caption: "Both objectives are within reach — which one is cheaper from where you are",
+      annotations: [
+        {
+          at: { x: 0.50, y: 0.50, r: 0.06 },
+          label: "Mid lane",
+          tone: "neutral",
+          note: "The start of every rotation. From the middle of the lane you are thirty seconds from either end of the map, which is why the team whose mid laner is already moving gets to decide.",
+        },
+        {
+          at: { x: 0.60, y: 0.65, r: 0.06 },
+          label: "Drake approach",
+          tone: "good",
+          note: "Closer than it looks if you just shoved. A crashed wave buys you the seconds you need to arrive before the pit is contested.",
+        },
+        {
+          at: { x: 0.25, y: 0.18, r: 0.06 },
+          label: "Herald or top turret",
+          tone: "good",
+          note: "Further than Drake but your opponent has to walk the same distance. The real question is which one arrives with a wave paid for and which one arrives having abandoned one.",
+        },
+      ],
+    },
+    {
       kind: "keyPoint",
       title: "Fourth before the fight beats fifth after it",
       text: "Objectives are decided by who has more bodies near the pit when it starts, not by who has more bodies in the fight once it has begun. Arriving fourth, before anything happens, means your team starts the objective and theirs has to react. Arriving fifth, ten seconds in, means you are joining a fight your team already committed to at a disadvantage — the same walk, a completely different game.",

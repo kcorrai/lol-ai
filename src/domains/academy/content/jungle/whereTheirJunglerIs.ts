@@ -35,6 +35,24 @@ export const whereTheirJunglerIs: Lesson = {
         ["He ganks your bot at 4:30", "He is bottom side for the next 40s", "Take his top camps or set up your own drake"],
       ],
     },
+    {
+      kind: "mapFigure",
+      caption: "He started on one of these two, and their lanes told you which at 1:30",
+      annotations: [
+        {
+          at: { x: 0.42, y: 0.20, r: 0.055 },
+          label: "He started their top side",
+          tone: "neutral",
+          note: "Their bottom lane arrived late, so he leashed up here. For the next three minutes he is somewhere in the top half of the map, and the bottom half of your jungle is nobody's.",
+        },
+        {
+          at: { x: 0.80, y: 0.58, r: 0.055 },
+          label: "He started their bottom side",
+          tone: "neutral",
+          note: "The mirror, and the more common one. Your top-side camps are unguarded until his first clear finishes — which is a fact you owned at 1:30 and most players do not use until they see him.",
+        },
+      ],
+    },
     { kind: "drill", drillId: "tracking-quiz" },
     { kind: "gate" },
     {

@@ -35,6 +35,32 @@ export const theRoleWithNoFarm: Lesson = {
         ["Damage components", "Poke pressure", "When your team needed the utility item three minutes ago"],
       ],
     },
+    {
+      kind: "figure",
+      caption: "The role's entire income, and what it turns into",
+      assets: [
+        {
+          ref: { of: "item", item: "world-atlas" },
+          label: "Where the gold comes from",
+          note: "You do not farm, so this does it for you: gold on a timer, plus charges that execute minions when your carry is not there to. It is the reason taking CS is a mistake rather than a bonus.",
+        },
+        {
+          ref: { of: "item", item: "runic-compass" },
+          label: "It upgrades on its own",
+          note: "The quest completes by playing the role properly, and the upgrade hands you free wards on a cooldown. Your vision stops competing with your build at exactly the point the map gets dangerous.",
+        },
+        {
+          ref: { of: "item", item: "bounty-of-worlds" },
+          label: "And again",
+          note: "The final form, and the honest measure of the role: a support who reached it played twenty-five minutes of a game where nothing they did showed up in the CS column.",
+        },
+        {
+          ref: { of: "item", item: "control-ward" },
+          label: "Where the gold goes",
+          note: "75 gold on every back. This is the conversion the lesson is about — a support's income does not become damage, it becomes the thing that decides whether the next objective is contestable.",
+        },
+      ],
+    },
     { kind: "drill", drillId: "nofarm-quiz" },
     {
       kind: "mistake",

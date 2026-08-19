@@ -37,6 +37,17 @@ export const farmingForTheItem: Lesson = {
     },
     { kind: "drill", drillId: "farm-quiz" },
     {
+      kind: "figure",
+      caption: "This is what the first fifteen minutes are for",
+      assets: [
+        {
+          ref: { of: "item", item: "kraken-slayer" },
+          label: "One completed item",
+          note: "Around 3,400 gold. At a little over a hundred gold a wave, that is roughly thirty waves — fifteen minutes of not missing minions, or eleven kills you are not going to get. The whole argument of this lesson is that the second number is not available and the first one is.",
+        },
+      ],
+    },
+    {
       kind: "mistake",
       title: "Recalling with an awkward number",
       text: "You back at 1150 gold because you are low on health, buy a component and two potions, and walk back. Two waves later you have 1300 gold and still no item — you spent the trip and got no spike out of it, and now you have to go again.",
