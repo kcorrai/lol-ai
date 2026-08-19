@@ -17,6 +17,10 @@ type RequestOptions = {
   noCacheEmptyArray?: boolean;
 };
 
+// Generous next to Riot's real latency distribution, tight next to the 300s platform ceiling a
+// hung connection would otherwise run to.
+const REQUEST_TIMEOUT_MS = 10_000;
+
 export class RiotHttpClient {
   private readonly apiKey: string;
   private readonly cache: CacheStore;
@@ -73,6 +77,12 @@ export class RiotHttpClient {
       },
       // Disable Next.js fetch cache — we manage caching ourselves
       cache: "no-store",
+      // Riot's p99 is well under two seconds. Without a bound, a stalled connection pins the
+      // invocation — and its memory reservation and its database connection — until the platform's
+      // 300s ceiling, three times over because withRetry will try again. The AI providers have
+      // carried the same guard since they were written (see providers/openai.ts); the Riot client
+      // never did. withRetry treats the resulting TimeoutError as retryable.
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
 
     if (!response.ok) {

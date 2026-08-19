@@ -67,3 +67,43 @@ describe("RiotHttpClient caching", () => {
     expect(cache.store.get("k")).toEqual([]);
   });
 });
+
+describe("RiotHttpClient timeouts", () => {
+  beforeEach(() => vi.restoreAllMocks());
+
+  it("passes an abort signal so a stalled connection cannot pin the invocation", async () => {
+    const fetchMock = vi.fn(async (_url: string, _init?: RequestInit) => ({
+      ok: true,
+      json: async () => ({}),
+      headers: { get: () => null },
+    }));
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    const client = new RiotHttpClient("key", makeCache(), limiter);
+    await client.get("http://x", { skipRateLimit: true });
+
+    expect(fetchMock.mock.calls[0]?.[1]?.signal).toBeInstanceOf(AbortSignal);
+  });
+
+  // The timeout is only worth having if the failure it produces is retryable rather than fatal —
+  // a TimeoutError carries no HTTP status, so withRetry has to recognise it by name.
+  it("surfaces a timeout as a retryable error", async () => {
+    const { withRetry } = await import("./retry");
+
+    const fetchMock = vi
+      .fn()
+      .mockRejectedValueOnce(Object.assign(new Error("timed out"), { name: "TimeoutError" }))
+      .mockResolvedValue({ ok: true, json: async () => ({ ok: 1 }), headers: { get: () => null } });
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    const client = new RiotHttpClient("key", makeCache(), limiter);
+    const out = await withRetry(() => client.get<{ ok: number }>("http://x", { skipRateLimit: true }), {
+      maxAttempts: 2,
+      baseDelayMs: 1,
+      maxDelayMs: 2,
+    });
+
+    expect(out).toEqual({ ok: 1 });
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+});
