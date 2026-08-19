@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import { RecentMatchList } from "@/domains/analysis/components/RecentMatchList";
 import { WinrateTrendWidget } from "@/domains/analysis/components/WinrateTrendWidget";
 import { PerformanceTrendChart } from "@/domains/analysis/components/PerformanceTrendChart";
@@ -10,7 +11,21 @@ import { TiltBreakModal } from "@/domains/analysis/components/TiltBreakModal";
 import { PatchImpactWidget } from "@/components/dashboard/PatchImpactWidget";
 import { MetaRecommendationsWidget } from "@/components/dashboard/MetaRecommendationsWidget";
 import { WeekSummaryWidget } from "@/components/dashboard/WeekSummaryWidget";
-import { DailyMomentumChart } from "@/components/dashboard/DailyMomentumChart";
+// Recharts is the single largest thing this route pulls in, and the chart sits well below the
+// fold. Loaded on demand so the dashboard's first paint does not wait on it; ssr:false because the
+// component is client-only anyway, so there is no server render being given up.
+const DailyMomentumChart = dynamic(
+  () => import("@/components/dashboard/DailyMomentumChart").then((m) => m.DailyMomentumChart),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="animate-pulse rounded-2xl border border-border bg-surface p-5">
+        <div className="h-3 w-32 rounded bg-border" />
+        <div className="mt-4 h-44 w-full rounded bg-border" />
+      </div>
+    ),
+  }
+);
 import { DuoPanel } from "@/components/dashboard/laneiq/duo/DuoPanel";
 import { DevRestartOnboarding } from "@/components/dashboard/DevRestartOnboarding";
 import { ClaimAccountOnArrival } from "@/components/dashboard/ClaimAccountOnArrival";
