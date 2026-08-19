@@ -26,8 +26,6 @@ if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 // Monitor connection pool exhaustion in Sentry so we can detect when
 // Neon pooler limits are hit across concurrent function invocations.
-prisma.$on("query" as never, () => { /* no-op, required to attach error handler */ });
-
 prisma.$use(async (params, next) => {
   try {
     return await next(params);

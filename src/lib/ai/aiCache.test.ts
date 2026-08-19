@@ -20,7 +20,7 @@ vi.mock("@/lib/cache/redisCache", () => ({
   redisCacheDelete: vi.fn(),
 }));
 
-import { getCached, setCached, deleteCached, buildCacheKey, incrementHit } from "./aiCache";
+import { getCached, setCached, deleteCached, buildCacheKey } from "./aiCache";
 import { prisma } from "@/lib/db/prisma";
 import { redisCacheGet, redisCacheSet, redisCacheDelete } from "@/lib/cache/redisCache";
 
@@ -159,17 +159,6 @@ describe("buildCacheKey", () => {
   it("returns a 64-char hex string (sha256)", () => {
     const key = buildCacheKey("otp", { champion: "riven", role: "TOP" });
     expect(key).toMatch(/^[0-9a-f]{64}$/);
-  });
-});
-
-describe("incrementHit", () => {
-  it("calls prisma update with correct args", async () => {
-    mockPrisma.aiCache.update.mockResolvedValue({});
-    await incrementHit("some-key");
-    expect(mockPrisma.aiCache.update).toHaveBeenCalledWith({
-      where: { cacheKey: "some-key" },
-      data: { hitCount: { increment: 1 } },
-    });
   });
 });
 

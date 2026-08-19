@@ -66,9 +66,38 @@ export async function createPendingReportWithinQuota(
   });
 }
 
+/**
+ * Projected rather than `SELECT *`, for the same reason the AI cache reads are (TASK-282): every
+ * column crosses the network from Neon, and this row carries five Json/Text blobs.
+ *
+ * The field list is `CoachingReportDetail` — what the API contract actually promises. The two
+ * columns left out are the ones no caller reads: `userFeedback`, the user's own free-text note,
+ * which was being handed back to them on every report load, and `shareToken`, which has its own
+ * endpoint and does not belong in a response that is not asking for it.
+ */
 export async function getReport(reportId: string, userId: string) {
   const report = await prisma.coachingReport.findFirst({
     where: { id: reportId, riotAccount: { userId } },
+    select: {
+      id: true,
+      riotAccountId: true,
+      reportType: true,
+      focusArea: true,
+      status: true,
+      matchesAnalyzed: true,
+      summary: true,
+      strengths: true,
+      weaknesses: true,
+      actionItems: true,
+      championRecommendations: true,
+      estimatedRankPotential: true,
+      coachPersonaResponse: true,
+      aiModelUsed: true,
+      processingTimeMs: true,
+      userRating: true,
+      createdAt: true,
+      completedAt: true,
+    },
   });
   if (!report) throw Errors.notFound("Coaching report");
   return report;

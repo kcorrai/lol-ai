@@ -174,7 +174,12 @@ function coPlayerCondition(
   };
 }
 
-/** True when no facet is set — lets the UI tell "everything" apart from "nothing matched". */
+/**
+ * True when no facet is set, so the archive UI can tell "everything" apart from "nothing matched".
+ *
+ * Nothing calls this yet — the archive is API-only, and the screen that needs the distinction is
+ * LA-36. Kept rather than deleted because it is a helper waiting on in-flight work, not a leftover.
+ */
 export function isEmptyFilter(filters: ArchiveFilters): boolean {
   return Object.entries(filters).every(
     ([key, value]) =>
