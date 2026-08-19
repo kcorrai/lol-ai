@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db/prisma";
+import { normalizeEmail } from "@/lib/security/email";
 import { checkRateLimit, getIp, rateLimitResponse } from "@/lib/api/rateLimit";
 import { logger } from "@/lib/utils/logger";
 
@@ -39,18 +40,24 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const { token: rawToken, password } = parsed.data;
   const hashedToken = createHash("sha256").update(rawToken).digest("hex");
 
+  // `VerificationToken` is shared with the email-verification flow, which stores its
+  // token as issued while this one stores a hash. That difference is the only thing
+  // keeping the two apart today, and it is not a property anyone would think to
+  // preserve — so the identifier is checked to be a plain address as well, and a
+  // future change to how verification tokens are stored cannot turn a "confirm your
+  // email" link into a password reset.
   const record = await prisma.verificationToken.findUnique({
     where: { token: hashedToken },
   });
 
-  if (!record || record.expires < new Date()) {
+  if (!record || record.identifier.includes(":") || record.expires < new Date()) {
     return NextResponse.json(
       { error: { code: "INVALID_TOKEN", message: "This reset link is invalid or has expired." } },
       { status: 400 }
     );
   }
 
-  const { identifier: email } = record;
+  const email = normalizeEmail(record.identifier);
 
   const user = await prisma.user.findUnique({
     where: { email },
@@ -70,6 +77,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   await prisma.account.updateMany({
     where: { userId: user.id, provider: "credentials" },
     data: { access_token: passwordHash },
+  });
+
+  // Every session signed in with the old password is cut here. A reset is what
+  // somebody does *because* their account is not theirs any more; leaving the
+  // intruder's 30-day JWT valid meant the reset changed nothing for them. The JWT
+  // callback refuses any token whose `sessionVersion` is behind the row's.
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { sessionVersion: { increment: 1 } },
   });
 
   // Invalidate the used token

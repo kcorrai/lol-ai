@@ -2,11 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
+import { checkRateLimit, rateLimitResponse } from "@/lib/api/rateLimit";
 import { applyReferralCode } from "@/domains/identity/services/referralService";
 
 const schema = z.object({ code: z.string().min(1).max(16).toUpperCase() });
 
+// Referral codes are short and carry a paid trial, and this endpoint said whether one
+// was valid with no ceiling on how often it could be asked — which is a free oracle
+// for walking the code space.
+const APPLY_LIMIT = { limit: 10, windowMs: 3_600_000 };
+
 export const POST = withAuth(async (req: NextRequest, { userId }) => {
+  const rl = await checkRateLimit(`referral-apply:${userId}`, APPLY_LIMIT);
+  if (!rl.allowed) return rateLimitResponse(rl.retryAfterMs, rl.limit);
+
   let body: unknown;
   try {
     body = await req.json();

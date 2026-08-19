@@ -43,29 +43,36 @@ async function fetchMatchupRows(
   riotAccountId: string,
   championId: number
 ): Promise<MatchupRow[]> {
-  // Prisma raw query: self-join match_participants to find same-lane opponent.
-  // Fluent API cannot express same-match cross-team same-position join in one go.
+  // Self-join match_participants to find the same-lane opponent. The fluent API cannot
+  // express a same-match, cross-team, same-position join in one go.
+  //
+  // Column names are quoted camelCase because that is what the tables actually have:
+  // Prisma maps table names through `@@map` and leaves column names alone. The snake_case
+  // this used to spell (`mp.riot_account_id`, `m.queue_type`) matches no column, and an
+  // unquoted camelCase name would be folded to lower case and match none either — so every
+  // request to the personal matchup endpoint failed with "column does not exist" (LA-38).
+  // Nothing catches that at compile time; `matchArchiveService` carries the same warning.
   return prisma.$queryRaw<MatchupRow[]>`
     SELECT
-      opp.champion_id         AS opponent_champion_id,
-      opp.champion_name       AS opponent_champion_name,
+      opp."championId"        AS opponent_champion_id,
+      opp."championName"      AS opponent_champion_name,
       COUNT(*)::bigint        AS games,
-      SUM(CASE WHEN mp.won THEN 1 ELSE 0 END)::bigint AS wins,
-      SUM(mp.kills + mp.assists)::float               AS kills_sum,
-      SUM(mp.deaths)::float                           AS deaths_sum,
-      SUM(mp.assists)::float                          AS assists_sum
+      SUM(CASE WHEN mp."won" THEN 1 ELSE 0 END)::bigint AS wins,
+      SUM(mp."kills")::float                            AS kills_sum,
+      SUM(mp."deaths")::float                           AS deaths_sum,
+      SUM(mp."assists")::float                          AS assists_sum
     FROM match_participants mp
     JOIN match_participants opp
-      ON  opp.match_id  = mp.match_id
-      AND opp.team_id  != mp.team_id
-      AND opp.position  = mp.position
-    JOIN matches m ON m.id = mp.match_id
-    WHERE mp.riot_account_id = ${riotAccountId}::uuid
-      AND mp.champion_id     = ${championId}
-      AND m.queue_type       = 'RANKED_SOLO_5x5'
-    GROUP BY opp.champion_id, opp.champion_name
+      ON  opp."matchId"  = mp."matchId"
+      AND opp."teamId"  != mp."teamId"
+      AND opp."position" = mp."position"
+    JOIN matches m ON m."id" = mp."matchId"
+    WHERE mp."riotAccountId" = ${riotAccountId}::uuid
+      AND mp."championId"    = ${championId}
+      AND m."queueType"      = 'RANKED_SOLO_5x5'
+    GROUP BY opp."championId", opp."championName"
     HAVING COUNT(*) >= ${MIN_GAMES}
-    ORDER BY (SUM(CASE WHEN mp.won THEN 1 ELSE 0 END)::float / COUNT(*)) DESC
+    ORDER BY (SUM(CASE WHEN mp."won" THEN 1 ELSE 0 END)::float / COUNT(*)) DESC
   `;
 }
 
@@ -75,18 +82,18 @@ async function fetchTrendGames(
   opponentChampionId: number
 ): Promise<RecentGame[]> {
   return prisma.$queryRaw<RecentGame[]>`
-    SELECT mp.won
+    SELECT mp."won"
     FROM match_participants mp
     JOIN match_participants opp
-      ON  opp.match_id  = mp.match_id
-      AND opp.team_id  != mp.team_id
-      AND opp.position  = mp.position
-    JOIN matches m ON m.id = mp.match_id
-    WHERE mp.riot_account_id = ${riotAccountId}::uuid
-      AND mp.champion_id     = ${championId}
-      AND opp.champion_id    = ${opponentChampionId}
-      AND m.queue_type       = 'RANKED_SOLO_5x5'
-    ORDER BY m.game_start DESC
+      ON  opp."matchId"  = mp."matchId"
+      AND opp."teamId"  != mp."teamId"
+      AND opp."position" = mp."position"
+    JOIN matches m ON m."id" = mp."matchId"
+    WHERE mp."riotAccountId" = ${riotAccountId}::uuid
+      AND mp."championId"    = ${championId}
+      AND opp."championId"   = ${opponentChampionId}
+      AND m."queueType"      = 'RANKED_SOLO_5x5'
+    ORDER BY m."gameStart" DESC
     LIMIT ${TREND_WINDOW * 2}
   `;
 }
@@ -94,8 +101,13 @@ async function fetchTrendGames(
 function rowToEntry(row: MatchupRow, trend: MatchupTrend): MatchupEntry {
   const games = Number(row.games);
   const wins = Number(row.wins);
+  // Aggregate KDA over the whole matchup: (all kills + all assists) / all deaths, matching
+  // `computeKDA`. It read `(kills_sum + assists_sum) / deaths / games` against a `kills_sum`
+  // that was itself `SUM(kills + assists)` — so assists were counted twice and the ratio was
+  // then divided by the game count a second time, which put every KDA on this panel out by
+  // roughly the number of games played.
   const deaths = row.deaths_sum === 0 ? 1 : row.deaths_sum;
-  const avgKda = Math.round(((row.kills_sum + row.assists_sum) / deaths / games) * 10) / 10;
+  const avgKda = Math.round(((row.kills_sum + row.assists_sum) / deaths) * 10) / 10;
 
   return {
     opponentChampionId: Number(row.opponent_champion_id),

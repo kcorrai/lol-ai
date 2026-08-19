@@ -8,6 +8,23 @@ const BACKUP_CODE_COUNT = 8;
 const BACKUP_CODE_ROUNDS = 10;
 const TOTP_OPTIONS = { algorithm: "sha1" as const, digits: 6, period: 30 };
 
+/**
+ * How far outside the current 30-second step a code is still accepted, in seconds.
+ *
+ * `verifySync` defaults to zero tolerance, so only the step the server is in counts.
+ * That is not a threshold a person can meet: reading six digits off a phone and typing
+ * them takes long enough to cross a boundary on its own, and the phone's clock only has
+ * to be a second or two out for a correct code to be refused every time. Verified by
+ * hand against a running server — a code generated and then used a few seconds later
+ * was rejected.
+ *
+ * One step either side is what RFC 6238 §5.2 suggests and what authenticator apps
+ * assume. It widens the guessing window from one code to three, which against a
+ * six-digit space and this route's ten-attempts-per-fifteen-minutes limit is not the
+ * part of this that an attacker would go at.
+ */
+const TOTP_TOLERANCE_SECONDS = 30;
+
 export interface TotpSetupResult {
   secret: string;
   otpauthUrl: string;
@@ -29,7 +46,12 @@ export function generateTotpSetup(email: string): TotpSetupResult {
 export function verifyTotpToken(encryptedSecret: string, token: string): boolean {
   try {
     const secret = decryptString(encryptedSecret);
-    const result = verifySync({ token, secret, ...TOTP_OPTIONS });
+    const result = verifySync({
+      token,
+      secret,
+      ...TOTP_OPTIONS,
+      epochTolerance: TOTP_TOLERANCE_SECONDS,
+    });
     return result !== null && result.valid;
   } catch {
     return false;

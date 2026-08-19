@@ -16,6 +16,7 @@ import { HudPanel } from "@/domains/marketplace/components/hud/HudPanel";
 import { BookingSteps } from "@/domains/marketplace/components/BookingSteps";
 import { NextSlotCard } from "@/domains/marketplace/components/NextSlotCard";
 import { CoachReviewCard } from "@/domains/marketplace/components/CoachReviewCard";
+import { jsonLdProps } from "@/lib/security/jsonLd";
 
 export const revalidate = 300;
 
@@ -51,7 +52,7 @@ export default async function CoachProfilePage({ params }: Props) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(coachProfileJsonLd({ coach, url })) }}
+        dangerouslySetInnerHTML={jsonLdProps(coachProfileJsonLd({ coach, url }))}
       />
 
       <section className="relative overflow-hidden border-b border-line-1">

@@ -16,6 +16,24 @@ beforeAll(() => {
 
 const TOTP_OPTIONS = { algorithm: "sha1" as const, digits: 6, period: 30 };
 
+/**
+ * A code for a step `stepsBack` before the current one.
+ *
+ * Anchored to the middle of the current step rather than to `Date.now()` directly: a
+ * plain `now - 30` lands two steps back whenever the clock happens to be near a
+ * boundary, which makes the case below pass or fail depending on when it is run.
+ */
+function codeFromStepsBack(secret: string, stepsBack: number): string {
+  const nowSec = Math.floor(Date.now() / 1000);
+  const midStep = nowSec - (nowSec % 30) + 15;
+  const generated = generateSync({
+    secret,
+    ...TOTP_OPTIONS,
+    epoch: midStep - stepsBack * 30,
+  });
+  return typeof generated === "string" ? generated : (generated as { token: string }).token;
+}
+
 describe("generateTotpSetup", () => {
   it("produces a secret, an otpauth URI and 8 backup codes", () => {
     const setup = generateTotpSetup("player@example.com");
@@ -153,5 +171,31 @@ describe("verifyAndConsumeBackupCode", () => {
 
     expect(hashed[0]).not.toContain("AAAA1111");
     expect(hashed[0]).toMatch(/^\$2[aby]\$/);
+  });
+});
+
+/**
+ * `verifySync` defaults to zero tolerance — only the 30-second step the server is in
+ * counts. Reading six digits off a phone and typing them crosses a boundary on its own,
+ * and a phone clock a couple of seconds out fails every time. Now that a second factor
+ * actually blocks a login, that is a lockout rather than an annoyance.
+ */
+describe("verifyTotpToken acceptance window", () => {
+  it("accepts a code from the step either side of now", () => {
+    const { secret } = generateTotpSetup("player@lolai.test");
+    const sealed = encryptTotpSecret(secret);
+
+    expect(verifyTotpToken(sealed, codeFromStepsBack(secret, 1))).toBe(true);
+    expect(verifyTotpToken(sealed, codeFromStepsBack(secret, 0))).toBe(true);
+    expect(verifyTotpToken(sealed, codeFromStepsBack(secret, -1))).toBe(true);
+  });
+
+  // The window is one step, not "recent enough".
+  it("refuses a code from further out than one step", () => {
+    const { secret } = generateTotpSetup("player@lolai.test");
+    const sealed = encryptTotpSecret(secret);
+
+    expect(verifyTotpToken(sealed, codeFromStepsBack(secret, 3))).toBe(false);
+    expect(verifyTotpToken(sealed, codeFromStepsBack(secret, -3))).toBe(false);
   });
 });

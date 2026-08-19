@@ -2,6 +2,7 @@
 
 import type { VodReviewDelivery } from "@/domains/marketplace/types";
 import { ANNOTATION_CATEGORIES, secondsToClock } from "@/domains/marketplace/vodClock";
+import { safeHref } from "@/lib/security/url";
 
 interface Props {
   review: VodReviewDelivery;
@@ -54,11 +55,13 @@ export function VodReviewReader({ review }: Props): React.ReactElement {
 
       <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-line-1 pt-3.5 font-mono text-[9.5px] uppercase tracking-[0.14em] text-text-faint">
         <span>Scrub your own replay to each timestamp</span>
-        {(review.sourceUrl || review.matchId) && (
+        {/* Same reasoning as the meeting link: the coach supplied this, and a stored
+            row predates the http-only schema. */}
+        {(safeHref(review.sourceUrl) || review.matchId) && (
           <span className="ml-auto break-all">
-            {review.sourceUrl ? (
+            {safeHref(review.sourceUrl) ? (
               <a
-                href={review.sourceUrl}
+                href={safeHref(review.sourceUrl) ?? undefined}
                 className="text-accent hover:text-acid-400"
                 target="_blank"
                 rel="noreferrer noopener"

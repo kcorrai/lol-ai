@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { mergeProfileSettings, type ProfileSettingsPatch } from "@/lib/db/profileSettingsStore";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -185,13 +186,18 @@ export async function updateProfileSettings(
   settings: Partial<ProfileSettings & { profilePublic: boolean }>
 ): Promise<void> {
   const { profilePublic, ...rest } = settings;
-  await prisma.user.update({
-    where: { id: userId },
-    data: {
-      ...(profilePublic !== undefined ? { profilePublic } : {}),
-      ...(Object.keys(rest).length > 0 ? { profileSettings: rest } : {}),
-    },
-  });
+
+  if (profilePublic !== undefined) {
+    await prisma.user.update({ where: { id: userId }, data: { profilePublic } });
+  }
+
+  // Merged, never assigned. Assigning dropped every key the caller did not send:
+  // toggling `showRank` alone reset the other three visibility flags to their
+  // defaults — which are *shown* — and deleted the pending-deletion stamp that
+  // `gdprErasure` reads to decide whether an erasure is still wanted.
+  if (Object.keys(rest).length > 0) {
+    await mergeProfileSettings(userId, rest as ProfileSettingsPatch);
+  }
 }
 
 export async function getProfileSettings(userId: string): Promise<ProfileSettings & { profilePublic: boolean; profileSlug: string | null }> {
@@ -200,10 +206,17 @@ export async function getProfileSettings(userId: string): Promise<ProfileSetting
     select: { profilePublic: true, profileSettings: true, profileSlug: true },
   });
 
+  // Picked key by key rather than spread: the column also carries the pending
+  // deletion stamp and the 2FA challenge stamp, and neither belongs in the
+  // visibility payload this endpoint returns.
+  const stored = (user?.profileSettings ?? null) as Partial<ProfileSettings> | null;
+
   return {
     profilePublic: user?.profilePublic ?? true,
     profileSlug: user?.profileSlug ?? null,
-    ...DEFAULT_SETTINGS,
-    ...(user?.profileSettings as Partial<ProfileSettings> | null),
+    showRank: stored?.showRank ?? DEFAULT_SETTINGS.showRank,
+    showWR: stored?.showWR ?? DEFAULT_SETTINGS.showWR,
+    showBadges: stored?.showBadges ?? DEFAULT_SETTINGS.showBadges,
+    showChampions: stored?.showChampions ?? DEFAULT_SETTINGS.showChampions,
   };
 }

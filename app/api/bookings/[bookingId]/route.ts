@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { httpUrl } from "@/lib/security/url";
 import * as market from "@/domains/marketplace";
 import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
@@ -8,14 +9,14 @@ import { Errors } from "@/lib/api/errors";
 export const dynamic = "force-dynamic";
 
 const ActionBody = z.discriminatedUnion("action", [
-  z.object({ action: z.literal("accept"), meetingUrl: z.string().url().max(500).nullish() }),
+  z.object({ action: z.literal("accept"), meetingUrl: httpUrl.nullish() }),
   z.object({ action: z.literal("decline"), reason: z.string().trim().min(5).max(1000) }),
   z.object({ action: z.literal("cancel"), reason: z.string().trim().min(5).max(1000) }),
   z.object({ action: z.literal("deliver") }),
   z.object({ action: z.literal("confirm") }),
   z.object({
     action: z.literal("meeting"),
-    meetingUrl: z.string().url().max(500).nullable(),
+    meetingUrl: httpUrl.nullable(),
   }),
 ]);
 

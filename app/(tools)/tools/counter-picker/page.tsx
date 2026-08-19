@@ -8,6 +8,7 @@ import { RelatedChampions } from "@/domains/meta/components/RelatedChampions";
 import { PersonalMatchupPanel } from "@/domains/counter/components/PersonalMatchupPanel";
 import { PublicOnly } from "@/components/tools/PublicOnly";
 import { CounterPickerControls } from "./CounterPickerControls";
+import { jsonLdProps } from "@/lib/security/jsonLd";
 
 interface PageProps {
   searchParams: { champion?: string; role?: string; tier?: string };
@@ -73,7 +74,7 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
     <div className="mx-auto max-w-5xl px-4 py-14">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        dangerouslySetInnerHTML={jsonLdProps(faqJsonLd)}
       />
 
       <Breadcrumb

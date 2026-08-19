@@ -39,7 +39,11 @@ export const GET = withAuth(async (req: NextRequest, { userId }) => {
 });
 
 export const POST = withAuth(async (req: NextRequest, { userId }) => {
-  const body = SetDuoSchema.parse(await req.json());
+  // `.parse` threw a ZodError, which `withAuth` does not recognise — so every bad body
+  // answered 500 instead of saying what was wrong.
+  const parsed = SetDuoSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) throw Errors.validation(parsed.error.issues[0]?.message ?? "Invalid duo");
+  const body = parsed.data;
   const blocked = await guard(req, userId, body.riotAccountId);
   if (blocked) return blocked;
 

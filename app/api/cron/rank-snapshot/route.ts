@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sweepRankSnapshots } from "@/domains/riot/services/rankSnapshotSweepService";
+import { checkCronAuth } from "@/lib/api/cronAuth";
 import { logger } from "@/lib/utils/logger";
 
 export const dynamic = "force-dynamic";
@@ -9,19 +10,8 @@ export const dynamic = "force-dynamic";
 // European and Turkish ladders this product serves, so the sample lands between play sessions
 // rather than mid-climb.
 export async function GET(req: NextRequest): Promise<NextResponse> {
-  const cronSecret = process.env.CRON_SECRET;
-
-  // A missing secret is a misconfiguration, not a reason to leave a Riot-API-consuming sweep open
-  // to anonymous callers.
-  if (!cronSecret) {
-    logger.error("[cron] CRON_SECRET env var is not set — refusing to execute");
-    return NextResponse.json({ error: "Cron is not configured" }, { status: 500 });
-  }
-
-  const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const auth = checkCronAuth(req);
+  if (!auth.ok) return NextResponse.json({ error: auth.message }, { status: auth.status });
 
   logger.info("[cron] rank-snapshot: starting");
 

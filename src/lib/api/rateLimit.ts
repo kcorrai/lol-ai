@@ -31,12 +31,30 @@ export async function checkRateLimit(
   return checkInMemory(key, config, now);
 }
 
+/**
+ * The address every per-caller rate limit is keyed on.
+ *
+ * Order matters. `req.ip` is filled in by the platform from the connection itself and
+ * cannot be set by the client; `x-real-ip` is written by the proxy. `x-forwarded-for`
+ * is only reached for last, and the *right*-most entry is taken rather than the
+ * left-most: the proxy appends the real peer, so anything to the left of it is a value
+ * the client sent. Reading the left-most entry meant a caller could put a fresh made-up
+ * address in the header on every request and never hit a limit at all.
+ */
 export function getIp(req: NextRequest): string {
-  return (
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    req.headers.get("x-real-ip") ??
-    "unknown"
-  );
+  if (req.ip) return req.ip;
+
+  const realIp = req.headers.get("x-real-ip")?.trim();
+  if (realIp) return realIp;
+
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const hops = forwarded.split(",").map((h) => h.trim()).filter(Boolean);
+    const nearest = hops.at(-1);
+    if (nearest) return nearest;
+  }
+
+  return "unknown";
 }
 
 export function rateLimitResponse(retryAfterMs: number, limit: number): NextResponse {

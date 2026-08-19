@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/dom
 import type { BookingDetail } from "@/domains/marketplace/types";
 import type { BookingAction } from "@/hooks/useBookings";
 import { whenLabel } from "@/domains/marketplace/components/BookingRow";
+import { safeHref } from "@/lib/security/url";
 
 interface Props {
   booking: BookingDetail;
@@ -54,17 +55,23 @@ export function LiveSessionPanel({ booking, pending, onAct }: Props): React.Reac
       </CardHeader>
 
       <CardContent className="space-y-3">
-        {booking.meetingUrl ? (
+        {/* The link is the coach's free text. `safeHref` is what stops a stored
+            `javascript:` URL from running when the student joins the session. */}
+        {safeHref(booking.meetingUrl) ? (
           open ? (
             <Button asChild>
-              <a href={booking.meetingUrl} target="_blank" rel="noreferrer noopener">
+              <a
+                href={safeHref(booking.meetingUrl) ?? undefined}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
                 Join the session
               </a>
             </Button>
           ) : (
             <p className="break-all text-sm text-text-body">
               <a
-                href={booking.meetingUrl}
+                href={safeHref(booking.meetingUrl) ?? undefined}
                 className="text-accent underline"
                 target="_blank"
                 rel="noreferrer noopener"

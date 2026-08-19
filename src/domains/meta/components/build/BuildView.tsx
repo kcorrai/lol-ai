@@ -13,6 +13,7 @@ import { SpellsRow } from "./SpellsRow";
 import { GameLengthCurve } from "./GameLengthCurve";
 import { TrendSparkline } from "./TrendSparkline";
 import { buildIntro, buildReasoning, buildJsonLd } from "./buildText";
+import { jsonLdProps } from "@/lib/security/jsonLd";
 
 export interface BuildViewData {
   championKey: string;
@@ -79,7 +80,7 @@ export function BuildView(d: BuildViewData): React.ReactElement {
         <script
           key={i}
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
+          dangerouslySetInnerHTML={jsonLdProps(ld)}
         />
       ))}
 

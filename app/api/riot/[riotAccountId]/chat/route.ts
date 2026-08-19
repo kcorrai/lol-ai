@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/config";
 import { assertOwnsRiotAccount } from "@/lib/auth/authorization";
@@ -11,6 +12,29 @@ import type { CoachPersona } from "@/lib/ai/chatSystemPrompt";
 const DAILY_LIMIT_FREE = 5;
 const DAILY_LIMIT_PRO  = 50;
 const DAY_MS           = 24 * 60 * 60 * 1000;
+
+// The transcript arrives from the browser on every turn, so it is input, not state.
+// It used to be cast to `ChatMessage[]` and forwarded unread, which let a caller send
+// `role: "system"` — overwriting the coach's own instructions with their own — and
+// forty messages of unbounded length, billed to us. Roles are limited to the two a
+// client is entitled to author, and the whole transcript to something a real
+// conversation fits inside.
+const MAX_MESSAGE_CHARS = 4_000;
+const MAX_TRANSCRIPT_CHARS = 24_000;
+
+const MessagesSchema = z
+  .array(
+    z.object({
+      role: z.enum(["user", "assistant"]),
+      content: z.string().min(1).max(MAX_MESSAGE_CHARS),
+    })
+  )
+  .min(1)
+  .max(40)
+  .refine(
+    (msgs) => msgs.reduce((n, m) => n + m.content.length, 0) <= MAX_TRANSCRIPT_CHARS,
+    "Conversation too long"
+  );
 
 function errJson(message: string, status: number) {
   return NextResponse.json({ error: { message } }, { status });
@@ -44,13 +68,18 @@ export async function POST(req: NextRequest): Promise<Response> {
     );
   }
 
-  const body = (await req.json().catch(() => ({}))) as { messages?: ChatMessage[]; persona?: CoachPersona };
-  const messages = body.messages ?? [];
-  const persona: CoachPersona = ["direct", "analytical", "motivational"].includes(body.persona ?? "")
+  const body = (await req.json().catch(() => ({}))) as { messages?: unknown; persona?: unknown };
+  const parsed = MessagesSchema.safeParse(body.messages);
+  if (!parsed.success) {
+    return errJson(parsed.error.issues[0]?.message ?? "messages array is required", 400);
+  }
+  const messages: ChatMessage[] = parsed.data;
+
+  const persona: CoachPersona = ["direct", "analytical", "motivational"].includes(
+    typeof body.persona === "string" ? body.persona : ""
+  )
     ? (body.persona as CoachPersona)
     : "direct";
-  if (!Array.isArray(messages) || messages.length === 0) return errJson("messages array is required", 400);
-  if (messages.length > 40) return errJson("Conversation too long", 400);
 
   const systemPrompt = await buildCoachChatContext(riotAccountId, persona);
   if (!systemPrompt) return errJson("Riot account not found", 404);

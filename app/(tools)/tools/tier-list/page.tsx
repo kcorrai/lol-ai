@@ -8,6 +8,7 @@ import { TierListView } from "./TierListView";
 import { tierBlurb } from "./tierBlurb";
 import { RelatedTools } from "../../RelatedTools";
 import { PublicOnly } from "@/components/tools/PublicOnly";
+import { jsonLdProps } from "@/lib/security/jsonLd";
 
 export const revalidate = 43200; // 12h ISR
 
@@ -55,7 +56,7 @@ export default async function TierListPage({ searchParams }: PageProps) {
       {itemListJsonLd && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+          dangerouslySetInnerHTML={jsonLdProps(itemListJsonLd)}
         />
       )}
 

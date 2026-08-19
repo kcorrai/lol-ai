@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
-import { prisma } from "@/lib/db/prisma";
+import { mergeProfileSettings } from "@/lib/db/profileSettingsStore";
 import { audit } from "@/lib/audit/auditService";
 import { inngest } from "@/inngest/client";
 import { checkRateLimit, rateLimitResponse } from "@/lib/api/rateLimit";
@@ -26,15 +26,12 @@ export const DELETE = withAuth(async (req: NextRequest, { userId, userEmail }) =
 
   const deletionScheduledAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
-  // Store deletion intent in user profile settings (non-destructive at this stage)
-  await prisma.user.update({
-    where: { id: userId },
-    data: {
-      profileSettings: {
-        deletionScheduledAt: deletionScheduledAt.toISOString(),
-        deletionRequestedAt: new Date().toISOString(),
-      },
-    },
+  // Merged into the settings blob rather than assigned over it. Assigning wiped the
+  // user's public-profile visibility toggles, whose defaults are *shown* — so asking
+  // to be deleted quietly made the account more public than it was.
+  await mergeProfileSettings(userId, {
+    deletionScheduledAt: deletionScheduledAt.toISOString(),
+    deletionRequestedAt: new Date().toISOString(),
   });
 
   // Schedule hard delete via Inngest

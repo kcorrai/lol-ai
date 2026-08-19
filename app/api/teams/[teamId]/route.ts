@@ -3,11 +3,12 @@ import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
 import { Errors } from "@/lib/api/errors";
 import { z } from "zod";
+import { httpUrl } from "@/lib/security/url";
 import { getTeamMembers, updateTeam, deleteTeam } from "@/domains/teams/services/teamService";
 
 const updateSchema = z.object({
   name: z.string().min(2).max(50).optional(),
-  logoUrl: z.string().url().optional().nullable(),
+  logoUrl: httpUrl.optional().nullable(),
 });
 
 function extractTeamId(req: NextRequest): string {

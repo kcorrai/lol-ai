@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { deleteExpiredSeries } from "@/domains/draft/server";
+import { checkCronAuth } from "@/lib/api/cronAuth";
 import { logger } from "@/lib/utils/logger";
 
 export const dynamic = "force-dynamic";
@@ -11,16 +12,8 @@ export const dynamic = "force-dynamic";
 // table grows for as long as the site is up. Series carry a seven-day expiry;
 // this is what actually collects them. Games and actions cascade.
 export async function GET(req: NextRequest): Promise<NextResponse> {
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret) {
-    logger.error("[cron] CRON_SECRET env var is not set — refusing to execute");
-    return NextResponse.json({ error: "Cron is not configured" }, { status: 500 });
-  }
-
-  if (req.headers.get("authorization") !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const auth = checkCronAuth(req);
+  if (!auth.ok) return NextResponse.json({ error: auth.message }, { status: auth.status });
 
   const deleted = await deleteExpiredSeries();
   logger.info("[cron] cleanup-drafts: done", { deleted });

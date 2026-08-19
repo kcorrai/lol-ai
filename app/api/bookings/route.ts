@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { httpUrl } from "@/lib/security/url";
 import { createBooking, listBookings } from "@/domains/marketplace";
 import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
@@ -16,7 +17,7 @@ const CreateBody = z.object({
   studentTimezone: z.string().trim().min(1).max(64),
   riotAccountId: z.string().uuid().nullable().default(null),
   matchIds: z.array(z.string().trim().min(1).max(40)).max(5).default([]),
-  vodUrl: z.string().url().max(500).nullable().default(null),
+  vodUrl: httpUrl.nullable().default(null),
 });
 
 const ListQuery = z.enum(["student", "coach"]).default("student");

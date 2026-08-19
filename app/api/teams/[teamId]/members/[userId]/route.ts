@@ -22,8 +22,9 @@ export const PATCH = withAuth(async (req: NextRequest, { userId }) => {
   const targetUserId = segments.at(-1) ?? "";
   if (!teamId || !targetUserId) throw Errors.validation("Missing teamId or userId");
 
-  const body = await req.json() as Record<string, unknown>;
-  const role = body.role as UpdatableRole;
+  // Guarded: an unparseable body threw out of the handler and answered 500.
+  const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
+  const role = body?.role as UpdatableRole;
   if (!UPDATABLE_ROLES.includes(role)) throw Errors.validation("Role must be COACH or PLAYER");
 
   await updateMemberRole(teamId, targetUserId, userId, role);

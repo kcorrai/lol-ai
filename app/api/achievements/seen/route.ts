@@ -20,8 +20,16 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   }
 
   const { achievementIds } = body;
-  if (!Array.isArray(achievementIds) || achievementIds.length === 0) {
-    throw Errors.validation("achievementIds must be a non-empty array");
+  // Bounded, and every entry checked. An unbounded array of arbitrary values became an
+  // unbounded `IN (…)` — the site has fewer than a hundred achievements, so anything
+  // past that is somebody testing how large a query they can make us build.
+  if (
+    !Array.isArray(achievementIds) ||
+    achievementIds.length === 0 ||
+    achievementIds.length > 100 ||
+    achievementIds.some((id) => typeof id !== "string" || id.length > 64)
+  ) {
+    throw Errors.validation("achievementIds must be a non-empty array of up to 100 ids");
   }
 
   await prisma.userAchievement.updateMany({

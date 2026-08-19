@@ -27,6 +27,9 @@ export async function getSession() {
 export async function getRequiredSession() {
   const session = await getSession();
   if (!session?.user?.id) throw Errors.unauthorized();
+  // Same rule as `withAuth`: a sign-in that still owes its second factor is not a
+  // session anything is allowed to be read or written under.
+  if (session.user.twoFactorPending) throw Errors.twoFactorRequired();
   return session;
 }
 

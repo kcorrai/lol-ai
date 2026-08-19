@@ -19,12 +19,21 @@ type AuthenticatedHandler = (
   ctx: AuthContext
 ) => Promise<NextResponse>;
 
+export interface WithAuthOptions {
+  /**
+   * Let a half-authenticated session through. Only the 2FA challenge endpoint sets
+   * this: it is the one thing a session owing a second factor is allowed to do, and
+   * refusing it would make an account with 2FA on impossible to finish logging into.
+   */
+  allowTwoFactorPending?: boolean;
+}
+
 // Wraps a route handler with:
 // - Session validation
 // - requestId generation (propagated via AsyncLocalStorage for structured logging)
 // - Sentry request tagging
 // - Uniform error handling
-export function withAuth(handler: AuthenticatedHandler) {
+export function withAuth(handler: AuthenticatedHandler, options: WithAuthOptions = {}) {
   return async (req: NextRequest): Promise<NextResponse> => {
     const requestId = randomUUID();
 
@@ -39,6 +48,17 @@ export function withAuth(handler: AuthenticatedHandler) {
 
         if (!session?.user?.id) {
           return apiError("UNAUTHORIZED", "Authentication required", 401);
+        }
+
+        // A password alone is not a session here. Without this every API route was
+        // reachable the moment the password checked out, which made 2FA a setting
+        // that changed nothing an attacker had to do.
+        if (session.user.twoFactorPending && !options.allowTwoFactorPending) {
+          return apiError(
+            "TWO_FACTOR_REQUIRED",
+            "Enter your two-factor code to finish signing in",
+            401
+          );
         }
 
         return await handler(req, {
