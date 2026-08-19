@@ -1029,6 +1029,57 @@ AI analysis of a specific participant's build in a match.
 
 ---
 
+### `GET /api/match/[matchId]/lane-phase`
+
+The lane, minute by minute, as a difference against the player opposite — built from the captured
+match timeline (LA-45, [ADR-033](./adr/ADR-033-match-timeline-capture.md)).
+
+**Auth:** Required — the caller must have played in the match, matched by puuid across every linked
+account, so a shared linked account still resolves (TASK-228).
+
+**Path params:** `matchId` — the internal match uuid, not the Riot match id.
+
+**Response 200:**
+```json
+{
+  "data": {
+    "position": "MIDDLE",
+    "championName": "Ahri",
+    "opponent": {
+      "puuid": "…",
+      "championName": "Zed",
+      "gameName": "Rival",
+      "tagLine": "EUW"
+    },
+    "points": [
+      { "minute": 0, "goldDiff": 0, "xpDiff": 0, "csDiff": 0 },
+      { "minute": 14, "goldDiff": -420, "xpDiff": -260, "csDiff": -11 }
+    ],
+    "markers": [
+      { "minute": 8, "kind": "CHAMPION_KILL", "side": "player", "label": "You died" }
+    ]
+  },
+  "meta": { "requestId": "uuid" }
+}
+```
+
+**Notes:**
+
+- `goldDiff` and friends are signed and read from the caller's point of view: positive is ahead.
+- A minute the opponent has no frame for is **omitted** rather than differenced against zero, so
+  `points` can have gaps. Callers must key on `minute`, not on array index.
+- `opponent` is null and `points` is empty when nobody was assigned to the same position on the
+  other team. The response still succeeds — there is a lane, just nothing to measure it against.
+
+**Errors:** `404` for a match the caller did not play in **and** for a match with no captured
+timeline — every game synced before LA-45. The two are deliberately indistinguishable: separating
+them would leak which matches exist. Clients should render an empty state on 404, not an error.
+
+**Cache TTL:** none server-side; a finished match's timeline is immutable, so the client holds it
+for an hour and does not retry the 404.
+
+---
+
 ## 12. Error Codes Reference
 
 | Code | HTTP | Meaning |
