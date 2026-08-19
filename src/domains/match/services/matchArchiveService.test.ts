@@ -112,6 +112,36 @@ describe("searchArchive — pagination", () => {
   });
 });
 
+describe("searchArchive — totals are computed once per search", () => {
+  // The totals cover the whole filtered set rather than the page, so they cannot change while
+  // paging. Recomputing them per page bought two extra full-set aggregate scans per request and
+  // got the same answer back every time.
+  it("computes totals on the first page", async () => {
+    db.matchParticipant.findMany.mockResolvedValue([row("a")]);
+    const page = await searchArchive(PUUID, F(), undefined, 2);
+
+    expect(page.totals).not.toBeNull();
+    expect(db.matchParticipant.aggregate).toHaveBeenCalledTimes(1);
+    expect(db.matchParticipant.count).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not recompute them on a continuation page", async () => {
+    db.matchParticipant.findMany.mockResolvedValue([row("a")]);
+    const page = await searchArchive(PUUID, F(), "cursor-id", 2);
+
+    expect(page.totals).toBeNull();
+    expect(db.matchParticipant.aggregate).not.toHaveBeenCalled();
+    expect(db.matchParticipant.count).not.toHaveBeenCalled();
+  });
+
+  it("still returns the page itself on a continuation page", async () => {
+    db.matchParticipant.findMany.mockResolvedValue([row("a"), row("b")]);
+    const page = await searchArchive(PUUID, F(), "cursor-id", 2);
+
+    expect(page.rows).toHaveLength(2);
+  });
+});
+
 describe("searchArchive — facet resolution", () => {
   it("does not touch the raw KDA query unless a KDA threshold is set", async () => {
     db.matchParticipant.findMany.mockResolvedValue([]);

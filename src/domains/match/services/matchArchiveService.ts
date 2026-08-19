@@ -48,7 +48,14 @@ export type ArchiveTotals = {
 export type ArchivePage = {
   rows: ArchiveRow[];
   nextCursor: string | null;
-  totals: ArchiveTotals;
+  /**
+   * Null on a continuation page.
+   *
+   * The totals cover the whole filtered set, not the page, so they do not change as you scroll —
+   * which is exactly why recomputing them per page was two full aggregate scans bought for nothing.
+   * They are returned once, with the first page, and the caller holds them.
+   */
+  totals: ArchiveTotals | null;
 };
 
 const DEFAULT_LIMIT = 25;
@@ -144,7 +151,10 @@ export async function searchArchive(
         },
       },
     }),
-    archiveTotals(where),
+    // Only for the first page. Every continuation page re-ran both aggregates over an identical
+    // where and got an identical answer back, so paging to page five cost ten full-set scans to
+    // learn what page one already said.
+    cursor ? Promise.resolve(null) : archiveTotals(where),
   ]);
 
   const hasMore = rows.length > take;

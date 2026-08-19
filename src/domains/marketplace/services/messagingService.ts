@@ -73,6 +73,44 @@ async function membership(conversationId: string, userId: string) {
   return { conversation, isCoach };
 }
 
+/**
+ * The status of the most recent booking for each (coach, student) pair, one row per pair.
+ *
+ * Raw SQL for `DISTINCT ON`, which has no fluent equivalent and is the whole point. The previous
+ * version fetched *every* booking for every pair in the list ordered by date, then walked the
+ * result keeping the first per pair and discarding the rest — so a coach with forty repeat students
+ * at twenty sessions each read eight hundred rows to produce forty values, and there was no `take`
+ * to bound it. It also built a hundred-branch `OR`, which is the shape a planner gives up on.
+ *
+ * The pair list is passed as two parallel arrays and joined against, rather than expanded into the
+ * query text, so the statement is the same shape whatever the list length.
+ */
+async function latestBookingPerPair(
+  pairs: Array<{ coachProfileId: string; studentId: string }>
+): Promise<Map<string, BookingStatus>> {
+  const latest = new Map<string, BookingStatus>();
+  if (pairs.length === 0) return latest;
+
+  const coachProfileIds = pairs.map((p) => p.coachProfileId);
+  const studentIds = pairs.map((p) => p.studentId);
+
+  const rows = await prisma.$queryRaw<
+    Array<{ coachProfileId: string; studentId: string; status: BookingStatus }>
+  >`
+    SELECT DISTINCT ON (b."coachProfileId", b."studentId")
+           b."coachProfileId", b."studentId", b."status"
+    FROM bookings b
+    JOIN unnest(${coachProfileIds}::uuid[], ${studentIds}::uuid[]) AS pair(cp, st)
+      ON b."coachProfileId" = pair.cp AND b."studentId" = pair.st
+    ORDER BY b."coachProfileId", b."studentId", b."createdAt" DESC
+  `;
+
+  for (const row of rows) {
+    latest.set(`${row.coachProfileId}:${row.studentId}`, row.status);
+  }
+  return latest;
+}
+
 /** Every thread the caller is in, most recently active first. */
 export async function listThreads(userId: string): Promise<ThreadSummary[]> {
   const rows = await prisma.conversation.findMany({
@@ -97,23 +135,7 @@ export async function listThreads(userId: string): Promise<ThreadSummary[]> {
     },
   });
 
-  // The latest booking for each pair, in one query rather than one per row.
-  const bookings = await prisma.booking.findMany({
-    where: {
-      OR: rows.map((row) => ({
-        coachProfileId: row.coachProfileId,
-        studentId: row.studentId,
-      })),
-    },
-    orderBy: { createdAt: "desc" },
-    select: { coachProfileId: true, studentId: true, status: true },
-  });
-
-  const latest = new Map<string, BookingStatus>();
-  for (const booking of bookings) {
-    const key = `${booking.coachProfileId}:${booking.studentId}`;
-    if (!latest.has(key)) latest.set(key, booking.status);
-  }
+  const latest = await latestBookingPerPair(rows);
 
   return rows.map((row) => ({
     id: row.id,
@@ -155,10 +177,18 @@ export async function getThread(
   });
 
   // Marked read on read, which is what makes an unread count mean anything.
-  await prisma.message.updateMany({
-    where: { conversationId, senderId: { not: userId }, readAt: null },
-    data: { readAt: new Date() },
-  });
+  //
+  // Only when there is something to mark. An open thread is polled every five seconds, so this
+  // fired twelve times a minute per reader and almost always matched zero rows — a write
+  // transaction, its WAL and its locks, bought to change nothing. The page just read tells us
+  // whether any unread message from the other side exists, so the question is already answered.
+  const hasUnread = messages.some((m) => m.senderId !== userId && m.readAt === null);
+  if (hasUnread) {
+    await prisma.message.updateMany({
+      where: { conversationId, senderId: { not: userId }, readAt: null },
+      data: { readAt: new Date() },
+    });
+  }
 
   return {
     id: conversation.id,

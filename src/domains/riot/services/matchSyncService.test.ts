@@ -126,6 +126,67 @@ describe("syncAccount", () => {
     expect(result).toEqual({ newMatches: 0, skipped: 0, rankedSnapshotted: false, errors: [] });
   });
 
+  // The linking pass used to be a loop: one updateMany per already-known match, up to a hundred
+  // sequential round trips per sync, and after the first successful sync every one of them matched
+  // zero rows. It has to stay one statement covering every known match.
+  it("links every already-known match in a single statement", async () => {
+    vi.mocked(prisma.riotAccount.findUnique).mockResolvedValue({
+      id: "acc-1", lastSyncedAt: null, gameName: "KaaN", tagLine: "TR1",
+      puuid: "puuid-1", region: "euw1", summonerId: "sum-1", userId: "user-1",
+    } as never);
+    vi.mocked(isDataStale).mockReturnValue(true);
+
+    const { getMatchIds, getRankedEntriesByPuuidDirect } = await import(
+      "@/domains/riot/services/riotApiClient"
+    );
+    vi.mocked(getMatchIds).mockResolvedValue(["EUW_1", "EUW_2", "EUW_3"]);
+    // All three already in the database, so nothing is ingested and only the link pass runs.
+    vi.mocked(prisma.match.findMany).mockResolvedValue([
+      { id: "db-1", matchId: "EUW_1" },
+      { id: "db-2", matchId: "EUW_2" },
+      { id: "db-3", matchId: "EUW_3" },
+    ] as never);
+    vi.mocked(prisma.matchParticipant.findMany).mockResolvedValue([]);
+    vi.mocked(prisma.matchParticipant.updateMany).mockResolvedValue({ count: 1 } as never);
+    vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([]);
+    vi.mocked(getRankedEntriesByPuuidDirect).mockResolvedValue([]);
+    vi.mocked(prisma.riotAccount.update).mockResolvedValue({} as never);
+
+    await syncAccount("acc-1", true);
+
+    expect(prisma.matchParticipant.updateMany).toHaveBeenCalledTimes(1);
+    expect(prisma.matchParticipant.updateMany).toHaveBeenCalledWith({
+      where: {
+        matchId: { in: ["db-1", "db-2", "db-3"] },
+        puuid: "puuid-1",
+        riotAccountId: null,
+      },
+      data: { riotAccountId: "acc-1" },
+    });
+  });
+
+  it("issues no linking statement when nothing is already known", async () => {
+    vi.mocked(prisma.riotAccount.findUnique).mockResolvedValue({
+      id: "acc-1", lastSyncedAt: null, gameName: "KaaN", tagLine: "TR1",
+      puuid: "puuid-1", region: "euw1", summonerId: "sum-1", userId: "user-1",
+    } as never);
+    vi.mocked(isDataStale).mockReturnValue(true);
+
+    const { getMatchIds, getRankedEntriesByPuuidDirect } = await import(
+      "@/domains/riot/services/riotApiClient"
+    );
+    vi.mocked(getMatchIds).mockResolvedValue([]);
+    vi.mocked(prisma.match.findMany).mockResolvedValue([]);
+    vi.mocked(prisma.matchParticipant.findMany).mockResolvedValue([]);
+    vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([]);
+    vi.mocked(getRankedEntriesByPuuidDirect).mockResolvedValue([]);
+    vi.mocked(prisma.riotAccount.update).mockResolvedValue({} as never);
+
+    await syncAccount("acc-1", true);
+
+    expect(prisma.matchParticipant.updateMany).not.toHaveBeenCalled();
+  });
+
   it("force=true bypasses staleness check", async () => {
     vi.mocked(prisma.riotAccount.findUnique).mockResolvedValue({
       id: "acc-1", lastSyncedAt: new Date(), gameName: "KaaN", tagLine: "TR1",
