@@ -4,3 +4,12 @@ export { explainBuild } from "@/domains/match/services/buildExplanationService";
 export type { BuildExplanation, ItemExplanation } from "@/domains/match/types/buildExplanation.types";
 export { getLanePhase, getLanePhaseForUser } from "@/domains/match/services/lanePhaseService";
 export type { LanePhase, LanePhasePoint, LanePhaseMarker, LanePhaseOpponent } from "@/domains/match/types/lanePhase.types";
+export { getMatchStoryForUser } from "@/domains/match/services/matchStoryService";
+export type {
+  MatchStory,
+  MatchStoryParticipant,
+  MatchStoryFrame,
+  MatchStoryFramePlayer,
+  MatchStoryTeamTotal,
+  MatchStoryEvent,
+} from "@/domains/match/types/matchStory.types";

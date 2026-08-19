@@ -1080,6 +1080,87 @@ for an hour and does not retry the 404.
 
 ---
 
+### `GET /api/match/[matchId]/story`
+
+The whole captured timeline (LA-45, [ADR-033](./adr/ADR-033-match-timeline-capture.md)), turned into
+a single minute-by-minute read: every participant's gold/level/CS per minute, each team's gold total
+and the difference between them, and the timeline's narrative events — kills, objectives, buildings,
+wards. This is the one endpoint the stored timeline feeds; a screen built on it is a separate card
+(Prism). `lane-phase` above stays the source for the two-player lane curve — this endpoint does not
+replace it.
+
+**Auth:** Required — same rule as `lane-phase`: the caller must have played in the match, matched by
+puuid across every linked account (TASK-228).
+
+**Path params:** `matchId` — the internal match uuid, not the Riot match id.
+
+**Response 200 (timeline captured):**
+```json
+{
+  "data": {
+    "hasTimeline": true,
+    "participants": [
+      { "puuid": "…", "championName": "Ahri", "teamId": 100, "position": "MIDDLE", "gameName": "Me", "tagLine": "NA1" }
+    ],
+    "frames": [
+      {
+        "minute": 14,
+        "players": [{ "puuid": "…", "totalGold": 6200, "level": 10, "cs": 112 }],
+        "teamTotals": [{ "teamId": 100, "totalGold": 29800 }, { "teamId": 200, "totalGold": 27100 }],
+        "teamGoldDiff": 2700
+      }
+    ],
+    "events": [
+      {
+        "kind": "CHAMPION_KILL",
+        "timestampMs": 515000,
+        "minute": 8,
+        "actor": { "puuid": "…", "championName": "Ahri", "teamId": 100, "position": "MIDDLE", "gameName": "Me", "tagLine": "NA1" },
+        "position": { "x": 4200, "y": 9100 },
+        "payload": { "killerId": 7, "killerPuuid": "…", "assistingParticipantIds": [6], "bounty": 300 }
+      }
+    ]
+  },
+  "meta": { "requestId": "uuid" }
+}
+```
+
+**Response 200 (no timeline captured):**
+```json
+{ "data": { "hasTimeline": false }, "meta": { "requestId": "uuid" } }
+```
+
+**Notes:**
+
+- `hasTimeline: false` is not an error. A match the caller owns that was synced before LA-45 has no
+  captured timeline, but the match itself is a real resource — the endpoint answers 200, not 404.
+  Only "no such match" and "not this caller's match" answer 404, same as `lane-phase`.
+- `teamGoldDiff` is team 100's total gold minus team 200's. League fixes 100 to the blue side and
+  200 to red for every match, so the sign is stable across matches without the client having to know
+  which side the viewer was on.
+- `events` carries seven of the eleven stored event kinds: `CHAMPION_KILL`, `CHAMPION_SPECIAL_KILL`,
+  `WARD_PLACED`, `WARD_KILL`, `ELITE_MONSTER_KILL`, `BUILDING_KILL`, `TURRET_PLATE_DESTROYED`.
+  `ITEM_PURCHASED`, `ITEM_SOLD`, `SKILL_LEVEL_UP`, and `LEVEL_UP` are deliberately left out — they
+  fire dozens of times per player per match, `level` is already on every frame above, and item/skill
+  data has its own endpoint (`build-explanation`). Sending all eleven kinds as stored would mean
+  several hundred rows per match for data this endpoint has no narrative use for.
+- Each event's `payload` is validated with zod on read and typed per `kind` — the column is stored
+  as Json, so this is what stands between a stored row and a shape the client can rely on. A row
+  whose payload no longer matches its kind's schema is dropped rather than breaking the response.
+- Each event's `actor` is the acting participant, already joined by puuid — `null` for a row with no
+  participant attached (e.g. a tower a minion, not a champion, destroyed). `participants` carries
+  the full roster so a payload field like `killerPuuid` can still be resolved without a second call.
+- Frames without a timeline (`hasTimeline: false`) omit `participants`, `frames`, and `events`
+  entirely rather than sending them empty — check `hasTimeline` first.
+
+**Errors:** `404` for a match the caller did not play in **and** for a match that does not exist —
+the two are deliberately indistinguishable, same reasoning as `lane-phase`.
+
+**Cache TTL:** none server-side; a finished match's timeline is immutable, so the client holds it
+for an hour.
+
+---
+
 ## 12. Error Codes Reference
 
 | Code | HTTP | Meaning |
