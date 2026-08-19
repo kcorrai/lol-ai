@@ -10,7 +10,7 @@ import { refreshChampionStats } from "@/domains/champions/services/championCache
 import { refreshChampionMastery } from "@/domains/champions/services/championMasteryService";
 import { getPlanLimits } from "@/lib/auth/authorization";
 import { indexPlayers, type IndexablePlayer } from "@/domains/riot/services/playerIndexService";
-import { enrichParticipantRanks, syncRankedSnapshot } from "@/domains/riot/services/matchSyncRankedService";
+import { syncRankedSnapshot } from "@/domains/riot/services/matchSyncRankedService";
 export { backfillMatchNicknames } from "@/domains/riot/services/matchSyncRankedService";
 
 export type SyncResult = {
@@ -108,12 +108,8 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
         });
       }
 
-      if (mapped.match.queueType === "RANKED_SOLO_5x5") {
-        const puuids = mapped.participants.map((p) => p.puuid);
-        enrichParticipantRanks(matchDbId, puuids, account.region).catch((err) =>
-          logger.warn(`[sync] Rank enrichment failed for ${riotMatchId}: ${err instanceof Error ? err.message : String(err)}`)
-        );
-      }
+      // Rank enrichment used to be fired here, unawaited, once per match. See the
+      // `match/enrich-ranks` event at the end of this function.
       newCount++;
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
@@ -143,21 +139,6 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
     });
   }
 
-  // Backfill ranks for existing ranked matches missing participant rank data
-  try {
-    const unrankedMatches = await prisma.match.findMany({
-      where: { queueType: "RANKED_SOLO_5x5", participants: { some: { riotAccountId: account.id } }, AND: { participants: { some: { rankTier: null } } } },
-      select: { id: true, participants: { select: { puuid: true } } },
-      take: 15,
-    });
-    for (const m of unrankedMatches) {
-      await enrichParticipantRanks(m.id, m.participants.map((p) => p.puuid), account.region);
-    }
-    if (unrankedMatches.length > 0) logger.info(`[sync] Backfilled ranks for ${unrankedMatches.length} existing matches`);
-  } catch (err) {
-    logger.warn(`[sync] Rank backfill failed: ${err instanceof Error ? err.message : String(err)}`);
-  }
-
   // ── Ranked snapshot ────────────────────────────────────────────────────────
   const { rankedSnapshotted, errors: rankedErrors, updatedAccount } = await syncRankedSnapshot(account);
   account = updatedAccount;
@@ -178,6 +159,9 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   inngest.send({ name: "tilt/check-streak", data: { riotAccountId: account.id, userId: account.userId } }).catch((err) => logger.warn("[sync] Failed to fire tilt/check-streak event", err));
   inngest.send({ name: "achievement/check", data: { riotAccountId: account.id, userId: account.userId } }).catch((err) => logger.warn("[sync] Failed to fire achievement/check event", err));
   if (newCount > 0) inngest.send({ name: "timeline/fetch-for-account", data: { riotAccountId: account.id } }).catch((err) => logger.warn("[sync] Failed to fire timeline/fetch-for-account event", err));
+  // Replaces both the per-match fan-out in the ingest loop and the fifteen-match backfill sweep
+  // that used to run here. The sweep only existed because the fan-out kept losing its work.
+  if (newCount > 0) inngest.send({ name: "match/enrich-ranks", data: { riotAccountId: account.id, region: account.region } }).catch((err) => logger.warn("[sync] Failed to fire match/enrich-ranks event", err));
   inngest.send({ name: "challenge/check-progress", data: { riotAccountId: account.id, userId: account.userId } }).catch((err) => logger.warn("[sync] Failed to fire challenge/check-progress event", err));
   inngest.send({ name: "snapshot/compute", data: { riotAccountId: account.id } }).catch((err) => logger.warn("[sync] Failed to fire snapshot/compute event", err));
   if (newCount > 0) inngest.send({ name: "academy/check-assignments", data: { riotAccountId: account.id, userId: account.userId } }).catch((err) => logger.warn("[sync] Failed to fire academy/check-assignments event", err));

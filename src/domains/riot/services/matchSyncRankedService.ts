@@ -8,6 +8,8 @@ import {
 } from "@/domains/riot/services/riotApiClient";
 import { getLastRankedSnapshot } from "@/domains/riot/services/rankedService";
 import type { RankTier, RankDivision, RiotAccount } from "@prisma/client";
+import { mapWithConcurrency } from "@/lib/utils/concurrency";
+import type { RankedEntryDTO } from "@/domains/riot/types/riot.types";
 
 const RANK_TIERS: Record<string, RankTier> = {
   IRON: "IRON", BRONZE: "BRONZE", SILVER: "SILVER", GOLD: "GOLD",
@@ -21,25 +23,67 @@ const RANK_DIVISIONS: Record<string, RankDivision> = { I: "I", II: "II", III: "I
 // the rank field is returned as "" but logically maps to "I".
 const APEX_TIERS = new Set(["MASTER", "GRANDMASTER", "CHALLENGER"]);
 
+// Five at a time across ten participants. The Riot limiter allows twenty a second and
+// getRankedEntriesByPuuidDirect is cached for five minutes per puuid, so repeat players across a
+// sync are nearly free; what cost anything was doing the ten strictly one after another.
+const RANK_LOOKUP_CONCURRENCY = 5;
+
+type ResolvedRank = { puuid: string; tier: RankTier; division: RankDivision; lp: number };
+
+function resolveRank(puuid: string, entries: RankedEntryDTO[]): ResolvedRank | null {
+  const soloEntry = entries.find((e) => e.queueType === "RANKED_SOLO_5x5");
+  if (!soloEntry) return null;
+
+  const tier = RANK_TIERS[soloEntry.tier];
+  const division: RankDivision | undefined =
+    RANK_DIVISIONS[soloEntry.rank] ?? (APEX_TIERS.has(soloEntry.tier) ? "I" : undefined);
+  if (!tier || !division) return null;
+
+  return { puuid, tier, division, lp: soloEntry.leaguePoints };
+}
+
+/**
+ * Stamps every participant of one match with the rank they held.
+ *
+ * Was ten Riot calls and ten writes, strictly in sequence, and was called unawaited once per
+ * ingested match — so a fifty-match sync launched fifty of these at once, up to five hundred Riot
+ * requests in flight from one user action, all contending with the ingest's own calls at the same
+ * token bucket. It is now driven by a durable Inngest step (`match/enrich-ranks`) instead, one
+ * match at a time, and the lookups inside it are bounded rather than serial.
+ *
+ * Writes are grouped by the rank value rather than issued per participant: ten players in a game
+ * usually hold three or four distinct ranks between them, so this is three or four statements
+ * rather than ten.
+ */
 export async function enrichParticipantRanks(matchDbId: string, participantPuuids: string[], region: string): Promise<void> {
-  for (const puuid of participantPuuids) {
-    try {
-      const entries = await getRankedEntriesByPuuidDirect(puuid, region);
-      const soloEntry = entries.find((e) => e.queueType === "RANKED_SOLO_5x5");
-      if (!soloEntry) continue;
-
-      const tier = RANK_TIERS[soloEntry.tier];
-      const division: RankDivision | undefined =
-        RANK_DIVISIONS[soloEntry.rank] ?? (APEX_TIERS.has(soloEntry.tier) ? "I" : undefined);
-      if (!tier || !division) continue;
-
-      await prisma.matchParticipant.updateMany({
-        where: { matchId: matchDbId, puuid },
-        data: { rankTier: tier, rankDivision: division, rankLp: soloEntry.leaguePoints },
-      });
-    } catch (err) {
-      logger.warn(`[sync] Rank lookup failed for ${puuid.slice(0, 8)}…: ${err instanceof Error ? err.message : String(err)}`);
+  const looked = await mapWithConcurrency(
+    participantPuuids,
+    RANK_LOOKUP_CONCURRENCY,
+    async (puuid): Promise<ResolvedRank | null> => {
+      try {
+        return resolveRank(puuid, await getRankedEntriesByPuuidDirect(puuid, region));
+      } catch (err) {
+        // One unreachable player must not cost the other nine their rank.
+        logger.warn(`[sync] Rank lookup failed for ${puuid.slice(0, 8)}…: ${err instanceof Error ? err.message : String(err)}`);
+        return null;
+      }
     }
+  );
+
+  const byRank = new Map<string, { rank: ResolvedRank; puuids: string[] }>();
+  for (const r of looked) {
+    if (!r) continue;
+    const key = `${r.tier}:${r.division}:${r.lp}`;
+    const bucket = byRank.get(key);
+    if (bucket) bucket.puuids.push(r.puuid);
+    else byRank.set(key, { rank: r, puuids: [r.puuid] });
+  }
+
+  for (const { rank, puuids } of byRank.values()) {
+    await prisma.matchParticipant.updateMany({
+      where: { matchId: matchDbId, puuid: { in: puuids } },
+      data: { rankTier: rank.tier, rankDivision: rank.division, rankLp: rank.lp },
+    });
   }
 }
 
