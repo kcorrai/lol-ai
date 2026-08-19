@@ -1064,3 +1064,43 @@ One participant's state at one minute, for all ten players. Riot samples on `fra
 - **Nothing is backfilled.** Matches synced before LA-45 have death events and no frames; the lane
   phase endpoint answers 404 for them and the page renders an empty state.
 - **This adds no Riot requests.** The payload was already fetched in full — 95% of it was discarded.
+
+---
+
+## Saved match searches (LA-36)
+
+Migration `20260819000000_add_saved_searches`.
+
+### `saved_searches`
+
+| Column | Type | Constraints |
+|---|---|---|
+| `id` | `uuid` | PK |
+| `userId` | `uuid` | NOT NULL — FK → `users.id` ON DELETE CASCADE |
+| `name` | `text` | NOT NULL — 1–60 chars, enforced in the service |
+| `filters` | `jsonb` | NOT NULL — the facets, as `archiveFilterSchema` produces them |
+| `createdAt` | `timestamptz` | DEFAULT now() |
+| `updatedAt` | `timestamptz` | @updatedAt |
+
+**Indexes:**
+- `UNIQUE (userId, name)`
+- `INDEX (userId, createdAt DESC)`
+
+**Notes:**
+
+- **Saved searches hang off the user, not off a `riot_accounts` row.** The filters describe a
+  question — "Ahri losses under 25 minutes" — and the same question is worth asking of either
+  linked account. Which account it is asked of comes from the account selector at request time.
+- **`filters` is jsonb rather than a column per facet.** The facet set grows every time the filter
+  console grows a control, and a column each would mean a migration for each. It is re-validated
+  through the current `archiveFilterSchema` on read, so a search saved before a facet existed still
+  loads: unknown keys fall away and the rest survives. A row that cannot be salvaged is dropped
+  from the list rather than failing the request — one bad row must not cost a player every other
+  search they saved. Same contract as `match_timeline_events.payload`.
+- **The unique index is what makes "save" mean save.** Writing a name that already exists upserts
+  it, so re-saving under the same name is the update path; there is no separate rename endpoint.
+- **50 rows per user**, enforced in `savedSearchService` rather than by a constraint — the count is
+  taken before the upsert so that replacing an existing search is never refused for being over the
+  cap.
+- **The cascade is the whole deletion story.** A saved search holds no match data of its own, only
+  facet values, so a deleted account takes them with it and nothing else needs cleaning up.
