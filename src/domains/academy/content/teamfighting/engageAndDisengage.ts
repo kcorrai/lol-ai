@@ -25,6 +25,32 @@ export const engageAndDisengage: Lesson = {
       text: "Look at your team composition before the fight and name the champion whose job it is to start. Usually the tank or the engage support; sometimes nobody, and knowing that is just as useful — a team with no engage does not force fights, it takes objectives and punishes theirs. What kills teams is five players who each think somebody else is going first.",
     },
     {
+      kind: "figure",
+      caption: "Who owns it — and what it looks like when nobody does",
+      assets: [
+        {
+          ref: { of: "champion", name: "Malphite" },
+          label: "The unmissable one",
+          note: "When a champion like this is on your team, the question is answered before the fight starts. Nobody else goes first, and your only job is to have an ability left when he does.",
+        },
+        {
+          ref: { of: "champion", name: "Leona" },
+          label: "The engage support",
+          note: "Owns the start in bot lane and keeps owning it at five-man fights. If your support is this and you are the carry, you do not choose when the fight happens — you choose whether you are in range when it does.",
+        },
+        {
+          ref: { of: "champion", name: "Sejuani" },
+          label: "The jungler who starts it",
+          note: "An engage jungler makes the whole team's timing his: fights happen when he arrives, which is why watching where he is walking is worth more than watching your own lane.",
+        },
+        {
+          ref: { of: "champion", name: "Janna" },
+          label: "The team with no engage",
+          note: "This is not a gap to fill by forcing one. A team built to disengage takes objectives and punishes their engage instead — and knowing that before the fight is the same skill as naming who starts it.",
+        },
+      ],
+    },
+    {
       kind: "table",
       caption: "The follow-up window",
       head: ["After the engage lands", "You have", "If you miss it"],

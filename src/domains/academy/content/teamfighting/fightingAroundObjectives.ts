@@ -25,6 +25,30 @@ export const fightingAroundObjectives: Lesson = {
       text: "The side nearest your base. It means every retreat is toward help and every one of theirs is away from it, it means the enemy engage has to cross the pit to reach you, and it means when the fight goes wrong you walk out instead of dying in a hole. Teams that lose Baron fights are almost always standing on the wrong side when it starts.",
     },
     {
+      kind: "mapFigure",
+      caption: "A pit is a hole with two entrances, and the sides are not equal",
+      annotations: [
+        {
+          at: { x: 0.6, y: 0.85, r: 0.055 },
+          label: "Your side of the pit",
+          tone: "good",
+          note: "Nearest your base. Every retreat from here runs toward help, and their engage has to cross the pit to reach you. This is the whole lesson, and it is one step of walking.",
+        },
+        {
+          at: { x: 0.79, y: 0.66, r: 0.055 },
+          label: "Their side",
+          tone: "bad",
+          note: "The same fight with the arrows reversed. Standing here means every mistake you make is a long walk from safety and every mistake they make is a short one.",
+        },
+        {
+          at: { x: 0.69, y: 0.75, r: 0.055 },
+          label: "In the hole",
+          tone: "bad",
+          note: "Below both teams, with a wall between you and everyone. Whoever is standing here when the fight starts is fighting uphill against people who can see them and cannot be seen back.",
+        },
+      ],
+    },
+    {
       kind: "table",
       caption: "Which thing is the win condition",
       head: ["Situation", "You are fighting for", "So you"],
