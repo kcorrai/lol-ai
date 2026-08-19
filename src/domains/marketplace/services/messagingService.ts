@@ -155,10 +155,18 @@ export async function getThread(
   });
 
   // Marked read on read, which is what makes an unread count mean anything.
-  await prisma.message.updateMany({
-    where: { conversationId, senderId: { not: userId }, readAt: null },
-    data: { readAt: new Date() },
-  });
+  //
+  // Only when there is something to mark. An open thread is polled every five seconds, so this
+  // fired twelve times a minute per reader and almost always matched zero rows — a write
+  // transaction, its WAL and its locks, bought to change nothing. The page just read tells us
+  // whether any unread message from the other side exists, so the question is already answered.
+  const hasUnread = messages.some((m) => m.senderId !== userId && m.readAt === null);
+  if (hasUnread) {
+    await prisma.message.updateMany({
+      where: { conversationId, senderId: { not: userId }, readAt: null },
+      data: { readAt: new Date() },
+    });
+  }
 
   return {
     id: conversation.id,
