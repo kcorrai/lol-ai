@@ -176,7 +176,72 @@ async function fetchAndBuildSnapshot(opts: Required<SnapshotOpts>): Promise<Meta
 // produces. Each instance holds at most a handful of variants.
 const MEMO_TTL_MS = 5 * 60 * 1000;
 
-const snapshotMemo = new Map<string, { value: MetaSnapshot | null; expiresAt: number }>();
+// Capped. The comment above says an instance holds "at most a handful of variants", which is true
+// of today's call sites and enforced by nothing: mode × tier is a product, and each entry is a
+// snapshot of around 200KB. If tier ever becomes a query parameter the reader controls, per-instance
+// memory becomes something the reader controls too. Eight covers every variant the app asks for
+// with room to spare.
+const MEMO_MAX_ENTRIES = 8;
+
+type MemoEntry = {
+  value: MetaSnapshot | null;
+  expiresAt: number;
+  /** Derived views, computed once per snapshot rather than per call — see below. */
+  derived: SnapshotViews | null;
+};
+
+const snapshotMemo = new Map<string, MemoEntry>();
+
+/**
+ * The two shapes of a snapshot that callers actually ask for, built once when it is memoised.
+ *
+ * getPopularChampions copied the whole ~170-champion array, filtered it, sorted it in full and kept
+ * eight — on every call, for a result that depends only on the snapshot. findChampionStats did a
+ * linear scan for a lookup. Neither is expensive on its own; both are multiplied by the ~739
+ * statically generated pages that revalidate together on a twelve-hour cycle, each calling more
+ * than once.
+ */
+interface SnapshotViews {
+  byPickRate: ChampionMetaStats[];
+  byKey: Map<string, ChampionMetaStats>;
+  byId: Map<number, ChampionMetaStats>;
+}
+
+function buildViews(snapshot: MetaSnapshot): SnapshotViews {
+  const byKey = new Map<string, ChampionMetaStats>();
+  const byId = new Map<number, ChampionMetaStats>();
+  for (const c of snapshot.champions) {
+    byKey.set(c.championKey.toLowerCase(), c);
+    byKey.set(c.name.toLowerCase(), c);
+    byId.set(c.championId, c);
+  }
+  return {
+    byPickRate: [...snapshot.champions].sort((a, b) => b.overallPickRate - a.overallPickRate),
+    byKey,
+    byId,
+  };
+}
+
+function rememberSnapshot(variant: string, value: MetaSnapshot | null): void {
+  snapshotMemo.set(variant, {
+    value,
+    expiresAt: Date.now() + rememberFor(value),
+    derived: value ? buildViews(value) : null,
+  });
+
+  // Oldest first, which is what a Map yields.
+  while (snapshotMemo.size > MEMO_MAX_ENTRIES) {
+    const oldest = snapshotMemo.keys().next();
+    if (oldest.done) break;
+    snapshotMemo.delete(oldest.value);
+  }
+}
+
+/** The memoised views for the default snapshot, loading it first if needed. */
+async function defaultViews(): Promise<SnapshotViews | null> {
+  await getMetaSnapshot();
+  return snapshotMemo.get("ranked:default")?.derived ?? null;
+}
 
 // The memo above only helps an instance that is already warm, and a revalidation
 // wave across 739 pages lands on instances that are each cold with respect to it
@@ -227,10 +292,7 @@ export async function getMetaSnapshot(opts: SnapshotOpts = {}): Promise<MetaSnap
   }
 
   // A null result is memoized too, but only briefly — see rememberFor below.
-  snapshotMemo.set(variant, {
-    value: snapshot,
-    expiresAt: Date.now() + rememberFor(snapshot),
-  });
+  rememberSnapshot(variant, snapshot);
 
   return snapshot;
 }
@@ -272,20 +334,30 @@ export function __clearSnapshotMemo(): void {
   snapshotMemo.clear();
 }
 
+/** Test seam: lets a suite assert the memo stays bounded without reaching into the Map. */
+export function __snapshotMemoSize(): number {
+  return snapshotMemo.size;
+}
+
 // Most-picked champions this patch, for related-links rows. Optionally excludes
 // one champion key (the current page's champion).
 export async function getPopularChampions(
   limit = 8,
   excludeKey?: string
 ): Promise<{ key: string; name: string }[]> {
-  const snapshot = await getMetaSnapshot();
-  if (!snapshot) return [];
+  const views = await defaultViews();
+  if (!views) return [];
+
   const needle = excludeKey?.toLowerCase();
-  return [...snapshot.champions]
-    .filter((c) => c.championKey.toLowerCase() !== needle)
-    .sort((a, b) => b.overallPickRate - a.overallPickRate)
-    .slice(0, limit)
-    .map((c) => ({ key: c.championKey, name: c.name }));
+  const out: { key: string; name: string }[] = [];
+  // Walks the pre-sorted list and stops at `limit`, rather than copying and sorting all ~170 to
+  // keep eight.
+  for (const c of views.byPickRate) {
+    if (out.length === limit) break;
+    if (c.championKey.toLowerCase() === needle) continue;
+    out.push({ key: c.championKey, name: c.name });
+  }
+  return out;
 }
 
 // Looks up one champion in a snapshot by Data Dragon key (case-insensitive) or
@@ -294,6 +366,16 @@ export function findChampionStats(
   snapshot: MetaSnapshot,
   championKeyOrId: string | number
 ): ChampionMetaStats | null {
+  // Indexed when the snapshot is memoised, if this is the memoised one. Callers can pass a
+  // snapshot from anywhere — a last-good fallback, a test fixture — so the scan stays as the path
+  // for anything not in the memo.
+  const indexed = [...snapshotMemo.values()].find((e) => e.value === snapshot)?.derived;
+  if (indexed) {
+    return typeof championKeyOrId === "number"
+      ? indexed.byId.get(championKeyOrId) ?? null
+      : indexed.byKey.get(championKeyOrId.toLowerCase()) ?? null;
+  }
+
   if (typeof championKeyOrId === "number") {
     return snapshot.champions.find((c) => c.championId === championKeyOrId) ?? null;
   }

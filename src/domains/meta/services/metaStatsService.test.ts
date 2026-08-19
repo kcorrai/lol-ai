@@ -31,7 +31,13 @@ vi.mock("@/lib/utils/logger", () => ({
   logger: { warn: vi.fn(), info: vi.fn(), error: vi.fn(), debug: vi.fn() },
 }));
 
-import { getMetaSnapshot, findChampionStats, __clearSnapshotMemo } from "./metaStatsService";
+import {
+  getMetaSnapshot,
+  getPopularChampions,
+  findChampionStats,
+  __clearSnapshotMemo,
+  __snapshotMemoSize,
+} from "./metaStatsService";
 import { getCached, setCached } from "@/lib/ai/aiCache";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { getLatestDdragonVersion } from "@/lib/ddragon";
@@ -328,5 +334,76 @@ describe("findChampionStats", () => {
 
   it("returns null for an unknown champion", () => {
     expect(findChampionStats(snapshot, "unknown")).toBeNull();
+  });
+});
+
+describe("derived snapshot views", () => {
+  beforeEach(() => {
+    mockGetCached.mockResolvedValue(null);
+    mockFetchOk(OPGG_SAMPLE);
+  });
+
+  // getPopularChampions copied the whole ~170-champion array, filtered it, sorted it in full and
+  // kept eight — per call, for a result that depends only on the snapshot, across the ~739 static
+  // pages that revalidate together.
+  it("orders popular champions by pick rate", async () => {
+    const popular = await getPopularChampions(5);
+    expect(popular.map((c) => c.key)).toEqual(["Ahri"]);
+  });
+
+  it("honours the limit", async () => {
+    const popular = await getPopularChampions(1);
+    expect(popular).toHaveLength(1);
+  });
+
+  it("excludes the champion whose page is asking", async () => {
+    const popular = await getPopularChampions(5, "Ahri");
+    expect(popular.map((c) => c.key)).not.toContain("Ahri");
+  });
+
+  it("is case-insensitive about the exclusion", async () => {
+    expect((await getPopularChampions(5, "ahri")).map((c) => c.key)).not.toContain("Ahri");
+  });
+
+  it("returns nothing when there is no snapshot to read", async () => {
+    mockGetCached.mockResolvedValue(null);
+    global.fetch = vi.fn().mockRejectedValue(new Error("op.gg down")) as unknown as typeof fetch;
+    __clearSnapshotMemo();
+    sharedStore.clear();
+
+    expect(await getPopularChampions(5)).toEqual([]);
+  });
+
+  it("looks a champion up by key, name and id through the index", async () => {
+    const snapshot = await getMetaSnapshot();
+    expect(findChampionStats(snapshot!, "ahri")?.championId).toBe(103);
+    expect(findChampionStats(snapshot!, "Ahri")?.championId).toBe(103);
+    expect(findChampionStats(snapshot!, 103)?.championKey).toBe("Ahri");
+    expect(findChampionStats(snapshot!, "nobody")).toBeNull();
+  });
+
+  // A caller can pass a snapshot from anywhere — a last-good fallback, a fixture — so the scan has
+  // to stay as the path for anything the memo does not hold.
+  it("still resolves a snapshot it has never memoised", async () => {
+    const snapshot = await getMetaSnapshot();
+    const detached: MetaSnapshot = JSON.parse(JSON.stringify(snapshot));
+    __clearSnapshotMemo();
+
+    expect(findChampionStats(detached, "ahri")?.championId).toBe(103);
+  });
+});
+
+describe("snapshot memo bounding", () => {
+  // The comment said "at most a handful of variants", which nothing enforced: mode × tier is a
+  // product and each entry is a ~200KB snapshot.
+  it("keeps at most eight variants", async () => {
+    mockGetCached.mockResolvedValue(null);
+    mockFetchOk(OPGG_SAMPLE);
+
+    for (let i = 0; i < 20; i++) {
+      await getMetaSnapshot({ tier: `tier-${i}` as never });
+    }
+
+    expect(__snapshotMemoSize()).toBeLessThanOrEqual(8);
   });
 });
