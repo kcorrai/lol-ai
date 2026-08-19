@@ -128,24 +128,4 @@ export interface ParticipantDTO {
   };
 }
 
-// MatchTimeline — only the fields we parse (CHAMPION_KILL events)
-export interface MatchTimelineDTO {
-  info: {
-    frameInterval: number;
-    participants: Array<{ participantId: number; puuid: string }>;
-    frames: Array<{
-      timestamp: number;
-      events: MatchTimelineEvent[];
-    }>;
-  };
-}
-
-export type MatchTimelineEvent =
-  | {
-      type: "CHAMPION_KILL";
-      timestamp: number;
-      killerId: number;
-      victimId: number;
-      position: { x: number; y: number };
-    }
-  | { type: string; [key: string]: unknown };
+// MatchTimeline lives in ./timeline.types.ts — the payload is large enough to own a file.

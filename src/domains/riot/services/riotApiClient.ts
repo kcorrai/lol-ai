@@ -7,9 +7,9 @@ import type {
   SummonerDTO,
   RankedEntryDTO,
   MatchDTO,
-  MatchTimelineDTO,
   ChampionMasteryDTO,
 } from "@/domains/riot/types/riot.types";
+import type { MatchTimelineDTO } from "@/domains/riot/types/timeline.types";
 
 // Region → routing cluster (for Account and Match v5 APIs)
 const ROUTING: Record<string, string> = {
