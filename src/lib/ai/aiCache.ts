@@ -36,8 +36,7 @@ export async function getCached(cacheKey: string): Promise<unknown | null> {
   // Deliberately no hitCount increment. It used to fire on every read, which
   // turned each cache *hit* into an extra write round trip — the exact opposite
   // of what a cache is for, and a meaningful slice of the egress that exhausted
-  // the Neon transfer quota. incrementHit() remains for callers that genuinely
-  // want the telemetry.
+  // the Neon transfer quota.
   return entry.content;
 }
 
@@ -70,12 +69,6 @@ export async function deleteCached(cacheKey: string): Promise<void> {
   // by the fallback above. Deleting one copy would leave the other to be found.
   await redisCacheDelete(cacheKey);
   await prisma.aiCache.deleteMany({ where: { cacheKey } }).catch(() => undefined);
-}
-
-export async function incrementHit(cacheKey: string): Promise<void> {
-  await prisma.aiCache
-    .update({ where: { cacheKey }, data: { hitCount: { increment: 1 } } })
-    .catch(() => undefined);
 }
 
 export function buildCacheKey(type: string, inputs: Record<string, string>): string {
