@@ -1,21 +1,33 @@
 import { prisma } from "@/lib/db/prisma";
 import { getCached, setCached, buildCacheKey } from "@/lib/ai/aiCache";
+import { computeKDA } from "@/domains/analysis/calculators/performanceCalculator";
 import type { MatchupEntry, MatchupTrend, PersonalMatchupReport } from "../types/counter.types";
 
 const MIN_GAMES = 3;
 const CACHE_TTL_DAYS = 0.042; // ~1 hour (1/24)
 const TREND_WINDOW = 5;
 
+// A player with nothing to report is the common case for a new account, and re-running the
+// self-join for them on every request is the most expensive way to learn nothing. Held briefly
+// rather than for the full hour, so the first matchup that qualifies is not hidden for an hour
+// after it lands.
+const EMPTY_CACHE_TTL_DAYS = 0.0035; // ~5 minutes
+
 // ── Raw query result shape ────────────────────────────────────────────────────
 
+// Column names are quoted camelCase in the queries below because that is what the tables actually
+// have: the schema maps table names with `@@map` and leaves column names alone. Getting this wrong
+// fails at runtime and never at compile time — `$queryRaw` is untyped at the SQL level — which is
+// exactly how LA-38 sat here unnoticed with every column in snake_case, so that every call to this
+// service threw `42703: column opp.champion_id does not exist` and the feature never once worked.
 interface MatchupRow {
-  opponent_champion_id: number;
-  opponent_champion_name: string;
+  opponentChampionId: number;
+  opponentChampionName: string;
   games: bigint;
   wins: bigint;
-  kills_sum: number;
-  deaths_sum: number;
-  assists_sum: number;
+  killsSum: number;
+  deathsSum: number;
+  assistsSum: number;
 }
 
 // ── Trend helpers ─────────────────────────────────────────────────────────────
@@ -43,24 +55,17 @@ async function fetchMatchupRows(
   riotAccountId: string,
   championId: number
 ): Promise<MatchupRow[]> {
-  // Self-join match_participants to find the same-lane opponent. The fluent API cannot
-  // express a same-match, cross-team, same-position join in one go.
-  //
-  // Column names are quoted camelCase because that is what the tables actually have:
-  // Prisma maps table names through `@@map` and leaves column names alone. The snake_case
-  // this used to spell (`mp.riot_account_id`, `m.queue_type`) matches no column, and an
-  // unquoted camelCase name would be folded to lower case and match none either — so every
-  // request to the personal matchup endpoint failed with "column does not exist" (LA-38).
-  // Nothing catches that at compile time; `matchArchiveService` carries the same warning.
+  // Prisma raw query: self-join match_participants to find same-lane opponent.
+  // Fluent API cannot express same-match cross-team same-position join in one go.
   return prisma.$queryRaw<MatchupRow[]>`
     SELECT
-      opp."championId"        AS opponent_champion_id,
-      opp."championName"      AS opponent_champion_name,
-      COUNT(*)::bigint        AS games,
+      opp."championId"    AS "opponentChampionId",
+      opp."championName"  AS "opponentChampionName",
+      COUNT(*)::bigint    AS games,
       SUM(CASE WHEN mp."won" THEN 1 ELSE 0 END)::bigint AS wins,
-      SUM(mp."kills")::float                            AS kills_sum,
-      SUM(mp."deaths")::float                           AS deaths_sum,
-      SUM(mp."assists")::float                          AS assists_sum
+      SUM(mp."kills")::float                            AS "killsSum",
+      SUM(mp."deaths")::float                           AS "deathsSum",
+      SUM(mp."assists")::float                          AS "assistsSum"
     FROM match_participants mp
     JOIN match_participants opp
       ON  opp."matchId"  = mp."matchId"
@@ -101,21 +106,18 @@ async function fetchTrendGames(
 function rowToEntry(row: MatchupRow, trend: MatchupTrend): MatchupEntry {
   const games = Number(row.games);
   const wins = Number(row.wins);
-  // Aggregate KDA over the whole matchup: (all kills + all assists) / all deaths, matching
-  // `computeKDA`. It read `(kills_sum + assists_sum) / deaths / games` against a `kills_sum`
-  // that was itself `SUM(kills + assists)` — so assists were counted twice and the ratio was
-  // then divided by the game count a second time, which put every KDA on this panel out by
-  // roughly the number of games played.
-  const deaths = row.deaths_sum === 0 ? 1 : row.deaths_sum;
-  const avgKda = Math.round(((row.kills_sum + row.assists_sum) / deaths) * 10) / 10;
 
   return {
-    opponentChampionId: Number(row.opponent_champion_id),
-    opponentChampionName: row.opponent_champion_name,
+    opponentChampionId: Number(row.opponentChampionId),
+    opponentChampionName: row.opponentChampionName,
     games,
     wins,
     winRate: Math.round((wins / games) * 100),
-    avgKda,
+    // Ratio of sums, via the shared calculator — the same aggregate KDA the archive reports and
+    // what every LoL site means by the term. The previous arithmetic here counted assists twice
+    // (the query already folded them into its kills total) and then divided the ratio by the game
+    // count, which is not an average of anything.
+    avgKda: computeKDA(row.killsSum, row.deathsSum, row.assistsSum),
     trend,
   };
 }
@@ -149,14 +151,16 @@ export async function getPersonalMatchups(
       banSuggestion: null,
       totalMatchupsAnalyzed: 0,
     };
+    // Cached, unlike before. "No qualifying matchups" is an answer, and it was the one answer this
+    // function refused to remember — so the account least likely to have data was the one paying
+    // for the full self-join on every single request, for ever.
+    await setCached(cacheKey, "personal-matchups", empty, EMPTY_CACHE_TTL_DAYS);
     return empty;
   }
 
-  const championName = rows[0]
-    ? await prisma.champion
-        .findUnique({ where: { id: championId }, select: { name: true } })
-        .then((c) => c?.name ?? "")
-    : "";
+  const championName = await prisma.champion
+    .findUnique({ where: { id: championId }, select: { name: true } })
+    .then((c) => c?.name ?? "");
 
   // Fetch trends for top 5 best + worst candidates (avoid N+1 for all rows)
   const sorted = [...rows];
@@ -166,7 +170,7 @@ export async function getPersonalMatchups(
 
   await Promise.all(
     [...bestRows, ...worstRows].map(async (row) => {
-      const id = Number(row.opponent_champion_id);
+      const id = Number(row.opponentChampionId);
       if (trendTargets.has(id)) return;
       const recent = await fetchTrendGames(riotAccountId, championId, id);
       trendTargets.set(id, computeTrend(recent));
@@ -174,7 +178,7 @@ export async function getPersonalMatchups(
   );
 
   const toEntry = (row: MatchupRow): MatchupEntry => {
-    const id = Number(row.opponent_champion_id);
+    const id = Number(row.opponentChampionId);
     return rowToEntry(row, trendTargets.get(id) ?? "insufficient_data");
   };
 
