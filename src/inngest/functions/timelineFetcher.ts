@@ -1,7 +1,7 @@
 import { inngest } from "@/inngest/client";
 import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
-import { fetchAndPersistDeathEvents } from "@/domains/riot/services/timelineService";
+import { captureMatchTimeline } from "@/domains/riot/services/timelineService";
 
 const MAX_MATCHES = 20;
 const DELAY_BETWEEN_MS = 1200; // respect ~1 req/s Riot rate limit
@@ -28,18 +28,22 @@ export const timelineFetcher = inngest.createFunction(
       return { processed: 0 };
     }
 
-    // Get ranked matches that haven't had timeline processed yet
+    // Ranked matches still missing either half of the capture.
+    //
+    // Two conditions, not one, because the halves are scoped differently (ADR-033). Death events
+    // are per-account; frames and events are per-match. Keying the work list on death events
+    // alone — as it did before — would mean every match already processed for deaths is skipped
+    // forever, so the twenty most recent games would never get their frames.
     const participants = await prisma.matchParticipant.findMany({
       where: {
         // Match data by puuid so a shared account's matches are all processed (TASK-228); death
         // events stay per-account (each account generates its own).
         puuid: account.puuid,
         match: { queueType: "RANKED_SOLO_5x5" },
-        NOT: {
-          match: {
-            deathEvents: { some: { riotAccountId } },
-          },
-        },
+        OR: [
+          { match: { deathEvents: { none: { riotAccountId } } } },
+          { match: { timelineFrames: { none: {} } } },
+        ],
       },
       select: {
         championName: true,
@@ -51,9 +55,12 @@ export const timelineFetcher = inngest.createFunction(
 
     logger.info(`[timelineFetcher] Processing ${participants.length} matches for ${riotAccountId}`);
     let totalDeaths = 0;
+    let totalFrames = 0;
+    let totalEvents = 0;
+    let fetched = 0;
 
     for (const p of participants) {
-      const count = await fetchAndPersistDeathEvents(
+      const result = await captureMatchTimeline(
         p.match.id,
         p.match.matchId,
         riotAccountId,
@@ -61,11 +68,20 @@ export const timelineFetcher = inngest.createFunction(
         account.region,
         p.championName
       );
-      totalDeaths += count;
+      totalDeaths += result.deaths;
+      totalFrames += result.frames;
+      totalEvents += result.events;
+
+      // Only a real fetch is worth waiting after. A match that turned out to be fully captured
+      // never touched Riot, so pausing for it would spend the budget this loop exists to protect.
+      if (result.skipped) continue;
+      fetched += 1;
       await sleep(DELAY_BETWEEN_MS);
     }
 
-    logger.info(`[timelineFetcher] Done: ${totalDeaths} deaths stored across ${participants.length} matches`);
-    return { processed: participants.length, totalDeaths };
+    logger.info(
+      `[timelineFetcher] Done: ${totalDeaths} deaths, ${totalFrames} frames, ${totalEvents} events across ${fetched} fetched of ${participants.length} matches`
+    );
+    return { processed: participants.length, fetched, totalDeaths, totalFrames, totalEvents };
   }
 );
