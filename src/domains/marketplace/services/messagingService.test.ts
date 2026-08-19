@@ -5,16 +5,19 @@ vi.mock("@/lib/db/prisma", () => ({
     conversation: { findUnique: vi.fn(), findMany: vi.fn(), upsert: vi.fn(), update: vi.fn() },
     message: { findMany: vi.fn(), updateMany: vi.fn(), create: vi.fn() },
     booking: { findMany: vi.fn(), findFirst: vi.fn() },
+    $queryRaw: vi.fn(),
     $transaction: vi.fn(),
   },
 }));
 
 import { prisma } from "@/lib/db/prisma";
-import { getThread } from "@/domains/marketplace/services/messagingService";
+import { getThread, listThreads } from "@/domains/marketplace/services/messagingService";
 
 const db = prisma as unknown as {
-  conversation: { findUnique: ReturnType<typeof vi.fn> };
+  conversation: { findUnique: ReturnType<typeof vi.fn>; findMany: ReturnType<typeof vi.fn> };
   message: { findMany: ReturnType<typeof vi.fn>; updateMany: ReturnType<typeof vi.fn> };
+  booking: { findMany: ReturnType<typeof vi.fn> };
+  $queryRaw: ReturnType<typeof vi.fn>;
 };
 
 const ME = "user-me";
@@ -109,5 +112,80 @@ describe("getThread read receipts", () => {
 
     expect(thread).toBeNull();
     expect(db.message.findMany).not.toHaveBeenCalled();
+  });
+});
+
+describe("listThreads booking lookup", () => {
+  function threadRow(over: Record<string, unknown> = {}) {
+    return {
+      id: "conv-1",
+      studentId: ME,
+      lastMessageAt: new Date("2026-08-19T10:00:00Z"),
+      student: { name: "Kaan" },
+      coachProfile: { userId: THEM, slug: "a-coach", displayName: "A Coach" },
+      _count: { messages: 0 },
+      messages: [{ body: "hi" }],
+      coachProfileId: "cp-1",
+      ...over,
+    };
+  }
+
+  beforeEach(() => {
+    db.conversation.findMany.mockResolvedValue([threadRow()]);
+    db.$queryRaw.mockResolvedValue([]);
+  });
+
+  // It used to read every booking for every pair and then throw away all but the newest per pair —
+  // a coach with forty repeat students at twenty sessions each read eight hundred rows to produce
+  // forty values, with no `take` bounding it.
+  it("asks the database for one row per pair instead of every booking", async () => {
+    await listThreads(ME);
+
+    expect(db.booking.findMany).not.toHaveBeenCalled();
+    expect(db.$queryRaw).toHaveBeenCalledTimes(1);
+
+    const sql = (db.$queryRaw.mock.calls[0][0] as string[]).join(" ? ");
+    expect(sql).toContain("DISTINCT ON");
+    expect(sql).toContain('"createdAt" DESC');
+  });
+
+  it("passes the pairs as arrays rather than expanding them into the query text", async () => {
+    db.conversation.findMany.mockResolvedValue([
+      threadRow({ id: "c1", coachProfileId: "cp-1", studentId: ME }),
+      threadRow({ id: "c2", coachProfileId: "cp-2", studentId: ME }),
+    ]);
+
+    await listThreads(ME);
+
+    const [, coachIds, studentIds] = db.$queryRaw.mock.calls[0];
+    expect(coachIds).toEqual(["cp-1", "cp-2"]);
+    expect(studentIds).toEqual([ME, ME]);
+  });
+
+  it("maps each pair's status onto its thread", async () => {
+    db.$queryRaw.mockResolvedValue([
+      { coachProfileId: "cp-1", studentId: ME, status: "COMPLETED" },
+    ]);
+
+    const threads = await listThreads(ME);
+
+    expect(threads[0].bookingStatus).toBe("COMPLETED");
+  });
+
+  it("leaves the status null for a pair with no booking", async () => {
+    db.$queryRaw.mockResolvedValue([]);
+
+    const threads = await listThreads(ME);
+
+    expect(threads[0].bookingStatus).toBeNull();
+  });
+
+  it("does not query at all when the caller is in no threads", async () => {
+    db.conversation.findMany.mockResolvedValue([]);
+
+    const threads = await listThreads(ME);
+
+    expect(threads).toEqual([]);
+    expect(db.$queryRaw).not.toHaveBeenCalled();
   });
 });
