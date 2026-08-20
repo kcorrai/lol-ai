@@ -301,6 +301,29 @@ reasons — e.g. `disabled` present on a wrapper rather than the button. Importe
 disabled button. `user-event` reproduces the full browser sequence, so a test that asserts a disabled
 control ignores input is actually testing that.
 
+### `patch-package` (v8.x)
+
+**Added in:** LA-41  
+**Purpose:** Applies `patches/next+14.2.35.patch` on every install (`postinstall`) — a 3-line fix
+inside Next's own bundled `@vercel/og`, which every card/OG route depends on through `next/og`.  
+**Why needed:** `next/dist/compiled/@vercel/og/index.node.js` loads its bundled Noto font, `yoga.wasm`
+and `resvg.wasm` with `path.join(import.meta.url, "../file.ext")` before calling `fileURLToPath`. On
+POSIX, `join` on a `file:///…` URL collapses the doubled `/` back into something `fileURLToPath`
+tolerates by accident; on Windows `path.win32.join` treats it as a relative path and produces
+`.\file:\C:\…`, which `fileURLToPath` rejects — `TypeError [ERR_INVALID_URL]`. The crash happens at
+module import, before `ImageResponse` is even constructed, so no app-level option (`fonts`, custom
+loaders) can route around it — every OG image route 500s in local Windows dev. Next fixed this
+upstream in 15.5.23 (`fileURLToPath(new URL(...))`), but the smallest version with the fix requires
+Next 15 (async `params`/`searchParams` — a migration far outside this bug's scope; tracked
+separately). The patch applies that same one-line-per-file fix to the 14.2.35 we're pinned to.  
+**Why this, not swapping to the standalone `@vercel/og` npm package:** that package also carries the
+fix, but its current release (1.0.1) ships a different default font (Geist, not Noto) and would
+change every card's rendered typography in production, not just fix Windows dev — out of scope for a
+platform-path bug.  
+**Consequence:** `patches/` must ship with `next` version-pinned in its filename; bumping `next`
+requires regenerating the patch (`npx patch-package next`) or dropping it once the LA-41-tracked
+Next 15 migration lands.
+
 ---
 
 ## External Data Sources (no npm package)
