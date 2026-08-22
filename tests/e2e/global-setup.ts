@@ -38,6 +38,7 @@ async function seedTestData(prisma: Awaited<ReturnType<typeof createTestPrisma>>
   // Delete in reverse FK order to avoid constraint violations
   const existing = await prisma.user.findUnique({ where: { email: E2E_USER.email }, select: { id: true } });
   if (existing) {
+    await prisma.improvementPlan.deleteMany({ where: { riotAccount: { userId: existing.id } } });
     await prisma.coachingReport.deleteMany({ where: { riotAccount: { userId: existing.id } } });
     await prisma.rankedHistory.deleteMany({ where: { riotAccount: { userId: existing.id } } });
     await prisma.championStat.deleteMany({ where: { riotAccount: { userId: existing.id } } });
@@ -66,6 +67,11 @@ async function seedTestData(prisma: Awaited<ReturnType<typeof createTestPrisma>>
       email: E2E_USER.email,
       name: E2E_USER.name,
       emailVerified: new Date(),
+      // Connecting an account through the app calls `ensureProfileSlug`; seeding
+      // the riotAccount row directly skips it, and then `/u/<slug>` 404s for a
+      // user who has a public profile everywhere else. Same derivation as
+      // `toProfileSlug`, which is what the app would have written.
+      profileSlug: `${E2E_RIOT_PRE.gameName}-${E2E_RIOT_PRE.tagLine}`.replace(/[^a-zA-Z0-9-_]/g, "-"),
       // Mark onboarding done so the forced first-journey overlay (TASK-217) doesn't block the
       // other smoke specs. The guided-onboarding spec resets this to null for its own run.
       profile: { create: { emailWeeklyReport: false, onboardingCompletedAt: new Date() } },
@@ -129,6 +135,12 @@ async function seedTestData(prisma: Awaited<ReturnType<typeof createTestPrisma>>
         matchId: match.id,
         riotAccountId: riotAccount.id,
         puuid: E2E_RIOT_PRE.mockPuuid,
+        // A real synced participant carries the Riot ID, and the scoreboard
+        // prints it as the link to that player's profile — which the guided
+        // journey spotlights. Without it the row falls back to the position and
+        // the tour has nothing to click.
+        gameName: E2E_RIOT_PRE.gameName,
+        tagLine: E2E_RIOT_PRE.tagLine,
         teamId: 100,
         championId: 103,
         championName: "Ahri",
@@ -193,6 +205,29 @@ async function seedTestData(prisma: Awaited<ReturnType<typeof createTestPrisma>>
       createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
     },
     select: { id: true },
+  });
+
+  // ── Active improvement plan ──────────────────────────────────────────────
+  // The seeded user stands for someone who has already been using the app, so
+  // the forced first journey fast-forwards past every step that waits on a
+  // gate. `hasPlan` was the one gate nothing satisfied, which parked the tour
+  // on "Create your first plan" with no way past it.
+  await prisma.improvementPlan.create({
+    data: {
+      riotAccountId: riotAccount.id,
+      status: "active",
+      expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+      targets: [
+        {
+          metric: "visionScore",
+          label: "Vision score",
+          baseline: 28,
+          goal: 36,
+          unit: "",
+          direction: "increase",
+        },
+      ],
+    },
   });
 
   // ── Write state file for tests to reference ─────────────────────────────

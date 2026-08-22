@@ -1,14 +1,95 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 import { createTestPrisma } from "./helpers/db";
 import { E2E_USER } from "./helpers/constants";
+import { GUIDE_STEPS, type GuideStep } from "@/domains/onboarding/guide/guideSteps";
 
 // Keep in sync with GUIDE_STORAGE_KEY in src/domains/onboarding/guide/guideSteps.ts
 const GUIDE_KEY = "lolai_first_journey_v1";
 
-// The seeded E2E user already has an account, matches and a completed report, so the forced journey
-// auto-fast-forwards past connect/sync/generate. This spec verifies the engine drives the user
-// across pages and that finishing sets the bypass-proof DB gate.
+// The tour is data: `GUIDE_STEPS` decides how many steps there are, which ones
+// wait on a gate, and which ones need a click on the page rather than in the
+// bubble. This spec reads that same list instead of hard-coding a path through
+// it — the previous version spelled out eight steps and went red the moment the
+// tour grew past them, which says nothing about whether onboarding works.
+//
+// The seeded user already has an account, matches and a completed report, so
+// the gated steps fast-forward. What is asserted is that the journey never
+// stalls and that finishing sets the bypass-proof DB gate.
+
+/**
+ * The bubble is the one element carrying the "Skip setup" escape hatch — except
+ * on the final step, which drops it (there is nothing left to skip) and offers
+ * "Start climbing" instead. Both spellings, or the walk goes blind exactly where
+ * it is supposed to finish.
+ */
+function bubble(page: Page) {
+  // Innermost div holding both the title and the button. Filtering on the
+  // button alone picks the button's own wrapper on the final step, where
+  // "Start climbing" sits two levels deeper than "Skip setup" ever did.
+  return page
+    .locator("div")
+    .filter({ has: page.locator("h3") })
+    .filter({ has: page.getByRole("button", { name: /Skip setup|Start climbing/ }) })
+    .last();
+}
+
+async function visibleTitle(page: Page): Promise<string | null> {
+  const b = bubble(page);
+  if (!(await b.isVisible().catch(() => false))) return null;
+  // Short budget on purpose: this runs in a poll loop, so a locator that has
+  // stopped matching must fail fast rather than eat the whole test timeout.
+  return (await b.locator("h3").first().innerText({ timeout: 2_000 }).catch(() => "")).trim() || null;
+}
+
+/**
+ * Resolve a title to a step. Two steps share the title "Your champion pool", so
+ * the search starts after the step we were last on rather than at the top —
+ * otherwise the walk snaps backwards and loops.
+ */
+function stepAfter(title: string, from: number): { step: GuideStep; index: number } | null {
+  for (let i = from + 1; i < GUIDE_STEPS.length; i += 1) {
+    if (GUIDE_STEPS[i].title.trim() === title) return { step: GUIDE_STEPS[i], index: i };
+  }
+  return null;
+}
+
+async function waitForNextStep(
+  page: Page,
+  from: number,
+  previousTitle: string | null,
+): Promise<{ step: GuideStep; index: number }> {
+  const deadline = Date.now() + 25_000;
+  while (Date.now() < deadline) {
+    const title = await visibleTitle(page);
+    if (title && title !== previousTitle) {
+      const found = stepAfter(title, from);
+      if (found) return found;
+    }
+    await page.waitForTimeout(200);
+  }
+  throw new Error(`the journey never advanced past "${previousTitle ?? "(start)"}"`);
+}
+
+async function click(page: Page, step: GuideStep): Promise<void> {
+  const control =
+    step.advance.type === "manual"
+      ? page.getByRole("button", { name: /Let's go|Got it/ })
+      : step.advance.type === "route" && step.goTo
+        ? page.getByRole("button", { name: /Take me there/ })
+        : step.advance.type === "route"
+          ? // No safety valve on this one: the point is that the spotlighted
+            // control on the page is what moves the journey on.
+            page.locator(`[data-tour="${step.target}"]`).first()
+          : null;
+
+  if (control) await control.click({ timeout: 8_000 }).catch(() => undefined);
+}
+
 test.describe("Forced first-journey onboarding", () => {
+  // A full walk of the tour is a few dozen page loads under `next dev`, each
+  // paying its own first compile.
+  test.setTimeout(300_000);
+
   test.beforeEach(async () => {
     const prisma = createTestPrisma();
     try {
@@ -43,34 +124,34 @@ test.describe("Forced first-journey onboarding", () => {
     await page.evaluate((k) => localStorage.removeItem(k), GUIDE_KEY);
     await page.reload();
 
-    // Welcome — the coach greets the user.
-    await expect(page.getByText("Welcome, summoner")).toBeVisible({ timeout: 15_000 });
-    await page.getByRole("button", { name: /Let's go/ }).click();
+    let current = await waitForNextStep(page, -1, null);
+    const walked: string[] = [];
 
-    // Fast-forwarded to "open a match" — click the spotlighted newest game.
-    await expect(page.getByText("Open a match")).toBeVisible({ timeout: 10_000 });
-    await page.locator('[data-tour="match-row"]').first().click();
+    for (;;) {
+      const { step, index } = current;
+      walked.push(step.id);
 
-    // Match breakdown explainer (manual).
-    await expect(page.getByText("This is a match breakdown")).toBeVisible({ timeout: 10_000 });
-    await page.getByRole("button", { name: /Got it/ }).click();
+      if (step.isFinal) {
+        await page.getByRole("button", { name: /Start climbing/ }).click();
+        break;
+      }
 
-    // Reports → (generate auto-skips, report already complete) → Improvement → Badges → Leaderboard.
-    await expect(page.getByText("Now, your AI reports")).toBeVisible({ timeout: 10_000 });
-    await page.getByRole("button", { name: /Take me there/ }).click();
+      // A `skipIfMissing` step auto-advances 700ms after it appears, so the
+      // control can be torn out from under the click. That is the journey
+      // working, not a failure — swallow it and let the wait below decide,
+      // which reports "never advanced past X" instead of retrying for the whole
+      // test timeout.
+      await click(page, step);
+      // A `state` step has no control at all — the engine advances it when the
+      // gate flips, and the wait below is the assertion that it does.
 
-    await expect(page.getByText("Your improvement plan")).toBeVisible({ timeout: 15_000 });
-    await page.getByRole("button", { name: /Take me there/ }).click();
+      current = await waitForNextStep(page, index, step.title);
+    }
 
-    await expect(page.getByText("Earn badges as you climb")).toBeVisible({ timeout: 10_000 });
-    await page.getByRole("button", { name: /Take me there/ }).click();
-
-    await expect(page.getByText("See where you rank")).toBeVisible({ timeout: 10_000 });
-    await page.getByRole("button", { name: /Take me there/ }).click();
-
-    // Finish — completes onboarding.
-    await expect(page.getByText("You're all set!")).toBeVisible({ timeout: 10_000 });
-    await page.getByRole("button", { name: /Start climbing/ }).click();
+    // The tour really walked; it did not fast-forward from welcome to finish.
+    expect(walked.length).toBeGreaterThan(5);
+    expect(walked[0]).toBe("welcome");
+    expect(walked.at(-1)).toBe(GUIDE_STEPS.at(-1)?.id);
 
     // Overlay is gone and the gate is persisted server-side.
     await expect(page.getByText("You're all set!")).toBeHidden({ timeout: 10_000 });
