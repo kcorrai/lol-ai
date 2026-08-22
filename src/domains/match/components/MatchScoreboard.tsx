@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { ItemIcon } from "@/components/ui/ItemIcon";
 import { cn } from "@/lib/utils";
@@ -10,6 +11,12 @@ interface MatchScoreboardProps {
   userPuuid: string | null;
   winningTeam: number;
   objectives: Record<string, TeamObjectives> | null;
+}
+
+// Mirrors `toProfileSlug` in the identity domain. Inlined rather than imported
+// because that module pulls Prisma in with it and this is a client component.
+function profileHref(gameName: string, tagLine: string | null): string {
+  return `/u/${`${gameName}-${tagLine ?? ""}`.replace(/[^a-zA-Z0-9-_]/g, "-")}`;
 }
 
 const COLS =
@@ -115,9 +122,19 @@ function TeamBlock({
                 >
                   {p.championName}
                 </span>
-                <span className="block truncate font-mono text-[9.5px] tracking-wide text-fg-4">
-                  {p.gameName ? `${p.gameName}#${p.tagLine ?? ""}` : p.position}
-                </span>
+                {p.gameName ? (
+                  <Link
+                    href={profileHref(p.gameName, p.tagLine)}
+                    data-tour={you ? "my-profile-link" : undefined}
+                    className="block truncate font-mono text-[9.5px] tracking-wide text-fg-4 hover:text-acid-500 hover:underline"
+                  >
+                    {`${p.gameName}#${p.tagLine ?? ""}`}
+                  </Link>
+                ) : (
+                  <span className="block truncate font-mono text-[9.5px] tracking-wide text-fg-4">
+                    {p.position}
+                  </span>
+                )}
               </span>
             </span>
 

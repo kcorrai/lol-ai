@@ -1,5 +1,27 @@
 import { describe, it, expect } from "vitest";
+import { readdirSync, readFileSync } from "fs";
+import { join } from "path";
 import { GUIDE_STEPS, GUIDE_STORAGE_KEY, isGateSatisfied, storageKeyFor, type GuideGates } from "./guideSteps";
+import { NAV_SECTIONS, NAV_SETTINGS } from "@/components/layout/navConfig";
+
+/** The sidebar and bottom nav set `data-tour` from config rather than a literal. */
+const NAV_TOUR_IDS = [...NAV_SECTIONS.flatMap((s) => s.items), ...NAV_SETTINGS]
+  .map((i) => i.tourId)
+  .filter((id): id is string => Boolean(id));
+
+/** Every .tsx under the given roots — where a `data-tour` anchor can live. */
+function tsxFilesUnder(...roots: string[]): string[] {
+  const out: string[] = [];
+  const walk = (dir: string): void => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const path = join(dir, entry.name);
+      if (entry.isDirectory()) walk(path);
+      else if (entry.name.endsWith(".tsx")) out.push(path);
+    }
+  };
+  for (const root of roots) walk(root);
+  return out;
+}
 
 const NONE: GuideGates = { hasAccount: false, hasMatches: false, hasCompleteReport: false, hasPlan: false };
 const ALL: GuideGates = { hasAccount: true, hasMatches: true, hasCompleteReport: true, hasPlan: true };
@@ -18,21 +40,29 @@ describe("GUIDE_STEPS", () => {
   });
 
   // Every step target must correspond to a real `data-tour` anchor rendered somewhere in the app.
-  // A step pointing at a non-existent anchor makes the spotlight overlay freeze the whole page
-  // (this list is what caught the missing `connect-form` — TASK-220). Keep in sync with the
-  // `data-tour="..."` attributes in the components.
+  // A step pointing at a non-existent anchor leaves the user staring at an empty
+  // spotlight with no control to click (this is what caught the missing
+  // `connect-form` — TASK-220).
+  //
+  // The anchor set is read out of the tree rather than copied into a literal
+  // here. The literal drifted: `my-profile-link` stayed in it for months after
+  // the match-page redesign dropped the link that carried it, so the test kept
+  // passing while the forced journey hard-locked on that step. A hand-kept copy
+  // of reality asserts nothing about reality.
   it("only spotlights anchors the app actually renders", () => {
-    const KNOWN_ANCHORS = new Set([
-      "nav-dashboard", "nav-accounts", "nav-reports", "nav-improvement", "nav-badges", "nav-leaderboard",
-      "nav-champions", "nav-coach-chat", "nav-otp", "nav-profile", "nav-discord",
-      "connect-form", "match-row", "generate-report", "create-plan", "my-profile-link",
-      "profile-hero", "profile-stats", "profile-champions", "profile-badges",
-      "improvement-preview", "badges-preview", "leaderboard-preview",
-      "champion-pool-grid", "chat-input", "otp-recommendations", "invite-friend", "discord-webhook",
-    ]);
+    const anchors = new Set<string>(NAV_TOUR_IDS);
+    // Both shapes count: a literal `data-tour="x"`, and the conditional
+    // `data-tour={cond ? "x" : undefined}` the row-level anchors use.
+    for (const file of tsxFilesUnder("app", "src")) {
+      for (const m of readFileSync(file, "utf8").matchAll(/data-tour=(?:"([^"]+)"|{([^}]*)})/g)) {
+        if (m[1]) anchors.add(m[1]);
+        for (const q of (m[2] ?? "").matchAll(/"([^"]+)"/g)) anchors.add(q[1]);
+      }
+    }
+
     for (const step of GUIDE_STEPS) {
       if (!step.target) continue;
-      expect(KNOWN_ANCHORS.has(step.target), `${step.id} → data-tour="${step.target}" must exist in the app`).toBe(true);
+      expect(anchors.has(step.target), `${step.id} → data-tour="${step.target}" must exist in the app`).toBe(true);
     }
   });
 
