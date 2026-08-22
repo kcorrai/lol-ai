@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LA-52 — Match Story timeline player (mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Orbitron:wght@600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ══ mockup viewer chrome — not part of the delivered design, for reviewing it only ══ -->
+<div class="mockup-bar">
+  <strong>LA-52 mockup viewer</strong>
+  <span class="mockup-note">|</span>
+  <button data-viewport="desktop" class="is-active">Desktop</button>
+  <button data-viewport="mobile">Phone</button>
+  <span class="mockup-note">|</span>
+  <button data-state="loaded" class="is-active">Populated</button>
+  <button data-state="loading">Loading</button>
+  <button data-state="empty">No timeline (hasTimeline: false)</button>
+  <span class="mockup-note">Drag the scrubber, hit play, click a tick or a feed row. Arrow keys move it once focused, Space plays/pauses.</span>
+</div>
+
+<div id="device-frame" class="device-frame viewport-desktop">
+  <div class="page-grid">
+    <div class="page-main">
+      <div class="context-block">↑ existing — MatchResultHeader · MatchKpiStrip · LanePhaseChart · MatchScoreboard</div>
+
+      <!-- ══════════════════════ POPULATED STATE (the design) ══════════════════════ -->
+      <section id="panel-loaded" class="story-panel notch">
+        <header class="story-header">
+          <span class="hud-label">// MATCH STORY</span>
+          <span class="subtitle">34m · <span class="story-result">Victory</span></span>
+        </header>
+
+        <div class="story-body">
+          <div class="story-main" tabindex="-1">
+            <div class="story-toolbar">
+              <div id="filter-chips" class="filter-chips"></div>
+              <span id="story-readout" class="story-readout font-mono">—</span>
+            </div>
+
+            <div class="chart-wrap">
+              <svg id="story-chart" class="story-chart"></svg>
+            </div>
+
+            <div class="story-controls">
+              <button id="prev-event-btn" class="ctrl-btn" title="Previous event" aria-label="Jump to previous event">⏮</button>
+              <button id="play-btn" class="ctrl-btn play" title="Play / pause" aria-label="Play or pause">▶</button>
+              <button id="next-event-btn" class="ctrl-btn" title="Next event" aria-label="Jump to next event">⏭</button>
+              <div class="scrubber-wrap">
+                <input id="scrubber" class="scrubber" type="range" min="0" max="34" step="1" value="18" aria-label="Match minute" />
+              </div>
+              <span id="minute-readout" class="minute-readout">18 / 34m</span>
+              <select id="speed-select" class="speed-select" aria-label="Playback speed">
+                <option value="1">1×</option>
+                <option value="2">2×</option>
+                <option value="4">4×</option>
+              </select>
+            </div>
+          </div>
+
+          <aside class="story-map-pane">
+            <span class="hud-label">// POSITIONS</span>
+            <div class="map-frame">
+              <svg class="rift-map" viewBox="0 0 100 100" role="img" aria-label="Summoner's Rift schematic with recent event positions">
+                <rect x="0" y="0" width="100" height="100" rx="3" fill="var(--ink-700)" />
+                <polygon points="0,0 100,0 100,100" fill="var(--red-500)" opacity="0.05" />
+                <polygon points="0,0 0,100 100,100" fill="var(--blue-500)" opacity="0.05" />
+                <line x1="4" y1="4" x2="96" y2="96" stroke="var(--teal-500)" stroke-opacity="0.16" stroke-width="13" stroke-linecap="round" />
+                <g stroke="var(--line-3)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                  <path d="M 9 78 L 9 15 Q 9 9 15 9 L 78 9" />
+                  <path d="M 22 91 L 85 91 Q 91 91 91 85 L 91 22" />
+                  <path d="M 16 84 L 84 16" />
+                </g>
+                <circle cx="7" cy="93" r="7" fill="var(--blue-500)" opacity="0.5" />
+                <circle cx="93" cy="7" r="7" fill="var(--red-500)" opacity="0.5" />
+                <g fill="var(--ink-800)" stroke="var(--line-3)" stroke-width="1.2">
+                  <circle cx="34" cy="27" r="6" />
+                  <circle cx="69" cy="75" r="6" />
+                </g>
+                <g fill="var(--fg-3)" font-size="4.2" font-family="JetBrains Mono, monospace" text-anchor="middle" letter-spacing="0.3">
+                  <text x="34" y="28.6">BARON</text>
+                  <text x="69" y="76.6">DRAKE</text>
+                </g>
+                <g id="map-pins"></g>
+              </svg>
+            </div>
+            <p class="map-hint">Pins mark where an event happened, fading over the ~6 minutes after. Movement between events isn't tracked — a frame only has position at the moment of an event, so no path is drawn between pins.</p>
+          </aside>
+        </div>
+
+        <div class="story-feed">
+          <span class="hud-label feed-label">// EVENTS</span>
+          <ul id="feed-list" class="feed-list"></ul>
+        </div>
+      </section>
+
+      <!-- ══════════════════════ EMPTY STATE — hasTimeline: false ══════════════════════ -->
+      <section id="panel-empty" class="story-panel story-panel--empty notch" style="display:none">
+        <header class="story-header">
+          <span class="hud-label">// MATCH STORY</span>
+          <span class="subtitle">No record</span>
+        </header>
+        <p class="empty-copy">
+          No minute-by-minute record for this match. Games synced from now on carry one, with kills,
+          objectives and wards you can scrub through — this one predates that.
+        </p>
+      </section>
+
+      <!-- ══════════════════════ LOADING STATE ══════════════════════ -->
+      <section id="panel-loading" class="story-panel notch" style="display:none">
+        <header class="story-header">
+          <span class="hud-label">// MATCH STORY</span>
+          <span class="subtitle">Loading</span>
+        </header>
+        <div class="story-loading">
+          <div class="skeleton-block"></div>
+          <div class="skeleton-block"></div>
+          <div class="skeleton-block" style="width:60%"></div>
+        </div>
+      </section>
+
+      <div class="context-block">↓ existing — BuildExplanationPanel</div>
+      <div class="handoff-link"><a href="README.md">README.md — load-bearing vs. taste, open questions, answers to the brief</a></div>
+    </div>
+    <div class="context-rail">MatchDetailRail<br/>(existing, unchanged —<br/>306px sidebar, ≥lg only)</div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
