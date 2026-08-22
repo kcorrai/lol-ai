@@ -130,7 +130,7 @@ export function ReportOgCard({ report }: { report: PublicReport }) {
             fontStyle: "italic",
           }}
         >
-          {"“"}{insight}{"”"}
+          {`“${insight}”`}
         </div>
       </div>
 

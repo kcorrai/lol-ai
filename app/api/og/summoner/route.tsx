@@ -59,11 +59,11 @@ export async function GET(req: NextRequest): Promise<Response> {
           {name}
         </div>
         <div style={{ fontSize: 28, color: tierColor, marginBottom: 8 }}>
-          {rank} {wr ? `· ${wr}% WR` : ""}
+          {wr ? `${rank} · ${wr}% WR` : rank}
         </div>
         {champ && (
           <div style={{ fontSize: 20, color: "#A7BCB5" }}>
-            Most played: {champ}
+            {`Most played: ${champ}`}
           </div>
         )}
         <div

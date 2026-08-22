@@ -42,7 +42,7 @@ export function MasteryCard({ d }: { d: MasteryCardData }) {
           </span>
 
           {/* Progress bar */}
-          <div style={{ marginTop: 32 }}>
+          <div style={{ display: "flex", flexDirection: "column", marginTop: 32 }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
               <span style={{ color: C.muted, fontSize: 16 }}>Mastery Score</span>
               <span style={{ color: C.text, fontSize: 16, fontWeight: 700 }}>
@@ -51,6 +51,7 @@ export function MasteryCard({ d }: { d: MasteryCardData }) {
             </div>
             <div
               style={{
+                display: "flex",
                 width: 480,
                 height: 16,
                 background: C.surface,

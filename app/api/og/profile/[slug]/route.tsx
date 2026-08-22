@@ -58,16 +58,16 @@ export async function GET(
           {name}
         </div>
         <div style={{ fontSize: 28, color: "#A7BCB5", marginBottom: 8 }}>
-          {rankStr} {wr ? `· ${wr}` : ""}
+          {wr ? `${rankStr} · ${wr}` : rankStr}
         </div>
         {topChamp && (
           <div style={{ fontSize: 20, color: "#A7BCB5", marginBottom: 8 }}>
-            En iyi: {topChamp}
+            {`En iyi: ${topChamp}`}
           </div>
         )}
         {badgeCount > 0 && (
           <div style={{ fontSize: 18, color: "#A7BCB5" }}>
-            {badgeCount} badges earned
+            {`${badgeCount} badges earned`}
           </div>
         )}
         <div
