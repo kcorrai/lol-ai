@@ -7,6 +7,11 @@ function getState(): E2EState {
   return JSON.parse(readFileSync(STATE_FILE, "utf-8")) as E2EState;
 }
 
+// `navigator.clipboard.writeText` rejects without an explicit grant, and the
+// button only says "Copied!" from that promise's `then`. Scoped to this file
+// rather than the whole smoke project: this is the one spec that copies.
+test.use({ permissions: ["clipboard-read", "clipboard-write"] });
+
 test.describe("Share Report", () => {
   test("Share button — generates link and displays URL", async ({ page }) => {
     const { reportId } = getState();
@@ -40,7 +45,7 @@ test.describe("Share Report", () => {
     await expect(page.locator("text=Strong early game mechanics")).toBeVisible();
 
     // CTA to get own report
-    await expect(page.getByRole("link", { name: /Get Your Own AI Coaching Report/ })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Get Your AI Coaching Report" })).toBeVisible();
 
     // Branding
     await expect(page.locator("text=LoL AI Coach")).toBeVisible();
@@ -55,7 +60,7 @@ test.describe("Share Report", () => {
     await page.goto("/share/report/invalid-token-that-does-not-exist");
 
     await expect(page.locator("text=Report not found")).toBeVisible({ timeout: 8_000 });
-    await expect(page.getByRole("link", { name: "Get Your Own AI Report" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Get Your AI Report" })).toBeVisible();
 
     await context.close();
   });
