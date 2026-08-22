@@ -36,7 +36,12 @@ test.describe("Streamer Kit overlay", () => {
       await page.goto(`/overlay/${OVERLAY_KEY}/rank`);
 
       await expect(page).not.toHaveURL(/\/login/);
-      await expect(page.getByText("Emerald II")).toBeVisible();
+      // First past the post: this request compiles both the overlay route and
+      // `/api/overlay/[key]` under `next dev`, and the widget paints only once
+      // that fetch answers. Every later case here reads a warm route inside the
+      // default budget — including the one below, which asserts the same text on
+      // the same page and passed five seconds after this one gave up.
+      await expect(page.getByText("Emerald II")).toBeVisible({ timeout: 30_000 });
       await expect(page.getByText("55 LP")).toBeVisible();
       await expect(page.getByText("+115 LP this session")).toBeVisible();
     });
