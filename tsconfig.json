@@ -23,5 +23,8 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  // `desktop/` is a separate application with its own tsconfig, its own React types and its
+  // own bundler (ADR-038). Leaving it inside `**/*.ts` would have this project try to compile
+  // it against Next.js settings it was never written for.
+  "exclude": ["node_modules", "desktop"]
 }

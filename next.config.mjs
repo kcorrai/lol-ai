@@ -21,8 +21,10 @@ const CSP = [
   // Champion/item images via Data Dragon + rank emblems via Community Dragon +
   // team/league/player logos for the esports section (ADR-016)
   "img-src 'self' data: blob: https://ddragon.leagueoflegends.com https://raw.communitydragon.org https://static.lolesports.com https://lolstatic-a.akamaihd.net",
-  // Official champion ability preview videos (Riot CloudFront)
-  "media-src 'self' https://d28xe8vt774jo5.cloudfront.net",
+  // Official champion ability preview videos (Riot CloudFront), plus the per-skin in-game
+  // effect clips on the champion page, which only Community Dragon carries (ADR-035). The
+  // host is already trusted for images; this adds the same host for the <video> it serves.
+  "media-src 'self' https://d28xe8vt774jo5.cloudfront.net https://raw.communitydragon.org",
   // Same-origin API calls + DDragon JSON data + Sentry error reporting
   "connect-src 'self' https://ddragon.leagueoflegends.com https://*.ingest.sentry.io https://*.sentry.io",
   // The official Twitch and YouTube players, for watching a pro game on the

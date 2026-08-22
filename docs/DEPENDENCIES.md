@@ -376,3 +376,47 @@ The one thing that *was* considered and rejected is a WebSocket transport —
 long-lived process to hold socket state, Upstash's REST client cannot subscribe,
 and a version-stamped read model with a locally derived clock gets the latency
 that actually matters (the countdown) to zero without any of it.
+
+---
+
+## Desktop companion (`desktop/`, LA-58)
+
+A **separate dependency tree**, installed into `desktop/node_modules` by
+`npm install --prefix desktop`. Nothing here is added to the website's
+`package.json`, and the website's build, test run and type check do not see it
+(`tsconfig.json` excludes `desktop`). ADR-038 explains why the app lives in this
+repository at all.
+
+Versions are pinned to the website's wherever a package appears in both, so the
+two applications cannot disagree about React or Tailwind semantics.
+
+| Package | Version | Why |
+|---|---|---|
+| `react`, `react-dom` | 18.3.1 | Same major as the website, so components and idioms port without translation. |
+| `vite` | 8.2.2 | The frontend build. Next.js would buy nothing here — there is no server in this process — and would cost startup time, which is the metric this app is judged on. |
+| `@vitejs/plugin-react` | 6.1.0 | JSX transform for the above. |
+| `typescript` | 5.6.3 | Website's version. |
+| `tailwindcss` | 3.4.14 | Website's version, and it must be: `desktop/tailwind.config.ts` re-exports the root config's theme (ADR-039). A different major would reinterpret those tokens. |
+| `postcss`, `autoprefixer` | 8.4.47 / 10.4.20 | Website's versions. |
+| **`postcss-import`** | 17.0.0 | **The only genuinely new package.** It inlines the website's `globals.css` into the desktop bundle *before* Tailwind runs. Without it Tailwind never sees those `@layer` and `@apply` rules and the app renders unstyled. Not needed on the web side, where Next handles CSS imports itself. |
+| `zod` | 4.4.3 | Validates the Live Client Data API payload. Riot ships that API with the game client and changes it on their patch cadence; the schemas are loose so a new field is routine, and a *missing* one is a named error rather than a blank HUD. |
+| `@tanstack/react-query` | 5.100.14 | Server state once pairing lands (phase 3). Present now so the seam is fixed rather than retrofitted. |
+| `lucide-react` | 1.17.0 | Website's icon set. |
+| `vitest` | 4.1.8 | Website's runner, its own config and its own project. |
+| `@types/react`, `@types/react-dom` | 18.3.x | Types for the above. |
+
+**Deliberately not taken.** `clsx` and `tailwind-merge`: they exist on the web to
+reconcile classes arriving through props across ~300 shared components. This app
+has a handful of screens that own their markup, and `src/lib/cn.ts` is a six-line
+`join`. `framer-motion`: unused on the web too, and motion here comes from the
+same CSS keyframes the design system already defines.
+
+**Bundled assets, not packages.** Three font families ship as woff2 under
+`desktop/public/fonts/` — 91 KB, Latin subset, all SIL Open Font License 1.1.
+`next/font` does not exist in this process, and a companion has to open while the
+machine is busy with a game or offline entirely; a face fetched over the network
+reflows the HUD in front of the player. ADR-039 records this.
+
+**Not yet added.** The Rust side (phase 2) brings `tauri` 2.11.x, `reqwest`,
+`serde`, `keyring` and `tokio` in `desktop/src-tauri/Cargo.toml`. No Rust
+toolchain is required for phase 1, and none is installed.

@@ -93,6 +93,9 @@ async function sendDiscordWeeklySummaries(): Promise<void> {
   for (const integration of integrations) {
     const account = integration.user.riotAccounts[0];
     if (!account || account.matchParticipants.length === 0) continue;
+    // An integration linked for slash commands only has no channel webhook, so there is
+    // nowhere to post the recap — skip before doing the LP arithmetic for it.
+    if (!integration.webhookUrl) continue;
 
     const wins = account.matchParticipants.filter((p) => p.won).length;
     const losses = account.matchParticipants.length - wins;
