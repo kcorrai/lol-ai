@@ -1,0 +1,39 @@
+[package]
+name = "lol-ai-desktop"
+version = "0.1.0"
+description = "LoL AI Coach desktop companion"
+authors = ["LoL AI Coach"]
+license = "UNLICENSED"
+edition = "2021"
+rust-version = "1.77.2"
+
+[lib]
+name = "lol_ai_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.6", features = [] }
+
+[dependencies]
+tauri = { version = "2.11", features = [] }
+tauri-plugin-log = "2"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+log = "0.4"
+thiserror = "2.0"
+
+# rustls rather than the platform TLS stack, because this client must trust exactly one
+# certificate authority — Riot's — and nothing else. `tls_built_in_root_certs(false)` is
+# what makes that true, and it is far easier to reason about on rustls.
+reqwest = { version = "0.13", default-features = false, features = ["json", "rustls"] }
+
+# keyring 3 onwards makes the platform backend an explicit choice rather than a default,
+# so each target names its own.
+[target.'cfg(windows)'.dependencies]
+keyring = { version = "4.1", features = ["windows-native-keyring-store"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+keyring = { version = "4.1", features = ["apple-native-keyring-store"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+keyring = { version = "4.1", features = ["zbus-secret-service-keyring-store"] }

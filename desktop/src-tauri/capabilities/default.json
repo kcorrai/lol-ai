@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Core window permissions only. This app grants the webview nothing beyond them — no filesystem, no shell, no arbitrary HTTP. Everything privileged goes through the three commands in src/commands.rs, which are reachable by default and guard themselves: live_client_get checks the requested path against a fixed allowlist, and the device token is never returned across the boundary at all.",
+  "windows": ["main"],
+  "permissions": ["core:default"]
+}
