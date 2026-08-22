@@ -6,7 +6,7 @@ export { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 export { buildAccountPreview } from "@/domains/riot/services/previewService";
 // The marketplace asks whether a student is in a game right now, for a coach
 // who is about to spectate them (LA-19).
-export { getLiveDraft } from "@/domains/riot/services/liveGameService";
+export { getLiveDraft, getLiveDraftForRiotId } from "@/domains/riot/services/liveGameService";
 export type { LiveDraft, LiveGameResult } from "@/domains/riot/services/liveGameService";
 export { VALID_REGIONS } from "@/domains/riot/services/riotApiClient";
 export { indexPlayers, searchPlayers } from "@/domains/riot/services/playerIndexService";

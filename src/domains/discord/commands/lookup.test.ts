@@ -3,21 +3,39 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("@/domains/riot", () => ({
   buildAccountPreview: vi.fn(),
   getLastMatchSummary: vi.fn(),
+  getLiveDraftForRiotId: vi.fn(),
   searchPlayers: vi.fn(),
   VALID_REGIONS: ["euw1", "tr1", "kr", "na1"],
 }));
 
-// The barrel drags matchService and Prisma in behind one label function.
+// These barrels drag matchService, Prisma and the meta snapshot in behind a
+// label function and a list of five strings.
 vi.mock("@/domains/match", () => ({ queueLabel: (q: string) => q }));
+vi.mock("@/domains/meta", () => ({
+  ALL_POSITIONS: ["TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"],
+  POSITION_LABELS: {
+    TOP: "Top",
+    JUNGLE: "Jungle",
+    MIDDLE: "Mid",
+    BOTTOM: "Bot",
+    UTILITY: "Support",
+  },
+}));
 
 import {
   championsCommand,
+  liveCommand,
   matchCommand,
   rankCommand,
 } from "@/domains/discord/commands/lookup";
 import type { BotRequest } from "@/domains/discord/request";
-import { buildAccountPreview, getLastMatchSummary, searchPlayers } from "@/domains/riot";
-import type { LastMatchSummary } from "@/domains/riot";
+import {
+  buildAccountPreview,
+  getLastMatchSummary,
+  getLiveDraftForRiotId,
+  searchPlayers,
+} from "@/domains/riot";
+import type { LastMatchSummary, LiveDraft } from "@/domains/riot";
 import { ApiError } from "@/lib/api/errors";
 import { ComponentType, type ContainerComponent } from "@/lib/discord/componentTypes";
 import { MessageFlags } from "@/lib/discord/interactionTypes";
@@ -203,5 +221,58 @@ describe("matchCommand", () => {
     vi.mocked(getLastMatchSummary).mockResolvedValue(null);
 
     expect(allText(await matchCommand(req({ command: "match" })))).toContain("No games to show");
+  });
+});
+
+const LIVE: LiveDraft = {
+  inGame: true,
+  gameMode: "CLASSIC",
+  gameLength: 754,
+  yourSide: "blue",
+  yourMatchup: { champion: "Ahri", opponent: "Sylas", position: "MIDDLE" },
+  draft: {
+    blue: { TOP: "Aatrox", JUNGLE: "Viego", MIDDLE: "Ahri", BOTTOM: "Jinx" },
+    red: { TOP: "Darius", JUNGLE: "Sejuani", MIDDLE: "Sylas", BOTTOM: "Caitlyn" },
+  },
+};
+
+describe("liveCommand", () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+    vi.mocked(searchPlayers).mockResolvedValue([]);
+    vi.mocked(getLiveDraftForRiotId).mockResolvedValue(LIVE);
+  });
+
+  it("lines the two sides up lane by lane and names the matchup", async () => {
+    const text = allText(await liveCommand(req({ command: "live" })));
+
+    expect(text).toContain("In game");
+    expect(text).toContain("12:34");
+    expect(text).toContain("Playing **Ahri** into **Sylas**");
+    // Fixed-width board: lane label, blue pick, red pick.
+    expect(text).toContain("Top    Aatrox        Darius");
+    expect(text).toContain("inferred from pick rates");
+  });
+
+  // A live game rarely has an empty lane, but the inference can leave one, and
+  // the row has to hold its shape when it does.
+  it("keeps the board aligned when a lane could not be assigned", async () => {
+    vi.mocked(getLiveDraftForRiotId).mockResolvedValue({
+      ...LIVE,
+      draft: { blue: { TOP: "Aatrox" }, red: {} },
+    });
+
+    expect(allText(await liveCommand(req({ command: "live" })))).toContain(
+      "Jungle —"
+    );
+  });
+
+  it("treats not being in a game as an answer, not an error", async () => {
+    vi.mocked(getLiveDraftForRiotId).mockResolvedValue({ inGame: false });
+
+    const payload = await liveCommand(req({ command: "live" }));
+
+    expect(payload.flags & MessageFlags.Ephemeral).toBe(0);
+    expect(allText(payload)).toContain("Not in game");
   });
 });

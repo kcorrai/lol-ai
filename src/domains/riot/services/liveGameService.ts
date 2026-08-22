@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
 import { getMetaSnapshot } from "@/domains/meta";
-import { getActiveGame } from "@/domains/riot/services/riotApiClient";
+import { getAccountByRiotId, getActiveGame } from "@/domains/riot/services/riotApiClient";
 import {
   assignLanes,
   findMatchup,
@@ -42,7 +42,27 @@ export async function getLiveDraft(riotAccountId: string): Promise<LiveGameResul
   });
   if (!account) return { inGame: false };
 
-  const game = await getActiveGame(account.puuid, account.region);
+  return buildLiveDraft(account.puuid, account.region);
+}
+
+/**
+ * The same answer for a Riot ID nobody has connected to an account.
+ *
+ * The Discord bot answers for whoever is typed at it, so it cannot go through
+ * `getLiveDraft` — that starts from a stored `riotAccountId`. One extra
+ * account-v1 call resolves the PUUID and the rest of the path is shared.
+ */
+export async function getLiveDraftForRiotId(
+  gameName: string,
+  tagLine: string,
+  region: string
+): Promise<LiveGameResult> {
+  const account = await getAccountByRiotId(gameName, tagLine, region);
+  return buildLiveDraft(account.puuid, region);
+}
+
+async function buildLiveDraft(puuid: string, region: string): Promise<LiveGameResult> {
+  const game = await getActiveGame(puuid, region);
   if (!game) return { inGame: false };
 
   const snapshot = await getMetaSnapshot();
@@ -59,7 +79,7 @@ export async function getLiveDraft(riotAccountId: string): Promise<LiveGameResul
     }
   }
 
-  const self = game.participants.find((p) => p.puuid === account.puuid);
+  const self = game.participants.find((p) => p.puuid === puuid);
   const draft = assignLanes(game.participants, laneFrequency, championKeys);
   const yourSide = self?.teamId === 200 ? "red" : "blue";
 

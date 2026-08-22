@@ -1,11 +1,13 @@
 import type { BotRequest } from "@/domains/discord/request";
 import { resolveTarget, type RiotTarget } from "@/domains/discord/resolveTarget";
 import { championsCard } from "@/domains/discord/views/championsCard";
+import { liveCard } from "@/domains/discord/views/liveCard";
 import { matchCard } from "@/domains/discord/views/matchCard";
 import { profileCard } from "@/domains/discord/views/profileCard";
 import { rankCard } from "@/domains/discord/views/rankCard";
-import { errorCard } from "@/domains/discord/views/shell";
-import { buildAccountPreview, getLastMatchSummary } from "@/domains/riot";
+import { card, errorCard } from "@/domains/discord/views/shell";
+import { textDisplay } from "@/lib/discord/components";
+import { buildAccountPreview, getLastMatchSummary, getLiveDraftForRiotId } from "@/domains/riot";
 import { RIOT_REGION_CONFIG } from "@/domains/riot/config/regions";
 import { ApiError } from "@/lib/api/errors";
 import type { DiscordMessagePayload } from "@/lib/discord/componentTypes";
@@ -91,6 +93,27 @@ export async function matchCommand(req: BotRequest): Promise<DiscordMessagePaylo
       );
     }
     return matchCard(match, { ...req, region: target.region }, ANALYSE_PATH);
+  } catch (error) {
+    return lookupErrorCard(error, target);
+  }
+}
+
+export async function liveCommand(req: BotRequest): Promise<DiscordMessagePayload> {
+  const resolved = await resolveTarget(req);
+  if (!resolved.ok) return targetErrorCard(resolved.reason);
+
+  const { target } = resolved;
+  const riotId = `${target.gameName}#${target.tagLine}`;
+  try {
+    const live = await getLiveDraftForRiotId(target.gameName, target.tagLine, target.region);
+    if (!live.inGame) {
+      // Not an error — "they are not playing" is a perfectly good answer, and
+      // an ephemeral red box would be the wrong shape for it.
+      return card([
+        textDisplay(`### 💤 Not in game\n**${riotId}** is not in a game right now.`),
+      ]);
+    }
+    return liveCard(live, riotId, { ...req, region: target.region }, ANALYSE_PATH);
   } catch (error) {
     return lookupErrorCard(error, target);
   }
