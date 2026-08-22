@@ -56,6 +56,7 @@ export const COMMAND_DEFINITIONS: SlashCommandDefinition[] = [
   lookup("rank", "Current rank, LP and recent form"),
   lookup("profile", "Rank, best champions and a coaching read in one card"),
   lookup("champions", "Most-played champions with win rates"),
+  lookup("match", "A breakdown of the last game played"),
   {
     name: "lolai",
     description: "LoL AI Coach — help and account linking",

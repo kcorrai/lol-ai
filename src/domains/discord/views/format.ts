@@ -43,3 +43,14 @@ export function championSummary(champions: PreviewResponse["topChampions"]): str
     .map((c) => `\`${c.championName}\` ${Math.round(c.winRate)}%`)
     .join(" · ");
 }
+
+/** "24.5k" — damage and gold numbers are unreadable at full precision. */
+export function compact(value: number): string {
+  return value >= 1000 ? `${(value / 1000).toFixed(1)}k` : String(Math.round(value));
+}
+
+/** "24:31" */
+export function duration(seconds: number): string {
+  const mins = Math.floor(seconds / 60);
+  return `${mins}:${String(Math.floor(seconds % 60)).padStart(2, "0")}`;
+}

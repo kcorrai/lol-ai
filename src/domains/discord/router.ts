@@ -1,6 +1,7 @@
 import { helpCommand } from "@/domains/discord/commands/help";
 import {
   championsCommand,
+  matchCommand,
   profileCommand,
   rankCommand,
 } from "@/domains/discord/commands/lookup";
@@ -22,6 +23,7 @@ const HANDLERS: Record<string, CommandHandler> = {
   rank: rankCommand,
   profile: profileCommand,
   champions: championsCommand,
+  match: matchCommand,
   lolai: async (req) => {
     if (req.subcommand === "help" || req.subcommand === undefined) return helpCommand();
     return errorCard("Not available yet", `\`/lolai ${req.subcommand}\` is not wired up yet.`);

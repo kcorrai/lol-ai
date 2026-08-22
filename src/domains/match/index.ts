@@ -13,3 +13,6 @@ export type {
   MatchStoryTeamTotal,
   MatchStoryEvent,
 } from "@/domains/match/types/matchStory.types";
+// The Discord bot renders a match summary the riot domain builds, and this is
+// the one place in the codebase that names a queue for a human.
+export { queueLabel } from "@/domains/match/archive/archiveLabels";

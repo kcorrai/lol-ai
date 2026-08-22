@@ -14,3 +14,7 @@ export type { IndexablePlayer, IndexedPlayer } from "@/domains/riot/services/pla
 export type { ConnectedAccount } from "@/domains/riot/services/accountService";
 export type { SyncResult } from "@/domains/riot/services/matchSyncService";
 export type { CurrentRank, LpSnapshot, RankedSnapshot } from "@/domains/riot/services/rankedService";
+// The Discord bot's /match card. Deeper than the preview's recent-match list,
+// which carries no CS, damage or items.
+export { getLastMatchSummary } from "@/domains/riot/services/lastMatchService";
+export type { LastMatchSummary, LastMatchPlayer } from "@/domains/riot/services/lastMatchService";

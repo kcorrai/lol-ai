@@ -1,10 +1,11 @@
 import type { BotRequest } from "@/domains/discord/request";
 import { resolveTarget, type RiotTarget } from "@/domains/discord/resolveTarget";
 import { championsCard } from "@/domains/discord/views/championsCard";
+import { matchCard } from "@/domains/discord/views/matchCard";
 import { profileCard } from "@/domains/discord/views/profileCard";
 import { rankCard } from "@/domains/discord/views/rankCard";
 import { errorCard } from "@/domains/discord/views/shell";
-import { buildAccountPreview } from "@/domains/riot";
+import { buildAccountPreview, getLastMatchSummary } from "@/domains/riot";
 import { RIOT_REGION_CONFIG } from "@/domains/riot/config/regions";
 import { ApiError } from "@/lib/api/errors";
 import type { DiscordMessagePayload } from "@/lib/discord/componentTypes";
@@ -75,3 +76,22 @@ function previewCommand(render: CardRenderer) {
 export const rankCommand = previewCommand(rankCard);
 export const profileCommand = previewCommand(profileCard);
 export const championsCommand = previewCommand(championsCard);
+
+export async function matchCommand(req: BotRequest): Promise<DiscordMessagePayload> {
+  const resolved = await resolveTarget(req);
+  if (!resolved.ok) return targetErrorCard(resolved.reason);
+
+  const { target } = resolved;
+  try {
+    const match = await getLastMatchSummary(target.gameName, target.tagLine, target.region);
+    if (!match) {
+      return errorCard(
+        "No games to show",
+        `Riot has no match history for **${target.gameName}#${target.tagLine}**.`
+      );
+    }
+    return matchCard(match, { ...req, region: target.region }, ANALYSE_PATH);
+  } catch (error) {
+    return lookupErrorCard(error, target);
+  }
+}
