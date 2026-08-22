@@ -43,7 +43,11 @@ test.describe("Riot Account Connection", () => {
     await page.getByRole("button", { name: "Connect Account" }).click();
 
     // Redirected to dashboard on success
-    await page.waitForURL("**/dashboard", { timeout: 15_000 });
+    // 15s was a warm-route budget. This click is the first POST to
+    // /api/riot/connect in a run and `next dev` compiles it on the way
+    // through — measured at 17.7s in a full-suite run, and comfortably under
+    // 15s in every run where something else had already compiled it.
+    await page.waitForURL("**/dashboard", { timeout: 45_000 });
     await expect(page).toHaveURL(/dashboard/);
   });
 

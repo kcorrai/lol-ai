@@ -37,7 +37,11 @@ test.describe("Streamer Kit dashboard", () => {
       // The first field on the overlays tab is the rank widget's URL, and it is
       // the whole deliverable of this page: a line the creator pastes into OBS.
       const url = page.getByRole("textbox").first();
-      await expect(url).toHaveValue(/\/overlay\/[A-Za-z0-9_-]{22}\/rank$/);
+      // Budgeted for a cold route: this click is the first request to the
+      // creator API in a run, `next dev` compiles it on that request, and the
+      // field does not exist until it answers — the page still reads "Loading
+      // your Streamer Kit…". Every later case in this file finds it warm.
+      await expect(url).toHaveValue(/\/overlay\/[A-Za-z0-9_-]{22}\/rank$/, { timeout: 30_000 });
 
       const profile = await creatorPrisma.creatorProfile.findUnique({
         where: { userId: creatorState.userId },
