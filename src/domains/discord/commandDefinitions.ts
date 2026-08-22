@@ -59,6 +59,11 @@ export const COMMAND_DEFINITIONS: SlashCommandDefinition[] = [
   lookup("match", "A breakdown of the last game played"),
   lookup("live", "Who is in the game right now, lane by lane"),
   {
+    name: "coach",
+    description: "Your recurring habits and what to work on next (Pro, linked accounts)",
+    ...ANYWHERE,
+  },
+  {
     name: "lolai",
     description: "LoL AI Coach — help and account linking",
     options: [

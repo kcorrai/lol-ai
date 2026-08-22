@@ -3,6 +3,7 @@ import {
   statusCommand,
   unlinkCommand,
 } from "@/domains/discord/commands/account";
+import { coachCommand } from "@/domains/discord/commands/coach";
 import { helpCommand } from "@/domains/discord/commands/help";
 import {
   championsCommand,
@@ -31,6 +32,7 @@ const HANDLERS: Record<string, CommandHandler> = {
   champions: championsCommand,
   match: matchCommand,
   live: liveCommand,
+  coach: coachCommand,
   lolai: async (req) => {
     switch (req.subcommand) {
       case "link":

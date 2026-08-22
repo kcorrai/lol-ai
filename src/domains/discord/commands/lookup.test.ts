@@ -108,7 +108,7 @@ describe("preview-backed lookup commands", () => {
     vi.mocked(getLinkedIdentity).mockResolvedValue({
       userId: "user-1",
       discordUsername: "kaan",
-      riotAccount: { gameName: "Kaan", tagLine: "TR1", region: "tr1" },
+      riotAccount: { id: "ra-1", gameName: "Kaan", tagLine: "TR1", region: "tr1" },
     });
 
     await rankCommand(req({ riotId: undefined }));

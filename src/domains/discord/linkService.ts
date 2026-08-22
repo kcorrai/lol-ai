@@ -4,7 +4,7 @@ export interface LinkedIdentity {
   userId: string;
   discordUsername: string;
   /** The Riot account commands answer for when no riot-id is given. */
-  riotAccount: { gameName: string; tagLine: string; region: string } | null;
+  riotAccount: { id: string; gameName: string; tagLine: string; region: string } | null;
 }
 
 /**
@@ -22,7 +22,7 @@ export async function getLinkedIdentity(discordUserId: string): Promise<LinkedId
       user: {
         select: {
           riotAccounts: {
-            select: { gameName: true, tagLine: true, region: true },
+            select: { id: true, gameName: true, tagLine: true, region: true },
             orderBy: [{ isPrimary: "desc" }, { createdAt: "asc" }],
             take: 1,
           },

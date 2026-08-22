@@ -66,7 +66,7 @@ describe("account commands", () => {
     vi.mocked(getLinkedIdentity).mockResolvedValue({
       userId: "user-1",
       discordUsername: "kaan",
-      riotAccount: { gameName: "Faker", tagLine: "KR1", region: "kr" },
+      riotAccount: { id: "ra-1", gameName: "Faker", tagLine: "KR1", region: "kr" },
     });
 
     const payload = await linkCommand(REQ);
