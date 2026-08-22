@@ -67,6 +67,21 @@ export const COMMAND_DEFINITIONS: SlashCommandDefinition[] = [
         name: "help",
         description: "What this bot can do",
       },
+      {
+        type: CommandOptionType.Subcommand,
+        name: "link",
+        description: "Connect your Discord to your LoL AI Coach account",
+      },
+      {
+        type: CommandOptionType.Subcommand,
+        name: "status",
+        description: "Show which account this Discord is linked to",
+      },
+      {
+        type: CommandOptionType.Subcommand,
+        name: "unlink",
+        description: "Disconnect your Discord from your LoL AI Coach account",
+      },
     ],
     ...ANYWHERE,
   },

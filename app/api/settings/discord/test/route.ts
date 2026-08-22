@@ -15,7 +15,9 @@ export const POST = withAuth(async (_req, { userId }) => {
     select: { webhookUrl: true },
   });
 
-  if (!integration) throw Errors.notFound("Discord integration");
+  // The row may exist for a Discord account link alone — a test message still
+  // needs a channel webhook to send to.
+  if (!integration?.webhookUrl) throw Errors.notFound("Discord webhook");
 
   let webhookUrl: string;
   try {

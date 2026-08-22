@@ -1,3 +1,4 @@
+import { getLinkedIdentity } from "@/domains/discord/linkService";
 import type { BotRequest } from "@/domains/discord/request";
 import { searchPlayers, VALID_REGIONS } from "@/domains/riot";
 import { splitRiotId } from "@/lib/riot/riotId";
@@ -13,12 +14,16 @@ export interface RiotTarget {
   regionInferred: boolean;
 }
 
+export type TargetReason = "missing" | "malformed" | "bad-region" | "no-riot-account";
+
 export type TargetResolution =
   | { ok: true; target: RiotTarget }
-  | { ok: false; reason: "missing" | "malformed" | "bad-region" };
+  | { ok: false; reason: TargetReason };
 
 /**
  * Turns what someone typed into a Riot account to look up.
+ *
+ * With no Riot ID it answers for the caller's own linked account.
  *
  * When no region is given the player index is consulted first — it already
  * holds every Riot ID seen in a synced match, so the common case resolves to
@@ -27,7 +32,14 @@ export type TargetResolution =
  * message can suggest the region argument.
  */
 export async function resolveTarget(req: BotRequest): Promise<TargetResolution> {
-  if (!req.riotId) return { ok: false, reason: "missing" };
+  // No Riot ID means "me" — which only works once the Discord account has been
+  // linked, and only if that account has a Riot account connected to it.
+  if (!req.riotId) {
+    const identity = await getLinkedIdentity(req.discordUserId);
+    if (!identity) return { ok: false, reason: "missing" };
+    if (!identity.riotAccount) return { ok: false, reason: "no-riot-account" };
+    return { ok: true, target: { ...identity.riotAccount, regionInferred: false } };
+  }
 
   const split = splitRiotId(req.riotId);
   if (!split) return { ok: false, reason: "malformed" };

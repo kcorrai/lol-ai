@@ -1,5 +1,9 @@
 import type { BotRequest } from "@/domains/discord/request";
-import { resolveTarget, type RiotTarget } from "@/domains/discord/resolveTarget";
+import {
+  resolveTarget,
+  type RiotTarget,
+  type TargetReason,
+} from "@/domains/discord/resolveTarget";
 import { championsCard } from "@/domains/discord/views/championsCard";
 import { liveCard } from "@/domains/discord/views/liveCard";
 import { matchCard } from "@/domains/discord/views/matchCard";
@@ -27,11 +31,17 @@ function regionName(region: string): string {
   return RIOT_REGION_CONFIG[region as keyof typeof RIOT_REGION_CONFIG]?.label ?? region.toUpperCase();
 }
 
-function targetErrorCard(reason: "missing" | "malformed" | "bad-region"): DiscordMessagePayload {
+function targetErrorCard(reason: TargetReason): DiscordMessagePayload {
   if (reason === "missing") {
     return errorCard(
       "Which account?",
       "Pass a Riot ID — `riot-id: Faker#KR1`. Run `/lolai link` once and you can leave it out."
+    );
+  }
+  if (reason === "no-riot-account") {
+    return errorCard(
+      "No Riot account connected",
+      "Your Discord is linked, but that account has no Riot account on it yet. Connect one in Settings → Accounts, or pass `riot-id:` here."
     );
   }
   if (reason === "malformed") {

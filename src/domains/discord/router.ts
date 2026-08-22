@@ -1,3 +1,8 @@
+import {
+  linkCommand,
+  statusCommand,
+  unlinkCommand,
+} from "@/domains/discord/commands/account";
 import { helpCommand } from "@/domains/discord/commands/help";
 import {
   championsCommand,
@@ -27,8 +32,16 @@ const HANDLERS: Record<string, CommandHandler> = {
   match: matchCommand,
   live: liveCommand,
   lolai: async (req) => {
-    if (req.subcommand === "help" || req.subcommand === undefined) return helpCommand();
-    return errorCard("Not available yet", `\`/lolai ${req.subcommand}\` is not wired up yet.`);
+    switch (req.subcommand) {
+      case "link":
+        return linkCommand(req);
+      case "status":
+        return statusCommand(req);
+      case "unlink":
+        return unlinkCommand(req);
+      default:
+        return helpCommand();
+    }
   },
 };
 
