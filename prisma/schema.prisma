@@ -1041,15 +1041,21 @@ model UserChallenge {
 
 // ============================================================
 // DISCORD INTEGRATION
-// Webhook URL stored encrypted. User controls notification types.
+// Two independent things share this row: an outbound channel webhook (encrypted,
+// with per-event toggles) and the Discord account the bot answers for. Either
+// may be present without the other.
 // ============================================================
 
 model DiscordIntegration {
   id              String   @id @default(uuid()) @db.Uuid
   userId          String   @unique @db.Uuid
-  discordUserId   String?
+  // Written by the bot's /lolai link flow. Unique so one Discord account cannot
+  // be claimed by two LoL AI Coach accounts.
+  discordUserId   String?  @unique
   discordUsername String?
-  webhookUrl      String
+  // Nullable since the bot: a row can exist for a Discord link with no channel
+  // webhook behind it. Every reader already treats it as optional.
+  webhookUrl      String?
   notifyRankUp    Boolean  @default(true)
   notifyBadge     Boolean  @default(false)
   notifyWeekly    Boolean  @default(true)

@@ -31,7 +31,9 @@ async function sendDiscordWeeklySummaries(): Promise<void> {
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
   const integrations = await prisma.discordIntegration.findMany({
-    where: { notifyWeekly: true },
+    // A row can now exist for a Discord *account* link with no channel webhook
+    // behind it, so the recap has to ask for one rather than assume it.
+    where: { notifyWeekly: true, webhookUrl: { not: null } },
     select: {
       webhookUrl: true,
       user: {
@@ -118,6 +120,8 @@ async function sendDiscordWeeklySummaries(): Promise<void> {
         ? composite(currentLp.tier, currentLp.division, currentLp.lp) -
           composite(weekAgoRank.tier, weekAgoRank.division, weekAgoRank.lp)
         : 0;
+
+    if (!integration.webhookUrl) continue;
 
     try {
       await sendDiscordWebhook(
