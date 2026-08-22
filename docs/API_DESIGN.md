@@ -2806,3 +2806,59 @@ than failing the request, so one bad row does not cost the player every other se
 
 Ownership is enforced inside the delete statement rather than fetch-then-check, so someone else's
 search is indistinguishable from one that does not exist: both answer `404`.
+
+---
+
+## Discord bot (LA-54 — see [ADR-035](./adr/ADR-035-discord-bot-over-http-interactions.md))
+
+Two routes. Neither is a normal JSON API: the first speaks Discord's interaction protocol
+and the second is a one-shot handshake, so neither uses the `apiSuccess` envelope for the
+outbound direction Discord reads.
+
+### `POST /api/discord/interactions`
+
+Discord's interactions webhook. **Unauthenticated in the session sense** — every request
+is signed with Ed25519 and verified against `DISCORD_PUBLIC_KEY` before the body is parsed
+(`src/lib/discord/verify.ts`). The signature covers `timestamp + rawBody`, so the raw text
+is read before any JSON round trip.
+
+Responses use Discord's own envelope, not this API's:
+
+| Incoming | Response |
+|---|---|
+| `type: 1` PING | `{ type: 1 }` PONG |
+| `type: 2` command | `{ type: 5 }` deferred, plus one `discord/interaction.received` Inngest event |
+| `type: 3` component | `{ type: 6 }` deferred update, plus the same event |
+| `type: 4` autocomplete | `{ type: 8, data: { choices } }` answered inline from the player index |
+| bad or missing signature | `401` with a plain-text body |
+| unparseable body | `400` |
+
+A `401` on a bad signature is required, not merely tidy — Discord probes a new endpoint URL
+with a deliberately invalid signature and refuses to save it unless the probe is rejected.
+
+The answer itself is delivered out of band by `src/inngest/functions/discordInteraction.ts`,
+which `PATCH`es `/webhooks/{application_id}/{token}/messages/@original`. Interaction tokens
+are valid for 15 minutes and authenticate that call by themselves, so no bot token is
+involved at runtime.
+
+Rate limited at 20 commands per Discord user per minute, applied in the worker rather than
+the route so the 3-second ACK never waits on Redis.
+
+### `POST /api/discord/link`
+
+Completes the handshake `/lolai link` starts. Session-authenticated through `withAuth`, and
+uses the standard envelope.
+
+**Body:** `{ token: string }` — the token from the link button, encrypted with
+`AUTH_ENCRYPTION_KEY` and valid for 10 minutes.
+
+**200** `{ discordUsername }` — the link was written.
+
+| Status | Code | When |
+|---|---|---|
+| `401` | `UNAUTHORIZED` | No session. The token alone may never create a link. |
+| `422` | `VALIDATION_ERROR` | Token missing, malformed, tampered with or expired |
+| `409` | `CONFLICT` | That Discord account is already linked to a different profile |
+
+The two halves are deliberately independent: the token proves which Discord account asked,
+the session proves which profile is answering, and neither on its own is enough.

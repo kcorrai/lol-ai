@@ -573,3 +573,23 @@ the only place that answers "how far have I actually come".
 **Difficulty:** Medium
 **Dependencies:** Match history, `ranked_history` sampling (LA-10), champion mastery,
 achievements, habit detection, Academy progress, season recaps
+
+---
+
+### F-043 — Discord Bot (shipped: LA-54)
+
+Slash commands inside any Discord server: `/rank`, `/profile`, `/champions`, `/match` and
+`/live` answer for any Riot ID with no account required; `/coach` reads your own habit
+history once you have run `/lolai link`. Replies are Components V2 cards — the container is
+tinted by rank tier, champion squares and rank emblems sit beside the text, and a Refresh
+button re-runs the lookup in place.
+
+Runs as an HTTP interactions endpoint inside the app rather than as a gateway process
+([ADR-035](./adr/ADR-035-discord-bot-over-http-interactions.md)), which is what keeps it on
+one deploy — at the cost of never seeing ordinary messages, reactions or presence. Setup
+runbook: [`docs/DISCORD_BOT.md`](./DISCORD_BOT.md).
+
+**User Benefit:** The product answers where players already argue about their games, and
+every card is an invitation back to the site.  
+**Difficulty:** Medium  
+**Dependencies:** A Discord application (id, public key, bot token), Inngest, `AUTH_ENCRYPTION_KEY` for linking
