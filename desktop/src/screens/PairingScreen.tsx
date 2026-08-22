@@ -1,28 +1,67 @@
 import { HudPanel } from "@/components/layout/HudPanel";
-import { NotImplemented } from "@/components/NotImplemented";
-import { useDeviceStatus } from "@/lib/useDeviceStatus";
+import { CodeEntry } from "@/components/pairing/CodeEntry";
+import { PairedDevice } from "@/components/pairing/PairedDevice";
+import { usePairing } from "@/lib/usePairing";
 
 export function PairingScreen(): React.ReactElement {
-  const { status, forget } = useDeviceStatus();
+  const { state, pair, forget, retry } = usePairing();
+
+  // The form is offered only when pairing is the thing to do. An app that already holds a
+  // token and merely cannot reach the website is not asked to pair again.
+  const canPair = state.status === "unpaired" || state.status === "pairing";
 
   return (
     <div className="grid gap-4">
       <HudPanel title="This device">
-        <DeviceState status={status} onForget={forget} />
+        {state.status === "loading" ? (
+          <p className="text-sm text-text-muted">Asking your credential store…</p>
+        ) : state.status === "unavailable" ? (
+          // Three states, not two. Saying "not paired" where nothing could be asked would
+          // be a guess dressed as a fact.
+          <p className="text-sm text-text-body">
+            This preview has no credential store to ask. Run the desktop app to see whether
+            this machine is paired.
+          </p>
+        ) : state.status === "paired" ? (
+          <PairedDevice pairing={state.pairing} onForget={forget} />
+        ) : state.status === "offline" ? (
+          <div className="grid gap-3">
+            <p className="text-sm text-text-body">
+              This machine holds a token, but LoL AI Coach could not be reached to confirm
+              it. Nothing is wrong with the pairing — the website is out of reach.
+            </p>
+            <p className="text-xs text-text-muted">{state.error}</p>
+            <button
+              type="button"
+              onClick={() => void retry()}
+              className="tag-cut w-fit border border-line-2 bg-surface-dark px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-label text-text-muted transition-colors hover:border-accent/60 hover:text-accent"
+            >
+              Try again
+            </button>
+          </div>
+        ) : (
+          <p className="text-sm text-text-body">
+            Not paired. Nothing is stored in your keychain for this app.
+          </p>
+        )}
       </HudPanel>
 
-      <HudPanel title="Pair this device">
-        <NotImplemented
-          what="Entering a code and exchanging it for a token needs the endpoints on the website, which land next."
-          phase="Phase 3"
-        />
-      </HudPanel>
+      {canPair && (
+        <HudPanel title="Pair this device">
+          <CodeEntry
+            onSubmit={pair}
+            busy={state.status === "pairing"}
+            disabled={false}
+            error={state.status === "unpaired" ? state.error : null}
+          />
+        </HudPanel>
+      )}
 
-      <HudPanel title="How it will work">
+      <HudPanel title="How it works">
         <ol className="grid gap-2 text-sm text-text-body">
           {[
-            "Sign in on the website and open Settings.",
-            "Generate a pairing code. It is good once, and briefly.",
+            "Sign in on the website and open Settings → Desktop app.",
+            "Generate a pairing code. It is good once, and for ten minutes.",
             "Type it here. This device swaps it for its own token.",
             "The token goes to your operating system's keychain, not to a file.",
           ].map((step, i) => (
@@ -37,51 +76,6 @@ export function PairingScreen(): React.ReactElement {
           website is enough to cut it off.
         </p>
       </HudPanel>
-    </div>
-  );
-}
-
-/**
- * Three states, not two. `null` means the credential store could not be asked at all —
- * the browser preview has none — and saying "not paired" there would be a guess dressed
- * as a fact.
- */
-function DeviceState({
-  status,
-  onForget,
-}: {
-  status: { paired: boolean } | null;
-  onForget: () => Promise<void>;
-}): React.ReactElement {
-  if (status === null) {
-    return (
-      <p className="text-sm text-text-body">
-        This preview has no credential store to ask. Run the desktop app to see whether this
-        machine is paired.
-      </p>
-    );
-  }
-
-  if (!status.paired) {
-    return (
-      <p className="text-sm text-text-body">
-        Not paired. Nothing is stored in your keychain for this app.
-      </p>
-    );
-  }
-
-  return (
-    <div className="flex flex-wrap items-center justify-between gap-3">
-      <p className="text-sm text-text-body">
-        Paired. A token for this device is held in your operating system&apos;s keychain.
-      </p>
-      <button
-        type="button"
-        onClick={() => void onForget()}
-        className="tag-cut border border-line-2 bg-surface-dark px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-label text-text-muted transition-colors hover:border-danger/60 hover:text-danger"
-      >
-        Forget this device
-      </button>
     </div>
   );
 }
