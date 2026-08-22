@@ -12,8 +12,8 @@ export function GameScreen({ read }: { read: LiveRead<AllGameData> }): React.Rea
 
       <HudPanel title="Game plan">
         <NotImplemented
-          what="Matchup reads, your recurring weakness in this lane and a plan for it come from your account on the web — which needs the desktop to be paired first."
-          phase="Phase 3 · pairing, then phase 4 · live dashboard"
+          what="Matchup reads, your recurring weakness in this lane and a plan for it come from your account on the web. This device can now pair with it; reading from it is next."
+          phase="Phase 4 · live dashboard"
         />
       </HudPanel>
     </div>

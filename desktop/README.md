@@ -13,14 +13,14 @@ extracts it with its history whenever a separate repository is wanted.
 
 ## Status
 
-**Phase 2 of 5.** The Rust core is in place, so the app can now actually read the game.
-`live_client_get` fetches Riot's Live Client Data API over a connection that trusts Riot's
-certificate authority and *no other* — the built-in root store is switched off, so a
-process that grabbed port 2999 before League did cannot impersonate it. The device token
-lives in the OS credential store and never crosses into the webview.
+**Phase 3 of 5.** The app can be paired with an account. The player generates a code at
+Settings → Desktop app on the website and types it here; this machine then holds its own
+long-lived token — exchanged by the Rust core, written to the OS credential store, and
+never passed to the webview. Revoking the device on the website cuts it off: the app finds
+out on its next call and forgets the token locally.
 
-Pairing itself is next: there is nowhere yet to get a code from. Everything that needs it
-says so rather than pretending.
+The live dashboard is next. Everything that needs the game itself already works; everything
+that needs a backend feature not yet built still says so rather than pretending.
 
 | Phase | | Needs Rust | Changes the schema |
 |---|---|---|---|
@@ -35,8 +35,18 @@ says so rather than pretending.
 | Command | Answers |
 |---|---|
 | `live_client_get(path)` | One Live Client Data API path, or `null` when no game is running. The path is checked against a fixed allowlist, so the webview cannot aim the privileged client somewhere it should not go. |
-| `device_status()` | Whether this machine holds a token. Never the token. |
+| `pair_device(code)` | Exchanges a pairing code for this machine's token. The token goes to the credential store here; what comes back is the account it belongs to. |
+| `device_account()` | Who this machine is acting as, asked of the website, or `null`. A 401 means the device was revoked — the token is forgotten locally and this answers `null`. |
+| `device_status()` | Whether this machine holds a token, asked of the credential store alone. Never the token, and no network — which is what lets an app opened offline know it is still paired. |
 | `clear_device_token()` | Forgets it locally. |
+
+### Where it points
+
+The website's address is **compiled in**: `http://localhost:3000` for a debug build,
+`https://lolaicoach.gg` for a release one, overridable at build time with `LOLAI_API_BASE`.
+Deliberately not a runtime setting — this client carries the device token, and anyone who
+could write to a config file could otherwise point it, and the token, at a host of their
+choosing.
 
 ## Running it
 
