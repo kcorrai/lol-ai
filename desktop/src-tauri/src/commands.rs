@@ -1,12 +1,14 @@
 use serde::Serialize;
 use tauri::State;
 
+use crate::api::{ApiClient, Pairing};
 use crate::error::AppResult;
 use crate::live_client::LiveClient;
 use crate::secrets;
 
 pub struct AppState {
     pub live: LiveClient,
+    pub api: ApiClient,
 }
 
 #[derive(Serialize)]
@@ -38,4 +40,26 @@ pub fn device_status() -> DeviceStatus {
 #[tauri::command]
 pub fn clear_device_token() -> AppResult<()> {
     secrets::clear()
+}
+
+/// Exchange a pairing code for this machine's own token.
+///
+/// The exchange happens here rather than in the webview for one reason: the response
+/// carries the token, and this is where it can be written to the credential store without
+/// ever existing in a browser context. What comes back to the UI is the account it belongs
+/// to — enough to say who you are signed in as, and nothing that could be replayed.
+#[tauri::command]
+pub async fn pair_device(state: State<'_, AppState>, code: String) -> AppResult<Pairing> {
+    let platform = crate::api::platform()?;
+    let label = crate::api::machine_label();
+    state.api.pair(code.trim(), &label, platform).await
+}
+
+/// Who this machine is acting as, or `null` when it is not paired.
+///
+/// Also how the app notices it has been revoked: the website answers 401, the token is
+/// forgotten locally, and this returns `null` — which is the pairing screen.
+#[tauri::command]
+pub async fn device_account(state: State<'_, AppState>) -> AppResult<Option<Pairing>> {
+    state.api.me().await
 }
