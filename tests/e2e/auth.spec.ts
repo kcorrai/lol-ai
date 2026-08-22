@@ -58,6 +58,17 @@ test.describe("Authentication", () => {
     await page.fill("#password", "definitely-wrong-password");
     await page.click('button[type="submit"]');
 
+    // A submit that beats its own CSRF cookie is answered with "Your login
+    // session expired before it was sent. Please try again." rather than the
+    // credentials error — a race `LoginForm` knows about and tells the user to
+    // resubmit through (see the comment beside that branch). Doing what the
+    // product says keeps this case about credentials; if the credentials error
+    // still never appears, the assertion below fails as it always did.
+    const expired = page.getByText("Your login session expired before it was sent.");
+    if (await expired.isVisible({ timeout: 3_000 }).catch(() => false)) {
+      await page.click('button[type="submit"]');
+    }
+
     await expect(page.getByText("Email or password is incorrect. Please try again.")).toBeVisible({
       timeout: 8_000,
     });

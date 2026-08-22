@@ -7,6 +7,7 @@ import {
   cleanAbilityText,
 } from "@/lib/ddragon/championsData";
 import { normalizeChampionKey, getLatestDdragonVersion } from "@/lib/ddragon";
+import { fetchChampionSkinMedia } from "@/lib/cdragon/skinMedia";
 import { getMetaSnapshot, findChampionStats } from "@/domains/meta";
 import { ProPlayStrip } from "@/domains/esports/components/ProPlayStrip";
 import { ChampionAbilities } from "./ChampionAbilities";
@@ -59,6 +60,10 @@ export default async function ChampionDetailPage({ params }: Props): Promise<Rea
     getMetaSnapshot(),
   ]);
   if (!champ) notFound();
+
+  // Sequential rather than part of the Promise.all above: this read is keyed by the
+  // champion's numeric id, which only exists once that first response has landed.
+  const skins = await fetchChampionSkinMedia(champ);
 
   const key = normalizeChampionKey(champ.name);
   const meta = snapshot ? findChampionStats(snapshot, key) : null;
@@ -146,7 +151,7 @@ export default async function ChampionDetailPage({ params }: Props): Promise<Rea
                 so an overview page never waits on the esports feed (TASK-310). */}
             <ProPlayStrip championId={key} name={champ.name} />
 
-            <ChampionSkins championKey={key} championName={champ.name} skins={champ.skins ?? []} />
+            <ChampionSkins skins={skins} />
 
             <ChampionTips
               name={champ.name}

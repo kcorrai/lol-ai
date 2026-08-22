@@ -1,0 +1,34 @@
+{
+  "name": "lol-ai-desktop",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "LoL AI Coach desktop companion. Reads Riot's Live Client Data API on the local machine, which no server-side code can reach (ADR-005, ADR-038).",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "5.100.14",
+    "lucide-react": "1.17.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "6.1.0",
+    "autoprefixer": "10.4.20",
+    "postcss": "8.4.47",
+    "postcss-import": "17.0.0",
+    "tailwindcss": "3.4.14",
+    "typescript": "5.6.3",
+    "vite": "8.2.2",
+    "vitest": "4.1.8"
+  }
+}
