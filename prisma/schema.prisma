@@ -183,6 +183,10 @@ model User {
   // Personal match database (ADR-032)
   savedSearches SavedSearch[]
 
+  // Desktop companion (ADR-038)
+  desktopDevices      DesktopDevice[]
+  desktopPairingCodes DesktopPairingCode[]
+
   @@map("users")
 }
 
@@ -819,7 +823,7 @@ model MatchTimelineFrame {
   timestampMs Int
 
   // Gold in hand — drops to ~0 on a back, so it reads as a spending curve.
-  currentGold Int
+  currentGold         Int
   // Earned across the whole game, monotonic. This is the one to difference between players.
   totalGold           Int
   xp                  Int
@@ -2183,4 +2187,71 @@ model SavedSearch {
   @@unique([userId, name])
   @@index([userId, createdAt(sort: Desc)])
   @@map("saved_searches")
+}
+
+// ============================================================
+// DESKTOP COMPANION (ADR-038)
+// ============================================================
+
+// A machine that has been paired with this account.
+//
+// `token` is a capability, the same idea as CreatorProfile.overlayKey and
+// DraftSeries.blueToken: the desktop app cannot carry a session cookie, so the
+// token is the whole of its identity. It lives in that machine's OS credential
+// store and is presented as a bearer token; it is never returned by any endpoint
+// after the pairing exchange that minted it.
+model DesktopDevice {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+
+  token String @unique // 32 bytes, base64url — 43 characters
+
+  // What the player sees in the device list. Reported by the app at pairing
+  // (the machine's hostname), so two paired laptops are told apart without
+  // anyone having to name them.
+  label      String
+  platform   String // windows | macos | linux
+  appVersion String?
+
+  createdAt  DateTime  @default(now())
+  // Written by the device's own requests, so the list can say how long a machine
+  // has been quiet. Null until the device has spoken once after pairing.
+  lastSeenAt DateTime?
+  // Revoking keeps the row instead of deleting it: the token stays taken, so a
+  // revoked device cannot be resurrected by a collision, and the player keeps a
+  // record that the machine was once paired.
+  revokedAt  DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("desktop_devices")
+}
+
+// A one-time code the player reads off the website and types into the app.
+//
+// A row rather than a signed token, for one reason a stateless token cannot
+// give: single use. The code is short enough to retype without a copy-paste —
+// which also means it is low-entropy, so it expires in minutes, is consumed on
+// first success, and both ends of the exchange are rate limited.
+model DesktopPairingCode {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+
+  code String @unique // 8 characters from a confusion-free alphabet
+
+  createdAt  DateTime  @default(now())
+  expiresAt  DateTime
+  consumedAt DateTime?
+  // Which machine claimed it. Kept so a player asking "what did I pair on
+  // Tuesday" has an answer that outlives the code.
+  deviceId   String?   @db.Uuid
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  // Swept by the expiry job; also the index that keeps the table from growing
+  // without bound.
+  @@index([expiresAt])
+  @@map("desktop_pairing_codes")
 }
