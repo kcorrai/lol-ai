@@ -1,0 +1,16 @@
+/*
+ * The one and only import of the design system (ADR-039).
+ *
+ * This is the web app's stylesheet, not a copy of it: the tokens, the chamfer clip-paths
+ * and the HUD utilities all arrive from the file the website itself compiles, so the two
+ * products cannot drift. `postcss-import` inlines it before Tailwind runs.
+ */
+@import "../../../src/styles/globals.css";
+
+/*
+ * Fonts are the one thing the web file cannot supply. There, `next/font` defines
+ * `--font-orbitron` and friends at build time. Here there is no Next, and there is also no
+ * network to rely on — a companion app has to open while the player's connection is busy
+ * carrying a game, or missing entirely. So the faces are served from disk.
+ */
+@import "./fonts.css";
