@@ -379,6 +379,31 @@ that actually matters (the countdown) to zero without any of it.
 
 ---
 
+## The Discord bot added nothing (LA-54)
+
+Recorded because the absence was a decision, not an oversight — both obvious packages were
+looked at and left out.
+
+**`discord-interactions` / `tweetnacl`, for verifying request signatures.** Discord hands
+out its public key as 32 raw hex bytes, which Node's `createPublicKey` will not accept
+because it wants SPKI DER. Wrapping those bytes in the 12-byte header for id-Ed25519
+(RFC 8410 §4) is a one-line constant, after which `crypto.verify` does the rest. That
+constant is the entire contribution the package would have made, and it cannot drift.
+See `src/lib/discord/verify.ts`.
+
+**`discord.js`.** It exists to run a Gateway connection and to build payloads for one. This
+bot has no Gateway connection ([ADR-035](./adr/ADR-035-discord-bot-over-http-interactions.md))
+and the payloads it does build are Components V2 objects — plain JSON, typed in
+`src/lib/discord/componentTypes.ts`. Taking the library for the builders would mean taking
+its Gateway client, its cache and its REST layer along with them.
+
+**`@vercel/functions`, for `waitUntil`.** The one genuinely tempting option: it would remove
+the Inngest hop and make every command noticeably faster. Rejected in ADR-035 — a dropped
+background task fails silently, and this repo already runs durable, retrying, observable
+background work.
+
+---
+
 ## Desktop companion (`desktop/`, LA-58)
 
 A **separate dependency tree**, installed into `desktop/node_modules` by

@@ -1104,3 +1104,46 @@ Migration `20260819000000_add_saved_searches`.
   cap.
 - **The cascade is the whole deletion story.** A saved search holds no match data of its own, only
   facet values, so a deleted account takes them with it and nothing else needs cleaning up.
+
+---
+
+## Discord (bot link + channel webhook, LA-54 — see [ADR-035](./adr/ADR-035-discord-bot-over-http-interactions.md))
+
+### `discord_integrations`
+
+One row per user, holding **two independent things**: an outbound channel webhook with its
+notification toggles, and the Discord account the bot answers for. Either may be present
+without the other, which is why both are nullable.
+
+| Column | Type | Constraints | Notes |
+|---|---|---|---|
+| `id` | `uuid` | PK | |
+| `userId` | `uuid` | FK → users.id, UNIQUE, ON DELETE CASCADE | |
+| `discordUserId` | `text` | NULLABLE, UNIQUE | Written by `/lolai link`. Unique so one Discord account cannot be claimed by two profiles. |
+| `discordUsername` | `text` | NULLABLE | Display name at link time, shown by `/lolai status` |
+| `webhookUrl` | `text` | NULLABLE, encrypted | AES-256-GCM via `AUTH_ENCRYPTION_KEY`. Channel webhook for rank-up/badge/weekly embeds. |
+| `notifyRankUp` | `boolean` | NOT NULL, default `true` | |
+| `notifyBadge` | `boolean` | NOT NULL, default `false` | |
+| `notifyWeekly` | `boolean` | NOT NULL, default `true` | |
+| `createdAt` | `timestamptz` | NOT NULL | |
+| `updatedAt` | `timestamptz` | NOT NULL | |
+
+**Indexes:**
+- `UNIQUE (userId)`
+- `UNIQUE (discordUserId)` — added by `20260822180000_discord_bot_link`
+
+**Notes:**
+
+- **`webhookUrl` became nullable when the bot landed** (`20260822180000_discord_bot_link`).
+  Before that the row could only exist for a webhook; now it can exist for a link with no
+  webhook behind it. Safe on existing data — every row at the time had one, and dropping
+  `NOT NULL` neither rewrites nor rejects any of them.
+- **Neither feature may switch the other off.** `DELETE /api/settings/discord` clears
+  `webhookUrl` and keeps the row when a `discordUserId` is on it; `/lolai unlink` clears the
+  two Discord columns and keeps the row when a `webhookUrl` is on it. The row is only
+  actually deleted when nothing else is left in it.
+- **Every reader treats `webhookUrl` as optional**, including the ones that predate the
+  bot — `sendWeeklyReportEmails` filters on `webhookUrl: { not: null }` and the settings
+  route has always reported `hasWebhook: !!integration.webhookUrl`.
+- **Postgres allows any number of NULLs under a unique index**, so every row that has never
+  linked stays valid under `UNIQUE (discordUserId)`.

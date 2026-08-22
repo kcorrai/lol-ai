@@ -74,8 +74,25 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   return apiSuccess({ ok: true });
 });
 
-// DELETE /api/settings/discord — remove integration
+// DELETE /api/settings/discord — remove the channel webhook
 export const DELETE = withAuth(async (_req, { userId }) => {
-  await prisma.discordIntegration.deleteMany({ where: { userId } });
+  const integration = await prisma.discordIntegration.findUnique({
+    where: { userId },
+    select: { discordUserId: true },
+  });
+  if (!integration) return apiSuccess({ ok: true });
+
+  // The same row also holds the bot's account link. Deleting it outright would
+  // silently unlink the bot from a page that says nothing about the bot, so the
+  // webhook is cleared and the row survives whenever a link is on it.
+  if (integration.discordUserId) {
+    await prisma.discordIntegration.update({
+      where: { userId },
+      data: { webhookUrl: null },
+    });
+  } else {
+    await prisma.discordIntegration.delete({ where: { userId } });
+  }
+
   return apiSuccess({ ok: true });
 });

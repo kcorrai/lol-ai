@@ -3,7 +3,7 @@ import type { Prisma, QueueType, Position } from "@prisma/client";
 import type { MatchDTO, ParticipantDTO } from "@/domains/riot/types/riot.types";
 import { logger } from "@/lib/utils/logger";
 
-const QUEUE_MAP: Partial<Record<number, QueueType>> = {
+export const QUEUE_MAP: Partial<Record<number, QueueType>> = {
   420: "RANKED_SOLO_5x5",
   440: "RANKED_FLEX_SR",
   490: "NORMAL_BLIND",  // Quick Play
