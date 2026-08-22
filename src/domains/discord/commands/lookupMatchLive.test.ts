@@ -134,7 +134,8 @@ describe("liveCommand", () => {
     expect(text).toContain("12:34");
     expect(text).toContain("Playing **Ahri** into **Sylas**");
     // Fixed-width board: lane label, blue pick, red pick.
-    expect(text).toContain("Top    Aatrox        Darius");
+    expect(text).toContain("Top      Aatrox         Darius");
+    expect(text).toContain("Summoner's Rift");
     expect(text).toContain("inferred from pick rates");
   });
 
@@ -147,8 +148,28 @@ describe("liveCommand", () => {
     });
 
     expect(allText(await liveCommand(req({ command: "live" })))).toContain(
-      "Jungle —"
+      "Jungle   —"
     );
+  });
+
+  // The longest lane label is "Support" and the longest champion key is
+  // "Fiddlesticks"; both have to clear their column or the board runs words
+  // together.
+  it("keeps the widest lane and champion apart", async () => {
+    vi.mocked(getLiveDraftForRiotId).mockResolvedValue({
+      ...LIVE,
+      draft: { blue: { UTILITY: "Fiddlesticks" }, red: { UTILITY: "Thresh" } },
+    });
+
+    expect(allText(await liveCommand(req({ command: "live" })))).toContain(
+      "Support  Fiddlesticks   Thresh"
+    );
+  });
+
+  it("humanises a game mode it has no label for", async () => {
+    vi.mocked(getLiveDraftForRiotId).mockResolvedValue({ ...LIVE, gameMode: "ASCENSION" });
+
+    expect(allText(await liveCommand(req({ command: "live" })))).toContain("Ascension");
   });
 
   it("treats not being in a game as an answer, not an error", async () => {

@@ -9,8 +9,33 @@ import type { ContainerChild, DiscordMessagePayload } from "@/lib/discord/compon
 import { championIconUrl } from "@/lib/ddragon";
 
 const EMPTY_LANE = "—";
-const LANE_WIDTH = 7;
-const CHAMPION_WIDTH = 14;
+// Wide enough for the longest lane label ("Support", 7) and the longest champion
+// key ("Fiddlesticks", 12) to still be followed by a gap. Without the slack the
+// board runs words together — "SupportThresh".
+const LANE_WIDTH = 9;
+const CHAMPION_WIDTH = 15;
+
+// The Spectator API reports Riot's internal game-mode enum. These are the modes
+// that are actually reachable today; anything else is title-cased rather than
+// hidden, so a new mode reads acceptably the day it lands.
+const GAME_MODE_LABELS: Record<string, string> = {
+  CLASSIC: "Summoner's Rift",
+  ARAM: "ARAM",
+  URF: "URF",
+  CHERRY: "Arena",
+  NEXUSBLITZ: "Nexus Blitz",
+  ONEFORALL: "One for All",
+  ULTBOOK: "Ultimate Spellbook",
+  STRAWBERRY: "Swarm",
+  TUTORIAL: "Tutorial",
+};
+
+function gameModeLabel(mode: string): string {
+  return (
+    GAME_MODE_LABELS[mode] ??
+    mode.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())
+  );
+}
 
 /**
  * The draft as a fixed-width board.
@@ -53,7 +78,7 @@ export function liveCard(
 
   const headlines = [
     `### 🔴 In game · ${duration(live.gameLength)}`,
-    `**${riotId}** · ${side} side · ${live.gameMode}`,
+    `**${riotId}** · ${side} side · ${gameModeLabel(live.gameMode)}`,
     matchup
       ? `Playing **${matchup.champion}** into **${matchup.opponent}**`
       : "Lane could not be worked out from the draft",

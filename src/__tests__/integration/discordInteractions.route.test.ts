@@ -134,6 +134,19 @@ describe("POST /api/discord/interactions", () => {
     expect(send).not.toHaveBeenCalled();
   });
 
+  // A deferred ACK that is never followed up leaves Discord showing "thinking…"
+  // for fifteen minutes. Saying so immediately is the lesser failure.
+  it("answers immediately when the job queue cannot be reached", async () => {
+    send.mockRejectedValue(new Error("ECONNREFUSED"));
+
+    const res = await POST(signedRequest(HELP_COMMAND));
+    const json = (await res.json()) as { type: number; data?: { flags: number } };
+
+    expect(res.status).toBe(200);
+    expect(json.type).toBe(InteractionResponseType.ChannelMessageWithSource);
+    expect(json.data?.flags).toBeDefined();
+  });
+
   it("returns an empty autocomplete list when no command supplies choices", async () => {
     const res = await POST(
       signedRequest({

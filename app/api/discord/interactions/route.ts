@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
+  deferToWorker,
   handleAutocomplete,
   parseCommandInteraction,
   parseComponentInteraction,
-  type BotRequest,
 } from "@/domains/discord";
-import { inngest } from "@/inngest/client";
 import {
   InteractionResponseType,
   InteractionType,
@@ -17,8 +16,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 // Discord's Interactions endpoint. It has 3 seconds to answer, so it verifies,
-// hands the work to Inngest and ACKs with a deferred response — the worker
-// replaces the placeholder once the answer exists.
+// normalises and hands off — every answer is built by the Inngest worker.
 export async function POST(req: NextRequest): Promise<NextResponse> {
   const rawBody = await req.text();
 
@@ -39,10 +37,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return new NextResponse("malformed payload", { status: 400 });
   }
 
-  let request: BotRequest | null = null;
   switch (interaction.type) {
     case InteractionType.Ping:
       return NextResponse.json({ type: InteractionResponseType.Pong });
+
     case InteractionType.Autocomplete:
       // Inline: autocomplete has no deferred response type, so it reads the
       // player index and never touches the Riot API.
@@ -50,31 +48,24 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         type: InteractionResponseType.AutocompleteResult,
         data: { choices: await handleAutocomplete(interaction) },
       });
+
     case InteractionType.ApplicationCommand:
-      request = parseCommandInteraction(interaction);
-      break;
-    case InteractionType.MessageComponent:
-      request = parseComponentInteraction(interaction);
-      break;
+    case InteractionType.MessageComponent: {
+      const request =
+        interaction.type === InteractionType.ApplicationCommand
+          ? parseCommandInteraction(interaction)
+          : parseComponentInteraction(interaction);
+
+      // Nothing actionable — a button whose custom_id predates the current
+      // encoding, or an interaction with no user on it. Acknowledging without a
+      // message beats showing an error nobody can act on.
+      if (!request) {
+        return NextResponse.json({ type: InteractionResponseType.DeferredUpdateMessage });
+      }
+      return NextResponse.json(await deferToWorker(interaction, request));
+    }
+
     default:
-      break;
+      return NextResponse.json({ type: InteractionResponseType.DeferredUpdateMessage });
   }
-
-  // Nothing actionable — a modal submit, or a button whose custom_id predates
-  // the current encoding. Acknowledging without a message beats a visible error.
-  if (!request) {
-    return NextResponse.json({ type: InteractionResponseType.DeferredUpdateMessage });
-  }
-
-  await inngest.send({
-    name: "discord/interaction.received",
-    data: { request, applicationId: interaction.application_id, token: interaction.token },
-  });
-
-  return NextResponse.json({
-    type:
-      interaction.type === InteractionType.MessageComponent
-        ? InteractionResponseType.DeferredUpdateMessage
-        : InteractionResponseType.DeferredChannelMessageWithSource,
-  });
 }
