@@ -2,7 +2,7 @@ import type { DiscordEmbed } from "./webhookService";
 
 const FOOTER = { text: "lolaicoach.com · AI-powered LoL coaching" };
 
-const TIER_HEX: Record<string, number> = {
+export const TIER_HEX: Record<string, number> = {
   IRON:        0x4a4a5a,
   BRONZE:      0xa05336,
   SILVER:      0xa8b8c8,
