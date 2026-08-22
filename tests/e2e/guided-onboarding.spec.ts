@@ -57,8 +57,9 @@ async function waitForNextStep(
   page: Page,
   from: number,
   previousTitle: string | null,
+  budgetMs = 25_000,
 ): Promise<{ step: GuideStep; index: number }> {
-  const deadline = Date.now() + 25_000;
+  const deadline = Date.now() + budgetMs;
   while (Date.now() < deadline) {
     const title = await visibleTitle(page);
     if (title && title !== previousTitle) {
@@ -70,7 +71,7 @@ async function waitForNextStep(
   throw new Error(`the journey never advanced past "${previousTitle ?? "(start)"}"`);
 }
 
-async function click(page: Page, step: GuideStep): Promise<void> {
+async function click(page: Page, step: GuideStep, force = false): Promise<void> {
   const control =
     step.advance.type === "manual"
       ? page.getByRole("button", { name: /Let's go|Got it/ })
@@ -82,7 +83,13 @@ async function click(page: Page, step: GuideStep): Promise<void> {
             page.locator(`[data-tour="${step.target}"]`).first()
           : null;
 
-  if (control) await control.click({ timeout: 8_000 }).catch(() => undefined);
+  if (!control) return;
+  // The spotlighted control can be a row the page is still fetching — the match
+  // list on the dashboard is a client query, and under load it arrives after the
+  // bubble does. Wait for it before clicking, or the walk gives up on a step
+  // that was about to work.
+  await control.waitFor({ state: "visible", timeout: 20_000 }).catch(() => undefined);
+  await control.click({ timeout: 8_000, force }).catch(() => undefined);
 }
 
 test.describe("Forced first-journey onboarding", () => {
@@ -138,14 +145,29 @@ test.describe("Forced first-journey onboarding", () => {
 
       // A `skipIfMissing` step auto-advances 700ms after it appears, so the
       // control can be torn out from under the click. That is the journey
-      // working, not a failure — swallow it and let the wait below decide,
-      // which reports "never advanced past X" instead of retrying for the whole
+      // working, not a failure — swallow it and let the waits below decide,
+      // which report "never advanced past X" instead of retrying for the whole
       // test timeout.
+      //
+      // The click is tried twice because the spotlight is a fixed overlay that
+      // re-measures its hole every frame: scrolling the control into view moves
+      // the hole, and a click that lands during that frame hits the dim panel
+      // instead of the control. A second attempt, once both have settled, is
+      // what a person does too.
       await click(page, step);
       // A `state` step has no control at all — the engine advances it when the
       // gate flips, and the wait below is the assertion that it does.
+      let next = await waitForNextStep(page, index, step.title, 8_000).catch(() => null);
+      if (!next) {
+        // Forced on the retry: the spotlight is a fixed overlay whose dim panels
+        // sit above the page, and scrolling the control into view can leave one
+        // of them over it for a frame. Playwright then reports the panel as the
+        // receiver and waits it out. The click still lands on the real control.
+        await click(page, step, true);
+        next = await waitForNextStep(page, index, step.title);
+      }
 
-      current = await waitForNextStep(page, index, step.title);
+      current = next;
     }
 
     // The tour really walked; it did not fast-forward from welcome to finish.
