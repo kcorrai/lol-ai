@@ -72,9 +72,12 @@ function unavailable(): Response {
  * upcoming column tests nothing. Shifting by the capture age keeps the split
  * where it was.
  *
- * Completed events are deliberately left alone: their result is already known,
- * and moving one into the future would produce a match that is finished and has
- * not started, which no real payload ever contains.
+ * Completed events move too, and are clamped so one can never land in the
+ * future — a match that is finished and has not started is a payload no real
+ * feed produces. Leaving them alone was the earlier reading, and it rots the
+ * other way: `/esports/schedule` only lists results from the last three days,
+ * so every captured result silently disappears three days after a capture and
+ * the results half of that page tests nothing.
  */
 function rebase<T>(payload: T, capturedAt: string): T {
   const delta = Date.now() - Date.parse(capturedAt);
@@ -88,9 +91,12 @@ function rebase<T>(payload: T, capturedAt: string): T {
     const shifted: Record<string, unknown> = {};
     for (const [key, item] of Object.entries(record)) shifted[key] = shift(item);
 
-    if (typeof record.startTime === "string" && record.state !== "completed") {
+    if (typeof record.startTime === "string") {
       const at = Date.parse(record.startTime);
-      if (Number.isFinite(at)) shifted.startTime = new Date(at + delta).toISOString();
+      if (Number.isFinite(at)) {
+        const moved = record.state === "completed" ? Math.min(at + delta, Date.now() - 60_000) : at + delta;
+        shifted.startTime = new Date(moved).toISOString();
+      }
     }
     return shifted;
   };
