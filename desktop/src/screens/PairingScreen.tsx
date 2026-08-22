@@ -1,12 +1,19 @@
 import { HudPanel } from "@/components/layout/HudPanel";
 import { NotImplemented } from "@/components/NotImplemented";
+import { useDeviceStatus } from "@/lib/useDeviceStatus";
 
 export function PairingScreen(): React.ReactElement {
+  const { status, forget } = useDeviceStatus();
+
   return (
     <div className="grid gap-4">
+      <HudPanel title="This device">
+        <DeviceState status={status} onForget={forget} />
+      </HudPanel>
+
       <HudPanel title="Pair this device">
         <NotImplemented
-          what="You will sign in on the website, generate a one-time code, and type it here once. This device then holds its own token — never your password."
+          what="Entering a code and exchanging it for a token needs the endpoints on the website, which land next."
           phase="Phase 3"
         />
       </HudPanel>
@@ -30,6 +37,51 @@ export function PairingScreen(): React.ReactElement {
           website is enough to cut it off.
         </p>
       </HudPanel>
+    </div>
+  );
+}
+
+/**
+ * Three states, not two. `null` means the credential store could not be asked at all —
+ * the browser preview has none — and saying "not paired" there would be a guess dressed
+ * as a fact.
+ */
+function DeviceState({
+  status,
+  onForget,
+}: {
+  status: { paired: boolean } | null;
+  onForget: () => Promise<void>;
+}): React.ReactElement {
+  if (status === null) {
+    return (
+      <p className="text-sm text-text-body">
+        This preview has no credential store to ask. Run the desktop app to see whether this
+        machine is paired.
+      </p>
+    );
+  }
+
+  if (!status.paired) {
+    return (
+      <p className="text-sm text-text-body">
+        Not paired. Nothing is stored in your keychain for this app.
+      </p>
+    );
+  }
+
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3">
+      <p className="text-sm text-text-body">
+        Paired. A token for this device is held in your operating system&apos;s keychain.
+      </p>
+      <button
+        type="button"
+        onClick={() => void onForget()}
+        className="tag-cut border border-line-2 bg-surface-dark px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-label text-text-muted transition-colors hover:border-danger/60 hover:text-danger"
+      >
+        Forget this device
+      </button>
     </div>
   );
 }

@@ -1,3 +1,16 @@
 node_modules
 dist
 src-tauri/target
+src-tauri/gen/schemas
+
+# The repository root ignores `*.png` to keep stray screenshots out of commits. The app
+# icons are build inputs, not screenshots, so they are exempted back in — Tauri reads them
+# from `tauri.conf.json` and the bundle will not build without them.
+!src-tauri/icons/*.png
+!src-tauri/icons/_source.png
+
+# The root ignores `*.pem` because private keys must never be committed. This one is the
+# opposite of a secret: it is Riot's public root certificate, published at
+# static.developer.riotgames.com, and the core will not compile without it — `include_str!`
+# bakes it into the binary so the app can verify the game client offline.
+!src-tauri/riot-root-ca.pem
