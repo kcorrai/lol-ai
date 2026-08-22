@@ -1,4 +1,9 @@
 import { helpCommand } from "@/domains/discord/commands/help";
+import {
+  championsCommand,
+  profileCommand,
+  rankCommand,
+} from "@/domains/discord/commands/lookup";
 import type { BotRequest } from "@/domains/discord/request";
 import { errorCard } from "@/domains/discord/views/shell";
 import { checkRateLimit } from "@/lib/api/rateLimit";
@@ -14,6 +19,9 @@ type CommandHandler = (req: BotRequest) => Promise<DiscordMessagePayload>;
 const BOT_LIMIT = { limit: 20, windowMs: 60_000 };
 
 const HANDLERS: Record<string, CommandHandler> = {
+  rank: rankCommand,
+  profile: profileCommand,
+  champions: championsCommand,
   lolai: async (req) => {
     if (req.subcommand === "help" || req.subcommand === undefined) return helpCommand();
     return errorCard("Not available yet", `\`/lolai ${req.subcommand}\` is not wired up yet.`);

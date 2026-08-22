@@ -1,3 +1,4 @@
+import { RIOT_REGION_CONFIG } from "@/domains/riot/config/regions";
 import { CommandOptionType } from "@/lib/discord/interactionTypes";
 
 export interface SlashCommandOption {
@@ -23,7 +24,38 @@ export interface SlashCommandDefinition {
 
 const ANYWHERE = { integration_types: [0, 1], contexts: [0, 1, 2] };
 
+// Eleven shards fits comfortably inside Discord's 25-choice cap, so this is a
+// fixed list rather than an autocomplete — one fewer round trip while typing.
+const REGION_OPTION: SlashCommandOption = {
+  type: CommandOptionType.String,
+  name: "region",
+  description: "Which shard they play on. Guessed from past games when left out.",
+  choices: Object.entries(RIOT_REGION_CONFIG).map(([value, { label, flag }]) => ({
+    name: `${flag} ${label}`,
+    value,
+  })),
+};
+
+const RIOT_ID_OPTION: SlashCommandOption = {
+  type: CommandOptionType.String,
+  name: "riot-id",
+  description: "Riot ID, e.g. Faker#KR1. Optional once you have run /lolai link.",
+  autocomplete: true,
+};
+
+function lookup(name: string, description: string): SlashCommandDefinition {
+  return {
+    name,
+    description,
+    options: [RIOT_ID_OPTION, REGION_OPTION],
+    ...ANYWHERE,
+  };
+}
+
 export const COMMAND_DEFINITIONS: SlashCommandDefinition[] = [
+  lookup("rank", "Current rank, LP and recent form"),
+  lookup("profile", "Rank, best champions and a coaching read in one card"),
+  lookup("champions", "Most-played champions with win rates"),
   {
     name: "lolai",
     description: "LoL AI Coach — help and account linking",

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
+  handleAutocomplete,
   parseCommandInteraction,
   parseComponentInteraction,
   type BotRequest,
@@ -43,9 +44,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     case InteractionType.Ping:
       return NextResponse.json({ type: InteractionResponseType.Pong });
     case InteractionType.Autocomplete:
+      // Inline: autocomplete has no deferred response type, so it reads the
+      // player index and never touches the Riot API.
       return NextResponse.json({
         type: InteractionResponseType.AutocompleteResult,
-        data: { choices: [] },
+        data: { choices: await handleAutocomplete(interaction) },
       });
     case InteractionType.ApplicationCommand:
       request = parseCommandInteraction(interaction);
