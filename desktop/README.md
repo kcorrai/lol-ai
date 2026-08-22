@@ -13,10 +13,14 @@ extracts it with its history whenever a separate repository is wanted.
 
 ## Status
 
-**Phase 1 of 5.** The shell, the design system and the Live Client reader are in place.
-There is no Rust core yet, so the app cannot actually reach the game client: it renders
-"Unreadable" and says why, rather than pretending no game is running. Everything that
-needs the backend states plainly that it is not implemented.
+**Phase 2 of 5.** The Rust core is in place, so the app can now actually read the game.
+`live_client_get` fetches Riot's Live Client Data API over a connection that trusts Riot's
+certificate authority and *no other* — the built-in root store is switched off, so a
+process that grabbed port 2999 before League did cannot impersonate it. The device token
+lives in the OS credential store and never crosses into the webview.
+
+Pairing itself is next: there is nowhere yet to get a code from. Everything that needs it
+says so rather than pretending.
 
 | Phase | | Needs Rust | Changes the schema |
 |---|---|---|---|
@@ -26,24 +30,45 @@ needs the backend states plainly that it is not implemented.
 | 4 | Live dashboard — matchup, game plan | yes | no |
 | 5 | Post-game handoff, tray, signed updates | yes | no |
 
+### The IPC surface
+
+| Command | Answers |
+|---|---|
+| `live_client_get(path)` | One Live Client Data API path, or `null` when no game is running. The path is checked against a fixed allowlist, so the webview cannot aim the privileged client somewhere it should not go. |
+| `device_status()` | Whether this machine holds a token. Never the token. |
+| `clear_device_token()` | Forgets it locally. |
+
 ## Running it
 
 ```
 npm install --prefix desktop
-npm --prefix desktop run dev       # http://localhost:3010
-npm --prefix desktop run test
-npm --prefix desktop run typecheck
+npm --prefix desktop run tauri dev     # the real app
+npm --prefix desktop run dev           # browser preview on :3010, no game access
+npm --prefix desktop run test          # frontend
+npm --prefix desktop run test:rust     # core
 ```
 
-Phase 2 onwards additionally needs the Rust toolchain, which is **not** required for
-anything above:
+The browser preview is useful for laying out screens, but it cannot reach the game: a
+webview has no path to a certificate the public root stores do not carry. It says so on
+screen instead of reporting "no game".
+
+Prerequisites are Rust and the MSVC C++ build tools; WebView2 ships with Windows 10 1803
+and later.
 
 ```
 winget install --id Rustlang.Rustup -e
 winget install --id Microsoft.VisualStudio.2022.BuildTools -e --override "--add Microsoft.VisualStudio.Workload.VCTools"
 ```
 
-WebView2 is already present on Windows 10 1803 and later.
+## The app icon
+
+`src-tauri/icons/_source.png` is the master; the rest are generated from it with
+`npx tauri icon src-tauri/icons/_source.png`. The mark is the design system's chamfer —
+cut at top-left and bottom-right only — as a ring, with a rising lane through it.
+
+Note that the repository root ignores `*.png` to keep stray screenshots out of commits;
+`desktop/.gitignore` exempts these back in, because they are build inputs and the bundle
+will not build without them.
 
 ## What it will never do
 
