@@ -1,6 +1,7 @@
 mod api;
 mod commands;
 mod error;
+mod lcu;
 mod live_client;
 mod live_context;
 mod post_game;
@@ -8,6 +9,7 @@ mod secrets;
 
 use api::ApiClient;
 use commands::AppState;
+use lcu::LcuClient;
 use live_client::LiveClient;
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
@@ -69,6 +71,9 @@ pub fn run() {
     // every poll would do that work sixty times a minute for the length of a game.
     let live = LiveClient::new().expect("the bundled Riot certificate must parse");
     let api = ApiClient::new().expect("the HTTP client must build");
+    // Built whether or not the capability is on: the client is inert without the feature,
+    // and building it unconditionally keeps one shape of `AppState` rather than two.
+    let lcu = LcuClient::new().expect("the HTTP client must build");
 
     tauri::Builder::default()
         // First, and it has to be: the plugin works by having the second process hand its
@@ -91,7 +96,7 @@ pub fn run() {
         // to the webview, so the sole address this app can open is the one `open_report`
         // builds from the compiled-in base.
         .plugin(tauri_plugin_opener::init())
-        .manage(AppState { live, api })
+        .manage(AppState { live, api, lcu })
         .invoke_handler(tauri::generate_handler![
             commands::live_client_get,
             commands::device_status,
@@ -101,6 +106,9 @@ pub fn run() {
             commands::live_context,
             commands::post_game,
             commands::open_report,
+            commands::lcu_available,
+            commands::lcu_champ_select,
+            commands::lcu_apply_runes,
         ])
         // Closing the window puts the app in the tray rather than ending it. The whole
         // point of this process is to be running when a game starts, and a player who

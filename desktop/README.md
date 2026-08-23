@@ -137,11 +137,21 @@ will not build without them.
 
 ## What it will never do
 
-No input sent to the game, no automation of any kind, no process memory reads, no packet
-inspection, no modification of any game file. No enemy ability cooldown tracking, which
-Riot prohibits outright. The LCU API — champion select — sits behind a capability that
-ships disabled, because Riot does not support it for third-party applications and requires
-per-release approval for it; see ADR-038.
+No input sent to the game, no automation of any kind — no auto-accept, no auto-pick, no
+auto-ban — no process memory reads, no packet inspection, no modification of any game
+file. No enemy ability or summoner spell cooldown tracking, both of which Riot prohibits
+outright. No notification that tells the player what to do from the state of the running
+game, which Riot prohibits as well: every live panel here describes and none instructs.
+
+The LCU API — champion select, and writing a rune page — is built, and sits behind the
+Cargo feature `lcu`, which is **not** in `default`. Riot does not support that API for
+third-party applications and requires pre-release approval for every release and every
+update, and bans its use for players in Korea. Building with it before that approval
+exists risks the Riot API key for the whole product, the website included.
+
+```
+cargo build --features lcu     # only for a build that has been through Riot's approval
+```
 
 LoL AI Coach isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot
 Games or anyone officially involved in producing or managing Riot Games properties.

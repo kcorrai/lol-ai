@@ -72,15 +72,42 @@ the capability exists in the architecture, and ships switched off. It turns on f
 that has been through Riot's approval, and never for a Korean client. No feature that the
 product promises may depend on it.
 
+**Implemented as a Cargo feature, `lcu`, absent from `default`.** A compile-time gate
+rather than a runtime setting, because the property worth having is that a shipped binary
+*cannot* call the API rather than that it chooses not to. `desktop/src-tauri/src/lcu.rs`
+holds it: two endpoints named by an enum — the champion select session, and writing one
+rune page — so no string from the webview reaches the client at all. A test asserts a
+default build both reports itself disabled and refuses.
+
+The cost of enabling it early is not confined to this application: Riot deactivating an
+API key over an unapproved LCU integration takes the website with it. That makes turning
+the feature on a release decision, and it is deliberately not one anybody can take by
+editing a config file.
+
 ### What it will never do
 
 Not deferred, not gated — absent. No input injection or automation of any kind: no
 auto-accept, no auto-pick, no auto-ban. No process memory reads, no packet inspection, no
 anti-cheat interaction, no modification of any game file.
 
-No enemy ultimate cooldown tracking: Riot banned it outright, effective 2025-03-13. No
-information about a game session that the player could not already see, and nothing that
-de-anonymises a champion-select player outside their own party.
+No enemy ability or summoner spell cooldown tracking. Riot's current wording is broader
+than the 2025-03-13 ultimate-timer ban this ADR first cited: the prohibition covers
+"tracking of enemy ability cooldowns, or facilitating players tracking these with timers"
+and the same sentence again for summoner spells. Teammate timers are a different thing and
+are not prohibited; this product does not ship them either, because they are not what it
+is for.
+
+No notification that dictates player action from the current game state. Riot's example is
+"enemy champion is underleveled, go gank top lane", and it is the constraint that shapes
+every live panel here: this product describes and never instructs. "Your CS is 6.2 a
+minute and your average is 7.1" is a fact about the player. "Go gank top" is a decision
+taken away from them. The same line rules out power-spike alerts, which Riot names
+separately.
+
+No information about a game session that the player could not already see, and nothing
+that de-anonymises a champion-select player outside their own party — Riot requires
+non-party summoner names in ranked champion select to be replaced with "Ally 1", "Ally 2"
+and so on.
 
 ### How it authenticates
 
