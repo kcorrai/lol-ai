@@ -4,6 +4,13 @@ export interface CacheStore {
   get<T>(key: string): Promise<T | null>;
   set<T>(key: string, value: T, ttlSeconds: number): Promise<void>;
   del(key: string): Promise<void>;
+  /**
+   * Drop every key under a prefix.
+   *
+   * Needed because a key can name a *window* rather than a single fact — match ids are cached per
+   * (start, count), so one account has several entries and invalidation cannot know which (LA-69).
+   */
+  delByPrefix(prefix: string): Promise<void>;
 }
 
 type CacheEntry = { value: string; expiresAt: number };
@@ -55,6 +62,12 @@ class MemoryCacheStore implements CacheStore {
 
   async del(key: string): Promise<void> {
     this.store.delete(key);
+  }
+
+  async delByPrefix(prefix: string): Promise<void> {
+    for (const key of this.store.keys()) {
+      if (key.startsWith(prefix)) this.store.delete(key);
+    }
   }
 
   /** Test seam: the singleton lives for the process, so a suite needs a way to see the size. */

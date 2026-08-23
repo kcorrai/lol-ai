@@ -8,9 +8,10 @@ import {
   winRateLine,
 } from "@/domains/discord/views/format";
 import type { PreviewMatch } from "@/types/preview";
+import { previewMatchFixture } from "@/types/preview.fixture";
 
 function match(win: boolean): PreviewMatch {
-  return { championName: "Ahri", win, kills: 9, deaths: 2, assists: 11, position: "MIDDLE" };
+  return previewMatchFixture({ win });
 }
 
 describe("card formatting", () => {

@@ -23,6 +23,7 @@ function participant(over: Partial<ParticipantDTO> = {}): ParticipantDTO {
     championId: 517,
     teamId: 200,
     teamPosition: "MIDDLE",
+    champLevel: 14,
     kills: 3,
     deaths: 7,
     assists: 4,

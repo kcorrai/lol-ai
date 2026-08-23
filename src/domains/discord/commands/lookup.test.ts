@@ -17,12 +17,13 @@ import { ComponentType, type ContainerComponent } from "@/lib/discord/componentT
 import { MessageFlags } from "@/lib/discord/interactionTypes";
 import type { DiscordMessagePayload } from "@/lib/discord/componentTypes";
 import type { PreviewResponse } from "@/types/preview";
+import { previewMatchFixture } from "@/types/preview.fixture";
 
 const PREVIEW: PreviewResponse = {
   summoner: { gameName: "Faker", tagLine: "KR1", summonerLevel: 843, profileIconId: 6 },
   rank: { tier: "GOLD", division: "II", lp: 47, wins: 23, losses: 19 },
   recentMatches: [
-    { championName: "Ahri", win: true, kills: 9, deaths: 2, assists: 11, position: "MIDDLE" },
+    previewMatchFixture(),
   ],
   topChampions: [{ championName: "Ahri", games: 24, wins: 15, winRate: 62.5 }],
   aiInsight: "Your deaths spike after 20 minutes.",

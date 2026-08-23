@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PlayerSearchBar } from "@/components/search/PlayerSearchBar";
+import { getBenchmarkForTier } from "@/domains/analysis";
 import { rankLine } from "@/lib/riot/rankDisplay";
-import { regionLabel } from "@/lib/riot/regions";
 import { loadProfile } from "../../../loadProfile";
 import { ProfileHero } from "../../../components/ProfileHero";
 import { ProfileChampions } from "../../../components/ProfileChampions";
+import { ProfileFormStrip } from "../../../components/ProfileFormStrip";
+import { ProfileMastery } from "../../../components/ProfileMastery";
 import { ProfileRoles } from "../../../components/ProfileRoles";
 import { ProfileMatches } from "../../../components/ProfileMatches";
 import { ProfileNotFound } from "../../../components/ProfileNotFound";
 import { ClaimProfileButton } from "../../../components/ClaimProfileButton";
+import { profileMetadata } from "../../../components/profileMetadata";
 import { jsonLdProps } from "@/lib/security/jsonLd";
 
 export const dynamic = "force-dynamic";
@@ -28,70 +31,26 @@ function decode(params: Props["params"]) {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { gameName, tagLine, region } = decode(params);
-  const name = `${gameName}#${tagLine}`;
-  const server = regionLabel(region);
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
-  const pageUrl = `${appUrl}/s/${params.region}/${params.gameName}/${params.tagLine}`;
-
   // Shares a cached load with the page component below — see loadProfile.
   const result = await loadProfile(gameName, tagLine, region);
+  return profileMetadata(result, { gameName, tagLine, region, path: params });
+}
 
-  // A miss still renders a useful page, but it is not a page worth indexing — without this it is
-  // a soft 404, since a page component cannot set a status code.
-  if (!result.ok) {
-    return {
-      title: `${name} ${server} — not found | LaneIQ`,
-      robots: { index: false, follow: true },
-    };
+/**
+ * The tier averages, or null if they cannot be read.
+ *
+ * This page is derived entirely from Riot data and has been careful since TASK-285 that a cache
+ * or database outage costs it nothing — `loadProfile` guards both. Benchmarks are the one thing
+ * on it that reaches Postgres, and unguarded they undid that: with the database down, a *ranked*
+ * player's profile threw while an unranked one rendered fine. A missing benchmark is already a
+ * supported state, so it is the right thing to degrade to.
+ */
+async function tierBenchmarks(tier: string) {
+  try {
+    return await getBenchmarkForTier(tier);
+  } catch {
+    return null;
   }
-
-  const data = result.data;
-  const rank = data?.rank ?? null;
-  const topChamp = data?.topChampions[0];
-  const totalGames = rank ? rank.wins + rank.losses : 0;
-  const wr = totalGames > 0 ? Math.round((rank!.wins / totalGames) * 100) : null;
-
-  const rankStr = rankLine(rank);
-  const description = `${name} League of Legends stats (${server}). ${rankStr}${
-    wr !== null ? ` · ${wr}% WR` : ""
-  }${topChamp ? ` · Most: ${topChamp.championName}` : ""}. Free LaneIQ profile — no login.`;
-
-  const ogParams = new URLSearchParams({
-    name,
-    region: server,
-    rank: rankStr,
-    ...(wr !== null ? { wr: String(wr) } : {}),
-    ...(topChamp ? { champ: topChamp.championName } : {}),
-    ...(rank ? { tier: rank.tier } : {}),
-  });
-
-  return {
-    title: `${name} ${server} — LoL Stats | LaneIQ`,
-    description,
-    keywords: [name, gameName, server, "League of Legends", "LoL stats", "rank", "AI coach"],
-    alternates: { canonical: pageUrl },
-    openGraph: {
-      type: "profile",
-      url: pageUrl,
-      title: `${name} — ${rankStr} · LaneIQ`,
-      description,
-      images: [
-        {
-          url: `${appUrl}/api/og/summoner?${ogParams.toString()}`,
-          width: 1200,
-          height: 630,
-          alt: `${name} LoL stats`,
-        },
-      ],
-      siteName: "LaneIQ",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${name} — ${rankStr}`,
-      description,
-      images: [`${appUrl}/api/og/summoner?${ogParams.toString()}`],
-    },
-  };
 }
 
 export default async function SummonerPage({ params }: Props): Promise<React.ReactElement> {
@@ -108,7 +67,12 @@ export default async function SummonerPage({ params }: Props): Promise<React.Rea
     );
   }
 
-  const { summoner, rank, recentMatches, topChampions, aiInsight } = result.data;
+  const { summoner, rank, recentMatches, topChampions, aiInsight, mastery, scoreboards, puuid } =
+    result.data;
+
+  // Null for an unranked player, and the form strip then simply has nothing to compare against.
+  const benchmarks = rank ? await tierBenchmarks(rank.tier) : null;
+
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
   const jsonLd = {
     "@context": "https://schema.org",
@@ -125,7 +89,7 @@ export default async function SummonerPage({ params }: Props): Promise<React.Rea
   };
 
   return (
-    <div className="mx-auto max-w-[980px] space-y-4 px-4 py-7">
+    <div className="mx-auto max-w-[1240px] space-y-4 px-4 py-7">
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdProps(jsonLd)} />
 
       {/* Searching the next player is the most likely next action on this page, so the box is
@@ -136,20 +100,39 @@ export default async function SummonerPage({ params }: Props): Promise<React.Rea
 
       <ProfileHero data={result.data} region={region} />
 
-      <div className="grid gap-4 md:grid-cols-2 md:items-start">
+      {/* Rail + main, the shape every stats site converged on: the identity and the pool stay
+          fixed on the left while the match list — the thing people scroll — takes the width it
+          needs for an expanded scoreboard. */}
+      <div className="grid gap-4 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start">
         <div className="grid gap-4">
           <ProfileChampions champions={topChampions} totalGames={recentMatches.length} />
+          <ProfileMastery mastery={mastery} />
           <ProfileRoles matches={recentMatches} />
-        </div>
-        <ProfileMatches matches={recentMatches} />
-      </div>
 
-      {aiInsight && (
-        <section className="notch border border-l-[3px] border-border border-l-accent bg-surface p-5">
-          <p className="hud-label mb-2">{"// Read"}</p>
-          <p className="text-[14px] leading-relaxed text-text-body">{aiInsight}</p>
-        </section>
-      )}
+          {aiInsight && (
+            <section className="notch border border-l-[3px] border-border border-l-accent bg-surface p-5">
+              <p className="hud-label mb-2">{"// Read"}</p>
+              <p className="text-[14px] leading-relaxed text-text-body">{aiInsight}</p>
+            </section>
+          )}
+        </div>
+
+        <div className="grid gap-4">
+          <ProfileFormStrip
+            matches={recentMatches}
+            benchmarks={benchmarks}
+            tierLabel={rank ? rank.tier : null}
+          />
+          <ProfileMatches
+            matches={recentMatches}
+            scoreboards={scoreboards}
+            puuid={puuid}
+            region={region}
+            gameName={summoner.gameName}
+            tagLine={summoner.tagLine}
+          />
+        </div>
+      </div>
 
       <section className="notch bg-hero-fade border border-accent/30 p-6 text-center">
         <p className="font-display text-lg font-bold uppercase text-text">

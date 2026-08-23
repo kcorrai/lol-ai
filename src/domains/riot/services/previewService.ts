@@ -1,94 +1,59 @@
+import { getChampionMastery } from "@/domains/riot/services/riotApiClient";
+import { buildRuleBasedInsight } from "@/domains/riot/services/preview/previewInsight";
 import {
-  getAccountByRiotId,
-  getSummonerByPuuid,
-  getRankedEntriesByPuuidDirect,
-  getMatchIds,
-  getMatch,
-} from "@/domains/riot/services/riotApiClient";
+  toPreviewMatch,
+  toPreviewScoreboard,
+} from "@/domains/riot/services/preview/previewMapper";
+import {
+  fetchPreviewSource,
+  MATCH_DEPTH,
+  type PreviewSource,
+} from "@/domains/riot/services/preview/previewSource";
 import { getCached, setCached, buildCacheKey } from "@/lib/ai/aiCache";
-import type { PreviewMatch, PreviewChampion, PreviewResponse } from "@/types/preview";
+import { fetchAllChampions } from "@/lib/ddragon/championsData";
+import type {
+  PreviewChampion,
+  PreviewMastery,
+  PreviewMatch,
+  PreviewResponse,
+  PreviewScoreboard,
+  PublicProfileResponse,
+} from "@/types/preview";
 
-/**
- * How many recent matches the preview carries.
- *
- * Ten rather than five since TASK-310: this payload is no longer only the landing teaser, it is
- * also the public profile page, and five games is too thin to read a champion pool or a role
- * split off. Each one is a Riot call on a cache miss, which the one-day cache below absorbs.
- */
-const MATCH_DEPTH = 10;
+const CACHE_TTL_DAYS = 1;
+/** Top champions shown on the profile, and the mastery strip beside them. */
+const TOP_CHAMPION_COUNT = 3;
+const MASTERY_COUNT = 3;
 
-// Builds the free public account preview: recent ranked form + top champions +
-// a rule-based coaching blurb. Caches the result for a day. Throws on Riot
-// errors so the route can map them to status codes.
-export async function buildAccountPreview(
-  gameName: string,
-  tagLine: string,
-  region: string
-): Promise<PreviewResponse> {
-  // The depth is part of the key: without it, raising it would keep serving day-old five-match
-  // payloads to a page that says it shows ten.
-  const cacheKey = buildCacheKey("preview", {
-    gameName,
-    tagLine,
-    region,
-    depth: String(MATCH_DEPTH),
-  });
-
-  try {
-    const cached = await getCached(cacheKey);
-    if (cached) return cached as PreviewResponse;
-  } catch {
-    // Cache unavailable — continue without it
-  }
-
-  const account = await getAccountByRiotId(gameName, tagLine, region);
-  const [summoner, rankedEntries, matchIds] = await Promise.all([
-    getSummonerByPuuid(account.puuid, region),
-    getRankedEntriesByPuuidDirect(account.puuid, region),
-    getMatchIds(account.puuid, region, MATCH_DEPTH),
-  ]);
-
-  const soloEntry = rankedEntries.find((e) => e.queueType === "RANKED_SOLO_5x5") ?? null;
-
-  const matchDTOs = await Promise.all(
-    matchIds.slice(0, MATCH_DEPTH).map((id) => getMatch(id, region).catch(() => null))
-  );
-
-  const recentMatches: PreviewMatch[] = matchDTOs
-    .filter((m): m is NonNullable<typeof m> => m !== null)
-    .map((m) => {
-      const p = m.info.participants.find((x) => x.puuid === account.puuid);
-      if (!p) return null;
-      return {
-        championName: p.championName,
-        win: p.win,
-        kills: p.kills,
-        deaths: p.deaths,
-        assists: p.assists,
-        position: p.teamPosition || "FILL",
-      };
-    })
-    .filter((x): x is PreviewMatch => x !== null);
-
-  // Top champion aggregation
+function topChampionsOf(matches: PreviewMatch[]): PreviewChampion[] {
   const champMap = new Map<string, { games: number; wins: number }>();
-  for (const m of recentMatches) {
+  for (const m of matches) {
     const entry = champMap.get(m.championName) ?? { games: 0, wins: 0 };
     entry.games++;
     if (m.win) entry.wins++;
     champMap.set(m.championName, entry);
   }
-  const topChampions: PreviewChampion[] = Array.from(champMap.entries())
+  return Array.from(champMap.entries())
     .sort((a, b) => b[1].games - a[1].games)
-    .slice(0, 3)
+    .slice(0, TOP_CHAMPION_COUNT)
     .map(([championName, s]) => ({
       championName,
       games: s.games,
       wins: s.wins,
       winRate: Math.round((s.wins / s.games) * 100),
     }));
+}
 
-  const result: PreviewResponse = {
+function toPreviewResponse(source: PreviewSource, gameName: string): PreviewResponse {
+  const { account, summoner, soloEntry } = source;
+
+  const recentMatches = source.matches
+    .map((dto) => toPreviewMatch(dto, account.puuid))
+    .filter((m): m is PreviewMatch => m !== null);
+
+  const topChampions = topChampionsOf(recentMatches);
+
+  return {
     summoner: {
       gameName: account.gameName,
       tagLine: account.tagLine,
@@ -108,58 +73,134 @@ export async function buildAccountPreview(
     topChampions,
     aiInsight: buildRuleBasedInsight(gameName, soloEntry, recentMatches, topChampions),
   };
+}
 
-  // The payload is already complete here, so a cache-write failure must not
-  // discard it — mirrors the guard on the read above. Neon being unreachable
-  // used to turn a fully served preview into a 500 (TASK-285).
-  try {
-    await setCached(cacheKey, "preview", result, 1); // 1 day TTL
-  } catch {
-    // Cache unavailable — serve the freshly built result anyway
-  }
+/**
+ * Riot's mastery list carries champion *ids*; the UI needs names.
+ *
+ * Data Dragon's champion list is already cached for a day with a last-good fallback, so this is
+ * effectively free — and if it is unavailable the mastery strip is dropped rather than rendering
+ * numeric ids at a player.
+ */
+async function toMastery(
+  entries: { championId: number; championLevel: number; championPoints: number }[]
+): Promise<PreviewMastery[]> {
+  const top = [...entries]
+    .sort((a, b) => b.championPoints - a.championPoints)
+    .slice(0, MASTERY_COUNT);
+  if (top.length === 0) return [];
+
+  const champions = await fetchAllChampions();
+  const nameByKey = new Map(champions.map((c) => [c.key, c.name]));
+
+  return top
+    .map((e) => {
+      const championName = nameByKey.get(String(e.championId));
+      return championName
+        ? {
+            championId: e.championId,
+            championName,
+            championLevel: e.championLevel,
+            championPoints: e.championPoints,
+          }
+        : null;
+    })
+    .filter((m): m is PreviewMastery => m !== null);
+}
+
+/**
+ * The free public account preview: recent ranked form + top champions + a rule-based blurb.
+ *
+ * Feeds the landing demo box, `/api/public/preview` and the Discord bot. Caches for a day and
+ * throws on Riot errors so callers can map them to status codes.
+ */
+export async function buildAccountPreview(
+  gameName: string,
+  tagLine: string,
+  region: string
+): Promise<PreviewResponse> {
+  // The depth is part of the key: without it, raising it would keep serving day-old five-match
+  // payloads to a page that says it shows ten. `v2` retires the payloads written before the rows
+  // carried items, runes and CS — a stale one of those renders as a page of blanks.
+  const cacheKey = buildCacheKey("preview-v2", {
+    gameName,
+    tagLine,
+    region,
+    depth: String(MATCH_DEPTH),
+  });
+
+  const cached = await readCache<PreviewResponse>(cacheKey);
+  if (cached) return cached;
+
+  const source = await fetchPreviewSource(gameName, tagLine, region);
+  const result = toPreviewResponse(source, gameName);
+
+  await writeCache(cacheKey, "preview", result);
   return result;
 }
 
-// Deterministic, zero-cost coaching blurb derived from the player's recent games.
-// (The full AI coaching report is a signed-in feature; the public preview stays free.)
-function buildRuleBasedInsight(
+/**
+ * Everything `/s/[region]/[gameName]/[tagLine]` renders.
+ *
+ * A superset of the preview: the same rows, plus each match's ten-player scoreboard and the
+ * account's champion mastery. It keeps its own cache key rather than widening the preview's so
+ * that the landing page and the Discord bot never pay to build scoreboards they do not draw —
+ * the landing page is under an LCP budget (CLAUDE.md §10).
+ */
+export async function buildPublicProfile(
   gameName: string,
-  ranked: { tier: string; rank: string; wins: number; losses: number } | null,
-  matches: PreviewMatch[],
-  topChamps: PreviewChampion[]
-): string {
-  if (matches.length === 0) {
-    return `We couldn't find recent ranked games for ${gameName}. Play a few ranked matches and check back to see where you can improve.`;
+  tagLine: string,
+  region: string
+): Promise<PublicProfileResponse> {
+  const cacheKey = buildCacheKey("public-profile-v1", {
+    gameName,
+    tagLine,
+    region,
+    depth: String(MATCH_DEPTH),
+  });
+
+  const cached = await readCache<PublicProfileResponse>(cacheKey);
+  if (cached) return cached;
+
+  const source = await fetchPreviewSource(gameName, tagLine, region);
+  const preview = toPreviewResponse(source, gameName);
+
+  // Mastery soft-fails to [] inside the client, so this cannot be the reason a profile 500s.
+  const masteryEntries = await getChampionMastery(source.account.puuid, region);
+
+  const scoreboards: Record<string, PreviewScoreboard> = {};
+  for (const dto of source.matches) {
+    scoreboards[dto.metadata.matchId] = toPreviewScoreboard(dto);
   }
 
-  const wins = matches.filter((m) => m.win).length;
-  const wr = Math.round((wins / matches.length) * 100);
-  const avgDeaths = matches.reduce((s, m) => s + m.deaths, 0) / matches.length;
-  const avgKda =
-    matches.reduce((s, m) => s + (m.kills + m.assists) / Math.max(1, m.deaths), 0) / matches.length;
-  const topChamp = topChamps[0];
+  const result: PublicProfileResponse = {
+    ...preview,
+    puuid: source.account.puuid,
+    mastery: await toMastery(masteryEntries),
+    scoreboards,
+  };
 
-  // Sentence 1 — recent form.
-  let form: string;
-  if (wr >= 60) {
-    form = `You're on a strong run — ${wins}/${matches.length} wins in your last games${ranked ? ` at ${ranked.tier} ${ranked.rank}` : ""}.`;
-  } else if (wr <= 40) {
-    form = `You're in a rough patch — ${wins}/${matches.length} wins recently${ranked ? ` at ${ranked.tier} ${ranked.rank}` : ""}. Time to tighten up the fundamentals.`;
-  } else {
-    form = `Your recent form is steady at ${wr}% over your last ${matches.length} games${ranked ? ` (${ranked.tier} ${ranked.rank})` : ""}.`;
+  await writeCache(cacheKey, "preview", result);
+  return result;
+}
+
+/** A cache outage must never be the reason a profile fails to load (TASK-285). */
+async function readCache<T>(key: string): Promise<T | null> {
+  try {
+    return ((await getCached(key)) as T | null) ?? null;
+  } catch {
+    return null;
   }
+}
 
-  // Sentence 2 — the biggest lever.
-  let lever: string;
-  if (avgDeaths > 7) {
-    lever = `You're averaging ${avgDeaths.toFixed(1)} deaths a game — cutting risky plays and warding more would swing your win rate the fastest.`;
-  } else if (avgKda >= 3.5) {
-    lever = `Your ${avgKda.toFixed(1)} average KDA is strong; converting that into objectives and closing games faster is your next step.`;
-  } else if (topChamp && topChamp.games >= Math.ceil(matches.length * 0.5)) {
-    lever = `You're leaning on ${topChamp.championName} (${topChamp.winRate}% win rate) — a focused 2-3 champion pool like this is exactly how you climb.`;
-  } else {
-    lever = `Tightening your champion pool and playing to your win conditions each game is the quickest path up.`;
+/**
+ * The payload is already complete by the time this runs, so a write failure must not discard it.
+ * Neon being unreachable used to turn a fully served preview into a 500 (TASK-285).
+ */
+async function writeCache(key: string, kind: string, value: unknown): Promise<void> {
+  try {
+    await setCached(key, kind, value, CACHE_TTL_DAYS);
+  } catch {
+    // Cache unavailable — serve the freshly built result anyway.
   }
-
-  return `${form} ${lever}`;
 }

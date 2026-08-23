@@ -131,15 +131,18 @@ export async function getSummonerByPuuid(
 export async function getMatchIds(
   puuid: string,
   region: string,
-  count = 20
+  count = 20,
+  /** Offset into the account's history, for the public profile's paging (LA-69). */
+  start = 0
 ): Promise<string[]> {
   const routing = getRouting(region);
   // Riot API enforces a hard cap of 100 on the count parameter.
   const safeCount = Math.min(count, 100);
-  const url = `https://${routing}.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?count=${safeCount}`;
+  const safeStart = Math.max(0, Math.trunc(start));
+  const url = `https://${routing}.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?start=${safeStart}&count=${safeCount}`;
   return riotClient.get<string[]>(url, {
     cacheTtl: 60,
-    cacheKey: CacheKeys.matchIds(puuid, region),
+    cacheKey: CacheKeys.matchIds(puuid, region, safeCount, safeStart),
     // A transient empty list (new PUUID-only accounts lag in match-v5) must not stick and block
     // re-sync (TASK-227).
     noCacheEmptyArray: true,
