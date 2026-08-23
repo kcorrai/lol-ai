@@ -108,14 +108,23 @@ describe("riotFixtureFor", () => {
   });
 });
 
-describe("the client gate", () => {
-  const cache: CacheStore = {
+/** A cache that never hits, so a test measures the gate rather than a warm entry. */
+function emptyCache(): CacheStore {
+  return {
     get: async () => null,
     set: async () => {},
     del: async () => {},
     delByPrefix: async () => {},
   };
-  const limiter = { consume: async () => {} } as unknown as TokenBucket;
+}
+
+function noLimiter(): TokenBucket {
+  return { consume: async () => {} } as unknown as TokenBucket;
+}
+
+describe("the client gate", () => {
+  const cache = emptyCache();
+  const limiter = noLimiter();
 
   afterEach(() => {
     delete process.env.E2E_MOCK;
@@ -200,20 +209,26 @@ describe("no Riot function reaches the network when mocked", () => {
   });
 
   /**
-   * Proves the test above has teeth.
+   * Proves the assertion above has teeth.
    *
-   * Without this, "fetch was never called" would pass just as well if the spy were watching the
-   * wrong thing — which is the failure mode of every assertion that something did *not* happen.
-   * Fetch is stubbed to reject so nothing leaves the machine either way.
+   * "fetch was never called" passes just as well when nothing would have called it anyway, which
+   * is the failure mode of every assertion that something did *not* happen. The first draft of
+   * this control failed for exactly that reason: it reused the module-level client, whose cache
+   * the test above had already warmed, so the call never reached the network with the flag off
+   * either. A fresh client with an empty cache is the only way the comparison means anything.
+   *
+   * Fetch is stubbed to reject, so nothing leaves the machine in either direction.
    */
-  it("and the same call does reach fetch with the flag off", async () => {
+  it("and the same request does reach fetch with the flag off", async () => {
     delete process.env.E2E_MOCK;
-    const api = await import("@/domains/riot/services/riotApiClient");
     const fetchSpy = vi
       .spyOn(globalThis, "fetch")
       .mockRejectedValue(new Error("blocked by the test"));
+    const client = new RiotHttpClient("fake-key", emptyCache(), noLimiter());
 
-    await api.getAccountByRiotId("E2ESmoke", "E2E", "euw1").catch(() => {});
+    await client
+      .get(`${EUROPE}/riot/account/v1/accounts/by-riot-id/E2ESmoke/E2E`, { skipRateLimit: true })
+      .catch(() => {});
 
     expect(fetchSpy).toHaveBeenCalled();
   });
