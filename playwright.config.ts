@@ -29,12 +29,12 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   // Sequential execution: all tests share DB state seeded in global-setup
   workers: 1,
-  // The suite is served by `next dev`, which compiles a route on the request that
-  // reaches it first — tens of seconds for the heavier pages. Playwright's 30s
-  // default is a budget, not an assertion, and leaving it there means whichever
-  // spec happens to touch a route first fails on the compile rather than on the
-  // product. Individual expects keep their own tight budgets, so a real hang is
-  // still reported by the assertion that is actually waiting.
+  // Sized for the local run, where `next dev` compiles a route on the request that reaches it
+  // first — tens of seconds for the heavier pages. Playwright's 30s default is a budget, not an
+  // assertion, and leaving it there means whichever spec touches a route first fails on the
+  // compile rather than on the product. Individual expects keep their own tight budgets, so a
+  // real hang is still reported by the assertion that is actually waiting. CI serves a compiled
+  // app and pays none of this, so the headroom is only ever unused there.
   timeout: 90_000,
   reporter: process.env.CI
     ? [["github"], ["html", { open: "never", outputFolder: "playwright-report" }]]
@@ -57,8 +57,8 @@ export default defineConfig({
     {
       name: "setup",
       testMatch: /auth-setup\.setup\.ts$/,
-      // First past the post under `next dev`: this is what pays the compile for
-      // /login and /dashboard, and every other project waits behind it.
+      // First past the post: under `next dev` locally this is what pays the compile for /login
+      // and /dashboard, and every other project waits behind it.
       timeout: 120_000,
       use: { ...devices["Desktop Chrome"] },
     },
@@ -91,10 +91,9 @@ export default defineConfig({
     {
       name: "esports",
       testMatch: /esports\.spec\.ts$/,
-      // The hub aggregates a whole split's worth of games to build the pro
-      // sample, and under `next dev` each route pays its first compile on the
-      // request that reaches it. Both are one-off, and neither is worth
-      // reporting as a failure at the 30s default.
+      // The hub aggregates a whole split's worth of games to build the pro sample, and locally
+      // each route also pays its first compile on the request that reaches it. Both are one-off,
+      // and neither is worth reporting as a failure at the 30s default.
       timeout: 120_000,
       use: { ...devices["Desktop Chrome"] },
     },
@@ -149,8 +148,8 @@ export default defineConfig({
       name: "smoke",
       testMatch: /\/(riot|coaching|share|guided-onboarding|esports-follows)\.spec\.ts$/,
       dependencies: ["setup"],
-      // Following a team walks the same feed the esports project does, and pays
-      // the same first-compile cost under `next dev`.
+      // Following a team walks the same feed the esports project does, and locally pays the
+      // same first-compile cost.
       timeout: 120_000,
       use: {
         ...devices["Desktop Chrome"],
@@ -160,7 +159,14 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: `next dev -p ${PORT}`,
+    // CI builds the app and then, until now, threw that build away: this served `next dev`, which
+    // compiles each route on the first request that reaches it. Every assertion budget in the
+    // suite was really a bet on whether it was the one paying that compile, which is why six full
+    // runs produced six different sets of 1-4 failures and none of them repeated (LA-56). `retries`
+    // hid it rather than fixing it — a green run only meant the second attempt hit a warm route.
+    //
+    // Locally it stays `next dev`: there is no build to serve, and reloading beats rebuilding.
+    command: process.env.CI ? `next start -p ${PORT}` : `next dev -p ${PORT}`,
     url: BASE_URL,
     reuseExistingServer: !process.env.CI,
     timeout: 90_000,
