@@ -151,6 +151,38 @@ export const liveHabitSchema = z.object({
 export type LiveHabit = z.infer<typeof liveHabitSchema>;
 
 /**
+ * What this account normally does on the champion it is playing right now.
+ *
+ * The companion measures the same four things off the Live Client Data API while
+ * the game runs, so this is the only half it cannot work out for itself. Ranked
+ * solo only — mixing queues would give an average true of no queue — and it
+ * always carries `games`, because a number the player cannot size is a number
+ * they cannot argue with.
+ */
+export const liveBaselineSchema = z.object({
+  games: z.number(),
+  csPerMin: z.number(),
+  deaths: z.number(),
+  visionScore: z.number(),
+  kda: z.number(),
+});
+export type LiveBaseline = z.infer<typeof liveBaselineSchema>;
+
+/**
+ * One goal this player is already working on, from the challenge they were set
+ * away from the game. `metric` is what the companion measures live against
+ * `targetValue`; anything it cannot measure in a running game is filtered out
+ * before it is sent.
+ */
+export const liveChallengeSchema = z.object({
+  id: z.string(),
+  metric: z.string(),
+  targetValue: z.number(),
+  description: z.string(),
+});
+export type LiveChallenge = z.infer<typeof liveChallengeSchema>;
+
+/**
  * What the website knows about the game the app is watching.
  *
  * Every field that can be absent is nullable rather than defaulted, because the
@@ -163,6 +195,9 @@ export const liveContextSchema = z.object({
   personal: livePersonalMatchupSchema.nullable(),
   meta: liveMetaMatchupSchema.nullable(),
   habits: z.array(liveHabitSchema),
+  /** Null when this account has not played the champion enough for an average to mean anything. */
+  baseline: liveBaselineSchema.nullable(),
+  challenges: z.array(liveChallengeSchema),
   /** False means the panels are empty for a reason the player can act on. */
   riotAccountLinked: z.boolean(),
 });

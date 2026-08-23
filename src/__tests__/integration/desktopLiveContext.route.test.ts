@@ -52,6 +52,8 @@ const CONTEXT = {
   personal: null,
   meta: null,
   habits: [],
+  baseline: null,
+  challenges: [],
   riotAccountLinked: true,
 };
 
@@ -94,7 +96,7 @@ describe("POST /api/desktop/live-context", () => {
 
     expect(res.status).toBe(200);
     expect(res.data).toEqual(CONTEXT);
-    expect(getLiveContext).toHaveBeenCalledWith(RIOT_ACCOUNT_ID, BODY);
+    expect(getLiveContext).toHaveBeenCalledWith(RIOT_ACCOUNT_ID, "user-1", BODY);
   });
 
   it("never lets an answer about one account be cached", async () => {
@@ -108,7 +110,7 @@ describe("POST /api/desktop/live-context", () => {
     vi.mocked(getDeviceAccount).mockResolvedValue(account(null));
 
     expect((await post(BODY)).status).toBe(200);
-    expect(getLiveContext).toHaveBeenCalledWith(null, BODY);
+    expect(getLiveContext).toHaveBeenCalledWith(null, "user-1", BODY);
   });
 });
 
@@ -179,6 +181,6 @@ describe("POST /api/desktop/live-context accepts the shapes a live game really h
     };
 
     expect((await post(aram)).status).toBe(200);
-    expect(getLiveContext).toHaveBeenCalledWith(RIOT_ACCOUNT_ID, aram);
+    expect(getLiveContext).toHaveBeenCalledWith(RIOT_ACCOUNT_ID, "user-1", aram);
   });
 });

@@ -5,6 +5,11 @@
 export { awardXp } from "./services/challengeProgressService";
 export { XP_PER_LEVEL } from "./services/challengeConstants";
 
+// The desktop companion measures the goals a player was already set against the game
+// they are playing right now, which is the one place they can still be acted on.
+export { getActiveChallenges } from "./services/challengeProgressService";
+export type { ChallengeWithProgress } from "./services/challengeConstants";
+
 // The Academy places a player and picks their next lesson from these two (LA-21).
 export { getPlayerPerformanceProfile } from "./services/matchAnalysisService";
 export { getActiveHabits } from "./services/habitDetectionService";
