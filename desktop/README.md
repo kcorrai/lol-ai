@@ -13,10 +13,10 @@ extracts it with its history whenever a separate repository is wanted.
 
 ## Status
 
-**Phase 4 of 5.** The two halves are joined. The app reads the game on this machine and
-asks the website what it knows about the account playing it, and the game screen shows
-both: the scoreboard it can see for itself, the lane read and the game plan it cannot work
-out alone.
+**Phase 5 of 5, in part.** The two halves are joined and the loop closes. The app
+reads the game on this machine and asks the website what it knows about the account
+playing it, and the game screen shows both: the scoreboard it can see for itself, the lane
+read and the game plan it cannot work out alone.
 
 Pairing (phase 3) is what makes that possible. The player generates a code at Settings →
 Desktop app on the website and types it here; this machine then holds its own long-lived
@@ -24,7 +24,17 @@ token — exchanged by the Rust core, written to the OS credential store, and ne
 the webview. Revoking the device on the website cuts it off, mid-game included: the app
 finds out on its next call and forgets the token locally.
 
-Everything that needs a backend feature not yet built still says so rather than pretending.
+When a game ends, the app tells the website — and that is the one thing it can say that
+the website could not have worked out. A server pulls an account when somebody opens the
+dashboard and the data is half an hour stale, because nothing on it knows a match is over.
+This window does, to the second. A "Game over" panel then offers the match list, opened in
+the player's own browser rather than inside this one.
+
+The rest of phase 5 — the system tray, launching on start-up, and signed updates with an
+update channel — is not built. Signing in particular needs a certificate and a release
+pipeline that do not exist yet, and Riot registration has to be in flight before any of it
+ships (ADR-038). Everything that needs a backend feature not yet built still says so rather
+than pretending.
 
 ### What the live dashboard shows
 
@@ -52,7 +62,8 @@ read about once a second and this answer changes when a game starts and not once
 | 2 | Tauri core, IPC surface, OS keychain | yes | no |
 | 3 | Pairing — `DesktopDevice`, `/api/desktop/*` | yes | yes |
 | 4 | Live dashboard — matchup, game plan | yes | no |
-| 5 | Post-game handoff, tray, signed updates | yes | no |
+| 5a | Post-game handoff | yes | no |
+| 5b | Tray, launch on start-up, signed updates | yes | no |
 
 ### The IPC surface
 
@@ -63,6 +74,8 @@ read about once a second and this answer changes when a game starts and not once
 | `device_account()` | Who this machine is acting as, asked of the website, or `null`. A 401 means the device was revoked — the token is forgotten locally and this answers `null`. |
 | `device_status()` | Whether this machine holds a token, asked of the credential store alone. Never the token, and no network — which is what lets an app opened offline know it is still paired. |
 | `live_context(request)` | What the website knows about the game on screen — the lane read and the game plan — or `null` when this machine is no longer paired. Goes through the core because the reading is personal, so the request has to carry the device token, and the token is not allowed to exist in a webview. |
+| `post_game()` | Tells the website a game has ended so the account is pulled now, or `null` when this machine is no longer paired. Takes no argument: the account is read from the device row and what game it was is read from Riot, so all the app contributes is the timing. |
+| `open_report()` | Opens the player's match list in their **own** browser. Takes no URL — the address is built in the core from the compiled-in base, so a renderer that went wrong could not choose what gets opened. Not a navigation inside this window: a companion to a running game must not turn itself into a browser. |
 | `clear_device_token()` | Forgets it locally. |
 
 ### Where it points
