@@ -282,21 +282,24 @@
   renderAll();
 
   // ── mockup-only viewer chrome ─────────────────────────────────────────
-  function bindGroup(selector, apply) {
-    var buttons = document.querySelectorAll(selector);
+  // Keyed on the attribute itself: the buttons carry data-viewport / data-state, so reading
+  // `dataset.value` off them yielded undefined and every switch landed on "-undefined" —
+  // the phone drawing and both other states were unreachable until this was fixed.
+  function bindGroup(key, apply) {
+    var buttons = document.querySelectorAll("[data-" + key + "]");
     buttons.forEach(function (b) {
       b.addEventListener("click", function () {
         buttons.forEach(function (x) { x.classList.remove("is-active"); });
         b.classList.add("is-active");
-        apply(b.dataset.value);
+        apply(b.dataset[key]);
       });
     });
   }
-  bindGroup("[data-viewport]", function (v) {
+  bindGroup("viewport", function (v) {
     var frame = document.getElementById("device-frame");
     frame.className = "device-frame viewport-" + v;
   });
-  bindGroup("[data-state]", function (v) {
+  bindGroup("state", function (v) {
     document.querySelectorAll(".story-panel").forEach(function (p) { p.style.display = "none"; });
     document.getElementById("panel-" + v).style.display = "";
   });
