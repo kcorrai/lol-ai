@@ -54,6 +54,12 @@ vi.mock("@/inngest/client", () => ({
   inngest: { send: vi.fn().mockResolvedValue(undefined) },
 }));
 
+vi.mock("@/domains/riot/services/timelineCaptureService", () => ({
+  runTimelineCaptureForAccount: vi.fn().mockResolvedValue({
+    processed: 0, fetched: 0, totalDeaths: 0, totalFrames: 0, totalEvents: 0,
+  }),
+}));
+
 vi.mock("@/lib/api/errors", () => ({
   Errors: { notFound: (msg: string) => new Error(`Not found: ${msg}`) },
 }));
@@ -288,6 +294,20 @@ describe("syncAccount", () => {
       participants: [{ puuid: `p-${id}`, gameName: "A", tagLine: "1" }],
     });
 
+    const ACCOUNT_ID = "acc-1";
+
+    /** Every event name that reached `inngest.send`, across however many calls it took. */
+    async function sentEventNames(): Promise<string[]> {
+      const { inngest } = await import("@/inngest/client");
+      return vi
+        .mocked(inngest.send as unknown as (e: unknown) => unknown)
+        .mock.calls.flatMap((call) => {
+          const arg = call[0];
+          const list = Array.isArray(arg) ? arg : [arg];
+          return list.map((e) => (e as { name: string }).name);
+        });
+    }
+
     it("counts every ingested match", async () => {
       const result = await ingest(["A", "B", "C", "D", "E"], ok);
 
@@ -325,18 +345,15 @@ describe("syncAccount", () => {
       expect(indexed.map((p) => p.puuid).sort()).toEqual(["p-A", "p-B", "p-C"]);
     });
 
-    // Asserted on the interleaving of start/end events rather than on wall-clock overlap, so it
-    // cannot flake when the suite runs the whole file under load.
-    // Seven separate sends, none awaited. On Vercel an unawaited promise can be dropped when the
-    // response returns, so the durable work these start was not reliably starting.
-    it("dispatches every post-sync event in one awaited send", async () => {
+    // The hazard this guards is unawaited dispatch: these were seven separate sends, none of
+    // them awaited, and on Vercel a promise that is neither awaited nor handed to waitUntil can
+    // be dropped when the response returns. Two awaited sends are fine; a fire-and-forget one is
+    // not, which is why the assertion is on the names that went out rather than on the count.
+    it("dispatches every post-sync event, all of them awaited", async () => {
       const { inngest } = await import("@/inngest/client");
       await ingest(["A", "B", "C"], ok);
 
-      expect(inngest.send).toHaveBeenCalledTimes(1);
-      const sent = vi.mocked(inngest.send).mock.calls[0][0] as Array<{ name: string }>;
-      expect(Array.isArray(sent)).toBe(true);
-      expect(sent.map((e) => e.name).sort()).toEqual([
+      expect((await sentEventNames()).sort()).toEqual([
         "academy/check-assignments",
         "achievement/check",
         "challenge/check-progress",
@@ -346,14 +363,40 @@ describe("syncAccount", () => {
         "tilt/check-streak",
         "timeline/fetch-for-account",
       ]);
+      // The batch is still one call. Only the timeline event is sent apart, because it is the
+      // one with somewhere to fall back to (LA-66).
+      const batch = vi.mocked(inngest.send).mock.calls.find((c) => Array.isArray(c[0]));
+      expect(batch).toBeDefined();
+    });
+
+    // The timeline capture is the one event the sync can carry out itself, so a send that fails
+    // must not lose it. LA-66: on a machine with no Inngest it had never run once.
+    it("runs the timeline capture in-process when the send fails", async () => {
+      const { inngest } = await import("@/inngest/client");
+      const { runTimelineCaptureForAccount } = await import(
+        "@/domains/riot/services/timelineCaptureService"
+      );
+      vi.mocked(inngest.send).mockRejectedValue(new Error("ECONNREFUSED"));
+
+      await ingest(["A"], ok);
+      // Dispatched fire-and-forget by design, so the fallback is given a turn to start.
+      await new Promise((r) => setTimeout(r, 0));
+
+      expect(runTimelineCaptureForAccount).toHaveBeenCalledWith(ACCOUNT_ID);
+    });
+
+    it("does not capture timelines when nothing was ingested", async () => {
+      const { runTimelineCaptureForAccount } = await import(
+        "@/domains/riot/services/timelineCaptureService"
+      );
+      await ingest([], ok);
+      expect(runTimelineCaptureForAccount).not.toHaveBeenCalled();
     });
 
     it("omits the new-match events when nothing was ingested", async () => {
-      const { inngest } = await import("@/inngest/client");
       await ingest([], ok);
 
-      const sent = vi.mocked(inngest.send).mock.calls[0][0] as Array<{ name: string }>;
-      const names = sent.map((e) => e.name);
+      const names = await sentEventNames();
       expect(names).not.toContain("match/enrich-ranks");
       expect(names).not.toContain("timeline/fetch-for-account");
       expect(names).toContain("snapshot/compute");

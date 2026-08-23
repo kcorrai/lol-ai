@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { inngest } from "@/inngest/client";
 import { logger } from "@/lib/utils/logger";
 
@@ -25,4 +26,49 @@ export async function dispatchOrRunInProcess(
       logger.error("[dispatch] In-process fallback failed", e instanceof Error ? e : new Error(String(e))),
     );
   }
+}
+
+/**
+ * Send events that have no in-process fallback, and make a failure impossible to miss.
+ *
+ * There is a difference between a send that fails with somewhere to fall back to and one
+ * without, and it is not a difference of degree. The first is a slow path; the second is
+ * work that is simply gone — nothing retries it, nothing records that it was owed, and the
+ * request that dispatched it has already answered.
+ *
+ * So this reports rather than swallows. It was a `logger.warn` on the sync's own batch until
+ * LA-66, where the whole reason a feature had never worked locally turned out to be sitting
+ * in that one line, unread for weeks. In production the same line would let an Inngest outage
+ * drop every background job the sync owes without anything noticing.
+ *
+ * It still does not throw. The caller has already done the work these events are about, and
+ * failing their request because a follow-up job could not be queued would turn a degraded
+ * background path into a broken foreground one.
+ */
+export async function dispatchOrReport(
+  events: InngestEvent,
+  context: string
+): Promise<boolean> {
+  try {
+    await inngest.send(events);
+    return true;
+  } catch (err) {
+    const error = err instanceof Error ? err : new Error(String(err));
+    const names = eventNames(events);
+    logger.error(
+      `[dispatch] ${context}: ${names.length} background job(s) were not queued and are lost: ${names.join(", ")}`,
+      error
+    );
+    Sentry.captureException(error, {
+      tags: { dispatch: context },
+      extra: { events: names },
+    });
+    return false;
+  }
+}
+
+/** The event names in a send, for a log line that says what was actually lost. */
+function eventNames(events: InngestEvent): string[] {
+  const list = Array.isArray(events) ? events : [events];
+  return list.map((e) => (typeof e === "object" && e !== null && "name" in e ? String(e.name) : "unknown"));
 }

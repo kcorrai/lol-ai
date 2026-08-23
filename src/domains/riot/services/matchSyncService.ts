@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
 import { Errors } from "@/lib/api/errors";
 import { isDataStale, invalidateAccountCache } from "@/lib/riot/lifecycle";
-import { inngest } from "@/inngest/client";
+import { dispatchOrReport, dispatchOrRunInProcess } from "@/lib/inngest/dispatch";
 import { deleteCachedMany, buildCacheKey } from "@/lib/ai/aiCache";
 import { getMatchIds, getMatch } from "@/domains/riot/services/riotApiClient";
 import { mapMatch } from "@/domains/riot/mappers/matchMapper";
@@ -13,6 +13,7 @@ import { getPlanLimits } from "@/lib/auth/authorization";
 import { indexPlayers, type IndexablePlayer } from "@/domains/riot/services/playerIndexService";
 import { mapWithConcurrency } from "@/lib/utils/concurrency";
 import { syncRankedSnapshot } from "@/domains/riot/services/matchSyncRankedService";
+import { runTimelineCaptureForAccount } from "@/domains/riot/services/timelineCaptureService";
 export { backfillMatchNicknames } from "@/domains/riot/services/matchSyncRankedService";
 
 export type SyncResult = {
@@ -197,7 +198,6 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
       : []),
     ...(forNewMatches
       ? [
-          { name: "timeline/fetch-for-account", data: { riotAccountId: account.id } },
           { name: "academy/check-assignments", data: { riotAccountId: account.id, userId: account.userId } },
           // Replaces both the per-match fan-out that used to sit in the ingest loop and the
           // fifteen-match backfill sweep that used to run here. The sweep only existed because
@@ -206,7 +206,18 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
         ]
       : []),
   ];
-  await inngest.send(events).catch((err) => logger.warn("[sync] Event dispatch failed", err));
+  await dispatchOrReport(events, "sync");
+
+  // The timeline capture is dispatched on its own because it is the one of these that can be
+  // run here instead. It matters more than the others too: LA-66 found that on a machine
+  // without Inngest it had never run once, which is why the feature it feeds could not be
+  // verified at all. The Inngest worker and this call reach the same service.
+  if (forNewMatches) {
+    await dispatchOrRunInProcess(
+      { name: "timeline/fetch-for-account", data: { riotAccountId: account.id } },
+      () => runTimelineCaptureForAccount(account.id)
+    );
+  }
 
   if (forNewMatches) {
     // Six keys, one per position. deleteCached would do a Redis command and a Postgres statement
