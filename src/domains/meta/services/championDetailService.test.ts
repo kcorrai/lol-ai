@@ -76,6 +76,75 @@ beforeEach(() => {
 });
 
 describe("getChampionDetail", () => {
+  /**
+   * op.gg sends `rank: null` for a patch the champion was not played in this lane, with `rate: 0`
+   * rather than omitting the point. The schema demanded a number, so one gap in a champion's trend
+   * history made Zod reject the *entire* payload — build, runes, items and counters included — and
+   * the page rendered "not found". Six of Syndra ADC's ten points are null (LA-71).
+   */
+  it("keeps the build when a trend point has no rank", async () => {
+    mockGetCached.mockResolvedValue(null);
+    mockFetchOk({
+      data: {
+        ...DETAIL_BODY.data,
+        trends: {
+          win: [
+            { version: "16.13", rate: 0.51, rank: 12 },
+            { version: "16.07", rate: 0, rank: null },
+          ],
+        },
+      },
+    });
+
+    const detail = await getChampionDetail(103, "MIDDLE");
+
+    expect(detail).not.toBeNull();
+    expect(detail!.build.coreItems?.ids).toEqual([3118, 4645, 3157]);
+  });
+
+  /** A patch it was not played in is absent, not a patch it ranked last in. */
+  it("drops the rankless point rather than plotting it at the floor", async () => {
+    mockGetCached.mockResolvedValue(null);
+    mockFetchOk({
+      data: {
+        ...DETAIL_BODY.data,
+        trends: {
+          win: [
+            { version: "16.13", rate: 0.51, rank: 12 },
+            { version: "16.07", rate: 0, rank: null },
+          ],
+        },
+      },
+    });
+
+    const detail = await getChampionDetail(103, "MIDDLE");
+
+    expect(detail!.build.trend).toEqual([{ version: "16.13", winRate: 51, rank: 12 }]);
+  });
+
+  /**
+   * The general form of the null-rank bug: every element schema is one op.gg change away from
+   * deleting a page. An unreadable entry now costs itself, not the champion's whole build.
+   */
+  it("drops an unreadable entry rather than the whole payload", async () => {
+    mockGetCached.mockResolvedValue(null);
+    mockFetchOk({
+      data: {
+        ...DETAIL_BODY.data,
+        core_items: [
+          { ids: [3118, 4645, 3157], play: 900, win: 500 },
+          { ids: "not an array", play: "lots" },
+        ],
+      },
+    });
+
+    const detail = await getChampionDetail(103, "MIDDLE");
+
+    expect(detail).not.toBeNull();
+    expect(detail!.build.coreItems?.ids).toEqual([3118, 4645, 3157]);
+    expect(detail!.build.runes?.primaryRuneIds).toEqual([8112, 8139, 8140, 8106]);
+  });
+
   it("parses counters and the full build, and caches both keys", async () => {
     mockGetCached.mockResolvedValue(null);
     mockFetchOk(DETAIL_BODY);

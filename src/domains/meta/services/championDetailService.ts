@@ -43,23 +43,75 @@ const SkillMasterySchema = z.object({
   win: z.number(),
 });
 const GameLengthSchema = z.object({ game_length: z.number(), rate: z.number() });
-const TrendWinSchema = z.object({ version: z.string(), rate: z.number(), rank: z.number() });
-
-const DetailSchema = z.object({
-  data: z.object({
-    counters: z.array(CounterSchema).optional().default([]),
-    runes: z.array(RuneSchema).optional().default([]),
-    summoner_spells: z.array(SpellSchema).optional().default([]),
-    core_items: z.array(ItemSetSchema).optional().default([]),
-    boots: z.array(ItemSetSchema).optional().default([]),
-    starter_items: z.array(ItemSetSchema).optional().default([]),
-    last_items: z.array(ItemSetSchema).optional().default([]),
-    skills: z.array(SkillSchema).optional().default([]),
-    skill_masteries: z.array(SkillMasterySchema).optional().default([]),
-    game_lengths: z.array(GameLengthSchema).optional().default([]),
-    trends: z.object({ win: z.array(TrendWinSchema).optional().default([]) }).optional(),
-  }),
+/**
+ * `rank` is null for a patch the champion was not played in that lane — op.gg sends the point with
+ * `rate: 0` and no rank rather than omitting it.
+ *
+ * It was declared as a plain number, which made Zod reject the whole payload: one gap in a
+ * champion's trend history threw away its entire build, runes, items and counters for that lane.
+ * Six of Syndra ADC's ten points are null, so that page had no build at all (LA-71).
+ */
+const TrendWinSchema = z.object({
+  version: z.string(),
+  rate: z.number(),
+  rank: z.number().nullable(),
 });
+
+/**
+ * A list from op.gg, where one unreadable entry drops that entry rather than the response.
+ *
+ * The whole payload used to hinge on every field of every element: `trend.rank` turning null cost
+ * three build pages their entire build, runes, items and counters, and every element schema below
+ * is one op.gg change away from the same thing (LA-71). Elements are parsed one at a time so drift
+ * costs a row.
+ *
+ * It counts what it drops and the caller logs it, because the expensive half of that bug was that
+ * it was silent: the page did not error, it said the champion had no build.
+ */
+function lenientArray<T extends z.ZodTypeAny>(
+  schema: T,
+  dropped: { count: number }
+): z.ZodType<z.infer<T>[]> {
+  return z
+    .array(z.unknown())
+    .optional()
+    .default([])
+    .transform((items) =>
+      items.flatMap((item) => {
+        const parsed = schema.safeParse(item);
+        if (parsed.success) return [parsed.data as z.infer<T>];
+        dropped.count++;
+        return [];
+      })
+    );
+}
+
+/**
+ * Builds the payload schema against a fresh drop counter.
+ *
+ * A function rather than a constant because the counter has to be per-parse — a module-level one
+ * would accumulate across every champion the process ever renders.
+ */
+function detailSchema(dropped: { count: number }) {
+  return z.object({
+    data: z.object({
+      counters: lenientArray(CounterSchema, dropped),
+      runes: lenientArray(RuneSchema, dropped),
+      summoner_spells: lenientArray(SpellSchema, dropped),
+      core_items: lenientArray(ItemSetSchema, dropped),
+      boots: lenientArray(ItemSetSchema, dropped),
+      starter_items: lenientArray(ItemSetSchema, dropped),
+      last_items: lenientArray(ItemSetSchema, dropped),
+      skills: lenientArray(SkillSchema, dropped),
+      skill_masteries: lenientArray(SkillMasterySchema, dropped),
+      game_lengths: lenientArray(GameLengthSchema, dropped),
+      trends: z.object({ win: lenientArray(TrendWinSchema, dropped) }).optional(),
+    }),
+  });
+}
+
+/** The parsed payload, named once so the mappers below do not each re-derive it. */
+type DetailData = z.infer<ReturnType<typeof detailSchema>>["data"];
 
 export interface ChampionDetail {
   counters: MatchupEntry[];
@@ -72,10 +124,7 @@ const toItemSet = (s: z.infer<typeof ItemSetSchema>): BuildItemSet => ({
   winRate: pct(s.win / Math.max(1, s.play)),
 });
 
-function buildFromDetail(
-  championId: number,
-  data: z.infer<typeof DetailSchema>["data"]
-): ChampionBuild {
+function buildFromDetail(championId: number, data: DetailData): ChampionBuild {
   const topRune = data.runes[0];
   return {
     championId,
@@ -102,15 +151,20 @@ function buildFromDetail(
       minutes: g.game_length,
       winRate: pct(g.rate),
     })),
-    trend: (data.trends?.win ?? []).map((t) => ({
-      version: t.version,
-      winRate: pct(t.rate),
-      rank: t.rank,
-    })),
+    // A point with no rank is a patch the champion was not played in this lane, not a patch it
+    // ranked last in. Dropping it keeps the sparkline a record of real patches rather than a line
+    // to the floor and back.
+    trend: (data.trends?.win ?? [])
+      .filter((t): t is typeof t & { rank: number } => t.rank !== null)
+      .map((t) => ({
+        version: t.version,
+        winRate: pct(t.rate),
+        rank: t.rank,
+      })),
   };
 }
 
-function countersFromDetail(data: z.infer<typeof DetailSchema>["data"]): MatchupEntry[] {
+function countersFromDetail(data: DetailData): MatchupEntry[] {
   return data.counters
     .filter((c) => c.play >= MIN_MATCHUP_GAMES)
     .map((c) => ({
@@ -148,7 +202,15 @@ export async function getChampionDetail(
     const res = await opggFetch(`${OPGG_BASE}/${mode}/${championId}/${posSegment}${tierParam}`);
     if (!res.ok) throw new Error(`op.gg detail responded ${res.status}`);
 
-    const { data } = DetailSchema.parse(await res.json());
+    const dropped = { count: 0 };
+    const { data } = detailSchema(dropped).parse(await res.json());
+    if (dropped.count > 0) {
+      // Loud on purpose: this is op.gg's shape moving under us, and the page above still renders,
+      // so nothing else will ever mention it.
+      logger.warn(
+        `[championDetailService] dropped ${dropped.count} unreadable entr${dropped.count === 1 ? "y" : "ies"} for ${championId}/${posSegment} — op.gg's payload shape may have changed`
+      );
+    }
     const detail: ChampionDetail = {
       counters: countersFromDetail(data),
       build: buildFromDetail(championId, data),
@@ -187,7 +249,7 @@ export async function refreshDetailLastGood(
     const res = await opggFetch(`${OPGG_BASE}/${mode}/${championId}/${posSegment}${tierParam}`);
     if (!res.ok) throw new Error(`op.gg detail responded ${res.status}`);
 
-    const { data } = DetailSchema.parse(await res.json());
+    const { data } = detailSchema({ count: 0 }).parse(await res.json());
     const detail: ChampionDetail = {
       counters: countersFromDetail(data),
       build: buildFromDetail(championId, data),
