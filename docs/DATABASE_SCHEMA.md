@@ -1147,3 +1147,62 @@ without the other, which is why both are nullable.
   route has always reported `hasWebhook: !!integration.webhookUrl`.
 - **Postgres allows any number of NULLs under a unique index**, so every row that has never
   linked stays valid under `UNIQUE (discordUserId)`.
+
+---
+
+## Desktop companion pairing (LA-59 — see [ADR-038](./adr/ADR-038-desktop-companion-architecture.md))
+
+Added by `20260823120000_add_desktop_pairing`. Two new tables, nothing existing touched.
+
+The desktop app cannot carry a session cookie, so it authenticates with a capability token
+— the same mechanism as `creator_profiles.overlayKey` and `draft_series.blueToken`. The
+player mints it by reading a short one-time code off the website and typing it into the app.
+
+### `desktop_devices`
+
+| Column | Type | Constraints | Notes |
+|---|---|---|---|
+| `id` | `uuid` | PK | |
+| `userId` | `uuid` | FK → users.id, ON DELETE CASCADE | |
+| `token` | `text` | NOT NULL, UNIQUE | 32 bytes as base64url (43 chars). Returned exactly once, by the pairing exchange that mints it, and never by any other endpoint. Lives in the machine's OS credential store. |
+| `label` | `text` | NOT NULL | The machine's hostname, reported by the app at pairing. What the player sees in the device list. |
+| `platform` | `text` | NOT NULL | `windows` \| `macos` \| `linux` |
+| `appVersion` | `text` | NULLABLE | Reported at pairing; null for a client too old to send it. |
+| `createdAt` | `timestamptz` | NOT NULL | |
+| `lastSeenAt` | `timestamptz` | NULLABLE | Written by the device's own authenticated requests. Null until it has spoken once after pairing. |
+| `revokedAt` | `timestamptz` | NULLABLE | Non-null means every request presenting this token is refused. |
+
+**Indexes:**
+- `UNIQUE (token)`
+- `(userId, createdAt DESC)` — the device list
+
+### `desktop_pairing_codes`
+
+| Column | Type | Constraints | Notes |
+|---|---|---|---|
+| `id` | `uuid` | PK | |
+| `userId` | `uuid` | FK → users.id, ON DELETE CASCADE | |
+| `code` | `text` | NOT NULL, UNIQUE | 8 characters from a confusion-free alphabet (no `I`, `L`, `O`, `U`, `0`, `1`). |
+| `createdAt` | `timestamptz` | NOT NULL | |
+| `expiresAt` | `timestamptz` | NOT NULL | 10 minutes after issue. |
+| `consumedAt` | `timestamptz` | NULLABLE | Set on the first successful exchange. A consumed code is dead. |
+| `deviceId` | `uuid` | NULLABLE | Which device claimed it. Deliberately not a foreign key: the record of what was paired should outlive a revoked device row. |
+
+**Indexes:**
+- `UNIQUE (code)`
+- `(userId, createdAt DESC)`
+- `(expiresAt)` — the sweep, and what keeps the table bounded
+
+**Notes:**
+
+- **A row, not a signed token**, for the one property a stateless token cannot give: single
+  use. `discord.linkToken` went the stateless way because a Discord interaction is already
+  proof of identity and replaying it changes nothing; a pairing code mints a long-lived
+  credential, so replay is exactly the thing to prevent.
+- **The code is short because a person retypes it**, which also means it is low-entropy —
+  ~40 bits. That is paid for elsewhere: it expires in 10 minutes, it is consumed on first
+  success, only one code per account is live at a time (issuing a new one expires the old),
+  and both issuing and redeeming are rate limited.
+- **Revoking keeps the device row** rather than deleting it. The token stays taken, so it
+  cannot be resurrected by a collision, and the player keeps a record that the machine was
+  once paired.

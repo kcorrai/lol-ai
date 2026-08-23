@@ -1,21 +1,29 @@
+import { GamePlanPanel } from "@/components/game/GamePlanPanel";
+import { MatchupPanel } from "@/components/game/MatchupPanel";
 import { HudPanel } from "@/components/layout/HudPanel";
-import { NotImplemented } from "@/components/NotImplemented";
 import { displayNameOf, type AllGameData, type LivePlayer } from "@/lib/liveClient/schema";
 import type { LiveRead } from "@/lib/liveClient/client";
+import { useLiveContext } from "@/lib/useLiveContext";
 
+/**
+ * The two halves of this app, on one screen.
+ *
+ * The top panel is what this machine can see and the website cannot — the game itself. The
+ * two below are what the website knows and this machine cannot work out — the account
+ * playing it. Neither half is worth much alone, which is the whole argument for a desktop
+ * companion existing at all (ADR-038).
+ */
 export function GameScreen({ read }: { read: LiveRead<AllGameData> }): React.ReactElement {
+  const context = useLiveContext(read);
+
   return (
     <div className="grid gap-4">
       <HudPanel title="Current game">
         {read.status === "ok" ? <GameSummary data={read.data} /> : <NoGame read={read} />}
       </HudPanel>
 
-      <HudPanel title="Game plan">
-        <NotImplemented
-          what="Matchup reads, your recurring weakness in this lane and a plan for it come from your account on the web — which needs the desktop to be paired first."
-          phase="Phase 3 · pairing, then phase 4 · live dashboard"
-        />
-      </HudPanel>
+      <MatchupPanel state={context} />
+      <GamePlanPanel state={context} />
     </div>
   );
 }

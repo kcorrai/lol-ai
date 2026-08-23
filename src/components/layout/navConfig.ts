@@ -26,6 +26,7 @@ import {
   History,
   Search,
   Radio as RadioIcon,
+  MonitorDown,
 } from "lucide-react";
 
 export interface NavItemConfig {
@@ -130,6 +131,7 @@ export const NAV_SETTINGS: NavItemConfig[] = [
   { href: "/settings/profile", icon: UserCircle, label: "Profile", tourId: "nav-profile" },
   { href: "/settings/privacy", icon: Lock, label: "Privacy" },
   { href: "/settings/discord", icon: Bot, label: "Discord", tourId: "nav-discord" },
+  { href: "/settings/desktop", icon: MonitorDown, label: "Desktop app" },
 ];
 
 // Every navigable href, used for longest-prefix active-state disambiguation.

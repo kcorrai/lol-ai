@@ -16,10 +16,8 @@ fn entry() -> AppResult<keyring::Entry> {
     keyring::Entry::new(SERVICE, ACCOUNT).map_err(|e| AppError::Keychain(e.to_string()))
 }
 
-/// The write half. Nothing calls it outside tests yet — pairing, which is the only thing
-/// that ever produces a token, lands in phase 3. Kept because the round trip it completes
-/// is what the test below actually verifies.
-#[allow(dead_code)]
+/// The write half. Called once, by the pairing exchange in `api.rs` — the only thing in
+/// the application that ever produces a token, and the only place one exists in memory.
 pub fn store(token: &str) -> AppResult<()> {
     entry()?
         .set_password(token)

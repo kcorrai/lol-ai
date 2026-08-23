@@ -442,6 +442,24 @@ same CSS keyframes the design system already defines.
 machine is busy with a game or offline entirely; a face fetched over the network
 reflows the HUD in front of the player. ADR-039 records this.
 
-**Not yet added.** The Rust side (phase 2) brings `tauri` 2.11.x, `reqwest`,
-`serde`, `keyring` and `tokio` in `desktop/src-tauri/Cargo.toml`. No Rust
-toolchain is required for phase 1, and none is installed.
+### The Rust core (`desktop/src-tauri/Cargo.toml`)
+
+A third dependency tree, and the one the website never touches. Building it needs
+a Rust toolchain and the MSVC C++ build tools; `desktop/README.md` has the two
+`winget` lines.
+
+| Crate | Version | Why |
+|---|---|---|
+| `tauri` | 2.11 | The shell. Chosen over Electron because this app runs *while League runs*: it renders through the OS webview instead of shipping a second browser (ADR-038). |
+| `tauri-build` | 2.6 | Its build script. |
+| `reqwest` | 0.13, `rustls`, no default features | Two HTTP clients are built from it with opposite trust settings — one that trusts Riot's root and nothing else for `127.0.0.1:2999`, one that trusts the ordinary root store for our own service. `tls_built_in_root_certs(false)` is what makes the first true, and it is far easier to reason about on rustls than on the platform stack. |
+| `keyring` | 4.1, per-platform backend | The device token goes to DPAPI, Keychain or Secret Service and never to a config file. Version 4 makes the backend an explicit choice, so each target names its own rather than inheriting one. |
+| **`tauri-plugin-opener`** | 2.5 | **Added in phase 5.** Hands the post-game report URL to the player's default browser. Used from Rust only: none of its commands are granted to the webview, so the sole address the app can open is the one `post_game::report_url` builds from the compiled-in base. Hand-rolling this over `std::process::Command` would mean composing a shell invocation around a URL, which is the thing worth not doing by hand. |
+| `tauri-plugin-log` | 2 | Debug builds only, wired behind `cfg!(debug_assertions)`. |
+| `serde`, `serde_json` | 1.0 | The website contract is mirrored by hand in Rust (ADR-038 K6) and these carry the rename to camelCase that the mirror depends on. |
+| `thiserror` | 2.0 | One error enum whose every variant is something the UI can say out loud, and whose `Serialize` is what crosses the IPC boundary. |
+| `log` | 0.4 | The logging facade the plugin implements. |
+
+`tokio` is present but not named here: it arrives through `tauri` and `reqwest`,
+and pinning it separately would be pinning a transitive dependency of two crates
+that already agree about it.

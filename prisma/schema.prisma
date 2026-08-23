@@ -2193,63 +2193,65 @@ model SavedSearch {
 // DESKTOP COMPANION (ADR-038)
 // ============================================================
 
-// A one-time code the player reads off the website and types into the desktop app.
+// A machine that has been paired with this account.
 //
-// Kept apart from DesktopDevice because the two share nothing but an owner: a code is
-// worthless ten minutes after it is made, a device lasts until somebody revokes it. Folding
-// them into one table would leave a half-built device row behind for every code nobody ever
-// typed, and "is this a device or an abandoned attempt" is not a question worth asking on
-// every read.
-model DesktopPairingCode {
-  id     String @id @default(uuid()) @db.Uuid
-  userId String @db.Uuid
-
-  // SHA-256 of the code, never the code. It is short enough for a person to retype, which
-  // is exactly what makes it worth guessing if this table ever leaks. Hashing costs nothing
-  // because the lookup is by exact value either way.
-  codeHash String @unique
-
-  expiresAt  DateTime
-  // Set the moment it is redeemed. A code is single-use, and this is what makes the second
-  // attempt fail even while the row is still inside its window.
-  consumedAt DateTime?
-
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Newest-first, for showing the player the code they just asked for.
-  @@index([userId, createdAt(sort: Desc)])
-  // Lets the sweep find expired rows without reading the table.
-  @@index([expiresAt])
-  @@map("desktop_pairing_codes")
-}
-
-// A machine that has been paired.
+// `token` is a capability, the same idea as CreatorProfile.overlayKey and
+// DraftSeries.blueToken: the desktop app cannot carry a session cookie, so the
+// token is the whole of its identity. It lives in that machine's OS credential
+// store and is presented as a bearer token; it is never returned by any endpoint
+// after the pairing exchange that minted it.
 model DesktopDevice {
   id     String @id @default(uuid()) @db.Uuid
   userId String @db.Uuid
 
-  // What the player sees in their device list. The app supplies both when it redeems a
-  // code, because the website has no way to know what it is talking to until then.
-  name     String
-  platform String
+  token String @unique // 32 bytes, base64url — 43 characters
 
-  // SHA-256 of the device token. The token itself exists in exactly two places: this
-  // machine's credential store and the Authorization header of its requests. It is never
-  // stored here, never logged, and never returned by any endpoint — so losing this table
-  // does not hand anyone a working credential.
-  tokenHash String @unique
+  // What the player sees in the device list. Reported by the app at pairing
+  // (the machine's hostname), so two paired laptops are told apart without
+  // anyone having to name them.
+  label      String
+  platform   String // windows | macos | linux
+  appVersion String?
 
+  createdAt  DateTime  @default(now())
+  // Written by the device's own requests, so the list can say how long a machine
+  // has been quiet. Null until the device has spoken once after pairing.
   lastSeenAt DateTime?
-  // Revoked rather than deleted, so a player can see that a device they no longer trust is
-  // actually cut off rather than merely missing from a list.
+  // Revoking keeps the row instead of deleting it: the token stays taken, so a
+  // revoked device cannot be resurrected by a collision, and the player keeps a
+  // record that the machine was once paired.
   revokedAt  DateTime?
-
-  createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt(sort: Desc)])
   @@map("desktop_devices")
+}
+
+// A one-time code the player reads off the website and types into the app.
+//
+// A row rather than a signed token, for one reason a stateless token cannot
+// give: single use. The code is short enough to retype without a copy-paste —
+// which also means it is low-entropy, so it expires in minutes, is consumed on
+// first success, and both ends of the exchange are rate limited.
+model DesktopPairingCode {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @db.Uuid
+
+  code String @unique // 8 characters from a confusion-free alphabet
+
+  createdAt  DateTime  @default(now())
+  expiresAt  DateTime
+  consumedAt DateTime?
+  // Which machine claimed it. Kept so a player asking "what did I pair on
+  // Tuesday" has an answer that outlives the code.
+  deviceId   String?   @db.Uuid
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  // Swept by the expiry job; also the index that keeps the table from growing
+  // without bound.
+  @@index([expiresAt])
+  @@map("desktop_pairing_codes")
 }

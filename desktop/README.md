@@ -13,14 +13,38 @@ extracts it with its history whenever a separate repository is wanted.
 
 ## Status
 
-**Phase 2 of 5.** The Rust core is in place, so the app can now actually read the game.
-`live_client_get` fetches Riot's Live Client Data API over a connection that trusts Riot's
-certificate authority and *no other* — the built-in root store is switched off, so a
-process that grabbed port 2999 before League did cannot impersonate it. The device token
-lives in the OS credential store and never crosses into the webview.
+**Phase 4 of 5.** The two halves are joined. The app reads the game on this machine and
+asks the website what it knows about the account playing it, and the game screen shows
+both: the scoreboard it can see for itself, the lane read and the game plan it cannot work
+out alone.
 
-Pairing itself is next: there is nowhere yet to get a code from. Everything that needs it
-says so rather than pretending.
+Pairing (phase 3) is what makes that possible. The player generates a code at Settings →
+Desktop app on the website and types it here; this machine then holds its own long-lived
+token — exchanged by the Rust core, written to the OS credential store, and never passed to
+the webview. Revoking the device on the website cuts it off, mid-game included: the app
+finds out on its next call and forgets the token locally.
+
+Everything that needs a backend feature not yet built still says so rather than pretending.
+
+### What the live dashboard shows
+
+**This lane** — how the matchup goes for everyone on this patch, and how it has gone for
+this account. The two are kept apart: a patch-wide win rate is a fact about the matchup and
+a personal one is a fact about the player, and averaging them would produce a number that
+is true of nobody. A personal record always carries its sample size, because over three
+games a win rate is a story about three games.
+
+**Game plan** — how the matchup is played, and what this player keeps doing wrong
+regardless of it. Both are readings the website already produced. **Nothing on this path
+calls a model**: a round trip at the start of every match would cost the player time in the
+one minute they cannot spare, and a deterministic reading is one that can be checked
+against the data behind it.
+
+The lane is derived from what is already on the player's own screen — the active player
+matched against the scoreboard, the enemy in the same position. Every case that cannot be
+resolved answers with nothing and says so, because a confident wrong reading is worse than
+an empty panel. The website is asked **once per matchup**, not once per poll: the game is
+read about once a second and this answer changes when a game starts and not once more.
 
 | Phase | | Needs Rust | Changes the schema |
 |---|---|---|---|
@@ -35,8 +59,19 @@ says so rather than pretending.
 | Command | Answers |
 |---|---|
 | `live_client_get(path)` | One Live Client Data API path, or `null` when no game is running. The path is checked against a fixed allowlist, so the webview cannot aim the privileged client somewhere it should not go. |
-| `device_status()` | Whether this machine holds a token. Never the token. |
+| `pair_device(code)` | Exchanges a pairing code for this machine's token. The token goes to the credential store here; what comes back is the account it belongs to. |
+| `device_account()` | Who this machine is acting as, asked of the website, or `null`. A 401 means the device was revoked — the token is forgotten locally and this answers `null`. |
+| `device_status()` | Whether this machine holds a token, asked of the credential store alone. Never the token, and no network — which is what lets an app opened offline know it is still paired. |
+| `live_context(request)` | What the website knows about the game on screen — the lane read and the game plan — or `null` when this machine is no longer paired. Goes through the core because the reading is personal, so the request has to carry the device token, and the token is not allowed to exist in a webview. |
 | `clear_device_token()` | Forgets it locally. |
+
+### Where it points
+
+The website's address is **compiled in**: `http://localhost:3000` for a debug build,
+`https://lolaicoach.gg` for a release one, overridable at build time with `LOLAI_API_BASE`.
+Deliberately not a runtime setting — this client carries the device token, and anyone who
+could write to a config file could otherwise point it, and the token, at a host of their
+choosing.
 
 ## Running it
 

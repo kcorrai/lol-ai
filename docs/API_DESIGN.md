@@ -2862,3 +2862,145 @@ uses the standard envelope.
 
 The two halves are deliberately independent: the token proves which Discord account asked,
 the session proves which profile is answering, and neither on its own is enough.
+
+---
+
+## Desktop companion (LA-59 — see [ADR-038](./adr/ADR-038-desktop-companion-architecture.md))
+
+Five endpoints, split by who is calling. `pairing-code` and `devices` are the player's,
+reached with a session through `withAuth`. `pair` and `me` are the desktop app's, reached
+with no session at all — the caller is a native process that has no cookie jar, and a
+capability token is the whole of its claim. That is the same pattern as the overlay key
+(ADR-026) and the draft room's team tokens.
+
+The token is minted by `POST /api/desktop/pair` and returned by nothing else, ever. The
+Rust core writes it straight to the OS credential store; it never enters the webview.
+
+### `POST /api/desktop/pairing-code`
+
+Session-authenticated. Mints the code the player types into the app.
+
+**200** `{ code, expiresAt }` — eight characters from an alphabet with no `I`, `L`, `O`,
+`U`, `0` or `1`; ten minutes.
+
+Issuing **expires whatever was outstanding for that account**, so this is also the "I lost
+it" button. Rate limited to 10 per 10 minutes per account — each call kills the previous
+code, and a loop would leave a player mid-exchange staring at a code that died while they
+typed it.
+
+| Status | Code | When |
+|---|---|---|
+| `401` | `UNAUTHORIZED` | No session |
+| `429` | — | Rate limited |
+
+### `POST /api/desktop/pair`
+
+**No session.** The one endpoint in the product that returns a device token.
+
+**Body:** `{ code, label, platform, appVersion? }` — validated against
+`src/domains/desktop/contract.ts`. `platform` is `windows` \| `macos` \| `linux`; `label` is
+the machine's hostname and is trimmed to 64 characters. The code may be sent as displayed
+(`ABCD-EFGH`).
+
+**201** `{ token, device, account }`, `Cache-Control: no-store`.
+
+| Status | Code | When |
+|---|---|---|
+| `422` | `VALIDATION_ERROR` | Malformed body, **and** every code failure — unknown, expired, already consumed |
+| `409` | `DEVICE_LIMIT_REACHED` | The account already has 10 live devices |
+| `429` | — | Rate limited: 10 per 10 minutes per caller IP |
+
+**Unknown, expired and already-used answer identically on purpose.** The code carries ~39
+bits, so "that guess hit a real account" is the one piece of feedback worth denying. The
+rate limit is keyed on the caller rather than the code, because keying it on the code would
+let a guesser lock out the code they are guessing.
+
+The exchange consumes the code with a conditional update inside a transaction, so two apps
+racing the same code both pass the read and only one wins; the loser gets the same `422`.
+
+### `GET /api/desktop/me`
+
+**Device-token authenticated** — `Authorization: Bearer <token>`, through `withDeviceAuth`.
+Also the app's liveness check: answering it is what writes `lastSeenAt`.
+
+**200** `{ device, account }`, `Cache-Control: no-store`. `account.riotAccount` is null when
+the player has linked none — a real state the app says out loud.
+
+| Status | Code | When |
+|---|---|---|
+| `401` | `UNAUTHORIZED` | Missing, malformed, unknown or **revoked** token, and a deleted account |
+
+One answer for all of them: a machine that has been cut off learns only that it is no
+longer welcome. The token's shape is checked before the database, so a probe walking these
+endpoints costs a regex rather than a query. A browser session is **not** accepted here.
+
+### `GET /api/desktop/devices`
+
+Session-authenticated. **200** `{ devices }` — every machine this account has paired,
+newest first, **revoked ones included and marked**. Never carries a token.
+
+### `DELETE /api/desktop/devices/[deviceId]`
+
+Session-authenticated. Cuts a machine off; the row stays and gains a `revokedAt`.
+
+**200** `{ revoked: true }`.
+
+| Status | Code | When |
+|---|---|---|
+| `404` | `RESOURCE_NOT_FOUND` | Unknown id, malformed id, an id belonging to someone else, or one already revoked |
+| `401` | `UNAUTHORIZED` | No session |
+
+**404 rather than 403 for someone else's device.** The service scopes the write by `userId`
+in the same query rather than fetching and then checking, so the route cannot tell the two
+apart — and should not be able to.
+
+### `POST /api/desktop/live-context`
+
+**Device-token authenticated**, through `withDeviceAuth`. What the website knows about the
+game the app is watching (LA-60, ADR-038 phase 4). The sixth desktop endpoint and the first
+one that *uses* the pairing rather than establishing it.
+
+**Body:** `{ championName, opponentChampionName, position, gameMode }`, validated against
+`src/domains/desktop/contract.ts`. The last three are nullable and null is routine, not an
+error: the game client publishes no position for an ARAM player or for anyone whose lane it
+has not resolved, and a lane nobody can name has no opponent to name either.
+
+**200** `{ champion, opponent, personal, meta, habits, riotAccountLinked }`,
+`Cache-Control: no-store`.
+
+| Field | What it is | Null when |
+|---|---|---|
+| `champion` / `opponent` | `{ key, name }` resolved against Data Dragon | the name is not on the roster |
+| `personal` | this account's own record in the pair — games, wins, win rate, KDA, trend | it has never played it, or no account is linked |
+| `meta` | the patch-current snapshot for the pair, plus its hints | the snapshot has nothing for the pair |
+| `habits` | up to three recurring weaknesses already detected from this account's matches | — (empty array) |
+| `riotAccountLinked` | whether the paired account has a Riot account at all | — |
+
+| Status | Code | When |
+|---|---|---|
+| `401` | `UNAUTHORIZED` | Missing, malformed, unknown or revoked token, and a deleted account |
+| `422` | `VALIDATION_ERROR` | Body is not a game this version can read |
+| `429` | — | Rate limited: 20 per 10 minutes per **device** |
+
+**POST rather than GET** because the body is the game state the app observed, and because
+the answer is one account's own history and must not be cached anywhere between here and
+the machine that asked.
+
+**Every champion name is resolved against the Data Dragon roster before it can reach a
+query.** The name is free text from a client this code does not control and it goes on to
+steer two other domains' reads; an unrecognised one is answered with nulls rather than
+forwarded.
+
+**Nothing here writes.** `withDeviceAuth` carries the rule that a stolen token must not be
+able to do anything worth stealing it for, and what this returns is what that account
+already sees on its own dashboard, narrowed to the lane it is playing.
+
+**No LLM is on this path.** `generateMatchupGuide` exists on the website and is cached for
+seven days; putting a model round trip at the start of every match would spend the player's
+time and connection in the one minute they cannot spare. The three reads are deterministic
+and each can be checked against the data that produced it.
+
+The reads are independent and one failing does not lose the others: a snapshot briefly out
+of reach costs the meta panel and leaves the player's own record on screen. The rate limit
+is sized for games rather than polls — the app asks once per matchup, and the matchup
+changes when a game starts.

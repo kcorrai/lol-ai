@@ -1,6 +1,10 @@
 // Public API of the riot domain
 export { connectAccount, disconnectAccount, listAccounts } from "@/domains/riot/services/accountService";
 export { syncAccount, backfillMatchNicknames } from "@/domains/riot/services/matchSyncService";
+// The durable entry the sync routes use: it owns `syncStatus` as well as the pull, so a
+// caller cannot leave an account marked RUNNING after a failure. The desktop companion
+// reports a finished game through it (ADR-038 phase 5).
+export { runSyncWithStatus } from "@/domains/riot/services/matchSyncService";
 export { getCurrentRank, getLpHistory, getLastRankedSnapshot } from "@/domains/riot/services/rankedService";
 export { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 export { buildAccountPreview } from "@/domains/riot/services/previewService";
