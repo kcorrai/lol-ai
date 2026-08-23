@@ -88,11 +88,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
    * Emitted per *played* lane rather than per champion × five: a Yuumi top page is real but empty,
    * and filling a sitemap with thin pages is worse than omitting them.
    *
-   * The floor is higher than the tier list's 0.3 because this list has a second job. op.gg's
-   * per-lane build detail does not always exist for a lane its own snapshot reports — Syndra bot
-   * and Galio support both render "not found" — and those misses cluster in the marginal lanes.
-   * Measured against the running app, 2% clears them, and a lane nobody plays was not worth a
-   * page anyway.
+   * The floor is higher than the tier list's 0.3 on purpose: a lane played half a percent of the
+   * time has a real page behind it and nothing to say on it, and a sitemap is a claim that a URL
+   * is worth crawling. A lane whose build detail op.gg does not actually have now redirects to the
+   * champion's own build page rather than 404ing, so this number decides thin-ness, not validity.
    */
   const MIN_LANE_PICK_RATE = 2;
   const roleBuildRoutes: MetadataRoute.Sitemap = (snapshot?.champions ?? []).flatMap((champ) =>
