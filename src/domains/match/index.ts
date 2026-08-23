@@ -7,11 +7,14 @@ export type { LanePhase, LanePhasePoint, LanePhaseMarker, LanePhaseOpponent } fr
 export { getMatchStoryForUser } from "@/domains/match/services/matchStoryService";
 export type {
   MatchStory,
+  MatchStoryAvailable,
+  MatchStoryUnavailable,
   MatchStoryParticipant,
   MatchStoryFrame,
   MatchStoryFramePlayer,
   MatchStoryTeamTotal,
   MatchStoryEvent,
+  StoryEventKind,
 } from "@/domains/match/types/matchStory.types";
 // The Discord bot renders a match summary the riot domain builds, and this is
 // the one place in the codebase that names a queue for a human.

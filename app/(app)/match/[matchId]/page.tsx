@@ -10,6 +10,7 @@ import { BuildExplanationPanel } from "@/domains/match/components/BuildExplanati
 import { MatchResultHeader } from "@/domains/match/components/MatchResultHeader";
 import { MatchKpiStrip } from "@/domains/match/components/MatchKpiStrip";
 import { MatchScoreboard } from "@/domains/match/components/MatchScoreboard";
+import { MatchStoryPanel } from "@/domains/match/components/MatchStoryPanel";
 import { MatchDetailRail } from "@/domains/match/components/MatchDetailRail";
 import { LanePhaseChart } from "@/domains/match/components/LanePhaseChart";
 
@@ -71,6 +72,15 @@ export default function MatchDetailPage(): React.JSX.Element {
               winningTeam={match.winningTeam}
               objectives={match.teamObjectives}
             />
+
+            {me && (
+              <MatchStoryPanel
+                matchId={match.id}
+                userPuuid={match.userPuuid}
+                durationSeconds={match.gameDuration}
+                won={me.won}
+              />
+            )}
 
             {me && (
               <BuildExplanationPanel

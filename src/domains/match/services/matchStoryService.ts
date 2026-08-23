@@ -64,7 +64,7 @@ function buildFrames(
 
 /**
  * The match, minute by minute — built from the captured timeline (LA-45, ADR-033). This is the one
- * read endpoint the whole captured timeline feeds; a screen consuming it is a separate card.
+ * read endpoint the whole captured timeline feeds; `MatchStoryPanel` is what draws it.
  *
  * Ownership resolves the same way `getLanePhaseForUser` does: match participation by puuid across
  * every account the caller has linked, not by `riotAccountId` (TASK-228). A caller who did not

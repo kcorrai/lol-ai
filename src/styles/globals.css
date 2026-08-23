@@ -211,6 +211,35 @@
     box-shadow: var(--glow-accent-soft);
   }
 
+  /* The match story scrubber. A range input's track and thumb live in vendor
+     pseudo-elements, which utilities cannot reach — so the one control on the
+     story panel that has to stay a real <input type="range"> is styled here.  */
+  .story-scrubber::-webkit-slider-runnable-track {
+    height: 4px;
+    background: var(--line-2);
+  }
+  .story-scrubber::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 22px;
+    margin-top: -9px;
+    border: none;
+    background: var(--acid-500);
+    box-shadow: var(--glow-accent-soft);
+    cursor: grab;
+  }
+  .story-scrubber::-moz-range-track {
+    height: 4px;
+    background: var(--line-2);
+  }
+  .story-scrubber::-moz-range-thumb {
+    width: 14px;
+    height: 22px;
+    border: none;
+    background: var(--acid-500);
+    cursor: grab;
+  }
+
   /* Accent controls go lighter on hover, darker on press — never scale. */
   .btn-glow:hover { box-shadow: var(--glow-accent-soft); }
   .btn-glow:active { transform: translateY(1px); }

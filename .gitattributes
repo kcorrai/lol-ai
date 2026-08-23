@@ -1,0 +1,33 @@
+# Line endings are settled here rather than left to each machine's core.autocrlf.
+#
+# Everything committed is already LF — `git ls-files --eol` reports i/lf for all 2563 tracked
+# text files — but Windows checkouts were getting CRLF working copies, which made
+# `npm run format:check` report 2340 failures locally against CI's 1177. Half of that number was
+# line endings alone, and any Windows developer running `npm run format` would have rewritten the
+# whole repository in CRLF (LA-63).
+#
+# `eol=lf` fixes the working tree too, so prettier's default endOfLine and CI agree with what a
+# developer sees locally.
+* text=auto eol=lf
+
+# Windows shells are the one place CRLF is not cosmetic — a .bat read with LF endings can break.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Never touched, never diffed as text.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.pdf binary
+*.zip binary
+*.node binary
+*.dll binary
+*.exe binary
