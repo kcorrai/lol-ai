@@ -53,6 +53,7 @@ export default async function AramTierListPage() {
         position={null}
         list={list}
         activeTier={null}
+        activeRegion={null}
         title={`ARAM tier list${patch ? ` — patch ${patch}` : ""}`}
         proPresence={null}
         subtitle="Strongest champions in ARAM by real win rate. Separate dataset, ARAM balance applied."

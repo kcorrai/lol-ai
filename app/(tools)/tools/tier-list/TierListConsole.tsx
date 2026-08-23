@@ -26,6 +26,7 @@ interface TierListConsoleProps {
   modeTabs: TierListTab[];
   laneTabs: TierListTab[] | null; // null in ARAM, which has no lanes
   rankTabs: TierListTab[];
+  regionTabs: TierListTab[] | null; // null in ARAM, which op.gg does not split by platform
   roleLabel: string;
   hrefBase: string;
   showBan: boolean;
@@ -57,6 +58,7 @@ export function TierListConsole({
   modeTabs,
   laneTabs,
   rankTabs,
+  regionTabs,
   roleLabel,
   hrefBase,
   showBan,
@@ -133,6 +135,12 @@ export function TierListConsole({
             Live · rebuilt every patch
           </span>
         </div>
+
+        {regionTabs && (
+          <div className="flex flex-wrap items-center gap-1.5 border-t border-line-1 pt-3">
+            <TagRow label="Region" tabs={regionTabs} />
+          </div>
+        )}
       </section>
 
       {shown.length === 0 ? (

@@ -2,12 +2,14 @@ import {
   ALL_POSITIONS,
   POSITION_LABELS,
   POSITION_SLUG,
+  SNAPSHOT_REGIONS,
   SNAPSHOT_TIERS,
   TIER_LABELS,
   formatGamePatch,
 } from "@/domains/meta";
 import type { CanonicalPosition, RoleTierList, SnapshotTier } from "@/domains/meta";
 import type { ProPresence } from "@/domains/esports";
+import { regionLabel } from "@/lib/riot/regions";
 import { StatBlock } from "@/components/dashboard/laneiq/HudPanel";
 import { TierListConsole, type TierListTab } from "./TierListConsole";
 import type { TierRow } from "./sortEntries";
@@ -17,6 +19,7 @@ interface TierListViewProps {
   position: CanonicalPosition | null; // null in ARAM, which has no lanes
   list: RoleTierList | null;
   activeTier: SnapshotTier | null; // current ?tier= rank filter (null = default bracket)
+  activeRegion: string | null; // current ?region= platform (null = op.gg's global numbers)
   title: string;
   subtitle: string;
   /**
@@ -40,6 +43,7 @@ export function TierListView({
   position,
   list,
   activeTier,
+  activeRegion,
   title,
   subtitle,
   proPresence,
@@ -66,15 +70,47 @@ export function TierListView({
         active: pos === position,
       }));
 
+  /**
+   * A chip changes one filter and keeps the other.
+   *
+   * Without this, picking a region would silently reset the rank bracket and the reader would be
+   * looking at a different question than the one they thought they asked.
+   */
+  const href = (next: { tier?: SnapshotTier | null; region?: string | null }): string => {
+    const tier = next.tier === undefined ? activeTier : next.tier;
+    const region = next.region === undefined ? activeRegion : next.region;
+    const params = new URLSearchParams();
+    if (tier) params.set("tier", tier);
+    if (region) params.set("region", region);
+    const query = params.toString();
+    return query ? `${rolePath}?${query}` : rolePath;
+  };
+
   // ARAM is one dataset with no rank brackets, so the row collapses to the single view it has.
   const rankTabs: TierListTab[] = aram
     ? [{ label: "All ranks", href: "/aram/tier-list", active: true }]
     : [
-        { label: "Default", href: rolePath, active: activeTier === null },
+        { label: "Default", href: href({ tier: null }), active: activeTier === null },
         ...SNAPSHOT_TIERS.map((t) => ({
           label: TIER_LABELS[t],
-          href: `${rolePath}?tier=${t}`,
+          href: href({ tier: t }),
           active: t === activeTier,
+        })),
+      ];
+
+  /**
+   * op.gg's numbers really do differ per platform — Ahri mid is rank 7 globally, 5 on EUW and 12
+   * on KR — and every competitor offers this. Global stays the default because each platform is a
+   * separate snapshot to fetch and hold (LA-71).
+   */
+  const regionTabs: TierListTab[] | null = aram
+    ? null
+    : [
+        { label: "Global", href: href({ region: null }), active: activeRegion === null },
+        ...SNAPSHOT_REGIONS.map((r) => ({
+          label: regionLabel(r),
+          href: href({ region: r }),
+          active: r === activeRegion,
         })),
       ];
 
@@ -124,6 +160,7 @@ export function TierListView({
             modeTabs={modeTabs}
             laneTabs={laneTabs}
             rankTabs={rankTabs}
+            regionTabs={regionTabs}
             roleLabel={roleLabel}
             hrefBase={aram ? "/aram" : "/counters"}
             showBan={!aram}

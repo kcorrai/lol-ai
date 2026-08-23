@@ -75,6 +75,7 @@ export default async function TierListPage({ searchParams }: PageProps) {
         position={DEFAULT_POSITION}
         list={list}
         activeTier={null}
+        activeRegion={null}
         title={`LoL tier list${patch ? ` — patch ${patch}` : ""}`}
         proPresence={proPresence}
         subtitle="Strongest champions per lane by real ranked win rate. Pick a lane and a rank band."
