@@ -80,7 +80,8 @@ read about once a second and this answer changes when a game starts and not once
 
 ### Where it points
 
-The website's address is **compiled in**: `http://localhost:3000` for a debug build,
+The website's address is **compiled in**: `http://localhost:3001` for a debug build — the
+port the website's own `npm run dev` serves on, not Next's default —
 `https://lolaicoach.gg` for a release one, overridable at build time with `LOLAI_API_BASE`.
 Deliberately not a runtime setting — this client carries the device token, and anyone who
 could write to a config file could otherwise point it, and the token, at a host of their

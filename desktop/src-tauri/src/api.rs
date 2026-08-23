@@ -20,7 +20,11 @@ use crate::error::{AppError, AppResult};
 /// could write to a config file could point this client — and the token it carries — at a
 /// host of their choosing.
 const RELEASE_BASE: &str = "https://lolaicoach.gg";
-const DEV_BASE: &str = "http://localhost:3000";
+/// The port the website's own `npm run dev` serves on — `next dev --turbo -p 3001` in the
+/// repository root's package.json. Not 3000: that is Next's default, and this project moved
+/// off it. A debug build pointing at the default reaches nothing, which is what it did
+/// until LA-67 and why nothing in the app had ever talked to the website through the core.
+const DEV_BASE: &str = "http://localhost:3001";
 
 pub fn base_url() -> &'static str {
     match option_env!("LOLAI_API_BASE") {
@@ -254,6 +258,13 @@ mod tests {
     /// The address is compiled in. A build that shipped pointing at localhost would leave
     /// every installed copy unable to pair, and one pointing anywhere unexpected would send
     /// device tokens there.
+    /// The number here has to match the one the website is actually served on. It did not,
+    /// for three phases, and no test would have caught it — so this is that test.
+    #[test]
+    fn the_debug_base_points_at_the_port_the_website_uses() {
+        assert_eq!(DEV_BASE, "http://localhost:3001");
+    }
+
     #[test]
     fn the_base_url_is_https_unless_this_is_a_debug_build() {
         let url = base_url();
