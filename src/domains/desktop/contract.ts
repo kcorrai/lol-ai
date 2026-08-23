@@ -167,3 +167,23 @@ export const liveContextSchema = z.object({
   riotAccountLinked: z.boolean(),
 });
 export type LiveContext = z.infer<typeof liveContextSchema>;
+
+// ── The post-game handoff (ADR-038, phase 5) ─────────────────────────────────
+//
+// The one thing the app can tell the website that the website could not work out
+// for itself: the game just ended. A server syncs an account when somebody opens
+// the dashboard and the data is half an hour stale; the process on the player's
+// machine knows to the second.
+
+/**
+ * What came of reporting a finished game.
+ *
+ * Flat rather than a discriminated union, because the Rust core parses it into one
+ * struct and a union on the wire would buy nothing there. `riotAccountId` is null
+ * only for `no_riot_account`.
+ */
+export const postGameSchema = z.object({
+  status: z.enum(["pending", "already_running", "no_riot_account"]),
+  riotAccountId: z.string().nullable(),
+});
+export type PostGame = z.infer<typeof postGameSchema>;
