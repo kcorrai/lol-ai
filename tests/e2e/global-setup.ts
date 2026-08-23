@@ -1,6 +1,7 @@
 import { execSync } from "child_process";
 import { mkdirSync, writeFileSync } from "fs";
 import bcrypt from "bcryptjs";
+import { syncChampions } from "../../scripts/syncChampions";
 import { createTestPrisma } from "./helpers/db";
 import {
   E2E_USER,
@@ -27,10 +28,28 @@ export default async function globalSetup(): Promise<void> {
   const prisma = createTestPrisma();
 
   try {
+    await seedChampionCatalogue(prisma);
     await seedTestData(prisma);
   } finally {
     await prisma.$disconnect();
   }
+}
+
+/**
+ * The draft room builds its champion grid from `prisma.champion` — an empty table renders an
+ * empty grid, and every test that picks a champion waits ninety seconds for a tile that is
+ * never coming. Nothing else seeded it: CI starts a blank Postgres every run, so those tests
+ * could only ever have failed there, and locally they passed only because E2E_DATABASE_URL was
+ * unset and the suite borrowed the dev database's catalogue.
+ *
+ * Upserts from Data Dragon, the same source `npm run sync:champions` uses. Skipped when the
+ * table is already populated, so a warm database costs nothing.
+ */
+async function seedChampionCatalogue(
+  prisma: Awaited<ReturnType<typeof createTestPrisma>>
+): Promise<void> {
+  if ((await prisma.champion.count()) > 0) return;
+  await syncChampions(prisma);
 }
 
 async function seedTestData(prisma: Awaited<ReturnType<typeof createTestPrisma>>): Promise<void> {
