@@ -181,6 +181,12 @@ export default defineConfig({
       NEXT_PUBLIC_APP_URL: BASE_URL,
       RIOT_API_KEY: "e2e-fake-riot-api-key",
       CRON_SECRET: "e2e-fake-cron-secret",
+      // `next start` runs with NODE_ENV=production, and src/inngest/client.ts refuses to load in
+      // production without a signing key — deliberately, because /api/inngest would otherwise
+      // accept unsigned requests. Under `next dev` the guard never fired and this was never
+      // needed; serving the compiled app makes it a hard requirement. Fake, like every other
+      // secret in this block.
+      INNGEST_SIGNING_KEY: "signkey-e2e-not-for-production",
       // No shared Redis for a test run. Next loads `.env.local` for the dev
       // server, so without this the suite writes into the real Upstash instance:
       // the brute-force counter, the rate limiters and the caches all live
