@@ -89,15 +89,25 @@ export async function getAccountByRiotId(
 // Reverse lookup of a Riot ID from a puuid. Used by the GDPR right-to-be-forgotten
 // sweep (TASK-287), which needs the *current* name for an account we already know
 // the puuid of — a forgotten account keeps its puuid but is renamed to rtbf<id>.
-export async function getAccountByPuuid(puuid: string, region: string): Promise<RiotAccountDTO> {
+export async function getAccountByPuuid(
+  puuid: string,
+  region: string,
+  /** Seconds to cache the name for. 0 (the default) keeps the RTBF sweep's uncached read. */
+  cacheTtlSeconds = 0
+): Promise<RiotAccountDTO> {
   if (process.env.E2E_MOCK === "true") {
     return { puuid, gameName: "E2EPlayer", tagLine: "E2E" };
   }
   const routing = getRouting(region);
   const url = `https://${routing}.api.riotgames.com/riot/account/v1/accounts/by-puuid/${encodeURIComponent(puuid)}`;
-  // Deliberately uncached: the sweep exists to observe a rename, and a cache hit
-  // would serve exactly the stale name it is looking for.
-  return riotClient.get<RiotAccountDTO>(url, { cacheTtl: 0 });
+  // Uncached by default: the RTBF sweep exists to observe a rename, and a cache hit would serve
+  // exactly the stale name it is looking for. Callers that only want a display name — the live
+  // scout, which asks for ten at once — pass a TTL, and must not be the reason that sweep goes
+  // blind (LA-70).
+  return riotClient.get<RiotAccountDTO>(url, {
+    cacheTtl: cacheTtlSeconds,
+    ...(cacheTtlSeconds > 0 ? { cacheKey: `riot:account:${puuid}` } : {}),
+  });
 }
 
 export async function getSummonerByPuuid(puuid: string, region: string): Promise<SummonerDTO> {
@@ -243,6 +253,15 @@ export interface ActiveGameParticipantDTO {
   championId: number;
   spell1Id: number;
   spell2Id: number;
+  /**
+   * "Name#TAG", when Riot sends it.
+   *
+   * Optional because this was written for the draft analyzer, which only ever needed champions and
+   * spells, so nothing here has depended on it before. Spectator-v5 is documented to carry it since
+   * the Riot ID migration — when it is present the live scout gets ten names for free instead of
+   * ten account-v1 calls, which is the difference between an 11-call page and a 21-call one.
+   */
+  riotId?: string;
 }
 
 export interface ActiveGameDTO {
