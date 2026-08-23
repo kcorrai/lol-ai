@@ -5,7 +5,6 @@ import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { getLatestDdragonVersion } from "@/lib/ddragon";
 import { logger } from "@/lib/utils/logger";
 import {
-  OPGG_BASE,
   opggBase,
   FRESH_TTL_DAYS,
   SNAPSHOT_TTL_DAYS,
