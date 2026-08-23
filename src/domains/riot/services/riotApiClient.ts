@@ -70,14 +70,6 @@ export async function getAccountByRiotId(
   tagLine: string,
   region: string
 ): Promise<RiotAccountDTO> {
-  // Deterministic mock for E2E tests — bypasses real Riot API
-  if (process.env.E2E_MOCK === "true") {
-    return {
-      puuid: `e2e-puuid-${gameName.toLowerCase().replace(/[^a-z0-9]/g, "")}-${region}`,
-      gameName,
-      tagLine,
-    };
-  }
   const routing = getRouting(region);
   const url = `https://${routing}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${encodeURIComponent(gameName)}/${encodeURIComponent(tagLine)}`;
   return riotClient.get<RiotAccountDTO>(url, {
@@ -95,9 +87,6 @@ export async function getAccountByPuuid(
   /** Seconds to cache the name for. 0 (the default) keeps the RTBF sweep's uncached read. */
   cacheTtlSeconds = 0
 ): Promise<RiotAccountDTO> {
-  if (process.env.E2E_MOCK === "true") {
-    return { puuid, gameName: "E2EPlayer", tagLine: "E2E" };
-  }
   const routing = getRouting(region);
   const url = `https://${routing}.api.riotgames.com/riot/account/v1/accounts/by-puuid/${encodeURIComponent(puuid)}`;
   // Uncached by default: the RTBF sweep exists to observe a rename, and a cache hit would serve
@@ -111,17 +100,6 @@ export async function getAccountByPuuid(
 }
 
 export async function getSummonerByPuuid(puuid: string, region: string): Promise<SummonerDTO> {
-  if (process.env.E2E_MOCK === "true") {
-    return {
-      id: `e2e-summoner-${puuid.slice(-8)}`,
-      accountId: `e2e-account-${puuid.slice(-8)}`,
-      puuid,
-      name: puuid.split("-")[2] ?? "E2EPlayer",
-      profileIconId: 588,
-      revisionDate: Date.now(),
-      summonerLevel: 100,
-    };
-  }
   const url = `https://${region}.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/${puuid}`;
   return riotClient.get<SummonerDTO>(url, {
     cacheTtl: 300,

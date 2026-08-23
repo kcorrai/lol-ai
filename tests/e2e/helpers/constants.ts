@@ -1,4 +1,5 @@
 import { join } from "path";
+import { e2eMockPuuid } from "../../../src/lib/riot/e2eFixtures";
 
 // Test user seeded by global-setup.ts — known credentials for all authenticated tests
 export const E2E_USER = {
@@ -8,14 +9,14 @@ export const E2E_USER = {
 } as const;
 
 // Riot account used for connect tests.
-// The mock PUUID is computed by riotApiClient when E2E_MOCK=true:
-//   `e2e-puuid-${gameName.toLowerCase()}-${region}`
+// The mock PUUID comes from the same helper the fixtures answer with, rather than a second copy
+// of the rule — the two were written out separately and nothing tied them together (LA-71).
 export const E2E_RIOT_CONNECT = {
   gameName: "E2ESmoke",
   tagLine: "E2E",
   region: "euw1",
   get mockPuuid() {
-    return `e2e-puuid-${this.gameName.toLowerCase()}-${this.region}`;
+    return e2eMockPuuid(this.gameName);
   },
 } as const;
 
@@ -25,7 +26,7 @@ export const E2E_RIOT_PRE = {
   tagLine: "PRE",
   region: "euw1",
   get mockPuuid() {
-    return `e2e-puuid-${this.gameName.toLowerCase()}-${this.region}`;
+    return e2eMockPuuid(this.gameName);
   },
 } as const;
 
