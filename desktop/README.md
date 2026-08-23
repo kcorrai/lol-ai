@@ -30,11 +30,17 @@ dashboard and the data is half an hour stale, because nothing on it knows a matc
 This window does, to the second. A "Game over" panel then offers the match list, opened in
 the player's own browser rather than inside this one.
 
-The rest of phase 5 — the system tray, launching on start-up, and signed updates with an
-update channel — is not built. Signing in particular needs a certificate and a release
-pipeline that do not exist yet, and Riot registration has to be in flight before any of it
-ships (ADR-038). Everything that needs a backend feature not yet built still says so rather
-than pretending.
+The tray is built. Closing the window no longer ends the process — it hides it, and the
+app keeps watching for a game; the tray icon brings it back and its menu is the only way
+out. Launching on start-up is offered in Settings and ships **off**, because putting
+itself in somebody's start-up list uninvited is the thing the competitors' reviews
+complain about. A second copy of the app hands its request to the first and exits, rather
+than polling `2999` twice.
+
+What remains of phase 5 is signed updates with an update channel. Signing needs a
+certificate and a release pipeline that do not exist yet, and Riot registration has to be
+in flight before any of it ships (ADR-038). Everything that needs a backend feature not
+yet built still says so rather than pretending.
 
 ### What the live dashboard shows
 
@@ -63,7 +69,8 @@ read about once a second and this answer changes when a game starts and not once
 | 3     | Pairing — `DesktopDevice`, `/api/desktop/*` | yes        | yes                |
 | 4     | Live dashboard — matchup, game plan         | yes        | no                 |
 | 5a    | Post-game handoff                           | yes        | no                 |
-| 5b    | Tray, launch on start-up, signed updates    | yes        | no                 |
+| 5b    | Tray, launch on start-up                    | yes        | no                 |
+| 5c    | Signed updates and an update channel        | yes        | no                 |
 
 ### The IPC surface
 

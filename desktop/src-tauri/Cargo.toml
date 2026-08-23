@@ -15,8 +15,20 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2.6", features = [] }
 
 [dependencies]
-tauri = { version = "2.11", features = [] }
+# `tray-icon` is what lets this app keep running with no window on screen. A companion
+# nobody remembers to launch before a game is a companion that never runs at all, and
+# every competitor starts with the client rather than by hand.
+tauri = { version = "2.11", features = ["tray-icon"] }
 tauri-plugin-log = "2"
+
+# Launch on start-up, offered in Settings and off until the player asks for it. Putting
+# itself in the player's start-up list uninvited is what the reviews of the competitors
+# complain about.
+tauri-plugin-autostart = "2"
+
+# A second copy would poll the same port and hold a second keychain handle. There is one
+# game on this machine, so there is one of these.
+tauri-plugin-single-instance = "2"
 
 # Hands a URL to the operating system's default browser. Used from Rust only — the plugin's
 # own commands are not granted to the webview, so the address opened is always one this

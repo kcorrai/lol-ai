@@ -1,5 +1,6 @@
 import { HudPanel } from "@/components/layout/HudPanel";
-import { NotImplemented } from "@/components/NotImplemented";
+import { cn } from "@/lib/cn";
+import { useAutostart } from "@/lib/useAutostart";
 
 /**
  * The compliance note is not boilerplate. Riot requires the disclaimer on every product,
@@ -10,10 +11,11 @@ export function SettingsScreen(): React.ReactElement {
   return (
     <div className="grid gap-4">
       <HudPanel title="Preferences">
-        <NotImplemented
-          what="Launch on start-up, window behaviour while a game is running, and which linked account this device reports on."
-          phase="Phase 5"
-        />
+        <Autostart />
+        <p className="mt-4 border-t border-line-1 pt-3 text-xs text-text-muted">
+          Closing the window leaves this running in the tray, so it is still watching when a
+          game starts. Quit from the tray icon to stop it.
+        </p>
       </HudPanel>
 
       <HudPanel title="What this app reads">
@@ -31,6 +33,58 @@ export function SettingsScreen(): React.ReactElement {
           properties.
         </p>
       </HudPanel>
+    </div>
+  );
+}
+
+/**
+ * Launch on start-up, off until asked for.
+ *
+ * The switch shows what the operating system actually reports, not what was last clicked:
+ * a write can be refused, and a control that claims a setting it did not get is worse than
+ * one that says it failed.
+ */
+function Autostart(): React.ReactElement {
+  const { state, toggle } = useAutostart();
+
+  const enabled = state.status === "ready" || state.status === "error" ? state.enabled : false;
+  const busy = state.status === "loading" || state.status === "unavailable";
+
+  return (
+    <div>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-sm text-text">Launch when this machine starts</p>
+          <p className="mt-1 text-xs text-text-muted">
+            {state.status === "unavailable"
+              ? "This preview has no start-up list. Run the desktop app."
+              : "Off unless you turn it on. It opens straight to the tray, not to a window."}
+          </p>
+        </div>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={enabled}
+          aria-label="Launch when this machine starts"
+          disabled={busy}
+          onClick={() => void toggle()}
+          className={cn(
+            "notch-sm mt-0.5 h-6 w-11 shrink-0 border transition-colors",
+            busy ? "cursor-not-allowed border-line-1 bg-surface opacity-50" : "border-line-2",
+            enabled ? "bg-accent" : "bg-surface"
+          )}
+        >
+          <span
+            className={cn(
+              "block h-4 w-4 bg-text transition-transform",
+              enabled ? "translate-x-6" : "translate-x-1"
+            )}
+          />
+        </button>
+      </div>
+      {state.status === "error" ? (
+        <p className="mt-2 text-xs text-danger">{state.message}</p>
+      ) : null}
     </div>
   );
 }
