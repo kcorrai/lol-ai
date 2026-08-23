@@ -86,10 +86,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
    * page we have been rendering without ever telling a crawler it exists.
    *
    * Emitted per *played* lane rather than per champion × five: a Yuumi top page is real but empty,
-   * and filling a sitemap with thin pages is worse than omitting them. The pick-rate floor is the
-   * same one the tier list uses to decide a lane is real rather than noise.
+   * and filling a sitemap with thin pages is worse than omitting them.
+   *
+   * The floor is higher than the tier list's 0.3 on purpose: a lane played half a percent of the
+   * time has a real page behind it and nothing to say on it, and a sitemap is a claim that a URL
+   * is worth crawling. A lane whose build detail op.gg does not actually have now redirects to the
+   * champion's own build page rather than 404ing, so this number decides thin-ness, not validity.
    */
-  const MIN_LANE_PICK_RATE = 0.5;
+  const MIN_LANE_PICK_RATE = 2;
   const roleBuildRoutes: MetadataRoute.Sitemap = (snapshot?.champions ?? []).flatMap((champ) =>
     champ.positions
       .filter((pos) => pos.pickRate >= MIN_LANE_PICK_RATE)
