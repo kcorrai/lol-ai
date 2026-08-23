@@ -1,2 +1,2 @@
 export type { MatchupEntry, PersonalMatchupReport } from "./types/counter.types";
-export { getPersonalMatchups } from "./services/personalCounterService";
+export { getPersonalMatchup, getPersonalMatchups } from "./services/personalCounterService";

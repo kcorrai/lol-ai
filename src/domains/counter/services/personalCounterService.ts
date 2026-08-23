@@ -199,3 +199,51 @@ export async function getPersonalMatchups(
   await setCached(cacheKey, "personal-matchups", report, CACHE_TTL_DAYS);
   return report;
 }
+
+/**
+ * One matchup, asked for by name rather than found in a top-five list.
+ *
+ * `getPersonalMatchups` answers "what are my best and worst lanes"; the desktop
+ * companion asks the opposite question — "what is my record in *this* lane, the
+ * one starting right now" — and the answer for a matchup sitting sixth is not
+ * "you have never played it". So this reads the pair directly.
+ *
+ * `MIN_GAMES` deliberately does not apply. A two-game record is a real record and
+ * the caller is told the sample size; hiding it would leave the panel claiming no
+ * history for a lane the player has played. A win rate over so few games means
+ * little, which is the reader's problem to present and not this function's to
+ * solve by lying about the games existing.
+ */
+export async function getPersonalMatchup(
+  riotAccountId: string,
+  championId: number,
+  opponentChampionId: number
+): Promise<MatchupEntry | null> {
+  const rows = await prisma.$queryRaw<MatchupRow[]>`
+    SELECT
+      opp."championId"    AS "opponentChampionId",
+      opp."championName"  AS "opponentChampionName",
+      COUNT(*)::bigint    AS games,
+      SUM(CASE WHEN mp."won" THEN 1 ELSE 0 END)::bigint AS wins,
+      SUM(mp."kills")::float                            AS "killsSum",
+      SUM(mp."deaths")::float                           AS "deathsSum",
+      SUM(mp."assists")::float                          AS "assistsSum"
+    FROM match_participants mp
+    JOIN match_participants opp
+      ON  opp."matchId"  = mp."matchId"
+      AND opp."teamId"  != mp."teamId"
+      AND opp."position" = mp."position"
+    JOIN matches m ON m."id" = mp."matchId"
+    WHERE mp."riotAccountId" = ${riotAccountId}::uuid
+      AND mp."championId"    = ${championId}
+      AND opp."championId"   = ${opponentChampionId}
+      AND m."queueType"      = 'RANKED_SOLO_5x5'
+    GROUP BY opp."championId", opp."championName"
+  `;
+
+  const row = rows[0];
+  if (!row) return null;
+
+  const trend = computeTrend(await fetchTrendGames(riotAccountId, championId, opponentChampionId));
+  return rowToEntry(row, trend);
+}

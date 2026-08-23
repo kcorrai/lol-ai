@@ -19,7 +19,10 @@ vi.mock("@/lib/ai/aiCache", () => ({
     `${type}:${JSON.stringify(inputs)}`,
 }));
 
-import { getPersonalMatchups } from "@/domains/counter/services/personalCounterService";
+import {
+  getPersonalMatchup,
+  getPersonalMatchups,
+} from "@/domains/counter/services/personalCounterService";
 
 const ACCOUNT = "11111111-1111-1111-1111-111111111111";
 
@@ -150,5 +153,69 @@ describe("getPersonalMatchups arithmetic", () => {
     expect(report.best[0]).toMatchObject({ games: 10, wins: 6, winRate: 60 });
     expect(report.championName).toBe("Darius");
     expect(report.totalMatchupsAnalyzed).toBe(1);
+  });
+});
+
+describe("getPersonalMatchup", () => {
+  it("asks for the one pair rather than reading the whole list", async () => {
+    mockQueryRaw.mockResolvedValue([]);
+    await getPersonalMatchup(ACCOUNT, 122, 2);
+
+    const [sql] = capturedSql();
+    // The plural reads every opponent and filters afterwards; this one names the opponent
+    // in the WHERE clause, which is the whole reason it exists.
+    expect(sql).toContain('opp."championId"');
+    expect(sql).toContain('mp."riotAccountId"');
+    expect(sql).toContain('"queueType"');
+  });
+
+  // The point of the singular read: a lane sitting sixth in the list is still a lane the
+  // player has played, and the live panel must not tell them otherwise.
+  it("returns a matchup below the list's minimum sample", async () => {
+    mockQueryRaw
+      .mockResolvedValueOnce([row({ games: BigInt(1), wins: BigInt(1) })])
+      .mockResolvedValue([]);
+
+    const entry = await getPersonalMatchup(ACCOUNT, 122, 2);
+    expect(entry).toMatchObject({ games: 1, wins: 1, winRate: 100 });
+  });
+
+  it("does not impose the list's HAVING floor", async () => {
+    mockQueryRaw.mockResolvedValue([]);
+    await getPersonalMatchup(ACCOUNT, 122, 2);
+    expect(capturedSql()[0]).not.toContain("HAVING");
+  });
+
+  it("answers null when this account has never played the pair", async () => {
+    mockQueryRaw.mockResolvedValue([]);
+    expect(await getPersonalMatchup(ACCOUNT, 122, 2)).toBeNull();
+    // And it does not go looking for a trend in games that do not exist.
+    expect(mockQueryRaw).toHaveBeenCalledTimes(1);
+  });
+
+  it("carries the same arithmetic as the list", async () => {
+    mockQueryRaw
+      .mockResolvedValueOnce([row({ games: BigInt(10), wins: BigInt(6), killsSum: 50, deathsSum: 25, assistsSum: 40 })])
+      .mockResolvedValue([]);
+
+    expect(await getPersonalMatchup(ACCOUNT, 122, 2)).toMatchObject({
+      opponentChampionId: 2,
+      opponentChampionName: "Olaf",
+      winRate: 60,
+      avgKda: 3.6,
+      trend: "insufficient_data",
+    });
+  });
+
+  it("reads the trend from the pair's own recent games", async () => {
+    const won = (won: boolean) => ({ won });
+    mockQueryRaw
+      .mockResolvedValueOnce([row()])
+      // Newest five won, the five before them lost.
+      .mockResolvedValueOnce([...Array(5).fill(won(true)), ...Array(5).fill(won(false))]);
+
+    const entry = await getPersonalMatchup(ACCOUNT, 122, 2);
+    expect(entry?.trend).toBe("improving");
+    expect(capturedSql()[1]).toContain('opp."championId"');
   });
 });
