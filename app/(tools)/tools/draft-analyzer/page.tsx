@@ -14,7 +14,7 @@ import { ToolUpgradeNudge } from "../../ToolUpgradeNudge";
 import { PublicOnly } from "@/components/tools/PublicOnly";
 import { DraftBuilder } from "./DraftBuilder";
 import { LiveGameButton } from "@/components/tools/LiveGameButton";
-import { DraftResults } from "./DraftResults";
+import { DraftResults } from "@/domains/meta/components/DraftResults";
 
 interface PageProps {
   searchParams: { blue?: string; red?: string };
