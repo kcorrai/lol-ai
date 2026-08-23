@@ -28,6 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/tools/counter-picker`, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE_URL}/tools/matchup`, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE_URL}/tools/draft-analyzer`, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${BASE_URL}/tools/multi-search`, changeFrequency: "weekly", priority: 0.7 },
     // The create page only. Individual rooms are private scrim links and carry
     // `robots: noindex`, so they are deliberately absent.
     { url: `${BASE_URL}/draft`, changeFrequency: "weekly", priority: 0.9 },
@@ -79,6 +80,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "daily" as const,
     priority: 0.8,
   }));
+
+  /**
+   * `/builds/[champion]/[role]` — "ahri mid build", which is how people actually search, and a
+   * page we have been rendering without ever telling a crawler it exists.
+   *
+   * Emitted per *played* lane rather than per champion × five: a Yuumi top page is real but empty,
+   * and filling a sitemap with thin pages is worse than omitting them. The pick-rate floor is the
+   * same one the tier list uses to decide a lane is real rather than noise.
+   */
+  const MIN_LANE_PICK_RATE = 0.5;
+  const roleBuildRoutes: MetadataRoute.Sitemap = (snapshot?.champions ?? []).flatMap((champ) =>
+    champ.positions
+      .filter((pos) => pos.pickRate >= MIN_LANE_PICK_RATE)
+      .map((pos) => ({
+        url: `${BASE_URL}/builds/${champ.championKey}/${POSITION_SLUG[pos.position]}`,
+        lastModified: dataLastMod,
+        changeFrequency: "daily" as const,
+        // Below the champion's own build page: that one is the canonical entry for the champion.
+        priority: 0.7,
+      }))
+  );
 
   const aramBuildRoutes: MetadataRoute.Sitemap = champions.map((c) => ({
     url: `${BASE_URL}/aram/${c.id}`,
@@ -132,6 +154,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...championRoutes,
     ...counterRoutes,
     ...buildRoutes,
+    ...roleBuildRoutes,
     ...aramBuildRoutes,
     ...matchupRoutes,
     ...esportsRoutes,

@@ -26,6 +26,17 @@ export { getLiveDraft, getLiveDraftForRiotId } from "@/domains/riot/services/liv
 // The public live page's payload: the same lobby, plus who the ten players are, how they rank and
 // what the draft says (LA-70).
 export { buildLiveScout } from "@/domains/riot/services/liveScoutService";
+// Champion select, which the Spectator API cannot see at all: the input is a paste of the lobby
+// chat, so the reader lives beside the scout that consumes it (LA-71).
+export { buildLobbyScout } from "@/domains/riot/services/lobbyScoutService";
+export type { LobbyPlayer, LobbyScout } from "@/domains/riot/services/lobbyScout.types";
+export {
+  extractRiotIds,
+  parseIdsParam,
+  toIdsParam,
+  MAX_LOBBY_SIZE,
+} from "@/domains/riot/services/riotIds";
+export type { ParsedRiotId } from "@/domains/riot/services/riotIds";
 export type {
   LiveScout,
   LiveScoutPlayer,
