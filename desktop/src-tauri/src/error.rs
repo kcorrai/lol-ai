@@ -10,6 +10,14 @@ pub enum AppError {
     #[error("the webview asked for a path this app does not serve")]
     ForbiddenPath,
 
+    /// Champion select sits behind the LCU, which Riot does not support for third-party
+    /// applications and gates behind per-release approval (ADR-038). Builds without the
+    /// `lcu` feature answer this rather than pretending the client is simply closed —
+    /// "not built in" and "not running" are different things, and only one of them is
+    /// something the player could fix.
+    #[error("champion select is not available in this build")]
+    LcuDisabled,
+
     #[error("could not reach the League client: {0}")]
     Transport(String),
 

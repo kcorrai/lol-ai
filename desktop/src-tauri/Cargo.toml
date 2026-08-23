@@ -11,6 +11,16 @@ rust-version = "1.77.2"
 name = "lol_ai_desktop_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
+# Champion select over the League Client Update API. OFF by default and deliberately a
+# compile-time feature rather than a setting: Riot does not support the LCU for third-party
+# applications and requires pre-release approval for every release and every update, plus a
+# ban on using it for players in Korea (ADR-038). A build without this feature cannot call
+# it at all, which is the property that matters — enabling it before the approval exists
+# risks the Riot API key for the whole product, website included.
+[features]
+default = []
+lcu = []
+
 [build-dependencies]
 tauri-build = { version = "2.6", features = [] }
 

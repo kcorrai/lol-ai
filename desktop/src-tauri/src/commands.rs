@@ -3,6 +3,7 @@ use tauri::{AppHandle, State};
 
 use crate::api::{ApiClient, Pairing};
 use crate::error::AppResult;
+use crate::lcu::{Endpoint, LcuClient, PerkPage};
 use crate::live_client::LiveClient;
 use crate::live_context::{LiveContext, LiveContextRequest};
 use crate::post_game::PostGame;
@@ -11,6 +12,7 @@ use crate::secrets;
 pub struct AppState {
     pub live: LiveClient,
     pub api: ApiClient,
+    pub lcu: LcuClient,
 }
 
 #[derive(Serialize)]
@@ -100,4 +102,48 @@ pub async fn post_game(state: State<'_, AppState>) -> AppResult<Option<PostGame>
 #[tauri::command]
 pub fn open_report(app: AppHandle) -> AppResult<()> {
     crate::post_game::open_report(&app)
+}
+
+// ── Champion select, behind the LCU capability (ADR-038) ─────────────────────
+//
+// Every one of these answers `AppError::LcuDisabled` unless the crate was built
+// with the `lcu` feature, which it is not by default. Riot does not support the
+// League Client API for third-party applications and requires pre-release
+// approval for every release and every update; a build without the feature
+// cannot reach it at all.
+//
+// There is no automation here and there will not be. Accepting a queue, picking
+// a champion or banning one is input taken on the player's behalf, which is
+// Riot's own definition of scripting.
+
+/// Whether this build can talk to the League client at all.
+///
+/// Asked before anything else so the UI can say "not in this build" rather than
+/// rendering a champion select panel that could only ever be empty.
+#[tauri::command]
+pub fn lcu_available() -> bool {
+    crate::lcu::ENABLED
+}
+
+/// The current champion select session, or `None` when there is not one.
+///
+/// Handed to the webview as the client's own JSON. Nothing is derived here about
+/// who the other players are: Riot requires non-party names in ranked champion
+/// select to be shown as "Ally 1" and so on, and the renderer is what honours
+/// that — this command adds no identity the client did not already publish.
+#[tauri::command]
+pub async fn lcu_champ_select(
+    state: State<'_, AppState>,
+) -> AppResult<Option<serde_json::Value>> {
+    state.lcu.get(Endpoint::ChampSelectSession).await
+}
+
+/// Writes one rune page into the client.
+///
+/// The page is computed on the website by `getChampionBuild` and carried here;
+/// this app works out no runes of its own. `false` means the client is not
+/// running, which is not a fault.
+#[tauri::command]
+pub async fn lcu_apply_runes(state: State<'_, AppState>, page: PerkPage) -> AppResult<bool> {
+    state.lcu.put_perk_page(&page).await
 }
