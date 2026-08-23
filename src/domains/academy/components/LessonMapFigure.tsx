@@ -1,5 +1,5 @@
 import type { MapAnnotation, MapFigureBlock } from "@/domains/academy/types";
-import { RiftMap } from "./RiftMap";
+import { RiftMap } from "@/components/ui/RiftMap";
 
 function pinClass(tone: MapAnnotation["tone"]): string {
   if (tone === "good") return "border-acid-500 bg-acid-500/25 text-acid-500";

@@ -2,7 +2,8 @@
  * Summoner's Rift as a schematic, drawn rather than downloaded. Riot's minimap art is theirs,
  * and a screenshot is the wrong picture anyway: what a vision lesson teaches is a shape — the
  * lane, the river between you and them, the two pits worth fighting over. Everything is in a
- * 0–100 box so a drill can place a spot with fractions and never think about pixels.
+ * 0–100 box so a caller can place a spot with fractions and never think about pixels —
+ * an academy drill's annotations, or a match story's event pins.
  *
  * Blue side sits bottom left and red side top right, the way every map in the game reads.
  */

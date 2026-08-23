@@ -1,7 +1,7 @@
 "use client";
 
 import type { MapDrill, MapDrillOption } from "@/domains/academy/types";
-import { RiftMap } from "./RiftMap";
+import { RiftMap } from "@/components/ui/RiftMap";
 
 interface MapDrillBodyProps {
   drill: MapDrill;
