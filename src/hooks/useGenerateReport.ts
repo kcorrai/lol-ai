@@ -58,25 +58,33 @@ export function useGenerateReport(options?: UseGenerateReportOptions): UseGenera
       const remaining = res.headers.get("X-RateLimit-Remaining");
       const reset = res.headers.get("X-RateLimit-Reset");
       if (limit && remaining && reset) {
-        setRateLimit({ limit: Number(limit), remaining: Number(remaining), resetAt: Number(reset) });
+        setRateLimit({
+          limit: Number(limit),
+          remaining: Number(remaining),
+          resetAt: Number(reset),
+        });
       }
 
       if (res.status === 429) {
         const retryAfter = res.headers.get("Retry-After");
         setRetryAfterSeconds(retryAfter ? Number(retryAfter) : 60);
-        const json = await res.json().catch(() => null) as { error?: { message?: string; code?: string } } | null;
+        const json = (await res.json().catch(() => null)) as {
+          error?: { message?: string; code?: string };
+        } | null;
         const message = json?.error?.message ?? "Too many requests. Please try again later.";
         throw new FetchError(message, 429, json?.error?.code);
       }
 
       if (!res.ok) {
-        const json = await res.json().catch(() => null) as { error?: { message?: string; code?: string } } | null;
+        const json = (await res.json().catch(() => null)) as {
+          error?: { message?: string; code?: string };
+        } | null;
         const message = json?.error?.message ?? "Request failed";
         throw new FetchError(message, res.status, json?.error?.code);
       }
 
       setRetryAfterSeconds(null);
-      const json = await res.json() as { data: GenerateReportResult };
+      const json = (await res.json()) as { data: GenerateReportResult };
       return json.data;
     },
     onSuccess: (_, variables) => {

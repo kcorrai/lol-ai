@@ -12,9 +12,16 @@ import { mapWithConcurrency } from "@/lib/utils/concurrency";
 import type { RankedEntryDTO } from "@/domains/riot/types/riot.types";
 
 const RANK_TIERS: Record<string, RankTier> = {
-  IRON: "IRON", BRONZE: "BRONZE", SILVER: "SILVER", GOLD: "GOLD",
-  PLATINUM: "PLATINUM", EMERALD: "EMERALD", DIAMOND: "DIAMOND",
-  MASTER: "MASTER", GRANDMASTER: "GRANDMASTER", CHALLENGER: "CHALLENGER",
+  IRON: "IRON",
+  BRONZE: "BRONZE",
+  SILVER: "SILVER",
+  GOLD: "GOLD",
+  PLATINUM: "PLATINUM",
+  EMERALD: "EMERALD",
+  DIAMOND: "DIAMOND",
+  MASTER: "MASTER",
+  GRANDMASTER: "GRANDMASTER",
+  CHALLENGER: "CHALLENGER",
 };
 
 const RANK_DIVISIONS: Record<string, RankDivision> = { I: "I", II: "II", III: "III", IV: "IV" };
@@ -55,7 +62,11 @@ function resolveRank(puuid: string, entries: RankedEntryDTO[]): ResolvedRank | n
  * usually hold three or four distinct ranks between them, so this is three or four statements
  * rather than ten.
  */
-export async function enrichParticipantRanks(matchDbId: string, participantPuuids: string[], region: string): Promise<void> {
+export async function enrichParticipantRanks(
+  matchDbId: string,
+  participantPuuids: string[],
+  region: string
+): Promise<void> {
   const looked = await mapWithConcurrency(
     participantPuuids,
     RANK_LOOKUP_CONCURRENCY,
@@ -64,7 +75,9 @@ export async function enrichParticipantRanks(matchDbId: string, participantPuuid
         return resolveRank(puuid, await getRankedEntriesByPuuidDirect(puuid, region));
       } catch (err) {
         // One unreachable player must not cost the other nine their rank.
-        logger.warn(`[sync] Rank lookup failed for ${puuid.slice(0, 8)}…: ${err instanceof Error ? err.message : String(err)}`);
+        logger.warn(
+          `[sync] Rank lookup failed for ${puuid.slice(0, 8)}…: ${err instanceof Error ? err.message : String(err)}`
+        );
         return null;
       }
     }
@@ -104,7 +117,11 @@ export const NO_RIOT_NAME = "";
  * is what lets the trigger settle. Readers map it back to null so nothing downstream sees the
  * sentinel.
  */
-export async function backfillMatchNicknames(matchDbId: string, riotMatchId: string, region: string): Promise<void> {
+export async function backfillMatchNicknames(
+  matchDbId: string,
+  riotMatchId: string,
+  region: string
+): Promise<void> {
   try {
     const dto = await getMatch(riotMatchId, region);
 
@@ -127,7 +144,9 @@ export async function backfillMatchNicknames(matchDbId: string, riotMatchId: str
         : Promise.resolve(),
     ]);
   } catch (err) {
-    logger.warn(`[sync] Nickname backfill failed for ${riotMatchId}: ${err instanceof Error ? err.message : String(err)}`);
+    logger.warn(
+      `[sync] Nickname backfill failed for ${riotMatchId}: ${err instanceof Error ? err.message : String(err)}`
+    );
   }
 }
 
@@ -143,15 +162,26 @@ export async function syncRankedSnapshot(
       if (summoner.id) {
         await prisma.riotAccount.update({
           where: { id: currentAccount.id },
-          data: { summonerId: summoner.id, accountId: summoner.accountId, summonerLevel: summoner.summonerLevel, profileIconId: summoner.profileIconId },
+          data: {
+            summonerId: summoner.id,
+            accountId: summoner.accountId,
+            summonerLevel: summoner.summonerLevel,
+            profileIconId: summoner.profileIconId,
+          },
         });
         currentAccount = { ...currentAccount, summonerId: summoner.id };
-        logger.info(`[sync] Auto-repaired summonerId for ${currentAccount.gameName}#${currentAccount.tagLine}`);
+        logger.info(
+          `[sync] Auto-repaired summonerId for ${currentAccount.gameName}#${currentAccount.tagLine}`
+        );
       } else {
-        logger.warn(`[sync] Riot API returned empty summonerId for ${currentAccount.gameName}#${currentAccount.tagLine} — account may use new PUUID-only system`);
+        logger.warn(
+          `[sync] Riot API returned empty summonerId for ${currentAccount.gameName}#${currentAccount.tagLine} — account may use new PUUID-only system`
+        );
       }
     } catch (err) {
-      logger.warn(`[sync] Failed to auto-repair summonerId: ${err instanceof Error ? err.message : String(err)}`);
+      logger.warn(
+        `[sync] Failed to auto-repair summonerId: ${err instanceof Error ? err.message : String(err)}`
+      );
     }
   }
 
@@ -166,33 +196,69 @@ export async function syncRankedSnapshot(
       currentAccount.puuid,
       currentAccount.region
     );
-    logger.info(`[sync] getRankedEntries returned ${entries.length} entries: ${JSON.stringify(entries.map(e => ({ q: e.queueType, tier: e.tier, rank: e.rank })))}`);
+    logger.info(
+      `[sync] getRankedEntries returned ${entries.length} entries: ${JSON.stringify(entries.map((e) => ({ q: e.queueType, tier: e.tier, rank: e.rank })))}`
+    );
 
     for (const entry of entries) {
       const tier = RANK_TIERS[entry.tier];
       const division: RankDivision | undefined =
         RANK_DIVISIONS[entry.rank] ?? (APEX_TIERS.has(entry.tier) ? "I" : undefined);
       const queueType =
-        entry.queueType === "RANKED_SOLO_5x5" ? ("RANKED_SOLO_5x5" as const)
-        : entry.queueType === "RANKED_FLEX_SR" ? ("RANKED_FLEX_SR" as const)
-        : null;
+        entry.queueType === "RANKED_SOLO_5x5"
+          ? ("RANKED_SOLO_5x5" as const)
+          : entry.queueType === "RANKED_FLEX_SR"
+            ? ("RANKED_FLEX_SR" as const)
+            : null;
 
-      logger.info(`[sync] entry: tier=${entry.tier}→${tier}, rank=${entry.rank}→${division}, queue=${entry.queueType}→${queueType}`);
+      logger.info(
+        `[sync] entry: tier=${entry.tier}→${tier}, rank=${entry.rank}→${division}, queue=${entry.queueType}→${queueType}`
+      );
       if (!tier || !division || !queueType) {
-        logger.warn(`[sync] Skipping entry — unmapped value: tier=${entry.tier}, rank=${entry.rank}, queue=${entry.queueType}`);
+        logger.warn(
+          `[sync] Skipping entry — unmapped value: tier=${entry.tier}, rank=${entry.rank}, queue=${entry.queueType}`
+        );
         continue;
       }
 
       const lastSnapshot = await getLastRankedSnapshot(currentAccount.id, queueType);
-      if (lastSnapshot && lastSnapshot.tier === tier && lastSnapshot.division === division && lastSnapshot.lp === entry.leaguePoints) continue;
+      if (
+        lastSnapshot &&
+        lastSnapshot.tier === tier &&
+        lastSnapshot.division === division &&
+        lastSnapshot.lp === entry.leaguePoints
+      )
+        continue;
 
       await prisma.rankedHistory.create({
-        data: { riotAccountId: currentAccount.id, queueType, tier, division, lp: entry.leaguePoints, wins: entry.wins, losses: entry.losses, hotStreak: entry.hotStreak, inactive: entry.inactive, recordedAt: new Date() },
+        data: {
+          riotAccountId: currentAccount.id,
+          queueType,
+          tier,
+          division,
+          lp: entry.leaguePoints,
+          wins: entry.wins,
+          losses: entry.losses,
+          hotStreak: entry.hotStreak,
+          inactive: entry.inactive,
+          recordedAt: new Date(),
+        },
       });
 
       if (lastSnapshot) {
         inngest
-          .send({ name: "rank/changed", data: { riotAccountId: currentAccount.id, previousTier: lastSnapshot.tier, previousDivision: lastSnapshot.division, previousLp: lastSnapshot.lp, newTier: tier, newDivision: division, newLp: entry.leaguePoints } })
+          .send({
+            name: "rank/changed",
+            data: {
+              riotAccountId: currentAccount.id,
+              previousTier: lastSnapshot.tier,
+              previousDivision: lastSnapshot.division,
+              previousLp: lastSnapshot.lp,
+              newTier: tier,
+              newDivision: division,
+              newLp: entry.leaguePoints,
+            },
+          })
           .catch((err) => logger.warn("[sync] Failed to fire rank/changed event", err));
       }
     }

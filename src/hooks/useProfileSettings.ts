@@ -6,7 +6,7 @@ type FullSettings = ProfileSettings & { profilePublic: boolean; profileSlug: str
 async function fetchSettings(): Promise<FullSettings> {
   const res = await fetch("/api/user/profile-settings");
   if (!res.ok) throw new Error("Failed to fetch profile settings");
-  const json = await res.json() as { data: FullSettings };
+  const json = (await res.json()) as { data: FullSettings };
   return json.data;
 }
 

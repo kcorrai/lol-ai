@@ -24,12 +24,10 @@ export function TodaysFocusCard({ riotAccountId }: TodaysFocusCardProps) {
       <p className="mb-3 text-xs text-text-muted">{focus.howTo}</p>
       <div className="flex flex-wrap gap-3 text-xs text-text-muted">
         <span>
-          Impact:{" "}
-          <span className="font-medium text-text">{focus.expectedImpact}</span>
+          Impact: <span className="font-medium text-text">{focus.expectedImpact}</span>
         </span>
         <span>
-          Timeframe:{" "}
-          <span className="font-medium text-text">{focus.timeframe}</span>
+          Timeframe: <span className="font-medium text-text">{focus.timeframe}</span>
         </span>
       </div>
     </div>

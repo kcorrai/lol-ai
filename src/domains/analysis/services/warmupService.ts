@@ -18,8 +18,10 @@ const RANKED_QUEUES = ["RANKED_SOLO_5x5", "RANKED_FLEX_SR"] as const;
 const WARMUP_QUEUES = ["NORMAL_BLIND", "NORMAL_DRAFT", "ARAM"] as const;
 
 const MESSAGES: Record<WarmupStatus, (warmupGames: number) => string> = {
-  warmed_up: (n) => `${n} warm-up game${n !== 1 ? "s" : ""} before ranked. Good habit — keep it up.`,
-  no_warmup: () => "No warm-up before ranked today. A few normals or ARAMs first improves early-game focus.",
+  warmed_up: (n) =>
+    `${n} warm-up game${n !== 1 ? "s" : ""} before ranked. Good habit — keep it up.`,
+  no_warmup: () =>
+    "No warm-up before ranked today. A few normals or ARAMs first improves early-game focus.",
   no_ranked_today: () => "No ranked games today yet.",
 };
 
@@ -42,7 +44,7 @@ export async function getWarmupStatus(riotAccountId: string): Promise<WarmupData
   });
 
   const firstRanked = todayMatches.find((m) =>
-    RANKED_QUEUES.includes(m.match.queueType as typeof RANKED_QUEUES[number])
+    RANKED_QUEUES.includes(m.match.queueType as (typeof RANKED_QUEUES)[number])
   );
 
   if (!firstRanked) {
@@ -63,7 +65,7 @@ export async function getWarmupStatus(riotAccountId: string): Promise<WarmupData
   const warmupGames = todayMatches.filter((m) => {
     const t = m.match.gameStart.getTime();
     return (
-      WARMUP_QUEUES.includes(m.match.queueType as typeof WARMUP_QUEUES[number]) &&
+      WARMUP_QUEUES.includes(m.match.queueType as (typeof WARMUP_QUEUES)[number]) &&
       t >= windowStart &&
       t < firstRankedTime
     );
@@ -107,8 +109,10 @@ export async function getWarmupStatus(riotAccountId: string): Promise<WarmupData
     }
   }
 
-  let withWarmupWins = 0, withWarmupTotal = 0;
-  let withoutWarmupWins = 0, withoutWarmupTotal = 0;
+  let withWarmupWins = 0,
+    withWarmupTotal = 0;
+  let withoutWarmupWins = 0,
+    withoutWarmupTotal = 0;
 
   for (const { firstGame } of dayMap.values()) {
     const hadWarmup = warmupGameTimes.some(
@@ -123,12 +127,10 @@ export async function getWarmupStatus(riotAccountId: string): Promise<WarmupData
     }
   }
 
-  const withWarmupWinRate = withWarmupTotal >= 3
-    ? Math.round((withWarmupWins / withWarmupTotal) * 100)
-    : null;
-  const withoutWarmupWinRate = withoutWarmupTotal >= 3
-    ? Math.round((withoutWarmupWins / withoutWarmupTotal) * 100)
-    : null;
+  const withWarmupWinRate =
+    withWarmupTotal >= 3 ? Math.round((withWarmupWins / withWarmupTotal) * 100) : null;
+  const withoutWarmupWinRate =
+    withoutWarmupTotal >= 3 ? Math.round((withoutWarmupWins / withoutWarmupTotal) * 100) : null;
 
   return {
     status,

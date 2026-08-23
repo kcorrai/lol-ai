@@ -46,11 +46,7 @@ function pruneOldDays(dateKey: string): void {
   }
 }
 
-export function useQuizGame(
-  dateKey: string | undefined,
-  mode: QuizMode,
-  practiceSeed?: string
-) {
+export function useQuizGame(dateKey: string | undefined, mode: QuizMode, practiceSeed?: string) {
   const [state, setState] = useState<QuizGameState>(EMPTY);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);

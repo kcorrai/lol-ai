@@ -40,10 +40,26 @@ export const teleport: Lesson = {
       caption: "What the spell is for",
       head: ["Use", "What it actually buys", "When"],
       rows: [
-        ["Into a fight", "A fifth player in a 4v5 your team is already losing", "Only when the fight is still live, never as revenge"],
-        ["Onto a crashing wave", "A turret, or two waves of free gold on a side lane", "After a back, when their side laner is dead or elsewhere"],
-        ["Flank at an objective", "An angle nobody is warding, from behind their line", "When the pit fight is about to start and they have used vision"],
-        ["Back to lane", "Twenty seconds of walking", "Only when losing the wave costs a plate or a turret"],
+        [
+          "Into a fight",
+          "A fifth player in a 4v5 your team is already losing",
+          "Only when the fight is still live, never as revenge",
+        ],
+        [
+          "Onto a crashing wave",
+          "A turret, or two waves of free gold on a side lane",
+          "After a back, when their side laner is dead or elsewhere",
+        ],
+        [
+          "Flank at an objective",
+          "An angle nobody is warding, from behind their line",
+          "When the pit fight is about to start and they have used vision",
+        ],
+        [
+          "Back to lane",
+          "Twenty seconds of walking",
+          "Only when losing the wave costs a plate or a turret",
+        ],
       ],
     },
     { kind: "drill", drillId: "teleport-quiz" },

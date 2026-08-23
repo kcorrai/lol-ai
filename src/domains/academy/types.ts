@@ -14,13 +14,7 @@ import type { AbilitySlot } from "@/lib/ddragon";
 export type RoleId = "top" | "jungle" | "mid" | "adc" | "support";
 
 /** The curriculum everyone reads, in teaching order. */
-export type CoreTrackId =
-  | "foundations"
-  | "laning"
-  | "vision"
-  | "macro"
-  | "teamfighting"
-  | "mental";
+export type CoreTrackId = "foundations" | "laning" | "vision" | "macro" | "teamfighting" | "mental";
 
 /**
  * A role path carries its role as its id — there is exactly one path per role. `"champion"` is

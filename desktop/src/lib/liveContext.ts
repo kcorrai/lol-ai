@@ -25,8 +25,6 @@ export async function readLiveContext(request: LiveContextRequest): Promise<Live
     // Tauri rejects with whatever the command serialised, and AppError serialises to its
     // own message — including the website's, for the cases where that is the half that
     // tells the player what to do next.
-    throw new LiveContextError(
-      typeof err === "string" ? err : "Could not reach LoL AI Coach."
-    );
+    throw new LiveContextError(typeof err === "string" ? err : "Could not reach LoL AI Coach.");
   }
 }

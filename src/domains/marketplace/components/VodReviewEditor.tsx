@@ -6,7 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { VodReviewDelivery } from "@/domains/marketplace/types";
 import { useSaveVodReview } from "@/hooks/useVodReview";
-import { ANNOTATION_CATEGORIES, secondsToClock, clockToSeconds } from "@/domains/marketplace/vodClock";
+import {
+  ANNOTATION_CATEGORIES,
+  secondsToClock,
+  clockToSeconds,
+} from "@/domains/marketplace/vodClock";
 
 interface Props {
   bookingId: string;
@@ -154,7 +158,10 @@ export function VodReviewEditor({ bookingId, existing, onPublished }: Props): Re
           variant="secondary"
           size="sm"
           onClick={() =>
-            setNotes((prev) => [...prev, { clock: "00:00", title: "", body: "", category: "MACRO" }])
+            setNotes((prev) => [
+              ...prev,
+              { clock: "00:00", title: "", body: "", category: "MACRO" },
+            ])
           }
         >
           <Plus className="h-3 w-3" aria-hidden />

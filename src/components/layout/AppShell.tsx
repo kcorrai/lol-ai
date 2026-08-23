@@ -37,9 +37,15 @@ export function AppShell({
         <TiltAlertBanner />
         <main
           className="flex-1 overflow-y-auto pb-16 md:pb-0"
-          style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)", backgroundSize: "64px 64px" }}
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)",
+            backgroundSize: "64px 64px",
+          }}
         >
-          <OnboardingPreviewProvider active={!onboardingComplete}>{children}</OnboardingPreviewProvider>
+          <OnboardingPreviewProvider active={!onboardingComplete}>
+            {children}
+          </OnboardingPreviewProvider>
         </main>
       </div>
       <AchievementToast />

@@ -55,7 +55,17 @@ describe("buildMatchupMatrix", () => {
     const cached = {
       playerChampions: ["Ahri"],
       opponentChampions: ["Zed"],
-      cells: [{ playerChampion: "Ahri", opponentChampion: "Zed", wins: 3, losses: 1, winRate: 75, avgKda: 3.5, gamesPlayed: 4 }],
+      cells: [
+        {
+          playerChampion: "Ahri",
+          opponentChampion: "Zed",
+          wins: 3,
+          losses: 1,
+          winRate: 75,
+          avgKda: 3.5,
+          gamesPlayed: 4,
+        },
+      ],
       generatedAt: new Date().toISOString(),
       position: null,
     };
@@ -69,14 +79,50 @@ describe("buildMatchupMatrix", () => {
 
   it("computes win rate correctly for a single matchup", async () => {
     const userParticipants = [
-      makeParticipant({ matchId: "m1", teamId: 100, position: "MIDDLE", championName: "Ahri", won: true }),
-      makeParticipant({ matchId: "m2", teamId: 100, position: "MIDDLE", championName: "Ahri", won: true }),
-      makeParticipant({ matchId: "m3", teamId: 100, position: "MIDDLE", championName: "Ahri", won: false }),
+      makeParticipant({
+        matchId: "m1",
+        teamId: 100,
+        position: "MIDDLE",
+        championName: "Ahri",
+        won: true,
+      }),
+      makeParticipant({
+        matchId: "m2",
+        teamId: 100,
+        position: "MIDDLE",
+        championName: "Ahri",
+        won: true,
+      }),
+      makeParticipant({
+        matchId: "m3",
+        teamId: 100,
+        position: "MIDDLE",
+        championName: "Ahri",
+        won: false,
+      }),
     ];
     const opponents = [
-      makeParticipant({ matchId: "m1", teamId: 200, position: "MIDDLE", championName: "Zed", won: false }),
-      makeParticipant({ matchId: "m2", teamId: 200, position: "MIDDLE", championName: "Zed", won: false }),
-      makeParticipant({ matchId: "m3", teamId: 200, position: "MIDDLE", championName: "Zed", won: true }),
+      makeParticipant({
+        matchId: "m1",
+        teamId: 200,
+        position: "MIDDLE",
+        championName: "Zed",
+        won: false,
+      }),
+      makeParticipant({
+        matchId: "m2",
+        teamId: 200,
+        position: "MIDDLE",
+        championName: "Zed",
+        won: false,
+      }),
+      makeParticipant({
+        matchId: "m3",
+        teamId: 200,
+        position: "MIDDLE",
+        championName: "Zed",
+        won: true,
+      }),
     ];
 
     vi.mocked(prisma.matchParticipant.findMany)
@@ -97,11 +143,23 @@ describe("buildMatchupMatrix", () => {
 
   it("does not match opponents on the same team", async () => {
     const userParticipants = [
-      makeParticipant({ matchId: "m1", teamId: 100, position: "MIDDLE", championName: "Ahri", won: true }),
+      makeParticipant({
+        matchId: "m1",
+        teamId: 100,
+        position: "MIDDLE",
+        championName: "Ahri",
+        won: true,
+      }),
     ];
     // Same team — should be excluded
     const sameTeamParticipant = [
-      makeParticipant({ matchId: "m1", teamId: 100, position: "MIDDLE", championName: "Viktor", won: true }),
+      makeParticipant({
+        matchId: "m1",
+        teamId: 100,
+        position: "MIDDLE",
+        championName: "Viktor",
+        won: true,
+      }),
     ];
 
     vi.mocked(prisma.matchParticipant.findMany)
@@ -114,9 +172,7 @@ describe("buildMatchupMatrix", () => {
   });
 
   it("filters by position when provided", async () => {
-    vi.mocked(prisma.matchParticipant.findMany)
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([]);
+    vi.mocked(prisma.matchParticipant.findMany).mockResolvedValueOnce([]).mockResolvedValueOnce([]);
 
     await buildMatchupMatrix("user-acc", "TOP");
 

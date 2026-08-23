@@ -107,8 +107,18 @@ export function GoldCurve({ timeline }: { timeline: GameTimeline }): React.React
           );
         })}
 
-        <polygon points={area} fill="#4C8FFF" fillOpacity="0.22" clipPath="url(#gold-curve-above)" />
-        <polygon points={area} fill="#FF5A5A" fillOpacity="0.22" clipPath="url(#gold-curve-below)" />
+        <polygon
+          points={area}
+          fill="#4C8FFF"
+          fillOpacity="0.22"
+          clipPath="url(#gold-curve-above)"
+        />
+        <polygon
+          points={area}
+          fill="#FF5A5A"
+          fillOpacity="0.22"
+          clipPath="url(#gold-curve-below)"
+        />
 
         {/* The zero line is the reading: which side of it the curve sits on. */}
         <line x1={PAD_X} y1={MID} x2={WIDTH - PAD_X} y2={MID} stroke="#6C817B" strokeWidth="1" />
@@ -135,8 +145,7 @@ export function GoldCurve({ timeline }: { timeline: GameTimeline }): React.React
       <figcaption className="mt-2 flex flex-wrap items-baseline justify-between gap-2 font-mono text-[11px] text-text-muted">
         <span>
           <span className="text-accent-blue">Blue</span> above,{" "}
-          <span className="text-danger">red</span> below · scale ±
-          {(scale / 1000).toFixed(1)}k gold
+          <span className="text-danger">red</span> below · scale ±{(scale / 1000).toFixed(1)}k gold
         </span>
         <span>
           Sampled every {timeline.intervalSeconds / 60} min

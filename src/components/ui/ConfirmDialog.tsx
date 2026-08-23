@@ -38,14 +38,19 @@ export function ConfirmDialog({
   }
 
   return (
-    <Dialog.Root open onOpenChange={(next) => { if (!next && !isPending) onCancel(); }}>
+    <Dialog.Root
+      open
+      onOpenChange={(next) => {
+        if (!next && !isPending) onCancel();
+      }}
+    >
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" />
         <Dialog.Content
           onEscapeKeyDown={guard}
           onPointerDownOutside={guard}
           onInteractOutside={guard}
-          className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-border bg-surface p-6 shadow-2xl space-y-4"
+          className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 space-y-4 rounded-2xl border border-border bg-surface p-6 shadow-2xl"
         >
           <div className="space-y-1">
             <Dialog.Title className="text-base font-bold text-text">{title}</Dialog.Title>
@@ -68,7 +73,7 @@ export function ConfirmDialog({
               size="sm"
               onClick={onConfirm}
               disabled={isPending}
-              className={danger ? "gap-1.5 bg-danger hover:bg-danger/90 text-white" : "gap-1.5"}
+              className={danger ? "gap-1.5 bg-danger text-white hover:bg-danger/90" : "gap-1.5"}
             >
               {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               {confirmLabel}

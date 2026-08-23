@@ -22,7 +22,10 @@ export function TwoFactorSetup() {
     setError(null);
     try {
       const res = await fetch("/api/auth/2fa/setup");
-      const json = await res.json() as { data?: { qrDataUrl: string; backupCodes: string[] }; error?: { message: string } };
+      const json = (await res.json()) as {
+        data?: { qrDataUrl: string; backupCodes: string[] };
+        error?: { message: string };
+      };
       if (!res.ok) throw new Error(json.error?.message ?? "Setup failed");
       setQrDataUrl(json.data!.qrDataUrl);
       setBackupCodes(json.data!.backupCodes);
@@ -44,7 +47,10 @@ export function TwoFactorSetup() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, backupCodes }),
       });
-      const json = await res.json() as { data?: { enabled: boolean }; error?: { message: string } };
+      const json = (await res.json()) as {
+        data?: { enabled: boolean };
+        error?: { message: string };
+      };
       if (!res.ok) throw new Error(json.error?.message ?? "Verification failed");
       setStep("enabled");
       setToken("");
@@ -64,7 +70,10 @@ export function TwoFactorSetup() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ totpToken: disableToken }),
       });
-      const json = await res.json() as { data?: { disabled: boolean }; error?: { message: string } };
+      const json = (await res.json()) as {
+        data?: { disabled: boolean };
+        error?: { message: string };
+      };
       if (!res.ok) throw new Error(json.error?.message ?? "Disable failed");
       setStep("idle");
       setDisableToken("");
@@ -83,12 +92,10 @@ export function TwoFactorSetup() {
 
   return (
     <>
-      {error && (
-        <p className="rounded-lg bg-danger/10 px-4 py-2.5 text-sm text-danger">{error}</p>
-      )}
+      {error && <p className="rounded-lg bg-danger/10 px-4 py-2.5 text-sm text-danger">{error}</p>}
 
       {step === "idle" && (
-        <div className="rounded-xl border border-border bg-surface p-5 space-y-4">
+        <div className="space-y-4 rounded-xl border border-border bg-surface p-5">
           <div className="flex items-start gap-4">
             <ShieldOff className="mt-0.5 h-8 w-8 shrink-0 text-text-muted" />
             <div>
@@ -110,13 +117,19 @@ export function TwoFactorSetup() {
       )}
 
       {step === "setup" && qrDataUrl && (
-        <div className="rounded-xl border border-border bg-surface p-5 space-y-4">
+        <div className="space-y-4 rounded-xl border border-border bg-surface p-5">
           <p className="text-sm font-semibold text-text">Step 1: Scan QR Code</p>
           <p className="text-xs text-text-muted">
             Scan the QR code below with Google Authenticator or Authy.
           </p>
           <div className="flex justify-center">
-            <Image src={qrDataUrl} alt="TOTP QR Code" width={180} height={180} className="rounded-xl" />
+            <Image
+              src={qrDataUrl}
+              alt="TOTP QR Code"
+              width={180}
+              height={180}
+              className="rounded-xl"
+            />
           </div>
           <button
             onClick={() => setStep("backup")}
@@ -128,10 +141,13 @@ export function TwoFactorSetup() {
       )}
 
       {step === "backup" && (
-        <div className="rounded-xl border border-border bg-surface p-5 space-y-4">
+        <div className="space-y-4 rounded-xl border border-border bg-surface p-5">
           <div className="flex items-center justify-between">
             <p className="text-sm font-semibold text-text">Step 2: Save Backup Codes</p>
-            <button onClick={() => setShowCodes(!showCodes)} className="text-text-muted hover:text-text">
+            <button
+              onClick={() => setShowCodes(!showCodes)}
+              className="text-text-muted hover:text-text"
+            >
               {showCodes ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
@@ -140,12 +156,20 @@ export function TwoFactorSetup() {
           </p>
           <div className="grid grid-cols-2 gap-2">
             {backupCodes.map((code, i) => (
-              <div key={i} className="flex items-center justify-between rounded-lg bg-surface-2 px-3 py-2">
-                <span className="font-mono text-xs text-text">
-                  {showCodes ? code : "••••••••"}
-                </span>
-                <button onClick={() => copyCode(code, i)} className="ml-2 text-text-muted hover:text-text">
-                  {copiedIndex === i ? <Check className="h-3.5 w-3.5 text-accent" /> : <Copy className="h-3.5 w-3.5" />}
+              <div
+                key={i}
+                className="flex items-center justify-between rounded-lg bg-surface-2 px-3 py-2"
+              >
+                <span className="font-mono text-xs text-text">{showCodes ? code : "••••••••"}</span>
+                <button
+                  onClick={() => copyCode(code, i)}
+                  className="ml-2 text-text-muted hover:text-text"
+                >
+                  {copiedIndex === i ? (
+                    <Check className="h-3.5 w-3.5 text-accent" />
+                  ) : (
+                    <Copy className="h-3.5 w-3.5" />
+                  )}
                 </button>
               </div>
             ))}
@@ -160,9 +184,11 @@ export function TwoFactorSetup() {
       )}
 
       {step === "verify" && (
-        <div className="rounded-xl border border-border bg-surface p-5 space-y-4">
+        <div className="space-y-4 rounded-xl border border-border bg-surface p-5">
           <p className="text-sm font-semibold text-text">Step 3: Verify Code</p>
-          <p className="text-xs text-text-muted">Enter the 6-digit code from your authenticator app.</p>
+          <p className="text-xs text-text-muted">
+            Enter the 6-digit code from your authenticator app.
+          </p>
           <input
             type="text"
             inputMode="numeric"
@@ -183,20 +209,25 @@ export function TwoFactorSetup() {
       )}
 
       {step === "enabled" && (
-        <div className="rounded-xl border border-accent/20 bg-surface p-5 space-y-3">
+        <div className="space-y-3 rounded-xl border border-accent/20 bg-surface p-5">
           <div className="flex items-center gap-3">
             <ShieldCheck className="h-6 w-6 text-accent" />
             <p className="text-sm font-semibold text-accent">2FA Enabled</p>
           </div>
-          <p className="text-xs text-text-muted">Your account is now protected with two-factor authentication.</p>
-          <button onClick={() => setStep("disable")} className="text-xs text-danger hover:underline">
+          <p className="text-xs text-text-muted">
+            Your account is now protected with two-factor authentication.
+          </p>
+          <button
+            onClick={() => setStep("disable")}
+            className="text-xs text-danger hover:underline"
+          >
             Disable 2FA
           </button>
         </div>
       )}
 
       {step === "disable" && (
-        <div className="rounded-xl border border-danger/20 bg-surface p-5 space-y-4">
+        <div className="space-y-4 rounded-xl border border-danger/20 bg-surface p-5">
           <p className="text-sm font-semibold text-danger">Disable 2FA</p>
           <p className="text-xs text-text-muted">
             You can disable it by entering the code from your authenticator app.
@@ -219,7 +250,10 @@ export function TwoFactorSetup() {
               {loading ? "Processing…" : "Disable"}
             </button>
             <button
-              onClick={() => { setStep("enabled"); setError(null); }}
+              onClick={() => {
+                setStep("enabled");
+                setError(null);
+              }}
               className="rounded-lg bg-surface-2 px-4 py-2.5 text-sm font-semibold text-text hover:bg-accent hover:text-background"
             >
               Cancel

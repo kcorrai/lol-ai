@@ -43,7 +43,7 @@ does the escaping. A test covers `the: real #1 guy`.
 Only a genuine failure surfaces, and it points at `/settings/accounts` rather than leaving a
 dashboard that silently has no account on it.
 
-The claim is stripped from the URL *before* the request, not after: a refresh mid-connect would
+The claim is stripped from the URL _before_ the request, not after: a refresh mid-connect would
 otherwise start it over.
 
 No change was needed to guided onboarding — its "go to accounts" step already carries

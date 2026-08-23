@@ -1,9 +1,6 @@
 import { getChampionMastery } from "@/domains/riot/services/riotApiClient";
 import { buildRuleBasedInsight } from "@/domains/riot/services/preview/previewInsight";
-import {
-  toPreviewMatch,
-  toPreviewScoreboard,
-} from "@/domains/riot/services/preview/previewMapper";
+import { toPreviewMatch, toPreviewScoreboard } from "@/domains/riot/services/preview/previewMapper";
 import {
   fetchPreviewSource,
   MATCH_DEPTH,

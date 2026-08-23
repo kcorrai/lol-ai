@@ -74,13 +74,14 @@ describe("withRetry", () => {
       // Two callers, same Retry-After, different Math.random draws: the delays must differ, or
       // honouring the header just rebuilds the burst that produced the 429.
       const delays: number[] = [];
-      const timeout = vi
-        .spyOn(globalThis, "setTimeout")
-        .mockImplementation(((cb: () => void, ms?: number) => {
-          delays.push(ms ?? 0);
-          cb();
-          return 0 as unknown as NodeJS.Timeout;
-        }) as unknown as typeof setTimeout);
+      const timeout = vi.spyOn(globalThis, "setTimeout").mockImplementation(((
+        cb: () => void,
+        ms?: number
+      ) => {
+        delays.push(ms ?? 0);
+        cb();
+        return 0 as unknown as NodeJS.Timeout;
+      }) as unknown as typeof setTimeout);
 
       vi.spyOn(Math, "random").mockReturnValueOnce(0).mockReturnValueOnce(1);
 
@@ -102,13 +103,14 @@ describe("withRetry", () => {
 
     it("caps exponential backoff at maxDelayMs", async () => {
       const delays: number[] = [];
-      const timeout = vi
-        .spyOn(globalThis, "setTimeout")
-        .mockImplementation(((cb: () => void, ms?: number) => {
-          delays.push(ms ?? 0);
-          cb();
-          return 0 as unknown as NodeJS.Timeout;
-        }) as unknown as typeof setTimeout);
+      const timeout = vi.spyOn(globalThis, "setTimeout").mockImplementation(((
+        cb: () => void,
+        ms?: number
+      ) => {
+        delays.push(ms ?? 0);
+        cb();
+        return 0 as unknown as NodeJS.Timeout;
+      }) as unknown as typeof setTimeout);
 
       const fn = vi.fn().mockRejectedValue(normalizeRiotError(503));
       await expect(

@@ -142,7 +142,7 @@ export default function PrivacySettingsPage() {
         </div>
       )}
 
-      <div className="rounded-xl border border-border bg-surface divide-y divide-border px-4">
+      <div className="divide-y divide-border rounded-xl border border-border bg-surface px-4">
         <ToggleRow
           label="Profile Public"
           description="If off, no one can access your profile page"
@@ -180,11 +180,12 @@ export default function PrivacySettingsPage() {
         />
       </div>
 
-      <div className="rounded-xl border border-border bg-surface p-5 space-y-3">
+      <div className="space-y-3 rounded-xl border border-border bg-surface p-5">
         <div>
           <h2 className="text-sm font-semibold text-text">Download My Data</h2>
           <p className="mt-1 text-xs text-text-muted">
-            Under GDPR, you can request a copy of all your data. Data will be sent to your email as a ZIP file within minutes.
+            Under GDPR, you can request a copy of all your data. Data will be sent to your email as
+            a ZIP file within minutes.
           </p>
         </div>
 
@@ -208,11 +209,12 @@ export default function PrivacySettingsPage() {
         )}
       </div>
 
-      <div className="rounded-xl border border-danger/20 bg-surface p-5 space-y-3">
+      <div className="space-y-3 rounded-xl border border-danger/20 bg-surface p-5">
         <div>
           <h2 className="text-sm font-semibold text-danger">Delete My Account</h2>
           <p className="mt-1 text-xs text-text-muted">
-            If you want to delete your account, remember that all your data will be permanently deleted. Deletion will happen after 30 days — you can cancel during this time.
+            If you want to delete your account, remember that all your data will be permanently
+            deleted. Deletion will happen after 30 days — you can cancel during this time.
           </p>
         </div>
 

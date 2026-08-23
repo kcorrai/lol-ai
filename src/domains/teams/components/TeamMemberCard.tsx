@@ -14,14 +14,28 @@ const ROLE_STYLES: Record<string, string> = {
   PLAYER: "border-border bg-surface-3 text-text-muted",
 };
 const TIER_COLORS: Record<string, string> = {
-  IRON: "#6b6b7d", BRONZE: "#a05336", SILVER: "#a8b8c8",
-  GOLD: "#C6FF3D", PLATINUM: "#3cba8c", EMERALD: "#00be93",
-  DIAMOND: "#576bce", MASTER: "#9e4fc6", GRANDMASTER: "#e84057", CHALLENGER: "#f4c874",
+  IRON: "#6b6b7d",
+  BRONZE: "#a05336",
+  SILVER: "#a8b8c8",
+  GOLD: "#C6FF3D",
+  PLATINUM: "#3cba8c",
+  EMERALD: "#00be93",
+  DIAMOND: "#576bce",
+  MASTER: "#9e4fc6",
+  GRANDMASTER: "#e84057",
+  CHALLENGER: "#f4c874",
 };
 const TIER_EN: Record<string, string> = {
-  IRON: "Iron", BRONZE: "Bronze", SILVER: "Silver", GOLD: "Gold",
-  PLATINUM: "Platinum", EMERALD: "Emerald", DIAMOND: "Diamond",
-  MASTER: "Master", GRANDMASTER: "Grandmaster", CHALLENGER: "Challenger",
+  IRON: "Iron",
+  BRONZE: "Bronze",
+  SILVER: "Silver",
+  GOLD: "Gold",
+  PLATINUM: "Platinum",
+  EMERALD: "Emerald",
+  DIAMOND: "Diamond",
+  MASTER: "Master",
+  GRANDMASTER: "Grandmaster",
+  CHALLENGER: "Challenger",
 };
 const CHAMPION_VERSION = "14.24.1";
 
@@ -38,13 +52,21 @@ export function TeamMemberCard({ member, canManage, onRemove, onRoleChange }: Pr
   const tierColor = member.rank ? (TIER_COLORS[member.rank.tier] ?? "#A7BCB5") : null;
   const tierName = member.rank ? (TIER_EN[member.rank.tier] ?? member.rank.tier) : null;
   const wrColor =
-    member.winRate7d === null ? "text-text-muted"
-    : member.winRate7d >= 55 ? "text-success"
-    : member.winRate7d < 45 ? "text-danger"
-    : "text-text";
+    member.winRate7d === null
+      ? "text-text-muted"
+      : member.winRate7d >= 55
+        ? "text-success"
+        : member.winRate7d < 45
+          ? "text-danger"
+          : "text-text";
   const wrArrow =
-    member.winRate7d === null ? null
-    : member.winRate7d >= 55 ? "↑" : member.winRate7d < 45 ? "↓" : "→";
+    member.winRate7d === null
+      ? null
+      : member.winRate7d >= 55
+        ? "↑"
+        : member.winRate7d < 45
+          ? "↓"
+          : "→";
 
   const canChangeRole = canManage && member.role !== "OWNER" && onRoleChange;
 
@@ -66,7 +88,10 @@ export function TeamMemberCard({ member, canManage, onRemove, onRoleChange }: Pr
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
           {member.profileSlug ? (
-            <Link href={`/u/${member.profileSlug}`} className="text-sm font-semibold text-text hover:text-info transition-colors">
+            <Link
+              href={`/u/${member.profileSlug}`}
+              className="text-sm font-semibold text-text transition-colors hover:text-info"
+            >
               {member.gameName}
               <span className="ml-1 text-xs font-normal text-text-muted">#{member.tagLine}</span>
             </Link>
@@ -92,7 +117,10 @@ export function TeamMemberCard({ member, canManage, onRemove, onRoleChange }: Pr
                   {(["COACH", "PLAYER"] as const).map((r) => (
                     <button
                       key={r}
-                      onClick={() => { onRoleChange(member.userId, r); setRoleMenuOpen(false); }}
+                      onClick={() => {
+                        onRoleChange(member.userId, r);
+                        setRoleMenuOpen(false);
+                      }}
                       className={`flex w-full items-center px-3 py-1.5 text-xs hover:bg-surface-2 ${member.role === r ? "font-bold text-text" : "text-text-muted"}`}
                     >
                       {ROLE_LABELS[r]}
@@ -102,7 +130,9 @@ export function TeamMemberCard({ member, canManage, onRemove, onRoleChange }: Pr
               )}
             </div>
           ) : (
-            <span className={`rounded-full border px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide ${ROLE_STYLES[member.role] ?? ROLE_STYLES.PLAYER}`}>
+            <span
+              className={`rounded-full border px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide ${ROLE_STYLES[member.role] ?? ROLE_STYLES.PLAYER}`}
+            >
               {ROLE_LABELS[member.role]}
             </span>
           )}
@@ -150,7 +180,9 @@ export function TeamMemberCard({ member, canManage, onRemove, onRoleChange }: Pr
               className="rounded-md border border-white/10"
             />
             {member.lastMatchResult && (
-              <span className={`absolute -bottom-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full text-[8px] font-bold ${member.lastMatchResult === "WIN" ? "bg-success text-background" : "bg-danger text-background"}`}>
+              <span
+                className={`absolute -bottom-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full text-[8px] font-bold ${member.lastMatchResult === "WIN" ? "bg-success text-background" : "bg-danger text-background"}`}
+              >
                 {member.lastMatchResult === "WIN" ? "W" : "L"}
               </span>
             )}

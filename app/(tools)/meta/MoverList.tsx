@@ -70,7 +70,9 @@ export function MoverList({ title, movers, direction }: MoverListProps) {
                 </div>
                 <div className="mt-1.5 flex items-center justify-between gap-2 pl-[30px] text-xs text-text-muted">
                   <span className="min-w-0 truncate">
-                    <span className={`font-semibold ${m.winRate >= 50 ? "text-success" : "text-text"}`}>
+                    <span
+                      className={`font-semibold ${m.winRate >= 50 ? "text-success" : "text-text"}`}
+                    >
                       {m.winRate.toFixed(1)}%
                     </span>{" "}
                     WR · {m.pickRate.toFixed(1)}% PR · {m.banRate.toFixed(1)}% BR

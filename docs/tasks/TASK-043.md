@@ -85,4 +85,3 @@ Counter Pick Generator'Ä±n kullanÄ±cÄ± arayÃ¼zÃ¼nÃ¼ yaz. KullanÄ±c
 - Sayfa `app/(app)/` altÄ±nda â€” layout'u otomatik alacak (Sidebar, TopBar vs.).
 - Component dosyalarÄ± 200 satÄ±rÄ± geÃ§memeli (CLAUDE.md kuralÄ±). CounterCard karmaÅŸÄ±klaÅŸÄ±rsa alt component'lere bÃ¶l.
 - `CounterCard` expand/collapse iÃ§in Radix UI `Collapsible` veya basit `useState` ile yÃ¶net.
-

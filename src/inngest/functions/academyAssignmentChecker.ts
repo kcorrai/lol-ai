@@ -6,7 +6,11 @@ import { logger } from "@/lib/utils/logger";
 // than a course: a lesson's field assignment is judged against the player's real ranked games,
 // and passing it is the only thing in the product that marks a lesson `mastered`.
 export const academyAssignmentChecker = inngest.createFunction(
-  { id: "academy-assignment-checker", triggers: [{ event: "academy/check-assignments" }], retries: 2 },
+  {
+    id: "academy-assignment-checker",
+    triggers: [{ event: "academy/check-assignments" }],
+    retries: 2,
+  },
   async ({ event }: { event: { data: { userId: string; riotAccountId: string } } }) => {
     const { userId, riotAccountId } = event.data;
 

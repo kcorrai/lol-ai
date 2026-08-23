@@ -41,9 +41,11 @@ export function ArchiveResultRow({ row }: { row: ArchiveRow }): React.JSX.Elemen
 
       <div className="shrink-0 text-right">
         <p className="font-mono text-[13px] tabular-nums text-fg-1">
-          {row.kills}<span className="text-fg-4">/</span>
+          {row.kills}
+          <span className="text-fg-4">/</span>
           <span className="text-danger">{row.deaths}</span>
-          <span className="text-fg-4">/</span>{row.assists}
+          <span className="text-fg-4">/</span>
+          {row.assists}
         </p>
         <p className="font-mono text-[10px] tabular-nums text-fg-3">{row.kda.toFixed(2)} KDA</p>
       </div>

@@ -28,9 +28,7 @@ test.describe("Coach marketplace", () => {
       await page.goto("/coaches");
 
       await expect(page).not.toHaveURL(/\/login/);
-      await expect(
-        page.getByRole("heading", { name: /rank they claim/i, level: 1 })
-      ).toBeVisible();
+      await expect(page.getByRole("heading", { name: /rank they claim/i, level: 1 })).toBeVisible();
     });
 
     /**
@@ -86,8 +84,14 @@ test.describe("Coach marketplace", () => {
         await expect(english).toBeChecked({ timeout: 1_000 });
       }).toPass({ timeout: 15_000 });
 
-      await page.getByRole("group", { name: "Regions" }).getByRole("checkbox", { name: "EUW" }).click();
-      await page.getByRole("group", { name: "Roles" }).getByRole("checkbox", { name: "Jungle" }).click();
+      await page
+        .getByRole("group", { name: "Regions" })
+        .getByRole("checkbox", { name: "EUW" })
+        .click();
+      await page
+        .getByRole("group", { name: "Roles" })
+        .getByRole("checkbox", { name: "Jungle" })
+        .click();
 
       await page.locator("#displayName").fill("E2E Coach");
       await page.locator("#headline").fill("Smoke-test jungler");

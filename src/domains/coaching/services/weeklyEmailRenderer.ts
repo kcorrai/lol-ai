@@ -1,6 +1,9 @@
 import { prisma } from "@/lib/db/prisma";
 import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
-import { computeRetentionSignals, NUDGE_MESSAGES } from "@/domains/analysis/services/retentionService";
+import {
+  computeRetentionSignals,
+  NUDGE_MESSAGES,
+} from "@/domains/analysis/services/retentionService";
 
 // ── Pure helpers (exported for testing) ─────────────────────────────────────
 
@@ -27,8 +30,16 @@ export function getIsoWeekKey(date: Date): string {
 
 export function lpComposite(tier: string, division: string, lp: number): number {
   const tierIndex: Record<string, number> = {
-    IRON: 0, BRONZE: 1, SILVER: 2, GOLD: 3, PLATINUM: 4,
-    EMERALD: 5, DIAMOND: 6, MASTER: 7, GRANDMASTER: 8, CHALLENGER: 9,
+    IRON: 0,
+    BRONZE: 1,
+    SILVER: 2,
+    GOLD: 3,
+    PLATINUM: 4,
+    EMERALD: 5,
+    DIAMOND: 6,
+    MASTER: 7,
+    GRANDMASTER: 8,
+    CHALLENGER: 9,
   };
   const divIndex: Record<string, number> = { IV: 0, III: 1, II: 2, I: 3 };
   return (tierIndex[tier] ?? 0) * 400 + (divIndex[division] ?? 0) * 100 + lp;
@@ -88,16 +99,12 @@ export async function buildWeeklyStats(
   });
 
   const avgCs = (arr: { csPerMinute: unknown }[]) =>
-    arr.length === 0
-      ? null
-      : arr.reduce((s, p) => s + Number(p.csPerMinute), 0) / arr.length;
+    arr.length === 0 ? null : arr.reduce((s, p) => s + Number(p.csPerMinute), 0) / arr.length;
 
   const thisCs = avgCs(thisWeekParticipants);
   const prevCs = avgCs(lastWeekParticipants);
   const csMinChange =
-    thisCs !== null && prevCs !== null
-      ? Math.round((thisCs - prevCs) * 10) / 10
-      : null;
+    thisCs !== null && prevCs !== null ? Math.round((thisCs - prevCs) * 10) / 10 : null;
 
   const latestRank = await prisma.rankedHistory.findFirst({
     where: { riotAccountId, queueType: "RANKED_SOLO_5x5" },
@@ -127,23 +134,36 @@ export async function buildWeeklyStats(
   });
 
   const weaknesses = lastReport?.weaknesses as
-    | Array<{ area: string; priority: string }> | null | undefined;
+    | Array<{ area: string; priority: string }>
+    | null
+    | undefined;
   const biggestWeakness =
-    weaknesses?.find((w) => w.priority === "high")?.area ??
-    weaknesses?.[0]?.area ??
-    null;
+    weaknesses?.find((w) => w.priority === "high")?.area ?? weaknesses?.[0]?.area ?? null;
 
   const championRecs = lastReport?.championRecommendations as
-    | Array<{ championName: string; priority: string }> | null | undefined;
+    | Array<{ championName: string; priority: string }>
+    | null
+    | undefined;
   const topChampion =
     championRecs?.find((c) => c.priority === "high")?.championName ??
     championRecs?.[0]?.championName ??
     null;
 
   const signals = await computeRetentionSignals(riotAccountId);
-  const smartNudge = signals.primaryNudge ? NUDGE_MESSAGES[signals.primaryNudge] ?? null : null;
+  const smartNudge = signals.primaryNudge ? (NUDGE_MESSAGES[signals.primaryNudge] ?? null) : null;
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
 
-  return { gamesPlayed, wins, lpChange, csMinChange, biggestWeakness, topChampion, smartNudge, isPro, gameName, appUrl };
+  return {
+    gamesPlayed,
+    wins,
+    lpChange,
+    csMinChange,
+    biggestWeakness,
+    topChampion,
+    smartNudge,
+    isPro,
+    gameName,
+    appUrl,
+  };
 }

@@ -33,13 +33,13 @@ Counter Pick servisini HTTP API olarak expose et. Auth gerektirmeyen public endp
 
 ```typescript
 // app/api/counter/route.ts
-import { NextRequest } from 'next/server';
-import { z } from 'zod';
-import { apiSuccess } from '@/lib/api/response';
-import { Errors } from '@/lib/api/errors';
-import { rateLimit } from '@/lib/riot/rateLimit';
-import { getGeneralCounters } from '@/domains/counter/services/generalCounterService';
-import { Position } from '@/types/common.types';
+import { NextRequest } from "next/server";
+import { z } from "zod";
+import { apiSuccess } from "@/lib/api/response";
+import { Errors } from "@/lib/api/errors";
+import { rateLimit } from "@/lib/riot/rateLimit";
+import { getGeneralCounters } from "@/domains/counter/services/generalCounterService";
+import { Position } from "@/types/common.types";
 
 const querySchema = z.object({
   champion: z.string().min(1),
@@ -59,6 +59,7 @@ export async function GET(request: NextRequest) {
 ### Rate Limiting
 
 Mevcut `rateLimit` helper'Ä±nÄ± kullan. Config:
+
 ```typescript
 { requests: 20, window: '1m', prefix: 'counter-api' }
 ```
@@ -81,4 +82,3 @@ Bulunamazsa: `Errors.notFound('Åampiyon bulunamadÄ±')`
 - Route handler 80 satÄ±rÄ± geÃ§memeli (CLAUDE.md kuralÄ±). Ä°ÅŸ mantÄ±ÄŸÄ± servise delegat et.
 - Rol parametresi URL'den geldiÄŸi iÃ§in string olarak gelir â€” `z.nativeEnum(Position)` ile validate et.
 - Champion adÄ±nÄ± normalize ederken DB'deki canonical ismi kullan (Ã¶r. "leesin" â†’ "Lee Sin").
-

@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { simulateWave, WAVE_ACTIONS, type WaveAction, type WaveGoal } from "@/domains/academy/drills/waveSim";
+import {
+  simulateWave,
+  WAVE_ACTIONS,
+  type WaveAction,
+  type WaveGoal,
+} from "@/domains/academy/drills/waveSim";
 import type { WaveSimDrill } from "@/domains/academy/types";
 
 interface WaveSimDrillBodyProps {
@@ -28,7 +33,11 @@ function trackPercent(position: number): number {
   return ((position + 3) / 6) * 100;
 }
 
-export function WaveSimDrillBody({ drill, locked, onSubmit }: WaveSimDrillBodyProps): React.ReactElement {
+export function WaveSimDrillBody({
+  drill,
+  locked,
+  onSubmit,
+}: WaveSimDrillBodyProps): React.ReactElement {
   const [actions, setActions] = useState<WaveAction[]>([]);
 
   const states = simulateWave(drill.start, actions);
@@ -64,13 +73,23 @@ export function WaveSimDrillBody({ drill, locked, onSubmit }: WaveSimDrillBodyPr
         </div>
 
         <div className="mt-1 flex items-baseline gap-2">
-          <span className="font-mono text-[11px] uppercase tracking-label text-text-muted">Minion count</span>
+          <span className="font-mono text-[11px] uppercase tracking-label text-text-muted">
+            Minion count
+          </span>
           <span
             className={`font-mono text-[13px] ${
-              current.advantage > 0 ? "text-accent" : current.advantage < 0 ? "text-danger" : "text-text-body"
+              current.advantage > 0
+                ? "text-accent"
+                : current.advantage < 0
+                  ? "text-danger"
+                  : "text-text-body"
             }`}
           >
-            {current.advantage > 0 ? `+${current.advantage} yours` : current.advantage < 0 ? `${-current.advantage} theirs` : "even"}
+            {current.advantage > 0
+              ? `+${current.advantage} yours`
+              : current.advantage < 0
+                ? `${-current.advantage} theirs`
+                : "even"}
           </span>
         </div>
       </div>

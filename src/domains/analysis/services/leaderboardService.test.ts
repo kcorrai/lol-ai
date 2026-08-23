@@ -52,7 +52,15 @@ describe("getLeaderboard", () => {
 
   it("excludes accounts with fewer than 2 history entries", async () => {
     vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([
-      makeEntry({ riotAccountId: "acc-1", tier: "GOLD", division: "II", lp: 50, wins: 10, losses: 5, recordedAt: new Date() }),
+      makeEntry({
+        riotAccountId: "acc-1",
+        tier: "GOLD",
+        division: "II",
+        lp: 50,
+        wins: 10,
+        losses: 5,
+        recordedAt: new Date(),
+      }),
     ] as never);
 
     const result = await getLeaderboard("week");
@@ -64,8 +72,24 @@ describe("getLeaderboard", () => {
     const t0 = new Date("2024-01-01");
     const t1 = new Date("2024-01-07");
     vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([
-      makeEntry({ riotAccountId: "acc-1", tier: "GOLD", division: "II", lp: 50, wins: 10, losses: 5, recordedAt: t0 }),
-      makeEntry({ riotAccountId: "acc-1", tier: "GOLD", division: "II", lp: 75, wins: 11, losses: 6, recordedAt: t1 }),
+      makeEntry({
+        riotAccountId: "acc-1",
+        tier: "GOLD",
+        division: "II",
+        lp: 50,
+        wins: 10,
+        losses: 5,
+        recordedAt: t0,
+      }),
+      makeEntry({
+        riotAccountId: "acc-1",
+        tier: "GOLD",
+        division: "II",
+        lp: 75,
+        wins: 11,
+        losses: 6,
+        recordedAt: t1,
+      }),
       // wins diff = 1, losses diff = 1 → 2 games → excluded
     ] as never);
 
@@ -83,8 +107,24 @@ describe("getLeaderboard", () => {
     // Gold I  75LP = 3*400 + 3*100 + 75 = 1575
     // lpGained = 125
     vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([
-      makeEntry({ riotAccountId: "acc-1", tier: "GOLD", division: "II", lp: 50, wins: 10, losses: 5, recordedAt: t0 }),
-      makeEntry({ riotAccountId: "acc-1", tier: "GOLD", division: "I", lp: 75, wins: 14, losses: 7, recordedAt: t1 }),
+      makeEntry({
+        riotAccountId: "acc-1",
+        tier: "GOLD",
+        division: "II",
+        lp: 50,
+        wins: 10,
+        losses: 5,
+        recordedAt: t0,
+      }),
+      makeEntry({
+        riotAccountId: "acc-1",
+        tier: "GOLD",
+        division: "I",
+        lp: 75,
+        wins: 14,
+        losses: 7,
+        recordedAt: t1,
+      }),
     ] as never);
 
     const result = await getLeaderboard("week");
@@ -100,11 +140,49 @@ describe("getLeaderboard", () => {
     const t1 = new Date("2024-01-07");
     vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([
       // acc-1: small gain (100 LP)
-      makeEntry({ riotAccountId: "acc-1", tier: "GOLD", division: "II", lp: 0, wins: 5, losses: 2, recordedAt: t0, profileSlug: "p1" }),
-      makeEntry({ riotAccountId: "acc-1", tier: "GOLD", division: "II", lp: 100, wins: 10, losses: 5, recordedAt: t1, profileSlug: "p1" }),
+      makeEntry({
+        riotAccountId: "acc-1",
+        tier: "GOLD",
+        division: "II",
+        lp: 0,
+        wins: 5,
+        losses: 2,
+        recordedAt: t0,
+        profileSlug: "p1",
+      }),
+      makeEntry({
+        riotAccountId: "acc-1",
+        tier: "GOLD",
+        division: "II",
+        lp: 100,
+        wins: 10,
+        losses: 5,
+        recordedAt: t1,
+        profileSlug: "p1",
+      }),
       // acc-2: larger gain (500 LP)
-      makeEntry({ riotAccountId: "acc-2", tier: "SILVER", division: "I", lp: 0, wins: 5, losses: 2, recordedAt: t0, gameName: "Faker", profileSlug: "p2" }),
-      makeEntry({ riotAccountId: "acc-2", tier: "GOLD", division: "II", lp: 0, wins: 10, losses: 5, recordedAt: t1, gameName: "Faker", profileSlug: "p2" }),
+      makeEntry({
+        riotAccountId: "acc-2",
+        tier: "SILVER",
+        division: "I",
+        lp: 0,
+        wins: 5,
+        losses: 2,
+        recordedAt: t0,
+        gameName: "Faker",
+        profileSlug: "p2",
+      }),
+      makeEntry({
+        riotAccountId: "acc-2",
+        tier: "GOLD",
+        division: "II",
+        lp: 0,
+        wins: 10,
+        losses: 5,
+        recordedAt: t1,
+        gameName: "Faker",
+        profileSlug: "p2",
+      }),
     ] as never);
 
     const result = await getLeaderboard("week");
@@ -117,10 +195,48 @@ describe("getLeaderboard", () => {
     const t0 = new Date("2024-01-01");
     const t1 = new Date("2024-01-07");
     vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([
-      makeEntry({ riotAccountId: "acc-1", tier: "GOLD", division: "II", lp: 0, wins: 5, losses: 2, recordedAt: t0, profileSlug: "p1" }),
-      makeEntry({ riotAccountId: "acc-1", tier: "GOLD", division: "II", lp: 100, wins: 10, losses: 5, recordedAt: t1, profileSlug: "p1" }),
-      makeEntry({ riotAccountId: "acc-2", tier: "SILVER", division: "I", lp: 50, wins: 5, losses: 2, recordedAt: t0, gameName: "Faker", profileSlug: "p2" }),
-      makeEntry({ riotAccountId: "acc-2", tier: "GOLD", division: "I", lp: 0, wins: 10, losses: 5, recordedAt: t1, gameName: "Faker", profileSlug: "p2" }),
+      makeEntry({
+        riotAccountId: "acc-1",
+        tier: "GOLD",
+        division: "II",
+        lp: 0,
+        wins: 5,
+        losses: 2,
+        recordedAt: t0,
+        profileSlug: "p1",
+      }),
+      makeEntry({
+        riotAccountId: "acc-1",
+        tier: "GOLD",
+        division: "II",
+        lp: 100,
+        wins: 10,
+        losses: 5,
+        recordedAt: t1,
+        profileSlug: "p1",
+      }),
+      makeEntry({
+        riotAccountId: "acc-2",
+        tier: "SILVER",
+        division: "I",
+        lp: 50,
+        wins: 5,
+        losses: 2,
+        recordedAt: t0,
+        gameName: "Faker",
+        profileSlug: "p2",
+      }),
+      makeEntry({
+        riotAccountId: "acc-2",
+        tier: "GOLD",
+        division: "I",
+        lp: 0,
+        wins: 10,
+        losses: 5,
+        recordedAt: t1,
+        gameName: "Faker",
+        profileSlug: "p2",
+      }),
     ] as never);
 
     const result = await getLeaderboard("week");
@@ -136,8 +252,26 @@ describe("getLeaderboard", () => {
     const t1 = new Date("2024-01-07");
     // Create 60 accounts each with 10 games played
     const entries = Array.from({ length: 60 }, (_, i) => [
-      makeEntry({ riotAccountId: `acc-${i}`, tier: "GOLD", division: "II", lp: 0, wins: 5, losses: 2, recordedAt: t0, profileSlug: `slug-${i}` }),
-      makeEntry({ riotAccountId: `acc-${i}`, tier: "GOLD", division: "II", lp: 50, wins: 15, losses: 5, recordedAt: t1, profileSlug: `slug-${i}` }),
+      makeEntry({
+        riotAccountId: `acc-${i}`,
+        tier: "GOLD",
+        division: "II",
+        lp: 0,
+        wins: 5,
+        losses: 2,
+        recordedAt: t0,
+        profileSlug: `slug-${i}`,
+      }),
+      makeEntry({
+        riotAccountId: `acc-${i}`,
+        tier: "GOLD",
+        division: "II",
+        lp: 50,
+        wins: 15,
+        losses: 5,
+        recordedAt: t1,
+        profileSlug: `slug-${i}`,
+      }),
     ]).flat();
 
     vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue(entries as never);
@@ -152,8 +286,24 @@ describe("getLeaderboard", () => {
     const t1 = new Date("2024-01-07");
     // 6 wins, 4 losses → 60% WR
     vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([
-      makeEntry({ riotAccountId: "acc-1", tier: "GOLD", division: "II", lp: 0, wins: 10, losses: 10, recordedAt: t0 }),
-      makeEntry({ riotAccountId: "acc-1", tier: "GOLD", division: "II", lp: 50, wins: 16, losses: 14, recordedAt: t1 }),
+      makeEntry({
+        riotAccountId: "acc-1",
+        tier: "GOLD",
+        division: "II",
+        lp: 0,
+        wins: 10,
+        losses: 10,
+        recordedAt: t0,
+      }),
+      makeEntry({
+        riotAccountId: "acc-1",
+        tier: "GOLD",
+        division: "II",
+        lp: 50,
+        wins: 16,
+        losses: 14,
+        recordedAt: t1,
+      }),
     ] as never);
 
     const result = await getLeaderboard("week");

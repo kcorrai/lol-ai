@@ -7,22 +7,60 @@ const CACHE_TTL_DAYS = 1;
 const MIN_SAMPLE_SIZE = 50;
 
 const TIER_ORDER = [
-  "IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM",
-  "EMERALD", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER",
+  "IRON",
+  "BRONZE",
+  "SILVER",
+  "GOLD",
+  "PLATINUM",
+  "EMERALD",
+  "DIAMOND",
+  "MASTER",
+  "GRANDMASTER",
+  "CHALLENGER",
 ] as const;
 
 // Fallback values (publicly known tier averages) used when DB has insufficient data
 const STATIC_FALLBACK: Record<string, RankBenchmarks> = {
-  IRON:        { tier: "IRON",        avgCSPerMinute: 4.5, avgVisionScore: 18, avgKDA: 1.8, avgWinRate: 50 },
-  BRONZE:      { tier: "BRONZE",      avgCSPerMinute: 5.0, avgVisionScore: 20, avgKDA: 2.0, avgWinRate: 50 },
-  SILVER:      { tier: "SILVER",      avgCSPerMinute: 5.8, avgVisionScore: 22, avgKDA: 2.3, avgWinRate: 50 },
-  GOLD:        { tier: "GOLD",        avgCSPerMinute: 6.5, avgVisionScore: 26, avgKDA: 2.8, avgWinRate: 50 },
-  PLATINUM:    { tier: "PLATINUM",    avgCSPerMinute: 7.0, avgVisionScore: 28, avgKDA: 3.0, avgWinRate: 50 },
-  EMERALD:     { tier: "EMERALD",     avgCSPerMinute: 7.5, avgVisionScore: 30, avgKDA: 3.2, avgWinRate: 50 },
-  DIAMOND:     { tier: "DIAMOND",     avgCSPerMinute: 8.0, avgVisionScore: 32, avgKDA: 3.5, avgWinRate: 50 },
-  MASTER:      { tier: "MASTER",      avgCSPerMinute: 8.5, avgVisionScore: 35, avgKDA: 4.0, avgWinRate: 50 },
-  GRANDMASTER: { tier: "GRANDMASTER", avgCSPerMinute: 9.0, avgVisionScore: 38, avgKDA: 4.5, avgWinRate: 50 },
-  CHALLENGER:  { tier: "CHALLENGER",  avgCSPerMinute: 9.5, avgVisionScore: 40, avgKDA: 5.0, avgWinRate: 50 },
+  IRON: { tier: "IRON", avgCSPerMinute: 4.5, avgVisionScore: 18, avgKDA: 1.8, avgWinRate: 50 },
+  BRONZE: { tier: "BRONZE", avgCSPerMinute: 5.0, avgVisionScore: 20, avgKDA: 2.0, avgWinRate: 50 },
+  SILVER: { tier: "SILVER", avgCSPerMinute: 5.8, avgVisionScore: 22, avgKDA: 2.3, avgWinRate: 50 },
+  GOLD: { tier: "GOLD", avgCSPerMinute: 6.5, avgVisionScore: 26, avgKDA: 2.8, avgWinRate: 50 },
+  PLATINUM: {
+    tier: "PLATINUM",
+    avgCSPerMinute: 7.0,
+    avgVisionScore: 28,
+    avgKDA: 3.0,
+    avgWinRate: 50,
+  },
+  EMERALD: {
+    tier: "EMERALD",
+    avgCSPerMinute: 7.5,
+    avgVisionScore: 30,
+    avgKDA: 3.2,
+    avgWinRate: 50,
+  },
+  DIAMOND: {
+    tier: "DIAMOND",
+    avgCSPerMinute: 8.0,
+    avgVisionScore: 32,
+    avgKDA: 3.5,
+    avgWinRate: 50,
+  },
+  MASTER: { tier: "MASTER", avgCSPerMinute: 8.5, avgVisionScore: 35, avgKDA: 4.0, avgWinRate: 50 },
+  GRANDMASTER: {
+    tier: "GRANDMASTER",
+    avgCSPerMinute: 9.0,
+    avgVisionScore: 38,
+    avgKDA: 4.5,
+    avgWinRate: 50,
+  },
+  CHALLENGER: {
+    tier: "CHALLENGER",
+    avgCSPerMinute: 9.5,
+    avgVisionScore: 40,
+    avgKDA: 5.0,
+    avgWinRate: 50,
+  },
 };
 
 async function computeFromDb(): Promise<Record<string, RankBenchmarks>> {
@@ -63,7 +101,7 @@ export async function getRankBenchmarks(): Promise<Record<string, RankBenchmarks
   const cached = await getCached(CACHE_KEY);
   if (cached) return cached as Record<string, RankBenchmarks>;
 
-  const dbData = await computeFromDb().catch(() => ({} as Record<string, RankBenchmarks>));
+  const dbData = await computeFromDb().catch(() => ({}) as Record<string, RankBenchmarks>);
 
   // Merge: use DB data where we have enough samples, fall back per tier otherwise
   const merged: Record<string, RankBenchmarks> = {};
@@ -84,9 +122,9 @@ export async function getBenchmarkForTier(tier: string): Promise<RankBenchmarks 
 // Values are empirically derived from community data (patchpoints.gg / Fandom wiki averages).
 export interface AramBenchmarks {
   avgKDA: number;
-  avgDamageShare: number;   // fraction (0–1), typical carry champion: 0.20–0.28
+  avgDamageShare: number; // fraction (0–1), typical carry champion: 0.20–0.28
   avgHealingPerMinute: number; // approximate gold equivalent
-  avgVisionScore: number;  // much lower in ARAM (no wards)
+  avgVisionScore: number; // much lower in ARAM (no wards)
   avgGoldPerMinute: number;
 }
 

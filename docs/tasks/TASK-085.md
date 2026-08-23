@@ -67,15 +67,12 @@ Webhook URL ÅŸifreleme: `crypto.createCipheriv` ile AES-256, anahtar env var'd
 ```typescript
 // src/lib/discord/webhookService.ts
 
-export async function sendDiscordWebhook(
-  webhookUrl: string,
-  embed: DiscordEmbed
-): Promise<void>
+export async function sendDiscordWebhook(webhookUrl: string, embed: DiscordEmbed): Promise<void>;
 
 interface DiscordEmbed {
   title: string;
   description: string;
-  color: number;          // hex renk kodu
+  color: number; // hex renk kodu
   fields?: { name: string; value: string; inline?: boolean }[];
   footer?: { text: string };
   thumbnail?: { url: string };
@@ -87,14 +84,14 @@ interface DiscordEmbed {
 ```typescript
 // Rank change event tespit edilince (rankHistory'de tier deÄŸiÅŸimi):
 const embed = {
-  title: 'ğŸ† Rank AtladÄ±!',
+  title: "ğŸ† Rank AtladÄ±!",
   description: `**${gameName}#${tagLine}** yeni ranka ulaÅŸtÄ±!`,
-  color: 0xFFD700, // altÄ±n
+  color: 0xffd700, // altÄ±n
   fields: [
-    { name: 'Ã–nceki Rank', value: 'Gold II', inline: true },
-    { name: 'Yeni Rank', value: 'Platinum IV', inline: true },
+    { name: "Ã–nceki Rank", value: "Gold II", inline: true },
+    { name: "Yeni Rank", value: "Platinum IV", inline: true },
   ],
-  footer: { text: 'lolaicoach.com Â· AI destekli LoL koÃ§luÄŸu' }
+  footer: { text: "lolaicoach.com Â· AI destekli LoL koÃ§luÄŸu" },
 };
 ```
 
@@ -105,13 +102,14 @@ const embed = {
   title: `ğŸ–ï¸ Yeni Rozet: ${achievement.name}`,
   description: achievement.description,
   color: TIER_COLORS[achievement.tier], // bronz/gÃ¼mÃ¼ÅŸ/altÄ±n/platin
-  thumbnail: { url: `https://lolaicoach.com/achievements/${achievement.iconSlug}` }
+  thumbnail: { url: `https://lolaicoach.com/achievements/${achievement.iconSlug}` },
 };
 ```
 
 ### HaftalÄ±k Ã–zet MesajÄ±
 
 Pazartesi Inngest cron'u (mevcut haftalÄ±k email ile aynÄ± anda):
+
 ```typescript
 // Mevcut weeklyEmailSender.ts ile aynÄ± veriyi kullan
 // Email yerine Discord embed olarak gÃ¶nder
@@ -194,11 +192,11 @@ src/inngest/functions/weeklyEmailSender.ts              â† Discord webhook 
 ## Test Plan
 
 ```typescript
-describe('webhookService', () => {
-  it('geÃ§erli webhook URL â†’ 204 response bekleniyor (mock HTTP)')
-  it('geÃ§ersiz URL â†’ hata fÄ±rlatÄ±yor, kullanÄ±cÄ±ya gÃ¶steriliyor')
-  it('ÅŸifreleme/ÅŸifre Ã§Ã¶zme round-trip Ã§alÄ±ÅŸÄ±yor')
-})
+describe("webhookService", () => {
+  it("geÃ§erli webhook URL â†’ 204 response bekleniyor (mock HTTP)");
+  it("geÃ§ersiz URL â†’ hata fÄ±rlatÄ±yor, kullanÄ±cÄ±ya gÃ¶steriliyor");
+  it("ÅŸifreleme/ÅŸifre Ã§Ã¶zme round-trip Ã§alÄ±ÅŸÄ±yor");
+});
 ```
 
 ---
@@ -219,4 +217,3 @@ describe('webhookService', () => {
 - Ayarlar sayfasÄ± responsive
 - `docs/DATABASE_SCHEMA.md` gÃ¼ncellendi
 - `.env.example` gÃ¼ncellendi
-

@@ -24,9 +24,9 @@ export function EmailVerificationBanner() {
         router.replace(url.pathname + (url.search || ""), { scroll: false });
       });
     }
-  // Intentional empty deps — runs once on mount to clean up the ?email_verified=1 param.
-  // Adding update/router/searchParams would re-run on every render and cause a redirect loop.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Intentional empty deps — runs once on mount to clean up the ?email_verified=1 param.
+    // Adding update/router/searchParams would re-run on every render and cause a redirect loop.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Countdown tick
@@ -36,11 +36,7 @@ export function EmailVerificationBanner() {
     return () => clearTimeout(id);
   }, [cooldownSecs]);
 
-  if (
-    status !== "authenticated" ||
-    session.user.emailVerified ||
-    dismissed
-  ) {
+  if (status !== "authenticated" || session.user.emailVerified || dismissed) {
     return null;
   }
 
@@ -64,13 +60,13 @@ export function EmailVerificationBanner() {
     <div className="flex items-center gap-3 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3 text-sm">
       <MailWarning className="h-4 w-4 shrink-0 text-warning" />
       <p className="flex-1 text-warning">
-        <span className="font-medium">Your email is not verified.</span>{" "}
-        AI report generation is disabled — check your inbox.
+        <span className="font-medium">Your email is not verified.</span> AI report generation is
+        disabled — check your inbox.
       </p>
       <Button
         size="sm"
         variant="ghost"
-        className="h-7 gap-1.5 text-warning hover:text-warning hover:bg-warning/20 disabled:opacity-50"
+        className="h-7 gap-1.5 text-warning hover:bg-warning/20 hover:text-warning disabled:opacity-50"
         onClick={handleResend}
         disabled={sending || cooldownSecs > 0}
       >
@@ -80,7 +76,7 @@ export function EmailVerificationBanner() {
       <button
         aria-label="Close"
         onClick={() => setDismissed(true)}
-        className="text-warning/60 hover:text-warning transition-colors"
+        className="text-warning/60 transition-colors hover:text-warning"
       >
         <X className="h-4 w-4" />
       </button>

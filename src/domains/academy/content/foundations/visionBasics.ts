@@ -45,9 +45,21 @@ export const visionBasics: Lesson = {
       caption: "Where the ward goes and why",
       head: ["Phase", "Where", "The question it answers"],
       rows: [
-        ["0–14 min", "The river bush or tri-bush on your jungler-facing side", "Is the enemy jungler coming for me right now?"],
-        ["14–20 min", "The enemy approach to the next drake or Baron pit", "Can we start this objective safely?"],
-        ["20+ min", "Chokepoints between you and the objective you want", "Is it safe for five people to walk here?"],
+        [
+          "0–14 min",
+          "The river bush or tri-bush on your jungler-facing side",
+          "Is the enemy jungler coming for me right now?",
+        ],
+        [
+          "14–20 min",
+          "The enemy approach to the next drake or Baron pit",
+          "Can we start this objective safely?",
+        ],
+        [
+          "20+ min",
+          "Chokepoints between you and the objective you want",
+          "Is it safe for five people to walk here?",
+        ],
       ],
     },
     {

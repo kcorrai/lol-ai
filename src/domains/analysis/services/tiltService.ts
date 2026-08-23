@@ -75,8 +75,7 @@ export async function computeTiltStatus(riotAccountId: string): Promise<TiltStat
 
   score = Math.min(score, 100);
 
-  const level: TiltLevel =
-    score <= 30 ? "focused" : score <= 60 ? "caution" : "tilting";
+  const level: TiltLevel = score <= 30 ? "focused" : score <= 60 ? "caution" : "tilting";
 
   return {
     level,
@@ -100,11 +99,12 @@ export interface RecentMatchSnippet {
 export async function generateTiltRecoveryMessage(
   recentMatches: RecentMatchSnippet[]
 ): Promise<string> {
-  const streak = recentMatches.filter(m => !m.won).length;
-  const avgDeaths = recentMatches.length > 0
-    ? (recentMatches.reduce((s, m) => s + m.deaths, 0) / recentMatches.length).toFixed(1)
-    : "?";
-  const champs = recentMatches.map(m => m.championName).join(", ");
+  const streak = recentMatches.filter((m) => !m.won).length;
+  const avgDeaths =
+    recentMatches.length > 0
+      ? (recentMatches.reduce((s, m) => s + m.deaths, 0) / recentMatches.length).toFixed(1)
+      : "?";
+  const champs = recentMatches.map((m) => m.championName).join(", ");
 
   const ai = getAiClient("lite");
   const result = await ai.complete(

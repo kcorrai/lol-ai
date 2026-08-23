@@ -15,8 +15,19 @@ const RANGES = [
   { value: "90d", label: "90G" },
 ] as const;
 
-const RANK_ORDER = ["IRON","BRONZE","SILVER","GOLD","PLATINUM","EMERALD","DIAMOND","MASTER","GRANDMASTER","CHALLENGER"];
-const DIV_ORDER = ["IV","III","II","I"];
+const RANK_ORDER = [
+  "IRON",
+  "BRONZE",
+  "SILVER",
+  "GOLD",
+  "PLATINUM",
+  "EMERALD",
+  "DIAMOND",
+  "MASTER",
+  "GRANDMASTER",
+  "CHALLENGER",
+];
+const DIV_ORDER = ["IV", "III", "II", "I"];
 
 function rankScore(m: TeamMemberSummary): number {
   if (!m.rank) return -1;
@@ -25,7 +36,11 @@ function rankScore(m: TeamMemberSummary): number {
   return tierIdx * 400 + divIdx * 100 + m.rank.lp;
 }
 
-function sortMembers(members: TeamMemberSummary[], key: SortKey, dir: SortDir): TeamMemberSummary[] {
+function sortMembers(
+  members: TeamMemberSummary[],
+  key: SortKey,
+  dir: SortDir
+): TeamMemberSummary[] {
   return [...members].sort((a, b) => {
     let diff = 0;
     if (key === "rank") diff = rankScore(a) - rankScore(b);
@@ -38,10 +53,12 @@ function sortMembers(members: TeamMemberSummary[], key: SortKey, dir: SortDir): 
 }
 
 function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
-  if (!active) return <ChevronsUpDown className="inline ml-1 h-3 w-3 opacity-40" />;
-  return dir === "desc"
-    ? <ChevronDown className="inline ml-1 h-3 w-3 text-info" />
-    : <ChevronUp className="inline ml-1 h-3 w-3 text-info" />;
+  if (!active) return <ChevronsUpDown className="ml-1 inline h-3 w-3 opacity-40" />;
+  return dir === "desc" ? (
+    <ChevronDown className="ml-1 inline h-3 w-3 text-info" />
+  ) : (
+    <ChevronUp className="ml-1 inline h-3 w-3 text-info" />
+  );
 }
 
 interface TeamComparisonTableProps {
@@ -81,15 +98,22 @@ export function TeamComparisonTable({ teamId }: TeamComparisonTableProps) {
       {/* Range selector */}
       <div className="flex items-center gap-1">
         {RANGES.map((r) => (
-          <button key={r.value} onClick={() => setRange(r.value)}
-            className={cn("rounded-lg px-3 py-1 text-xs font-semibold transition-colors",
-              range === r.value ? "bg-info/20 text-info" : "text-text-muted hover:bg-white/5 hover:text-text")}>
+          <button
+            key={r.value}
+            onClick={() => setRange(r.value)}
+            className={cn(
+              "rounded-lg px-3 py-1 text-xs font-semibold transition-colors",
+              range === r.value
+                ? "bg-info/20 text-info"
+                : "text-text-muted hover:bg-white/5 hover:text-text"
+            )}
+          >
             {r.label}
           </button>
         ))}
       </div>
 
-      <div className="rounded-xl border border-border bg-surface overflow-x-auto">
+      <div className="overflow-x-auto rounded-xl border border-border bg-surface">
         {isLoading ? (
           <div className="flex h-24 items-center justify-center">
             <Loader2 className="h-5 w-5 animate-spin text-text-muted" />
@@ -111,17 +135,33 @@ export function TeamComparisonTable({ teamId }: TeamComparisonTableProps) {
                 <tr key={m.userId} className="hover:bg-surface-2/50">
                   <td className="px-4 py-3">
                     <p className="font-medium text-text">{m.gameName}</p>
-                    <p className="text-[10px] text-text-muted capitalize">{m.role.toLowerCase()}</p>
+                    <p className="text-[10px] capitalize text-text-muted">{m.role.toLowerCase()}</p>
                   </td>
                   <td className="px-4 py-3 text-center">
-                    {m.rank ? <span className="font-semibold text-accent">{m.rank.tier} {m.rank.division}</span> : <span className="text-text-muted">—</span>}
+                    {m.rank ? (
+                      <span className="font-semibold text-accent">
+                        {m.rank.tier} {m.rank.division}
+                      </span>
+                    ) : (
+                      <span className="text-text-muted">—</span>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-center">
                     {m.winRate7d !== null ? (
-                      <span className={m.winRate7d >= 55 ? "font-semibold text-success" : m.winRate7d < 45 ? "text-danger" : "text-text"}>
+                      <span
+                        className={
+                          m.winRate7d >= 55
+                            ? "font-semibold text-success"
+                            : m.winRate7d < 45
+                              ? "text-danger"
+                              : "text-text"
+                        }
+                      >
                         {m.winRate7d}%
                       </span>
-                    ) : <span className="text-text-muted">—</span>}
+                    ) : (
+                      <span className="text-text-muted">—</span>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-center text-text">{m.avgKDA7d ?? "—"}</td>
                   <td className="px-4 py-3 text-center text-text">{m.avgCSPerMinute7d ?? "—"}</td>

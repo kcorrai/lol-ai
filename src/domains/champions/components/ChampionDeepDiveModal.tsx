@@ -7,15 +7,15 @@ import type { DeathCluster } from "@/domains/analysis/types/analysis.types";
 
 const DEATH_TIMING_LABEL: Record<DeathCluster, string> = {
   early_game: "Early-game",
-  mid_game:   "Mid-game",
-  late_game:  "Late-game",
-  spread:     "Spread",
+  mid_game: "Mid-game",
+  late_game: "Late-game",
+  spread: "Spread",
 };
 const DEATH_TIMING_COLOR: Record<DeathCluster, string> = {
   early_game: "bg-warning/15 text-warning",
-  mid_game:   "bg-danger/15 text-danger",
-  late_game:  "bg-accent/15 text-accent",
-  spread:     "bg-border text-text-muted",
+  mid_game: "bg-danger/15 text-danger",
+  late_game: "bg-accent/15 text-accent",
+  spread: "bg-border text-text-muted",
 };
 
 interface Props {
@@ -29,27 +29,28 @@ export function ChampionDeepDiveModal({ riotAccountId, championName, onClose }: 
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm sm:items-center"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="w-full max-w-lg rounded-t-2xl sm:rounded-2xl border border-border bg-surface shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-t-2xl border border-border bg-surface shadow-2xl sm:rounded-2xl">
         {/* Header */}
         <div className="sticky top-0 flex items-center justify-between border-b border-border bg-surface px-5 py-4">
           <div className="flex items-center gap-3">
             <ChampionIcon name={championName} size={40} />
             <div>
               <p className="font-display text-base font-semibold text-text">{championName}</p>
-              {data && (
-                <p className="text-xs text-text-muted">{data.gamesPlayed} ranked games</p>
-              )}
+              {data && <p className="text-xs text-text-muted">{data.gamesPlayed} ranked games</p>}
             </div>
           </div>
-          <button onClick={onClose} className="rounded-lg p-1.5 text-text-muted hover:text-text transition-colors">
+          <button
+            onClick={onClose}
+            className="rounded-lg p-1.5 text-text-muted transition-colors hover:text-text"
+          >
             <X className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="p-5 space-y-5">
+        <div className="space-y-5 p-5">
           {isLoading ? (
             <div className="space-y-3">
               {[1, 2, 3].map((i) => (
@@ -57,7 +58,7 @@ export function ChampionDeepDiveModal({ riotAccountId, championName, onClose }: 
               ))}
             </div>
           ) : !data ? (
-            <p className="text-center text-sm text-text-muted py-8">
+            <p className="py-8 text-center text-sm text-text-muted">
               Not enough games on {championName} to show a deep dive.
             </p>
           ) : (
@@ -65,14 +66,27 @@ export function ChampionDeepDiveModal({ riotAccountId, championName, onClose }: 
               {/* Stats row */}
               <div className="grid grid-cols-4 gap-2">
                 {[
-                  { label: "Win Rate", value: `${data.winRate}%`, color: data.winRate >= 55 ? "text-success" : data.winRate >= 50 ? "text-warning" : "text-danger" },
-                  { label: "KDA",      value: data.avgKda.toFixed(2), color: "text-text" },
-                  { label: "CS/min",   value: data.avgCsPerMinute.toFixed(1), color: "text-text" },
-                  { label: "Deaths/G", value: data.avgDeathsPerGame.toFixed(1), color: data.avgDeathsPerGame > 4 ? "text-danger" : "text-text" },
+                  {
+                    label: "Win Rate",
+                    value: `${data.winRate}%`,
+                    color:
+                      data.winRate >= 55
+                        ? "text-success"
+                        : data.winRate >= 50
+                          ? "text-warning"
+                          : "text-danger",
+                  },
+                  { label: "KDA", value: data.avgKda.toFixed(2), color: "text-text" },
+                  { label: "CS/min", value: data.avgCsPerMinute.toFixed(1), color: "text-text" },
+                  {
+                    label: "Deaths/G",
+                    value: data.avgDeathsPerGame.toFixed(1),
+                    color: data.avgDeathsPerGame > 4 ? "text-danger" : "text-text",
+                  },
                 ].map(({ label, value, color }) => (
                   <div key={label} className="rounded-lg bg-surface-2 p-2.5 text-center">
-                    <p className={`text-lg font-bold font-display ${color}`}>{value}</p>
-                    <p className="text-[10px] text-text-muted mt-0.5">{label}</p>
+                    <p className={`font-display text-lg font-bold ${color}`}>{value}</p>
+                    <p className="mt-0.5 text-[10px] text-text-muted">{label}</p>
                   </div>
                 ))}
               </div>
@@ -87,7 +101,7 @@ export function ChampionDeepDiveModal({ riotAccountId, championName, onClose }: 
                     <div
                       key={i}
                       title={`${g.kills}/${g.deaths}/${g.assists} · ${g.csPerMinute} CS/m · ${g.gameDate}`}
-                      className={`h-6 w-6 rounded flex items-center justify-center text-[10px] font-bold cursor-default ${
+                      className={`flex h-6 w-6 cursor-default items-center justify-center rounded text-[10px] font-bold ${
                         g.won ? "bg-success/20 text-success" : "bg-danger/20 text-danger"
                       }`}
                     >
@@ -100,7 +114,9 @@ export function ChampionDeepDiveModal({ riotAccountId, championName, onClose }: 
               {/* Death timing */}
               <div className="flex items-center gap-2">
                 <span className="text-xs text-text-muted">Deaths tend to happen:</span>
-                <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${DEATH_TIMING_COLOR[data.deathTiming]}`}>
+                <span
+                  className={`rounded-full px-2 py-0.5 text-xs font-medium ${DEATH_TIMING_COLOR[data.deathTiming]}`}
+                >
                   {DEATH_TIMING_LABEL[data.deathTiming]}
                 </span>
               </div>
@@ -113,8 +129,9 @@ export function ChampionDeepDiveModal({ riotAccountId, championName, onClose }: 
                 {data.coachingSummary ? (
                   <p className="text-sm leading-relaxed text-text-muted">{data.coachingSummary}</p>
                 ) : (
-                  <p className="text-xs text-text-muted italic">
-                    Analysis not available — make sure you have at least 3 ranked games on this champion.
+                  <p className="text-xs italic text-text-muted">
+                    Analysis not available — make sure you have at least 3 ranked games on this
+                    champion.
                   </p>
                 )}
               </div>

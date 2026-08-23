@@ -15,7 +15,10 @@ function loadEnvFiles(filenames: string[]): void {
       const eq = line.indexOf("=");
       if (eq === -1) continue;
       const key = line.slice(0, eq).trim();
-      const val = line.slice(eq + 1).trim().replace(/^["'](.*)["']$/, "$1");
+      const val = line
+        .slice(eq + 1)
+        .trim()
+        .replace(/^["'](.*)["']$/, "$1");
       if (key && !process.env[key]) process.env[key] = val;
     }
   }
@@ -65,7 +68,9 @@ async function fetchJson<T>(url: string): Promise<T> {
     if (err instanceof Error && err.name === "AbortError") {
       throw new Error(`Request timed out after ${FETCH_TIMEOUT_MS}ms: ${url}`);
     }
-    throw new Error(`Network failure fetching ${url}: ${err instanceof Error ? err.message : String(err)}`);
+    throw new Error(
+      `Network failure fetching ${url}: ${err instanceof Error ? err.message : String(err)}`
+    );
   } finally {
     clearTimeout(timer);
   }
@@ -157,9 +162,7 @@ export async function syncChampions(prisma: PrismaClient): Promise<void> {
 // Guard: only execute when run directly via `tsx scripts/syncChampions.ts`,
 // not when imported by seed.ts or other modules.
 
-const isEntryPoint = process.argv[1]
-  ?.replace(/\\/g, "/")
-  .endsWith("scripts/syncChampions.ts");
+const isEntryPoint = process.argv[1]?.replace(/\\/g, "/").endsWith("scripts/syncChampions.ts");
 
 if (isEntryPoint) {
   loadEnvFiles([".env", ".env.local"]);

@@ -22,7 +22,14 @@ interface ChampionStat {
 function computeChampionStats(matches: MatchPerformance[]): ChampionStat[] {
   const map = new Map<string, ChampionStat>();
   for (const m of matches) {
-    const prev = map.get(m.champion) ?? { name: m.champion, games: 0, wins: 0, kills: 0, deaths: 0, assists: 0 };
+    const prev = map.get(m.champion) ?? {
+      name: m.champion,
+      games: 0,
+      wins: 0,
+      kills: 0,
+      deaths: 0,
+      assists: 0,
+    };
     map.set(m.champion, {
       ...prev,
       games: prev.games + 1,
@@ -39,9 +46,13 @@ export function TopChampionsWidget({ matches, isLoading }: Props) {
   if (isLoading) {
     return (
       <Card>
-        <CardHeader className="pb-2"><Skeleton className="h-4 w-28" /></CardHeader>
+        <CardHeader className="pb-2">
+          <Skeleton className="h-4 w-28" />
+        </CardHeader>
         <CardContent className="space-y-3">
-          {[1, 2, 3].map((i) => <Skeleton key={i} className="h-14 w-full" />)}
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-14 w-full" />
+          ))}
         </CardContent>
       </Card>
     );
@@ -66,13 +77,17 @@ export function TopChampionsWidget({ matches, isLoading }: Props) {
           return (
             <div key={c.name} className="flex items-center gap-3 rounded-lg bg-surface-2 px-3 py-2">
               <ChampionIcon name={c.name} size={40} className="shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-text truncate">{c.name}</p>
-                <p className="text-xs text-text-muted">{c.games} games · KDA {kda}</p>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold text-text">{c.name}</p>
+                <p className="text-xs text-text-muted">
+                  {c.games} games · KDA {kda}
+                </p>
               </div>
-              <div className="text-right shrink-0">
+              <div className="shrink-0 text-right">
                 <p className={`text-sm font-bold ${wrColor}`}>{wr}%</p>
-                <p className="text-xs text-text-muted">{c.wins}W {c.games - c.wins}L</p>
+                <p className="text-xs text-text-muted">
+                  {c.wins}W {c.games - c.wins}L
+                </p>
               </div>
             </div>
           );

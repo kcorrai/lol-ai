@@ -41,7 +41,7 @@ export function DemoSearchBox() {
     try {
       const params = new URLSearchParams({ gameName, tagLine, region });
       const res = await fetch(`/api/public/preview?${params}`);
-      const json = await res.json() as { data?: PreviewResponse; error?: string };
+      const json = (await res.json()) as { data?: PreviewResponse; error?: string };
       if (!res.ok || json.error) {
         setError(json.error ?? "An error occurred.");
       } else if (json.data) {
@@ -62,7 +62,7 @@ export function DemoSearchBox() {
             type="text"
             placeholder="PlayerName#TR1"
             value={input}
-            onChange={e => setInput(e.target.value)}
+            onChange={(e) => setInput(e.target.value)}
             className="flex-1 bg-transparent px-4 py-3 text-sm text-text placeholder-text-muted outline-none"
             autoComplete="off"
             spellCheck={false}
@@ -70,10 +70,10 @@ export function DemoSearchBox() {
           <div className="my-2.5 w-px bg-border" />
           <select
             value={region}
-            onChange={e => setRegion(e.target.value)}
+            onChange={(e) => setRegion(e.target.value)}
             className="bg-transparent px-3 py-3 text-xs text-text-muted outline-none"
           >
-            {REGIONS.map(r => (
+            {REGIONS.map((r) => (
               <option key={r.value} value={r.value}>
                 {r.label}
               </option>
@@ -89,16 +89,14 @@ export function DemoSearchBox() {
         </button>
       </form>
 
-      {error && (
-        <p className="mt-3 text-center text-sm text-danger">{error}</p>
-      )}
+      {error && <p className="mt-3 text-center text-sm text-danger">{error}</p>}
 
       {loading && (
         <div className="mt-6 space-y-3 rounded-xl border border-border bg-surface p-6">
           <div className="h-5 w-48 animate-pulse rounded bg-surface-2" />
           <div className="h-4 w-32 animate-pulse rounded bg-surface-2" />
           <div className="mt-4 grid grid-cols-3 gap-3">
-            {[0, 1, 2].map(i => (
+            {[0, 1, 2].map((i) => (
               <div key={i} className="h-16 animate-pulse rounded-lg bg-surface-2" />
             ))}
           </div>

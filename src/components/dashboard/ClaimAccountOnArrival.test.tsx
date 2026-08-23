@@ -40,7 +40,7 @@ describe("ClaimAccountOnArrival", () => {
       expect(apiFetch).toHaveBeenCalledWith("/api/riot/connect", {
         method: "POST",
         body: JSON.stringify({ region: "tr1", gameName: "kaanproak0", tagLine: "TR1" }),
-      }),
+      })
     );
   });
 
@@ -76,7 +76,7 @@ describe("ClaimAccountOnArrival", () => {
 
   it("stays quiet when the account was already connected in another tab", async () => {
     vi.mocked(apiFetch).mockRejectedValue(
-      new Error("This Riot account is already connected to your profile."),
+      new Error("This Riot account is already connected to your profile.")
     );
     render(<ClaimAccountOnArrival />);
 
@@ -92,7 +92,7 @@ describe("ClaimAccountOnArrival", () => {
     expect(alert).toHaveTextContent("Riot ID not found");
     expect(screen.getByRole("link", { name: /account settings/i })).toHaveAttribute(
       "href",
-      "/settings/accounts",
+      "/settings/accounts"
     );
   });
 });

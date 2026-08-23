@@ -15,9 +15,7 @@ export interface TeamInviteEmailData {
   expiresHours: number;
 }
 
-export function buildTeamInviteEmail(
-  data: TeamInviteEmailData
-): { subject: string; html: string } {
+export function buildTeamInviteEmail(data: TeamInviteEmailData): { subject: string; html: string } {
   const subject = `You're invited to join the ${data.teamName} team`;
   const safeTeamName = escapeHtml(data.teamName);
   const safeInviterName = escapeHtml(data.inviterName);

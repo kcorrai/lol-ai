@@ -45,6 +45,7 @@ exactly "when we last confirmed this account against Riot", so no migration is
 needed. Actively-synced accounts are refreshed by the sync path itself.
 
 **Purge** — for a forgotten `puuid`:
+
 1. Scrub the identifying columns on every `MatchParticipant` row for that puuid
    (`gameName`/`tagLine` → null). The rows are kept so match aggregates stay
    intact; what remains is the pseudonymous puuid, not a human-identifiable name.

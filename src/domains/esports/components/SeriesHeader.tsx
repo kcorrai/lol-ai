@@ -22,9 +22,7 @@ function TeamSide({
   align: "left" | "right";
 }): React.JSX.Element {
   if (!team) {
-    return (
-      <span className={`hud-label ${align === "right" ? "text-right" : ""}`}>TBD</span>
-    );
+    return <span className={`hud-label ${align === "right" ? "text-right" : ""}`}>TBD</span>;
   }
 
   const name = slug ? (
@@ -111,7 +109,7 @@ export function SeriesHeader({
         <TeamSide team={home} slug={home ? teamSlugs.get(home.id) : undefined} align="left" />
 
         <div className="text-center">
-          <div className="font-mono text-3xl font-bold leading-none tabular-nums text-fg-1 md:text-4xl">
+          <div className="font-mono text-3xl font-bold tabular-nums leading-none text-fg-1 md:text-4xl">
             {home?.gameWins ?? 0}
             <span className="mx-2 text-fg-4">–</span>
             {away?.gameWins ?? 0}

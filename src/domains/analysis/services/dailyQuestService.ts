@@ -10,12 +10,7 @@ import { getActiveChallenges } from "./challengeProgressService";
 import type { ChallengeWithProgress } from "./challengeConstants";
 import { TEMPLATES } from "./challengeConstants";
 import type { ChallengeMetric } from "./challengeConstants";
-import {
-  dayWindow,
-  pickOnSiteTask,
-  questDateKey,
-  shiftDateKey,
-} from "./dailyQuestCatalog";
+import { dayWindow, pickOnSiteTask, questDateKey, shiftDateKey } from "./dailyQuestCatalog";
 import { loadQuestSignals } from "./dailyQuestSignals";
 import type { QuestSignals } from "./dailyQuestSignals";
 

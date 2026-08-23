@@ -13,17 +13,20 @@ type InngestEvent = Parameters<typeof inngest.send>[0];
 // also gives graceful degradation if Inngest has an outage in production (TASK-223).
 export async function dispatchOrRunInProcess(
   event: InngestEvent,
-  inProcess: () => Promise<unknown>,
+  inProcess: () => Promise<unknown>
 ): Promise<void> {
   try {
     await inngest.send(event);
   } catch (err) {
     logger.warn(
-      `[dispatch] Inngest send failed, running in-process: ${err instanceof Error ? err.message : String(err)}`,
+      `[dispatch] Inngest send failed, running in-process: ${err instanceof Error ? err.message : String(err)}`
     );
     // Fire-and-forget — the caller has already responded 202/accepted; status is tracked in the DB.
     void inProcess().catch((e) =>
-      logger.error("[dispatch] In-process fallback failed", e instanceof Error ? e : new Error(String(e))),
+      logger.error(
+        "[dispatch] In-process fallback failed",
+        e instanceof Error ? e : new Error(String(e))
+      )
     );
   }
 }
@@ -45,10 +48,7 @@ export async function dispatchOrRunInProcess(
  * failing their request because a follow-up job could not be queued would turn a degraded
  * background path into a broken foreground one.
  */
-export async function dispatchOrReport(
-  events: InngestEvent,
-  context: string
-): Promise<boolean> {
+export async function dispatchOrReport(events: InngestEvent, context: string): Promise<boolean> {
   try {
     await inngest.send(events);
     return true;
@@ -70,5 +70,7 @@ export async function dispatchOrReport(
 /** The event names in a send, for a log line that says what was actually lost. */
 function eventNames(events: InngestEvent): string[] {
   const list = Array.isArray(events) ? events : [events];
-  return list.map((e) => (typeof e === "object" && e !== null && "name" in e ? String(e.name) : "unknown"));
+  return list.map((e) =>
+    typeof e === "object" && e !== null && "name" in e ? String(e.name) : "unknown"
+  );
 }

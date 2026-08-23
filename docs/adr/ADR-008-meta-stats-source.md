@@ -11,6 +11,7 @@ counter matchups — that we cannot derive cheaply from our own database (we onl
 have our users' matches, not the global ladder).
 
 Options considered:
+
 - **Riot Match-V5 aggregation** — would require crawling millions of ranked games
   under our rate-limited key. Infeasible and expensive.
 - **Data Dragon only** — free and official, but has no win-rate/meta data.

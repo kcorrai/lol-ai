@@ -56,6 +56,9 @@ export async function handleAutocomplete(
 
   return hits.map((hit) => {
     const riotId = `${hit.gameName}#${hit.tagLine}`;
-    return { name: `${riotId} · ${hit.region.toUpperCase()}`.slice(0, 100), value: riotId.slice(0, 100) };
+    return {
+      name: `${riotId} · ${hit.region.toUpperCase()}`.slice(0, 100),
+      value: riotId.slice(0, 100),
+    };
   });
 }

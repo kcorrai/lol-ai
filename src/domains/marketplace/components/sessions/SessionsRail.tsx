@@ -15,7 +15,11 @@ const LEGEND: { label: string; tone: ChipTone; body: string }[] = [
     tone: "warn",
     body: `Sent, not answered. Expires on its own after ${COACH_RESPONSE_HOURS} hours and the money goes back.`,
   },
-  { label: "Confirmed", tone: "good", body: "Accepted and scheduled. Money is held, not paid out." },
+  {
+    label: "Confirmed",
+    tone: "good",
+    body: "Accepted and scheduled. Money is held, not paid out.",
+  },
   {
     label: "Delivered",
     tone: "neutral",

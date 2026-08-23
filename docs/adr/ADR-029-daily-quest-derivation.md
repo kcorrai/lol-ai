@@ -34,7 +34,7 @@ Store nothing. The quest is computed on read.
   already issues. It is passed through, never re-derived — two places deciding
   today's metric goal would eventually contradict each other on the same screen.
 - **The streak** replays the last 30 days over those same signals. A day counts
-  when every objective *issued that day* was finished; today is graded but never
+  when every objective _issued that day_ was finished; today is graded but never
   breaks the run, since an unfinished quest at 09:00 is a quest in progress.
 
 XP stays owned by whatever system grants it today. The quest endpoint reports

@@ -41,7 +41,8 @@ export const GET = withAuth(async (req: NextRequest, { userId }) => {
     reportType: report.reportType as ReportPDFData["reportType"],
     riotId: account ? `${account.gameName}#${account.tagLine}` : "Unknown",
     rank: rankStr,
-    createdAt: report.createdAt instanceof Date ? report.createdAt.toISOString() : String(report.createdAt),
+    createdAt:
+      report.createdAt instanceof Date ? report.createdAt.toISOString() : String(report.createdAt),
     matchCount: report.matchesAnalyzed.length,
     summary: report.summary,
     coachPersonaResponse: report.coachPersonaResponse,

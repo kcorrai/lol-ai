@@ -49,7 +49,9 @@ export function DisputeCard({ dispute, pending, onResolve }: Props): React.React
       <div className="flex flex-wrap items-start justify-between gap-4 border-b border-line-1 p-5">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2.5">
-            <StatusChip tone={open ? "warn" : dispute.status === "RESOLVED_REFUND" ? "bad" : "good"}>
+            <StatusChip
+              tone={open ? "warn" : dispute.status === "RESOLVED_REFUND" ? "bad" : "good"}
+            >
               {open ? "Open" : dispute.status === "RESOLVED_REFUND" ? "Refunded" : "Released"}
             </StatusChip>
             <h3 className="font-display text-[18px] font-extrabold uppercase tracking-[0.03em] text-text">

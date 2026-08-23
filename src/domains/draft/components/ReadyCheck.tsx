@@ -16,13 +16,7 @@ interface Props {
  * start — which is also the last moment either drafter can change who sits on
  * blue side for this game.
  */
-export function ReadyCheck({
-  state,
-  game,
-  role,
-  onSwapSides,
-  pending,
-}: Props): React.ReactElement {
+export function ReadyCheck({ state, game, role, onSwapSides, pending }: Props): React.ReactElement {
   const isDrafter = role !== "SPECTATOR";
   const myReady = role === "BLUE" ? game.blueReady : game.redReady;
   const theirReady = role === "BLUE" ? game.redReady : game.blueReady;

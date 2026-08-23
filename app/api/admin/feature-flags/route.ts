@@ -15,7 +15,10 @@ async function assertAdmin(): Promise<boolean> {
 }
 
 const createSchema = z.object({
-  key: z.string().min(1).regex(/^[a-z0-9_]+$/),
+  key: z
+    .string()
+    .min(1)
+    .regex(/^[a-z0-9_]+$/),
   description: z.string().default(""),
   enabled: z.boolean().default(false),
   rolloutPercentage: z.number().int().min(0).max(100).default(100),
@@ -25,14 +28,14 @@ const createSchema = z.object({
 const updateSchema = createSchema.partial().extend({ id: z.string().uuid() });
 
 export async function GET(): Promise<NextResponse> {
-  if (!await assertAdmin()) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!(await assertAdmin())) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const flags = await prisma.featureFlag.findMany({ orderBy: { createdAt: "desc" } });
   return NextResponse.json({ data: flags });
 }
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  if (!await assertAdmin()) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!(await assertAdmin())) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const body = await req.json().catch(() => null);
   const parsed = createSchema.safeParse(body);
@@ -43,7 +46,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 }
 
 export async function PATCH(req: NextRequest): Promise<NextResponse> {
-  if (!await assertAdmin()) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!(await assertAdmin())) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const body = await req.json().catch(() => null);
   const parsed = updateSchema.safeParse(body);
@@ -63,7 +66,7 @@ export async function PATCH(req: NextRequest): Promise<NextResponse> {
 }
 
 export async function DELETE(req: NextRequest): Promise<NextResponse> {
-  if (!await assertAdmin()) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!(await assertAdmin())) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");

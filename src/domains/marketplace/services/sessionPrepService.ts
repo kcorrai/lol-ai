@@ -38,10 +38,7 @@ export interface SessionPrep {
  * Refused for anybody else — including the student, who has all of this on
  * their own dashboard already and does not need a second copy of it here.
  */
-export async function sessionPrep(
-  bookingId: string,
-  userId: string
-): Promise<SessionPrep | null> {
+export async function sessionPrep(bookingId: string, userId: string): Promise<SessionPrep | null> {
   const booking = await prisma.booking.findFirst({
     where: { id: bookingId, coachProfile: { userId } },
     select: {

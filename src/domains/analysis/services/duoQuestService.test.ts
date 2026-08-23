@@ -46,7 +46,7 @@ function sharedGames(count: number, won = true): void {
       assists: 8,
       visionScore: 30,
       csPerMinute: 7,
-    })),
+    }))
   );
 }
 
@@ -59,7 +59,7 @@ beforeEach(() => {
   vi.mocked(loadDuoMatches).mockResolvedValue({ own: [], partner: [] });
   vi.mocked(prisma.duoQuest.findMany).mockResolvedValue([] as never);
   vi.mocked(prisma.$transaction).mockImplementation(
-    (fn) => (fn as unknown as (t: unknown) => Promise<unknown>)(tx) as never,
+    (fn) => (fn as unknown as (t: unknown) => Promise<unknown>)(tx) as never
   );
   sharedGames(0);
 });
@@ -112,7 +112,7 @@ describe("getDuoQuests", () => {
     sharedGames(20);
     const keys = questsForWeek(WEEK.start).map((q) => q.key);
     vi.mocked(prisma.duoQuest.findMany).mockResolvedValue(
-      keys.map((key) => ({ key, completed: true })) as never,
+      keys.map((key) => ({ key, completed: true })) as never
     );
 
     const result = await getDuoQuests(ACCOUNT_ID, NOW);
@@ -136,7 +136,7 @@ describe("getDuoQuests", () => {
             periodStart: WEEK.start,
           }),
         },
-      }),
+      })
     );
   });
 

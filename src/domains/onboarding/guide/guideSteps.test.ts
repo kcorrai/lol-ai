@@ -1,7 +1,13 @@
 import { describe, it, expect } from "vitest";
 import { readdirSync, readFileSync } from "fs";
 import { join } from "path";
-import { GUIDE_STEPS, GUIDE_STORAGE_KEY, isGateSatisfied, storageKeyFor, type GuideGates } from "./guideSteps";
+import {
+  GUIDE_STEPS,
+  GUIDE_STORAGE_KEY,
+  isGateSatisfied,
+  storageKeyFor,
+  type GuideGates,
+} from "./guideSteps";
 import { NAV_SECTIONS, NAV_SETTINGS } from "@/components/layout/navConfig";
 
 /** The sidebar and bottom nav set `data-tour` from config rather than a literal. */
@@ -23,8 +29,18 @@ function tsxFilesUnder(...roots: string[]): string[] {
   return out;
 }
 
-const NONE: GuideGates = { hasAccount: false, hasMatches: false, hasCompleteReport: false, hasPlan: false };
-const ALL: GuideGates = { hasAccount: true, hasMatches: true, hasCompleteReport: true, hasPlan: true };
+const NONE: GuideGates = {
+  hasAccount: false,
+  hasMatches: false,
+  hasCompleteReport: false,
+  hasPlan: false,
+};
+const ALL: GuideGates = {
+  hasAccount: true,
+  hasMatches: true,
+  hasCompleteReport: true,
+  hasPlan: true,
+};
 
 describe("GUIDE_STEPS", () => {
   it("starts with a welcome and ends with a final step", () => {
@@ -62,7 +78,10 @@ describe("GUIDE_STEPS", () => {
 
     for (const step of GUIDE_STEPS) {
       if (!step.target) continue;
-      expect(anchors.has(step.target), `${step.id} → data-tour="${step.target}" must exist in the app`).toBe(true);
+      expect(
+        anchors.has(step.target),
+        `${step.id} → data-tour="${step.target}" must exist in the app`
+      ).toBe(true);
     }
   });
 
@@ -117,7 +136,10 @@ describe("GUIDE_STEPS", () => {
 
     // Conditional sections auto-skip when absent so the walk never parks on an empty spotlight.
     for (const id of ["profile-stats", "profile-badges"]) {
-      expect(GUIDE_STEPS[GUIDE_STEPS.findIndex((s) => s.id === id)].skipIfMissing, `${id} skipIfMissing`).toBe(true);
+      expect(
+        GUIDE_STEPS[GUIDE_STEPS.findIndex((s) => s.id === id)].skipIfMissing,
+        `${id} skipIfMissing`
+      ).toBe(true);
     }
   });
 

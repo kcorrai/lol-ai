@@ -14,11 +14,7 @@ const NAV = [
   { href: "/admin/feature-flags", label: "Feature flags" },
 ];
 
-export default async function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const adminEmail = process.env.ADMIN_EMAIL;
   const session = await getServerSession(authOptions);
 

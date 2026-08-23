@@ -22,12 +22,14 @@ export default function FeatureFlagsAdminPage() {
 
   const load = useCallback(async () => {
     const res = await fetch("/api/admin/feature-flags");
-    const json = await res.json() as { data: Flag[] };
+    const json = (await res.json()) as { data: Flag[] };
     setFlags(json.data ?? []);
     setLoading(false);
   }, []);
 
-  useEffect(() => { void load(); }, [load]);
+  useEffect(() => {
+    void load();
+  }, [load]);
 
   async function create() {
     if (!newKey.match(/^[a-z0-9_]+$/)) return;
@@ -67,7 +69,7 @@ export default function FeatureFlagsAdminPage() {
     setFlags((prev) => prev.map((f) => (f.id === id ? { ...f, ...patch } : f)));
   }
 
-  if (loading) return <div className="animate-pulse p-6 text-text-muted text-sm">Loading…</div>;
+  if (loading) return <div className="animate-pulse p-6 text-sm text-text-muted">Loading…</div>;
 
   return (
     <div className="space-y-6">
@@ -76,7 +78,7 @@ export default function FeatureFlagsAdminPage() {
       </div>
 
       {/* New flag form */}
-      <div className="rounded-xl border border-border bg-surface p-4 flex gap-3 items-end">
+      <div className="flex items-end gap-3 rounded-xl border border-border bg-surface p-4">
         <div className="flex-1 space-y-1">
           <label className="text-xs text-text-muted">Key (snake_case)</label>
           <input
@@ -105,16 +107,16 @@ export default function FeatureFlagsAdminPage() {
       </div>
 
       {/* Flags table */}
-      <div className="rounded-xl border border-border bg-surface overflow-hidden">
+      <div className="overflow-hidden rounded-xl border border-border bg-surface">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border text-xs text-text-muted">
               <th className="px-4 py-3 text-left">Key</th>
               <th className="px-4 py-3 text-left">Description</th>
-              <th className="px-4 py-3 text-center w-20">Enabled</th>
-              <th className="px-4 py-3 text-center w-24">Rollout %</th>
-              <th className="px-4 py-3 text-left w-32">Segment</th>
-              <th className="px-4 py-3 w-20" />
+              <th className="w-20 px-4 py-3 text-center">Enabled</th>
+              <th className="w-24 px-4 py-3 text-center">Rollout %</th>
+              <th className="w-32 px-4 py-3 text-left">Segment</th>
+              <th className="w-20 px-4 py-3" />
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -144,19 +146,25 @@ export default function FeatureFlagsAdminPage() {
                     min={0}
                     max={100}
                     value={flag.rolloutPercentage}
-                    onChange={(e) => patchLocal(flag.id, { rolloutPercentage: Number(e.target.value) })}
+                    onChange={(e) =>
+                      patchLocal(flag.id, { rolloutPercentage: Number(e.target.value) })
+                    }
                     className="w-16 rounded bg-surface-2 px-2 py-1 text-center text-xs text-text"
                   />
                 </td>
                 <td className="px-4 py-3">
                   <input
                     value={flag.userSegment.join(",")}
-                    onChange={(e) => patchLocal(flag.id, { userSegment: e.target.value.split(",").map(s => s.trim()) })}
+                    onChange={(e) =>
+                      patchLocal(flag.id, {
+                        userSegment: e.target.value.split(",").map((s) => s.trim()),
+                      })
+                    }
                     className="w-full rounded bg-surface-2 px-2 py-1 text-xs text-text"
                   />
                 </td>
                 <td className="px-4 py-3">
-                  <div className="flex items-center gap-2 justify-end">
+                  <div className="flex items-center justify-end gap-2">
                     <button
                       onClick={() => update(flag)}
                       disabled={saving === flag.id}

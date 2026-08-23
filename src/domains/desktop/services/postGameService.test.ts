@@ -125,7 +125,9 @@ describe("requestPostGameSync and a sync already under way", () => {
   // A run that died, or an Inngest event nothing ever processed, would otherwise wedge the
   // account for ever — the app would report every game and none would be pulled.
   it("treats a sync stuck for more than five minutes as gone and starts a fresh one", async () => {
-    mockFindFirst.mockResolvedValue(account({ syncStatus: "RUNNING", syncStartedAt: minutesAgo(6) }));
+    mockFindFirst.mockResolvedValue(
+      account({ syncStatus: "RUNNING", syncStartedAt: minutesAgo(6) })
+    );
 
     expect(await requestPostGameSync(DEVICE, NOW)).toMatchObject({ status: "pending" });
     expect(mockDispatch).toHaveBeenCalledTimes(1);
@@ -138,7 +140,9 @@ describe("requestPostGameSync and a sync already under way", () => {
   });
 
   it("starts a sync over a previous failure", async () => {
-    mockFindFirst.mockResolvedValue(account({ syncStatus: "FAILED", syncStartedAt: minutesAgo(1) }));
+    mockFindFirst.mockResolvedValue(
+      account({ syncStatus: "FAILED", syncStartedAt: minutesAgo(1) })
+    );
 
     expect(await requestPostGameSync(DEVICE, NOW)).toMatchObject({ status: "pending" });
     // And clears the recorded error, so a stale message is not shown beside a live run.

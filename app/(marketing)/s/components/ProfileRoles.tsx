@@ -29,7 +29,7 @@ export function ProfileRoles({ matches }: Props): React.ReactElement | null {
       (a, b) =>
         b[1].games - a[1].games ||
         ROLE_ORDER.indexOf(a[0] as (typeof ROLE_ORDER)[number]) -
-          ROLE_ORDER.indexOf(b[0] as (typeof ROLE_ORDER)[number]),
+          ROLE_ORDER.indexOf(b[0] as (typeof ROLE_ORDER)[number])
     )
     .map(([position, s]) => ({
       position,

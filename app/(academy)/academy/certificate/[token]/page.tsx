@@ -25,7 +25,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const certificate = await loadCertificate(params.token);
 
   if (!certificate) {
-    return { title: "Certificate not found", alternates: { canonical: url }, robots: { index: false } };
+    return {
+      title: "Certificate not found",
+      alternates: { canonical: url },
+      robots: { index: false },
+    };
   }
 
   const title = `${certificate.displayName} finished ${certificate.trackTitle}`;
@@ -53,7 +57,7 @@ export default async function CertificatePage({ params }: Props): Promise<React.
 
   return (
     <div className="mx-auto max-w-[720px] px-5 py-14 md:px-8">
-      <section className="notch border border-acid-500 bg-surface glow-accent-soft">
+      <section className="notch glow-accent-soft border border-acid-500 bg-surface">
         <div className="flex items-center gap-2.5 border-b border-line-1 px-6 py-3.5">
           <Award className="h-4 w-4 text-accent" strokeWidth={2} />
           <span className="hud-label text-accent">Academy certificate</span>
@@ -92,10 +96,9 @@ export default async function CertificatePage({ params }: Props): Promise<React.
 
           {/* The distinction is the whole claim, so it is said in words as well as numbers. */}
           <p className="mt-8 text-[14px] leading-relaxed text-text-body">
-            Every lesson in this track was read and its drills answered. The ones counted as
-            proved were measured afterwards in this player&apos;s own ranked games — the Academy
-            watched the metric each lesson set, in the role it was set in, and only then called
-            it mastered.
+            Every lesson in this track was read and its drills answered. The ones counted as proved
+            were measured afterwards in this player&apos;s own ranked games — the Academy watched
+            the metric each lesson set, in the role it was set in, and only then called it mastered.
           </p>
         </div>
 

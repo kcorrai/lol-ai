@@ -35,7 +35,12 @@ describe("bayesianAverage", () => {
   });
 
   it("stays inside the scale whatever it is given", () => {
-    for (const [s, c] of [[5, 1], [500, 100], [100, 100], [1, 1]] as const) {
+    for (const [s, c] of [
+      [5, 1],
+      [500, 100],
+      [100, 100],
+      [1, 1],
+    ] as const) {
       const value = bayesianAverage(s, c, 4.5);
       expect(value).toBeGreaterThanOrEqual(1);
       expect(value).toBeLessThanOrEqual(5);
@@ -71,7 +76,12 @@ describe("wilsonLowerBound", () => {
   });
 
   it("never leaves 0..1", () => {
-    for (const [s, c] of [[5, 1], [1, 1], [5 * 500, 500], [3 * 7, 7]] as const) {
+    for (const [s, c] of [
+      [5, 1],
+      [1, 1],
+      [5 * 500, 500],
+      [3 * 7, 7],
+    ] as const) {
       const value = wilsonLowerBound(s, c);
       expect(value).toBeGreaterThanOrEqual(0);
       expect(value).toBeLessThanOrEqual(1);

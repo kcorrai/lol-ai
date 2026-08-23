@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
 } from "recharts";
 import { TrendingUp } from "lucide-react";
 import { useDailyMomentum } from "@/hooks/useDailyMomentum";
@@ -12,12 +19,13 @@ interface Props {
   riotAccountId: string | null | undefined;
 }
 
-const METRICS: { key: MomentumMetric; label: string; unit?: string; domain?: [number, number] }[] = [
-  { key: "kda", label: "KDA" },
-  { key: "csPerMin", label: "CS/min" },
-  { key: "visionScore", label: "Vision" },
-  { key: "winRate", label: "Win rate", unit: "%", domain: [0, 100] },
-];
+const METRICS: { key: MomentumMetric; label: string; unit?: string; domain?: [number, number] }[] =
+  [
+    { key: "kda", label: "KDA" },
+    { key: "csPerMin", label: "CS/min" },
+    { key: "visionScore", label: "Vision" },
+    { key: "winRate", label: "Win rate", unit: "%", domain: [0, 100] },
+  ];
 
 const SELF_COLOR = "#C6FF3D";
 const DUO_COLOR = "#3b82f6";
@@ -83,7 +91,11 @@ export function DailyMomentumChart({ riotAccountId }: Props) {
       <ResponsiveContainer width="100%" height={200}>
         <LineChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: -22 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-          <XAxis dataKey="date" tick={{ fontSize: 10, fill: "rgba(255,255,255,0.4)" }} tickLine={false} />
+          <XAxis
+            dataKey="date"
+            tick={{ fontSize: 10, fill: "rgba(255,255,255,0.4)" }}
+            tickLine={false}
+          />
           <YAxis
             domain={active.domain ?? ["auto", "auto"]}
             unit={active.unit}

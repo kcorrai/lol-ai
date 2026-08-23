@@ -3,10 +3,12 @@
 ## Status: Done
 
 ## Goal
+
 The matchup analyzer felt very incomplete: the lane selector was dead, most
 pairings showed a fabricated 50%, and the build summary was thin.
 
 ## Scope
+
 - `matchupService.ts`:
   - D1: `MatchupReport.availablePositions` now carries the lanes both champions
     share; `resolvePosition` returns them for the lane selector.
@@ -26,8 +28,10 @@ pairings showed a fabricated 50%, and the build summary was thin.
   core items.
 
 ## Tests
+
 - `matchupService.test.ts`: shared-lane exposure and requested-but-unshared lane
   falling back to a shared lane.
 
 ## Commit
+
 `fix(matchup): restore lane selector, drop fake 50%, enrich the build`

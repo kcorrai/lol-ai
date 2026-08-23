@@ -10,10 +10,8 @@ import type {
 const PLAYSTYLE_BLURB: Record<PlaystyleType, string> = {
   aggressive:
     "High kill participation, low vision, deaths front-loaded. You look for fights before you have information.",
-  farming:
-    "Wave-first. Your CS holds up, but you are rarely near the fight that decides the game.",
-  supportive:
-    "You show up for your team's fights and trade your own resources to do it.",
+  farming: "Wave-first. Your CS holds up, but you are rarely near the fight that decides the game.",
+  supportive: "You show up for your team's fights and trade your own resources to do it.",
   balanced: "No single axis dominates. Your ceiling comes from picking one and pushing it.",
   passive: "Low participation and low risk. Games are decided elsewhere on the map.",
 };
@@ -49,7 +47,7 @@ export function PlaystyleProfile({
   isLoading: boolean;
 }): React.ReactElement | null {
   if (isLoading) {
-    return <HudPanel className="h-[340px] animate-pulse" >{null}</HudPanel>;
+    return <HudPanel className="h-[340px] animate-pulse">{null}</HudPanel>;
   }
   if (!profile) return null;
 
@@ -69,9 +67,7 @@ export function PlaystyleProfile({
       <p className="font-display text-[26px] font-extrabold uppercase tracking-[0.03em] text-accent">
         {profile.playstyle}
       </p>
-      <p className="mb-4 mt-2 text-[13.5px] text-text-body">
-        {PLAYSTYLE_BLURB[profile.playstyle]}
-      </p>
+      <p className="mb-4 mt-2 text-[13.5px] text-text-body">{PLAYSTYLE_BLURB[profile.playstyle]}</p>
 
       <div className="grid gap-3">
         <HudMeter value={kpPct} label="Kill participation" right={`${kpPct}%`} />
@@ -97,7 +93,11 @@ export function PlaystyleProfile({
           value={profile.visionConsistency}
           color={`capitalize ${CONSISTENCY_COLOR[profile.visionConsistency]}`}
         />
-        <Row label="Deaths cluster" value={profile.deathCluster.replace("_", " ")} color="capitalize text-text" />
+        <Row
+          label="Deaths cluster"
+          value={profile.deathCluster.replace("_", " ")}
+          color="capitalize text-text"
+        />
       </div>
     </HudPanel>
   );

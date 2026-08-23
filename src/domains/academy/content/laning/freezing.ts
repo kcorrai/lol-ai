@@ -35,8 +35,14 @@ export const freezing: Lesson = {
       head: ["Situation", "Freeze?"],
       rows: [
         ["You are behind and want to farm safely", "Yes — the single best use of a freeze"],
-        ["Your opponent has to overextend to reach the wave", "Yes — you are printing gank opportunities for your jungler"],
-        ["An objective is spawning and your team needs you", "No — you cannot leave a freeze without giving it away"],
+        [
+          "Your opponent has to overextend to reach the wave",
+          "Yes — you are printing gank opportunities for your jungler",
+        ],
+        [
+          "An objective is spawning and your team needs you",
+          "No — you cannot leave a freeze without giving it away",
+        ],
         ["Your jungler is ganking the enemy lane and needs a shove", "No — shove for prio instead"],
         ["Enemy turret has plates up and you are ahead", "No — plates expire at 14:00, take them"],
         ["Your wave is huge and you need to reset", "No — crash it and recall"],
@@ -73,7 +79,8 @@ export const freezing: Lesson = {
       options: [
         {
           id: "a",
-          label: "Because you are standing next to your own turret, so the jungler has to come through it",
+          label:
+            "Because you are standing next to your own turret, so the jungler has to come through it",
           explain:
             "Correct. The safety comes from geography, not from the wave itself. A frozen lane puts you at the safest point in your half of the map with a short escape and a long approach for them.",
           correct: true,

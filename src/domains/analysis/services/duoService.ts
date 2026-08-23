@@ -50,7 +50,7 @@ const PARTICIPANT_FIELDS = {
  */
 async function scanTeammates(
   riotAccountId: string,
-  opts: { partnerPuuid?: string; minGames?: number; limit?: number } = {},
+  opts: { partnerPuuid?: string; minGames?: number; limit?: number } = {}
 ): Promise<DuoCandidate[]> {
   const puuid = await getAccountPuuid(riotAccountId);
   if (!puuid) return [];
@@ -155,7 +155,7 @@ export async function clearDuo(riotAccountId: string): Promise<void> {
 export async function findTeammateByRiotId(
   riotAccountId: string,
   gameName: string,
-  tagLine: string,
+  tagLine: string
 ): Promise<DuoCandidate | null> {
   const all = await scanTeammates(riotAccountId, { minGames: 1, limit: Number.MAX_SAFE_INTEGER });
   const wanted = `${gameName}#${tagLine}`.toLowerCase();

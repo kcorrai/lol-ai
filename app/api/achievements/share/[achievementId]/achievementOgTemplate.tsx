@@ -26,7 +26,16 @@ export function AchievementOgCard({
       }}
     >
       {/* Top accent bar */}
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "4px", background: tierColor }} />
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "4px",
+          background: tierColor,
+        }}
+      />
 
       {/* Badge */}
       <div

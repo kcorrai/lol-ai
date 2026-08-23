@@ -3,7 +3,10 @@
 import { useRouter } from "next/navigation";
 import { CheckCircle2, Clock, RotateCcw, Target, XCircle } from "lucide-react";
 import { formatMetric } from "@/domains/academy/assignments";
-import type { AssignmentStatus as Status, AssignmentView } from "@/domains/academy/services/assignmentService";
+import type {
+  AssignmentStatus as Status,
+  AssignmentView,
+} from "@/domains/academy/services/assignmentService";
 import { useRestartAssignment } from "@/hooks/useAcademyProgress";
 
 interface AssignmentStatusProps {
@@ -46,7 +49,7 @@ export function AssignmentStatus({
   return (
     <section className={`notch mt-10 border bg-surface ${BORDER[assignment.status]}`}>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line-1 px-5 py-3.5">
-        <span className={`flex items-center gap-2 hud-label ${tone}`}>
+        <span className={`hud-label flex items-center gap-2 ${tone}`}>
           <Icon className="h-3.5 w-3.5" strokeWidth={2} />
           {label}
         </span>
@@ -59,10 +62,7 @@ export function AssignmentStatus({
         <p className="text-[14.5px] leading-relaxed text-text">{instruction}</p>
 
         <div className="mt-4 grid grid-cols-3 gap-px bg-line-1">
-          <Stat
-            label="Baseline"
-            value={formatMetric(assignment.baseline, assignment.metric)}
-          />
+          <Stat label="Baseline" value={formatMetric(assignment.baseline, assignment.metric)} />
           <Stat
             label="Target"
             value={formatMetric(assignment.target, assignment.metric)}

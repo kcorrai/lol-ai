@@ -15,7 +15,9 @@ vi.mock("@/domains/marketplace/services/bookingSweepService", () => ({
   expireBooking: vi.fn(),
 }));
 vi.mock("@/domains/marketplace/services/reviewService", () => ({ revealExpired: vi.fn() }));
-vi.mock("@/domains/marketplace/services/reminderService", () => ({ sendSessionReminders: vi.fn() }));
+vi.mock("@/domains/marketplace/services/reminderService", () => ({
+  sendSessionReminders: vi.fn(),
+}));
 vi.mock("@/lib/utils/logger", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));
@@ -62,9 +64,7 @@ describe("expireUnanswered", () => {
   it("is bounded per run", async () => {
     await expireUnanswered(NOW, 50);
 
-    expect(mockPrisma.booking.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({ take: 50 })
-    );
+    expect(mockPrisma.booking.findMany).toHaveBeenCalledWith(expect.objectContaining({ take: 50 }));
   });
 });
 

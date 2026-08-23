@@ -21,7 +21,7 @@ progress read from the games they actually play, XP when they land it.
 ## Deterministic, not generated
 
 Individual challenges cost an AI call each (`challengeGenerationService`). Duo quests are per
-*pair*, so the same approach would scale spend with pairs rather than players — and "win three
+_pair_, so the same approach would scale spend with pairs rather than players — and "win three
 together" needs no creativity to be worth doing.
 
 `questsForWeek` rotates a fixed catalogue by week number. The set is therefore stable all week,

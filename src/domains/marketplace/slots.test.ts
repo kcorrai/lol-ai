@@ -57,10 +57,7 @@ describe("computeFreeSlots", () => {
       to: new Date("2026-08-18T00:00:00Z"),
     });
     // A two-hour session fits at 18:00 and 19:00, not at 20:00.
-    expect(starts(slots)).toEqual([
-      "2026-08-17T15:00:00.000Z",
-      "2026-08-17T16:00:00.000Z",
-    ]);
+    expect(starts(slots)).toEqual(["2026-08-17T15:00:00.000Z", "2026-08-17T16:00:00.000Z"]);
   });
 
   it("removes time that is already booked", () => {
@@ -70,10 +67,7 @@ describe("computeFreeSlots", () => {
       from: new Date("2026-08-17T00:00:00Z"),
       to: new Date("2026-08-18T00:00:00Z"),
     });
-    expect(starts(slots)).toEqual([
-      "2026-08-17T15:00:00.000Z",
-      "2026-08-17T17:00:00.000Z",
-    ]);
+    expect(starts(slots)).toEqual(["2026-08-17T15:00:00.000Z", "2026-08-17T17:00:00.000Z"]);
   });
 
   it("removes a slot a booking merely overlaps", () => {
@@ -85,10 +79,7 @@ describe("computeFreeSlots", () => {
     });
     // 18:00 local no longer fits an hour, but 18:45 onward does — and the step
     // realigns to the free window rather than to the clock.
-    expect(starts(slots)).toEqual([
-      "2026-08-17T15:45:00.000Z",
-      "2026-08-17T16:45:00.000Z",
-    ]);
+    expect(starts(slots)).toEqual(["2026-08-17T15:45:00.000Z", "2026-08-17T16:45:00.000Z"]);
   });
 
   it("honours minimum notice", () => {
@@ -196,25 +187,18 @@ describe("computeFreeSlots", () => {
     it("replaces a day's hours rather than adding to them", () => {
       const slots = computeFreeSlots({
         ...BASE,
-        exceptions: [
-          { date: "2026-08-17", isBlocked: false, startMinute: 600, endMinute: 720 },
-        ],
+        exceptions: [{ date: "2026-08-17", isBlocked: false, startMinute: 600, endMinute: 720 }],
         from: new Date("2026-08-17T00:00:00Z"),
         to: new Date("2026-08-18T00:00:00Z"),
       });
       // 10:00–12:00 Istanbul only — the usual evening rule does not also apply.
-      expect(starts(slots)).toEqual([
-        "2026-08-17T07:00:00.000Z",
-        "2026-08-17T08:00:00.000Z",
-      ]);
+      expect(starts(slots)).toEqual(["2026-08-17T07:00:00.000Z", "2026-08-17T08:00:00.000Z"]);
     });
 
     it("opens a day the weekly rules leave closed", () => {
       const slots = computeFreeSlots({
         ...BASE,
-        exceptions: [
-          { date: "2026-08-15", isBlocked: false, startMinute: 600, endMinute: 660 },
-        ],
+        exceptions: [{ date: "2026-08-15", isBlocked: false, startMinute: 600, endMinute: 660 }],
         from: new Date("2026-08-15T00:00:00Z"), // Saturday
         to: new Date("2026-08-16T00:00:00Z"),
       });

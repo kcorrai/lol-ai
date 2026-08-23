@@ -103,7 +103,8 @@ const METRICS: Metric[] = [
     format: "rate",
     pro: (pro) => pro.creepScorePerMin,
     you: (you) => you.creepScorePerMin,
-    below: "Pros farm faster on this champion, minute for minute — the gap the per-game figure hides.",
+    below:
+      "Pros farm faster on this champion, minute for minute — the gap the per-game figure hides.",
     atOrAbove: "Minute for minute, you farm this champion as fast as the pros do.",
   },
   {

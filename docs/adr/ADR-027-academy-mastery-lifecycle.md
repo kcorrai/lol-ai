@@ -6,7 +6,7 @@
 
 ADR-025 settled the Academy content model: a lesson is data, drills are pure, and
 `curriculum.test.ts` is the contract. Two things it deliberately left open are now
-being built, and both change what a lesson status *means*.
+being built, and both change what a lesson status _means_.
 
 **Mastery does not currently expire.** LA-22 made `mastered` mean something real —
 the player moved a metric in their own ranked games after the lesson. But it is
@@ -57,7 +57,7 @@ union. The contract from ADR-025 holds unchanged: the answer serialises as
 `string[]`, `gradeDrill` is pure and total, and the body component decides nothing.
 
 - **`map`** reuses `DrillOption` with normalised coordinates (`x`, `y`, `r`) added.
-  Grading is therefore the *existing* choice branch — a click on the map is a
+  Grading is therefore the _existing_ choice branch — a click on the map is a
   choice, and giving it its own scoring path would have meant a second way to be
   right about the same thing.
 - **`wave-sim`** carries a start state and an action per tick. `simulateWave` is a
@@ -73,7 +73,7 @@ the lesson is teaching anyway — the danger triangle is a shape, not a screensh
 ## Consequences
 
 - The Academy can claim something no competitor can: a curriculum that takes a
-  lesson *back* when your own games stop showing it. This only works because the
+  lesson _back_ when your own games stop showing it. This only works because the
   match data is already ours.
 - One migration (`decayCheckedAt`), hand-written. `prisma migrate dev` is not
   trustworthy in this repo until LA-15 is closed.

@@ -34,7 +34,10 @@ async function generateSummary(deaths: DeathPoint[]): Promise<string> {
   if (deaths.length === 0) return "";
   const cacheKey = buildCacheKey("heatmap-summary", {
     deathCount: String(deaths.length),
-    sample: deaths.slice(0, 5).map((d) => `${d.x},${d.y}`).join("|"),
+    sample: deaths
+      .slice(0, 5)
+      .map((d) => `${d.x},${d.y}`)
+      .join("|"),
   });
 
   const cached = await getCached(cacheKey);
@@ -50,7 +53,10 @@ async function generateSummary(deaths: DeathPoint[]): Promise<string> {
   const topRegion = sorted[0];
   const pct = Math.round((topRegion[1] / deaths.length) * 100);
 
-  const prompt = `The player died ${deaths.length} times in recent matches. ${pct}% of deaths happen on ${topRegion[0]}. Other death distribution: ${sorted.slice(1).map(([r, c]) => `${r}: ${Math.round((c / deaths.length) * 100)}%`).join(", ")}. In English, provide 2 sentences with concrete positioning advice.`;
+  const prompt = `The player died ${deaths.length} times in recent matches. ${pct}% of deaths happen on ${topRegion[0]}. Other death distribution: ${sorted
+    .slice(1)
+    .map(([r, c]) => `${r}: ${Math.round((c / deaths.length) * 100)}%`)
+    .join(", ")}. In English, provide 2 sentences with concrete positioning advice.`;
 
   try {
     const result = await getAiClient("lite").complete(
@@ -61,7 +67,9 @@ async function generateSummary(deaths: DeathPoint[]): Promise<string> {
     await setCached(cacheKey, "heatmap-summary", { summary: result.content }, 1);
     return result.content;
   } catch (err) {
-    logger.warn(`[heatmapService] AI summary failed: ${err instanceof Error ? err.message : String(err)}`);
+    logger.warn(
+      `[heatmapService] AI summary failed: ${err instanceof Error ? err.message : String(err)}`
+    );
     return `${pct}% of deaths happen on ${topRegion[0]}.`;
   }
 }
@@ -97,7 +105,10 @@ export async function getHeatmapData(
 
   if (champion) where.championName = champion;
 
-  let events = await prisma.matchDeathEvent.findMany({ where, select: { positionX: true, positionY: true, gameTimeMs: true } });
+  let events = await prisma.matchDeathEvent.findMany({
+    where,
+    select: { positionX: true, positionY: true, gameTimeMs: true },
+  });
 
   // Time range filter
   if (timeRange && TIME_RANGES[timeRange]) {
@@ -109,7 +120,11 @@ export async function getHeatmapData(
     return { deaths: [], summary: null, totalDeaths: 0, hasData: false };
   }
 
-  const deaths: DeathPoint[] = events.map((e) => ({ x: e.positionX, y: e.positionY, gameTimeMs: e.gameTimeMs }));
+  const deaths: DeathPoint[] = events.map((e) => ({
+    x: e.positionX,
+    y: e.positionY,
+    gameTimeMs: e.gameTimeMs,
+  }));
 
   const summary = isPro ? await generateSummary(deaths) : null;
   return { deaths, summary, totalDeaths: deaths.length, hasData: true };

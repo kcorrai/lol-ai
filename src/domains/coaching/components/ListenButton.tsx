@@ -78,10 +78,10 @@ export function ListenButton({ reportId, text }: Props) {
     state === "loading"
       ? "Loading…"
       : state === "playing"
-      ? "Stop"
-      : state === "error"
-      ? "Unsupported"
-      : "Listen";
+        ? "Stop"
+        : state === "error"
+          ? "Unsupported"
+          : "Listen";
 
   return (
     <button

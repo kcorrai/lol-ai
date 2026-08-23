@@ -22,7 +22,10 @@ const CUSTOM_ID_VERSION = "d1";
 const CUSTOM_ID_MAX = 100;
 
 /** In a guild the caller is under `member`; in a DM it is under `user`. */
-function actingUser(interaction: { member?: { user?: DiscordUser }; user?: DiscordUser }): DiscordUser | null {
+function actingUser(interaction: {
+  member?: { user?: DiscordUser };
+  user?: DiscordUser;
+}): DiscordUser | null {
   return interaction.member?.user ?? interaction.user ?? null;
 }
 

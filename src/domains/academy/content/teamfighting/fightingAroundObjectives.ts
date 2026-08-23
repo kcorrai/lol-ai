@@ -53,9 +53,21 @@ export const fightingAroundObjectives: Lesson = {
       caption: "Which thing is the win condition",
       head: ["Situation", "You are fighting for", "So you"],
       rows: [
-        ["You are ahead, objective is up", "The objective", "Take it fast, refuse the fight, walk away with it"],
-        ["You are behind, they start it", "The fight", "Contest from your side and hope for a mistake — the objective alone does not save you"],
-        ["Even, soul point drake", "Both, and the fight first", "Win the fight before the pit, not inside it"],
+        [
+          "You are ahead, objective is up",
+          "The objective",
+          "Take it fast, refuse the fight, walk away with it",
+        ],
+        [
+          "You are behind, they start it",
+          "The fight",
+          "Contest from your side and hope for a mistake — the objective alone does not save you",
+        ],
+        [
+          "Even, soul point drake",
+          "Both, and the fight first",
+          "Win the fight before the pit, not inside it",
+        ],
         ["They are set up and you are not", "Neither", "Leave. Take the other half of the map"],
       ],
     },
@@ -128,7 +140,8 @@ export const fightingAroundObjectives: Lesson = {
       options: [
         {
           id: "a",
-          label: "Retreats toward help, their engage has to cross, and nobody on your team is in the hole",
+          label:
+            "Retreats toward help, their engage has to cross, and nobody on your team is in the hole",
           explain:
             "Correct — three separate advantages from one piece of ground. It is the cheapest thing in a teamfight to get right and the most reliably decisive.",
           correct: true,

@@ -24,8 +24,8 @@ export function noteFor(state: LiveContextState): React.ReactElement | null {
     case "unavailable":
       return (
         <PanelNote>
-          This preview cannot read your account. Run the desktop app, which has the
-          credential store.
+          This preview cannot read your account. Run the desktop app, which has the credential
+          store.
         </PanelNote>
       );
     case "loading":

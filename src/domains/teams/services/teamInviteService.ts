@@ -99,10 +99,7 @@ export async function acceptInvite(
   return { teamId: invite.teamId, teamName: invite.team.name };
 }
 
-export async function getPendingInvites(
-  teamId: string,
-  userId: string
-): Promise<PendingInvite[]> {
+export async function getPendingInvites(teamId: string, userId: string): Promise<PendingInvite[]> {
   await assertCoachAccess(teamId, userId);
   const invites = await repo.findPendingInvites(teamId);
   return invites.map((i) => ({

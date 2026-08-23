@@ -75,7 +75,12 @@ export function ChampionConsole({
   // A–Z is the only sort with a meaningful heading per block; the others are one ranked run.
   const blocks = useMemo(() => {
     if (sort !== "az") {
-      return [{ letter: sort === "winRate" ? "Highest win rate first" : "Biggest change this patch", rows: shown }];
+      return [
+        {
+          letter: sort === "winRate" ? "Highest win rate first" : "Biggest change this patch",
+          rows: shown,
+        },
+      ];
     }
     const byLetter = new Map<string, ChampionRow[]>();
     for (const row of shown) {
@@ -84,7 +89,9 @@ export function ChampionConsole({
       if (bucket) bucket.push(row);
       else byLetter.set(letter, [row]);
     }
-    return [...byLetter.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([letter, r]) => ({ letter, rows: r }));
+    return [...byLetter.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([letter, r]) => ({ letter, rows: r }));
   }, [shown, sort]);
 
   const present = new Set(shown.map((r) => r.name[0].toUpperCase()));
@@ -145,7 +152,9 @@ export function ChampionConsole({
               href={`#letter-${letter}`}
               aria-disabled={!present.has(letter)}
               className={`px-1 font-mono text-[11px] tracking-[0.08em] ${
-                present.has(letter) ? "text-text-body hover:text-accent" : "pointer-events-none text-ink-400"
+                present.has(letter)
+                  ? "text-text-body hover:text-accent"
+                  : "pointer-events-none text-ink-400"
               }`}
             >
               {letter}
@@ -168,7 +177,11 @@ export function ChampionConsole({
         </section>
       ) : (
         blocks.map((block) => (
-          <div key={block.letter} id={sort === "az" ? `letter-${block.letter}` : undefined} className="scroll-mt-24">
+          <div
+            key={block.letter}
+            id={sort === "az" ? `letter-${block.letter}` : undefined}
+            className="scroll-mt-24"
+          >
             <div className="mb-2.5 flex items-center gap-3">
               <span className="font-display text-[15px] font-extrabold tracking-[0.08em] text-accent">
                 {block.letter}
@@ -203,7 +216,11 @@ export function ChampionConsole({
                         : `${row.delta > 0 ? "▲" : "▼"}${Math.abs(row.delta)}`}
                     </span>
                     <span className="text-[10px] tracking-[0.1em] text-text-faint">
-                      {row.games === null ? "" : row.games >= 1000 ? `${Math.round(row.games / 1000)}k` : row.games}
+                      {row.games === null
+                        ? ""
+                        : row.games >= 1000
+                          ? `${Math.round(row.games / 1000)}k`
+                          : row.games}
                     </span>
                   </span>
                 </Link>

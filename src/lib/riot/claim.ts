@@ -39,10 +39,8 @@ export function parseClaim(params: URLSearchParams | null): ClaimTarget | null {
 /** Whether a claim points at an account the user has already connected. */
 export function isAlreadyConnected(
   target: ClaimTarget,
-  accounts: ReadonlyArray<{ gameName: string; tagLine: string; region: string }>,
+  accounts: ReadonlyArray<{ gameName: string; tagLine: string; region: string }>
 ): boolean {
   const wanted = `${target.region}:${target.gameName}#${target.tagLine}`.toLowerCase();
-  return accounts.some(
-    (a) => `${a.region}:${a.gameName}#${a.tagLine}`.toLowerCase() === wanted,
-  );
+  return accounts.some((a) => `${a.region}:${a.gameName}#${a.tagLine}`.toLowerCase() === wanted);
 }

@@ -1,2581 +1,1869 @@
 {
- "esportsGameId": "115548681803406284",
- "esportsMatchId": "115548681803406283",
- "gameMetadata": {
-  "patchVersion": "16.16.805.442",
-  "blueTeamMetadata": {
-   "esportsTeamId": "98767991866488695",
-   "participantMetadata": [
-    {
-     "participantId": 1,
-     "esportsPlayerId": "107492129389636107",
-     "summonerName": "FNC Soboro",
-     "championId": "Gnar",
-     "role": "top"
+  "esportsGameId": "115548681803406284",
+  "esportsMatchId": "115548681803406283",
+  "gameMetadata": {
+    "patchVersion": "16.16.805.442",
+    "blueTeamMetadata": {
+      "esportsTeamId": "98767991866488695",
+      "participantMetadata": [
+        {
+          "participantId": 1,
+          "esportsPlayerId": "107492129389636107",
+          "summonerName": "FNC Soboro",
+          "championId": "Gnar",
+          "role": "top"
+        },
+        {
+          "participantId": 2,
+          "esportsPlayerId": "100238780551262852",
+          "summonerName": "FNC Razork",
+          "championId": "MonkeyKing",
+          "role": "jungle"
+        },
+        {
+          "participantId": 3,
+          "esportsPlayerId": "107045034481599547",
+          "summonerName": "FNC Vladi",
+          "championId": "Ryze",
+          "role": "mid"
+        },
+        {
+          "participantId": 4,
+          "esportsPlayerId": "99322214653265200",
+          "summonerName": "FNC Upset",
+          "championId": "Ezreal",
+          "role": "bottom"
+        },
+        {
+          "participantId": 5,
+          "esportsPlayerId": "107492067202132417",
+          "summonerName": "FNC Lospa",
+          "championId": "Karma",
+          "role": "support"
+        }
+      ]
     },
-    {
-     "participantId": 2,
-     "esportsPlayerId": "100238780551262852",
-     "summonerName": "FNC Razork",
-     "championId": "MonkeyKing",
-     "role": "jungle"
-    },
-    {
-     "participantId": 3,
-     "esportsPlayerId": "107045034481599547",
-     "summonerName": "FNC Vladi",
-     "championId": "Ryze",
-     "role": "mid"
-    },
-    {
-     "participantId": 4,
-     "esportsPlayerId": "99322214653265200",
-     "summonerName": "FNC Upset",
-     "championId": "Ezreal",
-     "role": "bottom"
-    },
-    {
-     "participantId": 5,
-     "esportsPlayerId": "107492067202132417",
-     "summonerName": "FNC Lospa",
-     "championId": "Karma",
-     "role": "support"
+    "redTeamMetadata": {
+      "esportsTeamId": "98767991926151025",
+      "participantMetadata": [
+        {
+          "participantId": 6,
+          "esportsPlayerId": "99566406047571736",
+          "summonerName": "G2 BrokenBlade",
+          "championId": "TwistedFate",
+          "role": "top"
+        },
+        {
+          "participantId": 7,
+          "esportsPlayerId": "107128052280762804",
+          "summonerName": "G2 SkewMond",
+          "championId": "Pantheon",
+          "role": "jungle"
+        },
+        {
+          "participantId": 8,
+          "esportsPlayerId": "98767975968177297",
+          "summonerName": "G2 Caps",
+          "championId": "Anivia",
+          "role": "mid"
+        },
+        {
+          "participantId": 9,
+          "esportsPlayerId": "98767975961872793",
+          "summonerName": "G2 Hans Sama",
+          "championId": "Lucian",
+          "role": "bottom"
+        },
+        {
+          "participantId": 10,
+          "esportsPlayerId": "102787200059605684",
+          "summonerName": "G2 Labrov",
+          "championId": "Milio",
+          "role": "support"
+        }
+      ]
     }
-   ]
   },
-  "redTeamMetadata": {
-   "esportsTeamId": "98767991926151025",
-   "participantMetadata": [
+  "frames": [
     {
-     "participantId": 6,
-     "esportsPlayerId": "99566406047571736",
-     "summonerName": "G2 BrokenBlade",
-     "championId": "TwistedFate",
-     "role": "top"
+      "rfc460Timestamp": "2026-08-16T17:51:20.047Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 75953,
+        "inhibitors": 1,
+        "towers": 7,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74656,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
     },
     {
-     "participantId": 7,
-     "esportsPlayerId": "107128052280762804",
-     "summonerName": "G2 SkewMond",
-     "championId": "Pantheon",
-     "role": "jungle"
+      "rfc460Timestamp": "2026-08-16T17:51:20.249Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 75953,
+        "inhibitors": 1,
+        "towers": 7,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74656,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
     },
     {
-     "participantId": 8,
-     "esportsPlayerId": "98767975968177297",
-     "summonerName": "G2 Caps",
-     "championId": "Anivia",
-     "role": "mid"
+      "rfc460Timestamp": "2026-08-16T17:51:20.348Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 75953,
+        "inhibitors": 1,
+        "towers": 7,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74656,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
     },
     {
-     "participantId": 9,
-     "esportsPlayerId": "98767975961872793",
-     "summonerName": "G2 Hans Sama",
-     "championId": "Lucian",
-     "role": "bottom"
+      "rfc460Timestamp": "2026-08-16T17:51:21.015Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 75964,
+        "inhibitors": 1,
+        "towers": 7,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74667,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
     },
     {
-     "participantId": 10,
-     "esportsPlayerId": "102787200059605684",
-     "summonerName": "G2 Labrov",
-     "championId": "Milio",
-     "role": "support"
+      "rfc460Timestamp": "2026-08-16T17:51:21.350Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 75964,
+        "inhibitors": 1,
+        "towers": 7,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74667,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:21.782Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 75964,
+        "inhibitors": 1,
+        "towers": 7,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74667,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:21.816Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 75964,
+        "inhibitors": 1,
+        "towers": 7,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74667,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:22.017Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 75975,
+        "inhibitors": 1,
+        "towers": 7,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74678,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:22.217Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 75975,
+        "inhibitors": 1,
+        "towers": 7,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74678,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:22.219Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 75975,
+        "inhibitors": 1,
+        "towers": 7,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74678,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.019Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 7,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.085Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 7,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.253Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.253Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.253Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.253Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.253Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.254Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.254Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.254Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.254Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.254Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.286Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.319Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.353Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.485Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.553Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.653Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.654Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.686Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:23.886Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76062,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74689,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:24.021Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76324,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74700,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:24.328Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76324,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74700,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:24.421Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76324,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74700,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:24.654Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76324,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74700,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:24.922Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76324,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74700,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:24.923Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76324,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74700,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:24.956Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76324,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74700,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:25.022Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76335,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74745,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:25.188Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76335,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74745,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:25.189Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76335,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74745,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:26.024Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76346,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74770,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:26.057Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76346,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74770,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:26.091Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76346,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74770,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:26.093Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76346,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74770,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:26.257Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76346,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74770,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:26.324Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76346,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74770,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:26.357Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76346,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74770,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:26.358Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76346,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74770,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:26.492Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76346,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74770,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:26.627Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76346,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74770,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:26.759Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76346,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74770,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:26.760Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76346,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74770,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:26.792Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76346,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74770,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:26.826Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76346,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74770,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:27.028Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76346,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74770,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:27.029Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76357,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 13,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74781,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:27.128Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76357,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74781,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:27.295Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76357,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74781,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:27.326Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76357,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74781,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:27.528Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76357,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74781,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:27.595Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76357,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74781,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:28.028Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76898,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74792,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:28.195Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76898,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74792,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:28.230Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76898,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74792,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:28.230Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76898,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74792,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:28.230Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76898,
+        "inhibitors": 1,
+        "towers": 8,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74792,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:28.230Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76898,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74792,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:28.230Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76898,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74792,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:28.231Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76898,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74792,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:28.231Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76898,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74792,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:28.231Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76898,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74792,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:28.231Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76898,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74792,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:28.231Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76898,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74792,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:28.495Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76898,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74792,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:28.629Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76898,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74792,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:28.763Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76898,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74792,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:28.996Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 76898,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74792,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:29.031Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 77154,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74802,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:29.097Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 77154,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74802,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:29.163Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 77154,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74802,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:29.264Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 77154,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74802,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:29.331Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 77154,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74802,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:29.397Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 77154,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74802,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:29.497Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 77154,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74802,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:29.534Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 77154,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74802,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:29.609Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 77154,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 14,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74802,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:29.640Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 77154,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 15,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74802,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
+    },
+    {
+      "rfc460Timestamp": "2026-08-16T17:51:29.899Z",
+      "gameState": "in_game",
+      "blueTeam": {
+        "totalGold": 77154,
+        "inhibitors": 1,
+        "towers": 9,
+        "barons": 1,
+        "totalKills": 15,
+        "dragons": ["ocean", "cloud", "cloud", "cloud"]
+      },
+      "redTeam": {
+        "totalGold": 74802,
+        "inhibitors": 0,
+        "towers": 6,
+        "barons": 1,
+        "totalKills": 11,
+        "dragons": ["chemtech", "cloud"]
+      }
     }
-   ]
-  }
- },
- "frames": [
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:20.047Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 75953,
-    "inhibitors": 1,
-    "towers": 7,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74656,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:20.249Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 75953,
-    "inhibitors": 1,
-    "towers": 7,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74656,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:20.348Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 75953,
-    "inhibitors": 1,
-    "towers": 7,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74656,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:21.015Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 75964,
-    "inhibitors": 1,
-    "towers": 7,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74667,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:21.350Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 75964,
-    "inhibitors": 1,
-    "towers": 7,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74667,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:21.782Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 75964,
-    "inhibitors": 1,
-    "towers": 7,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74667,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:21.816Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 75964,
-    "inhibitors": 1,
-    "towers": 7,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74667,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:22.017Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 75975,
-    "inhibitors": 1,
-    "towers": 7,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74678,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:22.217Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 75975,
-    "inhibitors": 1,
-    "towers": 7,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74678,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:22.219Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 75975,
-    "inhibitors": 1,
-    "towers": 7,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74678,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.019Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 7,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.085Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 7,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.253Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.253Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.253Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.253Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.253Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.254Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.254Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.254Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.254Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.254Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.286Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.319Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.353Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.485Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.553Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.653Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.654Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.686Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:23.886Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76062,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74689,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:24.021Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76324,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74700,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:24.328Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76324,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74700,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:24.421Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76324,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74700,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:24.654Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76324,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74700,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:24.922Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76324,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74700,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:24.923Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76324,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74700,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:24.956Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76324,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74700,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:25.022Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76335,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74745,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:25.188Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76335,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74745,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:25.189Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76335,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74745,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:26.024Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76346,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74770,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:26.057Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76346,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74770,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:26.091Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76346,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74770,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:26.093Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76346,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74770,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:26.257Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76346,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74770,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:26.324Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76346,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74770,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:26.357Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76346,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74770,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:26.358Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76346,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74770,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:26.492Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76346,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74770,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:26.627Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76346,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74770,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:26.759Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76346,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74770,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:26.760Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76346,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74770,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:26.792Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76346,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74770,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:26.826Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76346,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74770,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:27.028Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76346,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74770,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:27.029Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76357,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 13,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74781,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:27.128Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76357,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74781,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:27.295Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76357,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74781,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:27.326Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76357,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74781,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:27.528Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76357,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74781,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:27.595Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76357,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74781,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:28.028Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76898,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74792,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:28.195Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76898,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74792,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:28.230Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76898,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74792,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:28.230Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76898,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74792,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:28.230Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76898,
-    "inhibitors": 1,
-    "towers": 8,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74792,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:28.230Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76898,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74792,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:28.230Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76898,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74792,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:28.231Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76898,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74792,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:28.231Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76898,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74792,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:28.231Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76898,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74792,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:28.231Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76898,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74792,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:28.231Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76898,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74792,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:28.495Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76898,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74792,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:28.629Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76898,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74792,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:28.763Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76898,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74792,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:28.996Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 76898,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74792,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:29.031Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 77154,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74802,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:29.097Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 77154,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74802,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:29.163Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 77154,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74802,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:29.264Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 77154,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74802,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:29.331Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 77154,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74802,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:29.397Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 77154,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74802,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:29.497Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 77154,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74802,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:29.534Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 77154,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74802,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:29.609Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 77154,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 14,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74802,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:29.640Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 77154,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 15,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74802,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  },
-  {
-   "rfc460Timestamp": "2026-08-16T17:51:29.899Z",
-   "gameState": "in_game",
-   "blueTeam": {
-    "totalGold": 77154,
-    "inhibitors": 1,
-    "towers": 9,
-    "barons": 1,
-    "totalKills": 15,
-    "dragons": [
-     "ocean",
-     "cloud",
-     "cloud",
-     "cloud"
-    ]
-   },
-   "redTeam": {
-    "totalGold": 74802,
-    "inhibitors": 0,
-    "towers": 6,
-    "barons": 1,
-    "totalKills": 11,
-    "dragons": [
-     "chemtech",
-     "cloud"
-    ]
-   }
-  }
- ]
+  ]
 }

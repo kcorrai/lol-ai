@@ -65,11 +65,31 @@ export const wardingAsATeam: Lesson = {
       caption: "Whose piece is whose",
       head: ["Role", "Early", "After 20 minutes"],
       rows: [
-        ["Top", "Your own side river and the tri-bush behind you", "The flank the enemy would use to catch someone"],
-        ["Jungle", "Both entrances to whichever camp you are on", "The pit you are about to take, before you take it"],
-        ["Mid", "Both river bushes — you are the only one who reaches both", "The chokepoints either side of mid"],
-        ["ADC", "The tri-bush behind you and the lane brush", "Wherever you intend to stand in the next fight"],
-        ["Support", "The enemy's approach to your lane, and control wards", "The objective route, and everything you can sweep"],
+        [
+          "Top",
+          "Your own side river and the tri-bush behind you",
+          "The flank the enemy would use to catch someone",
+        ],
+        [
+          "Jungle",
+          "Both entrances to whichever camp you are on",
+          "The pit you are about to take, before you take it",
+        ],
+        [
+          "Mid",
+          "Both river bushes — you are the only one who reaches both",
+          "The chokepoints either side of mid",
+        ],
+        [
+          "ADC",
+          "The tri-bush behind you and the lane brush",
+          "Wherever you intend to stand in the next fight",
+        ],
+        [
+          "Support",
+          "The enemy's approach to your lane, and control wards",
+          "The objective route, and everything you can sweep",
+        ],
       ],
     },
     {

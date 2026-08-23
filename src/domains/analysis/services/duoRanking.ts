@@ -40,7 +40,7 @@ const pct = (n: number, d: number): number => (d === 0 ? 0 : Math.round((n / d) 
 export function rankTeammates(
   ownRows: OwnMatchRow[],
   teammateRows: TeammateRow[],
-  opts: { minGames?: number; limit?: number } = {},
+  opts: { minGames?: number; limit?: number } = {}
 ): DuoCandidate[] {
   const minGames = opts.minGames ?? MIN_SHARED_GAMES;
   const ownTeamByMatch = new Map(ownRows.map((r) => [r.matchId, r.teamId]));

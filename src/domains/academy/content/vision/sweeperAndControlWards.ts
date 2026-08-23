@@ -29,8 +29,16 @@ export const sweeperAndControlWards: Lesson = {
       caption: "The three tools and their actual jobs",
       head: ["Tool", "Costs", "The job"],
       rows: [
-        ["Stealth ward (trinket)", "A charge, 4 seconds", "Answer a question about a place you are about to be"],
-        ["Control ward", "75 gold, lasts until killed", "Hold a piece of the map, and make theirs die there"],
+        [
+          "Stealth ward (trinket)",
+          "A charge, 4 seconds",
+          "Answer a question about a place you are about to be",
+        ],
+        [
+          "Control ward",
+          "75 gold, lasts until killed",
+          "Hold a piece of the map, and make theirs die there",
+        ],
         ["Sweeper (oracle lens)", "A cooldown", "Clear the route before you walk it"],
       ],
     },

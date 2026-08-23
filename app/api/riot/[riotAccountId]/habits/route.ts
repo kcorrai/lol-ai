@@ -1,6 +1,9 @@
 import { withAuth } from "@/lib/api/withAuth";
 import { assertOwnsRiotAccount } from "@/lib/auth/authorization";
-import { getActiveHabits, detectAndPersistHabits } from "@/domains/analysis/services/habitDetectionService";
+import {
+  getActiveHabits,
+  detectAndPersistHabits,
+} from "@/domains/analysis/services/habitDetectionService";
 import { apiSuccess, apiError } from "@/lib/api/response";
 
 // GET /api/riot/[riotAccountId]/habits

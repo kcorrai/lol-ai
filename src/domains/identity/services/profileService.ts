@@ -56,7 +56,11 @@ export function toProfileSlug(gameName: string, tagLine: string): string {
   return `${gameName}-${tagLine}`.replace(/[^a-zA-Z0-9\-_]/g, "-");
 }
 
-export async function ensureProfileSlug(userId: string, gameName: string, tagLine: string): Promise<string> {
+export async function ensureProfileSlug(
+  userId: string,
+  gameName: string,
+  tagLine: string
+): Promise<string> {
   const slug = toProfileSlug(gameName, tagLine);
   await prisma.user.update({
     where: { id: userId },
@@ -100,9 +104,7 @@ export async function getPublicProfile(slug: string): Promise<PublicProfileData 
   if (!user) return null;
 
   const account = user.riotAccounts[0];
-  const displayName = account
-    ? `${account.gameName}#${account.tagLine}`
-    : user.name ?? "Player";
+  const displayName = account ? `${account.gameName}#${account.tagLine}` : (user.name ?? "Player");
 
   if (!user.profilePublic) {
     return {
@@ -154,16 +156,17 @@ export async function getPublicProfile(slug: string): Promise<PublicProfileData 
     displayName,
     region: account?.region ?? null,
     profileIconId: account?.profileIconId ?? null,
-    rank: settings.showRank && latestRank
-      ? {
-          tier: latestRank.tier,
-          division: latestRank.division,
-          lp: latestRank.lp,
-          wins: latestRank.wins,
-          losses: latestRank.losses,
-          hotStreak: latestRank.hotStreak,
-        }
-      : null,
+    rank:
+      settings.showRank && latestRank
+        ? {
+            tier: latestRank.tier,
+            division: latestRank.division,
+            lp: latestRank.lp,
+            wins: latestRank.wins,
+            losses: latestRank.losses,
+            hotStreak: latestRank.hotStreak,
+          }
+        : null,
     winRate: settings.showWR ? overallWR : null,
     totalGames,
     avgKda,
@@ -200,7 +203,9 @@ export async function updateProfileSettings(
   }
 }
 
-export async function getProfileSettings(userId: string): Promise<ProfileSettings & { profilePublic: boolean; profileSlug: string | null }> {
+export async function getProfileSettings(
+  userId: string
+): Promise<ProfileSettings & { profilePublic: boolean; profileSlug: string | null }> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: { profilePublic: true, profileSettings: true, profileSlug: true },

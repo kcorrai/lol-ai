@@ -46,9 +46,9 @@ src/domains/draft/
 ### Tip TanÄ±mlarÄ± (`draft.types.ts`)
 
 ```typescript
-import type { Position } from '@/types/common.types';
+import type { Position } from "@/types/common.types";
 
-export type TeamSide = 'blue' | 'red';
+export type TeamSide = "blue" | "red";
 
 export interface TeamComposition {
   engagePower: number;
@@ -61,7 +61,7 @@ export interface TeamComposition {
 
 export interface WinCondition {
   description: string;
-  priority: 'primary' | 'secondary';
+  priority: "primary" | "secondary";
   howToAchieve: string;
 }
 
@@ -74,14 +74,14 @@ export interface ScalingProfile {
 export interface KeyMatchup {
   blue: string;
   red: string;
-  advantage: 'blue' | 'red' | 'even';
+  advantage: "blue" | "red" | "even";
   note: string;
 }
 
 export interface DraftRisk {
   team: TeamSide;
   risk: string;
-  severity: 'high' | 'medium' | 'low';
+  severity: "high" | "medium" | "low";
 }
 
 export type TeamPicks = Record<Position, string>;
@@ -112,4 +112,3 @@ export interface DraftAnalysis {
 ## BaÄŸÄ±mlÄ±lÄ±klar
 
 - BaÄŸÄ±msÄ±z â€” paralel baÅŸlanabilir.
-

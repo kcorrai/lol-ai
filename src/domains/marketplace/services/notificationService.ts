@@ -15,10 +15,22 @@ import { logger } from "@/lib/utils/logger";
 export type MarketplaceNotification =
   | { type: "booking.requested"; bookingId: string; coachUserId: string; studentName: string }
   | { type: "booking.accepted"; bookingId: string; studentId: string; coachName: string }
-  | { type: "booking.declined"; bookingId: string; studentId: string; coachName: string; reason: string }
+  | {
+      type: "booking.declined";
+      bookingId: string;
+      studentId: string;
+      coachName: string;
+      reason: string;
+    }
   | { type: "booking.expired"; bookingId: string; studentId: string; coachName: string }
   | { type: "booking.delivered"; bookingId: string; studentId: string; coachName: string }
-  | { type: "session.reminder"; bookingId: string; userId: string; withName: string; startsAt: Date }
+  | {
+      type: "session.reminder";
+      bookingId: string;
+      userId: string;
+      withName: string;
+      startsAt: Date;
+    }
   | { type: "dispute.resolved"; bookingId: string; userId: string; refunded: boolean };
 
 interface Composed {

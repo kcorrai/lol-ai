@@ -77,12 +77,14 @@ interface PreviewResponse {
 ### AI Insight Ãœretimi
 
 Mevcut `src/lib/ai/` abstraction'Ä±nÄ± kullan. KÄ±sa prompt:
+
 ```
 Player: {name}, Rank: {tier}, Recent WR: {wr}%, Top champ: {champ}
 Give ONE coaching insight in 2 sentences. Be specific and actionable.
 ```
 
 Sonucu 24 saat cache'le (aynÄ± summoner iÃ§in tekrar API Ã§aÄŸrÄ±sÄ± yapma):
+
 - Redis key: `preview:{region}:{summonerName.toLowerCase()}`
 - TTL: 86400 saniye
 
@@ -129,11 +131,11 @@ app/(marketing)/page.tsx                     â† DemoSearchBox ekle
 // Upstash Redis â€” mevcut @upstash/ratelimit kullan
 const ratelimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(10, '1 h'),
-  prefix: 'preview',
+  limiter: Ratelimit.slidingWindow(10, "1 h"),
+  prefix: "preview",
 });
 const { success } = await ratelimit.limit(ip);
-if (!success) return Response.json({ error: 'Rate limit aÅŸÄ±ldÄ±' }, { status: 429 });
+if (!success) return Response.json({ error: "Rate limit aÅŸÄ±ldÄ±" }, { status: 429 });
 ```
 
 ---
@@ -141,12 +143,12 @@ if (!success) return Response.json({ error: 'Rate limit aÅŸÄ±ldÄ±' }, { st
 ## Test Plan
 
 ```typescript
-describe('public preview endpoint', () => {
-  it('geÃ§erli summoner â†’ PreviewResponse dÃ¶ndÃ¼rÃ¼r')
-  it('geÃ§ersiz summoner â†’ 404 dÃ¶ndÃ¼rÃ¼r')
-  it('11. istek aynÄ± IP â†’ 429 dÃ¶ndÃ¼rÃ¼r')
-  it('Riot 429 â†’ 503 ile graceful hata')
-})
+describe("public preview endpoint", () => {
+  it("geÃ§erli summoner â†’ PreviewResponse dÃ¶ndÃ¼rÃ¼r");
+  it("geÃ§ersiz summoner â†’ 404 dÃ¶ndÃ¼rÃ¼r");
+  it("11. istek aynÄ± IP â†’ 429 dÃ¶ndÃ¼rÃ¼r");
+  it("Riot 429 â†’ 503 ile graceful hata");
+});
 ```
 
 ---
@@ -166,4 +168,3 @@ describe('public preview endpoint', () => {
 - Blur overlay + CTA gÃ¶rÃ¼nÃ¼yor
 - Rate limit korumasÄ± aktif
 - `docs/API_DESIGN.md` gÃ¼ncellendi
-

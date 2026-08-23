@@ -134,13 +134,13 @@ prisma/migrations/YYYYMMDD_sync_status/          ← YENİ
 ## Test Plan
 
 ```typescript
-describe('matchSyncOrchestrator', () => {
-  it('riot account için sync tetiklenince status RUNNING oluyor')
-  it('tüm maçlar senkronize edilince status COMPLETED oluyor')
-  it('Riot API 429 → sleep + retry yapıyor')
-  it('aynı riotAccountId için paralel sync başlamıyor (concurrency key)')
-  it('3 başarısız retry sonrası status FAILED, hata mesajı DB\'ye yazılıyor')
-})
+describe("matchSyncOrchestrator", () => {
+  it("riot account için sync tetiklenince status RUNNING oluyor");
+  it("tüm maçlar senkronize edilince status COMPLETED oluyor");
+  it("Riot API 429 → sleep + retry yapıyor");
+  it("aynı riotAccountId için paralel sync başlamıyor (concurrency key)");
+  it("3 başarısız retry sonrası status FAILED, hata mesajı DB'ye yazılıyor");
+});
 ```
 
 ---

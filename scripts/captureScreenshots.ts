@@ -230,7 +230,10 @@ async function run(): Promise<void> {
     try {
       results.push([target.name, await shoot(page, target)]);
     } catch (err) {
-      results.push([target.name, `failed: ${err instanceof Error ? err.message.split("\n")[0] : String(err)}`]);
+      results.push([
+        target.name,
+        `failed: ${err instanceof Error ? err.message.split("\n")[0] : String(err)}`,
+      ]);
     }
     await context.close();
   }

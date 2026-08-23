@@ -68,7 +68,9 @@ export function ResultPanel({
               solved ? "text-accent" : "text-fg-2"
             }`}
           >
-            {solved ? `Solved in ${guessCount} ${guessCount === 1 ? "guess" : "guesses"}` : "The answer was"}
+            {solved
+              ? `Solved in ${guessCount} ${guessCount === 1 ? "guess" : "guesses"}`
+              : "The answer was"}
           </p>
           <p className="mt-1 font-mono text-[10.5px] uppercase tracking-label text-fg-3">
             {answer.name} · {answer.title}
@@ -81,7 +83,11 @@ export function ResultPanel({
             onClick={copy}
             className="tag-cut flex items-center gap-2 border border-line-2 bg-surface-2 px-3.5 py-2 font-mono text-[11px] uppercase tracking-label text-fg-1 transition-colors hover:border-accent hover:text-accent"
           >
-            {copied ? <Check aria-hidden className="h-3.5 w-3.5" /> : <Share2 aria-hidden className="h-3.5 w-3.5" />}
+            {copied ? (
+              <Check aria-hidden className="h-3.5 w-3.5" />
+            ) : (
+              <Share2 aria-hidden className="h-3.5 w-3.5" />
+            )}
             {copied ? "Copied" : "Share result"}
           </button>
           <button

@@ -63,8 +63,18 @@ describe("judgeGuess", () => {
     it("widens the Lore clue only after the player is deeply stuck", () => {
       const answer = answerFor("lore", "2026-08-17");
       const wrong = answer.id === "Ahri" ? "Garen" : "Ahri";
-      const at6 = judgeGuess("lore", wrong, NOW, Array.from({ length: 5 }, (_, i) => `w${i}`));
-      const at9 = judgeGuess("lore", wrong, NOW, Array.from({ length: 8 }, (_, i) => `w${i}`));
+      const at6 = judgeGuess(
+        "lore",
+        wrong,
+        NOW,
+        Array.from({ length: 5 }, (_, i) => `w${i}`)
+      );
+      const at9 = judgeGuess(
+        "lore",
+        wrong,
+        NOW,
+        Array.from({ length: 8 }, (_, i) => `w${i}`)
+      );
       expect(at9.hint!.length).toBeGreaterThan(at6.hint!.length);
     });
   });

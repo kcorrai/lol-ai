@@ -35,7 +35,7 @@ async function checkDatabase(): Promise<ServiceStatus> {
 
 async function checkRedis(): Promise<ServiceStatus> {
   if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
-    return { ok: true, latencyMs: 0 };  // not configured — not a failure
+    return { ok: true, latencyMs: 0 }; // not configured — not a failure
   }
 
   const start = Date.now();

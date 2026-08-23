@@ -42,14 +42,20 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   }
 
   // Award referral trial if this user was referred and this is their first account
-  await completeReferral(userId).catch(() => { /* non-critical */ });
+  await completeReferral(userId).catch(() => {
+    /* non-critical */
+  });
 
   // Fire activation email — non-blocking, first account only
   if (account.isPrimary) {
-    await inngest.send({
-      name: "riot/account.connected",
-      data: { userId, gameName: account.gameName },
-    }).catch(() => { /* non-critical */ });
+    await inngest
+      .send({
+        name: "riot/account.connected",
+        data: { userId, gameName: account.gameName },
+      })
+      .catch(() => {
+        /* non-critical */
+      });
   }
 
   await audit({
@@ -57,7 +63,9 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
     action: "riot.account.connected",
     resourceId: account.id,
     ipAddress: req.headers.get("x-forwarded-for") ?? undefined,
-  }).catch(() => { /* non-critical */ });
+  }).catch(() => {
+    /* non-critical */
+  });
 
   return apiSuccess(account, 201);
 });

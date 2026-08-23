@@ -29,10 +29,26 @@ export const positioningBasics: Lesson = {
       caption: "Who you are in a fight",
       head: ["If you are", "You stand", "Your failure mode"],
       rows: [
-        ["The front line", "In their face, first, on purpose", "Arriving second — the engage only works if it is yours"],
-        ["A ranged carry", "Behind your front line, outside their engage range", "Walking forward to secure a kill that was already dying"],
-        ["A mage", "Range of your longest spell, sideways to the fight", "Standing in the middle so every ability lands on you"],
-        ["An assassin", "On the flank, waiting for the front lines to commit", "Going in first, before there is anything to punish"],
+        [
+          "The front line",
+          "In their face, first, on purpose",
+          "Arriving second — the engage only works if it is yours",
+        ],
+        [
+          "A ranged carry",
+          "Behind your front line, outside their engage range",
+          "Walking forward to secure a kill that was already dying",
+        ],
+        [
+          "A mage",
+          "Range of your longest spell, sideways to the fight",
+          "Standing in the middle so every ability lands on you",
+        ],
+        [
+          "An assassin",
+          "On the flank, waiting for the front lines to commit",
+          "Going in first, before there is anything to punish",
+        ],
       ],
     },
     {

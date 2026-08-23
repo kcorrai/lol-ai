@@ -11,7 +11,9 @@ import type { TierListEntry } from "@/domains/meta";
  * Generic over the row so a caller that carries extra columns — the tier list's
  * pro presence — still has them on the far side of the grouping.
  */
-export function groupByTier<T extends TierListEntry>(entries: T[]): { letter: string; rows: T[] }[] {
+export function groupByTier<T extends TierListEntry>(
+  entries: T[]
+): { letter: string; rows: T[] }[] {
   const groups: { letter: string; rows: T[] }[] = [];
   for (const entry of entries) {
     const letter = tierLetter(entry.tier);

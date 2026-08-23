@@ -1,10 +1,12 @@
 # TASK-248 — Visual patch meta report
 
 ## Problem
+
 7.png: `/meta` opened with a ~160-word paragraph as the first thing on the page, and the ▲/▼ rank
 deltas collided with champion names.
 
 ## The collision was a real layout bug
+
 In `MoverList.tsx` the champion `Link` had no `min-w-0`/`truncate` and the delta badge no
 `shrink-0`, so in a ~420px column longer names ("Mordekaiser", "Tahm Kench", "Twisted Fate") ran
 under the badge. Truncating alone wouldn't have been enough — the row was carrying name + delta +
@@ -12,6 +14,7 @@ WR/PR/BR + games + a counters link on one line. It is now two lines: champion an
 stats and the link below.
 
 ## Change
+
 - `MetaHero.tsx` (new) — the single biggest winner and loser as large splash-art cards with the
   rank delta as the dominant number and a green/red wash for legibility over art of varying
   brightness.
@@ -29,6 +32,7 @@ stats and the link below.
   from `fetchAllChampions()`, which `MetaMover` doesn't carry.
 
 ## Verified live
+
 `/meta` — zero name/delta overlaps across all 20 rows at both 1200px and 900px viewports; hero
 cards render Mordekaiser (▲129) and Jayce (▼35); summary present in the DOM (157 words) and
 collapsed by default; both `<video>` elements sit at `networkState: 1` (idle) on load, confirming

@@ -108,7 +108,10 @@ describe("clips", () => {
    */
   it("never appears in a hand-written lesson", () => {
     for (const lesson of allLessons()) {
-      expect(lesson.blocks.filter((b) => b.kind === "clip"), lessonId(lesson)).toHaveLength(0);
+      expect(
+        lesson.blocks.filter((b) => b.kind === "clip"),
+        lessonId(lesson)
+      ).toHaveLength(0);
     }
   });
 });

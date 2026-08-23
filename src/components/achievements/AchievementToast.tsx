@@ -42,7 +42,10 @@ export function AchievementToast() {
 
       {/* Content */}
       <div className="min-w-0 flex-1">
-        <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: tierColor }}>
+        <p
+          className="text-[10px] font-semibold uppercase tracking-widest"
+          style={{ color: tierColor }}
+        >
           Yeni Rozet!
         </p>
         <p className="font-semibold text-text">{current.name}</p>

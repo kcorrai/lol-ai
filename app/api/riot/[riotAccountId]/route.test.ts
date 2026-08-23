@@ -14,7 +14,12 @@ vi.mock("@/domains/riot/services/accountService", () => ({
 import { assertOwnsRiotAccount, assertCanDisconnectRiotAccount } from "@/lib/auth/authorization";
 import { setPrimaryAccount, disconnectAccount } from "@/domains/riot/services/accountService";
 import { Errors } from "@/lib/api/errors";
-import { authenticateAs, authenticateAsNobody, readApiResponse, routeRequest } from "@/test/apiRoute";
+import {
+  authenticateAs,
+  authenticateAsNobody,
+  readApiResponse,
+  routeRequest,
+} from "@/test/apiRoute";
 import { PATCH, DELETE } from "./route";
 
 const USER_ID = "user-1";
@@ -32,7 +37,9 @@ describe("PATCH /api/riot/[riotAccountId]", () => {
   it("rejects an unauthenticated request before touching the account", async () => {
     authenticateAsNobody();
 
-    const res = await PATCH(routeRequest(PATH, { method: "PATCH", body: { action: "set_primary" } }));
+    const res = await PATCH(
+      routeRequest(PATH, { method: "PATCH", body: { action: "set_primary" } })
+    );
 
     expect(res.status).toBe(401);
     expect(assertOwnsRiotAccount).not.toHaveBeenCalled();
@@ -40,7 +47,9 @@ describe("PATCH /api/riot/[riotAccountId]", () => {
   });
 
   it("sets the account primary for the authenticated user", async () => {
-    const res = await PATCH(routeRequest(PATH, { method: "PATCH", body: { action: "set_primary" } }));
+    const res = await PATCH(
+      routeRequest(PATH, { method: "PATCH", body: { action: "set_primary" } })
+    );
 
     const { status, data } = await readApiResponse<{ primary: boolean }>(res);
     expect(status).toBe(200);
@@ -53,7 +62,9 @@ describe("PATCH /api/riot/[riotAccountId]", () => {
   it("checks ownership before mutating", async () => {
     vi.mocked(assertOwnsRiotAccount).mockRejectedValue(Errors.riotAccountNotOwned());
 
-    const res = await PATCH(routeRequest(PATH, { method: "PATCH", body: { action: "set_primary" } }));
+    const res = await PATCH(
+      routeRequest(PATH, { method: "PATCH", body: { action: "set_primary" } })
+    );
 
     const { status, error } = await readApiResponse(res);
     expect(status).toBe(403);
@@ -68,7 +79,9 @@ describe("PATCH /api/riot/[riotAccountId]", () => {
   });
 
   it("rejects a body with an unknown action", async () => {
-    const res = await PATCH(routeRequest(PATH, { method: "PATCH", body: { action: "delete_all" } }));
+    const res = await PATCH(
+      routeRequest(PATH, { method: "PATCH", body: { action: "delete_all" } })
+    );
 
     const { status, error } = await readApiResponse(res);
     expect(status).toBe(422);
@@ -85,9 +98,13 @@ describe("PATCH /api/riot/[riotAccountId]", () => {
   });
 
   it("returns 500 without leaking the message when the service fails unexpectedly", async () => {
-    vi.mocked(setPrimaryAccount).mockRejectedValue(new Error("connection string: postgres://secret"));
+    vi.mocked(setPrimaryAccount).mockRejectedValue(
+      new Error("connection string: postgres://secret")
+    );
 
-    const res = await PATCH(routeRequest(PATH, { method: "PATCH", body: { action: "set_primary" } }));
+    const res = await PATCH(
+      routeRequest(PATH, { method: "PATCH", body: { action: "set_primary" } })
+    );
 
     const { status, error } = await readApiResponse(res);
     expect(status).toBe(500);
@@ -109,7 +126,9 @@ describe("DELETE /api/riot/[riotAccountId]", () => {
   // Free-plan users cannot disconnect; this must be decided before ownership is even considered,
   // otherwise the plan gate is reachable only for accounts the user already owns.
   it("enforces the plan gate before disconnecting", async () => {
-    vi.mocked(assertCanDisconnectRiotAccount).mockRejectedValue(Errors.cannotDisconnectOnFreePlan());
+    vi.mocked(assertCanDisconnectRiotAccount).mockRejectedValue(
+      Errors.cannotDisconnectOnFreePlan()
+    );
 
     const res = await DELETE(routeRequest(PATH, { method: "DELETE" }));
 

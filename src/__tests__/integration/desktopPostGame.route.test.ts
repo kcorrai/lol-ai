@@ -47,7 +47,10 @@ beforeEach(() => {
     remaining: 5,
   });
   vi.mocked(authenticateDevice).mockResolvedValue({ device: DEVICE });
-  vi.mocked(requestPostGameSync).mockResolvedValue({ status: "pending", riotAccountId: ACCOUNT_ID });
+  vi.mocked(requestPostGameSync).mockResolvedValue({
+    status: "pending",
+    riotAccountId: ACCOUNT_ID,
+  });
 });
 
 describe("POST /api/desktop/post-game", () => {

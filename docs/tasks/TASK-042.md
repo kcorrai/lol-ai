@@ -28,23 +28,20 @@ Counter Pick sayfasÄ±nÄ±n kullanacaÄŸÄ± TanStack Query hook'unu yaz. Cha
 
 ```typescript
 // src/hooks/useGeneralCounterPick.ts
-import { useQuery } from '@tanstack/react-query';
-import type { GeneralCounterResult } from '@/domains/counter/types/counter.types';
-import type { Position } from '@/types/common.types';
+import { useQuery } from "@tanstack/react-query";
+import type { GeneralCounterResult } from "@/domains/counter/types/counter.types";
+import type { Position } from "@/types/common.types";
 
-export function useGeneralCounterPick(
-  champion: string | null,
-  role: Position | null
-) {
+export function useGeneralCounterPick(champion: string | null, role: Position | null) {
   return useQuery<GeneralCounterResult>({
-    queryKey: ['counter', 'general', champion, role],
+    queryKey: ["counter", "general", champion, role],
     queryFn: () =>
       fetch(`/api/counter?champion=${champion}&role=${role}`)
-        .then(res => res.json())
-        .then(data => data.data),
+        .then((res) => res.json())
+        .then((data) => data.data),
     enabled: !!champion && !!role,
-    staleTime: 1000 * 60 * 60 * 24 * 7,   // 7 gÃ¼n
-    gcTime: 1000 * 60 * 60 * 24 * 14,     // 14 gÃ¼n
+    staleTime: 1000 * 60 * 60 * 24 * 7, // 7 gÃ¼n
+    gcTime: 1000 * 60 * 60 * 24 * 14, // 14 gÃ¼n
     retry: 1,
   });
 }
@@ -62,4 +59,3 @@ export function useGeneralCounterPick(
 
 - `data.data` â€” mevcut `apiSuccess` envelope `{ data: ... }` formatÄ±nda dÃ¶ndÃ¼rÃ¼yor.
 - Hook dosyasÄ± 50 satÄ±rÄ± geÃ§memeli; karmaÅŸÄ±k logic servis katmanÄ±nda.
-

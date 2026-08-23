@@ -18,11 +18,11 @@ strings ("5m ago" vs "6m ago") and React would report a hydration mismatch.
 
 The flagged call sites are:
 
-| File | Call | Renders when loading |
-|---|---|---|
-| `ConnectedAccountsList.tsx:18` | `relativeTime` | `if (isLoading)` → skeleton |
-| `DailyChallengeWidget.tsx:7` | `timeLeft` | `if (isLoading)` → skeleton |
-| `RecentMatchList.tsx:24` | `timeAgo` | `if (isLoading)` → skeleton (line 137) |
+| File                           | Call           | Renders when loading                   |
+| ------------------------------ | -------------- | -------------------------------------- |
+| `ConnectedAccountsList.tsx:18` | `relativeTime` | `if (isLoading)` → skeleton            |
+| `DailyChallengeWidget.tsx:7`   | `timeLeft`     | `if (isLoading)` → skeleton            |
+| `RecentMatchList.tsx:24`       | `timeAgo`      | `if (isLoading)` → skeleton (line 137) |
 
 All three read their data from React Query, and **the project has no server-side query hydration** —
 a search for `HydrationBoundary`, `dehydrate` and `prefetchQuery` returns nothing outside a code
@@ -39,7 +39,7 @@ Dev server on `localhost:3001`, real session, browser console captured on `/dash
 
 **Zero hydration warnings on both pages.** The only console error is
 `@vercel/analytics` requesting `va.vercel-scripts.com/v1/script.debug.js` against a `script-src
-'self'` CSP — chased down and dismissed: that absolute URL exists only in the package's *debug*
+'self'` CSP — chased down and dismissed: that absolute URL exists only in the package's _debug_
 path, and production loads the same-origin `/_vercel/insights/script.js`, which the CSP allows. Not
 a defect either.
 

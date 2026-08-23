@@ -28,10 +28,10 @@ score = metaWinRate
 ```
 
 Every component is surfaced, never just the total: the panel shows
-*"Ornn — 52.1% top · +2.4 into K'Sante · fixes your frontline"*. A number with no
+_"Ornn — 52.1% top · +2.4 into K'Sante · fixes your frontline"_. A number with no
 reason attached is not advice.
 
-For a **ban** turn the same machinery runs against the *enemy's* needs and returns
+For a **ban** turn the same machinery runs against the _enemy's_ needs and returns
 the champions that would hurt you most.
 
 `src/domains/draft/components/`

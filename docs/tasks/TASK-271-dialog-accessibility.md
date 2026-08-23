@@ -13,7 +13,7 @@ handler, and any focus management. The consequences:
 
 - A screen reader does not announce it as a dialog, and does not associate the title or the
   description with it.
-- Focus stays wherever it was — usually the button that opened the dialog, which is *behind* the
+- Focus stays wherever it was — usually the button that opened the dialog, which is _behind_ the
   overlay. Tabbing walks straight into the page underneath, which is still fully interactive.
 - Escape does nothing.
 - Focus is not restored when it closes.

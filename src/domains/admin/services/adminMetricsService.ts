@@ -40,20 +40,26 @@ export async function getAdminMetrics(rangeDays: number = 30): Promise<AdminMetr
     challengesInRange,
   ] = await Promise.all([
     prismaReadonly.user.count(),
-    prismaReadonly.subscription.count({ where: { plan: { in: ["pro", "elite", "team"] }, status: { in: ["active", "trialing"] } } }),
+    prismaReadonly.subscription.count({
+      where: { plan: { in: ["pro", "elite", "team"] }, status: { in: ["active", "trialing"] } },
+    }),
     // DAU proxy: Riot accounts synced in last 24h → users who were active
     prismaReadonly.riotAccount.groupBy({ by: ["userId"], where: { updatedAt: { gte: dayAgo } } }),
     // MAU proxy: Riot accounts synced in last 30 days
     prismaReadonly.riotAccount.groupBy({ by: ["userId"], where: { updatedAt: { gte: monthAgo } } }),
     prismaReadonly.user.count({ where: { riotAccounts: { some: {} } } }),
-    prismaReadonly.user.count({ where: { riotAccounts: { some: { coachingReports: { some: {} } } } } }),
+    prismaReadonly.user.count({
+      where: { riotAccounts: { some: { coachingReports: { some: {} } } } },
+    }),
     prismaReadonly.user.count({ where: { createdAt: { gte: week7Ago } } }),
     prismaReadonly.coachingReport.count({ where: { createdAt: { gte: rangeStart } } }),
     prismaReadonly.aiAnalysis.count({ where: { createdAt: { gte: rangeStart } } }),
     prismaReadonly.seasonRecap.count({ where: { generatedAt: { gte: rangeStart } } }),
     prismaReadonly.matchParticipant.count({ where: { match: { gameStart: { gte: rangeStart } } } }),
     prismaReadonly.userAchievement.count({ where: { earnedAt: { gte: rangeStart } } }),
-    prismaReadonly.userChallenge.count({ where: { completedAt: { gte: rangeStart }, completed: true } }),
+    prismaReadonly.userChallenge.count({
+      where: { completedAt: { gte: rangeStart }, completed: true },
+    }),
   ]);
 
   const conversionRate = totalUsers > 0 ? Math.round((proUserCount / totalUsers) * 1000) / 10 : 0;

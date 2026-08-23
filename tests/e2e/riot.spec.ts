@@ -66,7 +66,9 @@ test.describe("Riot Account Connection", () => {
     ).toBeVisible({ timeout: 8_000 });
   });
 
-  test("Connect — duplicate protection shows error for already-connected account", async ({ page }) => {
+  test("Connect — duplicate protection shows error for already-connected account", async ({
+    page,
+  }) => {
     await page.goto("/settings/accounts");
 
     // Try connecting the same account again
@@ -77,8 +79,6 @@ test.describe("Riot Account Connection", () => {
     await page.getByRole("button", { name: "Connect Account" }).click();
 
     // Error message shown — account already connected
-    await expect(
-      page.locator("text=already connected")
-    ).toBeVisible({ timeout: 8_000 });
+    await expect(page.locator("text=already connected")).toBeVisible({ timeout: 8_000 });
   });
 });

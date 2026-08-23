@@ -101,12 +101,7 @@ describe("isApex and tiersAtOrAbove", () => {
   });
 
   it("lists a filter's tiers from the floor upward", () => {
-    expect(tiersAtOrAbove("DIAMOND")).toEqual([
-      "DIAMOND",
-      "MASTER",
-      "GRANDMASTER",
-      "CHALLENGER",
-    ]);
+    expect(tiersAtOrAbove("DIAMOND")).toEqual(["DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"]);
     expect(tiersAtOrAbove("IRON")).toHaveLength(10);
     expect(tiersAtOrAbove("CHALLENGER")).toEqual(["CHALLENGER"]);
   });

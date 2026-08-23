@@ -49,7 +49,9 @@ export function isApex(tier: RankTier): boolean {
  */
 export function rankScore(rank: Rank): number {
   const tier = TIER_ORDER.indexOf(rank.tier);
-  const division = isApex(rank.tier) ? DIVISION_ORDER.length - 1 : DIVISION_ORDER.indexOf(rank.division);
+  const division = isApex(rank.tier)
+    ? DIVISION_ORDER.length - 1
+    : DIVISION_ORDER.indexOf(rank.division);
   const lp = Math.max(0, Math.min(rank.leaguePoints ?? 0, 5000));
   return tier * 100_000 + division * 10_000 + lp;
 }

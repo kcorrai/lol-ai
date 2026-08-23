@@ -62,7 +62,10 @@ export default function CareerTimelinePage(): React.JSX.Element {
           title="No account linked yet"
           body="Link a Riot account and your timeline starts filling in from the games we can still reach."
         />
-        <Link href="/settings/accounts" className="mx-auto text-[13px] font-semibold text-accent hover:underline">
+        <Link
+          href="/settings/accounts"
+          className="mx-auto text-[13px] font-semibold text-accent hover:underline"
+        >
           Link an account →
         </Link>
       </Shell>

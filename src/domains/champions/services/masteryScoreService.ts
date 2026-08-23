@@ -137,8 +137,7 @@ export async function getChampionMastery(
   if (!stat || stat.gamesPlayed < MIN_GAMES) return null;
 
   const stale =
-    !stat.masteryScoreAt ||
-    Date.now() - stat.masteryScoreAt.getTime() > 24 * 60 * 60 * 1000;
+    !stat.masteryScoreAt || Date.now() - stat.masteryScoreAt.getTime() > 24 * 60 * 60 * 1000;
 
   if (!stale && stat.masteryScore !== null && stat.masterySubScores !== null) {
     return {

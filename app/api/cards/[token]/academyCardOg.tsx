@@ -34,9 +34,7 @@ export function AcademyCard({ d }: { d: AcademyCardData }) {
 
         <div style={{ display: "flex", gap: 56, marginTop: 40 }}>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ color: C.brand, fontSize: 44, fontWeight: 700 }}>
-              {d.lessonsTotal}
-            </span>
+            <span style={{ color: C.brand, fontSize: 44, fontWeight: 700 }}>{d.lessonsTotal}</span>
             <span style={{ color: C.muted, fontSize: 18 }}>lessons</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>

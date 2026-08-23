@@ -3,10 +3,10 @@
 import { cn } from "@/lib/utils";
 
 const TIME_RANGES = [
-  { value: undefined,  label: "All" },
-  { value: "early",   label: "0-15min" },
-  { value: "mid",     label: "15-30min" },
-  { value: "late",    label: "30+min" },
+  { value: undefined, label: "All" },
+  { value: "early", label: "0-15min" },
+  { value: "mid", label: "15-30min" },
+  { value: "late", label: "30+min" },
 ];
 
 const MATCH_COUNTS = [10, 20, 50];
@@ -45,7 +45,9 @@ export function HeatMapControls({
           >
             <option value="">All</option>
             {champions.map((c) => (
-              <option key={c} value={c}>{c}</option>
+              <option key={c} value={c}>
+                {c}
+              </option>
             ))}
           </select>
         </div>

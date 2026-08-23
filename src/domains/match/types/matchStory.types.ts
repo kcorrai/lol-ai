@@ -101,7 +101,10 @@ export type MatchStoryEvent =
   | (MatchStoryEventBase & { kind: "WARD_PLACED" | "WARD_KILL"; payload: WardEventPayload })
   | (MatchStoryEventBase & { kind: "ELITE_MONSTER_KILL"; payload: EliteMonsterKillPayload })
   | (MatchStoryEventBase & { kind: "BUILDING_KILL"; payload: BuildingKillPayload })
-  | (MatchStoryEventBase & { kind: "TURRET_PLATE_DESTROYED"; payload: TurretPlateDestroyedPayload });
+  | (MatchStoryEventBase & {
+      kind: "TURRET_PLATE_DESTROYED";
+      payload: TurretPlateDestroyedPayload;
+    });
 
 /**
  * No timeline was captured for this match — every game synced before LA-45. This is not an error:

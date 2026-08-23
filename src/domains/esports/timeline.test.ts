@@ -7,7 +7,11 @@ function state(over: Partial<TimelineTeamState> = {}): TimelineTeamState {
 }
 
 function timeline(
-  samples: { seconds: number; blue?: Partial<TimelineTeamState>; red?: Partial<TimelineTeamState> }[]
+  samples: {
+    seconds: number;
+    blue?: Partial<TimelineTeamState>;
+    red?: Partial<TimelineTeamState>;
+  }[]
 ): GameTimeline {
   return {
     gameId: "g1",
@@ -25,12 +29,16 @@ function timeline(
 
 describe("goldDiff", () => {
   it("reads positive when blue is ahead", () => {
-    const [sample] = timeline([{ seconds: 240, blue: { gold: 9000 }, red: { gold: 7500 } }]).samples;
+    const [sample] = timeline([
+      { seconds: 240, blue: { gold: 9000 }, red: { gold: 7500 } },
+    ]).samples;
     expect(goldDiff(sample)).toBe(1500);
   });
 
   it("reads negative when red is ahead", () => {
-    const [sample] = timeline([{ seconds: 240, blue: { gold: 7500 }, red: { gold: 9000 } }]).samples;
+    const [sample] = timeline([
+      { seconds: 240, blue: { gold: 7500 }, red: { gold: 9000 } },
+    ]).samples;
     expect(goldDiff(sample)).toBe(-1500);
   });
 });
@@ -104,7 +112,9 @@ describe("peakLead", () => {
   });
 
   it("has no answer for a game that was level at every sample", () => {
-    expect(peakLead(timeline([{ seconds: 240, blue: { gold: 5000 }, red: { gold: 5000 } }]))).toBeNull();
+    expect(
+      peakLead(timeline([{ seconds: 240, blue: { gold: 5000 }, red: { gold: 5000 } }]))
+    ).toBeNull();
   });
 });
 

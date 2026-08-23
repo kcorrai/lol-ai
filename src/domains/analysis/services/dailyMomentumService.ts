@@ -58,7 +58,7 @@ const toMomentumRow = (r: RawRow): MomentumRow => ({
  */
 export async function getDailyMomentum(
   riotAccountId: string,
-  days: number = DEFAULT_WINDOW_DAYS,
+  days: number = DEFAULT_WINDOW_DAYS
 ): Promise<DailyMomentum> {
   const window = Math.min(Math.max(days, 1), MAX_WINDOW_DAYS);
   const puuid = await getAccountPuuid(riotAccountId);

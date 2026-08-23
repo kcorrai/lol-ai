@@ -108,14 +108,15 @@ export function TierListView({
       <div className="mt-6">
         {lowConfidenceMajority && (
           <p className="notch mb-4 border border-warning/30 bg-warning/5 px-3 py-2 text-xs text-warning/90">
-            This bracket has a small sample this patch, so tiers below are low-confidence and ordered
-            by games played. Broader brackets give more reliable rankings.
+            This bracket has a small sample this patch, so tiers below are low-confidence and
+            ordered by games played. Broader brackets give more reliable rankings.
           </p>
         )}
 
         {!list || list.entries.length === 0 ? (
           <p className="notch border border-dashed border-border px-4 py-12 text-center text-text-muted">
-            {aram ? "ARAM tier data" : "Tier data"} is unavailable right now. Please try again shortly.
+            {aram ? "ARAM tier data" : "Tier data"} is unavailable right now. Please try again
+            shortly.
           </p>
         ) : (
           <TierListConsole

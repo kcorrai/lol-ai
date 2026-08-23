@@ -59,14 +59,19 @@ export function UpgradeModal({ open, onClose, reason }: UpgradeModalProps) {
   }
 
   return (
-    <Dialog.Root open onOpenChange={(next) => { if (!next) onClose(); }}>
+    <Dialog.Root
+      open
+      onOpenChange={(next) => {
+        if (!next) onClose();
+      }}
+    >
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60" />
         <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-accent/30 bg-surface p-6 shadow-2xl">
           {/* Was a bare <div> backdrop with an onClick — dismissal was mouse-only. */}
           <Dialog.Close
             aria-label="Close"
-            className="absolute right-4 top-4 text-text-muted hover:text-text transition-colors"
+            className="absolute right-4 top-4 text-text-muted transition-colors hover:text-text"
           >
             <X className="h-4 w-4" />
           </Dialog.Close>
@@ -97,12 +102,12 @@ export function UpgradeModal({ open, onClose, reason }: UpgradeModalProps) {
             <span className="text-sm text-text-muted"> / month</span>
           </div>
 
-          <Button
-            className="w-full"
-            onClick={handleUpgrade}
-            disabled={checkout.isPending}
-          >
-            {checkout.isPending ? "Redirecting..." : session ? "Upgrade to Pro →" : "Get Started Free →"}
+          <Button className="w-full" onClick={handleUpgrade} disabled={checkout.isPending}>
+            {checkout.isPending
+              ? "Redirecting..."
+              : session
+                ? "Upgrade to Pro →"
+                : "Get Started Free →"}
           </Button>
         </Dialog.Content>
       </Dialog.Portal>

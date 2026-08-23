@@ -86,7 +86,11 @@ export function gridToRules(open: Set<CellKey>): WeeklyRule[] {
   const rules: WeeklyRule[] = [];
   for (const { days, spans } of byShape.values()) {
     for (const [from, to] of spans) {
-      rules.push({ days: [...days].sort((a, b) => a - b), startMinute: from * 60, endMinute: to * 60 });
+      rules.push({
+        days: [...days].sort((a, b) => a - b),
+        startMinute: from * 60,
+        endMinute: to * 60,
+      });
     }
   }
 

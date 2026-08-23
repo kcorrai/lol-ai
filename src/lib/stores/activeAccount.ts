@@ -13,7 +13,7 @@ interface AccountRef {
  */
 export function resolveActiveAccountId(
   accounts: AccountRef[] | undefined,
-  activeId: string | null | undefined,
+  activeId: string | null | undefined
 ): string | null {
   if (!accounts || accounts.length === 0) return null;
   if (activeId && accounts.some((a) => a.id === activeId)) return activeId;
@@ -26,7 +26,7 @@ export function resolveActiveAccountId(
  */
 export function isStaleActiveAccountId(
   accounts: AccountRef[] | undefined,
-  activeId: string | null | undefined,
+  activeId: string | null | undefined
 ): boolean {
   if (!activeId) return false;
   if (!accounts || accounts.length === 0) return false;

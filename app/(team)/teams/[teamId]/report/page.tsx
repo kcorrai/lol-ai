@@ -38,12 +38,17 @@ export default function TeamReportPage() {
           <div>
             <p className="font-semibold text-text">No report generated yet</p>
             <p className="mt-1 text-sm text-text-muted">
-              Analyzes the team&apos;s performance over the last 7 days and generates an AI coaching report.
+              Analyzes the team&apos;s performance over the last 7 days and generates an AI coaching
+              report.
             </p>
           </div>
           {isCoach && (
             <Button onClick={() => generate()} disabled={isGenerating} className="gap-2">
-              {isGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+              {isGenerating ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Sparkles className="h-4 w-4" />
+              )}
               {isGenerating ? "Generating Report..." : "Generate Report"}
             </Button>
           )}

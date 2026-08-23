@@ -87,8 +87,14 @@ function summarise(dto: MatchDTO, puuid: string): LastMatchSummary | null {
     damageToChampions: player.totalDamageDealtToChampions,
     damageShare: teamDamage > 0 ? player.totalDamageDealtToChampions / teamDamage : 0,
     visionScore: player.visionScore,
-    items: [player.item0, player.item1, player.item2, player.item3, player.item4, player.item5]
-      .filter((id) => id > 0),
+    items: [
+      player.item0,
+      player.item1,
+      player.item2,
+      player.item3,
+      player.item4,
+      player.item5,
+    ].filter((id) => id > 0),
     opponent: opponent
       ? {
           championName: opponent.championName,

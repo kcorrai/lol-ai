@@ -8,7 +8,15 @@ interface MilestoneHeroProps {
   isCurrent: boolean;
 }
 
-function Stat({ label, value, tone }: { label: string; value: string; tone?: "good" | "bad" }): React.JSX.Element {
+function Stat({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone?: "good" | "bad";
+}): React.JSX.Element {
   return (
     <div>
       <div className="font-mono text-[9.5px] uppercase tracking-label text-fg-4">{label}</div>

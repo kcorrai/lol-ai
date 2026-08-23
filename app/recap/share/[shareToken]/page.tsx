@@ -28,8 +28,12 @@ export default async function PublicRecapPage({ params }: Props) {
       {/* Recap card */}
       <div className="w-full max-w-sm space-y-6 rounded-2xl border border-border bg-surface p-6 shadow-xl">
         <div className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-accent">{recap.seasonLabel}</p>
-          <h1 className="mt-2 font-display text-3xl font-black text-text">This Season&apos;s Record</h1>
+          <p className="text-xs font-semibold uppercase tracking-widest text-accent">
+            {recap.seasonLabel}
+          </p>
+          <h1 className="mt-2 font-display text-3xl font-black text-text">
+            This Season&apos;s Record
+          </h1>
         </div>
 
         <div className="grid grid-cols-2 gap-4 text-center">
@@ -41,7 +45,9 @@ export default async function PublicRecapPage({ params }: Props) {
           ].map((s) => (
             <div key={s.label} className="rounded-xl border border-border bg-surface-2 p-3">
               <p className="font-display text-2xl font-bold text-text">{s.value}</p>
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">{s.label}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+                {s.label}
+              </p>
             </div>
           ))}
         </div>

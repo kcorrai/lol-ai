@@ -16,10 +16,19 @@ function parseDevice(userAgent: string | null): { label: string; icon: "desktop"
   if (!userAgent) return { label: "Unknown Device", icon: "desktop" };
   const ua = userAgent.toLowerCase();
   const isMobile = ua.includes("mobile") || ua.includes("android") || ua.includes("iphone");
-  if (ua.includes("chrome")) return { label: `Chrome${isMobile ? " (Mobile)" : ""}`, icon: isMobile ? "mobile" : "desktop" };
-  if (ua.includes("firefox")) return { label: `Firefox${isMobile ? " (Mobile)" : ""}`, icon: isMobile ? "mobile" : "desktop" };
-  if (ua.includes("safari")) return { label: `Safari${isMobile ? " (Mobile)" : ""}`, icon: isMobile ? "mobile" : "desktop" };
-  return { label: isMobile ? "Mobile Browser" : "Desktop Browser", icon: isMobile ? "mobile" : "desktop" };
+  if (ua.includes("chrome"))
+    return { label: `Chrome${isMobile ? " (Mobile)" : ""}`, icon: isMobile ? "mobile" : "desktop" };
+  if (ua.includes("firefox"))
+    return {
+      label: `Firefox${isMobile ? " (Mobile)" : ""}`,
+      icon: isMobile ? "mobile" : "desktop",
+    };
+  if (ua.includes("safari"))
+    return { label: `Safari${isMobile ? " (Mobile)" : ""}`, icon: isMobile ? "mobile" : "desktop" };
+  return {
+    label: isMobile ? "Mobile Browser" : "Desktop Browser",
+    icon: isMobile ? "mobile" : "desktop",
+  };
 }
 
 export function ActiveSessionsList() {
@@ -31,13 +40,18 @@ export function ActiveSessionsList() {
     setLoading(true);
     try {
       const res = await fetch("/api/sessions");
-      const json = await res.json() as { data: UserSession[] };
+      const json = (await res.json()) as { data: UserSession[] };
       setSessions(json.data ?? []);
-    } catch { /* non-critical */ }
-    finally { setLoading(false); }
+    } catch {
+      /* non-critical */
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  useEffect(() => { void loadSessions(); }, [loadSessions]);
+  useEffect(() => {
+    void loadSessions();
+  }, [loadSessions]);
 
   async function revokeSession(sessionId: string) {
     setRevoking(sessionId);
@@ -52,16 +66,20 @@ export function ActiveSessionsList() {
 
   async function revokeAllSessions() {
     setRevoking("all");
-    await fetch("/api/sessions", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
+    await fetch("/api/sessions", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
+    });
     await signOut({ callbackUrl: "/login" });
   }
 
   return (
-    <div className="rounded-xl border border-border bg-surface p-5 space-y-4">
+    <div className="space-y-4 rounded-xl border border-border bg-surface p-5">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-semibold text-text">Active Sessions</p>
-          <p className="text-xs text-text-muted mt-0.5">Devices logged into your account</p>
+          <p className="mt-0.5 text-xs text-text-muted">Devices logged into your account</p>
         </div>
         <button
           onClick={revokeAllSessions}
@@ -75,7 +93,9 @@ export function ActiveSessionsList() {
 
       {loading ? (
         <div className="space-y-2">
-          {[1, 2].map((i) => <div key={i} className="h-12 animate-pulse rounded-lg bg-surface-2" />)}
+          {[1, 2].map((i) => (
+            <div key={i} className="h-12 animate-pulse rounded-lg bg-surface-2" />
+          ))}
         </div>
       ) : sessions.length === 0 ? (
         <p className="text-xs text-text-muted">No active sessions found.</p>
@@ -86,16 +106,25 @@ export function ActiveSessionsList() {
             const isFirst = idx === 0;
             return (
               <div key={s.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-surface-2 text-text-muted shrink-0">
-                  {device.icon === "mobile" ? <Smartphone className="h-4 w-4" /> : <Monitor className="h-4 w-4" />}
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-surface-2 text-text-muted">
+                  {device.icon === "mobile" ? (
+                    <Smartphone className="h-4 w-4" />
+                  ) : (
+                    <Monitor className="h-4 w-4" />
+                  )}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-text truncate">
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-xs font-medium text-text">
                     {device.label}
-                    {isFirst && <span className="ml-2 rounded-full bg-accent/10 px-2 py-0.5 text-[10px] text-accent font-semibold">This device</span>}
+                    {isFirst && (
+                      <span className="ml-2 rounded-full bg-accent/10 px-2 py-0.5 text-[10px] font-semibold text-accent">
+                        This device
+                      </span>
+                    )}
                   </p>
-                  <p className="text-[11px] text-text-muted truncate">
-                    {s.ipAddress ?? "IP unknown"} · Last active: {new Date(s.lastActiveAt).toLocaleDateString("en-US")}
+                  <p className="truncate text-[11px] text-text-muted">
+                    {s.ipAddress ?? "IP unknown"} · Last active:{" "}
+                    {new Date(s.lastActiveAt).toLocaleDateString("en-US")}
                   </p>
                 </div>
                 {!isFirst && (

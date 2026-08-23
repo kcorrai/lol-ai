@@ -6,8 +6,8 @@ export type ConsistencyLevel = "high" | "medium" | "low";
 export interface PerformanceMetrics {
   kda: number;
   csPerMinute: number;
-  damageShare: number;        // player's damage / team's total damage
-  killParticipation: number;  // (kills + assists) / team's total kills
+  damageShare: number; // player's damage / team's total damage
+  killParticipation: number; // (kills + assists) / team's total kills
   visionScorePerMinute: number;
   avgGoldPerMinute: number;
   avgDeathsPerGame: number;
@@ -52,10 +52,10 @@ export interface MatchPerformance {
 export type RankUpLevel = "high" | "moderate" | "low";
 
 export interface RankUpComponents {
-  lpProximity: number;   // 0–30
-  winRate: number;       // 0–35
-  trend: number;         // 0–20
-  mental: number;        // 0–15
+  lpProximity: number; // 0–30
+  winRate: number; // 0–35
+  trend: number; // 0–20
+  mental: number; // 0–15
 }
 
 export interface RankUpResult {
@@ -85,7 +85,7 @@ export interface ImprovementTarget {
 
 export interface PlanProgress extends ImprovementTarget {
   current: number;
-  progress: number;  // 0–1 clamped
+  progress: number; // 0–1 clamped
   achieved: boolean;
 }
 
@@ -94,7 +94,7 @@ export interface PlanWithProgress {
   createdAt: string;
   expiresAt: string;
   daysLeft: number;
-  weekLabel: string;  // "Week 1 of 2" | "Week 2 of 2"
+  weekLabel: string; // "Week 1 of 2" | "Week 2 of 2"
   status: "active" | "expired";
   targets: PlanProgress[];
   allAchieved: boolean;
@@ -109,7 +109,7 @@ export interface FocusItem {
 }
 
 export interface MetricDelta {
-  winRate: number;       // percentage points, e.g. +8.5
+  winRate: number; // percentage points, e.g. +8.5
   kda: number;
   csPerMinute: number;
   visionScore: number;

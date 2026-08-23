@@ -52,6 +52,7 @@ Mevcut `matchAnalysisService` ve `usePerformanceProfile` hook'u zaten 20 maÃ§ 
 ### Veri KaynaÄŸÄ±
 
 `usePerformanceProfile(riotAccountId)` hook'u `PlayerPerformanceProfile` tipinde data dÃ¶ndÃ¼rÃ¼yor. Bu tipten ÅŸu alanlarÄ± kullan:
+
 - `averageKda`, `averageCsPerMinute`, `winRate` (hesapla: wins/total)
 - `topChampion` (en Ã§ok oynanan)
 - `playstyle`
@@ -74,4 +75,3 @@ Mevcut `matchAnalysisService` ve `usePerformanceProfile` hook'u zaten 20 maÃ§ 
 
 - Yeni servis veya API endpoint yazmaya gerek yok â€” veri zaten Ã§ekiliyor.
 - `riotAccountId` dashboard'daki mevcut active account state'inden al (`uiStore`).
-

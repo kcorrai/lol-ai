@@ -33,7 +33,9 @@ export const discordInteractionWorker = inngest.createFunction(
     const payload = await runBotRequest(request);
     await editOriginalResponse(applicationId, token, payload);
 
-    logger.info(`[discord] answered /${request.command}${request.subcommand ? ` ${request.subcommand}` : ""}`);
+    logger.info(
+      `[discord] answered /${request.command}${request.subcommand ? ` ${request.subcommand}` : ""}`
+    );
     return { command: request.command };
   }
 );

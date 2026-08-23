@@ -1,10 +1,4 @@
-import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-} from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 
 // ── Palette ───────────────────────────────────────────────────────────────────
 const C = {
@@ -133,10 +127,22 @@ export interface ReportPDFData {
   summary: string | null;
   coachPersonaResponse: string | null;
   estimatedRankPotential: string | null;
-  actionItems: Array<{ priority: number; action: string; howTo: string; expectedImpact: string; timeframe: string }> | null;
+  actionItems: Array<{
+    priority: number;
+    action: string;
+    howTo: string;
+    expectedImpact: string;
+    timeframe: string;
+  }> | null;
   // Pro-only
   strengths: Array<{ area: string; description: string; evidence: string }> | null;
-  weaknesses: Array<{ area: string; description: string; priority: string; evidence: string; rootCause?: string }> | null;
+  weaknesses: Array<{
+    area: string;
+    description: string;
+    priority: string;
+    evidence: string;
+    rootCause?: string;
+  }> | null;
   championRecommendations: Array<{ championName: string; reason: string; priority: string }> | null;
   isPro: boolean;
 }
@@ -241,7 +247,12 @@ export function ReportPDF({ data }: { data: ReportPDFData }) {
                   {data.weaknesses.map((w, i) => (
                     <View key={i} style={styles.itemRow}>
                       <View style={styles.badgeRow}>
-                        <View style={[styles.badge, { backgroundColor: priorityColor(w.priority) + "33" }]}>
+                        <View
+                          style={[
+                            styles.badge,
+                            { backgroundColor: priorityColor(w.priority) + "33" },
+                          ]}
+                        >
                           <Text style={[styles.badgeText, { color: priorityColor(w.priority) }]}>
                             {w.priority}
                           </Text>
@@ -249,9 +260,7 @@ export function ReportPDF({ data }: { data: ReportPDFData }) {
                         <Text style={styles.itemTitle}>{w.area}</Text>
                       </View>
                       <Text style={styles.itemDesc}>{w.description}</Text>
-                      {w.rootCause && (
-                        <Text style={styles.italic}>Root cause: {w.rootCause}</Text>
-                      )}
+                      {w.rootCause && <Text style={styles.italic}>Root cause: {w.rootCause}</Text>}
                       <Text style={styles.itemEvidence}>{w.evidence}</Text>
                     </View>
                   ))}
@@ -265,7 +274,16 @@ export function ReportPDF({ data }: { data: ReportPDFData }) {
                 <View style={styles.card}>
                   {data.championRecommendations.map((rec, i) => (
                     <View key={i} style={styles.champRow}>
-                      <View style={[styles.badge, { backgroundColor: priorityColor(rec.priority) + "33", alignSelf: "flex-start", marginTop: 2 }]}>
+                      <View
+                        style={[
+                          styles.badge,
+                          {
+                            backgroundColor: priorityColor(rec.priority) + "33",
+                            alignSelf: "flex-start",
+                            marginTop: 2,
+                          },
+                        ]}
+                      >
                         <Text style={[styles.badgeText, { color: priorityColor(rec.priority) }]}>
                           {rec.priority}
                         </Text>
@@ -285,7 +303,8 @@ export function ReportPDF({ data }: { data: ReportPDFData }) {
         {!data.isPro && (
           <View style={[styles.card, { borderWidth: 1, borderColor: C.accent + "66" }]}>
             <Text style={[styles.muted, { textAlign: "center" }]}>
-              Upgrade to Pro to unlock strengths, weaknesses, and champion recommendations in your PDF.
+              Upgrade to Pro to unlock strengths, weaknesses, and champion recommendations in your
+              PDF.
             </Text>
           </View>
         )}

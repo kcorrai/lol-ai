@@ -30,15 +30,15 @@ or whether they should take a break.
 
 ## Tilt Score Algorithm
 
-| Signal | Condition | Points |
-|---|---|---|
-| Loss streak | 1 loss | +10 |
-| Loss streak | 2 losses | +20 |
-| Loss streak | 3 losses | +35 |
-| Loss streak | 4+ losses | +50 |
-| Recent win rate | < 50% in last 10 | +15 |
-| Recent win rate | < 40% in last 10 | +25 (replaces above) |
-| KDA declining | Last 3 avg < Last 7 avg | +15 |
-| Not enough data | < 3 matches | return null |
+| Signal          | Condition               | Points               |
+| --------------- | ----------------------- | -------------------- |
+| Loss streak     | 1 loss                  | +10                  |
+| Loss streak     | 2 losses                | +20                  |
+| Loss streak     | 3 losses                | +35                  |
+| Loss streak     | 4+ losses               | +50                  |
+| Recent win rate | < 50% in last 10        | +15                  |
+| Recent win rate | < 40% in last 10        | +25 (replaces above) |
+| KDA declining   | Last 3 avg < Last 7 avg | +15                  |
+| Not enough data | < 3 matches             | return null          |
 
 Score is capped at 100.

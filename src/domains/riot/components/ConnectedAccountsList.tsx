@@ -22,7 +22,17 @@ function relativeTime(date: string | Date | null): string {
   return `${Math.floor(secs / 86400)}d ago`;
 }
 
-function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, profileIconId, summonerLevel, canDisconnect }: {
+function AccountCard({
+  id,
+  gameName,
+  tagLine,
+  region,
+  isPrimary,
+  lastSyncedAt,
+  profileIconId,
+  summonerLevel,
+  canDisconnect,
+}: {
   id: string;
   gameName: string;
   tagLine: string;
@@ -43,7 +53,7 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
   const isSettingPrimary = setPrimary.isPending && setPrimary.variables === id;
 
   return (
-    <div className="rounded-lg border border-border bg-surface-2 p-4 space-y-3">
+    <div className="space-y-3 rounded-lg border border-border bg-surface-2 p-4">
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-3">
           <div className="relative shrink-0">
@@ -64,24 +74,26 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
               {gameName}
               <span className="text-text-muted">#{tagLine}</span>
             </p>
-            <p className="text-xs text-text-muted mt-0.5">
+            <p className="mt-0.5 text-xs text-text-muted">
               {region.toUpperCase()} · {relativeTime(lastSyncedAt)}
             </p>
           </div>
         </div>
-        <div className="flex gap-1.5 shrink-0">
-          {isPrimary && <Badge variant="secondary" className="text-xs">Primary</Badge>}
+        <div className="flex shrink-0 gap-1.5">
+          {isPrimary && (
+            <Badge variant="secondary" className="text-xs">
+              Primary
+            </Badge>
+          )}
         </div>
       </div>
 
       {syncStatus?.status === "RUNNING" || syncStatus?.status === "PENDING" ? (
-        <p className="text-xs text-accent animate-pulse">Syncing…</p>
+        <p className="animate-pulse text-xs text-accent">Syncing…</p>
       ) : syncStatus?.status === "COMPLETED" ? (
         <p className="text-xs text-success">Synced</p>
       ) : syncStatus?.status === "FAILED" ? (
-        <p className="text-xs text-danger">
-          Sync failed — try again with &quot;Sync Now&quot;.
-        </p>
+        <p className="text-xs text-danger">Sync failed — try again with &quot;Sync Now&quot;.</p>
       ) : null}
       {/*
         A rejected mutation used to render nothing at all: the user pressed Confirm and the row
@@ -89,16 +101,22 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
         that was pressed.
       */}
       {sync.isError && sync.variables === id && (
-        <p role="status" className="text-xs text-danger">{sync.error.message}</p>
+        <p role="status" className="text-xs text-danger">
+          {sync.error.message}
+        </p>
       )}
       {setPrimary.isError && (
-        <p role="status" className="text-xs text-danger">{setPrimary.error.message}</p>
+        <p role="status" className="text-xs text-danger">
+          {setPrimary.error.message}
+        </p>
       )}
       {disconnect.isError && (
-        <p role="status" className="text-xs text-danger">{disconnect.error.message}</p>
+        <p role="status" className="text-xs text-danger">
+          {disconnect.error.message}
+        </p>
       )}
 
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex flex-wrap gap-2">
         <Button
           size="sm"
           variant="secondary"
@@ -119,8 +137,8 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
           </Button>
         )}
 
-        {canDisconnect && (
-          !confirmDisconnect ? (
+        {canDisconnect &&
+          (!confirmDisconnect ? (
             <Button
               size="sm"
               variant="ghost"
@@ -143,8 +161,7 @@ function AccountCard({ id, gameName, tagLine, region, isPrimary, lastSyncedAt, p
                 Cancel
               </Button>
             </div>
-          )
-        )}
+          ))}
       </div>
     </div>
   );
@@ -166,9 +183,7 @@ export function ConnectedAccountsList() {
   }
 
   if (!accounts || accounts.length === 0) {
-    return (
-      <p className="text-sm text-text-muted">No connected accounts yet. Add one below.</p>
-    );
+    return <p className="text-sm text-text-muted">No connected accounts yet. Add one below.</p>;
   }
 
   return (

@@ -10,6 +10,7 @@ splash-art cards in a golden hextech particle field with mouse parallax — with
 regressing LCP or shipping a huge bundle to every visitor.
 
 Options:
+
 - **Raw Three.js** — full control but verbose imperative setup in React.
 - **React Three Fiber (R3F) + drei** — declarative Three.js for React, huge
   ecosystem, `useTexture`/`Float` helpers cut boilerplate.
@@ -28,7 +29,7 @@ lightweight UI animation elsewhere. The scene is isolated in
 - A static champion splash poster is the LCP element and the fallback.
 - Is skipped entirely for `prefers-reduced-motion` users and screens ≤ 768px
   (they get the poster only).
-- Textures are the ~60KB Data Dragon *loading* portraits (not 4K splash), served
+- Textures are the ~60KB Data Dragon _loading_ portraits (not 4K splash), served
   with `Access-Control-Allow-Origin: *` so WebGL can use them; `img-src` already
   allows the Data Dragon host.
 

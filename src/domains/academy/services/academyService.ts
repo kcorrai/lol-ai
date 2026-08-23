@@ -3,7 +3,10 @@ import { listAccounts } from "@/domains/riot";
 import { DEFAULT_PLACEMENT, placeFromProfile, type Placement } from "@/domains/academy/placement";
 import { chooseNextLesson, type Recommendation } from "@/domains/academy/recommendation";
 import { getLessonStatuses } from "@/domains/academy/services/progressService";
-import { getActiveAssignments, type AssignmentView } from "@/domains/academy/services/assignmentService";
+import {
+  getActiveAssignments,
+  type AssignmentView,
+} from "@/domains/academy/services/assignmentService";
 import { primaryPositionForAccount } from "@/domains/academy/services/assignmentReadings";
 import { roleFromPosition } from "@/domains/academy/roles";
 import type { LeakTag, LessonStatus, RoleId } from "@/domains/academy/types";

@@ -33,7 +33,8 @@ const PATTERNS: readonly { name: string; label: string; pattern: RegExp }[] = [
   {
     name: "invite",
     label: "an invite link",
-    pattern: /\b(?:https?:\/\/)?(?:www\.)?(?:discord\.(?:gg|com\/invite)|t\.me|wa\.me|join\.skype\.com)\/\S+/gi,
+    pattern:
+      /\b(?:https?:\/\/)?(?:www\.)?(?:discord\.(?:gg|com\/invite)|t\.me|wa\.me|join\.skype\.com)\/\S+/gi,
   },
   {
     name: "discord",

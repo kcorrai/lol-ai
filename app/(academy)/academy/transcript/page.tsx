@@ -29,7 +29,11 @@ function marker(status: TranscriptLesson["status"]): React.ReactElement {
 function when(lesson: TranscriptLesson): string {
   const stamp = lesson.masteredAt ?? lesson.completedAt;
   if (!stamp) return "";
-  return new Date(stamp).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+  return new Date(stamp).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 export default async function TranscriptPage(): Promise<React.ReactElement> {

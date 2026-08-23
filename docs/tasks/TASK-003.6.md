@@ -13,15 +13,15 @@
 TASK-003.5 already covers: TTL-based expiry, manual `cache.del()`, retry on stale
 responses. This task adds only what is **genuinely missing**:
 
-| Concern | Status after 003.5 | This task adds |
-|---|---|---|
-| TTL invalidation | ✅ `cache.set(ttl)` | — |
-| Manual del | ✅ `cache.del(key)` | Cache key factory |
-| Immutable match versioning | ✅ matches never change once played | — |
-| Staleness detection | ❌ no utility | `isDataStale()` |
-| In-flight dedup | ❌ two concurrent callers → two network calls | `dedup()` |
-| Background refresh | ❌ no fire-and-forget wrapper | `backgroundRefresh()` |
-| Invalidation patterns | ❌ callers invent ad-hoc keys | `CacheKeys.*` + `invalidateAccountCache()` |
+| Concern                    | Status after 003.5                            | This task adds                             |
+| -------------------------- | --------------------------------------------- | ------------------------------------------ |
+| TTL invalidation           | ✅ `cache.set(ttl)`                           | —                                          |
+| Manual del                 | ✅ `cache.del(key)`                           | Cache key factory                          |
+| Immutable match versioning | ✅ matches never change once played           | —                                          |
+| Staleness detection        | ❌ no utility                                 | `isDataStale()`                            |
+| In-flight dedup            | ❌ two concurrent callers → two network calls | `dedup()`                                  |
+| Background refresh         | ❌ no fire-and-forget wrapper                 | `backgroundRefresh()`                      |
+| Invalidation patterns      | ❌ callers invent ad-hoc keys                 | `CacheKeys.*` + `invalidateAccountCache()` |
 
 ---
 

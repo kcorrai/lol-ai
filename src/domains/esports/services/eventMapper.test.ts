@@ -24,7 +24,11 @@ function raw(overrides: Record<string, unknown> = {}): unknown {
 const twitch = {
   parameter: "lolpacificen",
   locale: "en-SG",
-  mediaLocale: { locale: "en-SG", englishName: "English (Singapore)", translatedName: "English (Singapore)" },
+  mediaLocale: {
+    locale: "en-SG",
+    englishName: "English (Singapore)",
+    translatedName: "English (Singapore)",
+  },
   provider: "twitch",
   countries: [],
   offset: -30000,
@@ -46,9 +50,7 @@ describe("mapEvent — streams", () => {
   });
 
   it("falls back to the raw locale when the feed has no translated name", () => {
-    const event = mapEvent(
-      raw({ streams: [{ ...twitch, mediaLocale: null }] }) as never
-    );
+    const event = mapEvent(raw({ streams: [{ ...twitch, mediaLocale: null }] }) as never);
 
     expect(event?.streams[0].language).toBe("en-SG");
   });

@@ -4,6 +4,7 @@ Neon alerted that `lol-ai` hit **100% of its monthly 5GB network transfer** and 
 suspension. This is egress, not storage.
 
 ## Root cause
+
 `getMetaSnapshot` in `src/domains/meta/services/metaStatsService.ts` had **no memoization of any
 kind**. Every call went to Postgres:
 
@@ -20,13 +21,13 @@ same order.
 
 Three multipliers turn that into gigabytes:
 
-1. **More than one call per render.** A page renders the tier list *and* `getPopularChampions` for
+1. **More than one call per render.** A page renders the tier list _and_ `getPopularChampions` for
    the related-links row — and that helper calls `getMetaSnapshot()` again. Same blob, second trip.
 2. **~739 statically generated pages on a 12h ISR cycle** (`revalidate = 43200` across
    `/builds/[champion]`, `/matchups/[slug]`, `/counters/[champion]`, `/aram/*`, the tier-list role
    hubs and `/meta`). Every revalidation re-runs the loaders.
 3. **A write on every read.** `getCached` fired a fire-and-forget `hitCount` increment on each hit,
-   so each cache *hit* cost an extra round trip — the opposite of what a cache is for.
+   so each cache _hit_ cost an extra round trip — the opposite of what a cache is for.
 
 Rough arithmetic: 739 pages × 2 revalidations/day × ~2 snapshot reads × 0.2 MB ≈ **0.6 GB/day**, or
 ~18 GB/month. The 5 GB allowance goes in well under two weeks, which matches the alert.
@@ -34,12 +35,14 @@ Rough arithmetic: 739 pages × 2 revalidations/day × ~2 snapshot reads × 0.2 M
 ## Change
 
 **`src/lib/ai/aiCache.ts`**
+
 - `getCached` now selects only `content` and `expiresAt`. The row also carries `id`, `type`,
   `hitCount` and `createdAt`, and every unselected byte crosses the network.
 - The per-read `hitCount` increment is removed. `incrementHit()` still exists for callers that
   genuinely want the telemetry.
 
 **`src/domains/meta/services/metaStatsService.ts`**
+
 - A process-level memo (`Map<variant, {value, expiresAt}>`, 5-minute TTL) in front of the DB read.
   The DB cache stays at 12h; this only collapses the burst of identical reads a revalidation wave
   produces, so freshness is unchanged in practice.
@@ -48,11 +51,13 @@ Rough arithmetic: 739 pages × 2 revalidations/day × ~2 snapshot reads × 0.2 M
 - The fetch/fallback logic moved unchanged into `loadSnapshot`; only the caching wrapper is new.
 
 ### Why failures get a shorter memo
-A `null` means the feed was down *and* no last-good row existed. Memoizing that for the full five
+
+A `null` means the feed was down _and_ no last-good row existed. Memoizing that for the full five
 minutes would keep serving empty pages long after the feed recovered, so `rememberFor()` holds
 failures for 30s — long enough to absorb a revalidation burst, short enough to recover quickly.
 
 ## Tests
+
 `metaStatsService.test.ts` gained four: one read across three calls; separate memo entries per
 mode/tier; a failed snapshot not held for the full window. `aiCache.test.ts` had its hit-count test
 **inverted** — it previously asserted the write happens — plus a new one pinning the `select`.
@@ -62,6 +67,7 @@ cached by one test satisfies the next and the fetch assertions become meaningles
 how the four pre-existing tests failed when the memo first landed.
 
 ## Still worth doing (not in this task)
+
 - **Point local development at a Neon branch, not production.** `.env.local`'s `DATABASE_URL` is the
   prod database, so every local page load, hot reload and polling hook (`useCoachingReports`,
   `useReportStatus`, `useSyncStatus` all use `refetchInterval`) spends the production allowance. Two
@@ -76,6 +82,7 @@ how the four pre-existing tests failed when the memo first landed.
 - `matchupService.ts:57` fetches `take: 300` participant rows to analyse the top 8 champions.
 
 ## Verification
+
 Full suite 590 green; `tsc --noEmit` and ESLint clean.
 The real proof is the Neon transfer graph flattening after deploy — worth checking a day later.
 

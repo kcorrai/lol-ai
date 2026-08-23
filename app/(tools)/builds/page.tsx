@@ -53,7 +53,12 @@ export default async function BuildsHubPage(): Promise<React.ReactElement> {
 
   return (
     <div className="mx-auto max-w-[1240px] px-5 py-12 md:px-8">
-      <Breadcrumb items={[{ name: "Free Tools", href: "/tools" }, { name: "Builds", href: "/builds" }]} />
+      <Breadcrumb
+        items={[
+          { name: "Free Tools", href: "/tools" },
+          { name: "Builds", href: "/builds" },
+        ]}
+      />
 
       <PublicOnly>
         <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-accent">
@@ -90,11 +95,7 @@ export default async function BuildsHubPage(): Promise<React.ReactElement> {
       ) : (
         <div className="mt-6 grid gap-5">
           <ChampionMovers movers={movers} />
-          <ChampionConsole
-            rows={champions.map(toRow)}
-            groups={LANES}
-            groupLabel="Lane"
-          />
+          <ChampionConsole rows={champions.map(toRow)} groups={LANES} groupLabel="Lane" />
         </div>
       )}
 

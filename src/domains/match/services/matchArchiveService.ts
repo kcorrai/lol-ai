@@ -249,7 +249,9 @@ export async function archiveFacetOptions(
   ]);
 
   // Patches are grouped to major.minor: "15.14.1" and "15.14.582" are the same patch to a player.
-  const patches = [...new Set(matchRows.map((r) => r.gameVersion.split(".").slice(0, 2).join(".")))];
+  const patches = [
+    ...new Set(matchRows.map((r) => r.gameVersion.split(".").slice(0, 2).join("."))),
+  ];
 
   return {
     champions: championRows.map((r) => r.championName).sort((a, b) => a.localeCompare(b)),

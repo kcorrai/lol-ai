@@ -20,7 +20,9 @@ describe("getOnboardingState", () => {
   });
 
   it("treats a null timestamp as not completed", async () => {
-    vi.mocked(prisma.profile.findUnique).mockResolvedValue({ onboardingCompletedAt: null } as never);
+    vi.mocked(prisma.profile.findUnique).mockResolvedValue({
+      onboardingCompletedAt: null,
+    } as never);
     const state = await getOnboardingState(userId);
     expect(state.completed).toBe(false);
   });
@@ -37,7 +39,9 @@ describe("completeOnboarding", () => {
   beforeEach(() => vi.clearAllMocks());
 
   it("sets the timestamp and upserts when not yet completed", async () => {
-    vi.mocked(prisma.profile.findUnique).mockResolvedValue({ onboardingCompletedAt: null } as never);
+    vi.mocked(prisma.profile.findUnique).mockResolvedValue({
+      onboardingCompletedAt: null,
+    } as never);
     vi.mocked(prisma.profile.upsert).mockResolvedValue({} as never);
 
     const state = await completeOnboarding(userId);
@@ -49,7 +53,9 @@ describe("completeOnboarding", () => {
 
   it("is idempotent — keeps the original timestamp and does not re-upsert", async () => {
     const original = new Date("2026-01-01T00:00:00Z");
-    vi.mocked(prisma.profile.findUnique).mockResolvedValue({ onboardingCompletedAt: original } as never);
+    vi.mocked(prisma.profile.findUnique).mockResolvedValue({
+      onboardingCompletedAt: original,
+    } as never);
 
     const state = await completeOnboarding(userId);
 

@@ -74,7 +74,7 @@ async function buildLiveDraft(puuid: string, region: string): Promise<LiveGameRe
     if (champion.positions.length > 0) {
       laneFrequency.set(
         champion.championId,
-        champion.positions.map((p) => ({ position: p.position, games: p.games })),
+        champion.positions.map((p) => ({ position: p.position, games: p.games }))
       );
     }
   }
@@ -92,4 +92,3 @@ async function buildLiveDraft(puuid: string, region: string): Promise<LiveGameRe
     yourMatchup: findMatchup(draft, yourSide, self && championKeys.get(self.championId)),
   };
 }
-

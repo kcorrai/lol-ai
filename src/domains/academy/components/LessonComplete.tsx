@@ -33,7 +33,7 @@ export function LessonComplete({
   xpAwarded,
 }: LessonCompleteProps): React.ReactElement {
   return (
-    <section className="notch mt-10 border border-acid-500 bg-surface glow-accent-soft">
+    <section className="notch glow-accent-soft mt-10 border border-acid-500 bg-surface">
       <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-line-1 px-5 py-3.5">
         <span className="hud-label text-accent">Lesson complete</span>
         <span className="font-mono text-sm font-bold text-text">
@@ -51,15 +51,15 @@ export function LessonComplete({
       </div>
 
       <div className="p-5">
-        <p className="flex items-center gap-2 hud-label">
+        <p className="hud-label flex items-center gap-2">
           <Target className="h-3.5 w-3.5 text-accent" strokeWidth={2} />
           Field assignment
         </p>
 
         {liveAssignment ? (
           <p className="mt-2.5 text-[14.5px] leading-relaxed text-text">
-            Your assignment is live below — the Academy is now watching your next ranked games
-            and will mark this lesson mastered when you hit the target.
+            Your assignment is live below — the Academy is now watching your next ranked games and
+            will mark this lesson mastered when you hit the target.
           </p>
         ) : assignment ? (
           <>
@@ -67,8 +67,15 @@ export function LessonComplete({
               {assignment.instruction}
             </p>
             <div className="mt-4 grid grid-cols-3 gap-px bg-line-1">
-              <Stat label="Your baseline" value={formatMetric(assignment.baseline, assignment.metric)} />
-              <Stat label="Target" value={formatMetric(assignment.target, assignment.metric)} accent />
+              <Stat
+                label="Your baseline"
+                value={formatMetric(assignment.baseline, assignment.metric)}
+              />
+              <Stat
+                label="Target"
+                value={formatMetric(assignment.target, assignment.metric)}
+                accent
+              />
               <Stat label="Over" value={`${assignment.games} games`} />
             </div>
             <p className="mt-2.5 font-mono text-[11px] text-text-faint">

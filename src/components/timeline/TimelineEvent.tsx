@@ -40,9 +40,7 @@ export function TimelineEvent({ event }: { event: CareerEvent }): React.ReactEle
         >
           {dayLabel(event.at)}
         </time>
-        <span className={`text-[13.5px] leading-snug ${TONE_TEXT[event.tone]}`}>
-          {event.title}
-        </span>
+        <span className={`text-[13.5px] leading-snug ${TONE_TEXT[event.tone]}`}>{event.title}</span>
       </div>
       {event.detail && (
         <p className="mt-0.5 pl-[62px] text-[11.5px] leading-snug text-text-muted">

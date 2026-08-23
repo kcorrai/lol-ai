@@ -23,7 +23,12 @@ function ringClass(option: MapDrillOption, picked: string | null, locked: boolea
  * map question back into a reading question, which is the thing this drill kind exists to stop —
  * so each option's words live in its accessible name, and appear on screen only once answered.
  */
-export function MapDrillBody({ drill, picked, locked, onPick }: MapDrillBodyProps): React.ReactElement {
+export function MapDrillBody({
+  drill,
+  picked,
+  locked,
+  onPick,
+}: MapDrillBodyProps): React.ReactElement {
   return (
     <div className="mt-4">
       <div className="relative mx-auto aspect-square w-full max-w-[320px]">
@@ -45,7 +50,7 @@ export function MapDrillBody({ drill, picked, locked, onPick }: MapDrillBodyProp
             className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition-colors ${ringClass(
               option,
               picked,
-              locked,
+              locked
             )}`}
           />
         ))}
@@ -57,7 +62,9 @@ export function MapDrillBody({ drill, picked, locked, onPick }: MapDrillBodyProp
             .filter((option) => option.correct || option.id === picked)
             .map((option) => (
               <li key={option.id} className="text-[13px] leading-relaxed">
-                <span className={option.correct ? "text-accent" : "text-danger"}>{option.label}</span>
+                <span className={option.correct ? "text-accent" : "text-danger"}>
+                  {option.label}
+                </span>
                 <span className="text-text-muted"> — {option.explain}</span>
               </li>
             ))}

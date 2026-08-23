@@ -79,7 +79,9 @@ export function PricingPlans({
               </span>
             </div>
             <div className="mb-1.5 mt-2.5 flex items-baseline gap-2">
-              <span className="font-mono text-4xl font-bold leading-none text-fg-1">{proPrice}</span>
+              <span className="font-mono text-4xl font-bold leading-none text-fg-1">
+                {proPrice}
+              </span>
               <span className="font-mono text-xs text-fg-4">{proUnit}</span>
             </div>
             <p className="mb-5 mt-0 max-w-[48ch] text-sm text-fg-2">

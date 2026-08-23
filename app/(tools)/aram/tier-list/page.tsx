@@ -34,10 +34,7 @@ export default async function AramTierListPage() {
   return (
     <div className="mx-auto max-w-[1240px] px-5 py-12 md:px-8">
       {itemListJsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={jsonLdProps(itemListJsonLd)}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdProps(itemListJsonLd)} />
       )}
 
       <Breadcrumb

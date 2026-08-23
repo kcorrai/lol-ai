@@ -31,9 +31,21 @@ export const splitPushing: Lesson = {
       caption: "The three timers, checked before you walk",
       head: ["Timer", "Where you read it", "What it changes"],
       rows: [
-        ["Their teleport", "The last time you saw them use it", "Whether one of them can answer instantly or has to walk"],
-        ["Your wave", "Which way it is moving right now", "Whether you arrive to a crash or to nothing"],
-        ["Their vision", "Whether your team has swept the river", "Whether they see you leave, or find out from a turret"],
+        [
+          "Their teleport",
+          "The last time you saw them use it",
+          "Whether one of them can answer instantly or has to walk",
+        ],
+        [
+          "Your wave",
+          "Which way it is moving right now",
+          "Whether you arrive to a crash or to nothing",
+        ],
+        [
+          "Their vision",
+          "Whether your team has swept the river",
+          "Whether they see you leave, or find out from a turret",
+        ],
       ],
     },
     {

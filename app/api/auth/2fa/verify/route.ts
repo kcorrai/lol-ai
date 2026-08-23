@@ -10,7 +10,10 @@ import { z } from "zod";
 const VERIFY_LIMIT = { limit: 10, windowMs: 900_000 }; // 10 attempts per 15 min
 
 const verifySchema = z.object({
-  token: z.string().length(6).regex(/^\d{6}$/),
+  token: z
+    .string()
+    .length(6)
+    .regex(/^\d{6}$/),
   backupCodes: z.array(z.string()).length(8),
 });
 
@@ -21,7 +24,8 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
 
   const body = await req.json().catch(() => null);
   const parsed = verifySchema.safeParse(body);
-  if (!parsed.success) throw Errors.validation("token must be a 6-digit number, backupCodes required");
+  if (!parsed.success)
+    throw Errors.validation("token must be a 6-digit number, backupCodes required");
 
   const user = await prisma.user.findUnique({
     where: { id: userId },

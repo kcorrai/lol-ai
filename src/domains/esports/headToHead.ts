@@ -45,11 +45,7 @@ function isTeam(entry: EsportsEventTeam, team: TeamKey): boolean {
   );
 }
 
-function meeting(
-  event: EsportsEvent,
-  a: EsportsEventTeam,
-  b: EsportsEventTeam
-): HeadToHeadMeeting {
+function meeting(event: EsportsEvent, a: EsportsEventTeam, b: EsportsEventTeam): HeadToHeadMeeting {
   const winner = a.outcome === "win" ? "a" : b.outcome === "win" ? "b" : null;
 
   return {

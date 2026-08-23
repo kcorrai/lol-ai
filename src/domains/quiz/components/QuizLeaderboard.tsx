@@ -51,7 +51,9 @@ function Row({
         )}
       </span>
       <span className="text-right font-mono text-[13px] tabular-nums text-fg-1">{modesSolved}</span>
-      <span className="text-right font-mono text-[13px] tabular-nums text-fg-3">{totalGuesses}</span>
+      <span className="text-right font-mono text-[13px] tabular-nums text-fg-3">
+        {totalGuesses}
+      </span>
     </div>
   );
 }
@@ -132,7 +134,7 @@ export function QuizLeaderboard(): React.JSX.Element {
             </div>
 
             {data.viewer && !data.viewer.listed && (
-              <div className="border border-accent/30 bg-accent/8">
+              <div className="bg-accent/8 border border-accent/30">
                 <Row
                   rank={data.viewer.rank}
                   name={`${data.viewer.displayName} (you)`}
@@ -142,8 +144,8 @@ export function QuizLeaderboard(): React.JSX.Element {
                   highlight
                 />
                 <p className="px-3 pb-2 pt-1 font-mono text-[10px] text-fg-4">
-                  Your profile is private, so only you can see this line. Make it public in
-                  settings to appear on the board.
+                  Your profile is private, so only you can see this line. Make it public in settings
+                  to appear on the board.
                 </p>
               </div>
             )}

@@ -6,7 +6,9 @@ import { card, errorCard } from "@/domains/discord/views/shell";
 import { actionRow, linkButton, separator, textDisplay } from "@/lib/discord/components";
 import type { DiscordMessagePayload } from "@/lib/discord/componentTypes";
 
-function accountLine(riotAccount: { gameName: string; tagLine: string; region: string } | null): string {
+function accountLine(
+  riotAccount: { gameName: string; tagLine: string; region: string } | null
+): string {
   return riotAccount
     ? `**${riotAccount.gameName}#${riotAccount.tagLine}** · ${riotAccount.region.toUpperCase()}`
     : "_No Riot account connected yet._";
@@ -47,9 +49,7 @@ export async function statusCommand(req: BotRequest): Promise<DiscordMessagePayl
   return card(
     [
       textDisplay("### ✅ Linked"),
-      textDisplay(
-        `Commands with no \`riot-id\` answer for:\n${accountLine(identity.riotAccount)}`
-      ),
+      textDisplay(`Commands with no \`riot-id\` answer for:\n${accountLine(identity.riotAccount)}`),
       separator(),
       textDisplay("-# `/lolai unlink` disconnects it again."),
       actionRow(linkButton("Open dashboard", `${APP_URL}/dashboard`, "🔗")),

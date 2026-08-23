@@ -29,9 +29,21 @@ export const theDangerTriangle: Lesson = {
       caption: "What the clock does to the triangle",
       head: ["Time since seen", "The shape", "What it means for you"],
       rows: [
-        ["0–15s", "A narrow cone on his side of the map", "The far half of the map is genuinely safe. Push it."],
-        ["15–30s", "Half the map, still weighted to where he was", "Safe to farm, not to walk into an unlit bush"],
-        ["30s+", "The whole map, with no weighting", "Behave as if he is in the nearest bush to you until proven otherwise"],
+        [
+          "0–15s",
+          "A narrow cone on his side of the map",
+          "The far half of the map is genuinely safe. Push it.",
+        ],
+        [
+          "15–30s",
+          "Half the map, still weighted to where he was",
+          "Safe to farm, not to walk into an unlit bush",
+        ],
+        [
+          "30s+",
+          "The whole map, with no weighting",
+          "Behave as if he is in the nearest bush to you until proven otherwise",
+        ],
       ],
     },
     {
@@ -136,7 +148,8 @@ export const theDangerTriangle: Lesson = {
       options: [
         {
           id: "a",
-          label: "Take the crash and the plate — eight seconds is a narrow cone and it does not reach you",
+          label:
+            "Take the crash and the plate — eight seconds is a narrow cone and it does not reach you",
           explain:
             "Correct. This is what the triangle is for: at eight seconds the danger has a direction, and the direction is the other end of the map. Playing scared here gives up a plate for a threat that is physically unable to arrive in time.",
           correct: true,

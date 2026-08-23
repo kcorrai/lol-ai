@@ -33,7 +33,7 @@ function toSide(
   const keystoneId = build?.runes?.primaryRuneIds[0];
   return {
     summonerSpellIds: build?.summonerSpellIds ?? [],
-    keystone: keystoneId ? runes.get(keystoneId) ?? null : null,
+    keystone: keystoneId ? (runes.get(keystoneId) ?? null) : null,
     coreItems: mapItems(build?.coreItems?.ids ?? []),
     boots: mapItems(build?.boots?.ids ?? []),
     situationalItems: mapItems(situationalIds),

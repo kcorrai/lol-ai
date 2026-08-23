@@ -51,7 +51,8 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
 
   // Passing the drills starts the Proof of Practice clock. A player with no synced account
   // gets null back and still keeps the completion — see openAssignment.
-  const assignment = result.progress.status === "completed" ? await openAssignment(userId, body.lessonId) : null;
+  const assignment =
+    result.progress.status === "completed" ? await openAssignment(userId, body.lessonId) : null;
 
   return apiSuccess({ ...result, assignment });
 });

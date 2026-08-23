@@ -1,14 +1,17 @@
 # TASK-177: Landing Redesign (English, Real Screenshots, Live Meta)
 
 ## Status: Pending
+
 ## Score: 92/100
 
 ## Goal
+
 Rebuild the landing page: full English copy, real product screenshots instead
 of CSS mockups, live patch-meta section, direct links to the public free tools,
 and a zero-AI-cost demo search box.
 
 ## Scope
+
 - Capture fresh product screenshots via Playwright (dashboard, counter picker,
   matchup, draft analyzer, tier list, coaching report) → `public/screenshots/`,
   render with `next/image`
@@ -22,7 +25,9 @@ and a zero-AI-cost demo search box.
 - Keep LCP < 3s (hero poster is the LCP element)
 
 ## Out of Scope
+
 - Pricing model changes; dashboard redesign
 
 ## Commit
+
 `feat(landing): english landing redesign with real screenshots and live meta section`

@@ -30,10 +30,9 @@ vi.mock("@/domains/esports/services/standingsService", () => ({
   getStandings: (id: string, force?: boolean) => getStandings(id, force),
 }));
 vi.mock("@/domains/esports/services/leagueService", async () => {
-  const actual =
-    await vi.importActual<typeof import("@/domains/esports/services/leagueService")>(
-      "@/domains/esports/services/leagueService"
-    );
+  const actual = await vi.importActual<typeof import("@/domains/esports/services/leagueService")>(
+    "@/domains/esports/services/leagueService"
+  );
   return {
     prominentLeagues: actual.prominentLeagues,
     getLeagues: () => getLeagues(),

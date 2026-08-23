@@ -14,10 +14,7 @@ export type { PlayerPerformanceProfile, PerformanceMetrics } from "./types/analy
 // The public profile builds a scoreboard straight from a Riot DTO, so the riot domain needs the
 // same two formulas the stored path uses — anything else and the same match would print two
 // different damage shares depending on whether the viewer was signed in.
-export {
-  computeDamageShare,
-  computeKillParticipation,
-} from "./calculators/performanceCalculator";
+export { computeDamageShare, computeKillParticipation } from "./calculators/performanceCalculator";
 
 // The public profile reads a searched player's averages against their own tier — the one thing
 // on that page op.gg does not have, and the reason it can end in a coaching CTA (LA-69).

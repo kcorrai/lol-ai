@@ -27,9 +27,7 @@ function asRecord(value: Prisma.JsonValue | null): Record<string, unknown> {
   return {};
 }
 
-export async function readProfileSettings(
-  userId: string
-): Promise<Record<string, unknown>> {
+export async function readProfileSettings(userId: string): Promise<Record<string, unknown>> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: { profileSettings: true },

@@ -30,9 +30,24 @@ export const objectiveSetup: Lesson = {
       caption: "Who moves for what",
       head: ["Objective", "Rotates", "Stays", "Why"],
       rows: [
-        ["Drake", "Bot lane, mid, jungle", "Top", "Top is the far side; walking is thirty seconds each way and the lane goes unfarmed"],
-        ["Baron", "Top, mid, jungle", "Bot", "Mirror image — and bot has the safest lane to keep pressuring while it happens"],
-        ["Herald", "Whoever is nearest with priority", "Everyone else", "It is not worth a rotation; it is worth a wave and a jungler"],
+        [
+          "Drake",
+          "Bot lane, mid, jungle",
+          "Top",
+          "Top is the far side; walking is thirty seconds each way and the lane goes unfarmed",
+        ],
+        [
+          "Baron",
+          "Top, mid, jungle",
+          "Bot",
+          "Mirror image — and bot has the safest lane to keep pressuring while it happens",
+        ],
+        [
+          "Herald",
+          "Whoever is nearest with priority",
+          "Everyone else",
+          "It is not worth a rotation; it is worth a wave and a jungler",
+        ],
       ],
     },
     {
@@ -63,7 +78,7 @@ export const objectiveSetup: Lesson = {
           note: "The shortest walk, which is why bot shoves first and leaves last. A wave crashing into their turret keeps the enemy duo in lane for the seconds you need to arrive first.",
         },
         {
-          at: { x: 0.50, y: 0.48, r: 0.055 },
+          at: { x: 0.5, y: 0.48, r: 0.055 },
           label: "Mid: shove, then walk",
           tone: "good",
           note: "About twenty seconds away, and the only lane that can leave late and still be on time. Shove it anyway — a mid turret taking free damage while you are at drake is how a won objective becomes an even trade.",

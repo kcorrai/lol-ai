@@ -142,7 +142,7 @@ function currentStreak(shared: readonly OwnRow[]): number {
 
 function championPairs(
   shared: readonly OwnRow[],
-  partnerByMatch: ReadonlyMap<string, PartnerRow>,
+  partnerByMatch: ReadonlyMap<string, PartnerRow>
 ): ChampionPair[] {
   const counts = new Map<string, { own: string; partner: string; games: number; wins: number }>();
 
@@ -177,7 +177,7 @@ function championPairs(
 
 function rolePairs(
   shared: readonly OwnRow[],
-  partnerByMatch: ReadonlyMap<string, PartnerRow>,
+  partnerByMatch: ReadonlyMap<string, PartnerRow>
 ): RolePair[] {
   const counts = new Map<string, { own: string; partner: string; games: number; wins: number }>();
 
@@ -214,13 +214,13 @@ function rolePairs(
  */
 export function computeDuoSynergy(
   ownRows: readonly OwnRow[],
-  partnerRows: readonly PartnerRow[],
+  partnerRows: readonly PartnerRow[]
 ): DuoSynergy {
   // Same match and same team. A partner who was on the enemy side that game is not a duo game,
   // and counting it would credit the pairing for beating each other.
   const ownTeamByMatch = new Map(ownRows.map((r) => [r.matchId, r.teamId]));
   const partnerByMatch = new Map(
-    partnerRows.filter((p) => ownTeamByMatch.get(p.matchId) === p.teamId).map((p) => [p.matchId, p]),
+    partnerRows.filter((p) => ownTeamByMatch.get(p.matchId) === p.teamId).map((p) => [p.matchId, p])
   );
 
   const shared = ownRows.filter((r) => partnerByMatch.has(r.matchId));

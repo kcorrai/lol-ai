@@ -47,7 +47,11 @@ function stats(averages: ProChampionAverages): Stat[] {
       value: `${averages.kills.toFixed(1)} / ${averages.deaths.toFixed(1)} / ${averages.assists.toFixed(1)}`,
       note: `${averages.kda.toFixed(2)} ratio`,
     },
-    { label: "CS", value: integer(averages.creepScore), note: `${rate(averages.creepScorePerMin)} per min` },
+    {
+      label: "CS",
+      value: integer(averages.creepScore),
+      note: `${rate(averages.creepScorePerMin)} per min`,
+    },
     {
       label: "Gold",
       value: integer(averages.gold),

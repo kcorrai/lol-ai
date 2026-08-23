@@ -12,7 +12,8 @@ import { cn } from "@/lib/utils";
 
 function SummonerAvatar({ iconId, size = 20 }: { iconId: number; size?: number }) {
   const [errored, setErrored] = useState(false);
-  if (errored) return <Gamepad2 className="shrink-0 text-accent" style={{ width: size, height: size }} />;
+  if (errored)
+    return <Gamepad2 className="shrink-0 text-accent" style={{ width: size, height: size }} />;
   return (
     <Image
       src={profileIconUrl(iconId)}
@@ -103,7 +104,10 @@ export function RiotAccountSelector() {
           </span>
         </span>
         <ChevronDown
-          className={cn("h-3.5 w-3.5 shrink-0 text-text-muted transition-transform", open && "rotate-180")}
+          className={cn(
+            "h-3.5 w-3.5 shrink-0 text-text-muted transition-transform",
+            open && "rotate-180"
+          )}
           strokeWidth={1.75}
         />
       </button>
@@ -131,7 +135,9 @@ export function RiotAccountSelector() {
               >
                 <SummonerAvatar iconId={account.profileIconId} size={22} />
                 <span className="grid min-w-0 flex-1 gap-px">
-                  <span className={cn("truncate text-[13px]", isActive ? "text-accent" : "text-text")}>
+                  <span
+                    className={cn("truncate text-[13px]", isActive ? "text-accent" : "text-text")}
+                  >
                     {account.gameName}#{account.tagLine}
                   </span>
                   <span className="font-mono text-[10px] tracking-[0.12em] text-text-muted">
@@ -146,13 +152,21 @@ export function RiotAccountSelector() {
 
           <div className="mt-1.5 border-t border-border pt-1.5">
             <button
-              onClick={() => { handleSync(); setOpen(false); }}
+              onClick={() => {
+                handleSync();
+                setOpen(false);
+              }}
               disabled={isSyncing}
               className="flex w-full items-center gap-2 px-2 py-1.5 font-mono text-[10.5px] uppercase tracking-label text-text-muted transition-colors hover:bg-surface hover:text-text disabled:opacity-50"
             >
-              <RefreshCw className={cn("h-3.5 w-3.5", isSyncing && "animate-spin")} strokeWidth={1.75} />
+              <RefreshCw
+                className={cn("h-3.5 w-3.5", isSyncing && "animate-spin")}
+                strokeWidth={1.75}
+              />
               {isSyncing ? "Refreshing…" : "Refresh data"}
-              {syncMsg && <span className="ml-auto normal-case tracking-normal text-accent">{syncMsg}</span>}
+              {syncMsg && (
+                <span className="ml-auto normal-case tracking-normal text-accent">{syncMsg}</span>
+              )}
             </button>
           </div>
         </div>

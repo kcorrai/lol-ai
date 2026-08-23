@@ -8,7 +8,12 @@ vi.mock("@/lib/utils/logger", () => ({
 }));
 
 import { NextResponse } from "next/server";
-import { authenticateAs, authenticateAsNobody, readApiResponse, routeRequest } from "@/test/apiRoute";
+import {
+  authenticateAs,
+  authenticateAsNobody,
+  readApiResponse,
+  routeRequest,
+} from "@/test/apiRoute";
 import { ApiError } from "@/lib/api/errors";
 import { withAdminAuth } from "./withAdminAuth";
 

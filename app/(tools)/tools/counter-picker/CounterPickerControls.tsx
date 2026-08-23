@@ -19,7 +19,8 @@ interface Props {
 
 const pillBase = "rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors";
 const activePill = "bg-accent text-background";
-const idlePill = "border border-border bg-surface text-text-muted hover:border-accent/40 hover:text-text";
+const idlePill =
+  "border border-border bg-surface text-text-muted hover:border-accent/40 hover:text-text";
 
 export function CounterPickerControls({
   champions,
@@ -69,7 +70,8 @@ export function CounterPickerControls({
                   className={cn(
                     pillBase,
                     active ? activePill : idlePill,
-                    !enabled && "cursor-not-allowed opacity-40 hover:border-border hover:text-text-muted"
+                    !enabled &&
+                      "cursor-not-allowed opacity-40 hover:border-border hover:text-text-muted"
                   )}
                 >
                   {POSITION_LABELS[pos]}

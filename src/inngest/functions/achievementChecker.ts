@@ -17,7 +17,9 @@ export const achievementChecker = inngest.createFunction(
     const { userId, riotAccountId } = event.data;
     logger.info(`[achievementChecker] Checking achievements for user ${userId}`);
     const awarded = await checkAndAwardAchievements(userId, riotAccountId);
-    logger.info(`[achievementChecker] Awarded ${awarded.length} achievement(s): ${awarded.join(", ")}`);
+    logger.info(
+      `[achievementChecker] Awarded ${awarded.length} achievement(s): ${awarded.join(", ")}`
+    );
 
     if (awarded.length > 0) {
       const discord = await prisma.discordIntegration.findUnique({
@@ -47,7 +49,9 @@ export const achievementChecker = inngest.createFunction(
               })
             );
           } catch (err) {
-            logger.warn(`[achievementChecker] Discord webhook failed: ${err instanceof Error ? err.message : String(err)}`);
+            logger.warn(
+              `[achievementChecker] Discord webhook failed: ${err instanceof Error ? err.message : String(err)}`
+            );
           }
         }
       }

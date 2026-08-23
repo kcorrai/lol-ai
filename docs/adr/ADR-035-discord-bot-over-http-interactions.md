@@ -6,7 +6,7 @@
 
 The product already talks to Discord in one direction: `src/lib/discord/webhookService.ts`
 pushes rank-up, achievement and weekly-recap embeds to a channel webhook the user
-pastes into Settings. Nothing lets a person *in* a Discord server ask it anything.
+pastes into Settings. Nothing lets a person _in_ a Discord server ask it anything.
 
 Everything needed to answer already exists server-side. `buildAccountPreview()` returns
 rank, top champions, recent form and a coaching read for any Riot ID with no account
@@ -28,7 +28,7 @@ initial response must arrive **within 3 seconds** or the interaction token is in
 and the user sees "The application did not respond." A cold Vercel start plus a Prisma
 connection plus a Riot round trip does not reliably fit inside that.
 
-The standard answer is to acknowledge with a *deferred* response and finish the work
+The standard answer is to acknowledge with a _deferred_ response and finish the work
 afterwards. On Vercel, work that is neither awaited nor handed to `waitUntil` can be
 killed when the response is sent — two comments in this repo already say so
 (`matchSyncService.ts`, `rankEnricher.ts`). But this app is on Next 14.2.35, which

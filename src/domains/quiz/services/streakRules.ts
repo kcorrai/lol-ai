@@ -71,7 +71,9 @@ export function advanceStreak(previous: StreakState, dateKey: string): StreakSta
     return state;
   }
 
-  const gap = state.lastPlayedDate ? dayNumber(dateKey) - dayNumber(state.lastPlayedDate) : Infinity;
+  const gap = state.lastPlayedDate
+    ? dayNumber(dateKey) - dayNumber(state.lastPlayedDate)
+    : Infinity;
 
   let current: number;
   let freezesLeft = state.freezesLeft;
@@ -100,10 +102,7 @@ export function advanceStreak(previous: StreakState, dateKey: string): StreakSta
  * A streak survives one missed day when a freeze is available, so the panel can
  * say "at risk" instead of showing a number that is about to vanish.
  */
-export function streakStatus(
-  state: StreakState,
-  today: string
-): "current" | "at-risk" | "broken" {
+export function streakStatus(state: StreakState, today: string): "current" | "at-risk" | "broken" {
   if (!state.lastPlayedDate || state.current === 0) return "broken";
   const gap = dayNumber(today) - dayNumber(state.lastPlayedDate);
   if (gap <= 0) return "current";

@@ -39,7 +39,7 @@ export const tiltStreakCheck = inngest.createFunction(
     if (recentMatches.length < 3) return { skipped: "insufficient_data" };
 
     const lastThree = recentMatches.slice(0, 3);
-    const isLoseStreak = lastThree.every(m => !m.won);
+    const isLoseStreak = lastThree.every((m) => !m.won);
     if (!isLoseStreak) return { skipped: "no_streak" };
 
     // Spam guard: no alert if one was sent within the cooldown window
@@ -57,7 +57,7 @@ export const tiltStreakCheck = inngest.createFunction(
     });
     if (todayCount >= MAX_ALERTS_PER_DAY) return { skipped: "daily_cap" };
 
-    const snippets = recentMatches.slice(0, 3).map(m => ({
+    const snippets = recentMatches.slice(0, 3).map((m) => ({
       championName: m.championName ?? "Unknown",
       won: m.won ?? false,
       kills: m.kills ?? 0,
@@ -69,8 +69,11 @@ export const tiltStreakCheck = inngest.createFunction(
     try {
       message = await generateTiltRecoveryMessage(snippets);
     } catch (err) {
-      logger.warn(`[tiltStreakCheck] AI message failed: ${err instanceof Error ? err.message : String(err)}`);
-      message = "Taking a break after 3 consecutive losses statistically improves your win rate. Take 15-20 minutes to cool off, then play again.";
+      logger.warn(
+        `[tiltStreakCheck] AI message failed: ${err instanceof Error ? err.message : String(err)}`
+      );
+      message =
+        "Taking a break after 3 consecutive losses statistically improves your win rate. Take 15-20 minutes to cool off, then play again.";
     }
 
     await prisma.tiltAlert.create({
@@ -83,7 +86,9 @@ export const tiltStreakCheck = inngest.createFunction(
       body: message.slice(0, 100),
       url: `${appUrl}/dashboard`,
       tag: `tilt-${userId}`,
-    }).catch(() => { /* non-blocking */ });
+    }).catch(() => {
+      /* non-blocking */
+    });
 
     logger.info(`[tiltStreakCheck] Alert created for userId=${userId.slice(0, 8)}…`);
     return { sent: true, streakLength: 3 };

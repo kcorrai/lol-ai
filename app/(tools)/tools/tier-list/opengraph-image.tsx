@@ -7,7 +7,10 @@ export const alt = "LoL Tier List";
 
 export default async function Image() {
   const list = await getTierList("MIDDLE");
-  const top = list?.entries.slice(0, 3).map((e) => e.name).join(" · ");
+  const top = list?.entries
+    .slice(0, 3)
+    .map((e) => e.name)
+    .join(" · ");
 
   return renderOgImage({
     badge: list ? `Patch ${formatGamePatch(list.patch)}` : "Tier List",

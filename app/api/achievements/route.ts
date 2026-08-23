@@ -23,5 +23,10 @@ export const GET = withAuth(async (_req, { userId }) => {
 
   const locked = ACHIEVEMENT_CATALOG.filter((a) => !earnedMap.has(a.id));
 
-  return apiSuccess({ earned, locked, earnedCount: earned.length, total: ACHIEVEMENT_CATALOG.length });
+  return apiSuccess({
+    earned,
+    locked,
+    earnedCount: earned.length,
+    total: ACHIEVEMENT_CATALOG.length,
+  });
 });

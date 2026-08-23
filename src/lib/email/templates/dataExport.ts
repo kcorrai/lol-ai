@@ -11,7 +11,10 @@ export interface DataExportEmailData {
   gameName: string;
 }
 
-export function buildDataExportEmail({ gameName }: DataExportEmailData): { subject: string; html: string } {
+export function buildDataExportEmail({ gameName }: DataExportEmailData): {
+  subject: string;
+  html: string;
+} {
   const subject = "Your data is ready — LoL AI Coach";
   const safeName = escapeHtml(gameName);
 

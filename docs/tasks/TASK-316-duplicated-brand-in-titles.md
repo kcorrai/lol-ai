@@ -50,7 +50,7 @@ its tail. It also reads as a mistake to anyone scanning a tab strip or a SERP.
   template supplies it.
 - Two of the entries are `default` titles inside their own layout `title`
   objects rather than templated strings — check each before editing, because a
-  `default` is *not* passed through the parent template and does need the brand.
+  `default` is _not_ passed through the parent template and does need the brand.
 - The esports section (TASK-298 onwards) already omits the suffix; use it as the
   reference.
 - Add a note to the section in `CLAUDE.md` §7 or the frontend docs stating that

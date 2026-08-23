@@ -36,7 +36,7 @@ export interface MomentumChartPoint {
 export function mergeSeries(
   self: DailyPoint[],
   duo: DailyPoint[],
-  metric: MomentumMetric,
+  metric: MomentumMetric
 ): MomentumChartPoint[] {
   const selfByDate = new Map(self.map((p) => [p.date, p[metric]]));
   const duoByDate = new Map(duo.map((p) => [p.date, p[metric]]));

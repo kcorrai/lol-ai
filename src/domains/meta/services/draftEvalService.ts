@@ -4,12 +4,7 @@ import { fetchAllChampions, type DdragonChampionSummary } from "@/lib/ddragon/ch
 import { ALL_POSITIONS } from "@/domains/meta/positions";
 import type { MetaSnapshot } from "@/domains/meta/types";
 import { evaluateTeam } from "./draftTeamEval";
-import type {
-  DraftTeam,
-  TeamEval,
-  LaneEdge,
-  DraftEvaluation,
-} from "./draftEval.types";
+import type { DraftTeam, TeamEval, LaneEdge, DraftEvaluation } from "./draftEval.types";
 
 export type {
   DraftTeam,
@@ -52,7 +47,14 @@ async function computeLaneEdges(
           ? `${blueName} is favoured into ${redName} (${blueWinRate.toFixed(1)}%).`
           : `${redName} is favoured into ${blueName} (${(100 - blueWinRate).toFixed(1)}%).`;
 
-    edges.push({ position, favored, blueKey: blueStats.championKey, redKey: redStats.championKey, blueWinRate, note });
+    edges.push({
+      position,
+      favored,
+      blueKey: blueStats.championKey,
+      redKey: redStats.championKey,
+      blueWinRate,
+      note,
+    });
   }
 
   return edges;
@@ -62,7 +64,9 @@ function buildVerdict(blue: TeamEval, red: TeamEval): string {
   const parts: string[] = [];
   const wrDiff = blue.avgWinRate - red.avgWinRate;
   if (Math.abs(wrDiff) < 0.5) {
-    parts.push(`Both drafts are close on meta strength (${blue.avgWinRate}% vs ${red.avgWinRate}% average win rate).`);
+    parts.push(
+      `Both drafts are close on meta strength (${blue.avgWinRate}% vs ${red.avgWinRate}% average win rate).`
+    );
   } else {
     const stronger = wrDiff > 0 ? "Blue" : "Red";
     parts.push(
@@ -70,13 +74,24 @@ function buildVerdict(blue: TeamEval, red: TeamEval): string {
     );
   }
 
-  for (const [side, team] of [["Blue", blue], ["Red", red]] as const) {
-    if (team.apShare >= 70) parts.push(`${side}'s damage is heavily magic (${team.apShare}% AP) — early magic resist punishes it.`);
-    else if (team.adShare >= 70) parts.push(`${side}'s damage is heavily physical (${team.adShare}% AD) — stacking armour swings fights.`);
+  for (const [side, team] of [
+    ["Blue", blue],
+    ["Red", red],
+  ] as const) {
+    if (team.apShare >= 70)
+      parts.push(
+        `${side}'s damage is heavily magic (${team.apShare}% AP) — early magic resist punishes it.`
+      );
+    else if (team.adShare >= 70)
+      parts.push(
+        `${side}'s damage is heavily physical (${team.adShare}% AD) — stacking armour swings fights.`
+      );
   }
 
-  if (blue.frontlineScore - red.frontlineScore >= 25) parts.push("Blue has the stronger frontline to engage and peel.");
-  else if (red.frontlineScore - blue.frontlineScore >= 25) parts.push("Red has the stronger frontline to engage and peel.");
+  if (blue.frontlineScore - red.frontlineScore >= 25)
+    parts.push("Blue has the stronger frontline to engage and peel.");
+  else if (red.frontlineScore - blue.frontlineScore >= 25)
+    parts.push("Red has the stronger frontline to engage and peel.");
 
   return parts.join(" ");
 }

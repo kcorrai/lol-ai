@@ -12,7 +12,7 @@ interface Props {
 
 export function PreviewResultCard({ data }: Props) {
   const { summoner, rank, recentMatches, topChampions, aiInsight } = data;
-  const wins = recentMatches.filter(m => m.win).length;
+  const wins = recentMatches.filter((m) => m.win).length;
   const totalGames = recentMatches.length;
   const recentWr = totalGames > 0 ? Math.round((wins / totalGames) * 100) : 0;
 
@@ -59,9 +59,7 @@ export function PreviewResultCard({ data }: Props) {
           </div>
         )}
         {!rank && (
-          <div className="ml-auto text-right text-sm font-medium text-text-muted">
-            No Ranked
-          </div>
+          <div className="ml-auto text-right text-sm font-medium text-text-muted">No Ranked</div>
         )}
       </div>
 
@@ -92,9 +90,7 @@ export function PreviewResultCard({ data }: Props) {
                   key={i}
                   title={`${m.championName} — ${m.kills}/${m.deaths}/${m.assists}`}
                   className={`flex flex-1 flex-col items-center gap-1 rounded-md border px-2 py-2 text-center ${
-                    m.win
-                      ? "border-success/30 bg-success/10"
-                      : "border-danger/30 bg-danger/10"
+                    m.win ? "border-success/30 bg-success/10" : "border-danger/30 bg-danger/10"
                   }`}
                 >
                   <span className="max-w-full truncate text-[10px] font-medium text-text">
@@ -103,7 +99,9 @@ export function PreviewResultCard({ data }: Props) {
                   <span className="text-[10px] text-text-muted">
                     {m.kills}/{m.deaths}/{m.assists}
                   </span>
-                  <span className={`text-[10px] font-semibold ${m.win ? "text-success" : "text-danger"}`}>
+                  <span
+                    className={`text-[10px] font-semibold ${m.win ? "text-success" : "text-danger"}`}
+                  >
                     {m.win ? "W" : "L"}
                   </span>
                 </div>
@@ -119,7 +117,7 @@ export function PreviewResultCard({ data }: Props) {
               Favorite Champions
             </p>
             <div className="space-y-1.5">
-              {topChampions.map(c => (
+              {topChampions.map((c) => (
                 <div key={c.championName} className="flex items-center gap-3 text-sm">
                   <Image
                     src={championIconUrl(c.championName)}
@@ -139,7 +137,9 @@ export function PreviewResultCard({ data }: Props) {
                       />
                     </div>
                   </div>
-                  <span className={`w-10 text-right text-xs font-semibold ${c.winRate >= 50 ? "text-success" : "text-danger"}`}>
+                  <span
+                    className={`w-10 text-right text-xs font-semibold ${c.winRate >= 50 ? "text-success" : "text-danger"}`}
+                  >
                     {c.winRate}%
                   </span>
                 </div>
@@ -153,11 +153,13 @@ export function PreviewResultCard({ data }: Props) {
           <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-accent">
             AI Coach Analysis
           </p>
-          <p className="text-sm leading-relaxed text-text-muted blur-[4px] select-none">
+          <p className="select-none text-sm leading-relaxed text-text-muted blur-[4px]">
             {aiInsight}
           </p>
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-surface/70 backdrop-blur-[1px]">
-            <p className="text-xs font-semibold text-text">Link your account to see full analysis</p>
+            <p className="text-xs font-semibold text-text">
+              Link your account to see full analysis
+            </p>
             <Link
               href="/register"
               className="rounded-md bg-accent px-5 py-2 text-xs font-semibold text-background transition-opacity hover:opacity-90"

@@ -1,56 +1,56 @@
 {
- "capturedAt": "2026-08-17T08:23:25.600Z",
- "leagueId": "98767991302996019",
- "leagueSlug": "lec",
- "tournamentId": "115548681802226458",
- "matchId": "115548681803406283",
- "gameId": "115548681803406284",
- "gameStartedAt": "2026-08-16T17:11:29.301Z",
- "closingTime": "2026-08-16T18:11:20Z",
- "walk": [
-  {
-   "step": 1,
-   "startingTime": "2026-08-16T17:15:20Z"
-  },
-  {
-   "step": 2,
-   "startingTime": "2026-08-16T17:19:20Z"
-  },
-  {
-   "step": 3,
-   "startingTime": "2026-08-16T17:23:20Z"
-  },
-  {
-   "step": 4,
-   "startingTime": "2026-08-16T17:27:20Z"
-  },
-  {
-   "step": 5,
-   "startingTime": "2026-08-16T17:31:20Z"
-  },
-  {
-   "step": 6,
-   "startingTime": "2026-08-16T17:35:20Z"
-  },
-  {
-   "step": 7,
-   "startingTime": "2026-08-16T17:39:20Z"
-  },
-  {
-   "step": 8,
-   "startingTime": "2026-08-16T17:43:20Z"
-  },
-  {
-   "step": 9,
-   "startingTime": "2026-08-16T17:47:20Z"
-  },
-  {
-   "step": 10,
-   "startingTime": "2026-08-16T17:51:20Z"
-  },
-  {
-   "step": 11,
-   "startingTime": "2026-08-16T17:55:20Z"
-  }
- ]
+  "capturedAt": "2026-08-17T08:23:25.600Z",
+  "leagueId": "98767991302996019",
+  "leagueSlug": "lec",
+  "tournamentId": "115548681802226458",
+  "matchId": "115548681803406283",
+  "gameId": "115548681803406284",
+  "gameStartedAt": "2026-08-16T17:11:29.301Z",
+  "closingTime": "2026-08-16T18:11:20Z",
+  "walk": [
+    {
+      "step": 1,
+      "startingTime": "2026-08-16T17:15:20Z"
+    },
+    {
+      "step": 2,
+      "startingTime": "2026-08-16T17:19:20Z"
+    },
+    {
+      "step": 3,
+      "startingTime": "2026-08-16T17:23:20Z"
+    },
+    {
+      "step": 4,
+      "startingTime": "2026-08-16T17:27:20Z"
+    },
+    {
+      "step": 5,
+      "startingTime": "2026-08-16T17:31:20Z"
+    },
+    {
+      "step": 6,
+      "startingTime": "2026-08-16T17:35:20Z"
+    },
+    {
+      "step": 7,
+      "startingTime": "2026-08-16T17:39:20Z"
+    },
+    {
+      "step": 8,
+      "startingTime": "2026-08-16T17:43:20Z"
+    },
+    {
+      "step": 9,
+      "startingTime": "2026-08-16T17:47:20Z"
+    },
+    {
+      "step": 10,
+      "startingTime": "2026-08-16T17:51:20Z"
+    },
+    {
+      "step": 11,
+      "startingTime": "2026-08-16T17:55:20Z"
+    }
+  ]
 }

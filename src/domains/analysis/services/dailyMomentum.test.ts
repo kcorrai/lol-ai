@@ -86,7 +86,7 @@ describe("mergeSeries", () => {
     const merged = mergeSeries(
       [point("2026-07-03", 3), point("2026-07-01", 1)],
       [point("2026-07-02", 2)],
-      "kda",
+      "kda"
     );
 
     expect(merged.map((p) => p.date)).toEqual(["2026-07-01", "2026-07-02", "2026-07-03"]);

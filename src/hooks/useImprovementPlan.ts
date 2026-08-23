@@ -20,8 +20,7 @@ export function useImprovementPlan(riotAccountId: string | null | undefined) {
 export function useGeneratePlan(riotAccountId: string | null | undefined) {
   const qc = useQueryClient();
   return useMutation<PlanWithProgress>({
-    mutationFn: () =>
-      apiFetch(`/api/riot/${riotAccountId}/plan`, { method: "POST" }),
+    mutationFn: () => apiFetch(`/api/riot/${riotAccountId}/plan`, { method: "POST" }),
     onSuccess: () => {
       if (riotAccountId) qc.invalidateQueries({ queryKey: planKey(riotAccountId) });
     },

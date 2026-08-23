@@ -32,7 +32,7 @@ route harness).
 
 - Writing component tests for existing components (separate tasks).
 - The API route test harness (TASK-262).
-- A CI coverage threshold (TASK-280) — widening the denominator will *lower* the reported
+- A CI coverage threshold (TASK-280) — widening the denominator will _lower_ the reported
   percentage, so the gate must come after the tests it gates.
 
 ## Acceptance criteria

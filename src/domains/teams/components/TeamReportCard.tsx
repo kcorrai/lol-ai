@@ -1,11 +1,24 @@
 "use client";
 
-import { Sparkles, TrendingUp, TrendingDown, Lightbulb, Star, Target, RefreshCw } from "lucide-react";
+import {
+  Sparkles,
+  TrendingUp,
+  TrendingDown,
+  Lightbulb,
+  Star,
+  Target,
+  RefreshCw,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { TeamReportData } from "@/domains/teams/services/teamReportService";
 
-function Section({ icon: Icon, title, items, color }: {
+function Section({
+  icon: Icon,
+  title,
+  items,
+  color,
+}: {
   icon: React.ComponentType<{ className?: string }>;
   title: string;
   items: string[];
@@ -20,7 +33,12 @@ function Section({ icon: Icon, title, items, color }: {
       <ul className="space-y-2">
         {items.map((item, i) => (
           <li key={i} className="flex items-start gap-2 text-sm text-text-muted">
-            <span className={cn("mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full", color.replace("text-", "bg-"))} />
+            <span
+              className={cn(
+                "mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full",
+                color.replace("text-", "bg-")
+              )}
+            />
             {item}
           </li>
         ))}
@@ -36,9 +54,17 @@ interface TeamReportCardProps {
   isCoach: boolean;
 }
 
-export function TeamReportCard({ report, onRegenerate, isRegenerating, isCoach }: TeamReportCardProps) {
+export function TeamReportCard({
+  report,
+  onRegenerate,
+  isRegenerating,
+  isCoach,
+}: TeamReportCardProps) {
   const generatedAt = new Date(report.generatedAt).toLocaleDateString("en-US", {
-    day: "numeric", month: "long", hour: "2-digit", minute: "2-digit",
+    day: "numeric",
+    month: "long",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 
   return (
@@ -53,8 +79,13 @@ export function TeamReportCard({ report, onRegenerate, isRegenerating, isCoach }
           <p className="text-xs text-text-muted">Generated on {generatedAt}</p>
         </div>
         {isCoach && (
-          <Button size="sm" variant="ghost" onClick={onRegenerate} disabled={isRegenerating}
-            className="shrink-0 gap-1.5 text-text-muted hover:text-text">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={onRegenerate}
+            disabled={isRegenerating}
+            className="shrink-0 gap-1.5 text-text-muted hover:text-text"
+          >
             <RefreshCw className={cn("h-3.5 w-3.5", isRegenerating && "animate-spin")} />
             Refresh
           </Button>
@@ -92,12 +123,27 @@ export function TeamReportCard({ report, onRegenerate, isRegenerating, isCoach }
 
       {/* Strengths / Weaknesses */}
       <div className="grid gap-3 sm:grid-cols-2">
-        <Section icon={TrendingUp} title="Strengths" items={report.strengths} color="text-success" />
-        <Section icon={TrendingDown} title="Weaknesses" items={report.weaknesses} color="text-danger" />
+        <Section
+          icon={TrendingUp}
+          title="Strengths"
+          items={report.strengths}
+          color="text-success"
+        />
+        <Section
+          icon={TrendingDown}
+          title="Weaknesses"
+          items={report.weaknesses}
+          color="text-danger"
+        />
       </div>
 
       {/* Recommendations */}
-      <Section icon={Lightbulb} title="Recommendations" items={report.recommendations} color="text-info" />
+      <Section
+        icon={Lightbulb}
+        title="Recommendations"
+        items={report.recommendations}
+        color="text-info"
+      />
 
       {/* Member Highlights */}
       {report.memberHighlights.length > 0 && (

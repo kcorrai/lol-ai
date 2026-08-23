@@ -41,6 +41,7 @@ interface RankGoalSelectorProps {
 ```
 
 GÃ¶sterim:
+
 ```
 Mevcut: [Gold III 45 LP]  â†’  Hedef: [Platinum IV â–¼]
 Tahmini: ~23 maÃ§ (60% WR ile)
@@ -49,15 +50,18 @@ Tahmini: ~23 maÃ§ (60% WR ile)
 ### Zustand Store GÃ¼ncellemesi
 
 `src/lib/stores/uiStore.ts` dosyasÄ±na ekle:
+
 ```typescript
 rankGoal: { tier: RankTier; division: RankDivision } | null;
 setRankGoal: (goal: { tier: RankTier; division: RankDivision } | null) => void;
 ```
+
 `persist` middleware zaten var â€” yeni alan otomatik localStorage'a yazÄ±lÄ±r.
 
 ### Progress HesabÄ±
 
 `useRankUpProbability` hook'u LP proximity ve win rate skorlarÄ±nÄ± dÃ¶ndÃ¼rÃ¼yor. Bu skoru kullanarak basit bir progress bar oluÅŸtur:
+
 - Skor 0-100 arasÄ± normalize edilmiÅŸ deÄŸer
 - Bar rengi: 0-33=kÄ±rmÄ±zÄ±, 34-66=sarÄ±, 67-100=yeÅŸil
 
@@ -75,4 +79,3 @@ setRankGoal: (goal: { tier: RankTier; division: RankDivision } | null) => void;
 - Hedef rank seÃ§icisi mevcut rank'tan dÃ¼ÅŸÃ¼k seÃ§ilemez (validation).
 - En fazla 2 tier ilerisi seÃ§ilebilir (Ã¶r. Gold â†’ Diamond direkt seÃ§ilemesin).
 - "Tahmini sÃ¼re" yaklaÅŸÄ±k deÄŸerdir â€” "â‰ˆ X maÃ§" formatÄ±nda gÃ¶ster, kesin vaat etme.
-

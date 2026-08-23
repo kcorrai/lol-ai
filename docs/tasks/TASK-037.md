@@ -48,7 +48,7 @@ model AiCache {
 ### Helper Fonksiyonlar (`src/lib/ai/aiCache.ts`)
 
 ```typescript
-export async function getCached(cacheKey: string): Promise<unknown | null>
+export async function getCached(cacheKey: string): Promise<unknown | null>;
 // expiresAt kontrolÃ¼ yap; sÃ¼resi dolmuÅŸsa null dÃ¶ndÃ¼r; hit ise incrementHit Ã§aÄŸÄ±r
 
 export async function setCached(
@@ -56,14 +56,11 @@ export async function setCached(
   type: string,
   content: unknown,
   ttlDays: number
-): Promise<void>
+): Promise<void>;
 
-export async function incrementHit(cacheKey: string): Promise<void>
+export async function incrementHit(cacheKey: string): Promise<void>;
 
-export function buildCacheKey(
-  type: string,
-  inputs: Record<string, string>
-): string
+export function buildCacheKey(type: string, inputs: Record<string, string>): string;
 // sha256(type + ":" + JSON.stringify(sortedInputs))
 // inputs sÄ±ralÄ± olmalÄ± â€” key order farklÄ±lÄ±ÄŸÄ± aynÄ± hash Ã¼retmeli
 ```
@@ -90,4 +87,3 @@ Yok â€” bu task diÄŸer tÃ¼m feature task'larÄ±nÄ±n Ã¶n koÅŸulud
 - `crypto` modÃ¼lÃ¼ Node.js built-in â€” yeni npm paketi ekleme.
 - SÃ¼resi dolmuÅŸ kayÄ±tlarÄ± silmek iÃ§in ayrÄ± bir cron job gerekmez; `expiresAt` index yeterli. Ä°leride toplu temizlik iÃ§in `DELETE WHERE expiresAt < NOW()` eklenebilir.
 - Default TTL: 14 gÃ¼n (â‰ˆ 1 patch cycle). Her servis kendi TTL'ini belirler.
-

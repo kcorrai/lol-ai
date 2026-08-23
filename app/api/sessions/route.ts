@@ -26,10 +26,18 @@ export const GET = withAuth(async (req: NextRequest, { userId }) => {
   // Update the most-recent session's metadata if it matches this UA
   const latest = sessions[0];
   if (latest) {
-    await prisma.userSession.update({
-      where: { id: latest.id },
-      data: { userAgent: userAgent ?? latest.userAgent, ipAddress: ip ?? latest.ipAddress, lastActiveAt: new Date() },
-    }).catch(() => { /* non-critical */ });
+    await prisma.userSession
+      .update({
+        where: { id: latest.id },
+        data: {
+          userAgent: userAgent ?? latest.userAgent,
+          ipAddress: ip ?? latest.ipAddress,
+          lastActiveAt: new Date(),
+        },
+      })
+      .catch(() => {
+        /* non-critical */
+      });
   }
 
   return apiSuccess(sessions);
@@ -41,7 +49,11 @@ const deleteSchema = z.object({ sessionId: z.string().uuid().optional() });
 // Body: { sessionId } for a single session, empty body for all sessions
 export const DELETE = withAuth(async (req: NextRequest, { userId }) => {
   let body: unknown;
-  try { body = await req.json(); } catch { body = {}; }
+  try {
+    body = await req.json();
+  } catch {
+    body = {};
+  }
 
   const parsed = deleteSchema.safeParse(body);
   if (!parsed.success) throw Errors.validation(parsed.error.issues[0].message);
@@ -50,7 +62,10 @@ export const DELETE = withAuth(async (req: NextRequest, { userId }) => {
 
   if (sessionId) {
     // Verify ownership before deleting
-    const session = await prisma.userSession.findUnique({ where: { id: sessionId }, select: { userId: true } });
+    const session = await prisma.userSession.findUnique({
+      where: { id: sessionId },
+      select: { userId: true },
+    });
     if (!session || session.userId !== userId) throw Errors.notFound("Session");
 
     await prisma.userSession.delete({ where: { id: sessionId } });

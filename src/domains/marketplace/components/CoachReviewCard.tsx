@@ -55,5 +55,9 @@ export function CoachReviewCard({ review, coachName }: Props): React.ReactElemen
 }
 
 function day(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+  return new Date(iso).toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }

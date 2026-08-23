@@ -24,22 +24,45 @@ const PERSONA_VOICE: Record<CoachPersona, string> = {
 };
 
 export function buildChatSystemPrompt(ctx: ChatContext): string {
-  const { gameName, tagLine, region, rankDisplay, profile, plan, focusAction, persona = "direct" } = ctx;
-  const { avgMetrics, winRate, playstyle, strongestArea, weakestArea, mostPlayedChampions, recentMatches } = profile;
+  const {
+    gameName,
+    tagLine,
+    region,
+    rankDisplay,
+    profile,
+    plan,
+    focusAction,
+    persona = "direct",
+  } = ctx;
+  const {
+    avgMetrics,
+    winRate,
+    playstyle,
+    strongestArea,
+    weakestArea,
+    mostPlayedChampions,
+    recentMatches,
+  } = profile;
 
   const avgVision =
     recentMatches.length > 0
       ? Math.round(recentMatches.reduce((s, m) => s + m.visionScore, 0) / recentMatches.length)
       : 0;
 
-  const matchSummaries = recentMatches.slice(0, 5).map((m, i) => {
-    const kda = `${m.kills}/${m.deaths}/${m.assists}`;
-    return `  ${i + 1}. ${m.champion} (${m.position}) — ${m.won ? "Win" : "Loss"} · KDA ${kda} · CS ${m.csPerMinute}/min`;
-  }).join("\n");
+  const matchSummaries = recentMatches
+    .slice(0, 5)
+    .map((m, i) => {
+      const kda = `${m.kills}/${m.deaths}/${m.assists}`;
+      return `  ${i + 1}. ${m.champion} (${m.position}) — ${m.won ? "Win" : "Loss"} · KDA ${kda} · CS ${m.csPerMinute}/min`;
+    })
+    .join("\n");
 
   const planSection = plan?.targets.length
     ? plan.targets
-        .map((t) => `  - ${t.label}: ${t.baseline}${t.unit} → ${t.goal}${t.unit} (${Math.round(t.progress * 100)}% complete)`)
+        .map(
+          (t) =>
+            `  - ${t.label}: ${t.baseline}${t.unit} → ${t.goal}${t.unit} (${Math.round(t.progress * 100)}% complete)`
+        )
         .join("\n")
     : "  No active plan.";
 

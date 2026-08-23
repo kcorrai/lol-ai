@@ -28,20 +28,20 @@ so it could be framed. That was rejected too: it means a `frame-src` grant, spen
 someone else's bandwidth without their agreement, and a deep-link scheme that can change
 without notice.
 
-What Community Dragon *does* publish, keyed by the champion's numeric Data Dragon id at
+What Community Dragon _does_ publish, keyed by the champion's numeric Data Dragon id at
 `/v1/champions/{key}.json`, is the client's own skin catalogue. Measured across all 2146
 skins in `v1/skins.json`:
 
-| Field | Skins with it |
-|---|---|
-| `loadScreenPath` — the in-game loading card, a render of the actual model | 2146 |
-| `tilePath` — the in-game HUD portrait | 2146 |
-| `uncenteredSplashPath` | 2146 |
-| `chromas[]` | 1072 |
-| `description` | 1831 |
-| `rarity` | 2146 |
-| `skinFeaturePreviewData` — per-ability in-game VFX clips | 17 |
-| `splashVideoPath` — animated splash | 12 |
+| Field                                                                     | Skins with it |
+| ------------------------------------------------------------------------- | ------------- |
+| `loadScreenPath` — the in-game loading card, a render of the actual model | 2146          |
+| `tilePath` — the in-game HUD portrait                                     | 2146          |
+| `uncenteredSplashPath`                                                    | 2146          |
+| `chromas[]`                                                               | 1072          |
+| `description`                                                             | 1831          |
+| `rarity`                                                                  | 2146          |
+| `skinFeaturePreviewData` — per-ability in-game VFX clips                  | 17            |
+| `splashVideoPath` — animated splash                                       | 12            |
 
 Animated splash and VFX clips are too rare to build a section on. The load screen is not:
 it is a render of the model the game puts on the Rift, and every skin has one.

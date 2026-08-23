@@ -42,7 +42,7 @@ export interface DuoQuestsResponse {
  */
 export async function getDuoQuests(
   riotAccountId: string,
-  now: Date = new Date(),
+  now: Date = new Date()
 ): Promise<DuoQuestsResponse | null> {
   const partner = await getActiveDuo(riotAccountId);
   if (!partner) return null;
@@ -129,7 +129,7 @@ async function persist(
   riotAccountId: string,
   partnerPuuid: string,
   definition: QuestDefinition,
-  { start, end, progress, completed, newlyCompleted }: PersistInput,
+  { start, end, progress, completed, newlyCompleted }: PersistInput
 ): Promise<void> {
   const data = {
     progress,
@@ -172,7 +172,7 @@ async function persist(
     logger.warn(
       `[duoQuest] Could not persist ${definition.key} for ${riotAccountId}: ${
         err instanceof Error ? err.message : String(err)
-      }`,
+      }`
     );
   }
 }

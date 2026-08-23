@@ -43,7 +43,9 @@ export function DevRestartOnboarding(): React.JSX.Element | null {
     >
       <GraduationCap className="h-3.5 w-3.5" />
       {busy ? "Restarting…" : "Restart onboarding"}
-      <span className="rounded bg-surface-2 px-1 text-[9px] uppercase tracking-wider text-text-muted/60">dev</span>
+      <span className="rounded bg-surface-2 px-1 text-[9px] uppercase tracking-wider text-text-muted/60">
+        dev
+      </span>
     </button>
   );
 }

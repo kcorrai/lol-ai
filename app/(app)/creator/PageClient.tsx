@@ -50,12 +50,12 @@ export default function PageClient(): JSX.Element {
           <li>Five browser-source overlays — paste a URL into OBS, nothing to install.</li>
           <li>
             <span className="font-mono text-accent">!rank</span>,{" "}
-            <span className="font-mono text-accent">!session</span> and three more, working with
-            the chat bot you already run.
+            <span className="font-mono text-accent">!session</span> and three more, working with the
+            chat bot you already run.
           </li>
           <li>
-            Stream-safe mode and a broadcast delay, so the overlay cannot give away that a game
-            just ended.
+            Stream-safe mode and a broadcast delay, so the overlay cannot give away that a game just
+            ended.
           </li>
         </ul>
         <button
@@ -83,8 +83,8 @@ export default function PageClient(): JSX.Element {
       <header>
         <h1 className="font-display text-2xl text-text">Streamer Kit</h1>
         <p className="mt-1 text-text-body">
-          Everything here reads your ranked history. Nothing reads your live game, so none of it
-          can break Riot&apos;s rules on in-game overlays.
+          Everything here reads your ranked history. Nothing reads your live game, so none of it can
+          break Riot&apos;s rules on in-game overlays.
         </p>
       </header>
 

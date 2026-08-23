@@ -56,7 +56,9 @@ describe("subtractAll", () => {
 
   it("ignores a booking that does not touch the window", () => {
     const window = [iv("2026-08-17T10:00:00Z", "2026-08-17T11:00:00Z")];
-    expect(subtractAll(window, [iv("2026-08-17T11:00:00Z", "2026-08-17T12:00:00Z")])).toEqual(window);
+    expect(subtractAll(window, [iv("2026-08-17T11:00:00Z", "2026-08-17T12:00:00Z")])).toEqual(
+      window
+    );
   });
 
   it("applies every booking, not just the first", () => {
@@ -79,15 +81,21 @@ describe("subtractAll", () => {
 describe("subtractOne", () => {
   it("returns the window untouched when the block does not reach it", () => {
     const window = iv("2026-08-17T10:00:00Z", "2026-08-17T11:00:00Z");
-    expect(subtractOne(window, iv("2026-08-17T08:00:00Z", "2026-08-17T09:00:00Z"))).toEqual([window]);
+    expect(subtractOne(window, iv("2026-08-17T08:00:00Z", "2026-08-17T09:00:00Z"))).toEqual([
+      window,
+    ]);
   });
 
   // Half-open ranges: a block that ends exactly where the window starts does
   // not overlap it, or every back-to-back session would eat the next one.
   it("treats a block that only touches the edge as no overlap", () => {
     const window = iv("2026-08-17T10:00:00Z", "2026-08-17T11:00:00Z");
-    expect(subtractOne(window, iv("2026-08-17T09:00:00Z", "2026-08-17T10:00:00Z"))).toEqual([window]);
-    expect(subtractOne(window, iv("2026-08-17T11:00:00Z", "2026-08-17T12:00:00Z"))).toEqual([window]);
+    expect(subtractOne(window, iv("2026-08-17T09:00:00Z", "2026-08-17T10:00:00Z"))).toEqual([
+      window,
+    ]);
+    expect(subtractOne(window, iv("2026-08-17T11:00:00Z", "2026-08-17T12:00:00Z"))).toEqual([
+      window,
+    ]);
   });
 
   it("trims from the front and from the back", () => {

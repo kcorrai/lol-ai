@@ -37,9 +37,7 @@ export interface RoflMetadata {
   matchId?: string;
 }
 
-export type RoflParseResult =
-  | { ok: true; metadata: RoflMetadata }
-  | { ok: false; error: string };
+export type RoflParseResult = { ok: true; metadata: RoflMetadata } | { ok: false; error: string };
 
 export function parseRoflBuffer(buffer: Buffer): RoflParseResult {
   // Validate magic bytes

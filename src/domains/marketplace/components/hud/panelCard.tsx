@@ -46,11 +46,7 @@ export function CardTitle({ children }: { children: React.ReactNode }): React.Re
   );
 }
 
-export function CardDescription({
-  children,
-}: {
-  children: React.ReactNode;
-}): React.ReactElement {
+export function CardDescription({ children }: { children: React.ReactNode }): React.ReactElement {
   return <p className="max-w-[62ch] text-[13.5px] text-text-body">{children}</p>;
 }
 

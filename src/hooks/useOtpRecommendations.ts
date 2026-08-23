@@ -12,7 +12,10 @@ interface OtpRecommendationsResponse {
 export function useOtpRecommendations(riotAccountId: string | null | undefined) {
   return useQuery<OtpRecommendationsResponse>({
     queryKey: ["otp-recommendations", riotAccountId],
-    queryFn: () => apiFetch<OtpRecommendationsResponse>(`/api/otp/recommendations?riotAccountId=${riotAccountId}`),
+    queryFn: () =>
+      apiFetch<OtpRecommendationsResponse>(
+        `/api/otp/recommendations?riotAccountId=${riotAccountId}`
+      ),
     enabled: !!riotAccountId,
     staleTime: 5 * 60_000,
   });

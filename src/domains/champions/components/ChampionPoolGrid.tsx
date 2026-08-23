@@ -25,7 +25,10 @@ function MasteryBar({ entry }: { entry: ChampionPoolEntry }) {
           Mastery
         </span>
         <span
-          className={cn("text-xs font-bold", masteryScore >= 75 ? "text-accent" : "text-text-muted")}
+          className={cn(
+            "text-xs font-bold",
+            masteryScore >= 75 ? "text-accent" : "text-text-muted"
+          )}
           title={`Experience: ${masterySubScores.experience} · Performance: ${masterySubScores.performance} · CS: ${masterySubScores.farm}`}
         >
           {masteryScore}/100
@@ -68,7 +71,8 @@ function ChampionCard({
       }`}
       style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)" }}
       onMouseEnter={(e) => {
-        (e.currentTarget as HTMLElement).style.boxShadow = `0 0 24px ${glowColor}, inset 0 1px 0 rgba(255,255,255,0.04)`;
+        (e.currentTarget as HTMLElement).style.boxShadow =
+          `0 0 24px ${glowColor}, inset 0 1px 0 rgba(255,255,255,0.04)`;
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLElement).style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.03)";
@@ -100,9 +104,7 @@ function ChampionCard({
             <p className="truncate font-display text-sm font-semibold text-text">
               {entry.championName}
             </p>
-            <Badge variant={winRateVariant(entry.winRate)}>
-              {entry.winRate}% WR
-            </Badge>
+            <Badge variant={winRateVariant(entry.winRate)}>{entry.winRate}% WR</Badge>
           </div>
           <div className="mt-1 flex gap-3 text-xs text-text-muted">
             <span>{entry.gamesPlayed} games</span>

@@ -14,7 +14,11 @@ function formatRank(tier: string, division: string, lp: number): string {
 function getMonthInfo(now: Date): { label: string; key: string } {
   const y = now.getUTCFullYear();
   const m = now.getUTCMonth() + 1;
-  const label = now.toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
+  const label = now.toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  });
   return { label, key: `${y}-${String(m).padStart(2, "0")}` };
 }
 
@@ -32,7 +36,7 @@ export async function sendMonthlyMilestoneReports(): Promise<{
   const now = new Date();
   const { label: monthLabel, key: monthKey } = getMonthInfo(now);
 
-  const monthStart  = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1));
+  const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 1));
   const prevMonthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 2, 1));
 
   const users = await prisma.user.findMany({
@@ -50,31 +54,59 @@ export async function sendMonthlyMilestoneReports(): Promise<{
     },
   });
 
-  let sent = 0, skipped = 0, errors = 0;
+  let sent = 0,
+    skipped = 0,
+    errors = 0;
 
   for (const user of users) {
-    if (!user.email) { skipped++; continue; }
+    if (!user.email) {
+      skipped++;
+      continue;
+    }
     const account = user.riotAccounts[0];
-    if (!account) { skipped++; continue; }
-    if (user.profile?.emailWeeklyReport === false) { skipped++; continue; }
+    if (!account) {
+      skipped++;
+      continue;
+    }
+    if (user.profile?.emailWeeklyReport === false) {
+      skipped++;
+      continue;
+    }
 
     const idempotencyKey = `monthly-milestone:${user.id}:${monthKey}`;
-    const alreadySent = await prisma.webhookEvent.findUnique({ where: { eventKey: idempotencyKey } });
-    if (alreadySent) { skipped++; continue; }
+    const alreadySent = await prisma.webhookEvent.findUnique({
+      where: { eventKey: idempotencyKey },
+    });
+    if (alreadySent) {
+      skipped++;
+      continue;
+    }
 
     try {
       const puuid = await getAccountPuuid(account.id);
       // ── This month's games ────────────────────────────────────────
       const thisMonthGames = await prisma.matchParticipant.findMany({
-        where: { puuid: puuid ?? "", match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: monthStart } } },
+        where: {
+          puuid: puuid ?? "",
+          match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: monthStart } },
+        },
         select: { won: true, championName: true },
       });
 
-      if (thisMonthGames.length === 0) { skipped++; continue; }
+      if (thisMonthGames.length === 0) {
+        skipped++;
+        continue;
+      }
 
       // ── Prev month games (for comparison) ────────────────────────
       const prevMonthCount = await prisma.matchParticipant.count({
-        where: { puuid: puuid ?? "", match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: prevMonthStart, lt: monthStart } } },
+        where: {
+          puuid: puuid ?? "",
+          match: {
+            queueType: "RANKED_SOLO_5x5",
+            gameStart: { gte: prevMonthStart, lt: monthStart },
+          },
+        },
       });
 
       // ── Win rate ──────────────────────────────────────────────────
@@ -102,15 +134,20 @@ export async function sendMonthlyMilestoneReports(): Promise<{
         select: { tier: true, division: true, lp: true },
       });
       const startRankRaw = await prisma.rankedHistory.findFirst({
-        where: { riotAccountId: account.id, queueType: "RANKED_SOLO_5x5", recordedAt: { lt: monthStart } },
+        where: {
+          riotAccountId: account.id,
+          queueType: "RANKED_SOLO_5x5",
+          recordedAt: { lt: monthStart },
+        },
         orderBy: { recordedAt: "desc" },
         select: { tier: true, division: true, lp: true },
       });
 
-      const lpChange = endRankRaw && startRankRaw
-        ? lpComposite(endRankRaw.tier, endRankRaw.division, endRankRaw.lp) -
-          lpComposite(startRankRaw.tier, startRankRaw.division, startRankRaw.lp)
-        : null;
+      const lpChange =
+        endRankRaw && startRankRaw
+          ? lpComposite(endRankRaw.tier, endRankRaw.division, endRankRaw.lp) -
+            lpComposite(startRankRaw.tier, startRankRaw.division, startRankRaw.lp)
+          : null;
 
       // ── Reports generated ─────────────────────────────────────────
       const reportsGenerated = await prisma.coachingReport.count({
@@ -118,10 +155,13 @@ export async function sendMonthlyMilestoneReports(): Promise<{
       });
 
       const isPro =
-        (user.subscription?.plan === "pro" || user.subscription?.plan === "elite" || user.subscription?.plan === "team") &&
+        (user.subscription?.plan === "pro" ||
+          user.subscription?.plan === "elite" ||
+          user.subscription?.plan === "team") &&
         (user.subscription?.status === "active" || user.subscription?.status === "trialing");
 
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTAUTH_URL ?? "https://lolaicoach.gg";
+      const appUrl =
+        process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTAUTH_URL ?? "https://lolaicoach.gg";
 
       const { subject, html } = buildMonthlyMilestoneEmail({
         gameName: account.gameName,
@@ -130,8 +170,12 @@ export async function sendMonthlyMilestoneReports(): Promise<{
         gamesPrevMonth: prevMonthCount,
         winRate,
         lpChange,
-        startRank: startRankRaw ? formatRank(startRankRaw.tier, startRankRaw.division, startRankRaw.lp) : null,
-        endRank: endRankRaw ? formatRank(endRankRaw.tier, endRankRaw.division, endRankRaw.lp) : null,
+        startRank: startRankRaw
+          ? formatRank(startRankRaw.tier, startRankRaw.division, startRankRaw.lp)
+          : null,
+        endRank: endRankRaw
+          ? formatRank(endRankRaw.tier, endRankRaw.division, endRankRaw.lp)
+          : null,
         bestChampion,
         bestChampionWinRate,
         reportsGenerated,

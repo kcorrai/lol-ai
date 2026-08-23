@@ -28,7 +28,7 @@ export function DeathHeatMap({ deaths, isLoading, summary }: Props) {
   if (isLoading) {
     return (
       <div className="flex h-[480px] items-center justify-center rounded-xl border border-border bg-surface">
-        <p className="text-sm text-text-muted animate-pulse">Loading map…</p>
+        <p className="animate-pulse text-sm text-text-muted">Loading map…</p>
       </div>
     );
   }
@@ -103,9 +103,7 @@ export function DeathHeatMap({ deaths, isLoading, summary }: Props) {
       )}
 
       {deaths.length === 0 && !isLoading && (
-        <p className="text-center text-sm text-text-muted">
-          No death data found for this filter.
-        </p>
+        <p className="text-center text-sm text-text-muted">No death data found for this filter.</p>
       )}
     </div>
   );

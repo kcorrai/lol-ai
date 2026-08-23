@@ -10,8 +10,8 @@ export interface CounterEntry {
 
 export interface CounterStats {
   champion: string;
-  nemeses: CounterEntry[];  // enemies you lose to most
-  prey: CounterEntry[];     // enemies you beat most
+  nemeses: CounterEntry[]; // enemies you lose to most
+  prey: CounterEntry[]; // enemies you beat most
   totalGames: number;
 }
 
@@ -87,9 +87,7 @@ export async function getCounterStats(
     .slice(0, 3);
 
   // Prey: highest win rate (you beat them most)
-  const prey = [...entries]
-    .sort((a, b) => b.winRate - a.winRate || b.games - a.games)
-    .slice(0, 3);
+  const prey = [...entries].sort((a, b) => b.winRate - a.winRate || b.games - a.games).slice(0, 3);
 
   return {
     champion,

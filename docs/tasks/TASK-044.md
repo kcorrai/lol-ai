@@ -50,16 +50,16 @@ describe('buildCounterUserPrompt')
 ### Mock Kurulumu
 
 ```typescript
-vi.mock('@/lib/ai/client', () => ({
+vi.mock("@/lib/ai/client", () => ({
   aiClient: {
     complete: vi.fn(),
   },
 }));
 
-vi.mock('@/lib/ai/aiCache', () => ({
+vi.mock("@/lib/ai/aiCache", () => ({
   getCached: vi.fn(),
   setCached: vi.fn(),
-  buildCacheKey: vi.fn().mockReturnValue('test-cache-key'),
+  buildCacheKey: vi.fn().mockReturnValue("test-cache-key"),
   incrementHit: vi.fn(),
 }));
 ```
@@ -76,4 +76,3 @@ vi.mock('@/lib/ai/aiCache', () => ({
 
 - Mevcut test dosyalarÄ±na bak (Ã¶rn. `coachingPipeline.test.ts`) â€” mock pattern aynÄ±.
 - Fixture olarak `validCounterResult` objesi oluÅŸtur â€” birden fazla test kullanacak.
-

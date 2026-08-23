@@ -7,8 +7,7 @@ export function useDisconnectAccount() {
   const queryClient = useQueryClient();
 
   return useMutation<{ disconnected: boolean }, Error, string>({
-    mutationFn: (riotAccountId) =>
-      apiFetch(`/api/riot/${riotAccountId}`, { method: "DELETE" }),
+    mutationFn: (riotAccountId) => apiFetch(`/api/riot/${riotAccountId}`, { method: "DELETE" }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["riot-accounts"] });
     },

@@ -25,7 +25,11 @@ export function AccountConnectionForm() {
   const queryClient = useQueryClient();
   const [serverError, setServerError] = useState<string | null>(null);
 
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { region: "euw1" as RiotRegion },
   });
@@ -78,7 +82,9 @@ export function AccountConnectionForm() {
               {...register("region")}
             >
               {RIOT_REGION_OPTIONS.map(({ value, label }) => (
-                <option key={value} value={value}>{label}</option>
+                <option key={value} value={value}>
+                  {label}
+                </option>
               ))}
             </select>
             {errors.region && <p className="text-xs text-danger">{errors.region.message}</p>}

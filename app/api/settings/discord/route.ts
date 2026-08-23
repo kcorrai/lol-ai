@@ -41,7 +41,10 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   if (typeof body !== "object" || body === null) throw Errors.validation("Invalid body");
   const b = body as Record<string, unknown>;
 
-  if (typeof b.webhookUrl !== "string" || !b.webhookUrl.startsWith("https://discord.com/api/webhooks/")) {
+  if (
+    typeof b.webhookUrl !== "string" ||
+    !b.webhookUrl.startsWith("https://discord.com/api/webhooks/")
+  ) {
     throw Errors.validation("webhookUrl must be a valid Discord webhook URL");
   }
 

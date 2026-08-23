@@ -68,8 +68,22 @@ describe("getLanePhase", () => {
     withBothParticipants();
     vi.mocked(prisma.matchTimelineFrame.findMany).mockResolvedValue(
       selected([
-        { puuid: ME, minute: 1, totalGold: 1000, xp: 300, minionsKilled: 2, jungleMinionsKilled: 12 },
-        { puuid: THEM, minute: 1, totalGold: 1000, xp: 300, minionsKilled: 1, jungleMinionsKilled: 8 },
+        {
+          puuid: ME,
+          minute: 1,
+          totalGold: 1000,
+          xp: 300,
+          minionsKilled: 2,
+          jungleMinionsKilled: 12,
+        },
+        {
+          puuid: THEM,
+          minute: 1,
+          totalGold: 1000,
+          xp: 300,
+          minionsKilled: 1,
+          jungleMinionsKilled: 8,
+        },
       ])
     );
 

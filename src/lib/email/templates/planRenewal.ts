@@ -12,7 +12,10 @@ export interface PlanRenewalEmailData {
   appUrl: string;
 }
 
-export function buildPlanRenewalEmail({ gameName, appUrl }: PlanRenewalEmailData): { subject: string; html: string } {
+export function buildPlanRenewalEmail({ gameName, appUrl }: PlanRenewalEmailData): {
+  subject: string;
+  html: string;
+} {
   const subject = "Your new 14-day improvement plan is ready — LoL AI Coach";
   const safeName = escapeHtml(gameName);
   const safeUrl = escapeHtml(`${appUrl}/dashboard`);

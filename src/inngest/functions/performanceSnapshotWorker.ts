@@ -17,7 +17,9 @@ export const performanceSnapshotWorker = inngest.createFunction(
 
     // Run habit detection immediately after snapshot so habits stay up to date
     await detectAndPersistHabits(riotAccountId).catch((err) =>
-      logger.warn(`[snapshotWorker] Habit detection failed: ${err instanceof Error ? err.message : String(err)}`)
+      logger.warn(
+        `[snapshotWorker] Habit detection failed: ${err instanceof Error ? err.message : String(err)}`
+      )
     );
 
     return { riotAccountId };

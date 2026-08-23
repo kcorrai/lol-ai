@@ -133,7 +133,10 @@ export async function saveReview(
 export async function publishReview(bookingId: string, userId: string): Promise<VodOutcome> {
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },
-    select: { coachProfile: { select: { userId: true } }, vodReview: { select: { summary: true } } },
+    select: {
+      coachProfile: { select: { userId: true } },
+      vodReview: { select: { summary: true } },
+    },
   });
 
   if (!booking) return { ok: false, reason: "not-found" };

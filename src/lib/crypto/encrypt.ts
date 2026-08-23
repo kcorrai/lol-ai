@@ -57,10 +57,9 @@ export function decryptString(ciphertext: string): string {
     decipher.setAuthTag(tag);
     // `final()` throws when the tag does not match, which is the whole point: a
     // tampered record fails loudly instead of decrypting to something plausible.
-    return Buffer.concat([
-      decipher.update(Buffer.from(encHex, "hex")),
-      decipher.final(),
-    ]).toString("utf8");
+    return Buffer.concat([decipher.update(Buffer.from(encHex, "hex")), decipher.final()]).toString(
+      "utf8"
+    );
   }
 
   return decryptLegacyCbc(ciphertext);
@@ -71,10 +70,9 @@ function decryptLegacyCbc(ciphertext: string): string {
   const [ivHex, encHex] = ciphertext.split(":");
   if (!ivHex || !encHex) throw new Error("Invalid ciphertext format");
   const decipher = createDecipheriv(LEGACY_ALGORITHM, getKey(), Buffer.from(ivHex, "hex"));
-  return Buffer.concat([
-    decipher.update(Buffer.from(encHex, "hex")),
-    decipher.final(),
-  ]).toString("utf8");
+  return Buffer.concat([decipher.update(Buffer.from(encHex, "hex")), decipher.final()]).toString(
+    "utf8"
+  );
 }
 
 /** True when the record is in the old unauthenticated format and should be rewritten. */

@@ -126,10 +126,7 @@ function TeamBlock({
               <ChampionIcon name={p.championName} size={34} />
               <span className="min-w-0">
                 <span
-                  className={cn(
-                    "block truncate text-[13px]",
-                    you ? "text-acid-500" : "text-fg-1"
-                  )}
+                  className={cn("block truncate text-[13px]", you ? "text-acid-500" : "text-fg-1")}
                 >
                   {p.championName}
                 </span>
@@ -191,7 +188,10 @@ function TeamBlock({
             </span>
             <span className="flex gap-1">
               {Array.from({ length: 6 }, (_, i) => p.itemIds[i] ?? null).map((id, i) => (
-                <span key={i} className="block h-[22px] w-[22px] border border-line-1 bg-surface-dark">
+                <span
+                  key={i}
+                  className="block h-[22px] w-[22px] border border-line-1 bg-surface-dark"
+                >
                   {id ? <ItemIcon itemId={id} size={20} /> : null}
                 </span>
               ))}

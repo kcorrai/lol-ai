@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getCounterData, getPopularChampions, parsePosition, parseTier, POSITION_LABELS, formatGamePatch } from "@/domains/meta";
+import {
+  getCounterData,
+  getPopularChampions,
+  parsePosition,
+  parseTier,
+  POSITION_LABELS,
+  formatGamePatch,
+} from "@/domains/meta";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { CounterResults } from "@/domains/meta/components/CounterResults";
 import { Breadcrumb } from "@/components/shared/Breadcrumb";
@@ -72,10 +79,7 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-14">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={jsonLdProps(faqJsonLd)}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdProps(faqJsonLd)} />
 
       <Breadcrumb
         items={[
@@ -90,12 +94,10 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
             Free Tool · No login required
           </p>
         </PublicOnly>
-        <h1 className="font-display text-3xl font-black text-text md:text-4xl">
-          Counter Picker
-        </h1>
+        <h1 className="font-display text-3xl font-black text-text md:text-4xl">Counter Picker</h1>
         <p className="mt-2 max-w-2xl text-text-muted">
-          Pick a champion to see who counters it and which matchups it wins, ranked by real
-          ranked win rate.
+          Pick a champion to see who counters it and which matchups it wins, ranked by real ranked
+          win rate.
         </p>
       </header>
 

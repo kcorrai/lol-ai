@@ -60,7 +60,9 @@ export const sendReportReadyEmail = inngest.createFunction(
       body: `${reportType} report for ${account.gameName} is complete.`,
       url: `${appUrl}/coaching/${reportId}`,
       tag: `report-${reportId}`,
-    }).catch(() => { /* push failure must not block email result */ });
+    }).catch(() => {
+      /* push failure must not block email result */
+    });
 
     return { sent: true };
   }

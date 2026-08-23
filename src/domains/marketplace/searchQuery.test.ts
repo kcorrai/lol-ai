@@ -27,7 +27,12 @@ describe("parseSearchQuery", () => {
   // A storefront is a URL people edit, share and mangle. Answering a bad filter
   // with an error page is worse for everyone than answering with all the coaches.
   it("drops values it does not recognise rather than failing", () => {
-    const q = parseSearchQuery({ role: "carry", kind: "telepathy", minTier: "wood", sort: "vibes" });
+    const q = parseSearchQuery({
+      role: "carry",
+      kind: "telepathy",
+      minTier: "wood",
+      sort: "vibes",
+    });
     expect(q.role).toBeUndefined();
     expect(q.kind).toBeUndefined();
     expect(q.minTier).toBeUndefined();

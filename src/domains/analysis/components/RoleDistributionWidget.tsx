@@ -50,8 +50,12 @@ export function RoleDistributionWidget({ matches, isLoading }: Props) {
   if (isLoading) {
     return (
       <Card>
-        <CardHeader><Skeleton className="h-4 w-32" /></CardHeader>
-        <CardContent><Skeleton className="h-28 w-full" /></CardContent>
+        <CardHeader>
+          <Skeleton className="h-4 w-32" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-28 w-full" />
+        </CardContent>
       </Card>
     );
   }
@@ -88,7 +92,10 @@ export function RoleDistributionWidget({ matches, isLoading }: Props) {
               </div>
               <span className="w-12 shrink-0 font-medium text-text">{label}</span>
               <div className="h-2 flex-1 overflow-hidden rounded-full bg-surface-2">
-                <div className={`h-full rounded-full ${color} opacity-80`} style={{ width: `${pct}%` }} />
+                <div
+                  className={`h-full rounded-full ${color} opacity-80`}
+                  style={{ width: `${pct}%` }}
+                />
               </div>
               <span className="w-7 shrink-0 text-right text-text-muted">{pct}%</span>
               <span className={`w-12 shrink-0 text-right font-semibold ${wrColor}`}>{wr}% WR</span>

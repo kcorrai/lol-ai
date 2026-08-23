@@ -82,10 +82,7 @@ export function actionRow(...buttons: ButtonComponent[]): ActionRowComponent {
   return { type: ComponentType.ActionRow, components: buttons };
 }
 
-export function container(
-  children: ContainerChild[],
-  accentColor?: number
-): ContainerComponent {
+export function container(children: ContainerChild[], accentColor?: number): ContainerComponent {
   return {
     type: ComponentType.Container,
     ...(accentColor === undefined ? {} : { accent_color: accentColor }),

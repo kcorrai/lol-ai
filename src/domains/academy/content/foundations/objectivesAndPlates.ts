@@ -24,10 +24,22 @@ export const objectivesAndPlates: Lesson = {
       caption: "The early objectives, ranked by what they are worth",
       head: ["Objective", "Window", "Real value"],
       rows: [
-        ["Turret plates", "Until 14:00 — then gone forever", "160g each, and the turret is softened for later"],
+        [
+          "Turret plates",
+          "Until 14:00 — then gone forever",
+          "160g each, and the turret is softened for later",
+        ],
         ["Outer turret", "Any time", "Permanent map space plus a global gold payout"],
-        ["Drake stacks", "Every ~5 min", "Permanent stats; the soul at four stacks can decide the game"],
-        ["Void grubs", "Early window only", "Serious extra damage to buildings for the next several minutes"],
+        [
+          "Drake stacks",
+          "Every ~5 min",
+          "Permanent stats; the soul at four stacks can decide the game",
+        ],
+        [
+          "Void grubs",
+          "Early window only",
+          "Serious extra damage to buildings for the next several minutes",
+        ],
         ["Rift Herald", "Mid-early window", "Effectively a free turret if used on a pushed lane"],
         ["Baron", "20:00+", "The siege window that ends games"],
       ],

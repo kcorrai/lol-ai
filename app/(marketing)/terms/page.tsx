@@ -13,18 +13,16 @@ export default function TermsPage() {
 
       <div className="mt-10 space-y-10 text-sm leading-relaxed text-text-muted">
         <section>
-          <h2 className="mb-3 font-display text-xl font-semibold text-text">
-            Service Description
-          </h2>
+          <h2 className="mb-3 font-display text-xl font-semibold text-text">Service Description</h2>
           <p>
             LoL AI Coach (&quot;we&quot;, &quot;us&quot;, &quot;the Service&quot;) provides
-            AI-generated coaching reports and performance analytics for League of Legends
-            players. The Service is provided &quot;as is&quot; and is intended for personal,
-            non-commercial use.
+            AI-generated coaching reports and performance analytics for League of Legends players.
+            The Service is provided &quot;as is&quot; and is intended for personal, non-commercial
+            use.
           </p>
           <p className="mt-3">
-            By creating an account and using the Service, you agree to these Terms of Service.
-            If you do not agree, do not use the Service.
+            By creating an account and using the Service, you agree to these Terms of Service. If
+            you do not agree, do not use the Service.
           </p>
         </section>
 
@@ -69,10 +67,10 @@ export default function TermsPage() {
         <section>
           <h2 className="mb-3 font-display text-xl font-semibold text-text">No Warranty</h2>
           <p>
-            The Service is provided without warranty of any kind, express or implied.
-            AI-generated coaching reports are for informational purposes only and do not
-            guarantee improvement in rank or game performance. We do not warrant that the
-            Service will be uninterrupted, error-free, or that defects will be corrected.
+            The Service is provided without warranty of any kind, express or implied. AI-generated
+            coaching reports are for informational purposes only and do not guarantee improvement in
+            rank or game performance. We do not warrant that the Service will be uninterrupted,
+            error-free, or that defects will be corrected.
           </p>
         </section>
 
@@ -81,14 +79,14 @@ export default function TermsPage() {
             Limitation of Liability
           </h2>
           <p>
-            To the fullest extent permitted by applicable law, LoL AI Coach and its operators
-            shall not be liable for any indirect, incidental, special, consequential, or
-            punitive damages arising out of or related to your use of the Service, including
-            but not limited to loss of data, loss of profits, or any other intangible losses.
+            To the fullest extent permitted by applicable law, LoL AI Coach and its operators shall
+            not be liable for any indirect, incidental, special, consequential, or punitive damages
+            arising out of or related to your use of the Service, including but not limited to loss
+            of data, loss of profits, or any other intangible losses.
           </p>
           <p className="mt-3">
-            Our total liability for any claim arising from the use of the Service shall not
-            exceed the amount you paid us in the 12 months preceding the claim.
+            Our total liability for any claim arising from the use of the Service shall not exceed
+            the amount you paid us in the 12 months preceding the claim.
           </p>
         </section>
 

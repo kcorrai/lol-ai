@@ -49,7 +49,10 @@ export function getIp(req: NextRequest): string {
 
   const forwarded = req.headers.get("x-forwarded-for");
   if (forwarded) {
-    const hops = forwarded.split(",").map((h) => h.trim()).filter(Boolean);
+    const hops = forwarded
+      .split(",")
+      .map((h) => h.trim())
+      .filter(Boolean);
     const nearest = hops.at(-1);
     if (nearest) return nearest;
   }

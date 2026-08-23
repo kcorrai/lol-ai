@@ -1,12 +1,15 @@
 # TASK-178: Docs, Final QA Sweep, Push
 
 ## Status: Pending
+
 ## Score: 90/100
 
 ## Goal
+
 Close out: documentation updates, full verification pass, single push to main.
 
 ## Scope
+
 - `docs/API_DESIGN.md` — remove deleted AI tool routes, add new pages/routes
 - `docs/PROJECT_STRUCTURE.md` — meta domain, (tools) route group
 - README — free tools section (English)
@@ -22,7 +25,9 @@ Close out: documentation updates, full verification pass, single push to main.
 - Final: `git push origin main`, then production smoke test on Vercel
 
 ## Out of Scope
+
 - New features
 
 ## Commit
+
 `docs: update api design and structure for public tools`

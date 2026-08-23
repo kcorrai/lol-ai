@@ -54,7 +54,7 @@ export function CoachCardTile({ coach, featured }: Props): React.ReactElement {
               </span>
             )}
           </span>
-          <span className="mt-1.5 block line-clamp-2 text-[13.5px] text-text-muted">
+          <span className="mt-1.5 line-clamp-2 block text-[13.5px] text-text-muted">
             {coach.headline}
           </span>
         </span>

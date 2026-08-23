@@ -51,6 +51,7 @@ reverse matchup slug → alphabetical canonical.
 ### Version Header
 
 Every API response includes:
+
 ```
 X-API-Version: 1
 ```
@@ -59,11 +60,11 @@ X-API-Version: 1
 
 Critical endpoints are available at both their legacy path and the `/api/v1/` prefix:
 
-| Versioned path | Legacy path |
-|---|---|
+| Versioned path                   | Legacy path                   |
+| -------------------------------- | ----------------------------- |
 | `POST /api/v1/coaching/generate` | `POST /api/coaching/generate` |
-| `GET /api/v1/coaching/reports` | `GET /api/coaching/reports` |
-| `GET /api/v1/riot/accounts` | `GET /api/riot/accounts` |
+| `GET /api/v1/coaching/reports`   | `GET /api/coaching/reports`   |
+| `GET /api/v1/riot/accounts`      | `GET /api/riot/accounts`      |
 
 ### Deprecation Policy
 
@@ -76,6 +77,7 @@ Critical endpoints are available at both their legacy path and the `/api/v1/` pr
 ### Migration Guide
 
 When a v2 ships:
+
 - Unversioned `/api/` paths will serve v1 behavior and emit `Deprecation` headers.
 - After 90 days, `/api/` paths redirect (308) to `/api/v2/`.
 - Applications should migrate to `/api/v2/` before the sunset date.
@@ -89,6 +91,7 @@ When a v2 ships:
 All endpoints accept and return `application/json`.
 
 **Success response:**
+
 ```json
 {
   "data": { ... },
@@ -97,6 +100,7 @@ All endpoints accept and return `application/json`.
 ```
 
 **Error response:**
+
 ```json
 {
   "error": {
@@ -110,20 +114,20 @@ All endpoints accept and return `application/json`.
 
 ### HTTP Status Codes
 
-| Code | Meaning |
-|---|---|
-| 200 | Success |
-| 201 | Created |
-| 202 | Accepted (async processing started) |
-| 400 | Bad Request (invalid input) |
-| 401 | Unauthorized (not authenticated) |
-| 403 | Forbidden (authenticated but not authorized) |
-| 404 | Not Found |
-| 409 | Conflict |
-| 422 | Unprocessable Entity (validation error) |
-| 429 | Too Many Requests |
-| 500 | Internal Server Error |
-| 503 | Service Unavailable (e.g., Riot API down) |
+| Code | Meaning                                      |
+| ---- | -------------------------------------------- |
+| 200  | Success                                      |
+| 201  | Created                                      |
+| 202  | Accepted (async processing started)          |
+| 400  | Bad Request (invalid input)                  |
+| 401  | Unauthorized (not authenticated)             |
+| 403  | Forbidden (authenticated but not authorized) |
+| 404  | Not Found                                    |
+| 409  | Conflict                                     |
+| 422  | Unprocessable Entity (validation error)      |
+| 429  | Too Many Requests                            |
+| 500  | Internal Server Error                        |
+| 503  | Service Unavailable (e.g., Riot API down)    |
 
 ### Pagination
 
@@ -134,6 +138,7 @@ GET /api/matches?cursor=<base64-cursor>&limit=20
 ```
 
 **Paginated response:**
+
 ```json
 {
   "data": [...],
@@ -148,6 +153,7 @@ GET /api/matches?cursor=<base64-cursor>&limit=20
 ### Rate Limiting Headers
 
 Every response includes:
+
 ```
 X-RateLimit-Limit: 100
 X-RateLimit-Remaining: 87
@@ -163,6 +169,7 @@ X-RateLimit-Reset: 1717200000
 Create a new user account.
 
 **Request:**
+
 ```json
 {
   "email": "player@example.com",
@@ -172,6 +179,7 @@ Create a new user account.
 ```
 
 **Response 201:**
+
 ```json
 {
   "data": {
@@ -190,6 +198,7 @@ Create a new user account.
 Authenticate with email/password.
 
 **Request:**
+
 ```json
 {
   "email": "player@example.com",
@@ -214,6 +223,7 @@ Invalidate current session.
 Return current authenticated user.
 
 **Response 200:**
+
 ```json
 {
   "data": {
@@ -239,6 +249,7 @@ Initiate connection of a Riot account by Riot ID.
 **Auth required.** **Subscription check:** Free tier max 1 account.
 
 **Request:**
+
 ```json
 {
   "gameName": "Faker",
@@ -248,6 +259,7 @@ Initiate connection of a Riot account by Riot ID.
 ```
 
 **Response 201:**
+
 ```json
 {
   "data": {
@@ -275,6 +287,7 @@ step position itself is tracked client-side (localStorage). Called by the guided
 **Auth required.**
 
 **Response 200:**
+
 ```json
 { "data": { "completedAt": "2026-07-18T20:00:00.000Z" } }
 ```
@@ -288,6 +301,7 @@ Disconnect a Riot account. Preserves historical data.
 **Auth required.** User must own the account.
 
 **Response 200:**
+
 ```json
 { "data": { "disconnected": true } }
 ```
@@ -301,6 +315,7 @@ Trigger a manual match history sync.
 **Auth required.**
 
 **Response 202:**
+
 ```json
 {
   "data": {
@@ -320,6 +335,7 @@ Trigger a manual match history sync.
 Get current ranked standing.
 
 **Response 200:**
+
 ```json
 {
   "data": {
@@ -345,6 +361,7 @@ Ranked LP history for charting.
 **Query params:** `queueType=RANKED_SOLO_5x5&days=30`
 
 **Response 200:**
+
 ```json
 {
   "data": [
@@ -363,6 +380,7 @@ Ranked LP history for charting.
 Get paginated match history for the authenticated user's primary account.
 
 **Query params:**
+
 - `riotAccountId` — optional, defaults to primary
 - `queueType` — `RANKED_SOLO_5x5 | RANKED_FLEX_SR | NORMAL | ALL`
 - `championId` — filter by champion
@@ -370,6 +388,7 @@ Get paginated match history for the authenticated user's primary account.
 - `limit` — default 20, max 50
 
 **Response 200:**
+
 ```json
 {
   "data": [
@@ -406,6 +425,7 @@ Get paginated match history for the authenticated user's primary account.
 Get full detail for a single match.
 
 **Response 200:**
+
 ```json
 {
   "data": {
@@ -457,6 +477,7 @@ Champion performance statistics for a riot account.
 **Query params:** `riotAccountId`, `queueType`, `limit=20`
 
 **Response 200:**
+
 ```json
 {
   "data": [
@@ -489,6 +510,7 @@ Recent performance summary with trend data.
 **Query params:** `riotAccountId`, `days=14`
 
 **Response 200:**
+
 ```json
 {
   "data": {
@@ -516,6 +538,7 @@ Recent performance summary with trend data.
 Analysis of a player's champion pool health.
 
 **Response 200:**
+
 ```json
 {
   "data": {
@@ -546,6 +569,7 @@ short, patch-aware recommendations for the dashboard "This Patch" widget (TASK-2
 `riotAccountId` (must be owned by the caller). Auth + IP rate limited.
 
 **Response 200:**
+
 ```json
 {
   "data": [
@@ -581,6 +605,7 @@ List coaching reports for the user.
 **Query params:** `riotAccountId`, `reportType`, `cursor`, `limit=10`
 
 **Response 200:**
+
 ```json
 {
   "data": [
@@ -604,6 +629,7 @@ List coaching reports for the user.
 Full coaching report detail.
 
 **Response 200:**
+
 ```json
 {
   "data": {
@@ -640,6 +666,7 @@ Request generation of a new coaching report.
 **Auth required.** **Subscription check:** Free tier = 1/week limit.
 
 **Request:**
+
 ```json
 {
   "riotAccountId": "uuid",
@@ -652,6 +679,7 @@ Request generation of a new coaching report.
 **`reportType` options:** `session_review`, `champion_focus`, `climb_roadmap`
 
 **Response 202:**
+
 ```json
 {
   "data": {
@@ -669,6 +697,7 @@ Request generation of a new coaching report.
 Poll report generation status (for client-side polling).
 
 **Response 200:**
+
 ```json
 {
   "data": {
@@ -686,6 +715,7 @@ Poll report generation status (for client-side polling).
 Submit user rating for a report.
 
 **Request:**
+
 ```json
 {
   "rating": 4,
@@ -710,6 +740,7 @@ List active training plans for user.
 Generate a new AI training plan.
 
 **Request:**
+
 ```json
 {
   "riotAccountId": "uuid",
@@ -738,6 +769,7 @@ Mark a training task as completed.
 Get current user's subscription status.
 
 **Response 200:**
+
 ```json
 {
   "data": {
@@ -813,13 +845,14 @@ Mark all notifications as read.
 Platform-level statistics. Admin role required.
 
 **Response 200:**
+
 ```json
 {
   "data": {
     "totalUsers": 5200,
     "activeSubscriptions": 312,
     "reportsGeneratedToday": 847,
-    "aiCostTodayUsd": 23.40,
+    "aiCostTodayUsd": 23.4,
     "avgReportGenerationMs": 42000
   }
 }
@@ -842,12 +875,13 @@ Generate counter pick recommendations for a champion in a specific role.
 
 **Query params:**
 
-| Param | Type | Required | Notes |
-|---|---|---|---|
-| `champion` | string | ✓ | Case-insensitive champion name |
-| `role` | enum | ✓ | `TOP \| JUNGLE \| MIDDLE \| BOTTOM \| UTILITY` |
+| Param      | Type   | Required | Notes                                          |
+| ---------- | ------ | -------- | ---------------------------------------------- |
+| `champion` | string | ✓        | Case-insensitive champion name                 |
+| `role`     | enum   | ✓        | `TOP \| JUNGLE \| MIDDLE \| BOTTOM \| UTILITY` |
 
 **Response 200:**
+
 ```json
 {
   "data": {
@@ -876,6 +910,7 @@ Analyze a lane matchup between two champions.
 **Rate limit:** 15 req/min per IP; free users: 5 analyses/day
 
 **Request body:**
+
 ```json
 {
   "champion": "Yasuo",
@@ -885,6 +920,7 @@ Analyze a lane matchup between two champions.
 ```
 
 **Response 200:**
+
 ```json
 {
   "data": {
@@ -916,12 +952,13 @@ Generate an OTP (One-Trick Pony) analysis for a champion in a role.
 
 **Query params:**
 
-| Param | Type | Required |
-|---|---|---|
-| `champion` | string | ✓ |
-| `role` | enum | ✓ |
+| Param      | Type   | Required |
+| ---------- | ------ | -------- |
+| `champion` | string | ✓        |
+| `role`     | enum   | ✓        |
 
 **Response 200:**
+
 ```json
 {
   "data": {
@@ -956,14 +993,28 @@ Analyze a full 10-champion draft for both teams.
 **Rate limit:** 10 req/min per IP; free users: 3 analyses/day
 
 **Request body:**
+
 ```json
 {
-  "blueTeam": { "TOP": "Garen", "JUNGLE": "LeeSin", "MIDDLE": "Yasuo", "BOTTOM": "Jinx", "UTILITY": "Thresh" },
-  "redTeam":  { "TOP": "Darius", "JUNGLE": "Vi",     "MIDDLE": "Zed",   "BOTTOM": "Caitlyn", "UTILITY": "Lulu" }
+  "blueTeam": {
+    "TOP": "Garen",
+    "JUNGLE": "LeeSin",
+    "MIDDLE": "Yasuo",
+    "BOTTOM": "Jinx",
+    "UTILITY": "Thresh"
+  },
+  "redTeam": {
+    "TOP": "Darius",
+    "JUNGLE": "Vi",
+    "MIDDLE": "Zed",
+    "BOTTOM": "Caitlyn",
+    "UTILITY": "Lulu"
+  }
 }
 ```
 
 **Response 200:**
+
 ```json
 {
   "data": {
@@ -998,11 +1049,12 @@ AI analysis of a specific participant's build in a match.
 
 **Query params:**
 
-| Param | Type | Required |
-|---|---|---|
-| `puuid` | string | ✓ | Participant's Riot PUUID |
+| Param   | Type   | Required |
+| ------- | ------ | -------- | ------------------------ |
+| `puuid` | string | ✓        | Participant's Riot PUUID |
 
 **Response 200:**
+
 ```json
 {
   "data": {
@@ -1040,6 +1092,7 @@ account, so a shared linked account still resolves (TASK-228).
 **Path params:** `matchId` — the internal match uuid, not the Riot match id.
 
 **Response 200:**
+
 ```json
 {
   "data": {
@@ -1055,9 +1108,7 @@ account, so a shared linked account still resolves (TASK-228).
       { "minute": 0, "goldDiff": 0, "xpDiff": 0, "csDiff": 0 },
       { "minute": 14, "goldDiff": -420, "xpDiff": -260, "csDiff": -11 }
     ],
-    "markers": [
-      { "minute": 8, "kind": "CHAMPION_KILL", "side": "player", "label": "You died" }
-    ]
+    "markers": [{ "minute": 8, "kind": "CHAMPION_KILL", "side": "player", "label": "You died" }]
   },
   "meta": { "requestId": "uuid" }
 }
@@ -1096,18 +1147,29 @@ puuid across every linked account (TASK-228).
 **Path params:** `matchId` — the internal match uuid, not the Riot match id.
 
 **Response 200 (timeline captured):**
+
 ```json
 {
   "data": {
     "hasTimeline": true,
     "participants": [
-      { "puuid": "…", "championName": "Ahri", "teamId": 100, "position": "MIDDLE", "gameName": "Me", "tagLine": "NA1" }
+      {
+        "puuid": "…",
+        "championName": "Ahri",
+        "teamId": 100,
+        "position": "MIDDLE",
+        "gameName": "Me",
+        "tagLine": "NA1"
+      }
     ],
     "frames": [
       {
         "minute": 14,
         "players": [{ "puuid": "…", "totalGold": 6200, "level": 10, "cs": 112 }],
-        "teamTotals": [{ "teamId": 100, "totalGold": 29800 }, { "teamId": 200, "totalGold": 27100 }],
+        "teamTotals": [
+          { "teamId": 100, "totalGold": 29800 },
+          { "teamId": 200, "totalGold": 27100 }
+        ],
         "teamGoldDiff": 2700
       }
     ],
@@ -1116,9 +1178,21 @@ puuid across every linked account (TASK-228).
         "kind": "CHAMPION_KILL",
         "timestampMs": 515000,
         "minute": 8,
-        "actor": { "puuid": "…", "championName": "Ahri", "teamId": 100, "position": "MIDDLE", "gameName": "Me", "tagLine": "NA1" },
+        "actor": {
+          "puuid": "…",
+          "championName": "Ahri",
+          "teamId": 100,
+          "position": "MIDDLE",
+          "gameName": "Me",
+          "tagLine": "NA1"
+        },
         "position": { "x": 4200, "y": 9100 },
-        "payload": { "killerId": 7, "killerPuuid": "…", "assistingParticipantIds": [6], "bounty": 300 }
+        "payload": {
+          "killerId": 7,
+          "killerPuuid": "…",
+          "assistingParticipantIds": [6],
+          "bounty": 300
+        }
       }
     ]
   },
@@ -1127,6 +1201,7 @@ puuid across every linked account (TASK-228).
 ```
 
 **Response 200 (no timeline captured):**
+
 ```json
 { "data": { "hasTimeline": false }, "meta": { "requestId": "uuid" } }
 ```
@@ -1164,20 +1239,20 @@ for an hour.
 
 ## 12. Error Codes Reference
 
-| Code | HTTP | Meaning |
-|---|---|---|
-| `UNAUTHORIZED` | 401 | No valid session |
-| `FORBIDDEN` | 403 | Insufficient permissions or subscription |
-| `RESOURCE_NOT_FOUND` | 404 | Entity does not exist |
-| `VALIDATION_ERROR` | 422 | Input validation failed |
-| `RIOT_ACCOUNT_NOT_FOUND` | 404 | Riot ID does not exist |
-| `RIOT_API_UNAVAILABLE` | 503 | Riot API is down |
-| `RIOT_RATE_LIMIT` | 429 | Riot API rate limit hit |
-| `ACCOUNT_LIMIT_REACHED` | 403 | Free tier max accounts reached |
-| `REPORT_LIMIT_REACHED` | 403 | Weekly report limit reached |
-| `REPORT_IN_PROGRESS` | 409 | Report already generating for this account |
-| `AI_PROVIDER_ERROR` | 503 | AI provider unavailable |
-| `INSUFFICIENT_MATCH_DATA` | 422 | Not enough matches to analyze |
+| Code                      | HTTP | Meaning                                    |
+| ------------------------- | ---- | ------------------------------------------ |
+| `UNAUTHORIZED`            | 401  | No valid session                           |
+| `FORBIDDEN`               | 403  | Insufficient permissions or subscription   |
+| `RESOURCE_NOT_FOUND`      | 404  | Entity does not exist                      |
+| `VALIDATION_ERROR`        | 422  | Input validation failed                    |
+| `RIOT_ACCOUNT_NOT_FOUND`  | 404  | Riot ID does not exist                     |
+| `RIOT_API_UNAVAILABLE`    | 503  | Riot API is down                           |
+| `RIOT_RATE_LIMIT`         | 429  | Riot API rate limit hit                    |
+| `ACCOUNT_LIMIT_REACHED`   | 403  | Free tier max accounts reached             |
+| `REPORT_LIMIT_REACHED`    | 403  | Weekly report limit reached                |
+| `REPORT_IN_PROGRESS`      | 409  | Report already generating for this account |
+| `AI_PROVIDER_ERROR`       | 503  | AI provider unavailable                    |
+| `INSUFFICIENT_MATCH_DATA` | 422  | Not enough matches to analyze              |
 
 ---
 
@@ -1186,27 +1261,35 @@ for an hour.
 All endpoints require authentication. Team features require `team` subscription plan.
 
 ### `GET /api/teams`
+
 Returns teams the authenticated user is a member of.
 
 ### `POST /api/teams`
+
 Creates a new team. Body: `{ name: string, logoUrl?: string }`. Returns `201`.
 
 ### `GET /api/teams/:teamId`
+
 Returns team details and member list. Requires team membership.
 
 ### `DELETE /api/teams/:teamId`
+
 Deletes a team. Requires OWNER role.
 
 ### `POST /api/teams/:teamId/members/invite`
+
 Sends an invite email to a new member. Body: `{ email: string, role: "COACH" | "PLAYER" }`.
 
 ### `DELETE /api/teams/:teamId/members/:userId`
+
 Removes a member. Requires OWNER role.
 
 ### `GET /api/teams/:teamId/dashboard`
+
 Returns team dashboard with member summaries (last match, rank, 7-day WR, last report). Requires COACH or OWNER role.
 
 ### `POST /api/teams/invites/:token/accept`
+
 Accepts a team invite. The authenticated user joins the team with the role encoded in the invite.
 
 **Error codes added:**
@@ -1226,6 +1309,7 @@ are in that data too — they are excluded by comparing team ids per match. Play
 games are dropped as autofill randoms. Requires `riotAccountId` (must be owned by the caller).
 
 **Response 200:**
+
 ```json
 {
   "data": [
@@ -1254,9 +1338,11 @@ A partner must appear in the caller's own match history — we hold no stats for
 arbitrary name is rejected rather than producing an empty chart.
 
 **POST body:**
+
 ```json
 { "riotAccountId": "uuid", "puuid": "lIfyZTv0..." }
 ```
+
 ```json
 { "riotAccountId": "uuid", "riotId": "DuoPartner#TR1" }
 ```
@@ -1272,18 +1358,35 @@ over the requested window for the caller, and — when a duo is set — the duo'
 games they shared. Query: `riotAccountId` (owned by the caller), optional `days` (default 30).
 
 **Response 200:**
+
 ```json
 {
   "data": {
     "days": 30,
     "self": [
-      { "date": "2026-07-19", "games": 4, "wins": 3, "winRate": 75, "kda": 3.4, "csPerMin": 7.1, "visionScore": 24 }
+      {
+        "date": "2026-07-19",
+        "games": 4,
+        "wins": 3,
+        "winRate": 75,
+        "kda": 3.4,
+        "csPerMin": 7.1,
+        "visionScore": 24
+      }
     ],
     "duo": {
       "gameName": "DuoPartner",
       "tagLine": "TR1",
       "points": [
-        { "date": "2026-07-19", "games": 3, "wins": 3, "winRate": 100, "kda": 4.1, "csPerMin": 6.2, "visionScore": 31 }
+        {
+          "date": "2026-07-19",
+          "games": 3,
+          "wins": 3,
+          "winRate": 100,
+          "kda": 4.1,
+          "csPerMin": 6.2,
+          "visionScore": 31
+        }
       ]
     }
   }
@@ -1306,10 +1409,11 @@ no positions. Smite decides the jungler; everyone else takes their most-played l
 assigned by how concentrated the champion is in it. The UI presents the result as a starting point
 the player can correct.
 
-This is the *live* game, not champion select — spectator only sees a match once it has started
+This is the _live_ game, not champion select — spectator only sees a match once it has started
 (see ADR-005).
 
 **Response 200 (in a game):**
+
 ```json
 {
   "data": {
@@ -1318,8 +1422,20 @@ This is the *live* game, not champion select — spectator only sees a match onc
     "gameLength": 412,
     "yourSide": "blue",
     "draft": {
-      "blue": { "TOP": "Garen", "JUNGLE": "LeeSin", "MIDDLE": "Ahri", "BOTTOM": "Jinx", "UTILITY": "Thresh" },
-      "red": { "TOP": "Darius", "JUNGLE": "Vi", "MIDDLE": "Sylas", "BOTTOM": "Caitlyn", "UTILITY": "Lulu" }
+      "blue": {
+        "TOP": "Garen",
+        "JUNGLE": "LeeSin",
+        "MIDDLE": "Ahri",
+        "BOTTOM": "Jinx",
+        "UTILITY": "Thresh"
+      },
+      "red": {
+        "TOP": "Darius",
+        "JUNGLE": "Vi",
+        "MIDDLE": "Sylas",
+        "BOTTOM": "Caitlyn",
+        "UTILITY": "Lulu"
+      }
     },
     "yourMatchup": { "champion": "Ahri", "opponent": "Sylas", "position": "MIDDLE" }
   }
@@ -1332,6 +1448,7 @@ depends on the lane inference more than `draft` does — a wrong lane there is o
 wrong row, here it names the wrong opponent — so consumers must let the player correct it.
 
 **Response 200 (not in a game):**
+
 ```json
 { "data": { "inGame": false } }
 ```
@@ -1369,6 +1486,7 @@ Creates a series and all its games. No auth; a signed-in creator is recorded so
 the series can be listed on their profile later, but a session is never required.
 
 **Body** (every field optional, defaults shown):
+
 ```json
 {
   "team1Name": "Team 1",
@@ -1379,10 +1497,12 @@ the series can be listed on their profile later, but a session is never required
   "disabledChampions": []
 }
 ```
+
 `mode` is `NORMAL` | `FEARLESS` | `TEAM_FEARLESS`. `gameCount` is 1–5.
 `timerSeconds` is `0` (untimed) or 15–120.
 
 **Response 201:**
+
 ```json
 { "data": { "code": "gk4mp2rn", "blueToken": "…32 hex…", "redToken": "…32 hex…" } }
 ```
@@ -1396,6 +1516,7 @@ spectator.
 lapsed turn resolve with neither drafter at their keyboard (ADR-016 §6).
 
 **Response 200:**
+
 ```json
 {
   "data": {
@@ -1451,7 +1572,14 @@ a patch. Rate limited `30 / min` per IP.
   "data": {
     "patch": "16.16",
     "champions": [
-      { "key": "Ahri", "name": "Ahri", "lanes": ["MIDDLE"], "winRate": 51.2, "pickRate": 8.4, "banRate": 3.1 }
+      {
+        "key": "Ahri",
+        "name": "Ahri",
+        "lanes": ["MIDDLE"],
+        "winRate": 51.2,
+        "pickRate": 8.4,
+        "banRate": 3.1
+      }
     ]
   }
 }
@@ -1525,11 +1653,11 @@ Autocomplete over the player index (`player_index`, see
 [ADR-017](./adr/ADR-017-player-search-index.md)). **No auth** — a visitor must be able to find
 a player before they have an account, which is the point of the whole flow.
 
-| Param | Required | Notes |
-|---|---|---|
-| `q` | yes | `Name` or `Name#TAG`, 1–64 chars. Fewer than 2 name characters returns an empty list rather than the whole index. |
-| `region` | no | Platform id (`euw1`, `tr1`, …). Omit to search every platform. |
-| `limit` | no | 1–20, default 8. |
+| Param    | Required | Notes                                                                                                             |
+| -------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
+| `q`      | yes      | `Name` or `Name#TAG`, 1–64 chars. Fewer than 2 name characters returns an empty list rather than the whole index. |
+| `region` | no       | Platform id (`euw1`, `tr1`, …). Omit to search every platform.                                                    |
+| `limit`  | no       | 1–20, default 8.                                                                                                  |
 
 ```json
 {
@@ -1549,6 +1677,7 @@ a player before they have an account, which is the point of the whole flow.
 ```
 
 **Notes:**
+
 - Rate limit is **150/min per IP**, far above the rest of the public surface: it answers from our
   own database on keystrokes, with no Riot call behind it. Throttling it like
   `/api/public/preview` would make autocomplete stop mid-word.
@@ -1570,12 +1699,12 @@ a login-free page and its "load more" has to work for the same anonymous visitor
 The profile's opening ten rows are **server-rendered** by `buildPublicProfile`, so the page is
 complete for a crawler with no JavaScript; this endpoint is only ever reached by a click.
 
-| Param | Required | Notes |
-|---|---|---|
-| `gameName` | yes | Riot ID name. |
-| `tagLine` | yes | Riot ID tag. |
-| `region` | yes | Platform id (`euw1`, `tr1`, …). Rejected with `400` unless in `VALID_REGIONS`. |
-| `start` | no | Offset into the account's history, `0`–`200`, default `0`. |
+| Param      | Required | Notes                                                                          |
+| ---------- | -------- | ------------------------------------------------------------------------------ |
+| `gameName` | yes      | Riot ID name.                                                                  |
+| `tagLine`  | yes      | Riot ID tag.                                                                   |
+| `region`   | yes      | Platform id (`euw1`, `tr1`, …). Rejected with `400` unless in `VALID_REGIONS`. |
+| `start`    | no       | Offset into the account's history, `0`–`200`, default `0`.                     |
 
 ```json
 {
@@ -1588,12 +1717,13 @@ complete for a crawler with no JavaScript; this endpoint is only ever reached by
 ```
 
 **Notes:**
+
 - Rate limit is **60/min per IP**, matching `/api/public/profile/[slug]`. Each page is cached for
   a day in front of Riot, so a repeat costs nothing and the limit only has to stop someone walking
   the ladder through this endpoint.
 - `start` is capped at **200** so a bot cannot page through an account's whole two-year history.
 - `nextStart` is computed server-side and is `null` once Riot stops returning a full page. It is
-  deliberately not left to the caller: a client adding up the rows it *kept* would drift backwards
+  deliberately not left to the caller: a client adding up the rows it _kept_ would drift backwards
   over any match that failed to fetch and serve the same games twice.
 - `scoreboards` carries all ten players per match, shaped as `ParticipantDetail` so the signed-in
   `MatchScoreboard` renders it unchanged. Ranks are always `null` — filling them would cost ten
@@ -1620,13 +1750,17 @@ pairings, per-game averages in each case, and the last five shared games.
     "partner": { "gameName": "C0marKopter", "tagLine": "TR1", "games": 73, "winRate": 51 },
     "hasEnoughData": true,
     "together": { "games": 73, "wins": 37, "winRate": 51 },
-    "apart":    { "games": 32, "wins": 22, "winRate": 69 },
+    "apart": { "games": 32, "wins": 22, "winRate": 69 },
     "synergyDelta": -18,
     "streak": -2,
-    "championPairs": [{ "ownChampion": "Alistar", "partnerChampion": "Caitlyn", "games": 9, "winRate": 78 }],
-    "rolePairs":     [{ "ownPosition": "UTILITY", "partnerPosition": "BOTTOM", "games": 25, "winRate": 52 }],
+    "championPairs": [
+      { "ownChampion": "Alistar", "partnerChampion": "Caitlyn", "games": 9, "winRate": 78 }
+    ],
+    "rolePairs": [
+      { "ownPosition": "UTILITY", "partnerPosition": "BOTTOM", "games": 25, "winRate": 52 }
+    ],
     "averagesTogether": { "kda": 3.63, "deaths": 5.8, "visionScore": 24.3, "csPerMinute": 4.3 },
-    "averagesApart":    { "kda": 5.88, "deaths": 3.4, "visionScore": 18.4, "csPerMinute": 7.0 },
+    "averagesApart": { "kda": 5.88, "deaths": 3.4, "visionScore": 18.4, "csPerMinute": 7.0 },
     "recentShared": []
   }
 }
@@ -1648,10 +1782,16 @@ This week's three duo quests with progress. Rate limit 60/hour.
     "weekStart": "2026-08-10T00:00:00.000Z",
     "weekEnd": "2026-08-17T00:00:00.000Z",
     "quests": [
-      { "key": "wins_together", "label": "Carry each other",
+      {
+        "key": "wins_together",
+        "label": "Carry each other",
         "detail": "Win 3 games together this week",
-        "progress": 3, "target": 3, "completed": true, "xpReward": 80,
-        "periodEnd": "2026-08-17T00:00:00.000Z" }
+        "progress": 3,
+        "target": 3,
+        "completed": true,
+        "xpReward": 80,
+        "periodEnd": "2026-08-17T00:00:00.000Z"
+      }
     ],
     "xpAwarded": 80
   }
@@ -1699,9 +1839,9 @@ The reader's followed teams, most recently followed first. Requires a session.
 
 ### `POST /api/esports/follows`
 
-| Field | Required | Notes |
-|---|---|---|
-| `slug` | yes | 1–120 chars. The team's slug — what the page the button sits on already has in its URL. |
+| Field  | Required | Notes                                                                                   |
+| ------ | -------- | --------------------------------------------------------------------------------------- |
+| `slug` | yes      | 1–120 chars. The team's slug — what the page the button sits on already has in its URL. |
 
 Answers `{ "data": { "follow": … } }` with the same entry shape as above.
 
@@ -1776,7 +1916,7 @@ Move the profile into review.
 - `404` when there is no profile to submit.
 - `409` when one is already `PENDING` or `APPROVED`.
 - `403` when the profile is `SUSPENDED` — reapplying is not the way back.
-- `422` when the profile is incomplete. The message is the *one* thing still
+- `422` when the profile is incomplete. The message is the _one_ thing still
   missing, phrased for the applicant ("Write at least 120 characters about how
   you coach."), because a list of six problems is one nobody reads.
 
@@ -1812,11 +1952,11 @@ account's email and its `rankProofs`, which are the substance of the review: a
 
 Admin only. One decision, as a discriminated union:
 
-| `decision` | From | Note |
-|---|---|---|
-| `approve` | `PENDING` | — |
-| `reject` | `PENDING` | required, 10–1000 chars |
-| `suspend` | `APPROVED` | required, 10–1000 chars |
+| `decision`  | From        | Note                    |
+| ----------- | ----------- | ----------------------- |
+| `approve`   | `PENDING`   | —                       |
+| `reject`    | `PENDING`   | required, 10–1000 chars |
+| `suspend`   | `APPROVED`  | required, 10–1000 chars |
 | `reinstate` | `SUSPENDED` | required, 10–1000 chars |
 
 ```json
@@ -1845,13 +1985,22 @@ pressing anything would change something.
   "data": {
     "badge": {
       "method": "PLATFORM_CHECKED",
-      "tier": "GOLD", "division": "II", "leaguePoints": 71,
-      "peakTier": "GOLD", "peakDivision": "II",
+      "tier": "GOLD",
+      "division": "II",
+      "leaguePoints": 71,
+      "peakTier": "GOLD",
+      "peakDivision": "II",
       "checkedAt": "2026-08-17T19:22:13.684Z",
       "stale": false
     },
     "accounts": [
-      { "id": "…", "gameName": "kaanproak0", "tagLine": "TR1", "region": "tr1", "isBadgeSource": true }
+      {
+        "id": "…",
+        "gameName": "kaanproak0",
+        "tagLine": "TR1",
+        "region": "tr1",
+        "isBadgeSource": true
+      }
     ]
   }
 }
@@ -1889,8 +2038,22 @@ shows the stronger wording for the weaker proof.
 Everything the caller sells, **active or not** — this is the management view.
 
 ```json
-{ "data": { "listings": [ { "id": "…", "kind": "VOD_REVIEW", "title": "…", "durationMinutes": 60,
-  "priceCents": 3000, "currency": "USD", "deliveryHours": 48, "isActive": true } ] } }
+{
+  "data": {
+    "listings": [
+      {
+        "id": "…",
+        "kind": "VOD_REVIEW",
+        "title": "…",
+        "durationMinutes": 60,
+        "priceCents": 3000,
+        "currency": "USD",
+        "deliveryHours": 48,
+        "isActive": true
+      }
+    ]
+  }
+}
 ```
 
 Returns an empty list, not a `404`, for a user with no coach profile.
@@ -1937,9 +2100,22 @@ The caller's weekly hours, their date exceptions, and the IANA zone all of it
 is written in.
 
 ```json
-{ "data": { "timeZone": "Europe/Istanbul",
-  "rules": [ { "id": "…", "days": [1,2,3,4,5], "startMinute": 1080, "endMinute": 1260 } ],
-  "exceptions": [ { "id": "…", "date": "2026-09-03", "isBlocked": true, "startMinute": null, "endMinute": null, "note": null } ] } }
+{
+  "data": {
+    "timeZone": "Europe/Istanbul",
+    "rules": [{ "id": "…", "days": [1, 2, 3, 4, 5], "startMinute": 1080, "endMinute": 1260 }],
+    "exceptions": [
+      {
+        "id": "…",
+        "date": "2026-09-03",
+        "isBlocked": true,
+        "startMinute": null,
+        "endMinute": null,
+        "note": null
+      }
+    ]
+  }
+}
 ```
 
 Minutes since local midnight, **not** instants. A weekly rule is wall-clock
@@ -1981,8 +2157,13 @@ up, so this answers without a session. Rate limited at 60/min per IP — it is a
 computed answer over a month of calendar, not a table lookup.
 
 ```json
-{ "data": { "slots": [ { "start": "2026-08-18T15:00:00.000Z", "end": "2026-08-18T16:00:00.000Z" } ],
-  "timeZone": "Europe/Istanbul", "durationMinutes": 60 } }
+{
+  "data": {
+    "slots": [{ "start": "2026-08-18T15:00:00.000Z", "end": "2026-08-18T16:00:00.000Z" }],
+    "timeZone": "Europe/Istanbul",
+    "durationMinutes": 60
+  }
+}
 ```
 
 - **The listing decides the length.** A request cannot ask for a 15-minute slot
@@ -1997,6 +2178,7 @@ computed answer over a month of calendar, not a table lookup.
   serving a slot that has just gone is how two students end up holding the same
   hour.
 - `404` for an unknown coach or listing, `422` without a listing id.
+
 ---
 
 ## Daily quiz (LaneIQ Daily)
@@ -2185,15 +2367,15 @@ One move: `accept` (+ optional `meetingUrl`), `decline`, `cancel`, `deliver`,
 Who may do what is established **from the row**, never from the request, and
 the move itself is checked against the state machine in `transitions.ts`.
 
-| Refusal | Meaning |
-|---|---|
-| `404` | No such booking — **and** what a stranger probing ids gets, so one cannot be told from the other |
-| `403` | Not your side of this booking |
-| `409 too late` | A student cancelling inside the window they agreed to |
-| `409 stale` | It already moved; the update is guarded on the status that was read, so two requests racing to accept cannot both win |
+| Refusal        | Meaning                                                                                                               |
+| -------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `404`          | No such booking — **and** what a stranger probing ids gets, so one cannot be told from the other                      |
+| `403`          | Not your side of this booking                                                                                         |
+| `409 too late` | A student cancelling inside the window they agreed to                                                                 |
+| `409 stale`    | It already moved; the update is guarded on the status that was read, so two requests racing to accept cannot both win |
 
 A coach may always cancel. The session cannot happen without them and refusing
-just produces a no-show instead — it is recorded as *their* cancellation, which
+just produces a no-show instead — it is recorded as _their_ cancellation, which
 is what an automatic refund keys off.
 
 `deliver` settles nothing: it starts the window the student can challenge it in
@@ -2209,16 +2391,24 @@ the money and the booking can never disagree about what happened.
 `GET /api/bookings/[bookingId]` carries the ledger as `payment`:
 
 ```json
-{ "provider": "manual", "status": "HELD", "amountCents": 4500,
-  "platformFeeCents": 900, "coachAmountCents": 3600, "currency": "USD",
-  "capturedAt": "…", "releasedAt": null, "refundedAt": null }
+{
+  "provider": "manual",
+  "status": "HELD",
+  "amountCents": 4500,
+  "platformFeeCents": 900,
+  "coachAmountCents": 3600,
+  "currency": "USD",
+  "capturedAt": "…",
+  "releasedAt": null,
+  "refundedAt": null
+}
 ```
 
-| Booking reaches | Money becomes |
-|---|---|
-| `PENDING_COACH`, `CONFIRMED`, `DELIVERED`, `DISPUTED` | stays `HELD` |
-| `COMPLETED` | `RELEASED` |
-| `DECLINED`, `EXPIRED`, either cancellation, `REFUNDED` | `REFUNDED` |
+| Booking reaches                                        | Money becomes |
+| ------------------------------------------------------ | ------------- |
+| `PENDING_COACH`, `CONFIRMED`, `DELIVERED`, `DISPUTED`  | stays `HELD`  |
+| `COMPLETED`                                            | `RELEASED`    |
+| `DECLINED`, `EXPIRED`, either cancellation, `REFUNDED` | `REFUNDED`    |
 
 **No money moves.** The only driver is `manual`, which advances these states
 and settles nothing, and the session page says so in as many words rather than
@@ -2351,7 +2541,7 @@ sit at 4.9.
 **Verified purchase by construction**, not by a check somebody could forget:
 `409` unless the booking is `COMPLETED`, and one review per side per booking.
 
-Only *student* reviews move a coach's rating — a coach rating their students has
+Only _student_ reviews move a coach's rating — a coach rating their students has
 nothing to do with how good the coaching was. Two aggregates are recomputed on
 reveal: a Bayesian average for display (withheld below three reviews) and a
 Wilson lower bound for search ordering, so a 5.0 from two people does not
@@ -2362,11 +2552,11 @@ outrank a 4.8 from ninety.
 No endpoint — an Inngest cron every five minutes (`marketplace-sweeps`) runs
 three things the marketplace has promised:
 
-| Sweep | Closes |
-|---|---|
-| `expireUnanswered` | a request sitting on a student's money because nobody answered it |
-| `completeUnchallenged` | a delivery that never settles because nobody clicked |
-| `revealExpired` | a review hidden for ever because the other side never wrote one |
+| Sweep                  | Closes                                                            |
+| ---------------------- | ----------------------------------------------------------------- |
+| `expireUnanswered`     | a request sitting on a student's money because nobody answered it |
+| `completeUnchallenged` | a delivery that never settles because nobody clicked              |
+| `revealExpired`        | a review hidden for ever because the other side never wrote one   |
 
 Five minutes rather than hourly because all three are deadlines somebody is
 waiting on — an hourly sweep means a coach's money sitting unreleased for up to
@@ -2443,12 +2633,12 @@ until the session starts.
 
 ### Abuse limits (M19)
 
-| Endpoint | Limit | Why |
-|---|---|---|
-| `POST /api/bookings` | 20/hour per **user** | a session is already required, so what is worth bounding is one account's appetite |
-| `POST /api/threads/[id]` | 60/5min per user | generous for a real conversation, tight enough that a compromised account cannot use the inbox as a delivery mechanism |
-| `POST /api/threads` | 30/hour per user | thread creation |
-| `GET /api/coaches/[slug]/slots` | 60/min per IP | public, and a computed answer over a month of calendar |
+| Endpoint                        | Limit                | Why                                                                                                                    |
+| ------------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `POST /api/bookings`            | 20/hour per **user** | a session is already required, so what is worth bounding is one account's appetite                                     |
+| `POST /api/threads/[id]`        | 60/5min per user     | generous for a real conversation, tight enough that a compromised account cannot use the inbox as a delivery mechanism |
+| `POST /api/threads`             | 30/hour per user     | thread creation                                                                                                        |
+| `GET /api/coaches/[slug]/slots` | 60/min per IP        | public, and a computed answer over a month of calendar                                                                 |
 
 **The slot-squatting defence is a domain rule, not a rate limit.** A pending
 request blocks a slot for up to 48 hours, so one account could quietly take a
@@ -2461,6 +2651,7 @@ still a week of somebody's calendar.
 coverage in `vitest.config.ts`, alongside the existing security-critical files.
 Those four decide who gets paid, what may move where, what a rating means and
 what leaves the platform.
+
 - **A passing submit also opens the field assignment** and returns it as `assignment`. It is
   `null` when there is nothing to measure against — no linked account, or fewer than 3 ranked
   games in the player's main role. The lesson still completes; see `docs/ACADEMY.md`.
@@ -2485,7 +2676,7 @@ Two sets of endpoints with two different ideas of who is calling.
 like everything else. `/api/overlay/*` is **the kit being consumed** — by an OBS
 Browser Source and by the streamer's chat bot, neither of which can carry a
 cookie. Those authenticate with the overlay key in the path and nothing else:
-the key *is* the capability, the same way `DraftSeries.blueToken` is.
+the key _is_ the capability, the same way `DraftSeries.blueToken` is.
 
 Unknown key, disabled kit and no-linked-Riot-account all answer identically, so
 a probe cannot learn that a key exists.
@@ -2546,7 +2737,7 @@ by default (`?refresh=` on the page, clamped to 5…300s).
 - `Access-Control-Allow-Origin: *`, deliberately: this is public data behind a
   capability key, and a creator may want it in their own scene HTML. `OPTIONS`
   is answered for the preflight.
-- Rate limited 120/min keyed on **the key *and* the caller IP**. Keyed on the key
+- Rate limited 120/min keyed on **the key _and_ the caller IP**. Keyed on the key
   alone, anyone holding it could freeze the creator's own scene; on the IP alone,
   two co-streamers on one connection would eat each other's budget.
 - `404 RESOURCE_NOT_FOUND` for unknown, disabled or unlinked.
@@ -2584,21 +2775,21 @@ finished, and the quest streak. Auth required.
 
 ```jsonc
 {
-  "dateKey": "2026-08-18",          // UTC day the quest belongs to
+  "dateKey": "2026-08-18", // UTC day the quest belongs to
   "objectives": [
     {
-      "kind": "in_game",            // the day's generated daily challenge
+      "kind": "in_game", // the day's generated daily challenge
       "id": "cs_per_min",
       "title": "Hit 6.8 CS/min in your next 3 games",
       "hint": "Ranked Solo/Duo · 3 games today",
       "href": "/improvement",
       "ctaLabel": "Drill this",
       "xpReward": 50,
-      "progress": 0.66,             // 0..1
-      "completed": false
+      "progress": 0.66, // 0..1
+      "completed": false,
     },
     {
-      "kind": "on_site",            // finishable without queuing
+      "kind": "on_site", // finishable without queuing
       "id": "quiz",
       "title": "Solve today's champion puzzle",
       "hint": "One puzzle, one guess ladder. Keeps your quiz streak alive too.",
@@ -2606,13 +2797,13 @@ finished, and the quest streak. Auth required.
       "ctaLabel": "Play the daily",
       "xpReward": 20,
       "progress": 0,
-      "completed": false
-    }
+      "completed": false,
+    },
   ],
   "completed": false,
   "streak": 5,
   "xpReward": 70,
-  "expiresAt": "2026-08-19T00:00:00.000Z"
+  "expiresAt": "2026-08-19T00:00:00.000Z",
 }
 ```
 
@@ -2640,40 +2831,44 @@ to the caller (`assertOwnsRiotAccount`).
     "gameName": "kaanproak0",
     "tagLine": "TR1",
     "summonerLevel": 148,
-    "firstTrackedAt": "2026-07-11T14:22:00.000Z",  // where the record starts, not the player
+    "firstTrackedAt": "2026-07-11T14:22:00.000Z", // where the record starts, not the player
     "lastTrackedAt": "2026-08-09T21:03:00.000Z",
     "totalGames": 90,
     "totalHours": 42,
     "currentRank": "Silver II",
     "peakRank": "Silver I",
-    "topMastery": [                                 // all-time, the only pre-window figure
-      { "championId": 157, "championName": "Yasuo", "level": 7, "points": 482310 }
-    ]
+    "topMastery": [
+      // all-time, the only pre-window figure
+      { "championId": 157, "championName": "Yasuo", "level": 7, "points": 482310 },
+    ],
   },
   "bands": [
     {
       "key": "2026-08",
       "label": "August 2026",
-      "games": 22, "wins": 14, "winRate": 64,
-      "lpDelta": 21, "rankAtClose": "Silver II",
+      "games": 22,
+      "wins": 14,
+      "winRate": 64,
+      "lpDelta": 21,
+      "rankAtClose": "Silver II",
       "events": [
         {
-          "id": "record:cs:TR1_123",               // stable, derived from the fact
-          "kind": "record",                        // rank_change|peak|champion_era|record|
-                                                   // achievement|habit|academy|season|joined
-          "group": "records",                      // rank|champions|records|learning
+          "id": "record:cs:TR1_123", // stable, derived from the fact
+          "kind": "record", // rank_change|peak|champion_era|record|
+          // achievement|habit|academy|season|joined
+          "group": "records", // rank|champions|records|learning
           "at": "2026-08-07T19:11:34.787Z",
           "title": "Best farming game",
           "detail": "10 CS/min on Veigar",
-          "tone": "good",                          // good|bad|neutral
-          "weight": 70,                            // curation cuts from the bottom
-          "href": "/match/TR1_123"
-        }
-      ]
-    }
+          "tone": "good", // good|bad|neutral
+          "weight": 70, // curation cuts from the bottom
+          "href": "/match/TR1_123",
+        },
+      ],
+    },
   ],
   "lpSeries": [{ "at": "…", "value": 1240, "label": "Silver II" }],
-  "trimmed": 4                                     // events curation dropped
+  "trimmed": 4, // events curation dropped
 }
 ```
 
@@ -2713,26 +2908,27 @@ question nobody asked.
 
 **Query params:**
 
-| Param | Type | Notes |
-|---|---|---|
-| `riotAccountId` | uuid | **Required.** |
-| `cursor` | uuid | A `participantId` from a previous page's `nextCursor`. |
-| `limit` | int | 1–100, default 25. |
-| `champions` | string list | Comma-separated or repeated. Max 30. |
-| `positions` | `Position` list | `TOP`/`JUNGLE`/`MIDDLE`/`BOTTOM`/`UTILITY`. |
-| `queueTypes` | `QueueType` list | Values come from the Prisma enum, so LA-37's widening lands here for free. |
-| `result` | `win` \| `loss` | |
-| `from`, `to` | ISO datetime with offset | Inclusive at both ends. |
-| `patch` | string | Matched as a **prefix**: `15.14` catches every hotfix of it. |
-| `playerPuuid` | string | Another player who was in the game. |
-| `playerSide` | `with` \| `against` \| `either` | Default `either`. Meaningless without `playerPuuid`. |
-| `minKda`, `minCsPerMinute`, `minVisionScore`, `minKills`, `maxDeaths`, `minDuration`, `maxDuration` | number | Thresholds. Durations are in **minutes**; the column is seconds. |
+| Param                                                                                               | Type                            | Notes                                                                      |
+| --------------------------------------------------------------------------------------------------- | ------------------------------- | -------------------------------------------------------------------------- |
+| `riotAccountId`                                                                                     | uuid                            | **Required.**                                                              |
+| `cursor`                                                                                            | uuid                            | A `participantId` from a previous page's `nextCursor`.                     |
+| `limit`                                                                                             | int                             | 1–100, default 25.                                                         |
+| `champions`                                                                                         | string list                     | Comma-separated or repeated. Max 30.                                       |
+| `positions`                                                                                         | `Position` list                 | `TOP`/`JUNGLE`/`MIDDLE`/`BOTTOM`/`UTILITY`.                                |
+| `queueTypes`                                                                                        | `QueueType` list                | Values come from the Prisma enum, so LA-37's widening lands here for free. |
+| `result`                                                                                            | `win` \| `loss`                 |                                                                            |
+| `from`, `to`                                                                                        | ISO datetime with offset        | Inclusive at both ends.                                                    |
+| `patch`                                                                                             | string                          | Matched as a **prefix**: `15.14` catches every hotfix of it.               |
+| `playerPuuid`                                                                                       | string                          | Another player who was in the game.                                        |
+| `playerSide`                                                                                        | `with` \| `against` \| `either` | Default `either`. Meaningless without `playerPuuid`.                       |
+| `minKda`, `minCsPerMinute`, `minVisionScore`, `minKills`, `maxDeaths`, `minDuration`, `maxDuration` | number                          | Thresholds. Durations are in **minutes**; the column is seconds.           |
 
 The single source of truth for the facet names and their bounds is `archiveFilterSchema` in
 `src/domains/match/services/matchArchiveFilters.ts` — it is the same schema the query string, the
 saved-search JSON column and the POST body are all parsed through.
 
 **Response 200:**
+
 ```json
 {
   "data": {
@@ -2749,17 +2945,30 @@ saved-search JSON column and the POST body are all parsed through.
         "championId": 103,
         "position": "MIDDLE",
         "won": true,
-        "kills": 7, "deaths": 2, "assists": 14, "kda": 10.5,
-        "cs": 205, "csPerMinute": 5.7, "visionScore": 41,
-        "goldEarned": 13400, "damageDealt": 24100,
+        "kills": 7,
+        "deaths": 2,
+        "assists": 14,
+        "kda": 10.5,
+        "cs": 205,
+        "csPerMinute": 5.7,
+        "visionScore": 41,
+        "goldEarned": 13400,
+        "damageDealt": 24100,
         "itemIds": [3157, 4629, 3165, 3174, 3089, 3040]
       }
     ],
     "nextCursor": "uuid|null",
     "totals": {
-      "games": 50, "wins": 33, "losses": 17, "winRate": 66.0,
-      "avgKda": 2.76, "avgKills": 6.1, "avgDeaths": 4.4, "avgAssists": 6.0,
-      "avgCsPerMinute": 5.4, "avgVisionScore": 26.0
+      "games": 50,
+      "wins": 33,
+      "losses": 17,
+      "winRate": 66.0,
+      "avgKda": 2.76,
+      "avgKills": 6.1,
+      "avgDeaths": 4.4,
+      "avgAssists": 6.0,
+      "avgCsPerMinute": 5.4,
+      "avgVisionScore": 26.0
     }
   },
   "meta": { "requestId": "uuid" }
@@ -2781,7 +2990,7 @@ saved-search JSON column and the POST body are all parsed through.
 - The cursor orders by `(gameStart desc, id desc)`. The `id` tiebreaker is what makes it stable —
   `gameStart` alone is not a total order and two games starting in the same second would page
   inconsistently.
-- An empty `rows` with no facets set means the account has nothing synced; empty *with* facets set
+- An empty `rows` with no facets set means the account has nothing synced; empty _with_ facets set
   means the search matched nothing. The two are different sentences on screen, so clients must
   track whether any facet was applied.
 
@@ -2797,6 +3006,7 @@ at the back and the rows already fetched do not change.
 **Auth:** Required, plus ownership of `riotAccountId` (the only query param).
 
 **Response 200:**
+
 ```json
 {
   "data": {
@@ -2869,14 +3079,14 @@ is read before any JSON round trip.
 
 Responses use Discord's own envelope, not this API's:
 
-| Incoming | Response |
-|---|---|
-| `type: 1` PING | `{ type: 1 }` PONG |
-| `type: 2` command | `{ type: 5 }` deferred, plus one `discord/interaction.received` Inngest event |
-| `type: 3` component | `{ type: 6 }` deferred update, plus the same event |
-| `type: 4` autocomplete | `{ type: 8, data: { choices } }` answered inline from the player index |
-| bad or missing signature | `401` with a plain-text body |
-| unparseable body | `400` |
+| Incoming                 | Response                                                                      |
+| ------------------------ | ----------------------------------------------------------------------------- |
+| `type: 1` PING           | `{ type: 1 }` PONG                                                            |
+| `type: 2` command        | `{ type: 5 }` deferred, plus one `discord/interaction.received` Inngest event |
+| `type: 3` component      | `{ type: 6 }` deferred update, plus the same event                            |
+| `type: 4` autocomplete   | `{ type: 8, data: { choices } }` answered inline from the player index        |
+| bad or missing signature | `401` with a plain-text body                                                  |
+| unparseable body         | `400`                                                                         |
 
 A `401` on a bad signature is required, not merely tidy — Discord probes a new endpoint URL
 with a deliberately invalid signature and refuses to save it unless the probe is rejected.
@@ -2899,11 +3109,11 @@ uses the standard envelope.
 
 **200** `{ discordUsername }` — the link was written.
 
-| Status | Code | When |
-|---|---|---|
-| `401` | `UNAUTHORIZED` | No session. The token alone may never create a link. |
-| `422` | `VALIDATION_ERROR` | Token missing, malformed, tampered with or expired |
-| `409` | `CONFLICT` | That Discord account is already linked to a different profile |
+| Status | Code               | When                                                          |
+| ------ | ------------------ | ------------------------------------------------------------- |
+| `401`  | `UNAUTHORIZED`     | No session. The token alone may never create a link.          |
+| `422`  | `VALIDATION_ERROR` | Token missing, malformed, tampered with or expired            |
+| `409`  | `CONFLICT`         | That Discord account is already linked to a different profile |
 
 The two halves are deliberately independent: the token proves which Discord account asked,
 the session proves which profile is answering, and neither on its own is enough.
@@ -2933,10 +3143,10 @@ it" button. Rate limited to 10 per 10 minutes per account — each call kills th
 code, and a loop would leave a player mid-exchange staring at a code that died while they
 typed it.
 
-| Status | Code | When |
-|---|---|---|
-| `401` | `UNAUTHORIZED` | No session |
-| `429` | — | Rate limited |
+| Status | Code           | When         |
+| ------ | -------------- | ------------ |
+| `401`  | `UNAUTHORIZED` | No session   |
+| `429`  | —              | Rate limited |
 
 ### `POST /api/desktop/pair`
 
@@ -2949,11 +3159,11 @@ the machine's hostname and is trimmed to 64 characters. The code may be sent as 
 
 **201** `{ token, device, account }`, `Cache-Control: no-store`.
 
-| Status | Code | When |
-|---|---|---|
-| `422` | `VALIDATION_ERROR` | Malformed body, **and** every code failure — unknown, expired, already consumed |
-| `409` | `DEVICE_LIMIT_REACHED` | The account already has 10 live devices |
-| `429` | — | Rate limited: 10 per 10 minutes per caller IP |
+| Status | Code                   | When                                                                            |
+| ------ | ---------------------- | ------------------------------------------------------------------------------- |
+| `422`  | `VALIDATION_ERROR`     | Malformed body, **and** every code failure — unknown, expired, already consumed |
+| `409`  | `DEVICE_LIMIT_REACHED` | The account already has 10 live devices                                         |
+| `429`  | —                      | Rate limited: 10 per 10 minutes per caller IP                                   |
 
 **Unknown, expired and already-used answer identically on purpose.** The code carries ~39
 bits, so "that guess hit a real account" is the one piece of feedback worth denying. The
@@ -2971,9 +3181,9 @@ Also the app's liveness check: answering it is what writes `lastSeenAt`.
 **200** `{ device, account }`, `Cache-Control: no-store`. `account.riotAccount` is null when
 the player has linked none — a real state the app says out loud.
 
-| Status | Code | When |
-|---|---|---|
-| `401` | `UNAUTHORIZED` | Missing, malformed, unknown or **revoked** token, and a deleted account |
+| Status | Code           | When                                                                    |
+| ------ | -------------- | ----------------------------------------------------------------------- |
+| `401`  | `UNAUTHORIZED` | Missing, malformed, unknown or **revoked** token, and a deleted account |
 
 One answer for all of them: a machine that has been cut off learns only that it is no
 longer welcome. The token's shape is checked before the database, so a probe walking these
@@ -2990,10 +3200,10 @@ Session-authenticated. Cuts a machine off; the row stays and gains a `revokedAt`
 
 **200** `{ revoked: true }`.
 
-| Status | Code | When |
-|---|---|---|
-| `404` | `RESOURCE_NOT_FOUND` | Unknown id, malformed id, an id belonging to someone else, or one already revoked |
-| `401` | `UNAUTHORIZED` | No session |
+| Status | Code                 | When                                                                              |
+| ------ | -------------------- | --------------------------------------------------------------------------------- |
+| `404`  | `RESOURCE_NOT_FOUND` | Unknown id, malformed id, an id belonging to someone else, or one already revoked |
+| `401`  | `UNAUTHORIZED`       | No session                                                                        |
 
 **404 rather than 403 for someone else's device.** The service scopes the write by `userId`
 in the same query rather than fetching and then checking, so the route cannot tell the two
@@ -3003,7 +3213,7 @@ apart — and should not be able to.
 
 **Device-token authenticated**, through `withDeviceAuth`. What the website knows about the
 game the app is watching (LA-60, ADR-038 phase 4). The sixth desktop endpoint and the first
-one that *uses* the pairing rather than establishing it.
+one that _uses_ the pairing rather than establishing it.
 
 **Body:** `{ championName, opponentChampionName, position, gameMode }`, validated against
 `src/domains/desktop/contract.ts`. The last three are nullable and null is routine, not an
@@ -3013,19 +3223,19 @@ has not resolved, and a lane nobody can name has no opponent to name either.
 **200** `{ champion, opponent, personal, meta, habits, riotAccountLinked }`,
 `Cache-Control: no-store`.
 
-| Field | What it is | Null when |
-|---|---|---|
-| `champion` / `opponent` | `{ key, name }` resolved against Data Dragon | the name is not on the roster |
-| `personal` | this account's own record in the pair — games, wins, win rate, KDA, trend | it has never played it, or no account is linked |
-| `meta` | the patch-current snapshot for the pair, plus its hints | the snapshot has nothing for the pair |
-| `habits` | up to three recurring weaknesses already detected from this account's matches | — (empty array) |
-| `riotAccountLinked` | whether the paired account has a Riot account at all | — |
+| Field                   | What it is                                                                    | Null when                                       |
+| ----------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------- |
+| `champion` / `opponent` | `{ key, name }` resolved against Data Dragon                                  | the name is not on the roster                   |
+| `personal`              | this account's own record in the pair — games, wins, win rate, KDA, trend     | it has never played it, or no account is linked |
+| `meta`                  | the patch-current snapshot for the pair, plus its hints                       | the snapshot has nothing for the pair           |
+| `habits`                | up to three recurring weaknesses already detected from this account's matches | — (empty array)                                 |
+| `riotAccountLinked`     | whether the paired account has a Riot account at all                          | —                                               |
 
-| Status | Code | When |
-|---|---|---|
-| `401` | `UNAUTHORIZED` | Missing, malformed, unknown or revoked token, and a deleted account |
-| `422` | `VALIDATION_ERROR` | Body is not a game this version can read |
-| `429` | — | Rate limited: 20 per 10 minutes per **device** |
+| Status | Code               | When                                                                |
+| ------ | ------------------ | ------------------------------------------------------------------- |
+| `401`  | `UNAUTHORIZED`     | Missing, malformed, unknown or revoked token, and a deleted account |
+| `422`  | `VALIDATION_ERROR` | Body is not a game this version can read                            |
+| `429`  | —                  | Rate limited: 20 per 10 minutes per **device**                      |
 
 **POST rather than GET** because the body is the game state the app observed, and because
 the answer is one account's own history and must not be cached anywhere between here and
@@ -3061,16 +3271,16 @@ something the website reads from Riot, never something it takes on a client's wo
 
 **200** `{ status, riotAccountId }`, `Cache-Control: no-store`.
 
-| `status` | Means |
-|---|---|
-| `pending` | The account was marked pending and the pull was dispatched |
+| `status`          | Means                                                                         |
+| ----------------- | ----------------------------------------------------------------------------- |
+| `pending`         | The account was marked pending and the pull was dispatched                    |
 | `already_running` | A sync was already under way and had not been running long enough to be stuck |
-| `no_riot_account` | The account behind this device has linked none — `riotAccountId` is null |
+| `no_riot_account` | The account behind this device has linked none — `riotAccountId` is null      |
 
-| Status | Code | When |
-|---|---|---|
-| `401` | `UNAUTHORIZED` | Missing, malformed, unknown or revoked token |
-| `429` | — | Rate limited: 6 per hour per **device** |
+| Status | Code           | When                                         |
+| ------ | -------------- | -------------------------------------------- |
+| `401`  | `UNAUTHORIZED` | Missing, malformed, unknown or revoked token |
+| `429`  | —              | Rate limited: 6 per hour per **device**      |
 
 **What a stolen token can do here.** Cause the owner's own matches to be pulled from Riot
 slightly sooner than they would have been. It cannot name the account — that is read from

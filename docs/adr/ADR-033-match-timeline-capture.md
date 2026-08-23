@@ -14,7 +14,7 @@ call in the app.
 What is discarded is the only per-minute data the product can obtain: `participantFrames`
 (gold, XP, level, CS for all ten players, sampled every 60s) plus ward, item, skill,
 objective and building events. Every service in `src/domains/analysis/` reasons from
-end-of-game totals, so nothing in the product can say *when* a game was lost — only that
+end-of-game totals, so nothing in the product can say _when_ a game was lost — only that
 it was.
 
 The type is why it was never used. `MatchTimelineDTO` declared `frameInterval`,

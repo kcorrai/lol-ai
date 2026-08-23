@@ -1,13 +1,16 @@
 # TASK-167: Counter Tool Rework — /tools/counter-picker (Public, Data-Driven)
 
 ## Status: Pending
+
 ## Score: 90/100
 
 ## Goal
+
 Replace the AI-powered counter tool with a public, zero-cost, data-driven
 counter picker fed by the meta domain (TASK-166). English UI, SEO-ready.
 
 ## Scope
+
 - `src/domains/meta/services/counterService.ts` — best counters per champion+role
   from op.gg counters (min sample threshold, win-rate sort), enriched with DDragon
   champion data; salvage useful editorial tips from
@@ -19,8 +22,10 @@ counter picker fed by the meta domain (TASK-166). English UI, SEO-ready.
 - Unit tests for counterService
 
 ## Out of Scope
+
 - Per-champion SEO pages (TASK-172)
 - Middleware/nav changes (TASK-171)
 
 ## Commit
+
 `feat(tools): public data-driven counter picker at /tools/counter-picker`

@@ -31,10 +31,7 @@ export default function TeamSettingsPage() {
 
   return (
     <div className="mx-auto max-w-lg space-y-6 px-4 py-6">
-      <PageHeader
-        title="Team Settings"
-        subtitle="Edit team information or delete your team"
-      />
+      <PageHeader title="Team Settings" subtitle="Edit team information or delete your team" />
       {team && (
         <>
           <TeamSettingsForm teamId={teamId} initialName={team.name} />

@@ -14,6 +14,7 @@ Candidates evaluated: NextAuth v4, Auth.js (NextAuth v5 beta), BetterAuth.
 Use **NextAuth v4** (`next-auth@4.24.x`).
 
 Reasons:
+
 - Mature, stable, widely used with Next.js 14 App Router
 - Official `@next-auth/prisma-adapter` maps exactly to our TASK-003 schema
   (User, Account, Session, VerificationToken models)

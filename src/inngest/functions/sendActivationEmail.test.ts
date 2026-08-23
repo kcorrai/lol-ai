@@ -34,7 +34,10 @@ beforeEach(() => {
 
 describe("buildActivationEmail", () => {
   it("generates correct subject", () => {
-    const { subject } = buildActivationEmail({ gameName: "Faker", appUrl: "https://lolaicoach.gg" });
+    const { subject } = buildActivationEmail({
+      gameName: "Faker",
+      appUrl: "https://lolaicoach.gg",
+    });
     expect(subject).toContain("Faker");
     expect(subject).toContain("report");
   });
@@ -46,7 +49,10 @@ describe("buildActivationEmail", () => {
   });
 
   it("escapes html in gameName", () => {
-    const { html } = buildActivationEmail({ gameName: "<script>xss</script>", appUrl: "https://lolaicoach.gg" });
+    const { html } = buildActivationEmail({
+      gameName: "<script>xss</script>",
+      appUrl: "https://lolaicoach.gg",
+    });
     expect(html).not.toContain("<script>");
     expect(html).toContain("&lt;script&gt;");
   });
@@ -76,7 +82,10 @@ describe("sendActivationEmail handler", () => {
   });
 
   it("skips when email client is not configured", async () => {
-    vi.mocked(mockUser.findUnique).mockResolvedValueOnce({ email: "faker@test.com", emailVerified: new Date() } as never);
+    vi.mocked(mockUser.findUnique).mockResolvedValueOnce({
+      email: "faker@test.com",
+      emailVerified: new Date(),
+    } as never);
     vi.mocked(getEmailClient).mockReturnValueOnce(null);
 
     const result = await runHandler({ userId: "user-1", gameName: "Faker" });
@@ -85,7 +94,10 @@ describe("sendActivationEmail handler", () => {
 
   it("sends email when user and client are ready", async () => {
     const mockSend = vi.fn().mockResolvedValueOnce({ error: null });
-    vi.mocked(mockUser.findUnique).mockResolvedValueOnce({ email: "faker@test.com", emailVerified: new Date() } as never);
+    vi.mocked(mockUser.findUnique).mockResolvedValueOnce({
+      email: "faker@test.com",
+      emailVerified: new Date(),
+    } as never);
     vi.mocked(getEmailClient).mockReturnValueOnce({ emails: { send: mockSend } } as never);
 
     const result = await runHandler({ userId: "user-1", gameName: "Faker" });

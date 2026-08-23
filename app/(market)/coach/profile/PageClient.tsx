@@ -103,9 +103,9 @@ export default function CoachApplyPage(): React.ReactElement {
             Coach on LaneIQ
           </h1>
           <p className="mt-4 max-w-[62ch] text-[15.5px] text-text-body">
-            Set your own prices and hours. Your rank is read from your linked Riot account and
-            shown with the date we last checked it — so students see a number you did not have to
-            be trusted on.
+            Set your own prices and hours. Your rank is read from your linked Riot account and shown
+            with the date we last checked it — so students see a number you did not have to be
+            trusted on.
           </p>
 
           <div className="mt-6 grid gap-px border border-border bg-line-1 sm:grid-cols-2 lg:grid-cols-4">
@@ -150,8 +150,8 @@ export default function CoachApplyPage(): React.ReactElement {
                 {KEEP_PCT}%
               </p>
               <p className="mt-3 text-[13px] text-text-body">
-                of the price you set. The cut comes out of your price rather than being added to
-                it, so booking you here is not more expensive than booking you directly.
+                of the price you set. The cut comes out of your price rather than being added to it,
+                so booking you here is not more expensive than booking you directly.
               </p>
               <dl className="mt-3.5 grid gap-2.5 border-t border-line-1 pt-3">
                 <EarnRow label="A $30 review" value="you keep $24" />

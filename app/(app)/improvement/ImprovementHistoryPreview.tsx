@@ -23,20 +23,27 @@ const SAMPLE_PLANS: SamplePlan[] = [
 ];
 
 function SamplePlanCard({ plan, index }: { plan: SamplePlan; index: number }): React.JSX.Element {
-  const scoreColor = plan.score >= 66 ? "text-success" : plan.score >= 33 ? "text-warning" : "text-danger";
-  const barColor = plan.score >= 66 ? "bg-success" : plan.score >= 33 ? "bg-warning" : "bg-danger/60";
+  const scoreColor =
+    plan.score >= 66 ? "text-success" : plan.score >= 33 ? "text-warning" : "text-danger";
+  const barColor =
+    plan.score >= 66 ? "bg-success" : plan.score >= 33 ? "bg-warning" : "bg-danger/60";
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.15 + index * 0.12, duration: 0.35, ease: "easeOut" }}
-      className={cn("rounded-xl border bg-surface p-4", plan.active ? "border-accent/30" : "border-border")}
+      className={cn(
+        "rounded-xl border bg-surface p-4",
+        plan.active ? "border-accent/30" : "border-border"
+      )}
     >
       <div className="mb-3 flex items-center justify-between">
         <div>
           <p className="text-sm font-semibold text-text">{plan.range}</p>
-          <p className="mt-0.5 text-xs text-text-muted">{plan.completed}/{plan.total} targets completed</p>
+          <p className="mt-0.5 text-xs text-text-muted">
+            {plan.completed}/{plan.total} targets completed
+          </p>
         </div>
         <div className="flex items-center gap-2">
           {plan.active && (

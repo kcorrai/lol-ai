@@ -21,7 +21,9 @@ describe("clueLadder", () => {
   });
 
   it("promises exactly as many emoji as the data actually carries", () => {
-    const sizes = new Set(Object.values(championEmoji as Record<string, string[]>).map((e) => e.length));
+    const sizes = new Set(
+      Object.values(championEmoji as Record<string, string[]>).map((e) => e.length)
+    );
     expect(sizes).toEqual(new Set([EMOJI_PER_CHAMPION]));
     expect(clueLadder("emoji", 0).filter((step) => step.at < 5)).toHaveLength(EMOJI_PER_CHAMPION);
   });

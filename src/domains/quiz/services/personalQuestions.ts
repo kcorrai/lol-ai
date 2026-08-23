@@ -106,7 +106,11 @@ function since(matches: readonly PlayedMatch[], now: Date, days: number): Played
   return matches.filter((m) => m.playedAt.getTime() >= cutoff);
 }
 
-type Builder = (matches: readonly PlayedMatch[], now: Date, seed: number) => PersonalQuestion | null;
+type Builder = (
+  matches: readonly PlayedMatch[],
+  now: Date,
+  seed: number
+) => PersonalQuestion | null;
 
 const buildMostPlayed: Builder = (matches, now, seed) => {
   const recent = since(matches, now, 30);

@@ -7,9 +7,10 @@ export interface CheckoutAbandonedEmailData {
   appUrl: string;
 }
 
-export function buildCheckoutAbandonedEmail(
-  data: CheckoutAbandonedEmailData
-): { subject: string; html: string } {
+export function buildCheckoutAbandonedEmail(data: CheckoutAbandonedEmailData): {
+  subject: string;
+  html: string;
+} {
   const subject = data.hasCoupon
     ? "Your Pro upgrade is waiting — here's a discount to finish"
     : "You left your Pro upgrade behind";

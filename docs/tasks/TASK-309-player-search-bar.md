@@ -9,7 +9,7 @@ back while typing, click one, land on a profile. No login, no linking, no waitin
 
 ## The problem being fixed
 
-Finding a player required knowing their exact Riot ID *and* picking the right platform, then
+Finding a player required knowing their exact Riot ID _and_ picking the right platform, then
 pressing a button. Every one of those is a place to be wrong, and being wrong returned "not
 found" rather than a suggestion. The one search box that existed lived below the fold of the
 landing page; no other page had one at all.
@@ -64,7 +64,7 @@ without navigating, and the empty-result message.
 a failing index answers with. Also asserts `seenCount`/`lastSeenAt` stay server-side.
 
 **Found by the test, fixed in the component:** arrow-up from nothing highlighted entered at the
-*first* row rather than the last, because `-1` fell through the modulo.
+_first_ row rather than the last, because `-1` fell through the modulo.
 
 ## Verified against the running app
 

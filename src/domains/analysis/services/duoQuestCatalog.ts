@@ -108,7 +108,7 @@ const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
  */
 export function weekWindow(now: Date): { start: Date; end: Date } {
   const start = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0),
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0)
   );
   // getUTCDay is 0 for Sunday, which is six days *after* the Monday that owns it.
   const daysSinceMonday = (start.getUTCDay() + 6) % 7;
@@ -129,6 +129,6 @@ export function questsForWeek(weekStart: Date): QuestDefinition[] {
 
   return Array.from(
     { length: QUESTS_PER_WEEK },
-    (_, i) => DUO_QUEST_CATALOG[(weekIndex + i) % DUO_QUEST_CATALOG.length]!,
+    (_, i) => DUO_QUEST_CATALOG[(weekIndex + i) % DUO_QUEST_CATALOG.length]!
   );
 }

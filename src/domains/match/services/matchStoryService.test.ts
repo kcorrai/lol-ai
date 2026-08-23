@@ -30,11 +30,46 @@ const USER = "user-id";
 const ME = PUUIDS[1]; // blue top
 
 const ROSTER = [
-  { puuid: PUUIDS[1], championName: "Ornn", teamId: 100, position: "TOP", gameName: "Me", tagLine: "NA1" },
-  { puuid: PUUIDS[2], championName: "LeeSin", teamId: 100, position: "JUNGLE", gameName: "Jg", tagLine: "NA1" },
-  { puuid: PUUIDS[3], championName: "Ahri", teamId: 100, position: "MIDDLE", gameName: "Mid", tagLine: "NA1" },
-  { puuid: PUUIDS[6], championName: "Darius", teamId: 200, position: "TOP", gameName: "Rival", tagLine: "NA1" },
-  { puuid: PUUIDS[7], championName: "Vi", teamId: 200, position: "JUNGLE", gameName: "RivalJg", tagLine: "NA1" },
+  {
+    puuid: PUUIDS[1],
+    championName: "Ornn",
+    teamId: 100,
+    position: "TOP",
+    gameName: "Me",
+    tagLine: "NA1",
+  },
+  {
+    puuid: PUUIDS[2],
+    championName: "LeeSin",
+    teamId: 100,
+    position: "JUNGLE",
+    gameName: "Jg",
+    tagLine: "NA1",
+  },
+  {
+    puuid: PUUIDS[3],
+    championName: "Ahri",
+    teamId: 100,
+    position: "MIDDLE",
+    gameName: "Mid",
+    tagLine: "NA1",
+  },
+  {
+    puuid: PUUIDS[6],
+    championName: "Darius",
+    teamId: 200,
+    position: "TOP",
+    gameName: "Rival",
+    tagLine: "NA1",
+  },
+  {
+    puuid: PUUIDS[7],
+    championName: "Vi",
+    teamId: 200,
+    position: "JUNGLE",
+    gameName: "RivalJg",
+    tagLine: "NA1",
+  },
 ];
 
 /** Frame rows in the shape the service's `select` produces, built from the shared riot fixture. */
@@ -83,7 +118,9 @@ describe("getMatchStoryForUser", () => {
   });
 
   it("returns null for a match the caller did not play in", async () => {
-    vi.mocked(prisma.riotAccount.findMany).mockResolvedValue(selected([{ puuid: "someone-elses-puuid" }]));
+    vi.mocked(prisma.riotAccount.findMany).mockResolvedValue(
+      selected([{ puuid: "someone-elses-puuid" }])
+    );
     vi.mocked(prisma.matchParticipant.findMany).mockResolvedValue(selected(ROSTER));
     expect(await getMatchStoryForUser(MATCH, USER)).toBeNull();
   });

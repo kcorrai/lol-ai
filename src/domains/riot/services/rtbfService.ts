@@ -11,9 +11,7 @@ const RTBF_NAME = /^rtbf\d*$/i;
 /** How stale an account may get before the sweep re-confirms it against Riot. */
 export const RTBF_REFRESH_DAYS = 30;
 
-export type RtbfVerdict =
-  | { forgotten: false }
-  | { forgotten: true; reason: "renamed" | "gone" };
+export type RtbfVerdict = { forgotten: false } | { forgotten: true; reason: "renamed" | "gone" };
 
 export function isRtbfName(name: string | null | undefined): boolean {
   return typeof name === "string" && RTBF_NAME.test(name.trim());
@@ -34,7 +32,9 @@ export function isRtbfName(name: string | null | undefined): boolean {
 export async function checkForgotten(puuid: string, region: string): Promise<RtbfVerdict> {
   try {
     const account = await getAccountByPuuid(puuid, region);
-    return isRtbfName(account.gameName) ? { forgotten: true, reason: "renamed" } : { forgotten: false };
+    return isRtbfName(account.gameName)
+      ? { forgotten: true, reason: "renamed" }
+      : { forgotten: false };
   } catch (err) {
     if (err instanceof ApiError && err.code === "RIOT_NOT_FOUND") {
       return { forgotten: true, reason: "gone" };

@@ -73,46 +73,41 @@ interface MatchFixtureOptions {
 }
 
 /** A full ten-player match with the subject on blue side. */
-export function matchFixture(
-  puuid: string,
-  options: MatchFixtureOptions = {}
-): MatchDTO {
+export function matchFixture(puuid: string, options: MatchFixtureOptions = {}): MatchDTO {
   const winningTeam = options.winningTeam ?? 100;
 
-  const participants =
-    options.participants ??
-    [
+  const participants = options.participants ?? [
+    participantFixture({
+      puuid,
+      riotIdGameName: "kaanproak0",
+      riotIdTagline: "TR1",
+      championId: 103,
+      championName: "Ahri",
+      teamId: 100,
+      kills: 9,
+      deaths: 2,
+      assists: 11,
+      totalMinionsKilled: 200,
+      neutralMinionsKilled: 31,
+      win: winningTeam === 100,
+    }),
+    ...Array.from({ length: 4 }, (_, i) =>
       participantFixture({
-        puuid,
-        riotIdGameName: "kaanproak0",
-        riotIdTagline: "TR1",
-        championId: 103,
-        championName: "Ahri",
+        puuid: `blue-${i}`,
         teamId: 100,
-        kills: 9,
-        deaths: 2,
-        assists: 11,
-        totalMinionsKilled: 200,
-        neutralMinionsKilled: 31,
+        kills: 2,
         win: winningTeam === 100,
-      }),
-      ...Array.from({ length: 4 }, (_, i) =>
-        participantFixture({
-          puuid: `blue-${i}`,
-          teamId: 100,
-          kills: 2,
-          win: winningTeam === 100,
-        })
-      ),
-      ...Array.from({ length: 5 }, (_, i) =>
-        participantFixture({
-          puuid: `red-${i}`,
-          teamId: 200,
-          kills: 3,
-          win: winningTeam === 200,
-        })
-      ),
-    ];
+      })
+    ),
+    ...Array.from({ length: 5 }, (_, i) =>
+      participantFixture({
+        puuid: `red-${i}`,
+        teamId: 200,
+        kills: 3,
+        win: winningTeam === 200,
+      })
+    ),
+  ];
 
   return {
     metadata: {

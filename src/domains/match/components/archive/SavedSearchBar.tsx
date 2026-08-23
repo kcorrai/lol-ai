@@ -4,11 +4,7 @@ import { useState } from "react";
 import { Bookmark, Loader2, X } from "lucide-react";
 import { describeFilters } from "@/domains/match/archive/archiveLabels";
 import { isEmptyFilters } from "@/domains/match/archive/archiveQuery";
-import {
-  useDeleteSavedSearch,
-  useSaveSearch,
-  useSavedSearches,
-} from "@/hooks/useSavedSearches";
+import { useDeleteSavedSearch, useSaveSearch, useSavedSearches } from "@/hooks/useSavedSearches";
 import type { ArchiveFilters } from "@/domains/match/services/matchArchiveFilters";
 import { cn } from "@/lib/utils";
 

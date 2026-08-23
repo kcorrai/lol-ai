@@ -5,7 +5,12 @@ import type { PlanProgress } from "@/domains/analysis/types/analysis.types";
 
 vi.mock("@/lib/db/prisma", () => ({
   prisma: {
-    improvementPlan: { findFirst: vi.fn(), findMany: vi.fn(), updateMany: vi.fn(), create: vi.fn() },
+    improvementPlan: {
+      findFirst: vi.fn(),
+      findMany: vi.fn(),
+      updateMany: vi.fn(),
+      create: vi.fn(),
+    },
   },
 }));
 
@@ -15,9 +20,14 @@ vi.mock("./matchAnalysisService", () => ({
 
 import { getPlayerPerformanceProfile } from "./matchAnalysisService";
 
-function mockProfile(overrides: Partial<{
-  winRate: number; avgDeaths: number; csPerMinute: number; kda: number;
-}> = {}) {
+function mockProfile(
+  overrides: Partial<{
+    winRate: number;
+    avgDeaths: number;
+    csPerMinute: number;
+    kda: number;
+  }> = {}
+) {
   return {
     riotAccountId: "acc-1",
     gamesAnalyzed: 20,
@@ -36,8 +46,48 @@ function mockProfile(overrides: Partial<{
     strongestArea: "Kills",
     weakestArea: "Deaths",
     recentMatches: [
-      { matchDbId: "m1", won: true,  kills: 5, deaths: 2, assists: 8, csPerMinute: 5.5, visionScore: 18, champion: "Jinx", gameDurationMinutes: 30, goldPerMinute: 300, damageShare: 0.25, position: "BOT", riotMatchId: "r1", notableEvents: [], itemIds: [], gameStart: new Date().toISOString(), summonerSpell1: 4, summonerSpell2: 7, runePrimaryKeystone: null },
-      { matchDbId: "m2", won: false, kills: 2, deaths: 7, assists: 3, csPerMinute: 4.5, visionScore: 15, champion: "Caitlyn", gameDurationMinutes: 25, goldPerMinute: 270, damageShare: 0.2, position: "BOT", riotMatchId: "r2", notableEvents: [], itemIds: [], gameStart: new Date().toISOString(), summonerSpell1: 4, summonerSpell2: 7, runePrimaryKeystone: null },
+      {
+        matchDbId: "m1",
+        won: true,
+        kills: 5,
+        deaths: 2,
+        assists: 8,
+        csPerMinute: 5.5,
+        visionScore: 18,
+        champion: "Jinx",
+        gameDurationMinutes: 30,
+        goldPerMinute: 300,
+        damageShare: 0.25,
+        position: "BOT",
+        riotMatchId: "r1",
+        notableEvents: [],
+        itemIds: [],
+        gameStart: new Date().toISOString(),
+        summonerSpell1: 4,
+        summonerSpell2: 7,
+        runePrimaryKeystone: null,
+      },
+      {
+        matchDbId: "m2",
+        won: false,
+        kills: 2,
+        deaths: 7,
+        assists: 3,
+        csPerMinute: 4.5,
+        visionScore: 15,
+        champion: "Caitlyn",
+        gameDurationMinutes: 25,
+        goldPerMinute: 270,
+        damageShare: 0.2,
+        position: "BOT",
+        riotMatchId: "r2",
+        notableEvents: [],
+        itemIds: [],
+        gameStart: new Date().toISOString(),
+        summonerSpell1: 4,
+        summonerSpell2: 7,
+        runePrimaryKeystone: null,
+      },
     ],
     mostPlayedChampions: ["Jinx", "Caitlyn"],
     deathCluster: "late_game" as const,
@@ -56,29 +106,66 @@ describe("computeWeeklyScore", () => {
 
   it("returns 33 for one achieved target out of one", () => {
     const targets: PlanProgress[] = [
-      { metric: "winRate", label: "Win Rate", baseline: 45, goal: 55, unit: "%", direction: "increase", current: 55, progress: 1, achieved: true },
+      {
+        metric: "winRate",
+        label: "Win Rate",
+        baseline: 45,
+        goal: 55,
+        unit: "%",
+        direction: "increase",
+        current: 55,
+        progress: 1,
+        achieved: true,
+      },
     ];
     expect(computeWeeklyScore(targets)).toBe(33);
   });
 
   it("returns 99 for 3 achieved targets", () => {
     const achieved = (metric: string): PlanProgress => ({
-      metric: metric as PlanProgress["metric"], label: metric, baseline: 0, goal: 10, unit: "", direction: "increase", current: 10, progress: 1, achieved: true,
+      metric: metric as PlanProgress["metric"],
+      label: metric,
+      baseline: 0,
+      goal: 10,
+      unit: "",
+      direction: "increase",
+      current: 10,
+      progress: 1,
+      achieved: true,
     });
     expect(computeWeeklyScore([achieved("winRate"), achieved("kda"), achieved("deaths")])).toBe(99);
   });
 
   it("gives partial score for progress > 0.5 but not achieved", () => {
     const partial: PlanProgress = {
-      metric: "winRate", label: "Win Rate", baseline: 45, goal: 55, unit: "%", direction: "increase", current: 51, progress: 0.6, achieved: false,
+      metric: "winRate",
+      label: "Win Rate",
+      baseline: 45,
+      goal: 55,
+      unit: "%",
+      direction: "increase",
+      current: 51,
+      progress: 0.6,
+      achieved: false,
     };
     expect(computeWeeklyScore([partial])).toBe(15);
   });
 
   it("caps at 100", () => {
-    const targets = Array.from({ length: 10 }, (): PlanProgress => ({
-      metric: "winRate", label: "Win Rate", baseline: 0, goal: 1, unit: "", direction: "increase", current: 1, progress: 1, achieved: true,
-    }));
+    const targets = Array.from(
+      { length: 10 },
+      (): PlanProgress => ({
+        metric: "winRate",
+        label: "Win Rate",
+        baseline: 0,
+        goal: 1,
+        unit: "",
+        direction: "increase",
+        current: 1,
+        progress: 1,
+        achieved: true,
+      })
+    );
     expect(computeWeeklyScore(targets)).toBe(100);
   });
 });
@@ -86,14 +173,17 @@ describe("computeWeeklyScore", () => {
 describe("generatePlan", () => {
   beforeEach(() => {
     vi.mocked(prisma.improvementPlan.updateMany).mockResolvedValue({ count: 0 } as never);
-    vi.mocked(prisma.improvementPlan.create).mockImplementation(({ data }) => Promise.resolve({
-      id: "plan-new",
-      riotAccountId: data.riotAccountId as string,
-      createdAt: new Date(),
-      expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
-      status: "active",
-      targets: data.targets,
-    }) as never);
+    vi.mocked(prisma.improvementPlan.create).mockImplementation(
+      ({ data }) =>
+        Promise.resolve({
+          id: "plan-new",
+          riotAccountId: data.riotAccountId as string,
+          createdAt: new Date(),
+          expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+          status: "active",
+          targets: data.targets,
+        }) as never
+    );
   });
 
   it("expires existing active plans before creating a new one", async () => {
@@ -105,7 +195,9 @@ describe("generatePlan", () => {
   });
 
   it("generates at least one improvement target", async () => {
-    vi.mocked(getPlayerPerformanceProfile).mockResolvedValue(mockProfile({ winRate: 40, avgDeaths: 5, csPerMinute: 4 }) as never);
+    vi.mocked(getPlayerPerformanceProfile).mockResolvedValue(
+      mockProfile({ winRate: 40, avgDeaths: 5, csPerMinute: 4 }) as never
+    );
     const plan = await generatePlan("acc-1");
     expect(plan.targets.length).toBeGreaterThan(0);
   });
@@ -121,7 +213,8 @@ describe("generatePlan", () => {
   it("returns a plan with 14-day expiry", async () => {
     vi.mocked(getPlayerPerformanceProfile).mockResolvedValue(mockProfile() as never);
     const plan = await generatePlan("acc-1");
-    const daysUntilExpiry = (new Date(plan.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24);
+    const daysUntilExpiry =
+      (new Date(plan.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24);
     expect(daysUntilExpiry).toBeGreaterThan(13);
     expect(daysUntilExpiry).toBeLessThanOrEqual(15);
   });

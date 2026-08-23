@@ -9,7 +9,7 @@ conversion between them is where scheduling systems quietly break.
 
 The failure is specific: resolve the weekly rule to a fixed UTC offset once, and
 every slot is an hour wrong for half the year. Cal.com's own scheduling code
-carries the comment *"there will be 60 min offset on the day of DST change"* at
+carries the comment _"there will be 60 min offset on the day of DST change"_ at
 exactly this spot, and its schema stores availability as timezone-naive `time`
 with the zone on the parent schedule.
 
@@ -51,7 +51,7 @@ No dependency.
 **Negative.** Every slot computation does per-day `Intl` work rather than
 arithmetic on a cached offset. It is bounded by the horizon (30 days) and
 nothing about it is hot, but it is not free. The naive two-pass conversion
-returns the *later* instant in an overlap, so the code probes both sides of the
+returns the _later_ instant in an overlap, so the code probes both sides of the
 boundary and takes the earliest candidate that round-trips — more work than the
 obvious implementation, and the tests say why.
 

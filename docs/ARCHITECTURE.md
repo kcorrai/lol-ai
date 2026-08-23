@@ -65,13 +65,13 @@ The system is designed around three core principles:
 
 ### 3.2 Rendering Strategy
 
-| Page Type | Strategy | Rationale |
-|---|---|---|
-| Marketing / Landing | Static (SSG) | SEO, performance |
-| Dashboard | Server Component + Client hydration | Fast initial load |
-| Match History | SSR with streaming | Large data sets |
-| AI Reports | Client-side fetch with loading states | Real-time feel |
-| Settings | Client-side | Low SEO requirement |
+| Page Type           | Strategy                              | Rationale           |
+| ------------------- | ------------------------------------- | ------------------- |
+| Marketing / Landing | Static (SSG)                          | SEO, performance    |
+| Dashboard           | Server Component + Client hydration   | Fast initial load   |
+| Match History       | SSR with streaming                    | Large data sets     |
+| AI Reports          | Client-side fetch with loading states | Real-time feel      |
+| Settings            | Client-side                           | Low SEO requirement |
 
 ### 3.3 Key Frontend Domains
 
@@ -105,16 +105,16 @@ Routes are organized under `app/api/` and grouped by domain. Each route file is 
 
 Services contain all business logic. They are plain TypeScript classes/functions (no framework coupling).
 
-| Service | Responsibility |
-|---|---|
-| `RiotService` | Riot API calls, rate limit management, data normalization |
-| `MatchService` | Match data persistence, retrieval, aggregation |
-| `AnalysisService` | Statistical analysis, performance metric calculation |
-| `CoachingService` | Orchestrates AI pipeline, generates coaching reports |
-| `ChampionService` | Champion pool management, role analysis |
-| `UserService` | User profile, preferences, account management |
-| `SubscriptionService` | LemonSqueezy integration, plan management, access gating |
-| `NotificationService` | In-app and email notifications |
+| Service               | Responsibility                                            |
+| --------------------- | --------------------------------------------------------- |
+| `RiotService`         | Riot API calls, rate limit management, data normalization |
+| `MatchService`        | Match data persistence, retrieval, aggregation            |
+| `AnalysisService`     | Statistical analysis, performance metric calculation      |
+| `CoachingService`     | Orchestrates AI pipeline, generates coaching reports      |
+| `ChampionService`     | Champion pool management, role analysis                   |
+| `UserService`         | User profile, preferences, account management             |
+| `SubscriptionService` | LemonSqueezy integration, plan management, access gating  |
+| `NotificationService` | In-app and email notifications                            |
 
 ### 4.3 Data Access Layer (Prisma)
 
@@ -174,22 +174,27 @@ See `AI_ARCHITECTURE.md` for full detail.
 The system is organized around five bounded contexts:
 
 ### Context 1: Identity & Access
+
 - User accounts, authentication, authorization, subscription state
 - Owns: `User`, `Subscription`, `Session`
 
 ### Context 2: Riot Integration
+
 - Riot account linking, API data fetching, match ingestion
 - Owns: `RiotAccount`, `Match`, `MatchParticipant`
 
 ### Context 3: Analysis
+
 - Statistical calculations, performance metrics, trend detection
 - Owns: `PerformanceSnapshot`, `ChampionStats`, `RankedHistory`
 
 ### Context 4: AI Coaching
+
 - Prompt construction, AI calls, report generation, coaching plans
 - Owns: `CoachingReport`, `AIAnalysis`, `TrainingPlan`
 
 ### Context 5: Champion Intelligence
+
 - Champion pool management, meta data, counter-pick database
 - Owns: `Champion`, `CounterData`, `ChampionPoolRecommendation`
 
@@ -238,14 +243,14 @@ User views CoachingReport in dashboard
 
 ## 8. Caching Strategy
 
-| Layer | Cache Type | TTL | Content |
-|---|---|---|---|
-| Riot API responses | Redis | 5 min | Raw match data, account info |
-| Computed stats | PostgreSQL (materialized view) | On sync | Aggregated champion stats |
-| AI reports | PostgreSQL | 24 hours | Full coaching reports |
-| AI prompt responses | Redis | 24 hours | Deduplicated by content hash |
-| Next.js static assets | CDN (Vercel) | Permanent | JS, CSS bundles |
-| Match list page | Next.js unstable_cache | 5 min | Server component data |
+| Layer                 | Cache Type                     | TTL       | Content                      |
+| --------------------- | ------------------------------ | --------- | ---------------------------- |
+| Riot API responses    | Redis                          | 5 min     | Raw match data, account info |
+| Computed stats        | PostgreSQL (materialized view) | On sync   | Aggregated champion stats    |
+| AI reports            | PostgreSQL                     | 24 hours  | Full coaching reports        |
+| AI prompt responses   | Redis                          | 24 hours  | Deduplicated by content hash |
+| Next.js static assets | CDN (Vercel)                   | Permanent | JS, CSS bundles              |
+| Match list page       | Next.js unstable_cache         | 5 min     | Server component data        |
 
 ---
 
@@ -316,6 +321,7 @@ The monolith is structured so that each domain service can be extracted with min
 4. **Step 4:** Introduce API gateway (Nginx / Kong) for routing and rate limiting.
 
 Extraction order (by independence and load):
+
 1. `RiotService` (high load, external dependency)
 2. `CoachingService` / AI Pipeline (expensive, cacheable)
 3. `AnalysisService` (CPU-bound computations)
@@ -324,12 +330,12 @@ Extraction order (by independence and load):
 
 ## 12. Infrastructure & Deployment
 
-| Component | MVP Choice | Scale Choice |
-|---|---|---|
-| Frontend + API | Vercel | Vercel / self-hosted |
-| Database | Neon (serverless PG) | Supabase / AWS RDS |
-| Cache / Queue | Upstash Redis | Redis Cloud / self-hosted |
-| File Storage | Vercel Blob | AWS S3 |
-| Email | Resend | Resend / AWS SES |
-| Monitoring | Vercel Analytics + Sentry | Datadog / Grafana stack |
-| CI/CD | GitHub Actions | GitHub Actions |
+| Component      | MVP Choice                | Scale Choice              |
+| -------------- | ------------------------- | ------------------------- |
+| Frontend + API | Vercel                    | Vercel / self-hosted      |
+| Database       | Neon (serverless PG)      | Supabase / AWS RDS        |
+| Cache / Queue  | Upstash Redis             | Redis Cloud / self-hosted |
+| File Storage   | Vercel Blob               | AWS S3                    |
+| Email          | Resend                    | Resend / AWS SES          |
+| Monitoring     | Vercel Analytics + Sentry | Datadog / Grafana stack   |
+| CI/CD          | GitHub Actions            | GitHub Actions            |

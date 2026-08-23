@@ -10,7 +10,11 @@ import { MIN_BIO_LENGTH } from "@/domains/marketplace/policy";
 
 export type SubmitOutcome =
   | { ok: true }
-  | { ok: false; reason: "no-profile" | "already-submitted" | "suspended" | "incomplete"; detail?: string };
+  | {
+      ok: false;
+      reason: "no-profile" | "already-submitted" | "suspended" | "incomplete";
+      detail?: string;
+    };
 
 /**
  * Move a DRAFT profile into review.

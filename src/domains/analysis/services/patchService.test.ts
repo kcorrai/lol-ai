@@ -99,7 +99,8 @@ describe("getOrCreateCurrentPatch", () => {
       id: "p3",
       version: "14.21.1",
       detectedAt: new Date(),
-      patchNotesUrl: "https://www.leagueoflegends.com/en-us/news/game-updates/league-of-legends-patch-14-21-notes/",
+      patchNotesUrl:
+        "https://www.leagueoflegends.com/en-us/news/game-updates/league-of-legends-patch-14-21-notes/",
     } as never);
 
     await getOrCreateCurrentPatch();
@@ -107,7 +108,8 @@ describe("getOrCreateCurrentPatch", () => {
     expect(prisma.patchVersion.create).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({
-          patchNotesUrl: "https://www.leagueoflegends.com/en-us/news/game-updates/league-of-legends-patch-14-21-notes/",
+          patchNotesUrl:
+            "https://www.leagueoflegends.com/en-us/news/game-updates/league-of-legends-patch-14-21-notes/",
         }),
       })
     );
@@ -127,7 +129,10 @@ describe("getPatchImpact", () => {
       json: vi.fn().mockResolvedValue(["14.21.1"]),
     } as never);
     vi.mocked(prisma.patchVersion.findUnique).mockResolvedValue({
-      id: "p1", version: "14.21.1", detectedAt: patchDate, patchNotesUrl: "https://example.com/patch",
+      id: "p1",
+      version: "14.21.1",
+      detectedAt: patchDate,
+      patchNotesUrl: "https://example.com/patch",
     } as never);
   });
 
@@ -155,9 +160,7 @@ describe("getPatchImpact", () => {
       match: { gameStart: i < 10 ? new Date("2024-10-01") : new Date("2024-11-01") },
     }));
 
-    vi.mocked(prisma.matchParticipant.findMany).mockResolvedValue(
-      [...zeroDeltas] as never
-    );
+    vi.mocked(prisma.matchParticipant.findMany).mockResolvedValue([...zeroDeltas] as never);
 
     const result = await getPatchImpact("acc-1");
 
@@ -169,10 +172,26 @@ describe("getPatchImpact", () => {
     // Ahri: 50% → 80% delta = +30
     // Viktor: 60% → 20% delta = -40
     const participants = [
-      ...Array.from({ length: 10 }, () => ({ championName: "Ahri", won: true, match: { gameStart: new Date("2024-10-01") } })),
-      ...Array.from({ length: 10 }, (_, i) => ({ championName: "Ahri", won: i < 8, match: { gameStart: new Date("2024-11-01") } })),
-      ...Array.from({ length: 10 }, (_, i) => ({ championName: "Viktor", won: i < 6, match: { gameStart: new Date("2024-10-01") } })),
-      ...Array.from({ length: 10 }, (_, i) => ({ championName: "Viktor", won: i < 2, match: { gameStart: new Date("2024-11-01") } })),
+      ...Array.from({ length: 10 }, () => ({
+        championName: "Ahri",
+        won: true,
+        match: { gameStart: new Date("2024-10-01") },
+      })),
+      ...Array.from({ length: 10 }, (_, i) => ({
+        championName: "Ahri",
+        won: i < 8,
+        match: { gameStart: new Date("2024-11-01") },
+      })),
+      ...Array.from({ length: 10 }, (_, i) => ({
+        championName: "Viktor",
+        won: i < 6,
+        match: { gameStart: new Date("2024-10-01") },
+      })),
+      ...Array.from({ length: 10 }, (_, i) => ({
+        championName: "Viktor",
+        won: i < 2,
+        match: { gameStart: new Date("2024-11-01") },
+      })),
     ];
 
     vi.mocked(prisma.matchParticipant.findMany).mockResolvedValue(participants as never);
@@ -184,14 +203,24 @@ describe("getPatchImpact", () => {
     // Viktor before: 6/10 = 60%, after: 2/10 = 20%, delta = -40
     // Sort by abs: Viktor (40) > Ahri (20)
     expect(result.champions[0].championName).toBe("Viktor");
-    expect(Math.abs(result.champions[0].wrDelta)).toBeGreaterThan(Math.abs(result.champions[1].wrDelta));
+    expect(Math.abs(result.champions[0].wrDelta)).toBeGreaterThan(
+      Math.abs(result.champions[1].wrDelta)
+    );
   });
 
   it("caps results at 5 champions", async () => {
     const champNames = ["Ahri", "Viktor", "Syndra", "Orianna", "Lux", "Zoe", "Vex"];
     const participants = champNames.flatMap((name) => [
-      ...Array.from({ length: 10 }, () => ({ championName: name, won: true, match: { gameStart: new Date("2024-10-01") } })),
-      ...Array.from({ length: 10 }, (_, i) => ({ championName: name, won: i < 2, match: { gameStart: new Date("2024-11-01") } })),
+      ...Array.from({ length: 10 }, () => ({
+        championName: name,
+        won: true,
+        match: { gameStart: new Date("2024-10-01") },
+      })),
+      ...Array.from({ length: 10 }, (_, i) => ({
+        championName: name,
+        won: i < 2,
+        match: { gameStart: new Date("2024-11-01") },
+      })),
     ]);
 
     vi.mocked(prisma.matchParticipant.findMany).mockResolvedValue(participants as never);

@@ -77,7 +77,8 @@ export default async function CoachConsolePage() {
                   : "Not listed"}
             </StatusChip>
             <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-text-faint">
-              {listings.filter((l) => l.isActive).length} listings on sale &middot; {profile.timezone}
+              {listings.filter((l) => l.isActive).length} listings on sale &middot;{" "}
+              {profile.timezone}
             </span>
           </>
         }
@@ -119,10 +120,7 @@ export default async function CoachConsolePage() {
                   </Link>
                 }
               />
-              <PipelineStrip
-                workload={workload}
-                nextExpiry={oldest ? oldest.respondByAt : null}
-              />
+              <PipelineStrip workload={workload} nextExpiry={oldest ? oldest.respondByAt : null} />
             </section>
 
             <EarningsPanel workload={workload} stats={stats} />
@@ -169,7 +167,9 @@ export default async function CoachConsolePage() {
 }
 
 /** Hours a coach is bookable in a normal week, before exceptions and bookings. */
-function openHoursPerWeek(rules: { days: number[]; startMinute: number; endMinute: number }[]): number {
+function openHoursPerWeek(
+  rules: { days: number[]; startMinute: number; endMinute: number }[]
+): number {
   const minutes = rules.reduce(
     (sum, rule) => sum + (rule.endMinute - rule.startMinute) * rule.days.length,
     0

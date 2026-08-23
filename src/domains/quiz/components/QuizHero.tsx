@@ -20,7 +20,7 @@ function HudStat({ label, value }: { label: string; value: React.ReactNode }): R
   return (
     <div>
       <p className="font-mono text-[9.5px] uppercase tracking-label text-fg-4">{label}</p>
-      <p className="mt-1.5 font-mono text-[22px] font-bold leading-none tabular-nums text-fg-1">
+      <p className="mt-1.5 font-mono text-[22px] font-bold tabular-nums leading-none text-fg-1">
         {value}
       </p>
     </div>
@@ -43,10 +43,16 @@ export function QuizHero({
     <section className="relative overflow-hidden border-b border-line-1">
       <span
         aria-hidden
-        className="absolute inset-0 bg-cover opacity-[.34] grayscale-[.4] contrast-[1.1]"
-        style={{ backgroundImage: `url('${championSplashUrl(HERO_ART)}')`, backgroundPosition: "60% 20%" }}
+        className="absolute inset-0 bg-cover opacity-[.34] contrast-[1.1] grayscale-[.4]"
+        style={{
+          backgroundImage: `url('${championSplashUrl(HERO_ART)}')`,
+          backgroundPosition: "60% 20%",
+        }}
       />
-      <span aria-hidden className="absolute inset-0 bg-gradient-to-r from-ink-1000 via-ink-1000/70 to-ink-1000/30" />
+      <span
+        aria-hidden
+        className="absolute inset-0 bg-gradient-to-r from-ink-1000 via-ink-1000/70 to-ink-1000/30"
+      />
       <span aria-hidden className="bg-scanline absolute inset-0" />
       <span aria-hidden className="bg-protect-bottom absolute inset-x-0 bottom-0 h-1/2" />
 
@@ -70,13 +76,17 @@ export function QuizHero({
         <div className="flex flex-wrap items-end gap-7 pb-0.5">
           <div
             className={`notch flex items-center gap-3 border px-4 py-3 ${
-              streak > 0 ? "glow-accent-soft border-acid-500 bg-ink-1000/60" : "border-line-2 bg-ink-1000/60"
+              streak > 0
+                ? "glow-accent-soft border-acid-500 bg-ink-1000/60"
+                : "border-line-2 bg-ink-1000/60"
             }`}
           >
-            <Flame className={`h-[22px] w-[22px] shrink-0 ${streak > 0 ? "text-acid-500" : "text-fg-4"}`} />
+            <Flame
+              className={`h-[22px] w-[22px] shrink-0 ${streak > 0 ? "text-acid-500" : "text-fg-4"}`}
+            />
             <span className="grid gap-1">
               <span
-                className={`font-mono text-[22px] font-bold leading-none tabular-nums ${
+                className={`font-mono text-[22px] font-bold tabular-nums leading-none ${
                   streak > 0 ? "text-acid-500" : "text-fg-3"
                 }`}
               >

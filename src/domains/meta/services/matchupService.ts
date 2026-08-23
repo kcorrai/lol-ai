@@ -106,11 +106,15 @@ function buildHints(
     );
   }
   if (a.info.difficulty >= 8) {
-    hints.push(`${a.name} is mechanically demanding — practice its combos before first-picking it into this lane.`);
+    hints.push(
+      `${a.name} is mechanically demanding — practice its combos before first-picking it into this lane.`
+    );
   }
 
   if (hints.length === 0) {
-    hints.push(`Trade when your key cooldowns are up and ${b.name}'s are down, and track wave state to deny all-ins.`);
+    hints.push(
+      `Trade when your key cooldowns are up and ${b.name}'s are down, and track wave state to deny all-ins.`
+    );
   }
   return hints.slice(0, 3);
 }

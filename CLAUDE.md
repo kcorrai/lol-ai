@@ -69,28 +69,28 @@ export default (k, d, a) => (k + a) / Math.max(d, 1);
 
 ### 3.2 Naming Conventions
 
-| Entity | Convention | Example |
-|---|---|---|
-| Files (components) | PascalCase | `MatchCard.tsx` |
-| Files (hooks) | camelCase with `use` prefix | `useMatchHistory.ts` |
-| Files (services) | camelCase with `Service` suffix | `coachingService.ts` |
-| Files (utils) | camelCase | `formatKDA.ts` |
-| Database tables | snake_case (Prisma convention) | `match_participants` |
-| Environment variables | SCREAMING_SNAKE_CASE | `RIOT_API_KEY` |
-| React components | PascalCase | `ChampionPoolCard` |
-| Zustand stores | camelCase with `Store` suffix | `useUiStore` |
-| API routes | kebab-case path segments | `/api/match-history` |
-| CSS classes | Tailwind utilities only | — |
+| Entity                | Convention                      | Example              |
+| --------------------- | ------------------------------- | -------------------- |
+| Files (components)    | PascalCase                      | `MatchCard.tsx`      |
+| Files (hooks)         | camelCase with `use` prefix     | `useMatchHistory.ts` |
+| Files (services)      | camelCase with `Service` suffix | `coachingService.ts` |
+| Files (utils)         | camelCase                       | `formatKDA.ts`       |
+| Database tables       | snake_case (Prisma convention)  | `match_participants` |
+| Environment variables | SCREAMING_SNAKE_CASE            | `RIOT_API_KEY`       |
+| React components      | PascalCase                      | `ChampionPoolCard`   |
+| Zustand stores        | camelCase with `Store` suffix   | `useUiStore`         |
+| API routes            | kebab-case path segments        | `/api/match-history` |
+| CSS classes           | Tailwind utilities only         | —                    |
 
 ### 3.3 File Size Limits
 
-| File Type | Max Lines | Action if Exceeded |
-|---|---|---|
-| React component | 200 | Extract sub-components |
-| Service file | 250 | Split by sub-domain |
-| API route handler | 80 | Move logic to service |
-| Utility file | 150 | Split by purpose |
-| Test file | 300 | Split by describe block |
+| File Type         | Max Lines | Action if Exceeded      |
+| ----------------- | --------- | ----------------------- |
+| React component   | 200       | Extract sub-components  |
+| Service file      | 250       | Split by sub-domain     |
+| API route handler | 80        | Move logic to service   |
+| Utility file      | 150       | Split by purpose        |
+| Test file         | 300       | Split by describe block |
 
 ### 3.4 Comments
 
@@ -125,12 +125,12 @@ Full structure in `docs/PROJECT_STRUCTURE.md`. Key rules:
 
 ### 5.2 Coverage Requirements
 
-| Layer | Minimum Coverage |
-|---|---|
-| Domain services | 80% |
-| Utility functions | 90% |
-| API route handlers | 70% |
-| React components | Key interactions only |
+| Layer              | Minimum Coverage      |
+| ------------------ | --------------------- |
+| Domain services    | 80%                   |
+| Utility functions  | 90%                   |
+| API route handlers | 70%                   |
+| React components   | Key interactions only |
 
 ### 5.3 Test File Organization
 
@@ -172,6 +172,7 @@ Follow Conventional Commits:
 Types: `feat`, `fix`, `chore`, `docs`, `test`, `refactor`, `perf`
 
 Examples:
+
 ```
 feat(coaching): generate AI coaching report for last 5 matches
 fix(riot): handle 429 rate limit response with exponential backoff
@@ -181,6 +182,7 @@ test(analysis): add unit tests for KDA computation edge cases
 ### 6.3 PR Requirements
 
 Every PR must:
+
 - Reference a task ID in the description
 - Have a self-review checklist completed
 - Have passing CI (lint, type check, tests)
@@ -214,12 +216,15 @@ When making a significant technical decision (choosing a library, changing an ar
 ## Status: Proposed | Accepted | Deprecated
 
 ## Context
+
 What situation prompted this decision?
 
 ## Decision
+
 What was decided?
 
 ## Consequences
+
 What are the trade-offs?
 ```
 
@@ -247,6 +252,7 @@ When using AI assistants (Claude Code, Copilot, etc.) on this project:
 ### 8.3 Verification Requirement
 
 Every AI-generated code block must be reviewed for:
+
 1. Type safety (no implicit `any`)
 2. Architecture compliance (correct layer placement)
 3. Security (no exposed secrets, no SQL injection surface)
@@ -257,6 +263,7 @@ Every AI-generated code block must be reviewed for:
 ## 9. Environment Variables
 
 Required variables are defined in `.env.example`. All variables must:
+
 - Be prefixed by their provider/scope: `RIOT_`, `OPENAI_`, `ANTHROPIC_`, `DB_`, `AUTH_`
 - Have a comment explaining what they are
 - Never have default values that are real secrets (use placeholder strings)

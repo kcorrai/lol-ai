@@ -34,11 +34,13 @@ Display the player's ranked standing and LP history over time as a line chart. T
 ### When to Snapshot
 
 A `ranked_history` row is inserted:
+
 1. When a Riot account is first connected (initial snapshot)
 2. After each successful match sync (if rank changed from last snapshot)
 3. Optionally: daily via a lightweight cron (Phase 2)
 
 LP change detection:
+
 ```typescript
 const lastSnapshot = await getLastRankedSnapshot(riotAccountId, queueType);
 if (hasRankChanged(lastSnapshot, currentRanked)) {
@@ -49,6 +51,7 @@ if (hasRankChanged(lastSnapshot, currentRanked)) {
 ### Chart Implementation
 
 Use Recharts `LineChart`:
+
 - X-axis: `recordedAt` (date)
 - Y-axis: composite LP (e.g., Gold II 67 LP = 1267, Gold I 45 = 1345)
 - Composite LP formula: `tierIndex * 400 + rankIndex * 100 + lp`
@@ -59,6 +62,7 @@ Use Recharts `LineChart`:
 ## Components to Build
 
 `src/domains/analysis/components/`:
+
 - `RankedStandingCard` — current rank with emblem, LP, W/L, win rate
 - `LPHistoryChart` — Recharts LineChart with tooltips
 - `RankTierBadge` — rank tier icon + tier name

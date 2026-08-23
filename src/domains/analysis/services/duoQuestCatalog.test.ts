@@ -61,7 +61,7 @@ describe("questsForWeek", () => {
     const nextWeek = weekWindow(new Date("2026-08-20T00:00:00Z")).start;
 
     expect(questsForWeek(thisWeek).map((q) => q.key)).not.toEqual(
-      questsForWeek(nextWeek).map((q) => q.key),
+      questsForWeek(nextWeek).map((q) => q.key)
     );
   });
 

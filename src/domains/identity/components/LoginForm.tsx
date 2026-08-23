@@ -73,9 +73,7 @@ export function LoginForm(): React.ReactElement {
     >
       <div className="space-y-4">
         {justRegistered && <AuthNotice>Account created — log in to get started.</AuthNotice>}
-        {justReset && (
-          <AuthNotice>Password updated. Log in with your new password.</AuthNotice>
-        )}
+        {justReset && <AuthNotice>Password updated. Log in with your new password.</AuthNotice>}
 
         <OAuthButton provider="google" />
 

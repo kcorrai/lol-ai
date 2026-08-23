@@ -64,7 +64,7 @@ famous name attached.
   `/esports/players/chovy` resolves to Gen.G, not the Challengers roster.
 - **Cost is bounded by sharing.** Reading a pool costs one match lookup plus two
   livestats calls per game, over the team's last four series. Game stats cache
-  per *game* for a month, so the first player of a team pays and the other nine
+  per _game_ for a month, so the first player of a team pays and the other nine
   are nearly free.
 - Roster cards and teammate chips now link to player pages, so team ↔ player
   navigation closes both ways.

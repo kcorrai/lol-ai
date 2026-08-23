@@ -30,11 +30,26 @@ export const slowPushAndCrash: Lesson = {
       caption: "What to cash a slow push in for",
       head: ["Situation", "The payout"],
       rows: [
-        ["Your jungler is nearby and the enemy is low", "A dive — the wave tanks the turret while you kill them"],
-        ["Enemy turret is low or plates are still up", "A turret or 2–3 plates while they cannot clear"],
-        ["You need to reset with an item threshold hit", "A free recall — the biggest wave you will ever crash"],
-        ["An objective is spawning on the other side", "Crash, then walk to the objective with the enemy stuck clearing"],
-        ["You have none of the above", "Do not build it — a big wave with no plan is a gank magnet"],
+        [
+          "Your jungler is nearby and the enemy is low",
+          "A dive — the wave tanks the turret while you kill them",
+        ],
+        [
+          "Enemy turret is low or plates are still up",
+          "A turret or 2–3 plates while they cannot clear",
+        ],
+        [
+          "You need to reset with an item threshold hit",
+          "A free recall — the biggest wave you will ever crash",
+        ],
+        [
+          "An objective is spawning on the other side",
+          "Crash, then walk to the objective with the enemy stuck clearing",
+        ],
+        [
+          "You have none of the above",
+          "Do not build it — a big wave with no plan is a gank magnet",
+        ],
       ],
     },
     {

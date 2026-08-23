@@ -49,7 +49,7 @@ function score(row: IndexedPlayer, query: SearchQuery): number {
 export function rankSearchHits(
   rows: readonly IndexedPlayer[],
   query: SearchQuery,
-  limit: number = DEFAULT_SEARCH_LIMIT,
+  limit: number = DEFAULT_SEARCH_LIMIT
 ): IndexedPlayer[] {
   const scored = rows.map((row) => ({ row, score: score(row, query) }));
 
@@ -60,7 +60,7 @@ export function rankSearchHits(
       b.row.lastSeenAt.getTime() - a.row.lastSeenAt.getTime() ||
       // Two players seen the same number of times on the same day would otherwise swap places
       // between requests, which reads as the list flickering.
-      a.row.gameName.localeCompare(b.row.gameName),
+      a.row.gameName.localeCompare(b.row.gameName)
   );
 
   return scored.slice(0, limit).map((s) => s.row);

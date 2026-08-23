@@ -13,7 +13,7 @@ report row looks inert and completed reports must be clicked. Wanted: the row st
 - `ReportList.ReportRow`: while `status` is `pending`/`processing`, apply a persistent
   `animate-glow-pulse` accent glow (reuse the existing keyframe) instead of the hover-only shadow.
 - `coaching/PageClient.tsx`: capture the just-generated `reportId` from `generateReport.mutate(...,
-  { onSuccess })`; a `useEffect` watching the polled reports (`useCoachingReports` already refetches
+{ onSuccess })`; a `useEffect` watching the polled reports (`useCoachingReports` already refetches
   every 3s while active) navigates `router.push('/coaching/'+reportId)` exactly once when that
   report flips to `complete`.
 

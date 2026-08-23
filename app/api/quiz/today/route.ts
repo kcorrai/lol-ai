@@ -27,12 +27,7 @@ export async function GET(request: NextRequest) {
     });
     if (!parsed.success) throw Errors.validation(parsed.error.issues[0].message);
 
-    const puzzle = buildPuzzle(
-      parsed.data.mode,
-      new Date(),
-      parsed.data.misses,
-      parsed.data.seed
-    );
+    const puzzle = buildPuzzle(parsed.data.mode, new Date(), parsed.data.misses, parsed.data.seed);
     return apiSuccess({ puzzle, champions: championCatalogue() });
   } catch (err) {
     if (err instanceof ApiError) return apiError(err.code, err.message, err.statusCode);

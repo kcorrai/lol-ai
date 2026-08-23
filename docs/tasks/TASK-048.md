@@ -27,9 +27,9 @@ Matchup sayfasÄ±nÄ±n kullanacaÄŸÄ± TanStack Query mutation hook'unu yaz.
 
 ```typescript
 // src/hooks/useMatchupAnalysis.ts
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { MatchupAnalysis } from '@/domains/matchup/types/matchup.types';
-import type { Position } from '@/types/common.types';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { MatchupAnalysis } from "@/domains/matchup/types/matchup.types";
+import type { Position } from "@/types/common.types";
 
 interface AnalyzeParams {
   champion: string;
@@ -42,18 +42,15 @@ export function useMatchupAnalysis() {
 
   const mutation = useMutation<MatchupAnalysis, Error, AnalyzeParams>({
     mutationFn: (params) =>
-      fetch('/api/matchup/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      fetch("/api/matchup/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(params),
       })
-        .then(res => res.json())
-        .then(data => data.data),
+        .then((res) => res.json())
+        .then((data) => data.data),
     onSuccess: (data, params) => {
-      queryClient.setQueryData(
-        ['matchup', params.champion, params.opponent, params.role],
-        data
-      );
+      queryClient.setQueryData(["matchup", params.champion, params.opponent, params.role], data);
     },
   });
 
@@ -73,4 +70,3 @@ export function useMatchupAnalysis() {
 ## BaÄŸÄ±mlÄ±lÄ±klar
 
 - TASK-047 (Matchup API endpoint) tamamlanmÄ±ÅŸ olmalÄ±
-

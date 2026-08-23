@@ -7,7 +7,7 @@
 The competitor research found one thing consistently, and it is the opening for
 this whole section: **nobody verifies a coach's rank.**
 
-- Metafy's own help centre: *"no application, no waitlist, and no vetting."* The
+- Metafy's own help centre: _"no application, no waitlist, and no vetting."_ The
   rank is a sentence in a bio. The only real gate is Veriff KYC before a coach
   can withdraw money.
 - Fiverr has no gaming-specific vetting at all; "I will make you Challenger"
@@ -23,7 +23,7 @@ The temptation is to call that "verified". It is not, and the difference
 matters.
 
 **Riot Sign-On is the only sanctioned way to prove an account belongs to a
-person.** It requires an approved production API key *and* a separate
+person.** It requires an approved production API key _and_ a separate
 invitation, and the odds and timeline of that invitation for a platform this
 size could not be established. The predecessor mechanism, Third-Party Code, was
 switched off on 7 March 2022. The "set this profile icon" trick is not a
@@ -34,11 +34,11 @@ anyone can read a public icon id.
 
 **Three tiers, and the UI never shows a stronger claim than the tier supports.**
 
-| `RankProofMethod` | What it proves | Label | Reachable |
-|---|---|---|---|
-| `SELF_REPORTED` | nothing | no badge | — |
-| `PLATFORM_CHECKED` | this rank was read by us, from Riot, for a linked account, on this date | "Checked by LaneIQ · *date*" | **now** |
-| `RIOT_VERIFIED` | the account belongs to this person | "Riot-verified" | blocked on an RSO invitation |
+| `RankProofMethod`  | What it proves                                                          | Label                        | Reachable                    |
+| ------------------ | ----------------------------------------------------------------------- | ---------------------------- | ---------------------------- |
+| `SELF_REPORTED`    | nothing                                                                 | no badge                     | —                            |
+| `PLATFORM_CHECKED` | this rank was read by us, from Riot, for a linked account, on this date | "Checked by LaneIQ · _date_" | **now**                      |
+| `RIOT_VERIFIED`    | the account belongs to this person                                      | "Riot-verified"              | blocked on an RSO invitation |
 
 `PLATFORM_CHECKED` is what ships. The badge carries the date it was read and
 goes stale after 36 hours; a cron refreshes every 6, so there are several

@@ -1,16 +1,21 @@
 export interface DdragonChampionSummary {
-  id: string;      // e.g. "Ahri"
-  key: string;     // numeric string e.g. "103"
-  name: string;    // display name e.g. "Ahri"
+  id: string; // e.g. "Ahri"
+  key: string; // numeric string e.g. "103"
+  name: string; // display name e.g. "Ahri"
   title: string;
-  tags: string[];  // ["Mage", "Assassin"]
+  tags: string[]; // ["Mage", "Assassin"]
   info: { attack: number; defense: number; magic: number; difficulty: number };
   stats: {
-    hp: number; hpperlevel: number;
-    armor: number; armorperlevel: number;
-    spellblock: number; spellblockperlevel: number;
-    attackdamage: number; attackdamageperlevel: number;
-    attackrange: number; movespeed: number;
+    hp: number;
+    hpperlevel: number;
+    armor: number;
+    armorperlevel: number;
+    spellblock: number;
+    spellblockperlevel: number;
+    attackdamage: number;
+    attackdamageperlevel: number;
+    attackrange: number;
+    movespeed: number;
   };
   blurb: string;
 }

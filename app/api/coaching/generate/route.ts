@@ -3,7 +3,11 @@ import { z } from "zod";
 import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
 import { Errors } from "@/lib/api/errors";
-import { assertOwnsRiotAccount, assertCanGenerateReport, getPlanLimits } from "@/lib/auth/authorization";
+import {
+  assertOwnsRiotAccount,
+  assertCanGenerateReport,
+  getPlanLimits,
+} from "@/lib/auth/authorization";
 import { buildCoachingInput } from "@/domains/coaching/pipeline/dataPreparator";
 import { createPendingReportWithinQuota } from "@/domains/coaching/services/reportService";
 import { checkRateLimit, rateLimitResponse, addRateLimitHeaders } from "@/lib/api/rateLimit";
@@ -57,13 +61,20 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
 
   // Re-checks the quota and inserts atomically — see createPendingReportWithinQuota (TASK-267).
   const reportId = await createPendingReportWithinQuota(
-    userId, riotAccountId, matchIds, reportType, focusArea
+    userId,
+    riotAccountId,
+    matchIds,
+    reportType,
+    focusArea
   );
 
   // Durable via Inngest in production; runs the pipeline in-process if Inngest is unavailable (TASK-223).
   await dispatchOrRunInProcess(
-    { name: "coaching/report.requested", data: { reportId, riotAccountId, matchIds, reportType, focusArea } },
-    () => runCoachingPipeline(reportId, riotAccountId, matchIds, reportType, focusArea),
+    {
+      name: "coaching/report.requested",
+      data: { reportId, riotAccountId, matchIds, reportType, focusArea },
+    },
+    () => runCoachingPipeline(reportId, riotAccountId, matchIds, reportType, focusArea)
   );
 
   await audit({
@@ -72,7 +83,9 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
     resourceId: reportId,
     metadata: { reportType, riotAccountId },
     ipAddress: req.headers.get("x-forwarded-for") ?? undefined,
-  }).catch(() => { /* non-critical */ });
+  }).catch(() => {
+    /* non-critical */
+  });
 
   const response = apiSuccess({ reportId, status: "pending" }, 202);
   return addRateLimitHeaders(response, rateCheck, rateConfig.windowMs);

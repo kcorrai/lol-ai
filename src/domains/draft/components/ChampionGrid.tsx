@@ -61,9 +61,7 @@ export function ChampionGrid({
     // itself when nothing is filtered out, and sorting that in place would
     // reorder every other consumer's view of the pool.
     const ranked = [...matched];
-    ranked.sort((a, b) =>
-      sort === "winRate" ? b.winRate - a.winRate : presence(b) - presence(a)
-    );
+    ranked.sort((a, b) => (sort === "winRate" ? b.winRate - a.winRate : presence(b) - presence(a)));
     return ranked;
   }, [champions, query, lane, sort]);
 

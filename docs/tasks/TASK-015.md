@@ -15,6 +15,7 @@ Complete all pre-launch checks before opening the beta to real users. This task 
 ## Acceptance Criteria
 
 ### Security
+
 - [ ] All environment variables set in Vercel (production)
 - [ ] No secrets in source code or git history (run `git log -S "sk_" --all` to verify)
 - [ ] CSP headers configured in `next.config.js`
@@ -23,16 +24,19 @@ Complete all pre-launch checks before opening the beta to real users. This task 
 - [ ] Auth middleware covers all `(app)/` routes
 
 ### Performance
+
 - [ ] Lighthouse score ≥ 90 on landing page
 - [ ] P95 API response time < 2s on match history endpoint (test with k6 or similar)
 - [ ] No N+1 queries (verify with Prisma query logging enabled in dev)
 
 ### Monitoring
+
 - [ ] Sentry configured (frontend + backend error tracking)
 - [ ] Vercel Analytics enabled
 - [ ] AI cost tracking dashboard query working (admin page)
 
 ### Legal / Compliance
+
 - [ ] Privacy policy page exists at `/privacy`
 - [ ] Terms of service page exists at `/terms`
 - [ ] Riot Games Legal Jibber Jabber compliance notice on landing page footer
@@ -40,12 +44,14 @@ Complete all pre-launch checks before opening the beta to real users. This task 
 - [ ] Cookie consent banner (if analytics cookies used)
 
 ### Error Handling
+
 - [ ] 404 page (`not-found.tsx`) exists and is styled
 - [ ] 500 error page (`error.tsx`) exists and is styled
 - [ ] Riot API down → user sees friendly message, not a 500
 - [ ] AI provider down → user sees friendly message, report marked `failed`
 
 ### Quality
+
 - [ ] All 13 previous tasks have passing CI
 - [ ] Beta tested internally with 5 real Riot accounts on different servers
 - [ ] AI report tested on at least 20 real player accounts, avg rating ≥ 3.8/5

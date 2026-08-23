@@ -11,12 +11,12 @@ Phase 6 (TASK-166..178) made the repo English and was verified by reading render
 strings survived that, and the reason each survived is worth noting — it says where the next one
 will be.
 
-| File | String | Why it was missed |
-|---|---|---|
-| `app/(app)/recap/page.tsx:4` | `title: "Sezon Recap"` | Page *metadata*, not page content — it renders in the browser tab, not the viewport |
-| `src/components/achievements/AchievementToast.tsx:56` | `aria-label="Kapat"` | **Only ever exposed to a screen reader.** Invisible to any visual review |
-| `src/components/layout/RiotAccountSelector.tsx:62` | `"Senkronize ediliyor…"` | Transient — shows for 4s after a successful sync |
-| `src/components/layout/RiotAccountSelector.tsx:65` | `"Hata"` | Only rendered on a sync failure |
+| File                                                  | String                   | Why it was missed                                                                   |
+| ----------------------------------------------------- | ------------------------ | ----------------------------------------------------------------------------------- |
+| `app/(app)/recap/page.tsx:4`                          | `title: "Sezon Recap"`   | Page _metadata_, not page content — it renders in the browser tab, not the viewport |
+| `src/components/achievements/AchievementToast.tsx:56` | `aria-label="Kapat"`     | **Only ever exposed to a screen reader.** Invisible to any visual review            |
+| `src/components/layout/RiotAccountSelector.tsx:62`    | `"Senkronize ediliyor…"` | Transient — shows for 4s after a successful sync                                    |
+| `src/components/layout/RiotAccountSelector.tsx:65`    | `"Hata"`                 | Only rendered on a sync failure                                                     |
 
 The pattern: everything left was **outside the default visual render** — metadata, an ARIA label,
 and two transient states behind a success/failure branch. A visual sweep structurally cannot find

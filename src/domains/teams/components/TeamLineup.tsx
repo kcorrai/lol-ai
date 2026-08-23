@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import type { TeamMemberSummary } from "@/domains/teams/types/teams.types";
 
 const POSITIONS = [
-  { key: "top",     label: "Top",     abbr: "TOP" },
-  { key: "jungle",  label: "Jungle",  abbr: "JGL" },
-  { key: "mid",     label: "Mid",     abbr: "MID" },
-  { key: "bot",     label: "Bot",     abbr: "BOT" },
+  { key: "top", label: "Top", abbr: "TOP" },
+  { key: "jungle", label: "Jungle", abbr: "JGL" },
+  { key: "mid", label: "Mid", abbr: "MID" },
+  { key: "bot", label: "Bot", abbr: "BOT" },
   { key: "support", label: "Support", abbr: "SUP" },
 ] as const;
 
-type PositionKey = typeof POSITIONS[number]["key"];
+type PositionKey = (typeof POSITIONS)[number]["key"];
 type Lineup = Record<PositionKey, string | null>;
 
 const EMPTY: Lineup = { top: null, jungle: null, mid: null, bot: null, support: null };
@@ -57,7 +57,7 @@ export function TeamLineup({ teamId, members, canManage }: Props) {
               setLineup(EMPTY);
               localStorage.removeItem(`lineup-${teamId}`);
             }}
-            className="text-[10px] text-text-muted/40 hover:text-text-muted transition-colors"
+            className="text-[10px] text-text-muted/40 transition-colors hover:text-text-muted"
           >
             Reset
           </button>
@@ -66,7 +66,9 @@ export function TeamLineup({ teamId, members, canManage }: Props) {
 
       {POSITIONS.map((pos) => {
         const member = assignedMember(pos.key);
-        const available = members.filter((m) => !assignedIds.has(m.userId) || lineup[pos.key] === m.userId);
+        const available = members.filter(
+          (m) => !assignedIds.has(m.userId) || lineup[pos.key] === m.userId
+        );
 
         return (
           <div
@@ -78,11 +80,15 @@ export function TeamLineup({ teamId, members, canManage }: Props) {
             </div>
 
             <div className="min-w-0 flex-1">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted/50">{pos.label}</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted/50">
+                {pos.label}
+              </p>
               {member ? (
-                <p className="text-sm font-semibold text-text truncate">
+                <p className="truncate text-sm font-semibold text-text">
                   {member.gameName}
-                  <span className="ml-1 text-xs font-normal text-text-muted">#{member.tagLine}</span>
+                  <span className="ml-1 text-xs font-normal text-text-muted">
+                    #{member.tagLine}
+                  </span>
                 </p>
               ) : (
                 <p className="text-sm text-text-muted/50">Empty</p>

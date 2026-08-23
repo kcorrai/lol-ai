@@ -86,11 +86,7 @@ export function DraftBoard({
 
       <div className="grid min-h-0 flex-1 lg:grid-cols-[minmax(210px,1fr)_minmax(0,2.1fr)_minmax(210px,1fr)]">
         <div className="min-h-0 border-line-1 p-3 lg:border-r">
-          <TeamColumn
-            game={game}
-            side="BLUE"
-            championsByKey={championsByKey}
-          />
+          <TeamColumn game={game} side="BLUE" championsByKey={championsByKey} />
         </div>
 
         <div className="order-last flex min-h-0 flex-col border-line-1 max-lg:border-y lg:order-none">
@@ -120,11 +116,7 @@ export function DraftBoard({
         </div>
 
         <div className="min-h-0 border-line-1 p-3 lg:border-l">
-          <TeamColumn
-            game={game}
-            side="RED"
-            championsByKey={championsByKey}
-          />
+          <TeamColumn game={game} side="RED" championsByKey={championsByKey} />
         </div>
       </div>
 

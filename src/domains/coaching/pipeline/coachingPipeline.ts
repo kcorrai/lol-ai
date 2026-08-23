@@ -26,9 +26,23 @@ async function callAiAndPersist(
   systemPrompt: string,
   userMessage: string,
   analysisTypeSuffix: string = ""
-): Promise<{ rawContent: string; model: string; promptTokens: number; completionTokens: number; totalTokens: number; latencyMs: number }> {
+): Promise<{
+  rawContent: string;
+  model: string;
+  promptTokens: number;
+  completionTokens: number;
+  totalTokens: number;
+  latencyMs: number;
+}> {
   const result = await getAiClient().complete(systemPrompt, userMessage);
-  const { content: rawContent, model, promptTokens, completionTokens, totalTokens, latencyMs } = result;
+  const {
+    content: rawContent,
+    model,
+    promptTokens,
+    completionTokens,
+    totalTokens,
+    latencyMs,
+  } = result;
 
   const inputHash = hashPrompt(systemPrompt, userMessage);
   await prisma.aiAnalysis.upsert({
@@ -108,7 +122,13 @@ export async function runCoachingPipeline(
       });
 
       const retryMessage = userMessage + STRICT_JSON_SUFFIX;
-      const retryResult = await callAiAndPersist(reportId, reportType, systemPrompt, retryMessage, "-retry");
+      const retryResult = await callAiAndPersist(
+        reportId,
+        reportType,
+        systemPrompt,
+        retryMessage,
+        "-retry"
+      );
       rawContent = retryResult.rawContent;
       model = retryResult.model;
       totalTokens += retryResult.totalTokens;

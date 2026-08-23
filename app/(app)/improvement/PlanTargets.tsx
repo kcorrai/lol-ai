@@ -17,7 +17,13 @@ interface PlanTargetsProps {
   planEnded: boolean;
 }
 
-function TargetRow({ target, planEnded }: { target: PlanProgress; planEnded: boolean }): React.JSX.Element {
+function TargetRow({
+  target,
+  planEnded,
+}: {
+  target: PlanProgress;
+  planEnded: boolean;
+}): React.JSX.Element {
   const tone = targetTone(target, planEnded);
   const unit = target.unit ?? "";
   const pct = Math.min(100, Math.max(0, Math.round(target.progress * 100)));
@@ -32,11 +38,14 @@ function TargetRow({ target, planEnded }: { target: PlanProgress; planEnded: boo
           </span>
         </span>
         <span className="font-mono text-[11.5px] tracking-wide text-fg-3">
-          start {formatMetric(target.baseline)}{unit} →{" "}
+          start {formatMetric(target.baseline)}
+          {unit} →{" "}
           <span className={toneText(tone)}>
-            now {formatMetric(target.current)}{unit}
+            now {formatMetric(target.current)}
+            {unit}
           </span>{" "}
-          · goal {formatMetric(target.goal)}{unit}
+          · goal {formatMetric(target.goal)}
+          {unit}
         </span>
       </div>
 

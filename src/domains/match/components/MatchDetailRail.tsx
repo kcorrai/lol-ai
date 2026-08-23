@@ -10,11 +10,21 @@ interface MatchDetailRailProps {
   me: ParticipantDetail | undefined;
 }
 
-function Row({ label, value, tone }: { label: string; value: string; tone?: "loss" }): React.JSX.Element {
+function Row({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone?: "loss";
+}): React.JSX.Element {
   return (
     <div className="flex justify-between gap-2.5">
       <span className="text-fg-3">{label}</span>
-      <span className={`font-mono text-xs uppercase ${tone === "loss" ? "text-danger" : "text-fg-1"}`}>
+      <span
+        className={`font-mono text-xs uppercase ${tone === "loss" ? "text-danger" : "text-fg-1"}`}
+      >
         {value}
       </span>
     </div>

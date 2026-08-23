@@ -91,7 +91,7 @@ export function MatchKpiStrip({ me, participants }: MatchKpiStripProps): React.J
                 {kpi.label}
               </div>
               <div
-                className={`my-2 font-mono text-xl font-bold leading-none tabular-nums ${
+                className={`my-2 font-mono text-xl font-bold tabular-nums leading-none ${
                   weak ? "text-danger" : "text-fg-1"
                 }`}
               >

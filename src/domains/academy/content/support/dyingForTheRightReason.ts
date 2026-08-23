@@ -29,11 +29,31 @@ export const dyingForTheRightReason: Lesson = {
       caption: "Worth it, or not",
       head: ["Situation", "Trade?", "Why"],
       rows: [
-        ["Your fed ADC is about to be caught in a fight you are winning", "Yes", "One death instead of the one that loses the fight"],
-        ["Body-blocking a chase during a retreat", "Yes", "You are the cheapest thing in the corridor"],
-        ["Contesting a Baron your team cannot fight for", "No", "Nothing is being saved; you are adding a body to a loss"],
-        ["Going in first to 'start something' at 34 minutes", "No", "Nothing was leaving — you created the loss"],
-        ["Warding deep at 30 minutes with no team nearby", "No", "The ward is not worth a death and never was"],
+        [
+          "Your fed ADC is about to be caught in a fight you are winning",
+          "Yes",
+          "One death instead of the one that loses the fight",
+        ],
+        [
+          "Body-blocking a chase during a retreat",
+          "Yes",
+          "You are the cheapest thing in the corridor",
+        ],
+        [
+          "Contesting a Baron your team cannot fight for",
+          "No",
+          "Nothing is being saved; you are adding a body to a loss",
+        ],
+        [
+          "Going in first to 'start something' at 34 minutes",
+          "No",
+          "Nothing was leaving — you created the loss",
+        ],
+        [
+          "Warding deep at 30 minutes with no team nearby",
+          "No",
+          "The ward is not worth a death and never was",
+        ],
       ],
     },
     { kind: "drill", drillId: "trade-quiz" },

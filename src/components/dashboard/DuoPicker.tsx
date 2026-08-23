@@ -85,10 +85,7 @@ export function DuoPicker({ candidates, isSaving, error, onPick, onCancel }: Pro
       {error && <p className="mt-2 text-xs text-danger">{error}</p>}
 
       {onCancel && (
-        <button
-          onClick={onCancel}
-          className="mt-3 text-[11px] text-text-muted hover:text-text"
-        >
+        <button onClick={onCancel} className="mt-3 text-[11px] text-text-muted hover:text-text">
           Cancel
         </button>
       )}

@@ -90,7 +90,9 @@ describe("applyReferralCode", () => {
 
   it("returns false when code already has a referee", async () => {
     vi.mocked(mockReferral.findUnique).mockResolvedValueOnce({
-      code: "ABC12345", referrerId: "referrer-1", refereeId: "existing-user",
+      code: "ABC12345",
+      referrerId: "referrer-1",
+      refereeId: "existing-user",
     } as never);
 
     expect(await applyReferralCode("ABC12345", "user-1")).toBe(false);
@@ -98,7 +100,9 @@ describe("applyReferralCode", () => {
 
   it("returns false when user tries to use their own code", async () => {
     vi.mocked(mockReferral.findUnique).mockResolvedValueOnce({
-      code: "MYCODE12", referrerId: "user-1", refereeId: null,
+      code: "MYCODE12",
+      referrerId: "user-1",
+      refereeId: null,
     } as never);
 
     expect(await applyReferralCode("MYCODE12", "user-1")).toBe(false);
@@ -106,7 +110,9 @@ describe("applyReferralCode", () => {
 
   it("applies the code and returns true", async () => {
     vi.mocked(mockReferral.findUnique).mockResolvedValueOnce({
-      code: "VALID123", referrerId: "referrer-1", refereeId: null,
+      code: "VALID123",
+      referrerId: "referrer-1",
+      refereeId: null,
     } as never);
     vi.mocked(mockReferral.update).mockResolvedValueOnce({} as never);
 
@@ -128,7 +134,9 @@ describe("completeReferral", () => {
 
   it("does nothing when referral status is not pending", async () => {
     vi.mocked(mockReferral.findUnique).mockResolvedValueOnce({
-      id: "ref-1", referrerId: "referrer-1", status: "rewarded",
+      id: "ref-1",
+      referrerId: "referrer-1",
+      status: "rewarded",
     } as never);
 
     await completeReferral("referee-1");
@@ -138,7 +146,9 @@ describe("completeReferral", () => {
 
   it("completes referral and awards Pro trial to both parties", async () => {
     vi.mocked(mockReferral.findUnique).mockResolvedValueOnce({
-      id: "ref-1", referrerId: "referrer-1", status: "pending",
+      id: "ref-1",
+      referrerId: "referrer-1",
+      status: "pending",
     } as never);
     // Referrer is below the reward cap → both parties get the trial (3 tx ops)
     vi.mocked(mockReferral.count).mockResolvedValueOnce(0 as never);

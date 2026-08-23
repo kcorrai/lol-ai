@@ -64,9 +64,13 @@ describe("indexPlayers", () => {
       participant("Chovy"),
     ]);
 
-    const increments = vi
-      .mocked(prisma.playerIndex.updateMany)
-      .mock.calls.map((call) => call[0] as { where: { puuid: { in: string[] } }; data: { seenCount: { increment: number } } });
+    const increments = vi.mocked(prisma.playerIndex.updateMany).mock.calls.map(
+      (call) =>
+        call[0] as {
+          where: { puuid: { in: string[] } };
+          data: { seenCount: { increment: number } };
+        }
+    );
 
     const byPuuid = new Map<string, number>();
     for (const call of increments) {
@@ -77,12 +81,7 @@ describe("indexPlayers", () => {
   });
 
   it("groups players by appearance count rather than issuing one statement each", async () => {
-    await indexPlayers([
-      participant("A"),
-      participant("B"),
-      participant("C"),
-      participant("D"),
-    ]);
+    await indexPlayers([participant("A"), participant("B"), participant("C"), participant("D")]);
 
     // Four players, all seen once — one statement, not four.
     expect(prisma.playerIndex.updateMany).toHaveBeenCalledTimes(1);
@@ -108,7 +107,7 @@ describe("indexPlayers", () => {
       expect.objectContaining({
         where: { puuid: "puuid-Faker" },
         data: expect.objectContaining({ gameName: "Faker", searchKey: "faker" }),
-      }),
+      })
     );
   });
 
@@ -135,7 +134,7 @@ describe("searchPlayers", () => {
     expect(prisma.playerIndex.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: { searchKey: { startsWith: "faker" }, region: "kr" },
-      }),
+      })
     );
 
     await searchPlayers("Faker#KR1");
@@ -145,7 +144,7 @@ describe("searchPlayers", () => {
           searchKey: { startsWith: "faker" },
           tagLine: { startsWith: "kr1", mode: "insensitive" },
         },
-      }),
+      })
     );
   });
 });

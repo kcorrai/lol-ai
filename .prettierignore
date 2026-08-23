@@ -1,0 +1,28 @@
+# Without this file `npm run format:check` walks build output, and most of what it reported was
+# never ours to format: Rust fingerprint JSON under desktop/src-tauri/target, the bundled
+# desktop/dist assets, Tauri's generated schemas, and Station's screenshot sidecars. Formatting
+# any of it changes nothing that ships and only makes the Lint job slower and noisier (LA-63).
+
+# Dependencies and framework output
+node_modules
+.next
+out
+dist
+build
+coverage
+
+# Rust and Tauri: target/ is a build cache, gen/ is generated from the capability files
+desktop/dist
+desktop/src-tauri/target
+desktop/src-tauri/gen
+
+# Test and tooling artifacts
+playwright-report
+test-results
+.playwright-mcp
+audit-screenshots
+.station
+
+# Owned by the tools that write them
+package-lock.json
+tsconfig.tsbuildinfo

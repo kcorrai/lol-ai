@@ -147,9 +147,7 @@ describe("liveCommand", () => {
       draft: { blue: { TOP: "Aatrox" }, red: {} },
     });
 
-    expect(allText(await liveCommand(req({ command: "live" })))).toContain(
-      "Jungle   —"
-    );
+    expect(allText(await liveCommand(req({ command: "live" })))).toContain("Jungle   —");
   });
 
   // The longest lane label is "Support" and the longest champion key is

@@ -29,7 +29,9 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function ChampionLessonPage({ params }: PageProps): Promise<React.ReactElement> {
+export default async function ChampionLessonPage({
+  params,
+}: PageProps): Promise<React.ReactElement> {
   const session = await getSession();
   const userId = session?.user?.id;
   // A lesson only exists for a champion this player has been playing, which is what keeps a
@@ -93,7 +95,9 @@ export default async function ChampionLessonPage({ params }: PageProps): Promise
         />
       </div>
 
-      {stored && <AssignmentStatus assignment={stored} instruction={lesson.assignment.instruction} />}
+      {stored && (
+        <AssignmentStatus assignment={stored} instruction={lesson.assignment.instruction} />
+      )}
 
       {gated && <ProGate lessonTitle={lesson.title} />}
 

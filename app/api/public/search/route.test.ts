@@ -27,7 +27,11 @@ const HIT = {
 
 beforeEach(() => {
   vi.resetAllMocks();
-  vi.mocked(checkRateLimit).mockResolvedValue({ allowed: true, limit: 150, remaining: 149 } as never);
+  vi.mocked(checkRateLimit).mockResolvedValue({
+    allowed: true,
+    limit: 150,
+    remaining: 149,
+  } as never);
   vi.mocked(searchPlayers).mockResolvedValue([HIT]);
 });
 

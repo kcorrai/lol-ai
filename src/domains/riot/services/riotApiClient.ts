@@ -57,10 +57,7 @@ export async function assertRiotApiReachable(region = "euw1"): Promise<void> {
  * multi-megabyte document is precisely what should not be parked in it; the death events extracted
  * from this are what gets persisted (matchDeathEvent), never the raw DTO.
  */
-export async function getMatchTimeline(
-  matchId: string,
-  region: string
-): Promise<MatchTimelineDTO> {
+export async function getMatchTimeline(matchId: string, region: string): Promise<MatchTimelineDTO> {
   const routing = getRouting(region);
   const url = `https://${routing}.api.riotgames.com/lol/match/v5/matches/${matchId}/timeline`;
   return dedup(CacheKeys.matchTimeline(matchId), () =>
@@ -92,10 +89,7 @@ export async function getAccountByRiotId(
 // Reverse lookup of a Riot ID from a puuid. Used by the GDPR right-to-be-forgotten
 // sweep (TASK-287), which needs the *current* name for an account we already know
 // the puuid of — a forgotten account keeps its puuid but is renamed to rtbf<id>.
-export async function getAccountByPuuid(
-  puuid: string,
-  region: string
-): Promise<RiotAccountDTO> {
+export async function getAccountByPuuid(puuid: string, region: string): Promise<RiotAccountDTO> {
   if (process.env.E2E_MOCK === "true") {
     return { puuid, gameName: "E2EPlayer", tagLine: "E2E" };
   }
@@ -106,10 +100,7 @@ export async function getAccountByPuuid(
   return riotClient.get<RiotAccountDTO>(url, { cacheTtl: 0 });
 }
 
-export async function getSummonerByPuuid(
-  puuid: string,
-  region: string
-): Promise<SummonerDTO> {
+export async function getSummonerByPuuid(puuid: string, region: string): Promise<SummonerDTO> {
   if (process.env.E2E_MOCK === "true") {
     return {
       id: `e2e-summoner-${puuid.slice(-8)}`,
@@ -149,10 +140,7 @@ export async function getMatchIds(
   });
 }
 
-export async function getMatch(
-  matchId: string,
-  region: string
-): Promise<MatchDTO> {
+export async function getMatch(matchId: string, region: string): Promise<MatchDTO> {
   const routing = getRouting(region);
   const url = `https://${routing}.api.riotgames.com/lol/match/v5/matches/${matchId}`;
   // dedup: two simultaneous syncs for the same match → one network call
@@ -196,7 +184,9 @@ export async function getRankedEntriesByPuuidDirect(
     logger.debug(`[RiotClient] by-puuid rank: ${puuid.slice(0, 8)}… → ${entries.length} entries`);
     return entries;
   } catch (err) {
-    logger.warn(`[RiotClient] by-puuid rank failed for ${puuid.slice(0, 8)}…: ${err instanceof Error ? err.message : String(err)} — trying summonerId fallback`);
+    logger.warn(
+      `[RiotClient] by-puuid rank failed for ${puuid.slice(0, 8)}…: ${err instanceof Error ? err.message : String(err)} — trying summonerId fallback`
+    );
   }
 
   // Fallback: resolve summonerId then call by-summoner endpoint
@@ -205,7 +195,9 @@ export async function getRankedEntriesByPuuidDirect(
     if (!summoner.id) return [];
     return await getRankedEntries(summoner.id, region);
   } catch (err) {
-    logger.warn(`[RiotClient] summonerId fallback also failed for ${puuid.slice(0, 8)}…: ${err instanceof Error ? err.message : String(err)}`);
+    logger.warn(
+      `[RiotClient] summonerId fallback also failed for ${puuid.slice(0, 8)}…: ${err instanceof Error ? err.message : String(err)}`
+    );
     return [];
   }
 }
@@ -271,10 +263,7 @@ export interface ActiveGameDTO {
  * Note this is the *live* game, not champion select: spectator only sees a game once it has
  * started. Champion select lives behind the localhost-only LCU API (see ADR-005).
  */
-export async function getActiveGame(
-  puuid: string,
-  region: string
-): Promise<ActiveGameDTO | null> {
+export async function getActiveGame(puuid: string, region: string): Promise<ActiveGameDTO | null> {
   const url = `https://${region}.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/${puuid}`;
   try {
     return await riotClient.get<ActiveGameDTO>(url, {
@@ -283,8 +272,9 @@ export async function getActiveGame(
       cacheKey: `active-game:${puuid}`,
     });
   } catch (err) {
-    const status = (err as { statusCode?: number; status?: number }).statusCode
-      ?? (err as { status?: number }).status;
+    const status =
+      (err as { statusCode?: number; status?: number }).statusCode ??
+      (err as { status?: number }).status;
     if (status === 404) return null;
     throw err;
   }

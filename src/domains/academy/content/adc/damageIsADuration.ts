@@ -31,7 +31,11 @@ export const damageIsADuration: Lesson = {
       rows: [
         ["Seconds of damage", "Three, maybe", "The whole fight"],
         ["Risk", "You are inside their team", "You are behind yours"],
-        ["If it works", "One kill, then you die", "The fight is won and you are alive for the next one"],
+        [
+          "If it works",
+          "One kill, then you die",
+          "The fight is won and you are alive for the next one",
+        ],
         ["If it fails", "Fight lost, 5v4 after", "Nothing happens"],
       ],
     },
@@ -64,8 +68,7 @@ export const damageIsADuration: Lesson = {
     {
       id: "duration-quiz",
       kind: "quiz",
-      prompt:
-        "In a five-versus-five that lasts twelve seconds, which ADC has contributed more?",
+      prompt: "In a five-versus-five that lasts twelve seconds, which ADC has contributed more?",
       options: [
         {
           id: "a",

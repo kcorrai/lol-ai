@@ -63,10 +63,7 @@ export default async function ToolsHubPage(): Promise<React.JSX.Element> {
 
   return (
     <div className="mx-auto max-w-[1240px] px-5 pb-16 pt-8 md:px-8">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={jsonLdProps(softwareJsonLd)}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdProps(softwareJsonLd)} />
 
       <ToolsHero stats={heroStats} />
       <ToolGroupList groups={TOOL_GROUPS} stats={rowStats} />

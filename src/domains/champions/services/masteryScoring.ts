@@ -58,7 +58,7 @@ export function computeTeamfight(matches: RawMatch[]): number {
     const gameMins = Math.max(m.gameDuration / 60, 1);
     const ccPerMin = m.totalTimeCCDealt / gameMins;
     const ccScore = normalize(ccPerMin, 0, 8);
-    return Math.round((dmgScore * 0.7 + ccScore * 0.3));
+    return Math.round(dmgScore * 0.7 + ccScore * 0.3);
   });
 
   return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
@@ -71,7 +71,7 @@ export function computeObjectiveCtrl(matches: RawMatch[]): number {
   const scores = matches.map((m) => {
     const stolenScore = normalize(m.objectivesStolen, 0, 2);
     const turretScore = normalize(m.turretsDestroyed, 0, 3);
-    return Math.round((stolenScore * 0.4 + turretScore * 0.6));
+    return Math.round(stolenScore * 0.4 + turretScore * 0.6);
   });
 
   return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
@@ -80,12 +80,9 @@ export function computeObjectiveCtrl(matches: RawMatch[]): number {
 export function computeConsistency(matches: RawMatch[]): number {
   if (matches.length < 3) return 50;
 
-  const kdaValues = matches.map(
-    (m) => (m.kills + m.assists) / Math.max(m.deaths, 1)
-  );
+  const kdaValues = matches.map((m) => (m.kills + m.assists) / Math.max(m.deaths, 1));
   const mean = kdaValues.reduce((a, b) => a + b, 0) / kdaValues.length;
-  const variance =
-    kdaValues.reduce((s, v) => s + (v - mean) ** 2, 0) / kdaValues.length;
+  const variance = kdaValues.reduce((s, v) => s + (v - mean) ** 2, 0) / kdaValues.length;
   const stdDev = Math.sqrt(variance);
 
   // Low std dev = consistent = high score. Range: 0 (perfect) → 3 (very inconsistent)
@@ -100,9 +97,9 @@ export function computeCarry(avgKda: number): number {
 // ── Composite score ───────────────────────────────────────────────────────────
 
 const WEIGHTS: Record<keyof MasterySubScores, number> = {
-  laning: 0.20,
+  laning: 0.2,
   vision: 0.15,
-  teamfight: 0.20,
+  teamfight: 0.2,
   objectiveCtrl: 0.15,
   consistency: 0.15,
   carry: 0.15,
@@ -111,11 +108,11 @@ const WEIGHTS: Record<keyof MasterySubScores, number> = {
 export function computeTotal(sub: MasterySubScores): number {
   return Math.round(
     sub.laning * WEIGHTS.laning +
-    sub.vision * WEIGHTS.vision +
-    sub.teamfight * WEIGHTS.teamfight +
-    sub.objectiveCtrl * WEIGHTS.objectiveCtrl +
-    sub.consistency * WEIGHTS.consistency +
-    sub.carry * WEIGHTS.carry
+      sub.vision * WEIGHTS.vision +
+      sub.teamfight * WEIGHTS.teamfight +
+      sub.objectiveCtrl * WEIGHTS.objectiveCtrl +
+      sub.consistency * WEIGHTS.consistency +
+      sub.carry * WEIGHTS.carry
   );
 }
 

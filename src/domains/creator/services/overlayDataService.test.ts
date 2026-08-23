@@ -352,9 +352,7 @@ describe("getOverlayPayload — session figures", () => {
   });
 
   it("starts the session at local midnight when none was set", async () => {
-    mockPrisma.creatorProfile.findUnique.mockResolvedValue(
-      creatorRow({ sessionStartedAt: null })
-    );
+    mockPrisma.creatorProfile.findUnique.mockResolvedValue(creatorRow({ sessionStartedAt: null }));
 
     const result = await getOverlayPayload("aaaaaaaaaaaaaaaaaaaaaa", NOW);
     // Istanbul is UTC+3, so today began at 21:00 UTC yesterday.

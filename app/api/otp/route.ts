@@ -51,10 +51,10 @@ export async function GET(request: NextRequest) {
     if (userId) {
       const limits = await getPlanLimits(userId);
       if (limits.otpAnalysisPerDay !== -1) {
-        const dailyCheck = await checkRateLimit(
-          `otp-daily:${userId}`,
-          { limit: limits.otpAnalysisPerDay, windowMs: DAILY_WINDOW_MS }
-        );
+        const dailyCheck = await checkRateLimit(`otp-daily:${userId}`, {
+          limit: limits.otpAnalysisPerDay,
+          windowMs: DAILY_WINDOW_MS,
+        });
         if (!dailyCheck.allowed) {
           return rateLimitResponse(dailyCheck.retryAfterMs, dailyCheck.limit);
         }

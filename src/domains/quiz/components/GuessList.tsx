@@ -14,7 +14,7 @@ export function GuessList({ results }: { results: GuessResult[] }): React.JSX.El
         <li
           key={result.guess}
           className={`tag-cut flex animate-hud-enter items-center gap-2.5 border px-3 py-2 ${
-            result.correct ? "border-accent bg-accent/12" : "border-line-2 bg-surface-dark"
+            result.correct ? "bg-accent/12 border-accent" : "border-line-2 bg-surface-dark"
           }`}
         >
           <span className="font-mono text-[10.5px] tabular-nums text-fg-4">

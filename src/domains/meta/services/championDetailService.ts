@@ -37,7 +37,11 @@ const RuneSchema = z.object({
 });
 const SpellSchema = z.object({ ids: z.array(z.number()), play: z.number(), win: z.number() });
 const SkillSchema = z.object({ order: z.array(z.string()), play: z.number(), win: z.number() });
-const SkillMasterySchema = z.object({ ids: z.array(z.string()), play: z.number(), win: z.number() });
+const SkillMasterySchema = z.object({
+  ids: z.array(z.string()),
+  play: z.number(),
+  win: z.number(),
+});
 const GameLengthSchema = z.object({ game_length: z.number(), rate: z.number() });
 const TrendWinSchema = z.object({ version: z.string(), rate: z.number(), rank: z.number() });
 
@@ -92,10 +96,7 @@ function buildFromDetail(
     boots: data.boots[0] ? toItemSet(data.boots[0]) : null,
     lateItemOptions: data.last_items.slice(0, 5).map(toItemSet),
     // op.gg stops at level 15; the remaining points follow from the levelling rules.
-    skillOrder: completeSkillOrder(
-      data.skills[0]?.order ?? [],
-      data.skill_masteries[0]?.ids ?? [],
-    ),
+    skillOrder: completeSkillOrder(data.skills[0]?.order ?? [], data.skill_masteries[0]?.ids ?? []),
     skillMaxOrder: data.skill_masteries[0]?.ids ?? [],
     gameLengths: data.game_lengths.map((g) => ({
       minutes: g.game_length,

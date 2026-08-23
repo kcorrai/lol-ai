@@ -22,7 +22,9 @@ interface Slot {
 
 function picksFor(game: DraftGameState, side: DraftSide): Slot[] {
   return Array.from({ length: SLOTS_PER_SIDE }, (_, slot) => {
-    const step = DRAFT_SEQUENCE.find((s) => s.side === side && s.kind === "PICK" && s.slot === slot);
+    const step = DRAFT_SEQUENCE.find(
+      (s) => s.side === side && s.kind === "PICK" && s.slot === slot
+    );
     const action = step ? game.actions.find((a) => a.step === step.index) : undefined;
     return {
       step: step?.index ?? -1,

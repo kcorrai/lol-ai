@@ -86,7 +86,9 @@ export async function deleteCached(cacheKey: string): Promise<void> {
 export async function deleteCachedMany(cacheKeys: string[]): Promise<void> {
   if (cacheKeys.length === 0) return;
   await redisCacheDeleteMany(cacheKeys);
-  await prisma.aiCache.deleteMany({ where: { cacheKey: { in: cacheKeys } } }).catch(() => undefined);
+  await prisma.aiCache
+    .deleteMany({ where: { cacheKey: { in: cacheKeys } } })
+    .catch(() => undefined);
 }
 
 export function buildCacheKey(type: string, inputs: Record<string, string>): string {

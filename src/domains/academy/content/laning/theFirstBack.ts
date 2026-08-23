@@ -30,10 +30,18 @@ export const theFirstBack: Lesson = {
       caption: "Rough first-back thresholds by role",
       head: ["Role", "Aim for", "Why"],
       rows: [
-        ["Solo laners", "~1,100–1,300g", "Enough for a real component or a cheap completed item plus a ward"],
+        [
+          "Solo laners",
+          "~1,100–1,300g",
+          "Enough for a real component or a cheap completed item plus a ward",
+        ],
         ["ADC", "~1,100g+", "A component that changes your damage, not two longswords"],
         ["Support", "~800g", "Item progress plus a control ward — vision is the job"],
-        ["Jungler", "Whatever clears faster", "Tempo matters more than the item; do not lose a camp cycle for 200g"],
+        [
+          "Jungler",
+          "Whatever clears faster",
+          "Tempo matters more than the item; do not lose a camp cycle for 200g",
+        ],
       ],
     },
     {

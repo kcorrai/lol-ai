@@ -27,8 +27,8 @@ export default function MessagesPage(): React.ReactElement {
             Messages
           </h1>
           <p className="mt-3 max-w-[60ch] text-[15px] text-text-body">
-            Keep it here. Sessions arranged off LaneIQ are not covered if something goes wrong —
-            and contact details get stripped on purpose.
+            Keep it here. Sessions arranged off LaneIQ are not covered if something goes wrong — and
+            contact details get stripped on purpose.
           </p>
         </div>
         <div className="flex gap-6 pb-1">

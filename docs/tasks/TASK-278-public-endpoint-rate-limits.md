@@ -29,11 +29,11 @@ IP-keyed limits via the existing `checkRateLimit` / `getIp` / `rateLimitResponse
 how `/api/public/profile/[slug]` already does it. Limits are generous — these are legitimate public
 endpoints and the goal is a ceiling, not friction:
 
-| Route | Limit | Reasoning |
-|---|---|---|
-| `/api/champions/all` | 30 / min | A selector fetches this once per page load |
-| `/api/leaderboard` | 60 / min | Two periods, polled by a widget |
-| `/api/auth/verify-email` | 10 / min | A human clicks this link once |
+| Route                    | Limit    | Reasoning                                  |
+| ------------------------ | -------- | ------------------------------------------ |
+| `/api/champions/all`     | 30 / min | A selector fetches this once per page load |
+| `/api/leaderboard`       | 60 / min | Two periods, polled by a widget            |
+| `/api/auth/verify-email` | 10 / min | A human clicks this link once              |
 
 `/api/champions/all` also gains a `Cache-Control` header. The champion catalogue changes at most
 once per patch, so re-reading it from Postgres on every request is the actual waste — the rate limit

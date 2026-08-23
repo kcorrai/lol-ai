@@ -3,7 +3,9 @@ import type { MetaMover, MetaReport } from "@/domains/meta";
 // A ~200-word, data-driven patch summary. Every figure comes from the live
 // snapshot so the copy is unique per patch (Google's scaled-content guard).
 export function metaSummary(r: MetaReport, gamePatch: string): string {
-  const games = r.matchCount ? `${r.matchCount.toLocaleString()} ranked games` : "millions of ranked games";
+  const games = r.matchCount
+    ? `${r.matchCount.toLocaleString()} ranked games`
+    : "millions of ranked games";
   const parts: string[] = [
     `Patch ${gamePatch} has reshaped the League of Legends meta. Across ${games} analyzed this patch, champion power rankings shifted as buffs, nerfs and item changes landed.`,
   ];
@@ -16,7 +18,9 @@ export function metaSummary(r: MetaReport, gamePatch: string): string {
   }
   const c1 = r.climbers[1];
   if (c1) {
-    parts.push(`${c1.name} is close behind, up ${c1.delta} places and now a genuine priority pick.`);
+    parts.push(
+      `${c1.name} is close behind, up ${c1.delta} places and now a genuine priority pick.`
+    );
   }
 
   const f0 = r.fallers[0];
@@ -43,7 +47,10 @@ export interface MetaFaqItem {
 
 export function metaFaq(r: MetaReport, gamePatch: string): MetaFaqItem[] {
   const names = (movers: MetaMover[]): string =>
-    movers.slice(0, 3).map((m) => m.name).join(", ") || "several champions";
+    movers
+      .slice(0, 3)
+      .map((m) => m.name)
+      .join(", ") || "several champions";
 
   // Highest ban rate among the risers — the pick most worth banning.
   const banTarget = [...r.climbers].sort((a, b) => b.banRate - a.banRate)[0];

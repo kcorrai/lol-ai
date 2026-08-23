@@ -3,19 +3,23 @@
 Scored **74/100**.
 
 ## Problem
+
 `src/lib/security/bruteForce.ts` (81 lines) and `src/lib/auth/totpService.ts` (65 lines) were both at
 0% coverage. The wiring around them is right — `register`, `forgot-password` and `reset-password` all
 call the throttle, verified during the audit — but the logic inside had nothing checking it.
 
 ## Change
+
 Two new test files, 30 tests total. No production code changed.
 
 ### `bruteForce.test.ts` (8 tests)
+
 Covers attempts below the threshold, the attempt that trips it, staying locked out afterwards,
 per-identifier isolation, the Sentry report, fixed-window expiry, and `clearFailedAttempts` restoring
 the full allowance.
 
 Two of these encode security properties rather than mechanics:
+
 - **Per-identifier isolation** — a global counter would let one attacker hammering a single account
   lock out every other user.
 - **Window expiry is fixed, not sliding** — a slow guesser must not be locked out permanently.
@@ -27,6 +31,7 @@ counter. That also mirrors production, where the key is a per-user or per-IP str
 order-independent with `--sequence.shuffle`.
 
 ### `totpService.test.ts` (22 tests)
+
 Setup (secret, 8 unique backup codes, URL-encoded otpauth label, fresh values per call), token
 verification (correct token round-trips via `generateSync` with the same options; a token from a
 different secret is rejected), and backup codes.
@@ -40,6 +45,7 @@ replayable forever), that lowercase/spacing variants normalize — users retype 
 — that a miss leaves the list untouched, and that codes are stored bcrypt-hashed, never in plaintext.
 
 ## Flagged, deliberately not fixed here
+
 Three things found while writing these. Each deserves its own task rather than widening this one:
 
 1. **No TOTP replay protection.** `verifyTotpToken` accepts the same token repeatedly within its 30s
@@ -56,6 +62,7 @@ Three things found while writing these. Each deserves its own task rather than w
    lifetime, but unbounded in a long-lived process.
 
 ## Verification
+
 `npx vitest run src/lib/security/bruteForce.test.ts src/lib/auth/totpService.test.ts` — 30 passed,
 and again under `--sequence.shuffle`. Full suite green; `tsc --noEmit` and ESLint clean.
 

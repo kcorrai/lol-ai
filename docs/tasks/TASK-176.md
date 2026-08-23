@@ -1,14 +1,17 @@
 # TASK-176: 3D Stack + Hextech Hero (Splash-Art Cards)
 
 ## Status: Pending
+
 ## Score: 85/100
 
 ## Goal
+
 React Three Fiber hero: golden hextech particle field + 3-5 floating cards
 textured with real champion splash art (DDragon/CDragon), mouse parallax.
 Lazy-loaded so LCP stays < 3s.
 
 ## Scope
+
 - Dependencies (React 18 compatible — R3F v9 requires React 19, do NOT use):
   `three`, `@react-three/fiber@^8`, `@react-three/drei@^9`, `framer-motion@^11`
   → record in `docs/DEPENDENCIES.md` + ADR "3D landing stack"
@@ -21,7 +24,9 @@ Lazy-loaded so LCP stays < 3s.
   `prefers-reduced-motion` → static poster, lightweight mobile variant
 
 ## Out of Scope
+
 - 3D on other pages; GLTF champion models (Riot IP + weight)
 
 ## Commit
+
 `feat(landing): 3d hextech hero with real splash art`

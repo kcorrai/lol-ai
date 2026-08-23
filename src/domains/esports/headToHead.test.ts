@@ -2,7 +2,12 @@ import { describe, expect, it } from "vitest";
 import { headToHead } from "@/domains/esports/headToHead";
 import type { EsportsEvent, EsportsEventTeam, MatchOutcome } from "@/domains/esports/types";
 
-function team(name: string, code: string, gameWins: number, outcome: MatchOutcome | null): EsportsEventTeam {
+function team(
+  name: string,
+  code: string,
+  gameWins: number,
+  outcome: MatchOutcome | null
+): EsportsEventTeam {
   return { id: null, slug: null, name, code, image: null, gameWins, outcome, record: null };
 }
 

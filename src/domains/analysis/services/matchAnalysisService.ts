@@ -11,7 +11,12 @@ import {
   identifyWeakestArea,
 } from "@/domains/analysis/calculators/performanceCalculator";
 import { classifyPlaystyle } from "@/domains/analysis/calculators/playstyleClassifier";
-import type { PlayerPerformanceProfile, MatchPerformance, PerformanceMetrics, MetricDelta } from "@/domains/analysis/types/analysis.types";
+import type {
+  PlayerPerformanceProfile,
+  MatchPerformance,
+  PerformanceMetrics,
+  MetricDelta,
+} from "@/domains/analysis/types/analysis.types";
 
 export async function getPlayerPerformanceProfile(
   riotAccountId: string,
@@ -66,8 +71,14 @@ export async function getPlayerPerformanceProfile(
       goldPerMinute: parseFloat(Number(p.goldPerMinute).toFixed(2)),
       damageShare,
       notableEvents: detectNotableEvents(
-        p.kills, p.deaths, Number(p.csPerMinute),
-        p.visionScore, p.firstBlood, p.position, p.won, teamKills
+        p.kills,
+        p.deaths,
+        Number(p.csPerMinute),
+        p.visionScore,
+        p.firstBlood,
+        p.position,
+        p.won,
+        teamKills
       ),
       itemIds: p.itemIds,
       gameStart: p.match.gameStart.toISOString(),
@@ -76,7 +87,10 @@ export async function getPlayerPerformanceProfile(
       runePrimaryKeystone: p.runePrimaryKeystone,
       runeSecondaryPath: p.runeSecondaryPath,
       teamObjectives: (() => {
-        type ObjMap = Record<string, { towers: number; dragons: number; barons: number; inhibitors: number; heralds: number }>;
+        type ObjMap = Record<
+          string,
+          { towers: number; dragons: number; barons: number; inhibitors: number; heralds: number }
+        >;
         const raw = p.match.teamObjectives as ObjMap | null;
         return raw?.[String(p.teamId)] ?? null;
       })(),
@@ -104,7 +118,9 @@ export async function getPlayerPerformanceProfile(
     csPerMinute: avgCsPerMin,
     damageShare: avgDamageShare,
     killParticipation: computeKillParticipation(avg("kills"), avg("assists"), avg("kills") + 5),
-    visionScorePerMinute: parseFloat((avgVisionScore / (avg("gameDurationMinutes") || 1)).toFixed(3)),
+    visionScorePerMinute: parseFloat(
+      (avgVisionScore / (avg("gameDurationMinutes") || 1)).toFixed(3)
+    ),
     avgGoldPerMinute: avgGoldPerMin,
     avgDeathsPerGame: avgDeaths,
   };
@@ -113,7 +129,8 @@ export async function getPlayerPerformanceProfile(
   for (const m of matchPerformances) {
     positionCounts.set(m.position, (positionCounts.get(m.position) ?? 0) + 1);
   }
-  const dominantPosition = [...positionCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "MIDDLE";
+  const dominantPosition =
+    [...positionCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "MIDDLE";
 
   const championCounts = new Map<string, number>();
   for (const m of matchPerformances) {
@@ -125,10 +142,12 @@ export async function getPlayerPerformanceProfile(
     .map(([name]) => name);
 
   const avgTimeSpentDead =
-    (await prisma.matchParticipant.aggregate({
-      where: { puuid: account.puuid },
-      _avg: { timeSpentDead: true },
-    }))._avg.timeSpentDead ?? 0;
+    (
+      await prisma.matchParticipant.aggregate({
+        where: { puuid: account.puuid },
+        _avg: { timeSpentDead: true },
+      })
+    )._avg.timeSpentDead ?? 0;
 
   // Delta: last 10 vs previous 10 (only computed when enough data exists)
   let delta: MetricDelta | undefined;
@@ -140,7 +159,10 @@ export async function getPlayerPerformanceProfile(
 
     delta = {
       winRate: parseFloat(
-        ((cur.filter((m) => m.won).length / 10) * 100 - (prev.filter((m) => m.won).length / 10) * 100).toFixed(1)
+        (
+          (cur.filter((m) => m.won).length / 10) * 100 -
+          (prev.filter((m) => m.won).length / 10) * 100
+        ).toFixed(1)
       ),
       kda: parseFloat(
         (
@@ -148,8 +170,12 @@ export async function getPlayerPerformanceProfile(
           computeKDA(halfAvg(prev, "kills"), halfAvg(prev, "deaths"), halfAvg(prev, "assists"))
         ).toFixed(2)
       ),
-      csPerMinute: parseFloat((halfAvg(cur, "csPerMinute") - halfAvg(prev, "csPerMinute")).toFixed(1)),
-      visionScore: parseFloat((halfAvg(cur, "visionScore") - halfAvg(prev, "visionScore")).toFixed(1)),
+      csPerMinute: parseFloat(
+        (halfAvg(cur, "csPerMinute") - halfAvg(prev, "csPerMinute")).toFixed(1)
+      ),
+      visionScore: parseFloat(
+        (halfAvg(cur, "visionScore") - halfAvg(prev, "visionScore")).toFixed(1)
+      ),
     };
   }
 
@@ -158,7 +184,13 @@ export async function getPlayerPerformanceProfile(
     gamesAnalyzed: matchPerformances.length,
     avgMetrics: metrics,
     playstyle: classifyPlaystyle(metrics, dominantPosition),
-    strongestArea: identifyStrongestArea(avgKDA, avgCsPerMin, avgVisionScore, avgDamageShare, winRate),
+    strongestArea: identifyStrongestArea(
+      avgKDA,
+      avgCsPerMin,
+      avgVisionScore,
+      avgDamageShare,
+      winRate
+    ),
     weakestArea: identifyWeakestArea(avgKDA, avgCsPerMin, avgVisionScore, winRate),
     recentMatches: matchPerformances,
     winRate,

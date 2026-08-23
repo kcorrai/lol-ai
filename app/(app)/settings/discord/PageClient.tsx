@@ -9,7 +9,15 @@ import {
 } from "@/hooks/useDiscordSettings";
 import { Trash2, Send } from "lucide-react";
 
-function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange: (v: boolean) => void; disabled?: boolean }) {
+function Toggle({
+  checked,
+  onChange,
+  disabled,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  disabled?: boolean;
+}) {
   return (
     <button
       disabled={disabled}
@@ -20,7 +28,9 @@ function Toggle({ checked, onChange, disabled }: { checked: boolean; onChange: (
       role="switch"
       aria-checked={checked}
     >
-      <span className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? "translate-x-5" : "translate-x-0"}`} />
+      <span
+        className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? "translate-x-5" : "translate-x-0"}`}
+      />
     </button>
   );
 }
@@ -51,7 +61,10 @@ export default function DiscordSettingsPage() {
     save.mutate(
       { webhookUrl, notifyRankUp, notifyBadge, notifyWeekly },
       {
-        onSuccess: () => { setWebhookUrl(""); setSaveMsg("✅ Webhook saved!"); },
+        onSuccess: () => {
+          setWebhookUrl("");
+          setSaveMsg("✅ Webhook saved!");
+        },
         onError: (e) => setSaveMsg(`❌ ${e instanceof Error ? e.message : "Save failed"}`),
       }
     );
@@ -106,9 +119,24 @@ export default function DiscordSettingsPage() {
       {/* Notification preferences */}
       <div className="divide-y divide-border rounded-xl border border-border bg-surface px-4">
         {[
-          { label: "Rank Up", description: "Notify when you rank up", checked: notifyRankUp, onChange: setNotifyRankUp },
-          { label: "Badge Earned", description: "Notify when you earn a badge", checked: notifyBadge, onChange: setNotifyBadge },
-          { label: "Weekly Summary", description: "Send weekly summary every Monday", checked: notifyWeekly, onChange: setNotifyWeekly },
+          {
+            label: "Rank Up",
+            description: "Notify when you rank up",
+            checked: notifyRankUp,
+            onChange: setNotifyRankUp,
+          },
+          {
+            label: "Badge Earned",
+            description: "Notify when you earn a badge",
+            checked: notifyBadge,
+            onChange: setNotifyBadge,
+          },
+          {
+            label: "Weekly Summary",
+            description: "Send weekly summary every Monday",
+            checked: notifyWeekly,
+            onChange: setNotifyWeekly,
+          },
         ].map((item) => (
           <div key={item.label} className="flex items-center justify-between gap-4 py-3">
             <div>
@@ -125,7 +153,7 @@ export default function DiscordSettingsPage() {
         <button
           onClick={handleTest}
           disabled={!data?.hasWebhook || test.isPending}
-          className="flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-2 text-sm font-semibold text-text disabled:opacity-50 hover:bg-surface-2"
+          className="flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-2 text-sm font-semibold text-text hover:bg-surface-2 disabled:opacity-50"
         >
           <Send className="h-4 w-4" />
           {test.isPending ? "Sending..." : "Send Test"}
@@ -133,16 +161,14 @@ export default function DiscordSettingsPage() {
         <button
           onClick={() => del.mutate()}
           disabled={!data?.hasWebhook || del.isPending}
-          className="flex items-center gap-2 rounded-lg border border-danger/30 bg-surface px-4 py-2 text-sm font-semibold text-danger disabled:opacity-50 hover:bg-danger/5"
+          className="flex items-center gap-2 rounded-lg border border-danger/30 bg-surface px-4 py-2 text-sm font-semibold text-danger hover:bg-danger/5 disabled:opacity-50"
         >
           <Trash2 className="h-4 w-4" />
           Remove
         </button>
       </div>
 
-      {testMsg && (
-        <p className="text-sm text-text-muted">{testMsg}</p>
-      )}
+      {testMsg && <p className="text-sm text-text-muted">{testMsg}</p>}
     </div>
   );
 }

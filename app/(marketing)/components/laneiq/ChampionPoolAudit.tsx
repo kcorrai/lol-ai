@@ -13,10 +13,42 @@ interface PoolEntry {
 }
 
 const POOL: readonly PoolEntry[] = [
-  { key: "Viego", name: "Viego", winRate: "58%", games: "42 games", kda: "4.1", verdict: "Keep · main", good: true },
-  { key: "Khazix", name: "Kha'Zix", winRate: "54%", games: "28 games", kda: "3.6", verdict: "Keep · pocket", good: true },
-  { key: "LeeSin", name: "Lee Sin", winRate: "44%", games: "31 games", kda: "2.4", verdict: "Bench", good: false },
-  { key: "Nidalee", name: "Nidalee", winRate: "38%", games: "16 games", kda: "2.1", verdict: "Drop", good: false },
+  {
+    key: "Viego",
+    name: "Viego",
+    winRate: "58%",
+    games: "42 games",
+    kda: "4.1",
+    verdict: "Keep · main",
+    good: true,
+  },
+  {
+    key: "Khazix",
+    name: "Kha'Zix",
+    winRate: "54%",
+    games: "28 games",
+    kda: "3.6",
+    verdict: "Keep · pocket",
+    good: true,
+  },
+  {
+    key: "LeeSin",
+    name: "Lee Sin",
+    winRate: "44%",
+    games: "31 games",
+    kda: "2.4",
+    verdict: "Bench",
+    good: false,
+  },
+  {
+    key: "Nidalee",
+    name: "Nidalee",
+    winRate: "38%",
+    games: "16 games",
+    kda: "2.1",
+    verdict: "Drop",
+    good: false,
+  },
 ];
 
 export function ChampionPoolAudit(): React.ReactElement {

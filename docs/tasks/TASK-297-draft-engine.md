@@ -6,7 +6,7 @@ Spec: `docs/DRAFT_ROOM.md` §2, §3, §5.
 
 A pure, dependency-free core for the live draft room. No Prisma, no fetch, no
 React. Everything the server and the client both need to agree on lives here, so
-the optimistic client echo and the authoritative server write run the *same code*
+the optimistic client echo and the authoritative server write run the _same code_
 and cannot disagree.
 
 ## Deliverables
@@ -41,7 +41,7 @@ and cannot disagree.
 4. Bans never carry across games in any mode.
 5. Acting out of turn, acting before both sides are ready, and acting after the
    draft is complete all fail with the specific reason.
-6. A disabled champion is rejected and is *not* treated as banned.
+6. A disabled champion is rejected and is _not_ treated as banned.
 7. `applyUndo` steps back exactly one action and restores that champion to the
    pool; undoing at step 0 is a no-op.
 8. `resolveTimeout` is deterministic: called twice with the same state and the

@@ -10,10 +10,7 @@ export const dynamic = "force-dynamic";
 
 // Either a full edit or just the on-sale switch — the switch is one click in
 // the UI and should not have to round-trip a whole listing to work.
-const PatchBody = z.union([
-  ListingBody,
-  z.object({ isActive: z.boolean() }),
-]);
+const PatchBody = z.union([ListingBody, z.object({ isActive: z.boolean() })]);
 
 // PATCH /api/coaches/me/listings/[listingId]
 export function PATCH(

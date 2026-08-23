@@ -46,17 +46,17 @@ export interface MatchupEntry {
   opponentChampionName: string;
   games: number;
   wins: number;
-  winRate: number;       // 0-100
+  winRate: number; // 0-100
   avgKda: number;
-  trend: 'improving' | 'declining' | 'stable' | 'insufficient_data';
+  trend: "improving" | "declining" | "stable" | "insufficient_data";
 }
 
 export interface PersonalMatchupReport {
   championId: number;
   championName: string;
-  best: MatchupEntry[];    // top 5, WR desc
-  worst: MatchupEntry[];   // bottom 5, WR asc
-  banSuggestion: MatchupEntry | null;  // worst WR ile en Ã§ok oynanan
+  best: MatchupEntry[]; // top 5, WR desc
+  worst: MatchupEntry[]; // bottom 5, WR asc
+  banSuggestion: MatchupEntry | null; // worst WR ile en Ã§ok oynanan
   totalMatchupsAnalyzed: number;
 }
 
@@ -64,7 +64,7 @@ export async function getPersonalMatchups(
   riotAccountId: string,
   championId: number,
   minGames = 3
-): Promise<PersonalMatchupReport>
+): Promise<PersonalMatchupReport>;
 ```
 
 ### Sorgu MantÄ±ÄŸÄ±
@@ -95,6 +95,7 @@ ORDER BY wins::float / COUNT(*) DESC
 ### Trend HesabÄ±
 
 Son 5 maÃ§ WR vs Ã¶nceki 5 maÃ§ WR karÅŸÄ±laÅŸtÄ±r:
+
 - `>= +15%` â†’ `improving`
 - `<= -15%` â†’ `declining`
 - DiÄŸer â†’ `stable`
@@ -154,13 +155,13 @@ src/hooks/usePersonalMatchups.ts                         â† YENÄ° (TanSta
 
 ```typescript
 // personalCounterService.test.ts
-describe('getPersonalMatchups', () => {
-  it('minimum 3 maÃ§ filtresini uygular')
-  it('win rate doÄŸru hesaplanÄ±r')
-  it('trend: improving tespit edilir (son 5 > Ã¶nceki 5)')
-  it('banSuggestion: en kÃ¶tÃ¼ WR ile en Ã§ok oynanan dÃ¶ner')
-  it('boÅŸ dizi: ÅŸampiyon Ã¼zerinde hiÃ§ maÃ§ yoksa 422 dÃ¶ner')
-})
+describe("getPersonalMatchups", () => {
+  it("minimum 3 maÃ§ filtresini uygular");
+  it("win rate doÄŸru hesaplanÄ±r");
+  it("trend: improving tespit edilir (son 5 > Ã¶nceki 5)");
+  it("banSuggestion: en kÃ¶tÃ¼ WR ile en Ã§ok oynanan dÃ¶ner");
+  it("boÅŸ dizi: ÅŸampiyon Ã¼zerinde hiÃ§ maÃ§ yoksa 422 dÃ¶ner");
+});
 ```
 
 ---
@@ -179,4 +180,3 @@ describe('getPersonalMatchups', () => {
 - Unit test coverage â‰¥ 80%
 - TypeScript: no `any`, strict geÃ§iyor
 - `docs/API_DESIGN.md` gÃ¼ncellendi
-

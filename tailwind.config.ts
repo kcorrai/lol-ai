@@ -165,59 +165,59 @@ const config: Config = {
           "50%": { boxShadow: "0 0 18px rgba(198,255,61,0.55)" },
         },
         "confetti-fall": {
-          "0%":   { transform: "translateY(-10px) rotate(0deg)", opacity: "1" },
+          "0%": { transform: "translateY(-10px) rotate(0deg)", opacity: "1" },
           "100%": { transform: "translateY(300px) rotate(720deg)", opacity: "0" },
         },
         "coach-bounce": {
           "0%, 100%": { transform: "translateY(0)" },
-          "50%":      { transform: "translateY(-6px)" },
+          "50%": { transform: "translateY(-6px)" },
         },
         blink: {
           "0%, 92%, 100%": { transform: "scaleY(1)" },
-          "96%":           { transform: "scaleY(0.1)" },
+          "96%": { transform: "scaleY(0.1)" },
         },
         nudge: {
           "0%, 100%": { transform: "translateX(0)" },
-          "50%":      { transform: "translateX(5px)" },
+          "50%": { transform: "translateX(5px)" },
         },
         "hud-enter": {
           from: { opacity: "0", transform: "translateY(6px)" },
-          to:   { opacity: "1", transform: "translateY(0)" },
+          to: { opacity: "1", transform: "translateY(0)" },
         },
 
         // LaneIQ Daily stage motion. A guess is a scoreboard event, so the
         // cells flip open in sequence rather than fading in together.
         "quiz-flip": {
-          "0%":   { transform: "rotateX(-92deg)", opacity: "0" },
-          "55%":  { opacity: "1" },
+          "0%": { transform: "rotateX(-92deg)", opacity: "0" },
+          "55%": { opacity: "1" },
           "100%": { transform: "none", opacity: "1" },
         },
         "quiz-stage": {
           from: { opacity: "0", transform: "translateY(10px)" },
-          to:   { opacity: "1", transform: "none" },
+          to: { opacity: "1", transform: "none" },
         },
         "quiz-scan": {
-          "0%":   { transform: "translateY(-100%)" },
+          "0%": { transform: "translateY(-100%)" },
           "100%": { transform: "translateY(220%)" },
         },
         "quiz-sweep": {
-          "0%":   { transform: "translateX(-120%)" },
+          "0%": { transform: "translateX(-120%)" },
           "100%": { transform: "translateX(320%)" },
         },
         "quiz-rise": {
           from: { opacity: "0", transform: "translateY(14px) scale(.985)" },
-          to:   { opacity: "1", transform: "none" },
+          to: { opacity: "1", transform: "none" },
         },
         "quiz-pop": {
           "0%, 100%": { transform: "scale(1)" },
-          "40%":      { transform: "scale(1.07)" },
+          "40%": { transform: "scale(1.07)" },
         },
         "quiz-shake": {
           "0%, 100%": { transform: "translateX(0)" },
-          "20%":      { transform: "translateX(-4px)" },
-          "40%":      { transform: "translateX(4px)" },
-          "60%":      { transform: "translateX(-2px)" },
-          "80%":      { transform: "translateX(2px)" },
+          "20%": { transform: "translateX(-4px)" },
+          "40%": { transform: "translateX(4px)" },
+          "60%": { transform: "translateX(-2px)" },
+          "80%": { transform: "translateX(2px)" },
         },
       },
       animation: {

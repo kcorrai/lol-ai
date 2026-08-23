@@ -43,6 +43,7 @@ Initialize the Next.js project with the full technology stack configured and ver
 ## Folder Structure to Create
 
 Following `docs/PROJECT_STRUCTURE.md`:
+
 ```
 src/
 ├── domains/

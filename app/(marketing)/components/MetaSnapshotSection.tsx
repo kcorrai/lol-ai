@@ -24,7 +24,12 @@ export async function MetaSnapshotSection() {
       .filter((p) => p.pickRate >= 2 && p.tier > 0)
       .sort((a, b) => b.winRate - a.winRate)[0];
     if (best) {
-      picks.push({ championKey: champ.championKey, name: champ.name, position: best.position, winRate: best.winRate });
+      picks.push({
+        championKey: champ.championKey,
+        name: champ.name,
+        position: best.position,
+        winRate: best.winRate,
+      });
     }
   }
   const top = picks.sort((a, b) => b.winRate - a.winRate).slice(0, 5);
@@ -46,9 +51,8 @@ export async function MetaSnapshotSection() {
           </p>
           {snapshot.matchCount ? (
             <p className="mt-4 text-sm text-text-muted">
-              Analyzing{" "}
-              <CountUp value={snapshot.matchCount} className="font-bold text-accent" />
-              {" "}ranked games this patch
+              Analyzing <CountUp value={snapshot.matchCount} className="font-bold text-accent" />{" "}
+              ranked games this patch
             </p>
           ) : null}
         </div>
@@ -67,7 +71,9 @@ export async function MetaSnapshotSection() {
                 <p className="text-xs text-text-muted">{POSITION_LABELS[pick.position]}</p>
               </div>
               <span className="text-right">
-                <span className="block text-sm font-bold text-success">{pick.winRate.toFixed(1)}%</span>
+                <span className="block text-sm font-bold text-success">
+                  {pick.winRate.toFixed(1)}%
+                </span>
                 <span className="block text-[10px] text-text-muted">win rate</span>
               </span>
             </Link>

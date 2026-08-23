@@ -62,10 +62,7 @@ describe("lpDelta", () => {
 
   it("reports a gain across a promotion as the LP it actually took", () => {
     expect(
-      lpDelta(
-        { tier: "GOLD", division: "II", lp: 80 },
-        { tier: "GOLD", division: "I", lp: 15 }
-      )
+      lpDelta({ tier: "GOLD", division: "II", lp: 80 }, { tier: "GOLD", division: "I", lp: 15 })
     ).toBe(35);
   });
 

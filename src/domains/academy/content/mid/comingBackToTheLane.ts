@@ -29,10 +29,26 @@ export const comingBackToTheLane: Lesson = {
       caption: "The wave while you are away",
       head: ["You left when", "Where it is 30s later", "What you come back to"],
       rows: [
-        ["Wave crashed into their turret", "Bouncing back toward the middle", "A wave to take, nothing lost"],
-        ["Wave was pushing toward you", "Under your turret, dying", "Missing minions and a plate at risk"],
-        ["Wave was frozen in the middle", "Wherever your opponent put it", "Whatever they chose, usually against you"],
-        ["Right after you both backed", "Fresh wave in the middle", "Even, if you got back on time"],
+        [
+          "Wave crashed into their turret",
+          "Bouncing back toward the middle",
+          "A wave to take, nothing lost",
+        ],
+        [
+          "Wave was pushing toward you",
+          "Under your turret, dying",
+          "Missing minions and a plate at risk",
+        ],
+        [
+          "Wave was frozen in the middle",
+          "Wherever your opponent put it",
+          "Whatever they chose, usually against you",
+        ],
+        [
+          "Right after you both backed",
+          "Fresh wave in the middle",
+          "Even, if you got back on time",
+        ],
       ],
     },
     { kind: "drill", drillId: "bounce-quiz" },

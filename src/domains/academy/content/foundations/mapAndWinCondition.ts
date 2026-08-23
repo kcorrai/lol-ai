@@ -35,9 +35,17 @@ export const mapAndWinCondition: Lesson = {
       rows: [
         ["Minions", "CS ticking up", "Steady gold with no risk — the cheapest gold in the game"],
         ["Kills", "Scoreboard", "A window of time where the enemy is not on the map"],
-        ["Turret plates", "Chunks off a turret before 14:00", "160g each, plus the turret weakening early"],
+        [
+          "Turret plates",
+          "Chunks off a turret before 14:00",
+          "160g each, plus the turret weakening early",
+        ],
         ["Turrets", "A building falls", "Map space — your team can stand further forward safely"],
-        ["Drakes / Grubs / Herald", "Neutral objectives", "Permanent stats or a free turret's worth of damage"],
+        [
+          "Drakes / Grubs / Herald",
+          "Neutral objectives",
+          "Permanent stats or a free turret's worth of damage",
+        ],
         ["Baron", "20:00+ objective", "A siege window big enough to end the game"],
       ],
     },

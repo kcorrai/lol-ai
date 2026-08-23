@@ -70,7 +70,10 @@ function status(tab: QuizTab, results: ModeResult[]): { text: string; done: bool
   const result = results.find((r) => r.mode === tab);
   if (!result) return { text: "Open", done: false };
   if (!result.solved) return { text: "Revealed", done: false };
-  return { text: `${result.guessCount} ${result.guessCount === 1 ? "guess" : "guesses"}`, done: true };
+  return {
+    text: `${result.guessCount} ${result.guessCount === 1 ? "guess" : "guesses"}`,
+    done: true,
+  };
 }
 
 export function ModeStrip({ active, results, onSelect }: ModeStripProps): React.JSX.Element {
@@ -101,7 +104,10 @@ export function ModeStrip({ active, results, onSelect }: ModeStripProps): React.
               className={`absolute inset-0 bg-cover transition-opacity ${
                 on ? "opacity-50" : "opacity-25 grayscale-[.5]"
               }`}
-              style={{ backgroundImage: `url('${championSplashUrl(tile.art)}')`, backgroundPosition: "52% 14%" }}
+              style={{
+                backgroundImage: `url('${championSplashUrl(tile.art)}')`,
+                backgroundPosition: "52% 14%",
+              }}
             />
             {on && (
               <span
@@ -109,14 +115,21 @@ export function ModeStrip({ active, results, onSelect }: ModeStripProps): React.
                 className="absolute inset-x-0 h-[34%] animate-quiz-scan bg-gradient-to-b from-transparent via-accent/15 to-transparent"
               />
             )}
-            <span aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink-1000 via-ink-1000/70 to-ink-1000/25" />
+            <span
+              aria-hidden
+              className="absolute inset-0 bg-gradient-to-t from-ink-1000 via-ink-1000/70 to-ink-1000/25"
+            />
 
             <span className="relative flex h-full flex-col justify-between gap-4 p-3">
               <span className="flex items-start justify-between gap-2">
-                <Icon className={`h-[15px] w-[15px] shrink-0 ${on ? "text-accent" : "text-fg-2"}`} />
+                <Icon
+                  className={`h-[15px] w-[15px] shrink-0 ${on ? "text-accent" : "text-fg-2"}`}
+                />
                 <span
                   className={`tag-cut border px-1.5 py-0.5 font-mono text-[8.5px] uppercase tracking-label ${
-                    state.done ? "border-accent bg-accent/10 text-accent" : "border-line-2 bg-ink-1000/60 text-fg-4"
+                    state.done
+                      ? "border-accent bg-accent/10 text-accent"
+                      : "border-line-2 bg-ink-1000/60 text-fg-4"
                   }`}
                 >
                   {state.text}

@@ -31,7 +31,11 @@ export const planExpiryChecker = inngest.createFunction(
     await inngest.send(
       expired.map((p) => ({
         name: "improvement/plan.expired" as const,
-        data: { planId: p.id, riotAccountId: p.riotAccountId, userId: p.riotAccount.userId } satisfies PlanExpiredPayload,
+        data: {
+          planId: p.id,
+          riotAccountId: p.riotAccountId,
+          userId: p.riotAccount.userId,
+        } satisfies PlanExpiredPayload,
       }))
     );
 
@@ -71,7 +75,12 @@ export const planRenewalWorker = inngest.createFunction(
       appUrl,
     });
 
-    const { error } = await emailClient.emails.send({ from: EMAIL_FROM, to: user.email, subject, html });
+    const { error } = await emailClient.emails.send({
+      from: EMAIL_FROM,
+      to: user.email,
+      subject,
+      html,
+    });
     if (error) logger.error(`[planRenewalWorker] Email send failed`, { userId, error });
 
     return { planId: newPlan.id, notified: !error };

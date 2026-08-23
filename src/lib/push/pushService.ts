@@ -60,6 +60,9 @@ export async function sendPushToUser(userId: string, payload: PushPayload): Prom
 
   if (staleIds.length > 0) {
     await prisma.pushSubscription.deleteMany({ where: { id: { in: staleIds } } });
-    logger.info("[pushService] Removed stale push subscriptions", { userId, count: staleIds.length });
+    logger.info("[pushService] Removed stale push subscriptions", {
+      userId,
+      count: staleIds.length,
+    });
   }
 }

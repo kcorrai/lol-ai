@@ -18,7 +18,10 @@ const SetDuoSchema = z
   .object({
     riotAccountId: z.string().uuid(),
     puuid: z.string().min(1).optional(),
-    riotId: z.string().regex(/^.+#.+$/, "Riot ID must look like Name#TAG").optional(),
+    riotId: z
+      .string()
+      .regex(/^.+#.+$/, "Riot ID must look like Name#TAG")
+      .optional(),
   })
   .refine((v) => v.puuid || v.riotId, { message: "Provide either puuid or riotId" });
 

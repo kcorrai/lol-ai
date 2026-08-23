@@ -23,7 +23,7 @@ export function MetaRating({ rating }: MetaRatingProps) {
   const percent = (rating.score / 10) * 100;
 
   return (
-    <div className="rounded-xl border border-border bg-surface p-4 space-y-3">
+    <div className="space-y-3 rounded-xl border border-border bg-surface p-4">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-text">Meta Rating</h3>
         <div className="flex items-center gap-2">
@@ -47,7 +47,10 @@ export function MetaRating({ rating }: MetaRatingProps) {
 
       <div className="h-2.5 w-full overflow-hidden rounded-full bg-surface-2">
         <div
-          className={cn("h-full rounded-full transition-all duration-700", scoreColor(rating.score))}
+          className={cn(
+            "h-full rounded-full transition-all duration-700",
+            scoreColor(rating.score)
+          )}
           style={{ width: `${percent}%` }}
         />
       </div>

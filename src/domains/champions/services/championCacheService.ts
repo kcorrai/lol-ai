@@ -35,17 +35,34 @@ export async function refreshChampionStats(
   if (participants.length === 0) return;
 
   type AggRow = {
-    games: number; wins: number;
-    kills: number; deaths: number; assists: number;
-    csSum: number; csPerMin: number;
-    vision: number; damage: number; gold: number;
+    games: number;
+    wins: number;
+    kills: number;
+    deaths: number;
+    assists: number;
+    csSum: number;
+    csPerMin: number;
+    vision: number;
+    damage: number;
+    gold: number;
   };
 
   const agg = new Map<number, AggRow>();
 
   for (const p of participants) {
     const existing = agg.get(p.championId);
-    const base = existing ?? { games: 0, wins: 0, kills: 0, deaths: 0, assists: 0, csSum: 0, csPerMin: 0, vision: 0, damage: 0, gold: 0 };
+    const base = existing ?? {
+      games: 0,
+      wins: 0,
+      kills: 0,
+      deaths: 0,
+      assists: 0,
+      csSum: 0,
+      csPerMin: 0,
+      vision: 0,
+      damage: 0,
+      gold: 0,
+    };
 
     agg.set(p.championId, {
       games: base.games + 1,

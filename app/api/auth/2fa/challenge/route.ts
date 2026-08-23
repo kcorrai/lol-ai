@@ -11,7 +11,13 @@ import { z } from "zod";
 const CHALLENGE_LIMIT = { limit: 10, windowMs: 900_000 };
 
 const challengeSchema = z.union([
-  z.object({ type: z.literal("totp"), token: z.string().length(6).regex(/^\d{6}$/) }),
+  z.object({
+    type: z.literal("totp"),
+    token: z
+      .string()
+      .length(6)
+      .regex(/^\d{6}$/),
+  }),
   z.object({ type: z.literal("backup"), code: z.string().min(6).max(64) }),
 ]);
 

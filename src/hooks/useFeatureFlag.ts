@@ -9,8 +9,11 @@ interface FlagResult {
 
 async function fetchFlags(keys: string[]): Promise<Record<string, FlagResult>> {
   const res = await fetch(`/api/feature-flags?keys=${keys.join(",")}`);
-  if (!res.ok) return Object.fromEntries(keys.map((k) => [k, { enabled: false, variant: "control" as const }]));
-  const json = await res.json() as { data: Record<string, FlagResult> };
+  if (!res.ok)
+    return Object.fromEntries(
+      keys.map((k) => [k, { enabled: false, variant: "control" as const }])
+    );
+  const json = (await res.json()) as { data: Record<string, FlagResult> };
   return json.data;
 }
 
@@ -34,5 +37,8 @@ export function useFeatureFlags(keys: string[]): Record<string, FlagResult> {
     gcTime: 10 * 60 * 1000,
   });
 
-  return data ?? Object.fromEntries(keys.map((k) => [k, { enabled: false, variant: "control" as const }]));
+  return (
+    data ??
+    Object.fromEntries(keys.map((k) => [k, { enabled: false, variant: "control" as const }]))
+  );
 }

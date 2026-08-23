@@ -38,14 +38,14 @@ yazÄ±yor. Rakiplerde benzeri yok â€” retention'Ä± doÄŸrudan etkileyen
 
 ## Desteklenen AlÄ±ÅŸkanlÄ±k Tipleri
 
-| `habitType` | Tespit Kriteri | GÃ¶rÃ¼nen Ä°sim |
-|---|---|---|
-| `low_vision` | `weakestArea = 'vision_control'` 2+ hafta | DÃ¼ÅŸÃ¼k Vizyon Skoru |
-| `high_deaths` | `weakestArea = 'death_reduction'` 2+ hafta | YÃ¼ksek Ã–lÃ¼m SayÄ±sÄ± |
-| `low_cs` | `weakestArea = 'cs_farming'` 2+ hafta | DÃ¼ÅŸÃ¼k CS |
-| `late_game_throw` | Son 3 haftada 30+ dk maÃ§larda WR < %40 | GeÃ§ Oyun HatasÄ± |
-| `tilt_prone` | Son 4 haftada tiltScore ortalamasÄ± > 60 | Tilt EÄŸilimi |
-| `objective_neglect` | Son 3 haftada objectivesStolen ortalamasÄ± < 0.3 | AmaÃ§ Ä°hmali |
+| `habitType`         | Tespit Kriteri                                   | GÃ¶rÃ¼nen Ä°sim         |
+| ------------------- | ------------------------------------------------ | ----------------------- |
+| `low_vision`        | `weakestArea = 'vision_control'` 2+ hafta        | DÃ¼ÅŸÃ¼k Vizyon Skoru   |
+| `high_deaths`       | `weakestArea = 'death_reduction'` 2+ hafta       | YÃ¼ksek Ã–lÃ¼m SayÄ±sÄ± |
+| `low_cs`            | `weakestArea = 'cs_farming'` 2+ hafta            | DÃ¼ÅŸÃ¼k CS             |
+| `late_game_throw`   | Son 3 haftada 30+ dk maÃ§larda WR < %40          | GeÃ§ Oyun HatasÄ±       |
+| `tilt_prone`        | Son 4 haftada tiltScore ortalamasÄ± > 60         | Tilt EÄŸilimi           |
+| `objective_neglect` | Son 3 haftada objectivesStolen ortalamasÄ± < 0.3 | AmaÃ§ Ä°hmali           |
 
 ---
 
@@ -84,16 +84,16 @@ export interface DetectedHabit {
   id: string;
   habitType: string;
   displayName: string;
-  severity: 'high' | 'medium' | 'low';
+  severity: "high" | "medium" | "low";
   weekCount: number;
   firstDetected: string;
   isResolved: boolean;
   evidence: HabitEvidence[];
-  message: string;  // "Bu problem son N haftadÄ±r devam ediyor"
+  message: string; // "Bu problem son N haftadÄ±r devam ediyor"
 }
 
-export async function detectAndPersistHabits(riotAccountId: string): Promise<DetectedHabit[]>
-export async function getActiveHabits(riotAccountId: string): Promise<DetectedHabit[]>
+export async function detectAndPersistHabits(riotAccountId: string): Promise<DetectedHabit[]>;
+export async function getActiveHabits(riotAccountId: string): Promise<DetectedHabit[]>;
 ```
 
 ### Tespit AlgoritmasÄ±
@@ -105,10 +105,10 @@ async function detectHabits(riotAccountId: string) {
     where: {
       riotAccountId,
       gamesAnalyzed: { gte: 5 },
-      periodEnd: { gte: new Date(Date.now() - 28 * 24 * 60 * 60 * 1000) }
+      periodEnd: { gte: new Date(Date.now() - 28 * 24 * 60 * 60 * 1000) },
     },
-    orderBy: { periodEnd: 'desc' },
-    take: 4
+    orderBy: { periodEnd: "desc" },
+    take: 4,
   });
 
   if (snapshots.length < 2) return; // yetersiz veri
@@ -116,7 +116,7 @@ async function detectHabits(riotAccountId: string) {
   const detectedHabits: HabitCandidate[] = [];
 
   // 2. weakestArea tekrarÄ± kontrolÃ¼
-  const weakAreas = snapshots.map(s => s.weakestArea).filter(Boolean);
+  const weakAreas = snapshots.map((s) => s.weakestArea).filter(Boolean);
   const areaCounts = countOccurrences(weakAreas);
   for (const [area, count] of Object.entries(areaCounts)) {
     if (count >= 2) {
@@ -125,7 +125,7 @@ async function detectHabits(riotAccountId: string) {
   }
 
   // 3. tilt pattern kontrolÃ¼
-  const tiltScores = snapshots.map(s => Number(s.tiltScore ?? 0));
+  const tiltScores = snapshots.map((s) => Number(s.tiltScore ?? 0));
   const avgTilt = average(tiltScores);
   if (avgTilt > 60) {
     detectedHabits.push(buildTiltHabit(avgTilt, snapshots));
@@ -140,14 +140,15 @@ async function detectHabits(riotAccountId: string) {
 ### Åiddet HesabÄ±
 
 | weekCount | severity |
-|---|---|
-| 2 | `medium` |
-| 3 | `high` |
-| 4+ | `high` |
+| --------- | -------- |
+| 2         | `medium` |
+| 3         | `high`   |
+| 4+        | `high`   |
 
 ### Otomatik Tetiklenme
 
 `matchSyncService.ts`'te sync tamamlandÄ±ÄŸÄ±nda:
+
 ```typescript
 // sync bittikten sonra fire-and-forget
 detectAndPersistHabits(riotAccountId).catch(logger.error);
@@ -199,14 +200,14 @@ src/hooks/usePlayerHabits.ts                                  â† YENÄ° (T
 ## Test Plan
 
 ```typescript
-describe('habitDetectionService', () => {
-  it('2 haftada aynÄ± weakestArea â†’ habit oluÅŸturulur')
-  it('1 haftada aynÄ± weakestArea â†’ habit oluÅŸturulmaz')
-  it('habit Ã§Ã¶zÃ¼ldÃ¼ÄŸÃ¼nde isResolved=true olur')
-  it('tilt ortalamasÄ± > 60 â†’ tilt_prone habit')
-  it('5 maÃ§tan az snapshot â†’ analiz yapÄ±lmaz')
-  it('severity: 2 hafta = medium, 3+ hafta = high')
-})
+describe("habitDetectionService", () => {
+  it("2 haftada aynÄ± weakestArea â†’ habit oluÅŸturulur");
+  it("1 haftada aynÄ± weakestArea â†’ habit oluÅŸturulmaz");
+  it("habit Ã§Ã¶zÃ¼ldÃ¼ÄŸÃ¼nde isResolved=true olur");
+  it("tilt ortalamasÄ± > 60 â†’ tilt_prone habit");
+  it("5 maÃ§tan az snapshot â†’ analiz yapÄ±lmaz");
+  it("severity: 2 hafta = medium, 3+ hafta = high");
+});
 ```
 
 ---
@@ -225,4 +226,3 @@ describe('habitDetectionService', () => {
 - Sync tetiklemesi Ã§alÄ±ÅŸÄ±yor (test et: sync yap, habits endpoint'ini Ã§aÄŸÄ±r)
 - Unit test coverage â‰¥ 80%
 - `docs/DATABASE_SCHEMA.md` gÃ¼ncellendi
-

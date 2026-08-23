@@ -50,8 +50,8 @@ export function PairedDevice({
           // A real state, not an error. Said plainly rather than shown as an empty panel
           // the player has to work out for themselves.
           <p className="text-sm text-text-muted">
-            No Riot account is linked to this profile yet. Link one on the website and this
-            app will read it.
+            No Riot account is linked to this profile yet. Link one on the website and this app will
+            read it.
           </p>
         )}
       </div>

@@ -94,8 +94,8 @@ export function DraftShareLinks({
       ))}
       <p className="text-[11.5px] leading-relaxed text-text-faint">
         A drafter link is the seat. Anyone who has it picks and bans for that team all series,
-        whichever side the team is on that game, so send each one directly rather than posting it
-        in a shared channel.
+        whichever side the team is on that game, so send each one directly rather than posting it in
+        a shared channel.
       </p>
     </div>
   );

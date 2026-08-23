@@ -14,7 +14,10 @@ vi.mock("@/lib/ddragon/championsData", () => ({
 
 import { evaluateDraft, dedupeDraft } from "./draftEvalService";
 import { getMetaSnapshot, findChampionStats } from "@/domains/meta/services/metaStatsService";
-import { getChampionCounters, getChampionBuild } from "@/domains/meta/services/championDetailService";
+import {
+  getChampionCounters,
+  getChampionBuild,
+} from "@/domains/meta/services/championDetailService";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import type { CanonicalPosition, ChampionMetaStats, MetaSnapshot } from "@/domains/meta/types";
 
@@ -33,15 +36,28 @@ function summary(id: string, tags: string[], attack: number, magic: number, defe
     tags,
     info: { attack, defense, magic, difficulty: 5 },
     stats: {
-      hp: 500, hpperlevel: 90, armor: 20, armorperlevel: 4, spellblock: 30,
-      spellblockperlevel: 1, attackdamage: 55, attackdamageperlevel: 3,
-      attackrange: 150, movespeed: 335,
+      hp: 500,
+      hpperlevel: 90,
+      armor: 20,
+      armorperlevel: 4,
+      spellblock: 30,
+      spellblockperlevel: 1,
+      attackdamage: 55,
+      attackdamageperlevel: 3,
+      attackrange: 150,
+      movespeed: 335,
     },
     blurb: "",
   };
 }
 
-function stats(id: number, key: string, position: CanonicalPosition, winRate: number, tier: number): ChampionMetaStats {
+function stats(
+  id: number,
+  key: string,
+  position: CanonicalPosition,
+  winRate: number,
+  tier: number
+): ChampionMetaStats {
   return {
     championId: id,
     championKey: key,
@@ -54,7 +70,17 @@ function stats(id: number, key: string, position: CanonicalPosition, winRate: nu
     overallRank: 20,
     prevPatchRank: 20,
     positions: [
-      { position, games: 10000, winRate, pickRate: 5, banRate: 2, tier, rank: 5, prevPatchRank: 7, counters: [] },
+      {
+        position,
+        games: 10000,
+        winRate,
+        pickRate: 5,
+        banRate: 2,
+        tier,
+        rank: 5,
+        prevPatchRank: 7,
+        counters: [],
+      },
     ],
   };
 }
@@ -91,7 +117,11 @@ const RED = { TOP: "Teemo", JUNGLE: "Amumu", MIDDLE: "Veigar", BOTTOM: "Ziggs", 
 
 beforeEach(() => {
   vi.clearAllMocks();
-  mockSnapshot.mockResolvedValue({ patch: "16.13", fetchedAt: "x", champions: Object.values(STATS) } as MetaSnapshot);
+  mockSnapshot.mockResolvedValue({
+    patch: "16.13",
+    fetchedAt: "x",
+    champions: Object.values(STATS),
+  } as MetaSnapshot);
   mockChampions.mockResolvedValue(SUMMARIES);
   mockFind.mockImplementation((_s: MetaSnapshot, key: string) => STATS[key] ?? null);
   mockCounters.mockResolvedValue([]);

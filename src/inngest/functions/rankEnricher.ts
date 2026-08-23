@@ -51,7 +51,11 @@ export const rankEnricher = inngest.createFunction(
     let enriched = 0;
     for (const match of matches) {
       try {
-        await enrichParticipantRanks(match.id, match.participants.map((p) => p.puuid), region);
+        await enrichParticipantRanks(
+          match.id,
+          match.participants.map((p) => p.puuid),
+          region
+        );
         enriched += 1;
       } catch (err) {
         // One bad match does not cost the rest theirs; the retry will come back for it.
@@ -61,7 +65,9 @@ export const rankEnricher = inngest.createFunction(
       }
     }
 
-    logger.info(`[rankEnricher] Enriched ${enriched}/${matches.length} matches for ${riotAccountId}`);
+    logger.info(
+      `[rankEnricher] Enriched ${enriched}/${matches.length} matches for ${riotAccountId}`
+    );
     return { enriched, considered: matches.length };
   }
 );

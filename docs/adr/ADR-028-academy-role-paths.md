@@ -13,7 +13,7 @@ same grid. Three things make that wrong:
 
 - **Four fifths of it is not for you.** A support main opening the hub would see eleven tracks
   and be told, implicitly, that five of them are somebody else's. The Academy's whole claim is
-  that it reads your games and shows you what applies to *you*.
+  that it reads your games and shows you what applies to _you_.
 - **The recommender would offer them.** `chooseNextLesson` walks the registry in order looking
   for an unfinished lesson that fixes a detected leak. `low_cs` is a leak a jungle lesson
   claims to fix, so a support player with low CS would be handed jungle clear routes.
@@ -50,7 +50,7 @@ lives in `roles.ts` and nowhere else.
 **Good**
 
 - The hub still shows six tracks and one path — a reading list, not a catalogue.
-- A role path's id *is* its role, so a path cannot be filed under a role it is not about, and
+- A role path's id _is_ its role, so a path cannot be filed under a role it is not about, and
   `/academy/top` is a URL a person can guess.
 - Nothing about progress, XP, mastery, decay or the transcript needed changing: a role path is a
   `Track` and its lessons are `Lesson`s, so every existing mechanism reaches them unchanged.

@@ -10,7 +10,7 @@ export function PreviewBadge({ className }: { className?: string }): React.JSX.E
     <span
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-accent",
-        className,
+        className
       )}
     >
       <Sparkles className="h-3 w-3" />

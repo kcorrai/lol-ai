@@ -31,7 +31,7 @@ catches, returns an empty catalogue); the same call inside a page render 500s.
 
 This defeats the degrade-to-last-good discipline ADR-016 is built on. An upstream being
 down was supposed to produce a stale answer or an empty state. Instead it took the page
-down *because* there was a cached copy to refresh.
+down _because_ there was a cached copy to refresh.
 
 ## Decision
 
@@ -40,7 +40,7 @@ which does not use the framework cache at all. It owns:
 
 - **its own TTL**, in a bounded process-lifetime map;
 - **its own timeout** (`AbortSignal.timeout`), so a hung connect cannot hold a request open;
-- **last-good retention** — on failure it serves the previous answer *past expiry*, because
+- **last-good retention** — on failure it serves the previous answer _past expiry_, because
   the entry is only stale since we could not reach the host to replace it;
 - **in-flight dedup**, reusing the existing `dedup()` helper;
 - **a non-rejecting contract** — it resolves to `undefined`, so no caller has to handle a

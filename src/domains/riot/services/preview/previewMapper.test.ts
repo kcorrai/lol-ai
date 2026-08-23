@@ -103,9 +103,7 @@ describe("toPreviewMatch", () => {
   it("dates the row from gameCreation when gameEndTimestamp is missing", () => {
     const dto = matchFixture(PUUID, { gameEndTimestamp: 0, gameCreation: 1_600_000_000_000 });
 
-    expect(toPreviewMatch(dto, PUUID)?.gameEndedAt).toBe(
-      new Date(1_600_000_000_000).toISOString()
-    );
+    expect(toPreviewMatch(dto, PUUID)?.gameEndedAt).toBe(new Date(1_600_000_000_000).toISOString());
   });
 
   it("returns null when the account is not in the match", () => {

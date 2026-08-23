@@ -42,7 +42,9 @@ describe("POST /api/discord/link", () => {
   it("refuses a valid token with no session", async () => {
     authenticateAsNobody();
 
-    const { status } = await readApiResponse(await POST(request({ token: createLinkToken(CLAIMS) })));
+    const { status } = await readApiResponse(
+      await POST(request({ token: createLinkToken(CLAIMS) }))
+    );
 
     expect(status).toBe(401);
     expect(linkDiscordAccount).not.toHaveBeenCalled();
@@ -69,8 +71,7 @@ describe("POST /api/discord/link", () => {
   it("rejects a missing token and a malformed body", async () => {
     expect((await readApiResponse(await POST(request({})))).status).toBe(422);
     expect(
-      (await readApiResponse(await POST(routeRequest("/api/discord/link", { body: "{" }))))
-        .status
+      (await readApiResponse(await POST(routeRequest("/api/discord/link", { body: "{" })))).status
     ).toBe(422);
   });
 

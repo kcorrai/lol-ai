@@ -119,7 +119,7 @@ import { ImageResponse } from 'next/og';
 
 export async function GET(req: Request, { params }: { params: { token: string } }) {
   const card = await prisma.shareableCard.findUnique({ where: { token: params.token } });
-  
+
   if (!card) return new Response(null, { status: 404 });
   if (card.expiresAt < new Date()) return new Response(null, { status: 410 });
 
@@ -178,6 +178,7 @@ src/hooks/useShareableCard.ts                     â† TanStack Query (genera
 ### UI Entegrasyonu (ayrÄ± ticket deÄŸil, bu task iÃ§inde)
 
 Dashboard ve coaching report sayfasÄ±na "PaylaÅŸ" butonu ekle:
+
 ```
 app/(app)/dashboard/page.tsx   â† "Bu HaftayÄ± PaylaÅŸ" butonu
 app/(app)/coaching/[id]/page.tsx â† rapor Ã¼stÃ¼ne "PaylaÅŸ" butonu
@@ -196,11 +197,11 @@ app/(app)/coaching/[id]/page.tsx â† rapor Ã¼stÃ¼ne "PaylaÅŸ" butonu
 ## Test Plan
 
 ```typescript
-describe('cardService', () => {
-  it('buildWeeklyCardData: LP delta hesabÄ± doÄŸru')
-  it('buildWeeklyCardData: WR son 7 gÃ¼nden hesaplanÄ±yor')
-  it('token 7 gÃ¼n TTL ile oluÅŸturuluyor')
-})
+describe("cardService", () => {
+  it("buildWeeklyCardData: LP delta hesabÄ± doÄŸru");
+  it("buildWeeklyCardData: WR son 7 gÃ¼nden hesaplanÄ±yor");
+  it("token 7 gÃ¼n TTL ile oluÅŸturuluyor");
+});
 
 // E2E: GET /api/cards/[token] â†’ Content-Type: image/png
 // E2E: expire sonrasÄ± â†’ 410 Gone
@@ -222,4 +223,3 @@ describe('cardService', () => {
 - Token expire mekanizmasÄ± test edildi
 - Watermark Free/Pro farkÄ± Ã§alÄ±ÅŸÄ±yor
 - `docs/API_DESIGN.md` gÃ¼ncellendi
-

@@ -38,7 +38,12 @@ export interface DecayInput {
  * - Too few games is `unmeasured`, not `decayed`. Silence is not regression, and demoting
  *   somebody for not playing punishes the wrong thing.
  */
-export function judgeDecay({ direction, target, gamesRequired, readings }: DecayInput): DecayVerdict {
+export function judgeDecay({
+  direction,
+  target,
+  gamesRequired,
+  readings,
+}: DecayInput): DecayVerdict {
   const counted = readings.slice(0, gamesRequired);
   if (counted.length < gamesRequired) return "unmeasured";
 

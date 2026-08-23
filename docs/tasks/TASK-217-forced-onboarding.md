@@ -12,7 +12,7 @@ crosses pages. Neither forces the user to actually learn the app.
 ## Goal
 
 A single, forced, **cross-page** guided journey that drives a new user step-by-step through
-the *real* application, Clash-Royale style: only the element to interact with is lit; the rest
+the _real_ application, Clash-Royale style: only the element to interact with is lit; the rest
 of the screen is dimmed and non-interactive. The user cannot use the site until the journey
 is complete.
 

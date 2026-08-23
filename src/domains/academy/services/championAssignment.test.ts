@@ -74,17 +74,19 @@ beforeEach(() => {
   vi.mocked(listAccounts).mockResolvedValue([{ id: "acc-1", isPrimary: true }] as never);
   vi.mocked(getAccountPuuid).mockResolvedValue("puuid-1");
   vi.mocked(prisma.academyAssignment.findFirst).mockResolvedValue(null as never);
-  vi.mocked(prisma.academyAssignment.create).mockImplementation(
-    (async ({ data }: { data: Record<string, unknown> }) => ({
-      id: "asg-1",
-      gamesObserved: 0,
-      status: "active",
-      evidence: null,
-      startedAt: new Date(),
-      resolvedAt: null,
-      ...data,
-    })) as never
-  );
+  vi.mocked(prisma.academyAssignment.create).mockImplementation((async ({
+    data,
+  }: {
+    data: Record<string, unknown>;
+  }) => ({
+    id: "asg-1",
+    gamesObserved: 0,
+    status: "active",
+    evidence: null,
+    startedAt: new Date(),
+    resolvedAt: null,
+    ...data,
+  })) as never);
   vi.mocked(getRecommendedOtps).mockResolvedValue([
     { championId: 45, name: "Veigar", position: "MIDDLE", games: 43, winRate: 63, avgKda: 3 },
   ] as never);

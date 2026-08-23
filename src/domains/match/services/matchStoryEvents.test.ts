@@ -66,7 +66,12 @@ describe("toStoryEvent", () => {
         puuid: null,
         positionX: 981,
         positionY: 10441,
-        payload: { teamId: 200, buildingType: "TOWER_BUILDING", laneType: "TOP_LANE", towerType: "OUTER_TURRET" },
+        payload: {
+          teamId: 200,
+          buildingType: "TOWER_BUILDING",
+          laneType: "TOP_LANE",
+          towerType: "OUTER_TURRET",
+        },
       },
       ROSTER
     );
@@ -75,7 +80,14 @@ describe("toStoryEvent", () => {
 
   it("leaves position null when neither coordinate was captured", () => {
     const event = toStoryEvent(
-      { kind: "WARD_PLACED", timestampMs: 0, puuid: ME, positionX: null, positionY: null, payload: { wardType: "YELLOW_TRINKET" } },
+      {
+        kind: "WARD_PLACED",
+        timestampMs: 0,
+        puuid: ME,
+        positionX: null,
+        positionY: null,
+        payload: { wardType: "YELLOW_TRINKET" },
+      },
       ROSTER
     );
     expect(event?.position).toBeNull();
@@ -83,7 +95,14 @@ describe("toStoryEvent", () => {
 
   it("drops a row whose payload no longer matches its kind's schema, rather than throwing", () => {
     const event = toStoryEvent(
-      { kind: "ELITE_MONSTER_KILL", timestampMs: 0, puuid: ME, positionX: null, positionY: null, payload: { monsterType: 42 } },
+      {
+        kind: "ELITE_MONSTER_KILL",
+        timestampMs: 0,
+        puuid: ME,
+        positionX: null,
+        positionY: null,
+        payload: { monsterType: 42 },
+      },
       ROSTER
     );
     expect(event).toBeNull();

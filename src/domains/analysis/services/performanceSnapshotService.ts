@@ -24,7 +24,9 @@ function computeAreaScores(
   };
 }
 
-function computeTiltScore(matches: { won: boolean; deaths: number; gameDuration: number }[]): number {
+function computeTiltScore(
+  matches: { won: boolean; deaths: number; gameDuration: number }[]
+): number {
   if (matches.length < 3) return 0;
 
   // Count loss streaks
@@ -76,13 +78,16 @@ export async function computeAndSaveSnapshot(riotAccountId: string): Promise<voi
   });
 
   if (rows.length < MIN_GAMES) {
-    logger.info(`[snapshot] Skipping ${riotAccountId} — only ${rows.length} games in window (need ${MIN_GAMES})`);
+    logger.info(
+      `[snapshot] Skipping ${riotAccountId} — only ${rows.length} games in window (need ${MIN_GAMES})`
+    );
     return;
   }
 
   const wins = rows.filter((r) => r.won).length;
   const winRate = (wins / rows.length) * 100;
-  const avgKda = rows.reduce((s, r) => s + (r.kills + r.assists) / Math.max(r.deaths, 1), 0) / rows.length;
+  const avgKda =
+    rows.reduce((s, r) => s + (r.kills + r.assists) / Math.max(r.deaths, 1), 0) / rows.length;
   const avgCs = rows.reduce((s, r) => s + Number(r.csPerMinute), 0) / rows.length;
   const avgVision = rows.reduce((s, r) => s + r.visionScore, 0) / rows.length;
   const avgObjectivesStolen = rows.reduce((s, r) => s + r.objectivesStolen, 0) / rows.length;

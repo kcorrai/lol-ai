@@ -41,6 +41,7 @@ referans alınacak.
 ### Mevcut i18n Altyapısı
 
 Proje `next-intl` kullanıyor. Türkçe referans dosyası:
+
 ```
 src/locales/tr.json   ← referans (tüm key'ler burada)
 src/locales/en.json   ← İngilizce
@@ -59,8 +60,8 @@ Dosya yapısı `tr.json` ile birebir aynı; yalnızca değerler çevrilir.
 
 ```javascript
 // next.config.js
-const locales = ['tr', 'en', 'ko', 'pt-BR'];
-const defaultLocale = 'tr';
+const locales = ["tr", "en", "ko", "pt-BR"];
+const defaultLocale = "tr";
 ```
 
 ### Dil Seçici
@@ -125,16 +126,16 @@ declare global {
 
 Türkçe dosyasındaki ana namespace'ler:
 
-| Namespace | Anahtar Sayısı (tahmini) |
-|---|---|
-| `common` | ~40 |
-| `dashboard` | ~30 |
-| `coaching` | ~50 |
-| `champions` | ~25 |
-| `settings` | ~35 |
-| `auth` | ~20 |
-| `errors` | ~15 |
-| **Toplam** | ~215 |
+| Namespace   | Anahtar Sayısı (tahmini) |
+| ----------- | ------------------------ |
+| `common`    | ~40                      |
+| `dashboard` | ~30                      |
+| `coaching`  | ~50                      |
+| `champions` | ~25                      |
+| `settings`  | ~35                      |
+| `auth`      | ~20                      |
+| `errors`    | ~15                      |
+| **Toplam**  | ~215                     |
 
 Not: Korece çeviri için makine çevirisi (DeepL) + native speaker review önerilir.
 Bu task makine çevirisi ile teslim edilir; native review ayrı task.
@@ -158,16 +159,16 @@ i18n.ts                                                 ← GÜNCELLE (fallback 
 ## Test Plan
 
 ```typescript
-describe('LocaleSwitcher', () => {
-  it('ko seçilince /ko/dashboard\'a yönlendiriyor')
-  it('pt-BR seçilince /pt-BR/dashboard\'a yönlendiriyor')
-  it('eksik key → İngilizce fallback gösteriyor, hata fırlatmıyor')
-})
+describe("LocaleSwitcher", () => {
+  it("ko seçilince /ko/dashboard'a yönlendiriyor");
+  it("pt-BR seçilince /pt-BR/dashboard'a yönlendiriyor");
+  it("eksik key → İngilizce fallback gösteriyor, hata fırlatmıyor");
+});
 
-describe('formatters', () => {
-  it('ko locale → Korece tarih formatı')
-  it('pt-BR locale → Brezilya sayı formatı (nokta binlik ayraç)')
-})
+describe("formatters", () => {
+  it("ko locale → Korece tarih formatı");
+  it("pt-BR locale → Brezilya sayı formatı (nokta binlik ayraç)");
+});
 ```
 
 ---

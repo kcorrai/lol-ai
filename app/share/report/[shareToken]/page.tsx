@@ -57,9 +57,7 @@ export default async function ShareReportPage({ params }: Props) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6 text-center">
         <p className="font-display text-2xl font-bold text-text">Report not found</p>
-        <p className="mt-2 text-sm text-text-muted">
-          This link may have expired or been revoked.
-        </p>
+        <p className="mt-2 text-sm text-text-muted">This link may have expired or been revoked.</p>
         <Link
           href="/"
           className="mt-6 rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-background"
@@ -87,9 +85,7 @@ export default async function ShareReportPage({ params }: Props) {
         <div className="mb-6">
           <h1 className="font-display text-3xl font-bold text-text md:text-4xl">
             {report.gameName}
-            <span className="ml-2 text-base font-normal text-text-muted">
-              #{report.tagLine}
-            </span>
+            <span className="ml-2 text-base font-normal text-text-muted">#{report.tagLine}</span>
           </h1>
           <div className="mt-2 flex flex-wrap items-center gap-2">
             {report.rankDisplay && (
@@ -145,11 +141,10 @@ export default async function ShareReportPage({ params }: Props) {
         {/* Pro gate teaser */}
         <div className="mb-8 rounded-xl border border-border bg-surface-2 p-5 text-center">
           <p className="text-sm text-text-muted">
-            Full weakness analysis, all action items, and champion recommendations are visible in the app.
+            Full weakness analysis, all action items, and champion recommendations are visible in
+            the app.
           </p>
-          <p className="mt-1 text-xs text-text-muted/60">
-            Free: 3 reports/month · Pro: unlimited
-          </p>
+          <p className="mt-1 text-xs text-text-muted/60">Free: 3 reports/month · Pro: unlimited</p>
         </div>
 
         {/* CTA */}

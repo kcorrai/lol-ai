@@ -30,7 +30,10 @@ function participantFrame(participantId: number, minute: number): ParticipantFra
   };
 }
 
-function frame(minute: number, events: MatchTimelineFrameDTO["events"] = []): MatchTimelineFrameDTO {
+function frame(
+  minute: number,
+  events: MatchTimelineFrameDTO["events"] = []
+): MatchTimelineFrameDTO {
   const participantFrames: Record<string, ParticipantFrameDTO> = {};
   for (const id of Object.keys(PUUIDS)) {
     participantFrames[id] = participantFrame(Number(id), minute);
@@ -50,7 +53,13 @@ export function timelineFixture(): MatchTimelineDTO {
         frame(0),
         frame(1, [
           { type: "ITEM_PURCHASED", timestamp: 65_000, participantId: 1, itemId: 1055 },
-          { type: "SKILL_LEVEL_UP", timestamp: 70_000, participantId: 1, skillSlot: 1, levelUpType: "NORMAL" },
+          {
+            type: "SKILL_LEVEL_UP",
+            timestamp: 70_000,
+            participantId: 1,
+            skillSlot: 1,
+            levelUpType: "NORMAL",
+          },
         ]),
         frame(2, [
           { type: "WARD_PLACED", timestamp: 130_000, creatorId: 2, wardType: "YELLOW_TRINKET" },

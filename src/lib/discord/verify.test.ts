@@ -9,7 +9,11 @@ function makeKeypair() {
   return { privateKey, publicKeyHex: der.subarray(der.length - 32).toString("hex") };
 }
 
-function signRequest(privateKey: Parameters<typeof cryptoSign>[2], timestamp: string, body: string) {
+function signRequest(
+  privateKey: Parameters<typeof cryptoSign>[2],
+  timestamp: string,
+  body: string
+) {
   return cryptoSign(null, Buffer.from(timestamp + body, "utf8"), privateKey).toString("hex");
 }
 
@@ -60,13 +64,22 @@ describe("verifyDiscordSignature", () => {
   it("returns false rather than throwing on malformed input", () => {
     const { publicKeyHex } = makeKeypair();
 
-    expect(verifyDiscordSignature({ rawBody, signature: null, timestamp, publicKeyHex })).toBe(false);
-    expect(verifyDiscordSignature({ rawBody, signature: "ab", timestamp, publicKeyHex })).toBe(false);
+    expect(verifyDiscordSignature({ rawBody, signature: null, timestamp, publicKeyHex })).toBe(
+      false
+    );
+    expect(verifyDiscordSignature({ rawBody, signature: "ab", timestamp, publicKeyHex })).toBe(
+      false
+    );
     expect(
       verifyDiscordSignature({ rawBody, signature: "zz".repeat(64), timestamp, publicKeyHex })
     ).toBe(false);
     expect(
-      verifyDiscordSignature({ rawBody, signature: "00".repeat(64), timestamp, publicKeyHex: "beef" })
+      verifyDiscordSignature({
+        rawBody,
+        signature: "00".repeat(64),
+        timestamp,
+        publicKeyHex: "beef",
+      })
     ).toBe(false);
   });
 
@@ -74,8 +87,8 @@ describe("verifyDiscordSignature", () => {
     const { privateKey } = makeKeypair();
     const signature = signRequest(privateKey, timestamp, rawBody);
 
-    expect(
-      verifyDiscordSignature({ rawBody, signature, timestamp, publicKeyHex: undefined })
-    ).toBe(false);
+    expect(verifyDiscordSignature({ rawBody, signature, timestamp, publicKeyHex: undefined })).toBe(
+      false
+    );
   });
 });

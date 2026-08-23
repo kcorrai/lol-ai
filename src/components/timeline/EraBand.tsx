@@ -19,9 +19,7 @@ export function EraBand({ band }: { band: CareerBand }): React.ReactElement {
       <header className="flex flex-wrap items-center gap-x-3.5 gap-y-1">
         <span className="hud-label">{`// ${band.label}`}</span>
         <span className="h-px min-w-4 flex-1 bg-line-1" />
-        {summary && (
-          <span className="font-mono text-[11px] text-text-muted">{summary}</span>
-        )}
+        {summary && <span className="font-mono text-[11px] text-text-muted">{summary}</span>}
       </header>
 
       {band.events.length > 0 ? (

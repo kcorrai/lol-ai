@@ -75,7 +75,7 @@ export function useClearDuo(riotAccountId: string | null | undefined) {
 // the duo itself — otherwise switching partner leaves the panel describing the old one.
 function invalidateDuo(
   queryClient: ReturnType<typeof useQueryClient>,
-  riotAccountId: string | null | undefined,
+  riotAccountId: string | null | undefined
 ) {
   queryClient.invalidateQueries({ queryKey: ["duo", riotAccountId] });
   queryClient.invalidateQueries({ queryKey: ["duo-synergy", riotAccountId] });

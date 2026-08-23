@@ -20,7 +20,11 @@ function remaining(target: string): string {
  * `nextResetAt` is optional: with nothing passed it works the next UTC midnight
  * out for itself, which is all any caller outside the quiz page needs.
  */
-export function ResetCountdown({ nextResetAt: target }: { nextResetAt?: string }): React.JSX.Element {
+export function ResetCountdown({
+  nextResetAt: target,
+}: {
+  nextResetAt?: string;
+}): React.JSX.Element {
   // Rendered empty on the server: the value depends on the viewer's clock, and
   // shipping the server's would guarantee a hydration mismatch every time.
   const [label, setLabel] = useState<string | null>(null);

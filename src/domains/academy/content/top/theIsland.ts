@@ -29,10 +29,26 @@ export const theIsland: Lesson = {
       caption: "What the distance actually changes",
       head: ["In bot lane", "In top lane", "So you"],
       rows: [
-        ["Help arrives in 15s", "Help arrives in 40s, or not at all", "Play the wave, not the fight"],
-        ["Dying costs the drake", "Dying costs a wave and a plate", "Can afford to lose, cannot afford to lose repeatedly"],
-        ["Two people, four hands", "One person, and a jungler who is elsewhere", "Own the whole lane state yourself"],
-        ["Roams are short", "Roams cost you the lane", "Leave only with a wave that survives without you"],
+        [
+          "Help arrives in 15s",
+          "Help arrives in 40s, or not at all",
+          "Play the wave, not the fight",
+        ],
+        [
+          "Dying costs the drake",
+          "Dying costs a wave and a plate",
+          "Can afford to lose, cannot afford to lose repeatedly",
+        ],
+        [
+          "Two people, four hands",
+          "One person, and a jungler who is elsewhere",
+          "Own the whole lane state yourself",
+        ],
+        [
+          "Roams are short",
+          "Roams cost you the lane",
+          "Leave only with a wave that survives without you",
+        ],
       ],
     },
     {
@@ -40,7 +56,7 @@ export const theIsland: Lesson = {
       caption: "Top lane in the map: the isolated corner",
       annotations: [
         {
-          at: { x: 0.09, y: 0.40, r: 0.055 },
+          at: { x: 0.09, y: 0.4, r: 0.055 },
           label: "Your top lane",
           tone: "neutral",
           note: "Where you farm alone. Forty seconds from your team at best, and often nobody is coming at all.",

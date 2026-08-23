@@ -22,8 +22,8 @@ export default function CreateDraftPage(): React.ReactElement {
             fearless lockouts, the score and the side swaps through all five games.
           </p>
           <p className="mt-3 max-w-[52ch] text-[15px] text-fg-3">
-            While you draft, your side sees what the patch data says about the pick in front of you —
-            which champions are actually strong right now, what counters what is already on the
+            While you draft, your side sees what the patch data says about the pick in front of you
+            — which champions are actually strong right now, what counters what is already on the
             board, and where your comp is thin.
           </p>
 

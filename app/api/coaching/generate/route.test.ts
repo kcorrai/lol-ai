@@ -25,7 +25,12 @@ import { buildCoachingInput } from "@/domains/coaching/pipeline/dataPreparator";
 import { checkRateLimit } from "@/lib/api/rateLimit";
 import { audit } from "@/lib/audit/auditService";
 import { Errors } from "@/lib/api/errors";
-import { authenticateAs, authenticateAsNobody, readApiResponse, routeRequest } from "@/test/apiRoute";
+import {
+  authenticateAs,
+  authenticateAsNobody,
+  readApiResponse,
+  routeRequest,
+} from "@/test/apiRoute";
 import { POST } from "./route";
 
 const USER_ID = "user-1";
@@ -127,7 +132,11 @@ describe("POST /api/coaching/generate", () => {
   });
 
   it("rejects a body that fails schema validation", async () => {
-    const res = await generate({ riotAccountId: "not-a-uuid", reportType: "session_review", matchIds: [] });
+    const res = await generate({
+      riotAccountId: "not-a-uuid",
+      reportType: "session_review",
+      matchIds: [],
+    });
 
     const { status, error } = await readApiResponse(res);
     expect(status).toBe(422);

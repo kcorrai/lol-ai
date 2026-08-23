@@ -5,12 +5,14 @@ import { BarChart3, Mail, Trophy } from "lucide-react";
 const B2B_FEATURES = [
   {
     title: "Bulk Member Analysis",
-    description: "Coach dashboard: see all players' ranks, 7-day WR, KDA, and CS stats on one screen.",
+    description:
+      "Coach dashboard: see all players' ranks, 7-day WR, KDA, and CS stats on one screen.",
     icon: BarChart3,
   },
   {
     title: "Weekly Team Report",
-    description: "Auto email every Monday: who's hot, who's struggling, which player needs coaching.",
+    description:
+      "Auto email every Monday: who's hot, who's struggling, which player needs coaching.",
     icon: Mail,
   },
   {
@@ -26,16 +28,24 @@ export function PricingB2BSection() {
   return (
     <div className="mx-auto mt-24 max-w-4xl">
       <div className="mb-10 text-center">
-        <span className="rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">B2B / Esports</span>
-        <h2 className="mt-4 font-display text-3xl font-bold text-text">For Esports Academies &amp; Clubs</h2>
+        <span className="rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
+          B2B / Esports
+        </span>
+        <h2 className="mt-4 font-display text-3xl font-bold text-text">
+          For Esports Academies &amp; Clubs
+        </h2>
         <p className="mt-3 text-text-muted">
-          Manage multiple teams, bulk-analyze your students, and automate weekly performance reports.
+          Manage multiple teams, bulk-analyze your students, and automate weekly performance
+          reports.
         </p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
         {B2B_FEATURES.map((item) => (
-          <div key={item.title} className="rounded-xl border border-border bg-surface p-5 space-y-3">
+          <div
+            key={item.title}
+            className="space-y-3 rounded-xl border border-border bg-surface p-5"
+          >
             <item.icon className="h-6 w-6 text-accent" strokeWidth={1.75} />
             <p className="font-semibold text-text">{item.title}</p>
             <p className="text-sm text-text-muted">{item.description}</p>
@@ -43,7 +53,7 @@ export function PricingB2BSection() {
         ))}
       </div>
 
-      <div className="mt-8 rounded-2xl border border-accent/20 bg-accent/5 p-6 flex flex-col items-center gap-4 text-center md:flex-row md:text-left md:items-start">
+      <div className="mt-8 flex flex-col items-center gap-4 rounded-2xl border border-accent/20 bg-accent/5 p-6 text-center md:flex-row md:items-start md:text-left">
         <div className="flex-1">
           <p className="text-lg font-bold text-text">Team Plan — $29.99/month</p>
           <p className="mt-1 text-sm text-text-muted">
@@ -51,7 +61,7 @@ export function PricingB2BSection() {
             We can offer custom enterprise pricing for large academies.
           </p>
         </div>
-        <div className="flex gap-3 shrink-0">
+        <div className="flex shrink-0 gap-3">
           <a
             href="/settings/billing"
             className="rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-background hover:bg-accent/90"

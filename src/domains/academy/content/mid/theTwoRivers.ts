@@ -31,10 +31,22 @@ export const theTwoRivers: Lesson = {
       caption: "Where to stand while you farm",
       head: ["What you know", "Where you stand", "What it costs"],
       rows: [
-        ["Their jungler is top side", "The bottom half of the wave", "Nothing — you can still last-hit everything"],
+        [
+          "Their jungler is top side",
+          "The bottom half of the wave",
+          "Nothing — you can still last-hit everything",
+        ],
         ["No idea where he is", "Behind the wave, nearer your turret", "A few minions"],
-        ["He is bottom side and your wave is pushed", "Take what you can reach and leave", "Half a wave, instead of a flash"],
-        ["He just appeared bottom on the minimap", "Push, immediately — this is your window", "Nothing; this is the free one"],
+        [
+          "He is bottom side and your wave is pushed",
+          "Take what you can reach and leave",
+          "Half a wave, instead of a flash",
+        ],
+        [
+          "He just appeared bottom on the minimap",
+          "Push, immediately — this is your window",
+          "Nothing; this is the free one",
+        ],
       ],
     },
     {

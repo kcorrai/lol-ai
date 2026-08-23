@@ -39,6 +39,7 @@ Wrapped gibi paylaÅŸÄ±labilir, "bu benim yÄ±lÄ±m" hissi veren viral iÃ�
 ## Recap SlaytlarÄ±
 
 ### Slayt 1 â€” KarÅŸÄ±lama
+
 ```
 [Oyuncu adÄ±] â€” [Sezon: Yaz 2025]
 "Bu sezon sahada geÃ§irdiÄŸin zamana deÄŸdi mi?"
@@ -46,6 +47,7 @@ Wrapped gibi paylaÅŸÄ±labilir, "bu benim yÄ±lÄ±m" hissi veren viral iÃ�
 ```
 
 ### Slayt 2 â€” BÃ¼yÃ¼k SayÄ±lar
+
 ```
 TOPLAM: 247 MaÃ§   |   LP DeÄŸiÅŸimi: +312
 KAZANMA ORANI: %54   |   Toplam KDA: 3.2
@@ -53,6 +55,7 @@ KAZANMA ORANI: %54   |   Toplam KDA: 3.2
 ```
 
 ### Slayt 3 â€” En Ä°yi Åampiyonun
+
 ```
 "Bu sezonun yÄ±ldÄ±zÄ±:"
 [Åampiyon splash art â€” tam arka plan]
@@ -61,6 +64,7 @@ AHRI   74 MaÃ§   %61 WR   3.8 KDA
 ```
 
 ### Slayt 4 â€” Rank YolculuÄŸu
+
 ```
 [Mini LP grafiÄŸi â€” animasyonlu Ã§izgi]
 "BaÅŸladÄ±ÄŸÄ±n yer: Silver III"
@@ -69,6 +73,7 @@ AHRI   74 MaÃ§   %61 WR   3.8 KDA
 ```
 
 ### Slayt 5 â€” En KÃ¶tÃ¼ Gecen
+
 ```
 "Bir de bunlar vardÄ±..."
 "27 MayÄ±s: 5 Ã¼st Ã¼ste kayÄ±p, -87 LP"
@@ -76,14 +81,17 @@ AHRI   74 MaÃ§   %61 WR   3.8 KDA
 ```
 
 ### Slayt 6 â€” Habit KÄ±rma AnÄ±
+
 ```
 "Bu sezon bir alÄ±ÅŸkanlÄ±ÄŸÄ± yendin:"
 "4 hafta boyunca vision score'un dÃ¼ÅŸÃ¼ktÃ¼."
 "Hafta 7'de problemi fark ettin ve Ã§Ã¶zdÃ¼n."
 ```
+
 (PlayerHabit.isResolved = true ise gÃ¶ster)
 
 ### Slayt 7 â€” AI KoÃ§ Yorumu
+
 ```
 [AI Ã¼retilmiÅŸ 3 cÃ¼mlelik sezon deÄŸerlendirmesi]
 "Bu sezonun en gÃ¼Ã§lÃ¼ yanÄ±: lane phase kontrolÃ¼.
@@ -91,6 +99,7 @@ Bir sonraki sezonda: map awareness."
 ```
 
 ### Slayt 8 â€” Bir Sonraki Sezon
+
 ```
 "SÄ±radaki hedef:"
 [Improvement planÄ±ndan alÄ±nan hedef varsa gÃ¶ster]
@@ -141,8 +150,11 @@ export interface RecapData {
   nextGoal: string | null;
 }
 
-export async function buildRecapData(userId: string, riotAccountId: string): Promise<RecapData>
-export async function generateOrGetRecap(userId: string, riotAccountId: string): Promise<SeasonRecap>
+export async function buildRecapData(userId: string, riotAccountId: string): Promise<RecapData>;
+export async function generateOrGetRecap(
+  userId: string,
+  riotAccountId: string
+): Promise<SeasonRecap>;
 ```
 
 ### Frontend: Animasyonlu Recap
@@ -164,6 +176,7 @@ export async function generateOrGetRecap(userId: string, riotAccountId: string):
 ### PaylaÅŸÄ±m CTA
 
 Her slaytÄ±n altÄ±nda:
+
 ```
 [ğŸ“¸ Bu anÄ± paylaÅŸ]  â† o slayta Ã¶zel OG image indir
 [ğŸ”— TÃ¼m recap'Ä± paylaÅŸ]  â† shareToken linki kopyala
@@ -200,12 +213,12 @@ src/hooks/useRecap.ts                                       â† YENÄ° TanS
 ## Test Plan
 
 ```typescript
-describe('recapService', () => {
-  it('buildRecapData: 30 maÃ§tan az â†’ hata dÃ¶ndÃ¼rÃ¼r')
-  it('buildRecapData: topChampion doÄŸru hesaplanÄ±yor')
-  it('buildRecapData: lpDelta yama tarihlerinden baÄŸÄ±msÄ±z doÄŸru')
-  it('generateOrGetRecap: ikinci Ã§aÄŸrÄ±da yeni Ã¼retilmiyor, mevcut dÃ¶ndÃ¼rÃ¼lÃ¼yor')
-})
+describe("recapService", () => {
+  it("buildRecapData: 30 maÃ§tan az â†’ hata dÃ¶ndÃ¼rÃ¼r");
+  it("buildRecapData: topChampion doÄŸru hesaplanÄ±yor");
+  it("buildRecapData: lpDelta yama tarihlerinden baÄŸÄ±msÄ±z doÄŸru");
+  it("generateOrGetRecap: ikinci Ã§aÄŸrÄ±da yeni Ã¼retilmiyor, mevcut dÃ¶ndÃ¼rÃ¼lÃ¼yor");
+});
 ```
 
 ---
@@ -225,4 +238,3 @@ describe('recapService', () => {
 - Share linki public eriÅŸimle aÃ§Ä±lÄ±yor
 - Mobile portrait'te tam ekran
 - `docs/DEPENDENCIES.md` gÃ¼ncellendi (Framer Motion)
-

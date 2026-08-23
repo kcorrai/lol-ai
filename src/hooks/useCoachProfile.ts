@@ -37,8 +37,7 @@ export function useSaveCoachProfile() {
 export function useSubmitApplication() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: () =>
-      apiFetch<{ submitted: boolean }>("/api/coaches/me/apply", { method: "POST" }),
+    mutationFn: () => apiFetch<{ submitted: boolean }>("/api/coaches/me/apply", { method: "POST" }),
     onSuccess: () => qc.invalidateQueries({ queryKey: KEY }),
   });
 }

@@ -60,6 +60,7 @@ await prisma.champion.upsert({
 ## Why This Is a Separate Task
 
 Champion data is static (changes only on patches). Fetching it on-demand from Riot's CDN on every request is wasteful. Storing it locally enables:
+
 - Offline development
 - Fast lookups without external API dependency
 - Ability to add our own metadata (tier scores, pool recommendations)

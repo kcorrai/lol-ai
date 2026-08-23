@@ -1,12 +1,14 @@
 # TASK-246 — Sortable tier list columns
 
 ## Goal
+
 Let the ranked and ARAM tier lists be reordered by clicking Tier, Patch, Win, Pick or Ban
 (6.png, 8.png). Both lists already shared `TierRow`, so one sortable table serves both.
 
 ## Change
+
 - `app/(tools)/tools/tier-list/sortEntries.ts` (new) — pure `sortEntries(entries, column,
-  direction)` plus `defaultDirectionFor`. Rank and tier are "lower is better" so they open
+direction)` plus `defaultDirectionFor`. Rank and tier are "lower is better" so they open
   ascending; the rate columns and movement open descending. Ties fall back to meta rank so equal
   values don't reshuffle arbitrarily.
 - `app/(tools)/tools/tier-list/SortableTierTable.tsx` (new, client) — owns the sort state, renders
@@ -17,6 +19,7 @@ Let the ranked and ARAM tier lists be reordered by clicking Tier, Patch, Win, Pi
 - `src/domains/meta/tierLetter.ts` (new) — see below.
 
 ## The build break worth recording
+
 Making the table a client component broke `next build`:
 
 ```
@@ -34,6 +37,7 @@ This is the concrete cost CLAUDE.md §3.1 warns about when it bans barrel files.
 anything from a domain barrel into a client component, check what the barrel reaches.**
 
 ## SSG is intact
+
 The tier list pages use `generateStaticParams` with `dynamicParams=false`. A client component
 still prerenders, and the default sort is the service's own order, so the served HTML is unchanged
 — verified with `curl`: champion links come back in rank order (Locke, Ahri, Sylas, Fizz…).
@@ -41,12 +45,14 @@ still prerenders, and the default sort is the service's own order, so the served
 known Windows-only `@vercel/og` bug recorded in Phase 6, not a regression.
 
 ## Tests
+
 `sortEntries.test.ts` — default order untouched, each column both directions, pick-rate ties fall
 back to rank, tier keeps meta order within a tier, movement ranks by rank climbed, champions with
-no previous-patch ranking sink to the bottom in *both* directions (a new champion must not read as
+no previous-patch ranking sink to the bottom in _both_ directions (a new champion must not read as
 the biggest faller), and the input array is not mutated.
 
 ## Verified live
+
 `/tools/tier-list/mid` — Win/Pick/Ban/Tier all reorder, a second click reverses, `aria-sort`
 tracks the active column, win-rate descending confirmed monotonic. `/aram/tier-list` — sorts with
 Ban and Patch correctly absent.

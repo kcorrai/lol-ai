@@ -108,8 +108,16 @@ async function sendDiscordWeeklySummaries(): Promise<void> {
     const weekAgoRank = rankByAccount.get(account.id);
 
     const TIER_ORDER: Record<string, number> = {
-      IRON: 0, BRONZE: 1, SILVER: 2, GOLD: 3, PLATINUM: 4,
-      EMERALD: 5, DIAMOND: 6, MASTER: 7, GRANDMASTER: 8, CHALLENGER: 9,
+      IRON: 0,
+      BRONZE: 1,
+      SILVER: 2,
+      GOLD: 3,
+      PLATINUM: 4,
+      EMERALD: 5,
+      DIAMOND: 6,
+      MASTER: 7,
+      GRANDMASTER: 8,
+      CHALLENGER: 9,
     };
     const DIV_ORDER: Record<string, number> = { IV: 0, III: 1, II: 2, I: 3 };
     const composite = (t: string, d: string, lp: number) =>
@@ -129,7 +137,9 @@ async function sendDiscordWeeklySummaries(): Promise<void> {
         weeklyRecapEmbed({ gameName: account.gameName, wins, losses, lpDelta, topChampion })
       );
     } catch (err) {
-      logger.warn(`[weekly-report] Discord webhook failed for account ${account.id}: ${err instanceof Error ? err.message : String(err)}`);
+      logger.warn(
+        `[weekly-report] Discord webhook failed for account ${account.id}: ${err instanceof Error ? err.message : String(err)}`
+      );
     }
   }
 }

@@ -40,7 +40,13 @@ export function parseSearchQuery(raw: string): SearchQuery | null {
   // Only the first `#` splits: tags cannot contain one, so a second is part of the typed name.
   const hashAt = clean.indexOf("#");
   const name = (hashAt === -1 ? clean : clean.slice(0, hashAt)).trim().toLowerCase();
-  const rawTag = hashAt === -1 ? "" : clean.slice(hashAt + 1).trim().toLowerCase();
+  const rawTag =
+    hashAt === -1
+      ? ""
+      : clean
+          .slice(hashAt + 1)
+          .trim()
+          .toLowerCase();
 
   if (name.length < MIN_QUERY_LENGTH) return null;
 

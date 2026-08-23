@@ -31,8 +31,16 @@ export const towerPriorityAndPlates: Lesson = {
       rows: [
         ["One plate", "160", "Four seconds of standing under a turret you can see"],
         ["A full wave", "~110", "Thirty seconds of lane, and it comes back"],
-        ["A solo kill", "~300 plus tempo", "Requires the enemy to be wrong, and you to survive being right"],
-        ["First turret bonus", "~700 shared", "It never comes back — and it opens the map for everyone"],
+        [
+          "A solo kill",
+          "~300 plus tempo",
+          "Requires the enemy to be wrong, and you to survive being right",
+        ],
+        [
+          "First turret bonus",
+          "~700 shared",
+          "It never comes back — and it opens the map for everyone",
+        ],
       ],
     },
     {
@@ -110,11 +118,13 @@ export const towerPriorityAndPlates: Lesson = {
     {
       id: "plates-quiz",
       kind: "quiz",
-      prompt: "Why does the team that takes first turret win so much more often than the gold alone would suggest?",
+      prompt:
+        "Why does the team that takes first turret win so much more often than the gold alone would suggest?",
       options: [
         {
           id: "a",
-          label: "The lane opens: their minions push toward you, the jungle behind it becomes yours, and their laner farms further from home",
+          label:
+            "The lane opens: their minions push toward you, the jungle behind it becomes yours, and their laner farms further from home",
           explain:
             "Correct. The gold is shared and pleasant; the map change is structural. A fallen turret converts one lane into permanent pressure and hands you the jungle entrance behind it for the rest of the game.",
           correct: true,

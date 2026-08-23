@@ -8,15 +8,21 @@ describe("cdragonAssetUrl", () => {
   // mixed-case spelling 404s, which is the whole reason this function exists.
   it("strips the game-data prefix and lowercases the rest", () => {
     expect(
-      cdragonAssetUrl("/lol-game-data/assets/ASSETS/Characters/Ahri/Skins/Skin01/AhriLoadscreen_1.jpg")
+      cdragonAssetUrl(
+        "/lol-game-data/assets/ASSETS/Characters/Ahri/Skins/Skin01/AhriLoadscreen_1.jpg"
+      )
     ).toBe(`${ASSET_ROOT}/characters/ahri/skins/skin01/ahriloadscreen_1.jpg`);
   });
 
   // skinFeaturePreviewData writes the same locations without the prefix.
   it("resolves a prefix-less ASSETS path against the same root", () => {
     expect(
-      cdragonAssetUrl("ASSETS/Characters/MasterYi/Skins/Skin116/SkinsFeaturesPreview/MasterYi116_Q.webm")
-    ).toBe(`${ASSET_ROOT}/characters/masteryi/skins/skin116/skinsfeaturespreview/masteryi116_q.webm`);
+      cdragonAssetUrl(
+        "ASSETS/Characters/MasterYi/Skins/Skin116/SkinsFeaturesPreview/MasterYi116_Q.webm"
+      )
+    ).toBe(
+      `${ASSET_ROOT}/characters/masteryi/skins/skin116/skinsfeaturespreview/masteryi116_q.webm`
+    );
   });
 
   // Chroma images sit under /v1/, not under /assets/ — the prefix strip must keep whichever
@@ -32,7 +38,15 @@ describe("cdragonAssetUrl", () => {
   });
 });
 
-const LABELLED = ["kRare", "kEpic", "kLegendary", "kMythic", "kUltimate", "kExalted", "kTranscendent"];
+const LABELLED = [
+  "kRare",
+  "kEpic",
+  "kLegendary",
+  "kMythic",
+  "kUltimate",
+  "kExalted",
+  "kTranscendent",
+];
 
 describe("skinRarity", () => {
   it.each([

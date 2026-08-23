@@ -9,13 +9,13 @@ lesson that says "the ward goes in the tri-brush" tells a Silver player where th
 in words, and that is the one thing words are worst at.
 
 The obvious answer is video, and it is the wrong one at this size. LA-42 recorded the reasoning
-and Kaan's decision. Briefly: hosting 61 clips is tens of dollars a month, but *producing* a
+and Kaan's decision. Briefly: hosting 61 clips is tens of dollars a month, but _producing_ a
 60–90 second clip that actually teaches a lesson — find the example, record it, cut it, annotate
 it, caption it — is realistically 2–4 hours each. That is 120–240 hours, three to six weeks of
 one person full time, and it goes stale every patch. There is nobody to do it. The card is open
 in the backlog as a decision record, not as work.
 
-That left the question this ADR answers: what *are* the Academy's pictures made of?
+That left the question this ADR answers: what _are_ the Academy's pictures made of?
 
 Three sources were available:
 

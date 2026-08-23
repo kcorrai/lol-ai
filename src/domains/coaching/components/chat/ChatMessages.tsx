@@ -25,7 +25,8 @@ export function ChatMessages({ messages, isStreaming }: ChatMessagesProps): Reac
   return (
     <div className="grid gap-4">
       {messages.map((message, i) => {
-        const streamingHere = isStreaming && i === messages.length - 1 && message.role === "assistant";
+        const streamingHere =
+          isStreaming && i === messages.length - 1 && message.role === "assistant";
 
         if (message.role === "user") {
           return (

@@ -34,25 +34,27 @@ export async function getMatchupAnalysis(
   champion: string,
   opponent: string,
   role: Position
-): Promise<MatchupAnalysis>
+): Promise<MatchupAnalysis>;
 ```
 
 Cache key:
+
 ```typescript
 // "yasuo vs zed mid" ile "zed vs yasuo mid" farklÄ± â€” her iki yÃ¶n ayrÄ± analiz
-buildCacheKey('matchup', {
+buildCacheKey("matchup", {
   champion: champion.toLowerCase(),
   opponent: opponent.toLowerCase(),
   role,
-})
+});
 ```
 
 TTL: 14 gÃ¼n.
 
 AynÄ± champion guard:
+
 ```typescript
 if (champion.toLowerCase() === opponent.toLowerCase()) {
-  throw new Error('Ä°ki farklÄ± ÅŸampiyon seÃ§ilmelidir');
+  throw new Error("Ä°ki farklÄ± ÅŸampiyon seÃ§ilmelidir");
 }
 ```
 
@@ -61,6 +63,7 @@ if (champion.toLowerCase() === opponent.toLowerCase()) {
 `buildMatchupUserPrompt(champion, opponent, role)`:
 
 DÃ¶rt bÃ¶lÃ¼m iÃ§in explicit JSON anahtarlarÄ± iste:
+
 - `laneAnalysis`: `advantage`, `summary`, `levels1to3`, `level6Plan`, `powerSpikes[]`
 - `tradeGuide`: `shortTrade`, `longTrade`, `winConditions[]`, `loseConditions[]`
 - `buildAdvice`: `startingItems[]`, `coreItems[]`, `situationalItems[]`, `reasoning`
@@ -90,4 +93,3 @@ export const matchupAnalysisSchema = z.object({
 
 - TASK-037 (AiCache)
 - TASK-045 (Matchup domain tipleri)
-

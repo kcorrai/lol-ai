@@ -29,10 +29,26 @@ export const playingFromBehind: Lesson = {
       caption: "The same situation, two states",
       head: ["Situation", "Even", "Behind"],
       rows: [
-        ["Wave pushed to you", "Shove it back and look for a roam", "Farm it under turret; take the free reset"],
-        ["A skirmish starts near you", "Join it", "Join only if you arrive first — you cannot afford to be the last one in"],
-        ["Enemy jungler unseen 30s", "Play the odds and keep farming", "Assume he is coming and hold position"],
-        ["An objective spawns", "Contest", "Be present with your wave shoved — presence is what you have to offer"],
+        [
+          "Wave pushed to you",
+          "Shove it back and look for a roam",
+          "Farm it under turret; take the free reset",
+        ],
+        [
+          "A skirmish starts near you",
+          "Join it",
+          "Join only if you arrive first — you cannot afford to be the last one in",
+        ],
+        [
+          "Enemy jungler unseen 30s",
+          "Play the odds and keep farming",
+          "Assume he is coming and hold position",
+        ],
+        [
+          "An objective spawns",
+          "Contest",
+          "Be present with your wave shoved — presence is what you have to offer",
+        ],
       ],
     },
     { kind: "gate" },
@@ -95,11 +111,13 @@ export const playingFromBehind: Lesson = {
     {
       id: "behind-quiz",
       kind: "quiz",
-      prompt: "What is the reliable mechanism by which a player who is behind gets back into the game?",
+      prompt:
+        "What is the reliable mechanism by which a player who is behind gets back into the game?",
       options: [
         {
           id: "a",
-          label: "Farming safely until the enemy's lead makes them overextend, then being alive to punish it",
+          label:
+            "Farming safely until the enemy's lead makes them overextend, then being alive to punish it",
           explain:
             "Correct, and both halves matter. The overextension happens on its own — being alive, nearby and full health when it does is the part you control, and it is what farming safely was for.",
           correct: true,

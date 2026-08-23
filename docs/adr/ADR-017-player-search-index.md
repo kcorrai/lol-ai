@@ -4,7 +4,7 @@
 
 ## Context
 
-The product asks a player to know their exact Riot ID — name *and* tag — and to pick the right
+The product asks a player to know their exact Riot ID — name _and_ tag — and to pick the right
 platform, before it will show them anything. Competing sites do not: on tracker.gg you type
 `fak`, a list of real accounts drops down, you click one, and the profile loads. Nothing is
 connected, nothing is verified, nothing is waited for. That absence of friction is a large part

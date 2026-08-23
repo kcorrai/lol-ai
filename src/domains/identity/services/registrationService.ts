@@ -16,9 +16,7 @@ export interface RegisterInput {
   refCode?: string;
 }
 
-export type RegisterResult =
-  | { ok: true; userId: string }
-  | { ok: false; code: "EMAIL_TAKEN" };
+export type RegisterResult = { ok: true; userId: string } | { ok: false; code: "EMAIL_TAKEN" };
 
 async function sendVerificationEmail(email: string, userId: string): Promise<void> {
   const token = randomBytes(32).toString("hex");
@@ -73,7 +71,9 @@ export async function registerUser(input: RegisterInput): Promise<RegisterResult
   await prisma.subscription.create({ data: { userId: user.id } });
 
   if (refCode) {
-    await applyReferralCode(refCode, user.id).catch(() => { /* ignore invalid codes */ });
+    await applyReferralCode(refCode, user.id).catch(() => {
+      /* ignore invalid codes */
+    });
   }
 
   // Send email verification — non-blocking, failure does not abort registration

@@ -53,10 +53,11 @@ export class RiotHttpClient {
       await this.limiter.consume();
     }
 
-    const result = await withRetry(
-      () => this.fetch<T>(url),
-      { maxAttempts: 3, baseDelayMs: 1000, maxDelayMs: 10_000 }
-    );
+    const result = await withRetry(() => this.fetch<T>(url), {
+      maxAttempts: 3,
+      baseDelayMs: 1000,
+      maxDelayMs: 10_000,
+    });
 
     const isEmptyArray = Array.isArray(result) && result.length === 0;
     if (cacheTtl > 0 && !(noCacheEmptyArray && isEmptyArray)) {

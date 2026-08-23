@@ -4,11 +4,7 @@ import { withAuth } from "@/lib/api/withAuth";
 import { Errors } from "@/lib/api/errors";
 import { apiSuccess } from "@/lib/api/response";
 import { checkRateLimit, rateLimitResponse } from "@/lib/api/rateLimit";
-import {
-  enableKit,
-  getKit,
-  saveSettings,
-} from "@/domains/creator/services/creatorProfileService";
+import { enableKit, getKit, saveSettings } from "@/domains/creator/services/creatorProfileService";
 import { MAX_DELAY_SECONDS } from "@/domains/creator/session";
 
 export const dynamic = "force-dynamic";
@@ -64,7 +60,8 @@ export const PUT = withAuth(async (req: NextRequest, { userId }): Promise<NextRe
   if (!rl.allowed) return rateLimitResponse(rl.retryAfterMs, rl.limit);
 
   const parsed = SettingsBody.safeParse(await req.json().catch(() => null));
-  if (!parsed.success) throw Errors.validation(parsed.error.issues[0]?.message ?? "Invalid settings.");
+  if (!parsed.success)
+    throw Errors.validation(parsed.error.issues[0]?.message ?? "Invalid settings.");
 
   const result = await saveSettings(userId, parsed.data);
   if (!result.ok) throw Errors.validation(result.reason);

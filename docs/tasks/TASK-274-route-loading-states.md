@@ -11,13 +11,13 @@ UIs in sequence."
 There are **0** `loading.tsx` files. The obvious move is to mirror TASK-254 and drop one in each of
 the five route groups. That would be wrong for three of them. Counting async server pages per group:
 
-| Group | Async pages | Verdict |
-|---|---|---|
-| `(app)` | **0 / 24** | Skip |
-| `(auth)` | **0 / 4** | Skip |
-| `(team)` | **0 / 6** | Skip |
-| `(marketing)` | 3 / 7 | Partial |
-| `(tools)` | **13 / 14** | Add |
+| Group         | Async pages | Verdict |
+| ------------- | ----------- | ------- |
+| `(app)`       | **0 / 24**  | Skip    |
+| `(auth)`      | **0 / 4**   | Skip    |
+| `(team)`      | **0 / 6**   | Skip    |
+| `(marketing)` | 3 / 7       | Partial |
+| `(tools)`     | **13 / 14** | Add     |
 
 Every `(app)` page is a synchronous wrapper — `dashboard/page.tsx` is literally
 `return <PageClient />` — and the client component owns a skeleton already. A `loading.tsx` there

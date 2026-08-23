@@ -7,7 +7,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import type { ReportSummary } from "@/domains/coaching/services/reportService";
 
-const STATUS_BADGE: Record<string, "default" | "secondary" | "success" | "destructive" | "warning"> = {
+const STATUS_BADGE: Record<
+  string,
+  "default" | "secondary" | "success" | "destructive" | "warning"
+> = {
   pending: "warning",
   processing: "secondary",
   complete: "success",
@@ -21,16 +24,34 @@ const STATUS_LABEL: Record<string, string> = {
   failed: "Failed",
 };
 
-const TYPE_CONFIG: Record<string, { icon: React.ElementType; color: string; bg: string; glow: string }> = {
-  session_review: { icon: BarChart2,  color: "text-accent",  bg: "bg-accent/15",  glow: "rgba(198,255,61,0.12)" },
-  champion_focus: { icon: Swords,     color: "text-warning", bg: "bg-warning/15", glow: "rgba(234,179,8,0.10)" },
-  climb_roadmap:  { icon: TrendingUp, color: "text-success", bg: "bg-success/15", glow: "rgba(74,222,128,0.10)" },
+const TYPE_CONFIG: Record<
+  string,
+  { icon: React.ElementType; color: string; bg: string; glow: string }
+> = {
+  session_review: {
+    icon: BarChart2,
+    color: "text-accent",
+    bg: "bg-accent/15",
+    glow: "rgba(198,255,61,0.12)",
+  },
+  champion_focus: {
+    icon: Swords,
+    color: "text-warning",
+    bg: "bg-warning/15",
+    glow: "rgba(234,179,8,0.10)",
+  },
+  climb_roadmap: {
+    icon: TrendingUp,
+    color: "text-success",
+    bg: "bg-success/15",
+    glow: "rgba(74,222,128,0.10)",
+  },
 };
 
 const REPORT_TYPE_LABEL: Record<string, string> = {
   session_review: "Session Review",
   champion_focus: "Champion Focus",
-  climb_roadmap:  "Climb Roadmap",
+  climb_roadmap: "Climb Roadmap",
 };
 
 function reportTitle(report: ReportSummary): string {
@@ -41,7 +62,11 @@ function reportTitle(report: ReportSummary): string {
 }
 
 function ReportRow({ report }: { report: ReportSummary }) {
-  const date = new Date(report.createdAt).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
+  const date = new Date(report.createdAt).toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
   const isComplete = report.status === "complete";
   const isBuilding = report.status === "pending" || report.status === "processing";
   const cfg = TYPE_CONFIG[report.reportType] ?? TYPE_CONFIG.session_review!;
@@ -52,16 +77,32 @@ function ReportRow({ report }: { report: ReportSummary }) {
   const inner = (
     <div
       className={`group flex items-center gap-3 rounded-xl border bg-surface p-4 ${
-        isBuilding ? "border-accent/50 animate-glow-pulse" : "border-border transition-all duration-200 hover:border-accent/30"
+        isBuilding
+          ? "animate-glow-pulse border-accent/50"
+          : "border-border transition-all duration-200 hover:border-accent/30"
       }`}
       style={isBuilding ? undefined : { boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)" }}
-      onMouseEnter={isBuilding ? undefined : (e) => { (e.currentTarget as HTMLElement).style.boxShadow = `0 0 20px ${cfg.glow}, inset 0 1px 0 rgba(255,255,255,0.04)`; }}
-      onMouseLeave={isBuilding ? undefined : (e) => { (e.currentTarget as HTMLElement).style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.03)"; }}
+      onMouseEnter={
+        isBuilding
+          ? undefined
+          : (e) => {
+              (e.currentTarget as HTMLElement).style.boxShadow =
+                `0 0 20px ${cfg.glow}, inset 0 1px 0 rgba(255,255,255,0.04)`;
+            }
+      }
+      onMouseLeave={
+        isBuilding
+          ? undefined
+          : (e) => {
+              (e.currentTarget as HTMLElement).style.boxShadow =
+                "inset 0 1px 0 rgba(255,255,255,0.03)";
+            }
+      }
     >
       <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${cfg.bg}`}>
         <Icon className={`h-5 w-5 ${cfg.color}`} />
       </div>
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <p className="text-sm font-semibold text-text">{reportTitle(report)}</p>
         <div className="mt-0.5 flex items-center gap-1.5 text-xs text-text-muted">
           <Clock className="h-3 w-3 shrink-0" />
@@ -84,7 +125,11 @@ function ReportRow({ report }: { report: ReportSummary }) {
     </div>
   );
 
-  return isComplete ? <Link href={`/coaching/${report.reportId}`}>{inner}</Link> : <div>{inner}</div>;
+  return isComplete ? (
+    <Link href={`/coaching/${report.reportId}`}>{inner}</Link>
+  ) : (
+    <div>{inner}</div>
+  );
 }
 
 interface Props {
@@ -95,7 +140,13 @@ interface Props {
   onLoadMore?: () => void;
 }
 
-export function ReportList({ reports, isLoading, hasNextPage, isFetchingNextPage, onLoadMore }: Props) {
+export function ReportList({
+  reports,
+  isLoading,
+  hasNextPage,
+  isFetchingNextPage,
+  onLoadMore,
+}: Props) {
   if (isLoading) {
     return (
       <div className="space-y-3">
@@ -120,7 +171,13 @@ export function ReportList({ reports, isLoading, hasNextPage, isFetchingNextPage
         <ReportRow key={r.reportId} report={r} />
       ))}
       {hasNextPage && (
-        <Button variant="secondary" size="sm" className="mt-2 w-full" onClick={onLoadMore} disabled={isFetchingNextPage}>
+        <Button
+          variant="secondary"
+          size="sm"
+          className="mt-2 w-full"
+          onClick={onLoadMore}
+          disabled={isFetchingNextPage}
+        >
           {isFetchingNextPage ? "Loading…" : "Show more"}
         </Button>
       )}

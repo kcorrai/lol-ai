@@ -34,10 +34,18 @@ export const tradingPatterns: Lesson = {
       caption: "The early level spikes",
       head: ["Level", "What changes", "The window"],
       rows: [
-        ["2", "Second ability — often two abilities against one", "The biggest raw early edge; lasts until they hit 2"],
+        [
+          "2",
+          "Second ability — often two abilities against one",
+          "The biggest raw early edge; lasts until they hit 2",
+        ],
         ["3", "Third ability — full basic kit", "A short spike if you got there first"],
         ["6", "Ultimate", "Often the whole all-in; know which of you spikes harder"],
-        ["Their 6", "Their ultimate", "The mirror — respect it for the 30 seconds before they get it"],
+        [
+          "Their 6",
+          "Their ultimate",
+          "The mirror — respect it for the 30 seconds before they get it",
+        ],
       ],
     },
     {

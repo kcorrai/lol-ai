@@ -36,7 +36,9 @@ export async function handleLsSubscriptionUpdated(payload: LsWebhookPayload): Pr
   if (!existing) {
     const userId = payload.meta.custom_data?.userId;
     if (!userId) {
-      logger.warn("[lemonsqueezy] subscription_updated: no matching subscription", { subscriptionId });
+      logger.warn("[lemonsqueezy] subscription_updated: no matching subscription", {
+        subscriptionId,
+      });
       return;
     }
     await upsertSubscription(userId, subscriptionId, attrs);
@@ -47,10 +49,14 @@ export async function handleLsSubscriptionUpdated(payload: LsWebhookPayload): Pr
 
   // When a team plan subscription expires, notify the owner
   if (existing.plan === "team" && attrs.status === "expired") {
-    await inngest.send({
-      name: "team/subscription.expired",
-      data: { userId: existing.userId },
-    }).catch(() => { /* non-critical */ });
+    await inngest
+      .send({
+        name: "team/subscription.expired",
+        data: { userId: existing.userId },
+      })
+      .catch(() => {
+        /* non-critical */
+      });
   }
 }
 
@@ -71,13 +77,17 @@ export async function handleLsSubscriptionCancelled(payload: LsWebhookPayload): 
 
   // Notify team plan owners so they can warn their members
   if (existing?.plan === "team") {
-    await inngest.send({
-      name: "team/subscription.cancelled",
-      data: {
-        userId: existing.userId,
-        periodEndDate: attrs.renews_at ?? attrs.ends_at ?? undefined,
-      },
-    }).catch(() => { /* non-critical */ });
+    await inngest
+      .send({
+        name: "team/subscription.cancelled",
+        data: {
+          userId: existing.userId,
+          periodEndDate: attrs.renews_at ?? attrs.ends_at ?? undefined,
+        },
+      })
+      .catch(() => {
+        /* non-critical */
+      });
   }
 }
 

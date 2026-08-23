@@ -11,10 +11,7 @@ export type { PlanLimits } from "@/lib/auth/planLimits";
 
 // ── Ownership ────────────────────────────────────────────────────────────────
 
-export async function assertOwnsRiotAccount(
-  userId: string,
-  riotAccountId: string
-): Promise<void> {
+export async function assertOwnsRiotAccount(userId: string, riotAccountId: string): Promise<void> {
   const account = await prisma.riotAccount.findFirst({
     where: { id: riotAccountId, userId },
     select: { id: true },
@@ -43,9 +40,13 @@ export async function checkIsPro(userId: string): Promise<boolean> {
     where: { userId },
     select: { plan: true, status: true },
   });
-  const isActive =
-    subscription?.status === "active" || subscription?.status === "trialing";
-  return isActive && (subscription?.plan === "pro" || subscription?.plan === "elite" || subscription?.plan === "team");
+  const isActive = subscription?.status === "active" || subscription?.status === "trialing";
+  return (
+    isActive &&
+    (subscription?.plan === "pro" ||
+      subscription?.plan === "elite" ||
+      subscription?.plan === "team")
+  );
 }
 
 // ── Report limits ────────────────────────────────────────────────────────────

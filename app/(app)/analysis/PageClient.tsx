@@ -31,10 +31,7 @@ export default function AnalysisPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 p-6">
-      <PageHeader
-        title="Death Heat Map"
-        subtitle="See where and when you die on the map."
-      />
+      <PageHeader title="Death Heat Map" subtitle="See where and when you die on the map." />
 
       <HeatMapControls
         champions={playedChampions}
@@ -60,17 +57,15 @@ export default function AnalysisPage() {
           <MapPin className="mx-auto mb-3 h-8 w-8 text-text-muted" />
           <p className="font-semibold text-text">Data is being prepared</p>
           <p className="mt-1 text-sm text-text-muted">
-            Match timeline data is being downloaded in the background. The map will appear in a few minutes.
+            Match timeline data is being downloaded in the background. The map will appear in a few
+            minutes.
           </p>
           <p className="mt-3 text-xs text-text-muted">Page auto-refreshes in 30 seconds…</p>
         </div>
       )}
 
       {!isLoading && data && data.hasData && (
-        <DeathHeatMap
-          deaths={data.deaths}
-          summary={data.summary}
-        />
+        <DeathHeatMap deaths={data.deaths} summary={data.summary} />
       )}
     </div>
   );

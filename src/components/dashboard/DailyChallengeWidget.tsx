@@ -15,9 +15,7 @@ export function DailyChallengeWidget() {
   const { data, isLoading, isError } = useChallenges();
 
   if (isLoading) {
-    return (
-      <div className="animate-pulse rounded-xl border border-border bg-surface p-4 h-32" />
-    );
+    return <div className="h-32 animate-pulse rounded-xl border border-border bg-surface p-4" />;
   }
 
   const daily = data?.challenges.find((c) => c.type === "daily");
@@ -36,7 +34,7 @@ export function DailyChallengeWidget() {
   }
 
   return (
-    <div className="rounded-xl border border-border bg-surface p-4 space-y-4">
+    <div className="space-y-4 rounded-xl border border-border bg-surface p-4">
       <div className="flex items-center gap-2">
         <Zap className="h-4 w-4 text-accent" />
         <h3 className="text-sm font-semibold text-text">Today&apos;s Challenge</h3>
@@ -66,9 +64,7 @@ export function DailyChallengeWidget() {
 
       {data && (
         <div className="flex items-center gap-2 pt-1">
-          <span className="text-xs text-text-muted">
-            🔥 {data.streak} day streak
-          </span>
+          <span className="text-xs text-text-muted">🔥 {data.streak} day streak</span>
         </div>
       )}
     </div>
@@ -95,7 +91,9 @@ function ChallengeRow({
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between gap-2">
-        <span className="text-[10px] font-semibold uppercase tracking-widest text-accent">{label}</span>
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-accent">
+          {label}
+        </span>
         {completed && <span className="text-[10px] font-bold text-accent">✓ Completed</span>}
       </div>
       <p className="text-sm text-text">{description}</p>

@@ -26,7 +26,11 @@ export const GET = withAuth(async (req: NextRequest, { userId }) => {
 export const PATCH = withAuth(async (req: NextRequest, { userId }) => {
   const teamId = extractTeamId(req);
   let body: unknown;
-  try { body = await req.json(); } catch { throw Errors.validation("Invalid JSON body"); }
+  try {
+    body = await req.json();
+  } catch {
+    throw Errors.validation("Invalid JSON body");
+  }
   const parsed = updateSchema.safeParse(body);
   if (!parsed.success) throw Errors.validation(parsed.error.issues[0].message);
   const { logoUrl, ...rest } = parsed.data;

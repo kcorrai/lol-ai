@@ -14,8 +14,8 @@ export function NoAccountState(): React.ReactElement {
           Connect your Riot account
         </h2>
         <p className="mx-auto mb-6 max-w-[46ch] text-[14.5px] text-text-body">
-          Read-only access to your match history. No password, nothing to install. Your first
-          review lands about 90 seconds after we finish the pull.
+          Read-only access to your match history. No password, nothing to install. Your first review
+          lands about 90 seconds after we finish the pull.
         </p>
         <Link
           href="/settings/accounts"
@@ -46,8 +46,8 @@ export function SyncingState({ gameName }: { gameName?: string }): React.ReactEl
         {gameName ? `${gameName} is linked.` : "Your account is linked."} Matches are coming in.
       </h2>
       <p className="mb-5 max-w-[62ch] text-[14.5px] text-text-body">
-        Riot rate-limits history pulls, so the full backfill takes a few minutes. You do not have
-        to wait for it — twenty games is already enough for a first report.
+        Riot rate-limits history pulls, so the full backfill takes a few minutes. You do not have to
+        wait for it — twenty games is already enough for a first report.
       </p>
       <div className="flex flex-wrap gap-3">
         <Link

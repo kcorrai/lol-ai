@@ -1,7 +1,14 @@
 import { APP_URL, BRAND_COLOR } from "@/domains/discord/brand";
 import { card, cardFooter } from "@/domains/discord/views/shell";
 import type { DetectedHabit, PlayerPerformanceProfile } from "@/domains/analysis";
-import { actionRow, linkButton, section, separator, textDisplay, thumbnail } from "@/lib/discord/components";
+import {
+  actionRow,
+  linkButton,
+  section,
+  separator,
+  textDisplay,
+  thumbnail,
+} from "@/lib/discord/components";
 import type { ContainerChild, DiscordMessagePayload } from "@/lib/discord/componentTypes";
 import { championIconUrl } from "@/lib/ddragon";
 

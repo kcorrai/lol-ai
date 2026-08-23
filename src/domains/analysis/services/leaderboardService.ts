@@ -1,8 +1,16 @@
 import { prismaReadonly } from "@/lib/db/prismaReadonly";
 
 const TIER_ORDER: Record<string, number> = {
-  IRON: 0, BRONZE: 1, SILVER: 2, GOLD: 3, PLATINUM: 4,
-  EMERALD: 5, DIAMOND: 6, MASTER: 7, GRANDMASTER: 8, CHALLENGER: 9,
+  IRON: 0,
+  BRONZE: 1,
+  SILVER: 2,
+  GOLD: 3,
+  PLATINUM: 4,
+  EMERALD: 5,
+  DIAMOND: 6,
+  MASTER: 7,
+  GRANDMASTER: 8,
+  CHALLENGER: 9,
 };
 const DIVISION_ORDER: Record<string, number> = { IV: 0, III: 1, II: 2, I: 3 };
 
@@ -26,7 +34,9 @@ export interface LeaderboardEntry {
   winRate: number;
 }
 
-export async function getLeaderboard(period: "week" | "month" = "week"): Promise<LeaderboardEntry[]> {
+export async function getLeaderboard(
+  period: "week" | "month" = "week"
+): Promise<LeaderboardEntry[]> {
   const since = new Date();
   since.setDate(since.getDate() - (period === "week" ? 7 : 30));
 

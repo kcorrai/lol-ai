@@ -138,9 +138,7 @@ export function mergeSkinMedia(
  * `mergeSkinMedia` treats that as "splash only" — so an unreachable Community Dragon costs
  * the badges and the in-game views, never the section or the page.
  */
-export async function fetchChampionSkinMedia(
-  champ: DdragonChampionDetail
-): Promise<SkinMedia[]> {
+export async function fetchChampionSkinMedia(champ: DdragonChampionDetail): Promise<SkinMedia[]> {
   const skins = champ.skins ?? [];
 
   // E2E replays every feed it depends on and must reach no network at all (CLAUDE.md 5.4).

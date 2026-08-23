@@ -179,10 +179,7 @@ export type PublicReport = {
   completedAt: Date | null;
 };
 
-export async function generateShareToken(
-  reportId: string,
-  userId: string
-): Promise<string> {
+export async function generateShareToken(reportId: string, userId: string): Promise<string> {
   const report = await prisma.coachingReport.findFirst({
     where: { id: reportId, riotAccount: { userId }, status: "complete" },
     select: { id: true, shareToken: true },
@@ -243,7 +240,10 @@ export async function getPublicReport(shareToken: string): Promise<PublicReport>
   if (!report || !report.shareToken) throw Errors.notFound("Shared report");
 
   const items = report.actionItems as Array<{ action: string; expectedImpact: string }> | null;
-  const champRecs = report.championRecommendations as Array<{ championName: string; priority: string }> | null;
+  const champRecs = report.championRecommendations as Array<{
+    championName: string;
+    priority: string;
+  }> | null;
   const latestRank = report.riotAccount.rankedHistory[0];
 
   const rankDisplay = latestRank

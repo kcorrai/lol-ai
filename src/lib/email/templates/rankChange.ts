@@ -23,13 +23,11 @@ export function buildRankChangeEmail(data: RankChangeEmailData): { subject: stri
 
   const safeName = escapeHtml(data.gameName);
   const safePrev = escapeHtml(data.previousRank);
-  const safeNew  = escapeHtml(data.newRank);
-  const safeUrl  = escapeHtml(data.appUrl);
+  const safeNew = escapeHtml(data.newRank);
+  const safeUrl = escapeHtml(data.appUrl);
 
   const accentColor = isPromo ? "#C6FF3D" : "#FF5A5A";
-  const headlineText = isPromo
-    ? `🎉 Promoted to ${safeNew}!`
-    : `Demoted to ${safeNew}`;
+  const headlineText = isPromo ? `🎉 Promoted to ${safeNew}!` : `Demoted to ${safeNew}`;
   const bodyText = isPromo
     ? `Well played, ${safeName}. You climbed from <strong>${safePrev}</strong> to <strong>${safeNew}</strong>. Keep the momentum — your next session analysis is ready.`
     : `It happens to everyone, ${safeName}. You dropped from <strong>${safePrev}</strong> to <strong>${safeNew}</strong>. Generate a coaching report to pinpoint what to fix before your next session.`;

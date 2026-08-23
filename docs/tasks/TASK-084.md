@@ -40,6 +40,7 @@ MaÃ§ Ã¶ncesi araÃ§ olarak da kullanÄ±labilir.
 ### Åampiyon Listesi
 
 DDragon'dan mevcut `championCacheService` kullan:
+
 ```typescript
 // TÃ¼m ÅŸampiyonlarÄ± client'a ver
 GET /api/public/champions
@@ -77,6 +78,7 @@ interface DraftAnalysis {
 ```
 
 AI Prompt:
+
 ```
 Blue team: {champions}.
 Red team: {champions}.
@@ -94,17 +96,19 @@ Key: `draft:{sorted_blue_champions}:{sorted_red_champions}`
 ### Åampiyon Rol Arketipleri (Local Data)
 
 AI Ã§aÄŸrÄ±sÄ±nÄ± beslemek iÃ§in temel rol verileri:
+
 ```typescript
 const CHAMPION_ARCHETYPES: Record<string, string> = {
-  Ahri: 'assassin-mage',
-  Viktor: 'poke-mage',
-  Leona: 'engage-support',
-  Thresh: 'utility-support',
-  Zed: 'assassin',
-  Jinx: 'hypercarry-adc',
+  Ahri: "assassin-mage",
+  Viktor: "poke-mage",
+  Leona: "engage-support",
+  Thresh: "utility-support",
+  Zed: "assassin",
+  Jinx: "hypercarry-adc",
   // ...
 };
 ```
+
 DDragon'dan Ã§ekilebilir veya static JSON olarak tutulabilir.
 
 ### Frontend: Draft Board
@@ -131,6 +135,7 @@ Layout:
 ### "Benim Ä°Ã§in Ã–neri" Modu
 
 EÄŸer kullanÄ±cÄ± giriÅŸ yapmÄ±ÅŸsa:
+
 - Kendi champion pool'u Ã¶ne Ã§Ä±karÄ±lÄ±r
 - "Bu kompo iÃ§in Ahri iyi bir seÃ§im, Viktor daha gÃ¼Ã§lÃ¼ olurdu" yorumu
 
@@ -186,4 +191,3 @@ describe('draftAnalysisService', () => {
 - URL paylaÅŸÄ±mÄ± Ã§alÄ±ÅŸÄ±yor (aynÄ± link aynÄ± draft'Ä± gÃ¶steriyor)
 - Analiz sonuÃ§larÄ± cache'leniyor
 - Sidebar'da "Draft" linki var
-

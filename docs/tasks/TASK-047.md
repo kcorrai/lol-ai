@@ -36,6 +36,7 @@ Body: { champion: string, opponent: string, role: Position }
 ```
 
 AdÄ±mlar:
+
 1. Rate limit (IP, 15/dakika)
 2. Body Zod validation
 3. Her iki champion iÃ§in DB validate (case-insensitive)
@@ -47,6 +48,7 @@ AdÄ±mlar:
 ### Plan Limits
 
 Mevcut `PLAN_LIMITS` objesini bul ve gÃ¼ncelle:
+
 ```typescript
 matchupAnalysis: {
   free: 5,    // gÃ¼nde 5
@@ -60,4 +62,3 @@ matchupAnalysis: {
 ## BaÄŸÄ±mlÄ±lÄ±klar
 
 - TASK-046 (matchupAnalysisService) tamamlanmÄ±ÅŸ olmalÄ±
-

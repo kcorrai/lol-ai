@@ -12,7 +12,7 @@ link that took the reader off the site.
 `ESPORTS_PLAN.md` §5 listed embedding as a non-goal, but the reason recorded
 there was not a decision about embedding: it was that an embed needs `frame-src`
 opened for two third-party hosts, and CLAUDE.md puts security config behind
-review. That is a reason to *ask*, not a reason to decline. Asked, the answer was
+review. That is a reason to _ask_, not a reason to decline. Asked, the answer was
 "I have no idea whether this is legal — decide on that basis", so the question is
 answered here.
 
@@ -24,7 +24,7 @@ For the EU — which is where this site's traffic is — the line is the right o
 communication to the public, and the CJEU has drawn it three times:
 
 - **Svensson (C-466/12)** and **BestWater (C-348/13)**: content already freely
-  accessible with the rightsholder's authorisation reaches no *new* public when
+  accessible with the rightsholder's authorisation reaches no _new_ public when
   it is framed elsewhere. Framing it is therefore not a separate act requiring
   separate permission.
 - **VG Bild-Kunst (C-392/19, 2021)** narrowed that: framing **is** infringing
@@ -54,7 +54,7 @@ Both publish the terms, and both are satisfied by using the documented player:
 
 Riot's developer policy prohibits **repackaging** their content — "simply
 ripping off or adding light commentary to existing content such as esports
-matches or other players' VODs". That is a rule about *republishing*, and it is
+matches or other players' VODs". That is a rule about _republishing_, and it is
 worth being clear about which side of it we are on. We host nothing, we
 re-encode nothing, and the page an embed sits on carries our own draft
 breakdown, scoreboard, per-minute rates, gold curve and objective ledger. The
@@ -87,8 +87,7 @@ Embed the official players, **click-to-load**.
   embed is an upgrade on a link, never a replacement.
 - `embedUrl` is the only place embed addresses are built. A watch URL and an
   embed URL are genuinely different addresses — `twitch.tv/videos/{id}` versus
-  `player.twitch.tv/?video=v{id}` — and a second caller guessing would frame a
-  404.
+  `player.twitch.tv/?video=v{id}` — and a second caller guessing would frame a 404.
 
 ## Consequences
 

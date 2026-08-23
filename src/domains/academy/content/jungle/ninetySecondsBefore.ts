@@ -30,9 +30,21 @@ export const ninetySecondsBefore: Lesson = {
       head: ["Time to spawn", "What you are doing", "Why"],
       rows: [
         ["90s", "Clearing the camps on that half of the map", "Same gold, better position"],
-        ["60s", "Ward the approaches — theirs, not the pit", "You need to know if they are coming, not that the pit exists"],
-        ["30s", "Ask your lanes to push, and make sure you can see two of them", "Priority is what decides whether the fight is 5v5 or 5v3"],
-        ["0s", "Start it, or do not — the decision was made at 30s", "Deciding at zero means deciding blind"],
+        [
+          "60s",
+          "Ward the approaches — theirs, not the pit",
+          "You need to know if they are coming, not that the pit exists",
+        ],
+        [
+          "30s",
+          "Ask your lanes to push, and make sure you can see two of them",
+          "Priority is what decides whether the fight is 5v5 or 5v3",
+        ],
+        [
+          "0s",
+          "Start it, or do not — the decision was made at 30s",
+          "Deciding at zero means deciding blind",
+        ],
       ],
     },
     { kind: "drill", drillId: "pit-map" },
@@ -82,8 +94,7 @@ export const ninetySecondsBefore: Lesson = {
     {
       id: "pit-map",
       kind: "map",
-      prompt:
-        "Drake spawns in sixty seconds and you are setting up. Click where the ward goes.",
+      prompt: "Drake spawns in sixty seconds and you are setting up. Click where the ward goes.",
       options: [
         {
           id: "approach",

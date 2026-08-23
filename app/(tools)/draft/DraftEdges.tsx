@@ -29,7 +29,10 @@ export function DraftEdges(): React.JSX.Element {
   return (
     <div className="mt-7 grid gap-px border border-border bg-line-1">
       {EDGES.map(({ Icon, title, body }) => (
-        <div key={title} className="grid grid-cols-[26px_minmax(0,1fr)] gap-3.5 bg-background px-5 py-4">
+        <div
+          key={title}
+          className="grid grid-cols-[26px_minmax(0,1fr)] gap-3.5 bg-background px-5 py-4"
+        >
           <Icon className="mt-0.5 h-[18px] w-[18px] text-acid-500" aria-hidden />
           <span>
             <span className="block font-display text-sm font-bold uppercase tracking-wide text-fg-1">

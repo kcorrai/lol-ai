@@ -22,7 +22,7 @@ export function AuthArt(): React.ReactElement {
         fill
         priority
         sizes="52vw"
-        className="object-cover object-[58%_24%] opacity-[0.42] grayscale-[0.35] contrast-[1.1]"
+        className="object-cover object-[58%_24%] opacity-[0.42] contrast-[1.1] grayscale-[0.35]"
       />
       <div className="bg-protect-bottom absolute inset-0" />
       <div className="bg-scanline absolute inset-0" />

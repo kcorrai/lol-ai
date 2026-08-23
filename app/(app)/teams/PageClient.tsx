@@ -32,18 +32,20 @@ function TeamCard({ team }: { team: TeamSummary }) {
 
       {/* Info */}
       <div className="min-w-0 flex-1">
-        <p className="truncate font-semibold text-text group-hover:text-accent transition-colors">
+        <p className="truncate font-semibold text-text transition-colors group-hover:text-accent">
           {team.name}
         </p>
         <div className="mt-1.5 flex items-center gap-2">
           {/* Role badge */}
-          <span className={`flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide ${ROLE_STYLES[team.myRole]}`}>
+          <span
+            className={`flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide ${ROLE_STYLES[team.myRole]}`}
+          >
             <Icon className="h-2.5 w-2.5" />
             {ROLE_LABELS[team.myRole]}
           </span>
           {/* Slot mini bar */}
           <div className="flex items-center gap-1.5">
-            <div className="h-1 w-16 overflow-hidden rounded-full bg-surface-3">
+            <div className="bg-surface-3 h-1 w-16 overflow-hidden rounded-full">
               <div
                 className="h-full rounded-full bg-accent/60 transition-all"
                 style={{ width: `${slotPct}%` }}
@@ -54,7 +56,7 @@ function TeamCard({ team }: { team: TeamSummary }) {
         </div>
       </div>
 
-      <ChevronRight className="h-4 w-4 shrink-0 text-text-muted/40 group-hover:text-accent transition-colors" />
+      <ChevronRight className="h-4 w-4 shrink-0 text-text-muted/40 transition-colors group-hover:text-accent" />
     </Link>
   );
 }
@@ -96,9 +98,7 @@ export default function TeamsPage() {
           <Users className="h-12 w-12 text-text-muted/30" />
           <div>
             <p className="font-semibold text-text">You don&apos;t have any teams yet</p>
-            <p className="mt-1 text-sm text-text-muted">
-              Create a team and invite your players
-            </p>
+            <p className="mt-1 text-sm text-text-muted">Create a team and invite your players</p>
           </div>
           <Link href="/teams/create">
             <Button>Create Team</Button>
@@ -108,7 +108,9 @@ export default function TeamsPage() {
 
       {teams && teams.length > 0 && (
         <div className="space-y-3">
-          {teams.map((team) => <TeamCard key={team.id} team={team} />)}
+          {teams.map((team) => (
+            <TeamCard key={team.id} team={team} />
+          ))}
         </div>
       )}
     </div>

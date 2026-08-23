@@ -123,7 +123,7 @@ export async function getReferralStats(userId: string): Promise<ReferralStats> {
     select: { code: true, status: true, refereeId: true },
   });
 
-  const code = referrals[0]?.code ?? await getOrCreateReferralCode(userId);
+  const code = referrals[0]?.code ?? (await getOrCreateReferralCode(userId));
   const totalInvited = referrals.filter((r) => r.refereeId !== null).length;
   const totalCompleted = referrals.filter((r) => r.status === "rewarded").length;
   const weeksEarned = Math.min(totalCompleted, MAX_REFERRAL_REWARDS);

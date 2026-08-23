@@ -1,6 +1,7 @@
 # TASK-240 — Dashboard shows a "connect your account" state instead of an endless skeleton
 
 ## Problem
+
 A signed-in user with no Riot account connected saw the dashboard skeleton forever (2.png):
 
 ```tsx
@@ -11,8 +12,9 @@ Loading and empty were collapsed into the same branch, so "nothing to show yet" 
 "still loading". Nothing told the user what to do, and there was no way forward from the page.
 
 ## Change
+
 - `src/components/dashboard/dashboardView.ts` (new) — pure `resolveDashboardView(accountsLoading,
-  accountCount)` returning `"loading" | "no-account" | "ready"`. Splitting the decision out keeps
+accountCount)` returning `"loading" | "no-account" | "ready"`. Splitting the decision out keeps
   it unit-testable; the component tree isn't (vitest here has no JSX setup).
 - `src/components/dashboard/ConnectAccountPrompt.tsx` (new) — the no-account state: what the app
   needs, a primary "Connect Riot Account" CTA to `/settings/accounts`, and a secondary link to the
@@ -24,6 +26,7 @@ The onboarding tour is unaffected: its connect step targets `data-tour="connect-
 `/settings/accounts`, which this state links to rather than replaces.
 
 ## Tests
+
 `dashboardView.test.ts` — loading wins over empty, empty vs populated, and loading-with-cached-
 accounts (a background refetch must not flip a populated dashboard back to the prompt).
 

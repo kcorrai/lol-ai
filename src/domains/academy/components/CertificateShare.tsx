@@ -17,7 +17,10 @@ interface GenerateResponse {
  * Turns a finished track into a shareable certificate. The link is only produced on request —
  * nobody's transcript needs a public URL sitting there waiting to be found.
  */
-export function CertificateShare({ trackId, trackTitle }: CertificateShareProps): React.ReactElement {
+export function CertificateShare({
+  trackId,
+  trackTitle,
+}: CertificateShareProps): React.ReactElement {
   const [url, setUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -66,7 +69,11 @@ export function CertificateShare({ trackId, trackTitle }: CertificateShareProps)
           onClick={copy}
           className="notch-sm flex items-center gap-1.5 border border-line-1 px-2.5 py-1 font-mono text-[11px] text-text-muted transition-colors hover:border-line-3"
         >
-          {copied ? <Check className="h-3 w-3" strokeWidth={2.5} /> : <Copy className="h-3 w-3" strokeWidth={2} />}
+          {copied ? (
+            <Check className="h-3 w-3" strokeWidth={2.5} />
+          ) : (
+            <Copy className="h-3 w-3" strokeWidth={2} />
+          )}
           {copied ? "Copied" : "Copy"}
         </button>
       </div>

@@ -22,7 +22,7 @@ function nextMidnight(): Date {
 function nextMonday(): Date {
   const d = todayMidnight();
   const day = d.getUTCDay();
-  const daysUntilMonday = ((1 - day + 7) % 7) || 7;
+  const daysUntilMonday = (1 - day + 7) % 7 || 7;
   d.setUTCDate(d.getUTCDate() + daysUntilMonday);
   return d;
 }
@@ -41,18 +41,18 @@ async function pickWeakMetric(riotAccountId: string): Promise<ChallengeMetric> {
   const avgCs = recent.reduce((s, r) => s + Number(r.csPerMinute), 0) / recent.length;
   const avgDeaths = recent.reduce((s, r) => s + r.deaths, 0) / recent.length;
   const avgVision = recent.reduce((s, r) => s + r.visionScore, 0) / recent.length;
-  const avgKda = recent.reduce((s, r) => s + (r.kills + r.assists) / Math.max(r.deaths, 1), 0) / recent.length;
+  const avgKda =
+    recent.reduce((s, r) => s + (r.kills + r.assists) / Math.max(r.deaths, 1), 0) / recent.length;
 
   const scores: Record<ChallengeMetric, number> = {
-    cs_per_min:   avgCs / 7.0,
-    deaths:       1 - avgDeaths / 6.0,
+    cs_per_min: avgCs / 7.0,
+    deaths: 1 - avgDeaths / 6.0,
     vision_score: avgVision / 30.0,
-    win_streak:   0.5,
-    kda:          avgKda / 3.0,
+    win_streak: 0.5,
+    kda: avgKda / 3.0,
   };
 
-  return (Object.entries(scores) as [ChallengeMetric, number][])
-    .sort((a, b) => a[1] - b[1])[0][0];
+  return (Object.entries(scores) as [ChallengeMetric, number][]).sort((a, b) => a[1] - b[1])[0][0];
 }
 
 async function computeTarget(riotAccountId: string, metric: ChallengeMetric): Promise<number> {
@@ -69,24 +69,40 @@ async function computeTarget(riotAccountId: string, metric: ChallengeMetric): Pr
 
   let avg: number;
   switch (metric) {
-    case "cs_per_min":   avg = recent.reduce((s, r) => s + Number(r.csPerMinute), 0) / recent.length; break;
-    case "deaths":       avg = recent.reduce((s, r) => s + r.deaths, 0) / recent.length; break;
-    case "vision_score": avg = recent.reduce((s, r) => s + r.visionScore, 0) / recent.length; break;
-    case "kda":          avg = recent.reduce((s, r) => s + (r.kills + r.assists) / Math.max(r.deaths, 1), 0) / recent.length; break;
-    default: return template.defaultTarget;
+    case "cs_per_min":
+      avg = recent.reduce((s, r) => s + Number(r.csPerMinute), 0) / recent.length;
+      break;
+    case "deaths":
+      avg = recent.reduce((s, r) => s + r.deaths, 0) / recent.length;
+      break;
+    case "vision_score":
+      avg = recent.reduce((s, r) => s + r.visionScore, 0) / recent.length;
+      break;
+    case "kda":
+      avg =
+        recent.reduce((s, r) => s + (r.kills + r.assists) / Math.max(r.deaths, 1), 0) /
+        recent.length;
+      break;
+    default:
+      return template.defaultTarget;
   }
 
-  if (metric === "deaths") return Math.max(1, Math.round((avg * 0.85) * 10) / 10);
-  return Math.round((avg * 1.12) * 10) / 10;
+  if (metric === "deaths") return Math.max(1, Math.round(avg * 0.85 * 10) / 10);
+  return Math.round(avg * 1.12 * 10) / 10;
 }
 
-async function buildDescription(metric: ChallengeMetric, targetValue: number, matchCount: number, type: "daily" | "weekly"): Promise<string> {
+async function buildDescription(
+  metric: ChallengeMetric,
+  targetValue: number,
+  matchCount: number,
+  type: "daily" | "weekly"
+): Promise<string> {
   const metricLabel: Record<ChallengeMetric, string> = {
-    cs_per_min:   `${targetValue}+ CS/min`,
-    deaths:       `${targetValue} or fewer deaths`,
+    cs_per_min: `${targetValue}+ CS/min`,
+    deaths: `${targetValue} or fewer deaths`,
     vision_score: `${targetValue}+ vision score`,
-    win_streak:   `${matchCount} win streak`,
-    kda:          `${targetValue}+ KDA`,
+    win_streak: `${matchCount} win streak`,
+    kda: `${targetValue}+ KDA`,
   };
 
   const base = `${metricLabel[metric]} in ${matchCount} matches`;
@@ -98,7 +114,8 @@ async function buildDescription(metric: ChallengeMetric, targetValue: number, ma
     if (cached && typeof cached === "string") return cached;
 
     const ai = getAiClient("lite");
-    const system = "You are a League of Legends coach. Write short, motivating challenge descriptions in English.";
+    const system =
+      "You are a League of Legends coach. Write short, motivating challenge descriptions in English.";
     const userMsg = `${type === "daily" ? "Daily" : "Weekly"} challenge: "${base}". Write a motivating description in English, max 2 sentences.`;
     const result = await ai.complete(system, userMsg, { maxTokens: 120 });
     const desc = result.content.trim() || base;
@@ -109,11 +126,16 @@ async function buildDescription(metric: ChallengeMetric, targetValue: number, ma
   }
 }
 
-export async function generateDailyChallenge(userId: string, riotAccountId: string): Promise<Challenge> {
+export async function generateDailyChallenge(
+  userId: string,
+  riotAccountId: string
+): Promise<Challenge> {
   const validFrom = todayMidnight();
   const validUntil = nextMidnight();
 
-  const existing = await prisma.challenge.findFirst({ where: { userId, type: "daily", validFrom } });
+  const existing = await prisma.challenge.findFirst({
+    where: { userId, type: "daily", validFrom },
+  });
   if (existing) return existing;
 
   const metric = await pickWeakMetric(riotAccountId);
@@ -122,18 +144,32 @@ export async function generateDailyChallenge(userId: string, riotAccountId: stri
   const description = await buildDescription(metric, targetValue, template.matchCount, "daily");
 
   const challenge = await prisma.challenge.create({
-    data: { userId, type: "daily", metric, targetValue, description, xpReward: template.xp, validFrom, validUntil },
+    data: {
+      userId,
+      type: "daily",
+      metric,
+      targetValue,
+      description,
+      xpReward: template.xp,
+      validFrom,
+      validUntil,
+    },
   });
   await prisma.userChallenge.create({ data: { userId, challengeId: challenge.id } });
   logger.info(`[challenges] Daily challenge created for ${userId}: ${metric} → ${targetValue}`);
   return challenge;
 }
 
-export async function generateWeeklyChallenge(userId: string, riotAccountId: string): Promise<Challenge> {
+export async function generateWeeklyChallenge(
+  userId: string,
+  riotAccountId: string
+): Promise<Challenge> {
   const validFrom = todayMidnight();
   const validUntil = nextMonday();
 
-  const existing = await prisma.challenge.findFirst({ where: { userId, type: "weekly", validFrom } });
+  const existing = await prisma.challenge.findFirst({
+    where: { userId, type: "weekly", validFrom },
+  });
   if (existing) return existing;
 
   const metric = await pickWeakMetric(riotAccountId);
@@ -144,7 +180,16 @@ export async function generateWeeklyChallenge(userId: string, riotAccountId: str
   const description = await buildDescription(metric, targetValue, weeklyMatchCount, "weekly");
 
   const challenge = await prisma.challenge.create({
-    data: { userId, type: "weekly", metric, targetValue, description, xpReward: weeklyXp, validFrom, validUntil },
+    data: {
+      userId,
+      type: "weekly",
+      metric,
+      targetValue,
+      description,
+      xpReward: weeklyXp,
+      validFrom,
+      validUntil,
+    },
   });
   await prisma.userChallenge.create({ data: { userId, challengeId: challenge.id } });
   logger.info(`[challenges] Weekly challenge created for ${userId}: ${metric} → ${targetValue}`);

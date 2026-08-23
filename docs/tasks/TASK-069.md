@@ -3,10 +3,12 @@
 ## Status: In Progress
 
 ## Context
+
 Counter Pick sayfası basit bir liste olmaktan çıkıp tam kapsamlı bir
 Matchup Assistant haline getiriliyor. OP.GG / U.GG hissiyatı hedefleniyor.
 
 ## Features Implemented
+
 1. **Champion Hero Section** — Splash art background + gradient overlay + champion info
 2. **Counter Score (94/100)** — Tier + win rate'den client-side hesaplanıyor
 3. **Tier Badge Redesign** — S=purple glow, A=green, B=blue, C=grey
@@ -18,12 +20,14 @@ Matchup Assistant haline getiriliyor. OP.GG / U.GG hissiyatı hedefleniyor.
 9. **Enhanced AI Analysis** — Detailed reasonWhy + laneAdvantage
 
 ## Skipped
+
 - Radar chart (charting library dependency)
 - Matchup timeline (duplicates lane phases)
 - Skill order (champion-specific, not matchup-specific)
 - Real pick/ban/win rate stats (no data source)
 
 ## Files Changed
+
 - `app/(app)/counter/page.tsx`
 - `src/domains/counter/components/CounterCard.tsx`
 - `src/domains/counter/components/CounterList.tsx`

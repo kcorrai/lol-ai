@@ -29,10 +29,26 @@ export const oneStepBack: Lesson = {
       caption: "Where to stand",
       head: ["Situation", "Where you are", "Why"],
       rows: [
-        ["Last-hitting in lane", "The furthest point that reaches the minion", "Their engage has to cross the extra distance"],
-        ["Trading with a shorter-ranged ADC", "Just inside your range, outside theirs", "They have to step forward to answer, and that is the trade"],
-        ["A fight has started", "Behind your front line, at maximum range", "You are attacking whatever is nearest and still leaving"],
-        ["You are being dived", "Moving away first, attacking second", "Damage you do while dying is damage nobody counts"],
+        [
+          "Last-hitting in lane",
+          "The furthest point that reaches the minion",
+          "Their engage has to cross the extra distance",
+        ],
+        [
+          "Trading with a shorter-ranged ADC",
+          "Just inside your range, outside theirs",
+          "They have to step forward to answer, and that is the trade",
+        ],
+        [
+          "A fight has started",
+          "Behind your front line, at maximum range",
+          "You are attacking whatever is nearest and still leaving",
+        ],
+        [
+          "You are being dived",
+          "Moving away first, attacking second",
+          "Damage you do while dying is damage nobody counts",
+        ],
       ],
     },
     { kind: "drill", drillId: "spacing-quiz" },

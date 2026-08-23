@@ -30,7 +30,7 @@ export function NextUpPanel({
   const { lesson, reason } = recommendation;
 
   return (
-    <section className="notch border border-acid-500 bg-surface glow-accent-soft">
+    <section className="notch glow-accent-soft border border-acid-500 bg-surface">
       <div className="flex flex-col gap-5 p-5 md:flex-row md:items-center md:justify-between md:p-6">
         <div className="min-w-0">
           <p className="hud-label flex items-center gap-2">
@@ -71,8 +71,8 @@ export function NextUpPanel({
             <Link href="/settings/accounts" className="text-accent hover:underline">
               Connect your Riot account
             </Link>{" "}
-            and the Academy reads your last 20 games to pick the lesson that fixes what is
-            actually costing you games.
+            and the Academy reads your last 20 games to pick the lesson that fixes what is actually
+            costing you games.
           </p>
         </div>
       )}

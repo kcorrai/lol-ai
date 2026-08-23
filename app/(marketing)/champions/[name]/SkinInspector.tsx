@@ -43,7 +43,12 @@ export function SkinInspector({
   const shown = chroma ? chroma.tileUrl : view.url;
 
   return (
-    <Dialog.Root open onOpenChange={(next) => { if (!next) onClose(); }}>
+    <Dialog.Root
+      open
+      onOpenChange={(next) => {
+        if (!next) onClose();
+      }}
+    >
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/80" />
         <Dialog.Content
@@ -126,7 +131,10 @@ export function SkinInspector({
                 <button
                   key={option.key}
                   type="button"
-                  onClick={() => { setViewKey(option.key); setChromaId(null); }}
+                  onClick={() => {
+                    setViewKey(option.key);
+                    setChromaId(null);
+                  }}
                   className={cn(
                     "tag-cut border px-3 py-1 font-mono text-[10.5px] uppercase tracking-label transition-colors",
                     option.key === view.key && !chroma

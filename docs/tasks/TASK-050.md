@@ -49,4 +49,3 @@
 ## BaÄŸÄ±mlÄ±lÄ±klar
 
 - TASK-046 (matchupAnalysisService + prompt) tamamlanmÄ±ÅŸ olmalÄ±
-

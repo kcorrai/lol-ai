@@ -38,11 +38,11 @@ We cannot copy that shape as-is:
 4. **The countdown is never polled.** The server publishes `turnStartedAt` and
    `timerSeconds`; each client derives the remaining time locally with
    `requestAnimationFrame`. The clock is therefore perfectly smooth at 0 network
-   cost, and a poll is only needed to learn that the turn *changed*.
+   cost, and a poll is only needed to learn that the turn _changed_.
 5. **The acting client echoes optimistically.** Whoever locks a champion sees it
    land immediately; the other participants see it within one poll interval.
 6. **Timeouts are resolved on read, not by a timer.** If `now > turnStartedAt +
-   timerSeconds`, the next mutation — or the next read — auto-locks the turn using
+timerSeconds`, the next mutation — or the next read — auto-locks the turn using
    the highest-ranked legal champion. No cron, no background worker, and the
    result is identical for every observer because it is a pure function of stored
    state.
@@ -53,7 +53,7 @@ We cannot copy that shape as-is:
 
 - Zero new infrastructure. No socket server, no Pusher/Ably line item, no
   `runtime = "edge"`.
-- Postgres reads stay proportional to *writes*, not to viewers — a 10-spectator
+- Postgres reads stay proportional to _writes_, not to viewers — a 10-spectator
   draft costs the same Neon egress as a 0-spectator one.
 - The visible latency budget that matters (the countdown) is exact, because it is
   computed from a timestamp rather than transported.
@@ -62,7 +62,7 @@ We cannot copy that shape as-is:
 
 **Bad**
 
-- A pick appears to the *other* side up to ~1 s late. Acceptable against a 30 s
+- A pick appears to the _other_ side up to ~1 s late. Acceptable against a 30 s
   turn; it would not be acceptable for anything reflex-based.
 - Polling continues while a background tab is open. Mitigated by pausing on
   `document.hidden` and by stopping entirely once the series completes.

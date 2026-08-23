@@ -20,12 +20,27 @@ interface ToolTile {
  * empty "select a champion" form. Re-run it when the design or the patch moves.
  */
 const TOOLS: readonly ToolTile[] = [
-  { name: "Counter picker", href: "/tools/counter-picker", stat: "Every lane matchup", shot: "counters" },
+  {
+    name: "Counter picker",
+    href: "/tools/counter-picker",
+    stat: "Every lane matchup",
+    shot: "counters",
+  },
   { name: "Tier list", href: "/tools/tier-list", stat: "All roles, all tiers", shot: "tier-list" },
-  { name: "Draft analyzer", href: "/tools/draft-analyzer", stat: "Both sides graded", shot: "draft-analyzer" },
+  {
+    name: "Draft analyzer",
+    href: "/tools/draft-analyzer",
+    stat: "Both sides graded",
+    shot: "draft-analyzer",
+  },
   { name: "Champion builds", href: "/builds", stat: "Runes, items, skills", shot: "builds" },
   { name: "ARAM tier list", href: "/aram/tier-list", stat: "Howling Abyss only", shot: "aram" },
-  { name: "Patch meta report", href: "/meta", stat: `Data Dragon ${DDRAGON_VERSION}`, shot: "meta" },
+  {
+    name: "Patch meta report",
+    href: "/meta",
+    stat: `Data Dragon ${DDRAGON_VERSION}`,
+    shot: "meta",
+  },
 ];
 
 export function FreeToolsGrid(): React.ReactElement {

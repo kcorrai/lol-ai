@@ -3,7 +3,13 @@
 import { useState } from "react";
 import { HudPanel } from "@/components/dashboard/laneiq/HudPanel";
 import { DuoPicker } from "@/components/dashboard/DuoPicker";
-import { useClearDuo, useDuoCandidates, useDuoQuests, useDuoSynergy, useSetDuo } from "@/hooks/useDuo";
+import {
+  useClearDuo,
+  useDuoCandidates,
+  useDuoQuests,
+  useDuoSynergy,
+  useSetDuo,
+} from "@/hooks/useDuo";
 import { DuoIdentity } from "./DuoIdentity";
 import { DuoVerdict } from "./DuoVerdict";
 import { DuoFormShift } from "./DuoFormShift";

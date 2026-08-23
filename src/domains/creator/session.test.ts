@@ -17,9 +17,7 @@ describe("startOfLocalDay", () => {
   // Istanbul is UTC+3 year round, so local midnight is 21:00 the previous day.
   it("returns local midnight for a zone ahead of UTC", () => {
     const now = new Date("2026-08-18T14:37:12.000Z"); // 17:37 in Istanbul
-    expect(startOfLocalDay(now, "Europe/Istanbul").toISOString()).toBe(
-      "2026-08-17T21:00:00.000Z"
-    );
+    expect(startOfLocalDay(now, "Europe/Istanbul").toISOString()).toBe("2026-08-17T21:00:00.000Z");
   });
 
   it("returns local midnight for a zone behind UTC", () => {
@@ -32,9 +30,7 @@ describe("startOfLocalDay", () => {
   // The interesting case: the UTC date and the local date are different days.
   it("uses the local day, not the UTC one, when they disagree", () => {
     const now = new Date("2026-08-18T01:30:00.000Z"); // 04:30 on the 18th in Istanbul
-    expect(startOfLocalDay(now, "Europe/Istanbul").toISOString()).toBe(
-      "2026-08-17T21:00:00.000Z"
-    );
+    expect(startOfLocalDay(now, "Europe/Istanbul").toISOString()).toBe("2026-08-17T21:00:00.000Z");
 
     const evening = new Date("2026-08-18T23:30:00.000Z"); // 16:30 on the 18th in LA
     expect(startOfLocalDay(evening, "America/Los_Angeles").toISOString()).toBe(

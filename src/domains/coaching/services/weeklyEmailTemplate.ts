@@ -3,7 +3,18 @@ import { escapeHtml, type WeeklyStats } from "./weeklyEmailRenderer";
 // HTML email template for the weekly update. Kept separate from the data
 // builder so the renderer stays a pure stats → { subject, html } transform.
 export function renderWeeklyEmail(stats: WeeklyStats): { subject: string; html: string } {
-  const { gamesPlayed, wins, lpChange, csMinChange, biggestWeakness, topChampion, smartNudge, isPro, gameName, appUrl } = stats;
+  const {
+    gamesPlayed,
+    wins,
+    lpChange,
+    csMinChange,
+    biggestWeakness,
+    topChampion,
+    smartNudge,
+    isPro,
+    gameName,
+    appUrl,
+  } = stats;
 
   // Escape all user/AI-derived strings before interpolating into HTML
   const safeGameName = escapeHtml(gameName);
@@ -14,10 +25,7 @@ export function renderWeeklyEmail(stats: WeeklyStats): { subject: string; html: 
   const losses = gamesPlayed - wins;
   const winRate = Math.round((wins / gamesPlayed) * 100);
 
-  const lpText =
-    lpChange !== null
-      ? `${lpChange >= 0 ? "+" : ""}${lpChange} LP`
-      : "No LP data";
+  const lpText = lpChange !== null ? `${lpChange >= 0 ? "+" : ""}${lpChange} LP` : "No LP data";
 
   const csText =
     csMinChange !== null

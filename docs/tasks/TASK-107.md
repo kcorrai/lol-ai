@@ -62,31 +62,31 @@ model AuditLog {
 
 export const AUDIT_EVENTS = {
   // Kimlik
-  "auth.login":              "Kullanıcı giriş yaptı",
-  "auth.logout":             "Kullanıcı çıkış yaptı",
-  "auth.login.failed":       "Başarısız giriş denemesi",
-  "auth.password.changed":   "Şifre değiştirildi",
+  "auth.login": "Kullanıcı giriş yaptı",
+  "auth.logout": "Kullanıcı çıkış yaptı",
+  "auth.login.failed": "Başarısız giriş denemesi",
+  "auth.password.changed": "Şifre değiştirildi",
 
   // Riot
-  "riot.account.connected":  "Riot hesabı bağlandı",
-  "riot.account.removed":    "Riot hesabı kaldırıldı",
-  "riot.sync.started":       "Maç senkronizasyonu başladı",
+  "riot.account.connected": "Riot hesabı bağlandı",
+  "riot.account.removed": "Riot hesabı kaldırıldı",
+  "riot.sync.started": "Maç senkronizasyonu başladı",
 
   // Koçluk
-  "report.generated":        "Koçluk raporu üretildi",
-  "report.viewed":           "Koçluk raporu görüntülendi",
+  "report.generated": "Koçluk raporu üretildi",
+  "report.viewed": "Koçluk raporu görüntülendi",
 
   // Abonelik
-  "subscription.upgraded":   "Pro'ya yükseltildi",
-  "subscription.cancelled":  "Abonelik iptal edildi",
+  "subscription.upgraded": "Pro'ya yükseltildi",
+  "subscription.cancelled": "Abonelik iptal edildi",
 
   // Veri
-  "data.export.requested":   "Veri dışa aktarma talep edildi",
+  "data.export.requested": "Veri dışa aktarma talep edildi",
   "data.deletion.requested": "Veri silme talep edildi",
 
   // Admin
-  "admin.user.viewed":       "Admin kullanıcı verisini görüntüledi",
-  "admin.impersonation":     "Admin kullanıcı adına işlem yaptı",
+  "admin.user.viewed": "Admin kullanıcı verisini görüntüledi",
+  "admin.impersonation": "Admin kullanıcı adına işlem yaptı",
 } as const;
 
 export type AuditEvent = keyof typeof AUDIT_EVENTS;
@@ -214,23 +214,23 @@ docs/DATABASE_SCHEMA.md                          ← GÜNCELLE
 ## Test Plan
 
 ```typescript
-describe('auditService', () => {
-  it('audit() DB\'ye kayıt oluşturuyor')
-  it('audit() AuditLog kaydı update veya delete edilemiyor')
-  it('userId null olsa bile kayıt oluşuyor (anonim işlemler)')
-})
+describe("auditService", () => {
+  it("audit() DB'ye kayıt oluşturuyor");
+  it("audit() AuditLog kaydı update veya delete edilemiyor");
+  it("userId null olsa bile kayıt oluşuyor (anonim işlemler)");
+});
 
-describe('bruteForce', () => {
-  it('5. başarısız denemede hata fırlatıyor')
-  it('15 dakika sonra sayaç sıfırlanıyor')
-  it('başarılı giriş sonrası sayaç sıfırlanıyor')
-})
+describe("bruteForce", () => {
+  it("5. başarısız denemede hata fırlatıyor");
+  it("15 dakika sonra sayaç sıfırlanıyor");
+  it("başarılı giriş sonrası sayaç sıfırlanıyor");
+});
 
-describe('GDPR', () => {
-  it('export endpoint kullanıcının tüm verisini içeriyor')
-  it('silme endpoint 30 gün sonra veriyi hard-delete yapıyor')
-  it('silme işlemi audit log\'da anonim kayıt bırakıyor')
-})
+describe("GDPR", () => {
+  it("export endpoint kullanıcının tüm verisini içeriyor");
+  it("silme endpoint 30 gün sonra veriyi hard-delete yapıyor");
+  it("silme işlemi audit log'da anonim kayıt bırakıyor");
+});
 ```
 
 ---
@@ -238,6 +238,7 @@ describe('GDPR', () => {
 ## ADR
 
 `docs/adr/ADR-004-audit-logging.md` oluşturulacak:
+
 - Neden append-only audit log?
 - Neden ayrı tablo (application log'a göre)?
 - Retention policy: 2 yıl

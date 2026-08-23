@@ -29,9 +29,21 @@ export const theTwoPlayerLane: Lesson = {
       caption: "The lane your support is playing",
       head: ["Support kind", "What the lane wants", "What kills you"],
       rows: [
-        ["Engage — hooks, charges", "Shove and look for the fight at level 2 and 6", "Standing back and wasting their cooldowns"],
-        ["Enchanter — shields, heals", "Farm safely, win the long trades, spike on items", "Taking early all-ins their kit cannot follow"],
-        ["Poke — ranged harass", "Push, take plates, force the recall", "Letting them all-in you while you are pushed"],
+        [
+          "Engage — hooks, charges",
+          "Shove and look for the fight at level 2 and 6",
+          "Standing back and wasting their cooldowns",
+        ],
+        [
+          "Enchanter — shields, heals",
+          "Farm safely, win the long trades, spike on items",
+          "Taking early all-ins their kit cannot follow",
+        ],
+        [
+          "Poke — ranged harass",
+          "Push, take plates, force the recall",
+          "Letting them all-in you while you are pushed",
+        ],
       ],
     },
     { kind: "drill", drillId: "botlane-quiz" },
@@ -67,7 +79,8 @@ export const theTwoPlayerLane: Lesson = {
       options: [
         {
           id: "a",
-          label: "For ten or fifteen seconds you are two players with an extra ability against two without one",
+          label:
+            "For ten or fifteen seconds you are two players with an extra ability against two without one",
           explain:
             "Correct. It is a temporary 2v2 advantage large enough to force a summoner spell or a kill, and it arrives before anybody has items to change the maths. That window is the most reliable advantage of the early game.",
           correct: true,

@@ -127,7 +127,8 @@ describe("getPersonalMatchups arithmetic", () => {
   // The old code summed kills+assists in SQL and then added assistsSum again in JS, before
   // dividing the ratio by the game count — which is not an average of anything.
   it("reports aggregate KDA as the ratio of sums, counting assists once", async () => {
-    mockQueryRaw.mockResolvedValueOnce([row({ killsSum: 50, deathsSum: 25, assistsSum: 40 })])
+    mockQueryRaw
+      .mockResolvedValueOnce([row({ killsSum: 50, deathsSum: 25, assistsSum: 40 })])
       .mockResolvedValue([]);
 
     const report = await getPersonalMatchups(ACCOUNT, 122);
@@ -137,7 +138,8 @@ describe("getPersonalMatchups arithmetic", () => {
   });
 
   it("does not divide by zero for a deathless run", async () => {
-    mockQueryRaw.mockResolvedValueOnce([row({ killsSum: 12, deathsSum: 0, assistsSum: 8 })])
+    mockQueryRaw
+      .mockResolvedValueOnce([row({ killsSum: 12, deathsSum: 0, assistsSum: 8 })])
       .mockResolvedValue([]);
 
     const report = await getPersonalMatchups(ACCOUNT, 122);
@@ -195,7 +197,9 @@ describe("getPersonalMatchup", () => {
 
   it("carries the same arithmetic as the list", async () => {
     mockQueryRaw
-      .mockResolvedValueOnce([row({ games: BigInt(10), wins: BigInt(6), killsSum: 50, deathsSum: 25, assistsSum: 40 })])
+      .mockResolvedValueOnce([
+        row({ games: BigInt(10), wins: BigInt(6), killsSum: 50, deathsSum: 25, assistsSum: 40 }),
+      ])
       .mockResolvedValue([]);
 
     expect(await getPersonalMatchup(ACCOUNT, 122, 2)).toMatchObject({

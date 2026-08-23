@@ -130,7 +130,9 @@ describe("getDailyQuest", () => {
   });
 
   it("is complete only when every issued objective is", async () => {
-    vi.mocked(getActiveChallenges).mockResolvedValue([dailyChallenge({ completed: true, progress: 1 })]);
+    vi.mocked(getActiveChallenges).mockResolvedValue([
+      dailyChallenge({ completed: true, progress: 1 }),
+    ]);
     vi.mocked(loadQuestSignals).mockResolvedValue(onSiteDoneOn(signals(), [TODAY]));
 
     const quest = await getDailyQuest(USER, NOW);
@@ -139,7 +141,9 @@ describe("getDailyQuest", () => {
   });
 
   it("is incomplete while the on-site leg is outstanding", async () => {
-    vi.mocked(getActiveChallenges).mockResolvedValue([dailyChallenge({ completed: true, progress: 1 })]);
+    vi.mocked(getActiveChallenges).mockResolvedValue([
+      dailyChallenge({ completed: true, progress: 1 }),
+    ]);
 
     const quest = await getDailyQuest(USER, NOW);
     expect(quest.completed).toBe(false);

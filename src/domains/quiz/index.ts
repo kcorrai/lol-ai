@@ -25,12 +25,7 @@ export { ABILITY_SLOTS, QUIZ_MODES, isQuizMode } from "./types/quiz.types";
 export { DATASET_VERSION, findChampion, resolveGuess } from "./services/championPool";
 export { championIndex as championCatalogue } from "./services/championPool";
 
-export {
-  nextResetAt,
-  puzzleNumber,
-  secondsUntilReset,
-  utcDateKey,
-} from "./services/dailySeed";
+export { nextResetAt, puzzleNumber, secondsUntilReset, utcDateKey } from "./services/dailySeed";
 
 // The one component other areas of the app render: the landing page's Daily
 // band needs the same clock the quiz hero shows.
@@ -42,7 +37,13 @@ export type { ClueStep } from "./services/clueLadder";
 export { CLASSIC_COLUMNS, compareClassic, isSolvedRow } from "./services/classicMode";
 export type { ClassicColumnKey } from "./services/classicMode";
 
-export { abilityFor, answerFor, buildPuzzle, skinNumFor, visibleEmoji } from "./services/puzzleService";
+export {
+  abilityFor,
+  answerFor,
+  buildPuzzle,
+  skinNumFor,
+  visibleEmoji,
+} from "./services/puzzleService";
 
 export { UnknownChampionError, judgeGuess, missCount, revealAnswer } from "./services/guessService";
 

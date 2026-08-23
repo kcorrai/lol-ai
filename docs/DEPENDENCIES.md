@@ -9,13 +9,13 @@ This document records every production and development dependency added after th
 Arrived with `create-next-app` and `prisma init` rather than being chosen against alternatives.
 Listed for completeness (TASK-275) — where a real decision exists, it lives in an ADR.
 
-| Package | Version | Role |
-|---|---|---|
-| `next` | 14.2.35 | App Router framework. Pinned exactly, not caret-ranged, because the framework major gates the React major (see #12 in the scored backlog). |
-| `react-dom` | ^18.3.1 | Renderer. Held on the React 18 line — ADR-009 pins R3F/drei to React-18-compatible versions. |
-| `prisma` / `@prisma/client` | ^5.22.0 | ORM and generated client. Major version choice recorded in **ADR-001**. |
-| `next-auth` | ^4.24.14 | Session and OAuth. Library choice recorded in **ADR-003**. |
-| `@next-auth/prisma-adapter` | ^1.0.7 | Persists NextAuth sessions and accounts through Prisma, so auth state lives in the same database as everything else rather than a second store. |
+| Package                     | Version  | Role                                                                                                                                            |
+| --------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `next`                      | 14.2.35  | App Router framework. Pinned exactly, not caret-ranged, because the framework major gates the React major (see #12 in the scored backlog).      |
+| `react-dom`                 | ^18.3.1  | Renderer. Held on the React 18 line — ADR-009 pins R3F/drei to React-18-compatible versions.                                                    |
+| `prisma` / `@prisma/client` | ^5.22.0  | ORM and generated client. Major version choice recorded in **ADR-001**.                                                                         |
+| `next-auth`                 | ^4.24.14 | Session and OAuth. Library choice recorded in **ADR-003**.                                                                                      |
+| `@next-auth/prisma-adapter` | ^1.0.7   | Persists NextAuth sessions and accounts through Prisma, so auth state lives in the same database as everything else rather than a second store. |
 
 ---
 
@@ -75,7 +75,7 @@ TASK-276.
 
 **Purpose:** The `cn()` helper in `src/lib/utils.ts`, and typed component variants.  
 **Why all three:** they solve three different halves of the same problem. `clsx` joins conditional
-class names; `tailwind-merge` resolves *conflicts* between them, so a `className` prop can actually
+class names; `tailwind-merge` resolves _conflicts_ between them, so a `className` prop can actually
 override a component's default (`px-4` passed to a `px-2` button wins instead of both landing in the
 attribute and CSS order deciding); `class-variance-authority` turns variant props into class sets
 with real types, which is what `button.tsx` and `badge.tsx` are built on. Adopted together, and only
@@ -93,6 +93,7 @@ perfectly to avoid shipping thousands of unused components.
 **Added in:** TASK-156
 **Purpose:** Team stats trend charts — win rate over time (line chart) and per-member sparklines on the team dashboard. Composable React components with SSR-safe rendering.
 **Why this, not alternatives:**
+
 - Chart.js / react-chartjs-2: imperative API, less idiomatic in React, heavier bundle.
 - Visx: low-level primitives, too much boilerplate for simple line/area charts.
 - Tremor: opinionated design system that would conflict with the project's custom Tailwind theme.
@@ -107,6 +108,7 @@ perfectly to avoid shipping thousands of unused components.
 **Added in:** TASK-114
 **Purpose:** Product analytics — custom event tracking (report_generated, upgrade_clicked, Riot connect), user identification, and funnel analysis. `posthog-js` powers the client-side React provider; `posthog-node` enables server-side event capture from Inngest workers and API routes.
 **Why this, not alternatives:**
+
 - Vercel Analytics (`@vercel/analytics`): already present but only captures page views — no custom events, no user identification, no funnels.
 - Mixpanel: higher price point; no self-host option for EU data-residency compliance.
 - Amplitude: complex SDK, event schema management overhead.
@@ -121,6 +123,7 @@ perfectly to avoid shipping thousands of unused components.
 **Added in:** TASK-028
 **Purpose:** Server-side PDF generation for coaching report export. Renders React component trees to PDF buffers in a Next.js API route — no headless browser required.
 **Why this, not alternatives:**
+
 - Puppeteer: requires Chromium binary (~300MB), incompatible with Vercel serverless limits.
 - jsPDF + html2canvas: client-side DOM screenshot → rasterized, low quality output.
 - pdfmake: no React component model, more verbose document definition.
@@ -134,6 +137,7 @@ perfectly to avoid shipping thousands of unused components.
 **Added in:** TASK-006  
 **Purpose:** Client-side server-state management. All API data fetching in UI components goes through React Query hooks in `src/hooks/` — per architecture rule "No frontend components that fetch data directly."  
 **Why this, not alternatives:**
+
 - SWR: similar but less ergonomic for mutations and cache invalidation.
 - Zustand: architecture prohibits Zustand for server state. Zustand is client-only UI state only.
 - Raw fetch + useState: no caching, no deduplication, no background refresh, more boilerplate.
@@ -147,6 +151,7 @@ perfectly to avoid shipping thousands of unused components.
 **Added in:** TASK-005  
 **Purpose:** Official OpenAI Node.js SDK for calling the GPT API.  
 **Why this, not alternatives:**
+
 - `axios` + raw API: more boilerplate, no type safety for request/response shapes.
 - `@anthropic-ai/sdk`: Anthropic is a secondary provider; OpenAI is the default (`AI_PROVIDER=openai`).
 - `langchain`: heavy abstraction layer we don't need — we have our own prompt builder and response parser.
@@ -160,6 +165,7 @@ perfectly to avoid shipping thousands of unused components.
 **Added in:** TASK-012  
 **Purpose:** Client-only UI state management. Used exclusively for `sidebarCollapsed` and `activeRiotAccountId` — state that is ephemeral to the browser session and has no server-side representation.  
 **Why this, not alternatives:**
+
 - TanStack Query: architecture prohibits using React Query for non-server state.
 - `useState` + prop-drilling: sidebar collapsed state is needed across sibling components (Sidebar, AppShell) — Zustand avoids threading props.
 - Redux/Jotai: heavier; Zustand is the established pattern for this project (referenced in CLAUDE.md).
@@ -173,6 +179,7 @@ perfectly to avoid shipping thousands of unused components.
 **Added in:** TASK-136
 **Purpose:** TOTP 2FA implementation. `otplib` generates TOTP secrets, verifies time-based tokens, and generates `otpauth://` URIs. `qrcode` converts the URI to a PNG data URL for display in the browser. `bcryptjs` (already present) hashes the 8 backup codes.
 **Why this, not alternatives:**
+
 - `speakeasy`: unmaintained, last released 2017, known security issues.
 - `@otplib/preset-default`: older API — `otplib` v12 uses direct exports (`generateSecret`, `verifySync`).
 - Manual HMAC-SHA1: correct but adds ~100 lines of crypto code when a maintained library is available.
@@ -187,6 +194,7 @@ perfectly to avoid shipping thousands of unused components.
 **Added in:** TASK-135
 **Purpose:** Server-side VAPID authentication and AES-128-GCM encrypted push notification delivery. Used by `src/lib/push/pushService.ts` to send notifications to browsers that have subscribed via the Web Push API. Also handles stale subscription cleanup (HTTP 404/410 responses).
 **Why this, not alternatives:**
+
 - Manual ECDH + AES-128-GCM: implementing the Web Push Protocol from scratch is ~400 lines of crypto; `web-push` is the canonical Node.js implementation.
 - Firebase Cloud Messaging: requires Firebase SDK, introduces vendor lock-in, and requires users to have a Google account — unnecessary given our direct VAPID support.
 - Pusher / Ably: real-time channels, not needed here — we only push event-driven alerts.
@@ -200,6 +208,7 @@ perfectly to avoid shipping thousands of unused components.
 **Added in:** TASK-132
 **Purpose:** ZIP archive creation for GDPR data export. The `gdprExport` Inngest function uses `zipSync` and `strToU8` to bundle multiple JSON files (profile, matches, reports, achievements, plans, audit log) into a single ZIP buffer attached to an email.
 **Why this, not alternatives:**
+
 - `jszip`: would require a new direct dependency install; fflate is already present as a transitive dependency of other packages.
 - `archiver`/`adm-zip`: server-only packages that require a new direct install.
 - Raw ZIP construction: building the ZIP binary format by hand is error-prone and not worth the lines.
@@ -214,7 +223,7 @@ perfectly to avoid shipping thousands of unused components.
 **Added in:** TASK-271  
 **Purpose:** Accessible dialog primitive behind `ConfirmDialog` and `UpgradeModal`.  
 **Why needed:** Both were plain `<div>` overlays with no `role`, no `aria-*`, no Escape handler and
-no focus management — focus stayed on the trigger *behind* the overlay and tabbing walked into the
+no focus management — focus stayed on the trigger _behind_ the overlay and tabbing walked into the
 still-interactive page underneath. `ConfirmDialog` guards destructive actions, so that is a real
 defect rather than a nit.  
 **Why this, not hand-rolled:** focus trapping, focus restoration, `aria-modal`, scroll locking and
@@ -230,15 +239,15 @@ Compiler, linter, formatter, styling pipeline and type stubs. These came with th
 the unremarkable companion of something that did; none was chosen against a real alternative, so
 they get a line rather than a rationale (TASK-275).
 
-| Package | Role |
-|---|---|
-| `typescript` | Compiler. `strict: true`, no weakening flags. |
-| `eslint` + `eslint-config-next` | Linting, Next.js rule set. |
-| `@typescript-eslint/parser` + `@typescript-eslint/eslint-plugin` | Lets ESLint understand TypeScript syntax and type-aware rules. |
-| `prettier` + `prettier-plugin-tailwindcss` | Formatting; the plugin sorts Tailwind classes so class order stops appearing in diffs. |
-| `tailwindcss` + `postcss` + `autoprefixer` | The styling pipeline. CLAUDE.md §3.2 mandates Tailwind utilities, so this is load-bearing rather than optional. |
-| `@playwright/test` | E2E runner. Excluded from vitest in `vitest.config.ts` — the two runners both define `test`/`expect` and would otherwise collide. |
-| `@types/node`, `@types/react`, `@types/react-dom`, `@types/bcryptjs` | Type stubs for untyped or partially typed packages. |
+| Package                                                              | Role                                                                                                                              |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `typescript`                                                         | Compiler. `strict: true`, no weakening flags.                                                                                     |
+| `eslint` + `eslint-config-next`                                      | Linting, Next.js rule set.                                                                                                        |
+| `@typescript-eslint/parser` + `@typescript-eslint/eslint-plugin`     | Lets ESLint understand TypeScript syntax and type-aware rules.                                                                    |
+| `prettier` + `prettier-plugin-tailwindcss`                           | Formatting; the plugin sorts Tailwind classes so class order stops appearing in diffs.                                            |
+| `tailwindcss` + `postcss` + `autoprefixer`                           | The styling pipeline. CLAUDE.md §3.2 mandates Tailwind utilities, so this is load-bearing rather than optional.                   |
+| `@playwright/test`                                                   | E2E runner. Excluded from vitest in `vitest.config.ts` — the two runners both define `test`/`expect` and would otherwise collide. |
+| `@types/node`, `@types/react`, `@types/react-dom`, `@types/bcryptjs` | Type stubs for untyped or partially typed packages.                                                                               |
 
 ---
 
@@ -249,6 +258,7 @@ they get a line rather than a rationale (TASK-275).
 **Added in:** TASK-005  
 **Purpose:** Test runner for unit and integration tests.  
 **Why this, not Jest:**
+
 - Native ESM support without extra Babel config — matches Next.js 14 module resolution.
 - Faster cold start and watch mode.
 - Compatible `expect` / `vi` API, low migration cost if switching later.
@@ -360,18 +370,18 @@ ADR-009 is superseded.
 **No new runtime dependency.** The whole feature is built on what was already
 here:
 
-| Need | Used |
-|---|---|
-| Persistence | Prisma / Neon Postgres |
-| Read model, so polls do not hit Postgres | `@upstash/redis`, via `src/lib/cache/redisCache` |
+| Need                                           | Used                                              |
+| ---------------------------------------------- | ------------------------------------------------- |
+| Persistence                                    | Prisma / Neon Postgres                            |
+| Read model, so polls do not hit Postgres       | `@upstash/redis`, via `src/lib/cache/redisCache`  |
 | Rate limiting the first public write endpoints | `@upstash/ratelimit`, via `src/lib/api/rateLimit` |
-| Client state and polling | `@tanstack/react-query` |
-| Validation | `zod` |
-| Icons | `lucide-react` |
-| Champion portraits | Data Dragon, already fetched |
-| Win rates, matchups, the draft verdict | `src/domains/meta`, already in place |
+| Client state and polling                       | `@tanstack/react-query`                           |
+| Validation                                     | `zod`                                             |
+| Icons                                          | `lucide-react`                                    |
+| Champion portraits                             | Data Dragon, already fetched                      |
+| Win rates, matchups, the draft verdict         | `src/domains/meta`, already in place              |
 
-The one thing that *was* considered and rejected is a WebSocket transport —
+The one thing that _was_ considered and rejected is a WebSocket transport —
 `socket.io`, Pusher or Ably. ADR-016 records why: Next.js on Vercel has no
 long-lived process to hold socket state, Upstash's REST client cannot subscribe,
 and a version-stamped read model with a locally derived clock gets the latency
@@ -415,20 +425,20 @@ repository at all.
 Versions are pinned to the website's wherever a package appears in both, so the
 two applications cannot disagree about React or Tailwind semantics.
 
-| Package | Version | Why |
-|---|---|---|
-| `react`, `react-dom` | 18.3.1 | Same major as the website, so components and idioms port without translation. |
-| `vite` | 8.2.2 | The frontend build. Next.js would buy nothing here — there is no server in this process — and would cost startup time, which is the metric this app is judged on. |
-| `@vitejs/plugin-react` | 6.1.0 | JSX transform for the above. |
-| `typescript` | 5.6.3 | Website's version. |
-| `tailwindcss` | 3.4.14 | Website's version, and it must be: `desktop/tailwind.config.ts` re-exports the root config's theme (ADR-039). A different major would reinterpret those tokens. |
-| `postcss`, `autoprefixer` | 8.4.47 / 10.4.20 | Website's versions. |
-| **`postcss-import`** | 17.0.0 | **The only genuinely new package.** It inlines the website's `globals.css` into the desktop bundle *before* Tailwind runs. Without it Tailwind never sees those `@layer` and `@apply` rules and the app renders unstyled. Not needed on the web side, where Next handles CSS imports itself. |
-| `zod` | 4.4.3 | Validates the Live Client Data API payload. Riot ships that API with the game client and changes it on their patch cadence; the schemas are loose so a new field is routine, and a *missing* one is a named error rather than a blank HUD. |
-| `@tanstack/react-query` | 5.100.14 | Server state once pairing lands (phase 3). Present now so the seam is fixed rather than retrofitted. |
-| `lucide-react` | 1.17.0 | Website's icon set. |
-| `vitest` | 4.1.8 | Website's runner, its own config and its own project. |
-| `@types/react`, `@types/react-dom` | 18.3.x | Types for the above. |
+| Package                            | Version          | Why                                                                                                                                                                                                                                                                                          |
+| ---------------------------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `react`, `react-dom`               | 18.3.1           | Same major as the website, so components and idioms port without translation.                                                                                                                                                                                                                |
+| `vite`                             | 8.2.2            | The frontend build. Next.js would buy nothing here — there is no server in this process — and would cost startup time, which is the metric this app is judged on.                                                                                                                            |
+| `@vitejs/plugin-react`             | 6.1.0            | JSX transform for the above.                                                                                                                                                                                                                                                                 |
+| `typescript`                       | 5.6.3            | Website's version.                                                                                                                                                                                                                                                                           |
+| `tailwindcss`                      | 3.4.14           | Website's version, and it must be: `desktop/tailwind.config.ts` re-exports the root config's theme (ADR-039). A different major would reinterpret those tokens.                                                                                                                              |
+| `postcss`, `autoprefixer`          | 8.4.47 / 10.4.20 | Website's versions.                                                                                                                                                                                                                                                                          |
+| **`postcss-import`**               | 17.0.0           | **The only genuinely new package.** It inlines the website's `globals.css` into the desktop bundle _before_ Tailwind runs. Without it Tailwind never sees those `@layer` and `@apply` rules and the app renders unstyled. Not needed on the web side, where Next handles CSS imports itself. |
+| `zod`                              | 4.4.3            | Validates the Live Client Data API payload. Riot ships that API with the game client and changes it on their patch cadence; the schemas are loose so a new field is routine, and a _missing_ one is a named error rather than a blank HUD.                                                   |
+| `@tanstack/react-query`            | 5.100.14         | Server state once pairing lands (phase 3). Present now so the seam is fixed rather than retrofitted.                                                                                                                                                                                         |
+| `lucide-react`                     | 1.17.0           | Website's icon set.                                                                                                                                                                                                                                                                          |
+| `vitest`                           | 4.1.8            | Website's runner, its own config and its own project.                                                                                                                                                                                                                                        |
+| `@types/react`, `@types/react-dom` | 18.3.x           | Types for the above.                                                                                                                                                                                                                                                                         |
 
 **Deliberately not taken.** `clsx` and `tailwind-merge`: they exist on the web to
 reconcile classes arriving through props across ~300 shared components. This app
@@ -448,17 +458,17 @@ A third dependency tree, and the one the website never touches. Building it need
 a Rust toolchain and the MSVC C++ build tools; `desktop/README.md` has the two
 `winget` lines.
 
-| Crate | Version | Why |
-|---|---|---|
-| `tauri` | 2.11 | The shell. Chosen over Electron because this app runs *while League runs*: it renders through the OS webview instead of shipping a second browser (ADR-038). |
-| `tauri-build` | 2.6 | Its build script. |
-| `reqwest` | 0.13, `rustls`, no default features | Two HTTP clients are built from it with opposite trust settings — one that trusts Riot's root and nothing else for `127.0.0.1:2999`, one that trusts the ordinary root store for our own service. `tls_built_in_root_certs(false)` is what makes the first true, and it is far easier to reason about on rustls than on the platform stack. |
-| `keyring` | 4.1, per-platform backend | The device token goes to DPAPI, Keychain or Secret Service and never to a config file. Version 4 makes the backend an explicit choice, so each target names its own rather than inheriting one. |
-| **`tauri-plugin-opener`** | 2.5 | **Added in phase 5.** Hands the post-game report URL to the player's default browser. Used from Rust only: none of its commands are granted to the webview, so the sole address the app can open is the one `post_game::report_url` builds from the compiled-in base. Hand-rolling this over `std::process::Command` would mean composing a shell invocation around a URL, which is the thing worth not doing by hand. |
-| `tauri-plugin-log` | 2 | Debug builds only, wired behind `cfg!(debug_assertions)`. |
-| `serde`, `serde_json` | 1.0 | The website contract is mirrored by hand in Rust (ADR-038 K6) and these carry the rename to camelCase that the mirror depends on. |
-| `thiserror` | 2.0 | One error enum whose every variant is something the UI can say out loud, and whose `Serialize` is what crosses the IPC boundary. |
-| `log` | 0.4 | The logging facade the plugin implements. |
+| Crate                     | Version                             | Why                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ------------------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tauri`                   | 2.11                                | The shell. Chosen over Electron because this app runs _while League runs_: it renders through the OS webview instead of shipping a second browser (ADR-038).                                                                                                                                                                                                                                                           |
+| `tauri-build`             | 2.6                                 | Its build script.                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `reqwest`                 | 0.13, `rustls`, no default features | Two HTTP clients are built from it with opposite trust settings — one that trusts Riot's root and nothing else for `127.0.0.1:2999`, one that trusts the ordinary root store for our own service. `tls_built_in_root_certs(false)` is what makes the first true, and it is far easier to reason about on rustls than on the platform stack.                                                                            |
+| `keyring`                 | 4.1, per-platform backend           | The device token goes to DPAPI, Keychain or Secret Service and never to a config file. Version 4 makes the backend an explicit choice, so each target names its own rather than inheriting one.                                                                                                                                                                                                                        |
+| **`tauri-plugin-opener`** | 2.5                                 | **Added in phase 5.** Hands the post-game report URL to the player's default browser. Used from Rust only: none of its commands are granted to the webview, so the sole address the app can open is the one `post_game::report_url` builds from the compiled-in base. Hand-rolling this over `std::process::Command` would mean composing a shell invocation around a URL, which is the thing worth not doing by hand. |
+| `tauri-plugin-log`        | 2                                   | Debug builds only, wired behind `cfg!(debug_assertions)`.                                                                                                                                                                                                                                                                                                                                                              |
+| `serde`, `serde_json`     | 1.0                                 | The website contract is mirrored by hand in Rust (ADR-038 K6) and these carry the rename to camelCase that the mirror depends on.                                                                                                                                                                                                                                                                                      |
+| `thiserror`               | 2.0                                 | One error enum whose every variant is something the UI can say out loud, and whose `Serialize` is what crosses the IPC boundary.                                                                                                                                                                                                                                                                                       |
+| `log`                     | 0.4                                 | The logging facade the plugin implements.                                                                                                                                                                                                                                                                                                                                                                              |
 
 `tokio` is present but not named here: it arrives through `tauri` and `reqwest`,
 and pinning it separately would be pinning a transitive dependency of two crates

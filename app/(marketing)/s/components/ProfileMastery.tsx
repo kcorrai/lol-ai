@@ -38,9 +38,7 @@ export function ProfileMastery({ mastery }: Props): React.ReactElement | null {
               unoptimized
               className="shrink-0 border border-border"
             />
-            <span className="min-w-0 flex-1 truncate text-[13px] text-text">
-              {m.championName}
-            </span>
+            <span className="min-w-0 flex-1 truncate text-[13px] text-text">{m.championName}</span>
             <span className="shrink-0 font-mono text-[11px] text-text-muted">
               M{m.championLevel} · {points(m.championPoints)}
             </span>

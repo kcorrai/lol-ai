@@ -59,22 +59,23 @@ interface PlanHistoryEntry {
   id: string;
   createdAt: string;
   expiresAt: string;
-  status: 'active' | 'expired';
+  status: "active" | "expired";
   completedCount: number;
   totalTargets: number;
-  weeklyScore: number;   // 0-100
+  weeklyScore: number; // 0-100
 }
 ```
 
 ### HaftalÄ±k Skor HesabÄ±
 
 `improvementPlanService.ts`'e `computeWeeklyScore()` fonksiyonu ekle:
+
 ```typescript
 function computeWeeklyScore(progresses: PlanProgress[]): number {
   if (progresses.length === 0) return 0;
-  const completed = progresses.filter(p => p.achieved).length;
-  const partial = progresses.filter(p => !p.achieved && p.progress > 0.5).length;
-  return Math.round((completed * 33 + partial * 15));
+  const completed = progresses.filter((p) => p.achieved).length;
+  const partial = progresses.filter((p) => !p.achieved && p.progress > 0.5).length;
+  return Math.round(completed * 33 + partial * 15);
 }
 ```
 
@@ -155,6 +156,7 @@ src/hooks/useImprovementPlan.ts                              â† kontrol et 
 ## Sidebar Navigasyonu
 
 `src/components/layout/Sidebar.tsx`'e "GeliÅŸim" linki ekle:
+
 - `/improvement` â€” progress ikon ile
 
 ---
@@ -170,18 +172,18 @@ src/hooks/useImprovementPlan.ts                              â† kontrol et 
 ## Test Plan
 
 ```typescript
-describe('ImprovementPlanWidget', () => {
-  it('plan varsa hedefleri gÃ¶steriyor')
-  it('plan yoksa empty state gÃ¶steriyor')
-  it('tamamlanan hedef yeÅŸil âœ… ikonu alÄ±yor')
-  it('geride kalan hedef kÄ±rmÄ±zÄ± âŒ alÄ±yor')
-})
+describe("ImprovementPlanWidget", () => {
+  it("plan varsa hedefleri gÃ¶steriyor");
+  it("plan yoksa empty state gÃ¶steriyor");
+  it("tamamlanan hedef yeÅŸil âœ… ikonu alÄ±yor");
+  it("geride kalan hedef kÄ±rmÄ±zÄ± âŒ alÄ±yor");
+});
 
-describe('computeWeeklyScore', () => {
-  it('3 tamamlanan â†’ 99 puan')
-  it('1 tamamlanan + 1 partial â†’ 48 puan')
-  it('hiÃ§ tamamlanmayan â†’ 0 puan')
-})
+describe("computeWeeklyScore", () => {
+  it("3 tamamlanan â†’ 99 puan");
+  it("1 tamamlanan + 1 partial â†’ 48 puan");
+  it("hiÃ§ tamamlanmayan â†’ 0 puan");
+});
 ```
 
 ---
@@ -201,4 +203,3 @@ describe('computeWeeklyScore', () => {
 - Free/Pro gating Ã§alÄ±ÅŸÄ±yor
 - Mobile'da gÃ¶rÃ¼nÃ¼m bozulmuyor
 - Component'lerin hiÃ§biri 200 satÄ±rÄ± geÃ§miyor
-

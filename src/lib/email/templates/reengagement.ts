@@ -72,14 +72,14 @@ function getNudgeCopy(nudge: NudgeType, gameName: string, lossStreak?: number): 
   }
 }
 
-export function buildReengagementEmail(data: ReengagementEmailData): { subject: string; html: string } {
+export function buildReengagementEmail(data: ReengagementEmailData): {
+  subject: string;
+  html: string;
+} {
   const copy = getNudgeCopy(data.nudge, data.gameName, data.lossStreak);
   const safeUrl = escapeHtml(data.appUrl);
 
-  const ctaHref =
-    data.nudge === "pool_too_wide"
-      ? `${safeUrl}/champions`
-      : `${safeUrl}/dashboard`;
+  const ctaHref = data.nudge === "pool_too_wide" ? `${safeUrl}/champions` : `${safeUrl}/dashboard`;
 
   const contentHtml = `<h1 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#C6FF3D;">
                 ${escapeHtml(copy.headline)}
@@ -100,6 +100,11 @@ export function buildReengagementEmail(data: ReengagementEmailData): { subject: 
 
   return {
     subject: copy.subject,
-    html: renderEmailShell({ title: copy.subject, contentHtml, appUrl: data.appUrl, unsubscribe: true }),
+    html: renderEmailShell({
+      title: copy.subject,
+      contentHtml,
+      appUrl: data.appUrl,
+      unsubscribe: true,
+    }),
   };
 }

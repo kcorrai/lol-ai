@@ -1,6 +1,7 @@
 # TASK-253 — Harden the AI matchup-guide endpoint
 
 ## Problem
+
 `app/api/analysis/matchup-guide/route.ts` is the only route in the app that calls `getAiClient()`
 directly, and it was the only AI route with **no rate limit**. It interpolated two unvalidated
 client-supplied strings straight into the LLM prompt and into the AI cache key:
@@ -51,12 +52,14 @@ the existing `checkRateLimit`/`rateLimitResponse` idiom from
 `app/api/analysis/daily-momentum/route.ts`.
 
 ## Tests
+
 `matchupGuideService.test.ts` — 13 tests: happy path, cache hit (asserts the AI provider is **not**
 called), unknown player/opponent champion, a prompt-injection payload proving no AI call is made,
 case-insensitive matching with canonicalization, one cache key across casing variants, and clamping
 of negative / absurd / non-finite / fractional numerics.
 
 ## Verification
+
 `npx vitest run src/domains/analysis/services/matchupGuideService.test.ts` — 13 passed.
 Full suite green; `tsc --noEmit` and ESLint clean.
 

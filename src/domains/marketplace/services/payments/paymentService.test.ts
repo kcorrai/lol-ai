@@ -152,26 +152,33 @@ describe("settleForStatus", () => {
     );
   });
 
-  it.each(["DECLINED", "EXPIRED", "CANCELLED_BY_STUDENT", "CANCELLED_BY_COACH", "REFUNDED"] as const)(
-    "refunds when a booking ends as %s",
-    async (status) => {
-      expect(await settleForStatus("b1", status)).toBe("REFUNDED");
+  it.each([
+    "DECLINED",
+    "EXPIRED",
+    "CANCELLED_BY_STUDENT",
+    "CANCELLED_BY_COACH",
+    "REFUNDED",
+  ] as const)("refunds when a booking ends as %s", async (status) => {
+    expect(await settleForStatus("b1", status)).toBe("REFUNDED");
 
-      expect(mockPrisma.bookingPayment.update).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: expect.objectContaining({ status: "REFUNDED", refundedAt: expect.any(Date) }),
-        })
-      );
-    }
-  );
+    expect(mockPrisma.bookingPayment.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ status: "REFUNDED", refundedAt: expect.any(Date) }),
+      })
+    );
+  });
 
   // Re-settling would double-count a transfer under a driver that actually
   // moves money.
   it("does nothing to money that has already settled", async () => {
-    mockPrisma.bookingPayment.findUnique.mockResolvedValue(payment({ status: "RELEASED" }) as never);
+    mockPrisma.bookingPayment.findUnique.mockResolvedValue(
+      payment({ status: "RELEASED" }) as never
+    );
     expect(await settleForStatus("b1", "COMPLETED")).toBe("RELEASED");
 
-    mockPrisma.bookingPayment.findUnique.mockResolvedValue(payment({ status: "REFUNDED" }) as never);
+    mockPrisma.bookingPayment.findUnique.mockResolvedValue(
+      payment({ status: "REFUNDED" }) as never
+    );
     expect(await settleForStatus("b1", "EXPIRED")).toBe("REFUNDED");
 
     expect(mockPrisma.bookingPayment.update).not.toHaveBeenCalled();

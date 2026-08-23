@@ -36,7 +36,10 @@ export default async function globalSetup(): Promise<void> {
 async function seedTestData(prisma: Awaited<ReturnType<typeof createTestPrisma>>): Promise<void> {
   // ── Clean previous E2E data ──────────────────────────────────────────────
   // Delete in reverse FK order to avoid constraint violations
-  const existing = await prisma.user.findUnique({ where: { email: E2E_USER.email }, select: { id: true } });
+  const existing = await prisma.user.findUnique({
+    where: { email: E2E_USER.email },
+    select: { id: true },
+  });
   if (existing) {
     await prisma.improvementPlan.deleteMany({ where: { riotAccount: { userId: existing.id } } });
     await prisma.coachingReport.deleteMany({ where: { riotAccount: { userId: existing.id } } });
@@ -44,7 +47,9 @@ async function seedTestData(prisma: Awaited<ReturnType<typeof createTestPrisma>>
     await prisma.championStat.deleteMany({ where: { riotAccount: { userId: existing.id } } });
     await prisma.matchParticipant.deleteMany({ where: { riotAccount: { userId: existing.id } } });
     await prisma.riotAccount.deleteMany({ where: { userId: existing.id } });
-    await prisma.webhookEvent.deleteMany({ where: { eventKey: { startsWith: `weekly-email:${existing.id}` } } });
+    await prisma.webhookEvent.deleteMany({
+      where: { eventKey: { startsWith: `weekly-email:${existing.id}` } },
+    });
     await prisma.subscription.deleteMany({ where: { userId: existing.id } });
     await prisma.profile.deleteMany({ where: { userId: existing.id } });
     await prisma.account.deleteMany({ where: { userId: existing.id } });
@@ -71,7 +76,10 @@ async function seedTestData(prisma: Awaited<ReturnType<typeof createTestPrisma>>
       // the riotAccount row directly skips it, and then `/u/<slug>` 404s for a
       // user who has a public profile everywhere else. Same derivation as
       // `toProfileSlug`, which is what the app would have written.
-      profileSlug: `${E2E_RIOT_PRE.gameName}-${E2E_RIOT_PRE.tagLine}`.replace(/[^a-zA-Z0-9-_]/g, "-"),
+      profileSlug: `${E2E_RIOT_PRE.gameName}-${E2E_RIOT_PRE.tagLine}`.replace(
+        /[^a-zA-Z0-9-_]/g,
+        "-"
+      ),
       // Mark onboarding done so the forced first-journey overlay (TASK-217) doesn't block the
       // other smoke specs. The guided-onboarding spec resets this to null for its own run.
       profile: { create: { emailWeeklyReport: false, onboardingCompletedAt: new Date() } },
@@ -179,20 +187,42 @@ async function seedTestData(prisma: Awaited<ReturnType<typeof createTestPrisma>>
       reportType: "session_review",
       status: "complete",
       matchesAnalyzed: matchIds,
-      summary: "Strong early game mechanics with consistent CS above 8 min. Your main area for improvement is vision control — focus on buying more control wards.",
+      summary:
+        "Strong early game mechanics with consistent CS above 8 min. Your main area for improvement is vision control — focus on buying more control wards.",
       strengths: [
-        { area: "Farming", description: "Consistent CS above 8/min", evidence: "8.2 CS/min average across 5 games" },
+        {
+          area: "Farming",
+          description: "Consistent CS above 8/min",
+          evidence: "8.2 CS/min average across 5 games",
+        },
       ],
       weaknesses: [
-        { area: "Vision Control", description: "Ward coverage below average", priority: "high", evidence: "28 avg vision score", rootCause: "Insufficient control ward purchases" },
+        {
+          area: "Vision Control",
+          description: "Ward coverage below average",
+          priority: "high",
+          evidence: "28 avg vision score",
+          rootCause: "Insufficient control ward purchases",
+        },
       ],
       actionItems: [
-        { priority: 1, action: "Purchase at least 2 control wards per game", howTo: "Add to your first-back buy list", expectedImpact: "+8 average vision score", timeframe: "Immediate" },
+        {
+          priority: 1,
+          action: "Purchase at least 2 control wards per game",
+          howTo: "Add to your first-back buy list",
+          expectedImpact: "+8 average vision score",
+          timeframe: "Immediate",
+        },
       ],
-      coachPersonaResponse: "Your mechanics are solid — you belong in a higher tier. Fix your vision game and you will climb.",
+      coachPersonaResponse:
+        "Your mechanics are solid — you belong in a higher tier. Fix your vision game and you will climb.",
       estimatedRankPotential: "Platinum II",
       championRecommendations: [
-        { championName: "Ahri", reason: "Your most played champion with 60% win rate", priority: "high" },
+        {
+          championName: "Ahri",
+          reason: "Your most played champion with 60% win rate",
+          priority: "high",
+        },
       ],
       aiModelUsed: "gpt-4o-mini",
       processingTimeMs: 3200,

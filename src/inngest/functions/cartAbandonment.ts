@@ -57,7 +57,12 @@ export const cartAbandonmentReminder = inngest.createFunction(
         appUrl,
       });
 
-      const { error } = await emailClient.emails.send({ from: EMAIL_FROM, to: user.email, subject, html });
+      const { error } = await emailClient.emails.send({
+        from: EMAIL_FROM,
+        to: user.email,
+        subject,
+        html,
+      });
       if (error) {
         logger.error("[cartAbandonment] email send failed", { userId, error });
         return { sent: false };

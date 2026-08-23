@@ -24,11 +24,7 @@ export function MatchupControls({
 }: Props) {
   const router = useRouter();
 
-  function navigate(
-    a: string | null,
-    b: string | null,
-    pos: CanonicalPosition | null
-  ): void {
+  function navigate(a: string | null, b: string | null, pos: CanonicalPosition | null): void {
     const params = new URLSearchParams();
     if (a) params.set("a", a);
     if (b) params.set("b", b);
@@ -73,7 +69,8 @@ export function MatchupControls({
                   active
                     ? "bg-accent text-background"
                     : "border border-border bg-surface text-text-muted hover:border-accent/40 hover:text-text",
-                  !enabled && "cursor-not-allowed opacity-40 hover:border-border hover:text-text-muted"
+                  !enabled &&
+                    "cursor-not-allowed opacity-40 hover:border-border hover:text-text-muted"
                 )}
               >
                 {POSITION_LABELS[pos]}

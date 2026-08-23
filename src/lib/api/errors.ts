@@ -11,27 +11,19 @@ export class ApiError extends Error {
 
 // Predefined errors for common cases — keeps route handlers thin
 export const Errors = {
-  unauthorized: () =>
-    new ApiError("UNAUTHORIZED", "Authentication required", 401),
+  unauthorized: () => new ApiError("UNAUTHORIZED", "Authentication required", 401),
 
   twoFactorRequired: () =>
-    new ApiError(
-      "TWO_FACTOR_REQUIRED",
-      "Enter your two-factor code to finish signing in",
-      401
-    ),
+    new ApiError("TWO_FACTOR_REQUIRED", "Enter your two-factor code to finish signing in", 401),
 
-  forbidden: (detail = "Access denied") =>
-    new ApiError("FORBIDDEN", detail, 403),
+  forbidden: (detail = "Access denied") => new ApiError("FORBIDDEN", detail, 403),
 
   notFound: (resource = "Resource") =>
     new ApiError("RESOURCE_NOT_FOUND", `${resource} not found`, 404),
 
-  conflict: (detail: string) =>
-    new ApiError("CONFLICT", detail, 409),
+  conflict: (detail: string) => new ApiError("CONFLICT", detail, 409),
 
-  validation: (detail: string) =>
-    new ApiError("VALIDATION_ERROR", detail, 422),
+  validation: (detail: string) => new ApiError("VALIDATION_ERROR", detail, 422),
 
   accountLimitReached: () =>
     new ApiError(
@@ -55,11 +47,7 @@ export const Errors = {
     ),
 
   proRequired: (feature: string) =>
-    new ApiError(
-      "PRO_REQUIRED",
-      `${feature} requires a Pro subscription.`,
-      403
-    ),
+    new ApiError("PRO_REQUIRED", `${feature} requires a Pro subscription.`, 403),
 
   riotAccountNotOwned: () =>
     new ApiError(

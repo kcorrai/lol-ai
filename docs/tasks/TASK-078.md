@@ -37,20 +37,20 @@ kullanÄ±cÄ±yÄ± platforma geri getiren gÃ¼Ã§lÃ¼ bir retention mekaniz
 
 ## Rozet KataloÄŸu (Seed Data)
 
-| ID | Ä°sim | AÃ§Ä±klama | Tetikleyici | Tier |
-|---|---|---|---|---|
-| `cs_machine` | CS Makinesi | 3 Ã¼st Ã¼ste 7.0+ CS/dk | matchParticipant.csPerMinute â‰¥ 7.0 Ã— 3 | GÃ¼mÃ¼ÅŸ |
-| `deathless` | Dokunulmaz | 5 Ã¼st Ã¼ste â‰¤ 2 Ã¶lÃ¼m | matchParticipant.deaths â‰¤ 2 Ã— 5 | AltÄ±n |
-| `rising_star` | YÃ¼kselen YÄ±ldÄ±z | Haftada +50 LP | rankHistory delta | AltÄ±n |
-| `on_fire` | AteÅŸ Serisi | 5 maÃ§ galibiyet serisi | consecutive wins | GÃ¼mÃ¼ÅŸ |
-| `habit_breaker` | AlÄ±ÅŸkanlÄ±k KÄ±rÄ±cÄ± | Tespit edilen bir alÄ±ÅŸkanlÄ±ÄŸÄ± Ã§Ã¶z | PlayerHabit.isResolved | Platin |
-| `otp_apprentice` | OTP AdayÄ± | Tek ÅŸampiyonla 50 maÃ§ | championStats.games â‰¥ 50 | GÃ¼mÃ¼ÅŸ |
-| `otp_master` | OTP UstasÄ± | Tek ÅŸampiyonla 100 maÃ§ | championStats.games â‰¥ 100 | Platin |
-| `vision_ward` | Vizyon UstasÄ± | 3 Ã¼st Ã¼ste 10+ vision score | matchParticipant.visionScore â‰¥ 10 Ã— 3 | GÃ¼mÃ¼ÅŸ |
-| `comeback_king` | Geri DÃ¶nÃ¼ÅŸ KralÄ± | Tilt sonrasÄ± 3 galibiyet serisi | tiltScore > 60 â†’ 3 win | AltÄ±n |
-| `first_report` | Ä°lk Rapor | Ä°lk koÃ§luk raporunu al | coachingReport.count â‰¥ 1 | Bronz |
-| `week_warrior` | Hafta SavaÅŸÃ§Ä±sÄ± | Haftada 20+ maÃ§ | matches count weekly | GÃ¼mÃ¼ÅŸ |
-| `improvement_plan` | PlanlÄ± Oyuncu | Ä°lk improvement planÄ±nÄ± tamamla | improvementPlan completed | AltÄ±n |
+| ID                 | Ä°sim                   | AÃ§Ä±klama                               | Tetikleyici                               | Tier     |
+| ------------------ | ----------------------- | ---------------------------------------- | ----------------------------------------- | -------- |
+| `cs_machine`       | CS Makinesi             | 3 Ã¼st Ã¼ste 7.0+ CS/dk                  | matchParticipant.csPerMinute â‰¥ 7.0 Ã— 3 | GÃ¼mÃ¼ÅŸ |
+| `deathless`        | Dokunulmaz              | 5 Ã¼st Ã¼ste â‰¤ 2 Ã¶lÃ¼m                | matchParticipant.deaths â‰¤ 2 Ã— 5        | AltÄ±n   |
+| `rising_star`      | YÃ¼kselen YÄ±ldÄ±z      | Haftada +50 LP                           | rankHistory delta                         | AltÄ±n   |
+| `on_fire`          | AteÅŸ Serisi            | 5 maÃ§ galibiyet serisi                  | consecutive wins                          | GÃ¼mÃ¼ÅŸ |
+| `habit_breaker`    | AlÄ±ÅŸkanlÄ±k KÄ±rÄ±cÄ± | Tespit edilen bir alÄ±ÅŸkanlÄ±ÄŸÄ± Ã§Ã¶z | PlayerHabit.isResolved                    | Platin   |
+| `otp_apprentice`   | OTP AdayÄ±              | Tek ÅŸampiyonla 50 maÃ§                  | championStats.games â‰¥ 50                | GÃ¼mÃ¼ÅŸ |
+| `otp_master`       | OTP UstasÄ±             | Tek ÅŸampiyonla 100 maÃ§                 | championStats.games â‰¥ 100               | Platin   |
+| `vision_ward`      | Vizyon UstasÄ±          | 3 Ã¼st Ã¼ste 10+ vision score            | matchParticipant.visionScore â‰¥ 10 Ã— 3  | GÃ¼mÃ¼ÅŸ |
+| `comeback_king`    | Geri DÃ¶nÃ¼ÅŸ KralÄ±    | Tilt sonrasÄ± 3 galibiyet serisi         | tiltScore > 60 â†’ 3 win                  | AltÄ±n   |
+| `first_report`     | Ä°lk Rapor              | Ä°lk koÃ§luk raporunu al                 | coachingReport.count â‰¥ 1                | Bronz    |
+| `week_warrior`     | Hafta SavaÅŸÃ§Ä±sÄ±     | Haftada 20+ maÃ§                         | matches count weekly                      | GÃ¼mÃ¼ÅŸ |
+| `improvement_plan` | PlanlÄ± Oyuncu          | Ä°lk improvement planÄ±nÄ± tamamla       | improvementPlan completed                 | AltÄ±n   |
 
 ---
 
@@ -96,14 +96,15 @@ model UserAchievement {
 export async function checkAndAwardAchievements(
   userId: string,
   riotAccountId: string
-): Promise<string[]> // kazanÄ±lan achievement ID'leri
+): Promise<string[]>; // kazanÄ±lan achievement ID'leri
 ```
 
 Her checker ayrÄ± pure fonksiyon:
+
 ```typescript
-async function checkCsMachine(riotAccountId: string): Promise<boolean>
-async function checkDeathless(riotAccountId: string): Promise<boolean>
-async function checkRisingStar(riotAccountId: string): Promise<boolean>
+async function checkCsMachine(riotAccountId: string): Promise<boolean>;
+async function checkDeathless(riotAccountId: string): Promise<boolean>;
+async function checkRisingStar(riotAccountId: string): Promise<boolean>;
 // ...
 ```
 
@@ -112,8 +113,8 @@ async function checkRisingStar(riotAccountId: string): Promise<boolean>
 ```typescript
 // matchSyncService.ts sync sonrasÄ±:
 await inngest.send({
-  name: 'achievement/check',
-  data: { userId, riotAccountId }
+  name: "achievement/check",
+  data: { userId, riotAccountId },
 });
 ```
 
@@ -188,13 +189,13 @@ src/domains/riot/services/matchSyncService.ts             â† event ekle
 ## Test Plan
 
 ```typescript
-describe('achievementService', () => {
-  it('checkCsMachine: 3 Ã¼st Ã¼ste 7.0+ â†’ true')
-  it('checkCsMachine: sadece 2 Ã¼st Ã¼ste â†’ false')
-  it('checkDeathless: araya girmiÅŸ yÃ¼ksek Ã¶lÃ¼m â†’ false')
-  it('duplicate award: aynÄ± rozet iki kez verilmez')
-  it('checkAndAwardAchievements: birden fazla rozet aynÄ± anda verilebilir')
-})
+describe("achievementService", () => {
+  it("checkCsMachine: 3 Ã¼st Ã¼ste 7.0+ â†’ true");
+  it("checkCsMachine: sadece 2 Ã¼st Ã¼ste â†’ false");
+  it("checkDeathless: araya girmiÅŸ yÃ¼ksek Ã¶lÃ¼m â†’ false");
+  it("duplicate award: aynÄ± rozet iki kez verilmez");
+  it("checkAndAwardAchievements: birden fazla rozet aynÄ± anda verilebilir");
+});
 ```
 
 ---
@@ -216,4 +217,3 @@ describe('achievementService', () => {
 - PaylaÅŸÄ±m kartÄ± PNG dÃ¶ndÃ¼rÃ¼yor
 - Unit test coverage â‰¥ 80%
 - `docs/DATABASE_SCHEMA.md` gÃ¼ncellendi
-

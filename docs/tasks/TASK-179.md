@@ -1,12 +1,15 @@
 # TASK-179: SEO Internal Linking + Live Meta Counter
 
 ## Status: Pending
+
 ## Score: 88/100
 
 ## Goal
+
 Strengthen the SEO internal-link graph and add a real "live" signal to the landing.
 
 ## Scope
+
 - **Live match counter**: expose op.gg's `meta.match_count` on the snapshot
   (`MetaSnapshot.matchCount`) and show an animated "X ranked games analyzed this
   patch" figure on the hero and in the meta section (real number, not fake).
@@ -19,7 +22,9 @@ Strengthen the SEO internal-link graph and add a real "live" signal to the landi
   `/counters/[name]`; keep the counter page → champion guide link.
 
 ## Out of Scope
+
 - New tools; per-matchup pages.
 
 ## Commit
+
 `feat(seo): internal linking graph + live meta counter`

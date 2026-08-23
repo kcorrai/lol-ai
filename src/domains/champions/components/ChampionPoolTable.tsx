@@ -4,7 +4,13 @@ import { useState } from "react";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { cn } from "@/lib/utils";
 import type { ChampionPoolEntry } from "@/domains/champions/services/championStatsService";
-import { VERDICT_CHIP, VERDICT_LABEL, VERDICT_RULE, verdictFor, type PoolVerdict } from "./poolVerdict";
+import {
+  VERDICT_CHIP,
+  VERDICT_LABEL,
+  VERDICT_RULE,
+  verdictFor,
+  type PoolVerdict,
+} from "./poolVerdict";
 
 type SortKey = "winRate" | "gamesPlayed" | "masteryScore";
 
@@ -70,7 +76,9 @@ export function ChampionPoolTable({
         </div>
         <span className="h-5 w-px bg-line-1" />
         <div className="flex items-center gap-2">
-          <span className="font-mono text-[10px] uppercase tracking-label text-text-muted">Sort</span>
+          <span className="font-mono text-[10px] uppercase tracking-label text-text-muted">
+            Sort
+          </span>
           {SORTS.map((s) => (
             <button
               key={s.key}

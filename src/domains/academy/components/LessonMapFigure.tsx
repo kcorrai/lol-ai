@@ -31,7 +31,7 @@ export function LessonMapFigure({ block }: { block: MapFigureBlock }): React.Rea
                 height: `${annotation.at.r * 200}%`,
               }}
               className={`absolute flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 font-mono text-[11px] font-bold ${pinClass(
-                annotation.tone,
+                annotation.tone
               )}`}
             >
               {i + 1}
@@ -44,19 +44,22 @@ export function LessonMapFigure({ block }: { block: MapFigureBlock }): React.Rea
             <li key={annotation.label} className="flex gap-3">
               <span
                 className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border font-mono text-[10px] font-bold ${pinClass(
-                  annotation.tone,
+                  annotation.tone
                 )}`}
               >
                 {i + 1}
               </span>
               <p className="text-[13.5px] leading-relaxed text-text-body">
-                <span className="font-medium text-text">{annotation.label}</span> — {annotation.note}
+                <span className="font-medium text-text">{annotation.label}</span> —{" "}
+                {annotation.note}
               </p>
             </li>
           ))}
         </ol>
       </div>
-      <figcaption className="mt-2 font-mono text-[11px] text-text-faint">{block.caption}</figcaption>
+      <figcaption className="mt-2 font-mono text-[11px] text-text-faint">
+        {block.caption}
+      </figcaption>
     </figure>
   );
 }

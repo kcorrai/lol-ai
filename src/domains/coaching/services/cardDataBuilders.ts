@@ -70,10 +70,7 @@ export async function buildWeeklyData(
     orderBy: { recordedAt: "asc" },
     take: 2,
   });
-  const lpDelta =
-    lpHistory.length >= 2
-      ? lpHistory[lpHistory.length - 1].lp - lpHistory[0].lp
-      : 0;
+  const lpDelta = lpHistory.length >= 2 ? lpHistory[lpHistory.length - 1].lp - lpHistory[0].lp : 0;
 
   // Latest coach grade from most recent completed report
   const lastReport = await prisma.coachingReport.findFirst({
@@ -182,10 +179,7 @@ export async function buildMasteryData(
  * A certificate for a finished track. The academy domain decides what "finished" means and
  * refuses to issue one otherwise — a certificate for a part-read track would be decoration.
  */
-export async function buildAcademyData(
-  userId: string,
-  trackId: string
-): Promise<AcademyCardData> {
+export async function buildAcademyData(userId: string, trackId: string): Promise<AcademyCardData> {
   const certificate = await buildCertificate(userId, trackId);
   if (!certificate) throw new Error("TRACK_NOT_FINISHED");
 

@@ -1,7 +1,10 @@
 import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
 import { Errors } from "@/lib/api/errors";
-import { updateProfileSettings, getProfileSettings } from "@/domains/identity/services/profileService";
+import {
+  updateProfileSettings,
+  getProfileSettings,
+} from "@/domains/identity/services/profileService";
 import { NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -33,7 +36,10 @@ export const PATCH = withAuth(async (req: NextRequest, { userId }) => {
     }
   }
 
-  const { profilePublic, ...rest } = update as { profilePublic?: boolean } & Record<string, boolean>;
+  const { profilePublic, ...rest } = update as { profilePublic?: boolean } & Record<
+    string,
+    boolean
+  >;
   await updateProfileSettings(userId, { profilePublic, ...rest });
 
   return apiSuccess({ ok: true });

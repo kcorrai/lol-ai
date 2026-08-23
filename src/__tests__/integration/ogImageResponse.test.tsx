@@ -57,7 +57,8 @@ describe("next/og ImageResponse", () => {
 // plain <div> are both two-or-more children, which is how four separate share
 // surfaces shipped broken behind LA-41's crash.
 async function expectRenders(el: ReactElement | ImageResponse): Promise<void> {
-  const res = el instanceof ImageResponse ? el : new ImageResponse(el, { width: 1200, height: 630 });
+  const res =
+    el instanceof ImageResponse ? el : new ImageResponse(el, { width: 1200, height: 630 });
   expect(res.status).toBe(200);
   expect((await res.arrayBuffer()).byteLength).toBeGreaterThan(0);
 }

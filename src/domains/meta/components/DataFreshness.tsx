@@ -23,14 +23,18 @@ export function DataFreshness({
   className?: string;
 }) {
   return (
-    <div className={`flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-muted ${className}`}>
+    <div
+      className={`flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-muted ${className}`}
+    >
       <span>Data updated {hoursAgo(fetchedAt)}h ago</span>
       <span aria-hidden>·</span>
       <span>Patch {formatGamePatch(patch)}</span>
       {matchCount ? (
         <>
           <span aria-hidden>·</span>
-          <span>{matchCount.toLocaleString()} {gamesLabel}</span>
+          <span>
+            {matchCount.toLocaleString()} {gamesLabel}
+          </span>
         </>
       ) : null}
     </div>

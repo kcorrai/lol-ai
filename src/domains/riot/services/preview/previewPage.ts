@@ -1,12 +1,5 @@
-import {
-  getAccountByRiotId,
-  getMatch,
-  getMatchIds,
-} from "@/domains/riot/services/riotApiClient";
-import {
-  toPreviewMatch,
-  toPreviewScoreboard,
-} from "@/domains/riot/services/preview/previewMapper";
+import { getAccountByRiotId, getMatch, getMatchIds } from "@/domains/riot/services/riotApiClient";
+import { toPreviewMatch, toPreviewScoreboard } from "@/domains/riot/services/preview/previewMapper";
 import { MATCH_DEPTH } from "@/domains/riot/services/preview/previewSource";
 import { buildCacheKey, getCached, setCached } from "@/lib/ai/aiCache";
 import type { MatchDTO } from "@/domains/riot/types/riot.types";

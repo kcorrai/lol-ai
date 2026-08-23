@@ -63,6 +63,7 @@ export function poolHeadline(entries: ChampionPoolEntry[]): string | null {
   const keepers = entries.filter((c) => verdictFor(c) === "keep");
   if (entries.length < 4) return "Not enough champions yet to call the shape of your pool.";
   if (keepers.length === 0) return "No champion in your pool is clearing 60%.";
-  if (keepers.length <= 3) return `Your pool is too wide. ${keepers.length} champions are carrying you.`;
+  if (keepers.length <= 3)
+    return `Your pool is too wide. ${keepers.length} champions are carrying you.`;
   return `${keepers.length} champions are above 60%. Pick three and queue them.`;
 }

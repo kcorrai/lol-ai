@@ -9,8 +9,16 @@ import { decryptString } from "@/lib/crypto/encrypt";
 import { sendPushToUser } from "@/lib/push/pushService";
 
 const TIER_ORDER: Record<string, number> = {
-  IRON: 0, BRONZE: 1, SILVER: 2, GOLD: 3, PLATINUM: 4,
-  EMERALD: 5, DIAMOND: 6, MASTER: 7, GRANDMASTER: 8, CHALLENGER: 9,
+  IRON: 0,
+  BRONZE: 1,
+  SILVER: 2,
+  GOLD: 3,
+  PLATINUM: 4,
+  EMERALD: 5,
+  DIAMOND: 6,
+  MASTER: 7,
+  GRANDMASTER: 8,
+  CHALLENGER: 9,
 };
 const DIV_ORDER: Record<string, number> = { IV: 0, III: 1, II: 2, I: 3 };
 
@@ -46,7 +54,7 @@ export const sendRankChangeEmail = inngest.createFunction(
     const payload = event.data as RankChangedPayload;
 
     const prevScore = composite(payload.previousTier, payload.previousDivision);
-    const newScore  = composite(payload.newTier, payload.newDivision);
+    const newScore = composite(payload.newTier, payload.newDivision);
 
     // Only email on tier or division changes, not just LP movement
     if (prevScore === newScore) return { skipped: "lp_only_change" };
@@ -79,7 +87,8 @@ export const sendRankChangeEmail = inngest.createFunction(
       return { skipped: "resend_not_configured" };
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTAUTH_URL ?? "https://lolaicoach.gg";
+    const appUrl =
+      process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTAUTH_URL ?? "https://lolaicoach.gg";
 
     const { subject, html } = buildRankChangeEmail({
       gameName: account.gameName,
@@ -109,7 +118,9 @@ export const sendRankChangeEmail = inngest.createFunction(
       body: `${account.gameName} is now ${newRankLabel}`,
       url: `${appUrl}/dashboard`,
       tag: `rank-${payload.riotAccountId}`,
-    }).catch(() => { /* non-blocking */ });
+    }).catch(() => {
+      /* non-blocking */
+    });
 
     // Discord webhook for rank changes (promotion only)
     const discord = account?.user?.discordIntegration;
@@ -129,7 +140,9 @@ export const sendRankChangeEmail = inngest.createFunction(
           })
         );
       } catch (err) {
-        logger.warn(`[rankChangeEmail] Discord webhook failed: ${err instanceof Error ? err.message : String(err)}`);
+        logger.warn(
+          `[rankChangeEmail] Discord webhook failed: ${err instanceof Error ? err.message : String(err)}`
+        );
       }
     }
 

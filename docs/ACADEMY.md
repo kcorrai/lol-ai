@@ -7,12 +7,12 @@ the same shape as Esports and the Draft Room, and deliberately not a dashboard p
 
 The market splits in two and neither half closes the loop:
 
-| Product | What it does | What it misses |
-|---|---|---|
-| Skill Capped, ProGuides | Structured video curriculum | Nobody diagnoses your actual habits |
-| Mobalytics, AI coaches (RiftCoach, Meeko, Baron Buff) | Reads your games, reports on them | No curriculum — a report is not a lesson |
-| MOBA Trainer | Interactive pro-authored decision puzzles | Static content, unconnected to your matches |
-| LoL Dodge Game | Mechanical mini-games | Mechanics only, no macro, no progression |
+| Product                                               | What it does                              | What it misses                              |
+| ----------------------------------------------------- | ----------------------------------------- | ------------------------------------------- |
+| Skill Capped, ProGuides                               | Structured video curriculum               | Nobody diagnoses your actual habits         |
+| Mobalytics, AI coaches (RiftCoach, Meeko, Baron Buff) | Reads your games, reports on them         | No curriculum — a report is not a lesson    |
+| MOBA Trainer                                          | Interactive pro-authored decision puzzles | Static content, unconnected to your matches |
+| LoL Dodge Game                                        | Mechanical mini-games                     | Mechanics only, no macro, no progression    |
 
 We already own both halves: `habitDetectionService` finds the leak, `getPlayerPerformanceProfile`
 gives the numbers, `rankBenchmarkService` gives the comparison. The Academy is the curriculum
@@ -38,8 +38,8 @@ Track  →  Lesson  →  Blocks + Drills + Field assignment
   where the wave ended up.
 - **Figure** — a picture that teaches. `figure` is a row of Riot's own icons; `mapFigure` is
   the Rift schematic with numbered pins on it; `clip` is Riot's official ability preview and is
-  generated, never written. See *Visual language* below.
-- **Field assignment** — Proof of Practice. Written as a *movement* ("0.5 more CS per minute
+  generated, never written. See _Visual language_ below.
+- **Field assignment** — Proof of Practice. Written as a _movement_ ("0.5 more CS per minute
   over 3 games"), never an absolute, and resolved against the player's own baseline so a
   Bronze and a Diamond player reading the same lesson get the same instruction and different
   numbers. See below — this is the half that makes the Academy more than a course.
@@ -179,11 +179,11 @@ fixture. Generated content cannot ship below the standard authored content is he
 
 Three drill shapes, chosen because the analysis can support them:
 
-| Drill | Built from | Why it works |
-|---|---|---|
-| Tier recognition (`quiz`) | One easy matchup against three hard ones | The wrong answers carry the real summary of the lane they name |
-| The plan for the hardest lane (`decision`) | That matchup's `keyTip` against three others' | Every wrong option is real advice for a *different* opponent — "right idea, wrong lane" |
-| Ban priority (`order`) | `banPriority`, which states its own priorities | The only field carrying a sequence; power spikes are deliberately a table, since nothing promises that array is chronological |
+| Drill                                      | Built from                                     | Why it works                                                                                                                  |
+| ------------------------------------------ | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Tier recognition (`quiz`)                  | One easy matchup against three hard ones       | The wrong answers carry the real summary of the lane they name                                                                |
+| The plan for the hardest lane (`decision`) | That matchup's `keyTip` against three others'  | Every wrong option is real advice for a _different_ opponent — "right idea, wrong lane"                                       |
+| Ban priority (`order`)                     | `banPriority`, which states its own priorities | The only field carrying a sequence; power spikes are deliberately a table, since nothing promises that array is chronological |
 
 Four rules give it its shape:
 
@@ -204,7 +204,7 @@ Four rules give it its shape:
   — means champion-blind.
 
   The role is the second half and it was found against real data: a champion lesson measures in
-  the role that *champion* is played in, not the account's main role. An account whose last
+  the role that _champion_ is played in, not the account's main role. An account whose last
   twenty ranked games were eleven support and seven mid reads as a support main, so its Veigar
   lesson — 43 ranked games, all mid — found zero of them and opened no assignment at all. The
   role now comes from the lesson (`resolveLesson` carries it), and `rankedBaseline` uses it
@@ -212,7 +212,7 @@ Four rules give it its shape:
 
 Not in the registry: `TrackId` gains `"champion"`, the one member with no `Track` behind it. No
 sitemap entry, no `generateStaticParams`, `noindex`, and no certificate — a certificate is for a
-finished *track*, and there is no defined set of champions to finish. The transcript lists them
+finished _track_, and there is no defined set of champions to finish. The transcript lists them
 in their own section, outside the totals, for the same reason.
 
 ## Proof of Practice
@@ -222,16 +222,16 @@ Finishing the drills completes a lesson. **Mastering** it takes a real game.
 When a lesson is completed, the Academy opens an assignment pinned to the player's own numbers,
 then judges it from their matches — nothing is self-reported.
 
-| | Rule | Why |
-|---|---|---|
-| **Baseline** | Mean over the last 20 ranked games **in the player's main role** | Must match the population the verdict is read from |
-| **Target** | Baseline ± the lesson's delta, floored at zero | A movement, not an absolute — same lesson, different numbers per player |
-| **Counted games** | The **first** N ranked games in that role after the lesson was finished | First N, not best N — that is what makes it a commitment |
-| **Verdict** | Mean of those games vs the target; landing exactly on it passes | Averaging matches how the baseline was built |
-| **Expiry** | 14 days without collecting N games | An assignment that never resolves is worse than none |
-| **Pass** | `academy_progress.status → mastered` | The only thing in the product that can set `mastered` |
-| **Fail** | Lesson stays `completed`; the player can restart with a fresh baseline | A miss is not a punishment |
-| **Decay** | 21 days after mastery, re-measured against the **same** target; below it drops to `review` | Mastery that cannot come undone is a certificate, not a habit |
+|                   | Rule                                                                                       | Why                                                                     |
+| ----------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| **Baseline**      | Mean over the last 20 ranked games **in the player's main role**                           | Must match the population the verdict is read from                      |
+| **Target**        | Baseline ± the lesson's delta, floored at zero                                             | A movement, not an absolute — same lesson, different numbers per player |
+| **Counted games** | The **first** N ranked games in that role after the lesson was finished                    | First N, not best N — that is what makes it a commitment                |
+| **Verdict**       | Mean of those games vs the target; landing exactly on it passes                            | Averaging matches how the baseline was built                            |
+| **Expiry**        | 14 days without collecting N games                                                         | An assignment that never resolves is worse than none                    |
+| **Pass**          | `academy_progress.status → mastered`                                                       | The only thing in the product that can set `mastered`                   |
+| **Fail**          | Lesson stays `completed`; the player can restart with a fresh baseline                     | A miss is not a punishment                                              |
+| **Decay**         | 21 days after mastery, re-measured against the **same** target; below it drops to `review` | Mastery that cannot come undone is a certificate, not a habit           |
 
 Both filters were learned against real data and both matter:
 
@@ -271,26 +271,26 @@ drills behind the gate.
 
 ## Where things live
 
-| Concern | Path |
-|---|---|
-| Types | `src/domains/academy/types.ts` |
-| Lesson content | `src/domains/academy/content/<track>/<lesson>.ts` |
-| Track registry | `src/domains/academy/content/tracks.ts` |
-| Role vocabulary | `src/domains/academy/roles.ts` |
-| Champion lesson generator | `src/domains/academy/championLesson.ts`, `championDrills.ts` |
-| Lesson lookup (both kinds) | `src/domains/academy/services/lessonResolver.ts` |
-| Lookup & gating | `src/domains/academy/curriculum.ts` |
-| Drill grading | `src/domains/academy/drills/scoring.ts` |
+| Concern                                  | Path                                                            |
+| ---------------------------------------- | --------------------------------------------------------------- |
+| Types                                    | `src/domains/academy/types.ts`                                  |
+| Lesson content                           | `src/domains/academy/content/<track>/<lesson>.ts`               |
+| Track registry                           | `src/domains/academy/content/tracks.ts`                         |
+| Role vocabulary                          | `src/domains/academy/roles.ts`                                  |
+| Champion lesson generator                | `src/domains/academy/championLesson.ts`, `championDrills.ts`    |
+| Lesson lookup (both kinds)               | `src/domains/academy/services/lessonResolver.ts`                |
+| Lookup & gating                          | `src/domains/academy/curriculum.ts`                             |
+| Drill grading                            | `src/domains/academy/drills/scoring.ts`                         |
 | Placement / recommendation / assignments | `src/domains/academy/{placement,recommendation,assignments}.ts` |
-| Assignment judging | `src/domains/academy/verification.ts` |
-| Assignment lifecycle (Prisma) | `src/domains/academy/services/assignmentService.ts` |
-| Post-sync checker | `src/inngest/functions/academyAssignmentChecker.ts` |
-| Services (Prisma) | `src/domains/academy/services/` |
-| Components | `src/domains/academy/components/` |
-| Routes | `app/(academy)/academy/` |
-| Role path index | `app/(academy)/academy/roles/page.tsx` |
-| Champion Mastery | `app/(academy)/academy/champion/` |
-| API | `app/api/academy/progress/route.ts` |
+| Assignment judging                       | `src/domains/academy/verification.ts`                           |
+| Assignment lifecycle (Prisma)            | `src/domains/academy/services/assignmentService.ts`             |
+| Post-sync checker                        | `src/inngest/functions/academyAssignmentChecker.ts`             |
+| Services (Prisma)                        | `src/domains/academy/services/`                                 |
+| Components                               | `src/domains/academy/components/`                               |
+| Routes                                   | `app/(academy)/academy/`                                        |
+| Role path index                          | `app/(academy)/academy/roles/page.tsx`                          |
+| Champion Mastery                         | `app/(academy)/academy/champion/`                               |
+| API                                      | `app/api/academy/progress/route.ts`                             |
 
 Content decisions and the client-import rule are recorded in
 `docs/adr/ADR-025-academy-content-model.md`.

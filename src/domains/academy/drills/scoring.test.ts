@@ -128,10 +128,13 @@ describe("scoreLesson", () => {
   });
 
   it("passes at the pass ratio and fails below it", () => {
-    const allRight = scoreLesson([quiz, order], [
-      { drillId: "q1", answer: ["a"] },
-      { drillId: "o1", answer: ["x", "y"] },
-    ]);
+    const allRight = scoreLesson(
+      [quiz, order],
+      [
+        { drillId: "q1", answer: ["a"] },
+        { drillId: "o1", answer: ["x", "y"] },
+      ]
+    );
     expect(allRight.score).toBe(100);
     expect(allRight.passed).toBe(true);
 
@@ -146,10 +149,13 @@ describe("scoreLesson", () => {
   });
 
   it("ignores attempts for drills the lesson does not contain", () => {
-    const result = scoreLesson([quiz], [
-      { drillId: "q1", answer: ["a"] },
-      { drillId: "ghost", answer: ["a"] },
-    ]);
+    const result = scoreLesson(
+      [quiz],
+      [
+        { drillId: "q1", answer: ["a"] },
+        { drillId: "ghost", answer: ["a"] },
+      ]
+    );
     expect(result.total).toBe(1);
     expect(result.score).toBe(100);
   });

@@ -15,23 +15,46 @@ interface RawRune {
   slots?: { runes: RawRune[] }[];
 }
 
-const runeIconUrl = (icon: string): string =>
-  `https://ddragon.leagueoflegends.com/cdn/img/${icon}`;
+const runeIconUrl = (icon: string): string => `https://ddragon.leagueoflegends.com/cdn/img/${icon}`;
 
 // Stat shards are not in runesReforged.json — small static catalog (id → label +
 // Community Dragon icon). The rcp-fe-lol-perks image path 404s; the shard icons
 // live under the game assets tree.
 const SHARD_BASE = "https://raw.communitydragon.org/latest/game/assets/perks";
 export const STAT_SHARDS: Record<number, RuneInfo> = {
-  5008: { id: 5008, name: "Adaptive Force", iconUrl: `${SHARD_BASE}/statmods/statmodsadaptiveforceicon.png` },
-  5005: { id: 5005, name: "Attack Speed", iconUrl: `${SHARD_BASE}/statmods/statmodsattackspeedicon.png` },
-  5007: { id: 5007, name: "Ability Haste", iconUrl: `${SHARD_BASE}/statmods/statmodscdrscalingicon.png` },
-  5001: { id: 5001, name: "Health Scaling", iconUrl: `${SHARD_BASE}/statmods/statmodshealthscalingicon.png` },
+  5008: {
+    id: 5008,
+    name: "Adaptive Force",
+    iconUrl: `${SHARD_BASE}/statmods/statmodsadaptiveforceicon.png`,
+  },
+  5005: {
+    id: 5005,
+    name: "Attack Speed",
+    iconUrl: `${SHARD_BASE}/statmods/statmodsattackspeedicon.png`,
+  },
+  5007: {
+    id: 5007,
+    name: "Ability Haste",
+    iconUrl: `${SHARD_BASE}/statmods/statmodscdrscalingicon.png`,
+  },
+  5001: {
+    id: 5001,
+    name: "Health Scaling",
+    iconUrl: `${SHARD_BASE}/statmods/statmodshealthscalingicon.png`,
+  },
   5011: { id: 5011, name: "Health", iconUrl: `${SHARD_BASE}/statmods/statmodshealthplusicon.png` },
   5013: { id: 5013, name: "Tenacity", iconUrl: `${SHARD_BASE}/statmods/statmodstenacityicon.png` },
-  5010: { id: 5010, name: "Move Speed", iconUrl: `${SHARD_BASE}/statmods/statmodsmovementspeedicon.png` },
+  5010: {
+    id: 5010,
+    name: "Move Speed",
+    iconUrl: `${SHARD_BASE}/statmods/statmodsmovementspeedicon.png`,
+  },
   5002: { id: 5002, name: "Armor", iconUrl: `${SHARD_BASE}/statmods/statmodsarmoricon.png` },
-  5003: { id: 5003, name: "Magic Resist", iconUrl: `${SHARD_BASE}/statmods/statmodsmagicresicon.png` },
+  5003: {
+    id: 5003,
+    name: "Magic Resist",
+    iconUrl: `${SHARD_BASE}/statmods/statmodsmagicresicon.png`,
+  },
 };
 
 // Cached catalog of every rune AND rune path (id → name/icon), plus stat shards.

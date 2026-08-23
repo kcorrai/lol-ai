@@ -17,7 +17,7 @@ describe("ProfileRoles", () => {
           match("MIDDLE", false),
           match("MIDDLE", true),
         ]}
-      />,
+      />
     );
 
     const roles = screen.getAllByRole("term").map((el) => el.textContent);

@@ -149,7 +149,7 @@ export async function indexPlayers(players: readonly IndexablePlayer[]): Promise
     return rows.length;
   } catch (err) {
     logger.warn(
-      `[playerIndex] Indexing ${rows.length} players failed: ${err instanceof Error ? err.message : String(err)}`,
+      `[playerIndex] Indexing ${rows.length} players failed: ${err instanceof Error ? err.message : String(err)}`
     );
     return 0;
   }
@@ -166,7 +166,7 @@ export async function indexPlayers(players: readonly IndexablePlayer[]): Promise
  */
 export async function searchPlayers(
   rawQuery: string,
-  opts: { region?: string; limit?: number } = {},
+  opts: { region?: string; limit?: number } = {}
 ): Promise<IndexedPlayer[]> {
   const query = parseSearchQuery(rawQuery);
   if (!query) return [];

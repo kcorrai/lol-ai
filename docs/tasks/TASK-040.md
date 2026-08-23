@@ -31,18 +31,18 @@ Counter Pick feature'Ä±nÄ±n iÅŸ mantÄ±ÄŸÄ±nÄ± yaz. AI Ã§aÄŸrÄ
 ### Servis (`generalCounterService.ts`)
 
 ```typescript
-import { getCached, setCached, buildCacheKey } from '@/lib/ai/aiCache';
-import { aiClient } from '@/lib/ai/client';
-import { buildCounterSystemPrompt, buildCounterUserPrompt } from '../prompts/counterPrompt';
-import { counterResultSchema } from '../types/counter.types';
-import type { GeneralCounterResult } from '../types/counter.types';
-import type { Position } from '@/types/common.types';
+import { getCached, setCached, buildCacheKey } from "@/lib/ai/aiCache";
+import { aiClient } from "@/lib/ai/client";
+import { buildCounterSystemPrompt, buildCounterUserPrompt } from "../prompts/counterPrompt";
+import { counterResultSchema } from "../types/counter.types";
+import type { GeneralCounterResult } from "../types/counter.types";
+import type { Position } from "@/types/common.types";
 
 export async function getGeneralCounters(
   champion: string,
   role: Position
 ): Promise<GeneralCounterResult> {
-  const cacheKey = buildCacheKey('counter', { champion: champion.toLowerCase(), role });
+  const cacheKey = buildCacheKey("counter", { champion: champion.toLowerCase(), role });
 
   const cached = await getCached(cacheKey);
   if (cached) return cached as GeneralCounterResult;
@@ -53,7 +53,7 @@ export async function getGeneralCounters(
   });
 
   const parsed = counterResultSchema.parse(JSON.parse(result.content));
-  await setCached(cacheKey, 'counter', parsed, 14);
+  await setCached(cacheKey, "counter", parsed, 14);
   return parsed;
 }
 ```
@@ -63,6 +63,7 @@ export async function getGeneralCounters(
 `buildCounterSystemPrompt()`: "Sen bir League of Legends uzman koÃ§usun..." framing.
 
 `buildCounterUserPrompt(champion, role)`:
+
 - `topCounters` (5 adet), `easyCounters` (3 adet), `soloQueueCounters` (3 adet) iste
 - Her counter iÃ§in: `champion`, `difficulty`, `reasonWhy`, `laneAdvantage`, `watchOut`, `buildHint`, `tier`
 - `tips`: genel 3-5 ipucu listesi
@@ -94,4 +95,3 @@ export const generalCounterResultSchema = z.object({ ... });
 - `aiClient.complete()` mevcut `src/lib/ai/client.ts` provider'Ä±nÄ± kullanÄ±yor. Yeni AI baÄŸlantÄ±sÄ± aÃ§ma.
 - JSON parse hatasÄ± durumunda `src/lib/ai/responseParser.ts`'deki mevcut helper'Ä± incele â€” benzer pattern kullan.
 - Cache TTL 14 gÃ¼n: bir League patch'i yaklaÅŸÄ±k 14 gÃ¼ndÃ¼r.
-

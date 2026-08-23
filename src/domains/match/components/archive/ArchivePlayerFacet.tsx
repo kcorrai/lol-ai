@@ -75,7 +75,9 @@ export function ArchivePlayerFacet({
 
       {draft.playerPuuid && (
         <div>
-          <FacetLabel>Which side {selected ? `${selected.gameName} was on` : "they were on"}</FacetLabel>
+          <FacetLabel>
+            Which side {selected ? `${selected.gameName} was on` : "they were on"}
+          </FacetLabel>
           <div className="flex gap-1">
             {SIDES.map((side) => (
               <button

@@ -2,7 +2,7 @@
 
 Design a single, full-length landing page artboard (desktop, 1440px wide) for
 **LaneIQ / LoL AI Coach**. This is a redesign of a page that already ships, so it
-is a *recomposition*, not a blank page: the visual system is fixed, the content
+is a _recomposition_, not a blank page: the visual system is fixed, the content
 inventory is fixed, the arrangement and the impact are yours.
 
 ---
@@ -54,7 +54,7 @@ Data semantics only — never a second brand colour
 ```
 
 **The rationing rule is the most important rule in this system.** Acid lime marks
-*the one thing that matters on a given screen* — a single accent word in a
+_the one thing that matters on a given screen_ — a single accent word in a
 headline, the primary CTA, the one plan being recommended, a delta that moved. If
 two things on a screen are lime, the screen is wrong. Everything else lives on the
 ink ground and the fg ramp. No lime gradients, no lime washes, no lime headlines.
@@ -100,7 +100,7 @@ Nothing bounces except deliberate scoreboard events. Restrained.
 for the hero and the strip immediately beneath it you may be radical: a different
 compositional idea, 3D, layered depth, motion, an unexpected crop or scale
 relationship, type used as image. It must still be built from the locked palette,
-the locked typefaces and the chamfer language — but its *composition* need not
+the locked typefaces and the chamfer language — but its _composition_ need not
 resemble what ships today (splash washed from the left, headline bottom-left, form
 under it), which is a competent default and reads as one. Push it. The job is to
 make the first screen unforgettable while still looking like the same product two
@@ -128,15 +128,15 @@ two, annotate it.
 
 3. **Sample report** — the product's payload, shown rather than described:
    - three severity-graded insight cards: `CRITICAL / No vision before the river /
-     62% of crossings unwarded · 11 deaths`; `HIGH / Objectives start without prio
-     / 7 of 12 drake attempts, 0 lanes pushed`; `MEDIUM / Tilt queue / Requeue
-     under 120s · 27% win rate`
+62% of crossings unwarded · 11 deaths`; `HIGH / Objectives start without prio
+/ 7 of 12 drake attempts, 0 lanes pushed`; `MEDIUM / Tilt queue / Requeue
+under 120s · 27% win rate`
    - four labelled meters: Clear speed 78, Gank conversion 71, Objective setup 41,
      Vision before fights 23 — the low one is the whole point, make it read as a
      wound
    - three numbered actions with LP deltas: `01 Path to the objective you can
-     contest, not enemy blue. +9 LP`; `02 Ward the pit 45s before spawn, not at
-     spawn. +6 LP`; `03 No requeue inside 5 minutes of a loss. +3 LP`
+contest, not enemy blue. +9 LP`; `02 Ward the pit 45s before spawn, not at
+spawn. +6 LP`; `03 No requeue inside 5 minutes of a loss. +3 LP`
 
 4. **Champion pool audit.** Heading "CHAMPION POOL AUDIT" with the right-aligned
    mono note "Keep three. Bench the rest." A ranked list of the player's champions

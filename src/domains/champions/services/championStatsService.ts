@@ -6,7 +6,7 @@ import type { QueueType } from "@prisma/client";
 export interface MasterySubScores {
   experience: number; // 0-100: log-scaled games played
   performance: number; // 0-100: winRate + KDA combined
-  farm: number;       // 0-100: CS/min normalized
+  farm: number; // 0-100: CS/min normalized
 }
 
 export type ChampionPoolEntry = {
@@ -15,11 +15,11 @@ export type ChampionPoolEntry = {
   imageUrl: string;
   gamesPlayed: number;
   wins: number;
-  winRate: number;       // 0–100, rounded
-  avgKda: number;        // rounded to 1 decimal
+  winRate: number; // 0–100, rounded
+  avgKda: number; // rounded to 1 decimal
   avgCsPerMinute: number; // rounded to 1 decimal
   isBest: boolean;
-  masteryScore: number;        // 0–100 composite
+  masteryScore: number; // 0–100 composite
   masterySubScores: MasterySubScores;
 };
 
@@ -124,7 +124,12 @@ export async function getChampionPool(
     const winRate = Math.round((s.wins / s.games) * 100);
     const avgKda = Math.round((s.kdaSum / s.games) * 10) / 10;
     const avgCsPerMinute = Math.round((s.csSum / s.games) * 10) / 10;
-    const { score: masteryScore, sub: masterySubScores } = computeMasteryScore(s.games, winRate, avgKda, avgCsPerMinute);
+    const { score: masteryScore, sub: masterySubScores } = computeMasteryScore(
+      s.games,
+      winRate,
+      avgKda,
+      avgCsPerMinute
+    );
     return {
       championId: cid,
       championName: s.name,

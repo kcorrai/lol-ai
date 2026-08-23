@@ -28,19 +28,19 @@ export interface DetectedHabit {
 // Exported so the career timeline can name a habit the same way this service does —
 // a second copy of these labels is a second copy that drifts.
 export const HABIT_META: Record<string, { displayName: string }> = {
-  low_vision:        { displayName: "Low Vision Score" },
-  high_deaths:       { displayName: "High Death Count" },
-  low_cs:            { displayName: "Low CS Per Minute" },
-  late_game_throw:   { displayName: "Late Game Throw" },
-  tilt_prone:        { displayName: "Tilt Prone" },
+  low_vision: { displayName: "Low Vision Score" },
+  high_deaths: { displayName: "High Death Count" },
+  low_cs: { displayName: "Low CS Per Minute" },
+  late_game_throw: { displayName: "Late Game Throw" },
+  tilt_prone: { displayName: "Tilt Prone" },
   objective_neglect: { displayName: "Objective Neglect" },
 };
 
 // weakestArea values coming from PerformanceSnapshot → habit type mapping
 const WEAK_AREA_TO_HABIT: Record<string, string> = {
-  vision_control:    "low_vision",
-  death_reduction:   "high_deaths",
-  cs_farming:        "low_cs",
+  vision_control: "low_vision",
+  death_reduction: "high_deaths",
+  cs_farming: "low_cs",
 };
 
 function severityFor(weekCount: number): HabitSeverity {
@@ -88,9 +88,7 @@ async function detectCandidates(
   }
 
   // 2. Persistent tilt
-  const tiltScores = snapshots
-    .map((s) => Number(s.tiltScore ?? 0))
-    .filter((v) => v > 0);
+  const tiltScores = snapshots.map((s) => Number(s.tiltScore ?? 0)).filter((v) => v > 0);
   if (tiltScores.length >= 2) {
     const avg = tiltScores.reduce((a, b) => a + b, 0) / tiltScores.length;
     if (avg > 60) {
@@ -218,10 +216,7 @@ export async function detectAndPersistHabits(riotAccountId: string): Promise<voi
 
   const candidates = await detectCandidates(snapshots);
   await upsertHabits(riotAccountId, candidates);
-  await resolveStaleHabits(
-    riotAccountId,
-    new Set(candidates.map((c) => c.habitType))
-  );
+  await resolveStaleHabits(riotAccountId, new Set(candidates.map((c) => c.habitType)));
 }
 
 export async function getActiveHabits(riotAccountId: string): Promise<DetectedHabit[]> {

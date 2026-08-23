@@ -27,7 +27,9 @@ function ProgressBar({ target }: { target: PlanProgress }) {
           )}
         >
           {achieved ? (
-            <><CheckCircle2 className="h-3 w-3" /> Completed</>
+            <>
+              <CheckCircle2 className="h-3 w-3" /> Completed
+            </>
           ) : onTrack ? (
             "↑ On Track"
           ) : (
@@ -45,8 +47,20 @@ function ProgressBar({ target }: { target: PlanProgress }) {
         />
       </div>
       <div className="flex justify-between text-[11px] text-text-muted">
-        <span>Current: <span className="font-medium text-text">{target.current}{target.unit ?? ""}</span></span>
-        <span>Goal: <span className="font-medium text-text">{target.goal}{target.unit ?? ""}</span></span>
+        <span>
+          Current:{" "}
+          <span className="font-medium text-text">
+            {target.current}
+            {target.unit ?? ""}
+          </span>
+        </span>
+        <span>
+          Goal:{" "}
+          <span className="font-medium text-text">
+            {target.goal}
+            {target.unit ?? ""}
+          </span>
+        </span>
       </div>
     </div>
   );
@@ -64,9 +78,14 @@ export function ImprovementPlanWidget({ riotAccountId }: ImprovementPlanWidgetPr
     return (
       <div className="relative overflow-hidden rounded-2xl border border-border bg-surface p-6 text-center">
         {/* Ryze splash — scholar/learning theme */}
-        <Image fill alt="" aria-hidden src={championSplashUrl("Ryze")}
+        <Image
+          fill
+          alt=""
+          aria-hidden
+          src={championSplashUrl("Ryze")}
           className="object-cover object-[70%_20%] opacity-[0.13]"
-          style={{ filter: "blur(3px) saturate(0.4)" }} />
+          style={{ filter: "blur(3px) saturate(0.4)" }}
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/85 to-surface/60" />
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <div className="h-48 w-64 rounded-full bg-accent/10 blur-3xl" />
@@ -102,14 +121,18 @@ export function ImprovementPlanWidget({ riotAccountId }: ImprovementPlanWidgetPr
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-text-muted" />
-            <p className="text-xs font-semibold uppercase tracking-widest text-text-muted">Improvement Plan</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-text-muted">
+              Improvement Plan
+            </p>
           </div>
           <span className="rounded-full border border-border bg-surface-2 px-2.5 py-0.5 text-xs text-text-muted">
             Expired
           </span>
         </div>
         <div className="mb-5 space-y-4">
-          {plan.targets.map((t) => <ProgressBar key={t.metric} target={t} />)}
+          {plan.targets.map((t) => (
+            <ProgressBar key={t.metric} target={t} />
+          ))}
         </div>
         <button
           onClick={() => generate.mutate()}
@@ -138,7 +161,9 @@ export function ImprovementPlanWidget({ riotAccountId }: ImprovementPlanWidgetPr
           </div>
         </div>
         <div className="text-right">
-          <p className="text-lg font-bold text-accent">{achievedCount}/{plan.targets.length}</p>
+          <p className="text-lg font-bold text-accent">
+            {achievedCount}/{plan.targets.length}
+          </p>
           <p className="text-[11px] text-text-muted">goals</p>
         </div>
       </div>
@@ -153,7 +178,9 @@ export function ImprovementPlanWidget({ riotAccountId }: ImprovementPlanWidgetPr
       )}
 
       <div className="mb-4 space-y-4">
-        {plan.targets.map((t) => <ProgressBar key={t.metric} target={t} />)}
+        {plan.targets.map((t) => (
+          <ProgressBar key={t.metric} target={t} />
+        ))}
       </div>
 
       {plan.allAchieved && (

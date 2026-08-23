@@ -20,13 +20,39 @@ const OLD_PUUID = "puuid-before-riot-reissued-it";
 function history(): void {
   vi.mocked(prisma.matchParticipant.findMany)
     .mockResolvedValueOnce([
-      { matchId: "m1", teamId: 100, puuid: CURRENT_PUUID, match: { gameStart: new Date(2026, 0, 2) } },
+      {
+        matchId: "m1",
+        teamId: 100,
+        puuid: CURRENT_PUUID,
+        match: { gameStart: new Date(2026, 0, 2) },
+      },
       { matchId: "m2", teamId: 100, puuid: OLD_PUUID, match: { gameStart: new Date(2026, 0, 1) } },
     ] as never)
     .mockResolvedValueOnce([
-      { matchId: "m1", teamId: 100, puuid: "puuid-mate", gameName: "Mate", tagLine: "TR1", won: true },
-      { matchId: "m2", teamId: 100, puuid: "puuid-mate", gameName: "Mate", tagLine: "TR1", won: false },
-      { matchId: "m1", teamId: 100, puuid: "puuid-mate", gameName: "Mate", tagLine: "TR1", won: true },
+      {
+        matchId: "m1",
+        teamId: 100,
+        puuid: "puuid-mate",
+        gameName: "Mate",
+        tagLine: "TR1",
+        won: true,
+      },
+      {
+        matchId: "m2",
+        teamId: 100,
+        puuid: "puuid-mate",
+        gameName: "Mate",
+        tagLine: "TR1",
+        won: false,
+      },
+      {
+        matchId: "m1",
+        teamId: 100,
+        puuid: "puuid-mate",
+        gameName: "Mate",
+        tagLine: "TR1",
+        won: true,
+      },
     ] as never);
 }
 

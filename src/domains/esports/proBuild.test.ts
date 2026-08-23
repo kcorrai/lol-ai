@@ -50,11 +50,7 @@ function participant(spec: PlayerSpec, participantId: number): GameParticipant {
   };
 }
 
-function side(
-  sideName: "blue" | "red",
-  players: PlayerSpec[],
-  won: boolean
-): GameTeamStats {
+function side(sideName: "blue" | "red", players: PlayerSpec[], won: boolean): GameTeamStats {
   return {
     side: sideName,
     teamId: `team-${sideName}`,
@@ -114,19 +110,13 @@ describe("aggregateProBuilds — items", () => {
   it("drops a component someone happened to be holding when the game ended", () => {
     // A B. F. Sword costs 1300 — well over the gold bar — and is still not part
     // of how anyone builds the champion.
-    const builds = aggregateProBuilds(
-      [game({ blue: [{ ...AZIR, items: [6631, 1038] }] })],
-      GOLD
-    );
+    const builds = aggregateProBuilds([game({ blue: [{ ...AZIR, items: [6631, 1038] }] })], GOLD);
 
     expect(builds.Azir.items.map((item) => item.itemId)).toEqual([6631]);
   });
 
   it("drops an elixir, which costs enough and builds into nothing", () => {
-    const builds = aggregateProBuilds(
-      [game({ blue: [{ ...AZIR, items: [6631, 2140] }] })],
-      GOLD
-    );
+    const builds = aggregateProBuilds([game({ blue: [{ ...AZIR, items: [6631, 2140] }] })], GOLD);
 
     expect(builds.Azir.items.map((item) => item.itemId)).toEqual([6631]);
   });

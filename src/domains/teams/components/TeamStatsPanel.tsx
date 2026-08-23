@@ -57,7 +57,9 @@ export function TeamStatsPanel({ teamId }: TeamStatsPanelProps) {
 
       {/* Chart */}
       <div className="rounded-xl border border-border bg-surface p-4">
-        <p className="mb-3 text-xs font-bold uppercase tracking-wider text-text-muted/60">Team Win Rate Trend</p>
+        <p className="mb-3 text-xs font-bold uppercase tracking-wider text-text-muted/60">
+          Team Win Rate Trend
+        </p>
         {isLoading && (
           <div className="flex h-40 items-center justify-center">
             <Loader2 className="h-5 w-5 animate-spin text-text-muted" />
@@ -79,14 +81,23 @@ export function TeamStatsPanel({ teamId }: TeamStatsPanelProps) {
             .map((member) => {
               const last = member.points.at(-1);
               return (
-                <div key={member.gameName} className="rounded-xl border border-border bg-surface p-3">
+                <div
+                  key={member.gameName}
+                  className="rounded-xl border border-border bg-surface p-3"
+                >
                   <div className="mb-2 flex items-center justify-between">
                     <p className="text-xs font-semibold text-text">{member.gameName}</p>
                     {last && (
-                      <span className={cn(
-                        "text-xs font-bold",
-                        last.winRate >= 55 ? "text-success" : last.winRate < 45 ? "text-danger" : "text-text-muted"
-                      )}>
+                      <span
+                        className={cn(
+                          "text-xs font-bold",
+                          last.winRate >= 55
+                            ? "text-success"
+                            : last.winRate < 45
+                              ? "text-danger"
+                              : "text-text-muted"
+                        )}
+                      >
                         {last.winRate}%
                       </span>
                     )}

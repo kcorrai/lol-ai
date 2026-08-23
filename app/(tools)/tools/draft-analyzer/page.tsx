@@ -115,7 +115,9 @@ export default async function DraftAnalyzerPage({ searchParams }: PageProps) {
 
       {evaluation && (
         <>
-          <div className="mb-6 text-sm text-text-muted">Patch {formatGamePatch(evaluation.patch)}</div>
+          <div className="mb-6 text-sm text-text-muted">
+            Patch {formatGamePatch(evaluation.patch)}
+          </div>
           <DraftResults evaluation={evaluation} />
 
           <ToolUpgradeNudge message="Go Pro for AI coaching on YOUR games — how your real drafts play out, your worst matchups, and a step-by-step climb plan." />

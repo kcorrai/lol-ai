@@ -39,9 +39,7 @@ export function UserMenu() {
         <div className="absolute right-0 top-full z-50 mt-1 w-44 overflow-hidden rounded-md border border-border bg-surface shadow-lg">
           <div className="border-b border-border px-3 py-2">
             <p className="truncate text-xs font-medium text-text">{displayName}</p>
-            {user?.email && (
-              <p className="truncate text-xs text-text-muted">{user.email}</p>
-            )}
+            {user?.email && <p className="truncate text-xs text-text-muted">{user.email}</p>}
           </div>
           <div className="p-1">
             <button

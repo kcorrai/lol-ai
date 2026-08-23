@@ -40,9 +40,9 @@ interface ChampionSelectorProps {
   onChange: (champion: string | null) => void;
   placeholder?: string;
   disabled?: boolean;
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
   filterRole?: Position;
-  excludeChampions?: string[];  // bu listede olanlarÄ± gÃ¶sterme (duplicate prevention)
+  excludeChampions?: string[]; // bu listede olanlarÄ± gÃ¶sterme (duplicate prevention)
   className?: string;
 }
 ```
@@ -61,7 +61,7 @@ interface TeamSelection {
 interface RoleBasedTeamPickerProps {
   value: TeamSelection;
   onChange: (team: TeamSelection) => void;
-  label?: string;           // "Blue Team" / "Red Team"
+  label?: string; // "Blue Team" / "Red Team"
   excludeChampions?: string[]; // diÄŸer takÄ±mÄ±n seÃ§imleri
 }
 ```
@@ -69,9 +69,10 @@ interface RoleBasedTeamPickerProps {
 ### Veri Ã‡ekme
 
 `/api/champions` endpoint'i zaten var. `useQuery` ile champions listesi Ã§ek:
+
 ```typescript
-queryKey: ['champions']
-staleTime: Infinity  // champion listesi deÄŸiÅŸmez
+queryKey: ["champions"];
+staleTime: Infinity; // champion listesi deÄŸiÅŸmez
 ```
 
 ---
@@ -89,4 +90,3 @@ staleTime: Infinity  // champion listesi deÄŸiÅŸmez
 - Bu component F1, F2, F3, F7 task'larÄ±ndan Ã¶nce tamamlanmalÄ± â€” tÃ¼m sayfalar buna baÄŸÄ±mlÄ±.
 - `size` prop: `sm` = 32px icon, `md` = 40px icon, `lg` = 48px icon.
 - SeÃ§im temizleme: `value` doluyken "Ã—" butonu gÃ¶ster, tÄ±klayÄ±nca `onChange(null)` Ã§aÄŸÄ±r.
-

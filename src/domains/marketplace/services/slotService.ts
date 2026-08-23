@@ -67,11 +67,7 @@ export async function freeSlots(query: SlotQuery): Promise<Slot[]> {
 }
 
 /** Bookings that still hold time in the window. */
-async function busyIntervals(
-  coachProfileId: string,
-  from: Date,
-  to: Date
-): Promise<Interval[]> {
+async function busyIntervals(coachProfileId: string, from: Date, to: Date): Promise<Interval[]> {
   const rows = await prisma.booking.findMany({
     where: {
       coachProfileId,
@@ -83,8 +79,9 @@ async function busyIntervals(
   });
 
   return rows
-    .filter((row): row is { startTime: Date; endTime: Date } =>
-      row.startTime !== null && row.endTime !== null
+    .filter(
+      (row): row is { startTime: Date; endTime: Date } =>
+        row.startTime !== null && row.endTime !== null
     )
     .map((row) => ({ start: row.startTime, end: row.endTime }));
 }

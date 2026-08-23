@@ -81,7 +81,11 @@ export function computeFreeSlots(request: SlotRequest): Interval[] {
   for (const window of free) {
     // Steps are aligned to the window's own start rather than to the hour, so a
     // coach whose day begins at 18:15 is offered 18:15 and not 18:30.
-    for (let start = window.start.getTime(); start + durationMs <= window.end.getTime(); start += stepMs) {
+    for (
+      let start = window.start.getTime();
+      start + durationMs <= window.end.getTime();
+      start += stepMs
+    ) {
       if (start < earliest) continue;
       if (start < from.getTime() || start + durationMs > to.getTime()) continue;
       slots.push({ start: new Date(start), end: new Date(start + durationMs) });
@@ -117,9 +121,7 @@ export function openWindows(input: {
     if (exception?.isBlocked && exception.startMinute === null) continue;
     if (exception?.isBlocked && exception.startMinute === undefined) continue;
 
-    const ranges = exception
-      ? overrideRanges(exception)
-      : rulesForWeekday(rules, weekdayOf(day));
+    const ranges = exception ? overrideRanges(exception) : rulesForWeekday(rules, weekdayOf(day));
 
     for (const range of ranges) {
       if (range.endMinute <= range.startMinute) continue;

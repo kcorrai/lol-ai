@@ -34,17 +34,20 @@ Build the authenticated application shell (sidebar, topbar, layout) and the main
 ### App Shell Layout
 
 `app/(app)/layout.tsx` — Server Component wrapper
+
 - Fetches session (via `getServerSession`)
 - Fetches user's connected accounts (for account selector)
 - Passes data to client `AppShell` component
 
 `src/components/layout/AppShell.tsx` — Client Component
+
 - Manages sidebar collapsed state (Zustand `useUIStore`)
 - Renders `Sidebar`, `TopBar`, and `{children}` content
 
 ### Zustand UI Store
 
 `src/lib/stores/uiStore.ts`:
+
 ```typescript
 interface UIStore {
   sidebarCollapsed: boolean;
@@ -53,11 +56,13 @@ interface UIStore {
   setActiveRiotAccountId: (id: string) => void;
 }
 ```
+
 Persist `sidebarCollapsed` to localStorage via Zustand persist middleware.
 
 ### Dashboard Page
 
 `app/(app)/dashboard/page.tsx` — Server Component:
+
 - If no riot accounts: render `OnboardingEmptyState`
 - If accounts exist: render dashboard with ranked card + recent matches + report CTA
 
@@ -66,6 +71,7 @@ Persist `sidebarCollapsed` to localStorage via Zustand persist middleware.
 ## Components to Build
 
 `src/components/layout/`:
+
 - `AppShell.tsx`
 - `Sidebar.tsx`
 - `SidebarNavItem.tsx`
@@ -75,6 +81,7 @@ Persist `sidebarCollapsed` to localStorage via Zustand persist middleware.
 - `UserMenu.tsx`
 
 `src/domains/dashboard/components/` (create this domain):
+
 - `DashboardWelcomeCard.tsx` — personalized greeting with rank
 - `RecentMatchesSummary.tsx` — last 5 matches mini-list
 - `CoachingReportCTA.tsx` — CTA card if no recent report

@@ -29,10 +29,22 @@ export const sessionDiscipline: Lesson = {
       caption: "A session rule that survives contact",
       head: ["Rule", "Value", "Why this one"],
       rows: [
-        ["Games per session", "Three to five", "Beyond five, most players' win rate drops measurably"],
-        ["Stop on", "Three losses, or two in a row after a break", "The streak is the signal, not the total"],
+        [
+          "Games per session",
+          "Three to five",
+          "Beyond five, most players' win rate drops measurably",
+        ],
+        [
+          "Stop on",
+          "Three losses, or two in a row after a break",
+          "The streak is the signal, not the total",
+        ],
         ["Break every", "Two games, five minutes", "Long enough for the tilt effects to decay"],
-        ["End the day on", "A game you played well — win or lose", "Ending on a bad one is what makes tomorrow's first game worse"],
+        [
+          "End the day on",
+          "A game you played well — win or lose",
+          "Ending on a bad one is what makes tomorrow's first game worse",
+        ],
       ],
     },
     { kind: "gate" },
@@ -99,7 +111,8 @@ export const sessionDiscipline: Lesson = {
       options: [
         {
           id: "a",
-          label: "LP is an outcome you do not control on the day, so a session judged on it never ends on purpose",
+          label:
+            "LP is an outcome you do not control on the day, so a session judged on it never ends on purpose",
           explain:
             "Correct. Judged on LP, a session ends when a number is reached — which means it ends late on a bad day and early on a good one. Judged on decisions, it ends when you planned, which is the only version that is repeatable.",
           correct: true,

@@ -9,12 +9,7 @@ import { notify } from "@/domains/marketplace/services/notificationService";
 // "accept" does not need to be told they accepted. The ones here are the moves
 // somebody finds out about from us or not at all.
 
-const WORTH_TELLING: readonly BookingStatus[] = [
-  "CONFIRMED",
-  "DECLINED",
-  "EXPIRED",
-  "DELIVERED",
-];
+const WORTH_TELLING: readonly BookingStatus[] = ["CONFIRMED", "DECLINED", "EXPIRED", "DELIVERED"];
 
 /** Tell whoever was not the one who acted. Swallows its own failures. */
 export async function notifyForMove(
@@ -37,7 +32,12 @@ export async function notifyForMove(
 
   switch (to) {
     case "CONFIRMED":
-      return notify({ type: "booking.accepted", bookingId, studentId: booking.studentId, coachName });
+      return notify({
+        type: "booking.accepted",
+        bookingId,
+        studentId: booking.studentId,
+        coachName,
+      });
     case "DECLINED":
       return notify({
         type: "booking.declined",
@@ -47,8 +47,18 @@ export async function notifyForMove(
         reason: reason ?? "No reason given.",
       });
     case "EXPIRED":
-      return notify({ type: "booking.expired", bookingId, studentId: booking.studentId, coachName });
+      return notify({
+        type: "booking.expired",
+        bookingId,
+        studentId: booking.studentId,
+        coachName,
+      });
     case "DELIVERED":
-      return notify({ type: "booking.delivered", bookingId, studentId: booking.studentId, coachName });
+      return notify({
+        type: "booking.delivered",
+        bookingId,
+        studentId: booking.studentId,
+        coachName,
+      });
   }
 }

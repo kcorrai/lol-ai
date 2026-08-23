@@ -29,10 +29,26 @@ export const tempoAndPriority: Lesson = {
       caption: "Reading priority in one look",
       head: ["The lane looks like", "Who has priority", "What it is worth"],
       rows: [
-        ["Your wave is crashing into their turret", "You", "Ten to fifteen seconds anywhere on the map"],
-        ["The wave is frozen outside your turret", "Them", "You are stuck; the freeze is doing that on purpose"],
-        ["Both waves even in the middle", "Whoever shoves first", "A race — and shoving costs you a wave if they answer"],
-        ["You are behind and under turret", "Them, badly", "Do not leave; farm and wait for the wave to reset"],
+        [
+          "Your wave is crashing into their turret",
+          "You",
+          "Ten to fifteen seconds anywhere on the map",
+        ],
+        [
+          "The wave is frozen outside your turret",
+          "Them",
+          "You are stuck; the freeze is doing that on purpose",
+        ],
+        [
+          "Both waves even in the middle",
+          "Whoever shoves first",
+          "A race — and shoving costs you a wave if they answer",
+        ],
+        [
+          "You are behind and under turret",
+          "Them, badly",
+          "Do not leave; farm and wait for the wave to reset",
+        ],
       ],
     },
     {

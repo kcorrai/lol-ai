@@ -58,11 +58,11 @@ TASK-015  Beta Launch Checklist      ← tüm task'lar tamamlandıktan sonra
 
 Bağımlılıklar karşılandığında şu task'lar paralel yürütülebilir:
 
-| Paralel Grup | Task'lar | Koşul | Not |
-|---|---|---|---|
-| ~~Grup A~~ | ~~002 + 003~~ | ~~TASK-001 sonrası~~ | ❌ **Geçersiz** — 002, 003'ün migrate çıktısına bağımlı |
-| Grup B | 006 + 007 + 010 | TASK-005 tamamlandıktan sonra | ✅ Geçerli |
-| Grup C | 011 + 013 | TASK-002, 003 tamamlandıktan sonra | ✅ Geçerli |
+| Paralel Grup | Task'lar        | Koşul                              | Not                                                     |
+| ------------ | --------------- | ---------------------------------- | ------------------------------------------------------- |
+| ~~Grup A~~   | ~~002 + 003~~   | ~~TASK-001 sonrası~~               | ❌ **Geçersiz** — 002, 003'ün migrate çıktısına bağımlı |
+| Grup B       | 006 + 007 + 010 | TASK-005 tamamlandıktan sonra      | ✅ Geçerli                                              |
+| Grup C       | 011 + 013       | TASK-002, 003 tamamlandıktan sonra | ✅ Geçerli                                              |
 
 **Tek geliştirici ortamında:** Paralel çalışma önerilmez. Sıralı ilerle, bağımlılıkları bloke eden task'ı önce bitir.
 
@@ -79,6 +79,7 @@ Bu soruya verilen cevap dışındaki hiçbir dosyaya dokunulmaz. Başka bir dosy
 Claude Code'un context'i şişerse analiz kalitesi düşer ve yanlış kararlar alınır.
 
 Kurallar:
+
 - Her task için **yeni bir Claude Code oturumu** başlatılır.
 - Önceki task'ın konuşma geçmişi aktarılmaz.
 - Oturum başlangıcında sadece o task'a ait bağlam aktarılır (aşağıdaki Section 4'te açıklandı).
@@ -102,10 +103,12 @@ Tek istisna: `package.json` — yeni bağımlılık eklenmesi gerekiyorsa ve tas
 ### 2.2 Kapsam Kuralı
 
 Task dosyası ne söylüyorsa o yapılır. Task şunu söylüyor:
+
 - "Kullanıcı X yapabilmeli" → sadece bunu implement et
 - "Y bileşeni oluştur" → sadece bunu oluştur
 
 Task dosyası şunu söylemiyorsa:
+
 - Bir şeyi "daha iyi hale getirmek" için dokunma
 - "Şu zaten yanlış görünüyor" diyerek düzeltme
 - Gelecekteki task'a ait mantığı ekleme ("bir sonraki task için hazırlık yapalım" yasak)
@@ -113,6 +116,7 @@ Task dosyası şunu söylemiyorsa:
 ### 2.3 Refactor Yasağı
 
 Bir task'ta refactor görürsen:
+
 1. Dur.
 2. Refactor'ı ayrı bir task olarak `docs/tasks/TASK-0XX-refactor-yyy.md` olarak yaz.
 3. Mevcut task'a devam et.
@@ -124,6 +128,7 @@ Refactor gerekliyse, o ayrı task açılır, backlog'a eklenir, sırasında yap�
 Task sırasında şunu fark edersen: "Bu mimari kararı değiştirmem gerekiyor" —
 
 Bu bir mimari karar gerektiriyor demektir. Şunları yap:
+
 1. Task'ı durdur.
 2. `docs/adr/ADR-XXX-title.md` yaz (Architecture Decision Record).
 3. Kararı gözden geçir.
@@ -173,6 +178,7 @@ Kural: En küçük değişiklikle acceptance criteria'yı karşıla.
 ```
 
 Sıra:
+
 1. Önce tip tanımları (`types.ts` dosyaları)
 2. Sonra veri katmanı (Prisma repository / db calls)
 3. Sonra servis katmanı (iş mantığı)
@@ -197,6 +203,7 @@ Her madde için:
 ```
 
 Manuel doğrulama akışı:
+
 1. `npm run dev` çalıştır
 2. Task'ın ana akışını elle test et (happy path)
 3. Hata durumlarını test et (geçersiz input, API hatası vb.)
@@ -226,6 +233,7 @@ Manuel doğrulama akışı:
 ### Adım 6 — Review ve Geçiş
 
 Merge sonrası:
+
 - `develop` branch'inde smoke test yap (deploy preview var mı? varsa test et)
 - Bir sonraki task'ı başlatmadan önce 15 dakika bekle (mental ayrışma)
 - Sonraki task'ın bağımlılıkları hazır mı kontrol et
@@ -254,7 +262,7 @@ Bu task'ta sadece şu dosyalara dokunacağız:
 
 Bu task'ta yapılmayacaklar:
 - Refactor
-- Mimari değişiklik  
+- Mimari değişiklik
 - Başka task'ların dosyaları
 
 Acceptance criteria:
@@ -269,6 +277,7 @@ Bu promptu her oturum başında kullan. Önceki oturumdan referans verme.
 ### 4.2 Context Şişmesini Önleme
 
 Context şişmesinin işaretleri:
+
 - Claude daha önce söylediği şeyin aksini söylüyor
 - Claude var olmayan fonksiyonlara reference yapıyor
 - Claude "haydi her şeyi yeniden yapılandıralım" diyor
@@ -302,12 +311,14 @@ Claude "bu işe yarar" dedi diye çalıştırma. Oku. Anla. Sonra uygula.
 ### 4.5 Ne Zaman Claude'a Sorulur, Ne Zaman Sorulmaz
 
 **Sorulur:**
+
 - "Bu Prisma query'i nasıl optimize ederim?"
 - "Bu Zod schema doğru mu?"
 - "Bu test case'i eksik mi?"
 - "Bu error boundary nasıl yapılandırılır?"
 
 **Sorulmaz:**
+
 - "Bu mimariyi nasıl değiştirelim?"  
   → `docs/ARCHITECTURE.md`'ye bak
 - "Hangi task sırasıyla yapılmalı?"  
@@ -332,6 +343,7 @@ main          ← production (sadece release merge'leri)
 ```
 
 Branch kuralları:
+
 - `main`'e direkt commit yasak. Her zaman PR.
 - `develop`'a direkt commit yasak. Her zaman feature branch → PR.
 - Feature branch isimlendirmesi: `feature/TASK-001-project-bootstrap`
@@ -340,6 +352,7 @@ Branch kuralları:
 ### 5.2 Commit Standardı
 
 Format (Conventional Commits):
+
 ```
 <type>(<scope>): <kısa açıklama>
 
@@ -349,6 +362,7 @@ refs TASK-XXX
 ```
 
 Type listesi:
+
 ```
 feat     → yeni özellik
 fix      → bug fix
@@ -359,6 +373,7 @@ refactor → davranış değişmeden yeniden düzenleme (ayrı task gerektirir)
 ```
 
 Örnekler:
+
 ```
 feat(riot): add Riot account connection endpoint
 fix(auth): handle missing session on dashboard redirect
@@ -367,6 +382,7 @@ test(analysis): unit tests for KDA calculator
 ```
 
 Kötü commit mesajları:
+
 ```
 "fix stuff"
 "wip"
@@ -386,7 +402,7 @@ Bir task içinde beklenen commit sayısı: 3–8.
 ```
 Örnek TASK-005 commit akışı:
 1. "chore(riot): add match v5 API types"
-2. "feat(riot): implement match ID list fetcher"  
+2. "feat(riot): implement match ID list fetcher"
 3. "feat(riot): implement full match detail fetcher"
 4. "feat(riot): add match mapper (raw → domain model)"
 5. "feat(riot): implement match sync orchestrator"
@@ -397,6 +413,7 @@ Bir task içinde beklenen commit sayısı: 3–8.
 ### 5.4 Rollback Stratejisi
 
 **Senaryo 1 — Task içinde bozulma:**
+
 ```bash
 git diff                    # neyin değiştiğini gör
 git checkout -- <dosya>     # tek dosyayı geri al
@@ -404,20 +421,25 @@ git reset --soft HEAD~1     # son commit'i geri al (dosyalar değişmiş kalır)
 ```
 
 **Senaryo 2 — Task tamamlandı ama develop'a merge sonrası sorun:**
+
 ```bash
 git revert <merge-commit-hash>    # merge'i revert et, yeni commit oluşturur
 ```
+
 Force push veya history rewrite kullanılmaz. Revert ile ileri git.
 
 **Senaryo 3 — Database migration bozuldu:**
+
 ```bash
 npx prisma migrate reset    # sadece development'ta!
 # production'da:
 npx prisma migrate resolve --rolled-back <migration-name>
 ```
+
 Migration rollback'i için her zaman `DOWN` migration hazır olmalı veya manuel SQL yazılmalı.
 
 **Senaryo 4 — Yanlış branch'e commit atıldı:**
+
 ```bash
 git log --oneline -5             # commit hash'ini bul
 git checkout feature/doğru-branch
@@ -429,11 +451,13 @@ git reset --hard HEAD~1          # yanlış branch'ten kaldır
 ### 5.5 PR (Pull Request) Kuralları
 
 Her PR şunları içermelidir:
+
 1. Başlık: `[TASK-XXX] Kısa açıklama`
 2. Description: acceptance criteria checklist (tamamlananlar işaretli)
 3. "Testing done" bölümü: ne test edildi, nasıl
 
 PR'ı merge etmeden önce:
+
 - `typecheck` geçiyor mu?
 - `lint` geçiyor mu?
 - Açıkça bozulmuş bir şey var mı? (manuel smoke test)
@@ -511,6 +535,7 @@ Belirtisi: Claude "bence bu mimariyi şöyle değiştirelim" diyor. Claude mevcu
 Tetikleyici: Context büyüdüğünde veya belirsiz prompt verildiğinde Claude "daha iyi" çözüm üretmeye çalışır.
 
 Önlem (sıralı):
+
 1. "Dur. Mevcut mimariyi değiştirmiyoruz." de.
 2. Claude'u `docs/ARCHITECTURE.md`'ye yönlendir.
 3. Eğer Claude ısrar ediyorsa: oturumu kapat, yeni oturum başlat, daha spesifik prompt kullan.
@@ -580,16 +605,16 @@ Durum: Bir task tamamlandı ama develop merge sonrası sistem çalışmıyor.
 
 Bu takvim kesin değildir, referans noktasıdır.
 
-| Hafta | Task'lar | Kritik Çıktı |
-|---|---|---|
-| Hafta 1 | 001, 002, 003 | Çalışan auth + DB |
-| Hafta 2 | 014, 004 | Riot hesap bağlama |
-| Hafta 3 | 005, 006 | Maç geçmişi görünür |
-| Hafta 4 | 007, 008, 010 | Champion stats + AI altyapı |
-| Hafta 5 | 009 | İlk AI koçluk raporu |
-| Hafta 6 | 012, 011 | Dashboard + ödeme sistemi |
-| Hafta 7 | 013, 015 | Landing page + beta kontrolü |
-| Hafta 8 | Buffer | Test, bug fix, kalite |
+| Hafta   | Task'lar      | Kritik Çıktı                 |
+| ------- | ------------- | ---------------------------- |
+| Hafta 1 | 001, 002, 003 | Çalışan auth + DB            |
+| Hafta 2 | 014, 004      | Riot hesap bağlama           |
+| Hafta 3 | 005, 006      | Maç geçmişi görünür          |
+| Hafta 4 | 007, 008, 010 | Champion stats + AI altyapı  |
+| Hafta 5 | 009           | İlk AI koçluk raporu         |
+| Hafta 6 | 012, 011      | Dashboard + ödeme sistemi    |
+| Hafta 7 | 013, 015      | Landing page + beta kontrolü |
+| Hafta 8 | Buffer        | Test, bug fix, kalite        |
 
 Eğer bir task takvimin 2 katı süre alıyorsa: task'ı daha küçük parçalara böl veya scope'u daralt.
 

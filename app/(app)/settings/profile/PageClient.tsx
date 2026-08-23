@@ -63,10 +63,7 @@ export default function ProfileSettingsPage() {
 
   return (
     <div className="mx-auto max-w-lg p-8">
-      <PageHeader
-        title="Profile"
-        subtitle="Manage your account settings."
-      />
+      <PageHeader title="Profile" subtitle="Manage your account settings." />
 
       <div className="space-y-8">
         {/* Referral */}
@@ -106,9 +103,11 @@ export default function ProfileSettingsPage() {
                   emailOptOut ? "bg-danger" : "bg-border"
                 }`}
               >
-                <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                  emailOptOut ? "translate-x-5" : "translate-x-0.5"
-                }`} />
+                <span
+                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
+                    emailOptOut ? "translate-x-5" : "translate-x-0.5"
+                  }`}
+                />
               </button>
             </div>
             {emailOptOut && (
@@ -123,7 +122,8 @@ export default function ProfileSettingsPage() {
         <div className="rounded-xl border border-danger/40 bg-danger/5 p-6">
           <p className="mb-1 text-sm font-semibold text-danger">Delete Account</p>
           <p className="mb-4 text-xs leading-relaxed text-text-muted">
-            This is permanent and irreversible. All your Riot accounts, match data, coaching reports, and subscription history will be deleted. Type your email below to confirm.
+            This is permanent and irreversible. All your Riot accounts, match data, coaching
+            reports, and subscription history will be deleted. Type your email below to confirm.
           </p>
 
           <div className="space-y-3">
@@ -136,9 +136,7 @@ export default function ProfileSettingsPage() {
               className="border-border bg-background text-sm"
             />
 
-            {error && (
-              <p className="text-xs text-danger">{error}</p>
-            )}
+            {error && <p className="text-xs text-danger">{error}</p>}
 
             <Button
               variant="destructive"

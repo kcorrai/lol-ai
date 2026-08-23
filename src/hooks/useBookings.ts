@@ -28,8 +28,7 @@ export function useBookings(side: BookingSide) {
 export function useCoachSlots(slug: string, listingId: string | null) {
   return useQuery<{ slots: Slot[]; timeZone: string; durationMinutes: number }>({
     queryKey: ["marketplace", "slots", slug, listingId],
-    queryFn: () =>
-      apiFetch(`/api/coaches/${slug}/slots?listingId=${listingId as string}`),
+    queryFn: () => apiFetch(`/api/coaches/${slug}/slots?listingId=${listingId as string}`),
     enabled: Boolean(listingId),
     staleTime: 10_000,
   });

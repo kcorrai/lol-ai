@@ -93,13 +93,15 @@ lg:  768px+   → masaüstü layout (mevcut)
 ### Veri Tabloları
 
 Tüm `<table>` bileşenlerine overflow-x-auto wrapper:
+
 ```tsx
-<div className="overflow-x-auto -mx-4 px-4">
+<div className="-mx-4 overflow-x-auto px-4">
   <table className="min-w-full">…</table>
 </div>
 ```
 
 Veya mobil kart görünümüne geçiş:
+
 ```tsx
 // Tablolar için ResponsiveTable wrapper bileşeni
 // md altında kart, md üstünde tablo render eder
@@ -117,6 +119,7 @@ Veya mobil kart görünümüne geçiş:
 ### Touch Target Audit
 
 Tüm interactive elementler için min-h-[44px] min-w-[44px] kuralı:
+
 ```tsx
 // Kötü:
 <button className="p-1 text-sm">
@@ -136,17 +139,17 @@ Tüm interactive elementler için min-h-[44px] min-w-[44px] kuralı:
 
 ## Sayfalar — Öncelik Sırası
 
-| Öncelik | Sayfa | Kritik Sorun |
-|---|---|---|
-| P0 | Dashboard | Grid taşıyor |
-| P0 | Match History | Tablo taşıyor |
-| P0 | Coaching Report | Font küçük, okumak zor |
-| P1 | Champion Pool | Grid bozuk |
-| P1 | Settings | Form inputlar küçük |
-| P2 | Death Heatmap | Canvas boyutu |
-| P2 | Leaderboard | Tablo taşıyor |
-| P3 | Season Recap | Slide boyutları |
-| P3 | Draft Simülatörü | Komp kartları taşıyor |
+| Öncelik | Sayfa            | Kritik Sorun           |
+| ------- | ---------------- | ---------------------- |
+| P0      | Dashboard        | Grid taşıyor           |
+| P0      | Match History    | Tablo taşıyor          |
+| P0      | Coaching Report  | Font küçük, okumak zor |
+| P1      | Champion Pool    | Grid bozuk             |
+| P1      | Settings         | Form inputlar küçük    |
+| P2      | Death Heatmap    | Canvas boyutu          |
+| P2      | Leaderboard      | Tablo taşıyor          |
+| P3      | Season Recap     | Slide boyutları        |
+| P3      | Draft Simülatörü | Komp kartları taşıyor  |
 
 ---
 
@@ -174,7 +177,7 @@ src/components/shared/ResponsiveTable.tsx            ← YENİ (tablo/kart switc
 
 ```typescript
 // tests/e2e/mobile-nav.spec.ts
-test('mobil navigasyon çalışıyor', async ({ page }) => {
+test("mobil navigasyon çalışıyor", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   // sidebar görünmüyor
   // bottom nav görünüyor

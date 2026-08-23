@@ -74,7 +74,9 @@ export async function explainBuild(
     ? participant.match.winningTeam === participant.teamId
       ? 200 - participant.match.winningTeam + 100
       : participant.match.winningTeam
-    : participant.teamId === 100 ? 200 : 100;
+    : participant.teamId === 100
+      ? 200
+      : 100;
 
   const enemyChampions = participant.match.participants
     .filter((p) => p.teamId === enemyTeamId)

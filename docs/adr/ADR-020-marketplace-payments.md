@@ -30,11 +30,11 @@ provider is a driver behind a four-verb interface: `charge`, `release`,
 The only driver today is `manual`, which advances the states and settles
 nothing. The states are real from the start:
 
-| Booking reaches | Money becomes |
-|---|---|
-| `PENDING_COACH`, `CONFIRMED`, `DELIVERED`, `DISPUTED` | stays `HELD` |
-| `COMPLETED` | `RELEASED` |
-| `DECLINED`, `EXPIRED`, either cancellation, `REFUNDED` | `REFUNDED` |
+| Booking reaches                                        | Money becomes |
+| ------------------------------------------------------ | ------------- |
+| `PENDING_COACH`, `CONFIRMED`, `DELIVERED`, `DISPUTED`  | stays `HELD`  |
+| `COMPLETED`                                            | `RELEASED`    |
+| `DECLINED`, `EXPIRED`, either cancellation, `REFUNDED` | `REFUNDED`    |
 
 Settlement is driven by the booking's status rather than called separately for
 each outcome, so the money and the booking cannot disagree.

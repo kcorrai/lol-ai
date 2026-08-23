@@ -25,20 +25,17 @@ OTP sayfasÄ±nÄ±n kullanacaÄŸÄ± TanStack Query hook'unu yaz.
 
 ```typescript
 // src/hooks/useOtpAssistant.ts
-import { useQuery } from '@tanstack/react-query';
-import type { OtpAnalysis } from '@/domains/otp/types/otp.types';
-import type { Position } from '@/types/common.types';
+import { useQuery } from "@tanstack/react-query";
+import type { OtpAnalysis } from "@/domains/otp/types/otp.types";
+import type { Position } from "@/types/common.types";
 
-export function useOtpAssistant(
-  champion: string | null,
-  role: Position | null
-) {
+export function useOtpAssistant(champion: string | null, role: Position | null) {
   return useQuery<OtpAnalysis>({
-    queryKey: ['otp', champion, role],
+    queryKey: ["otp", champion, role],
     queryFn: () =>
       fetch(`/api/otp?champion=${champion}&role=${role}`)
-        .then(res => res.json())
-        .then(data => data.data),
+        .then((res) => res.json())
+        .then((data) => data.data),
     enabled: !!champion && !!role,
     staleTime: 1000 * 60 * 60 * 24 * 7,
     gcTime: 1000 * 60 * 60 * 24 * 14,
@@ -52,4 +49,3 @@ export function useOtpAssistant(
 ## BaÄŸÄ±mlÄ±lÄ±klar
 
 - TASK-055 (OTP API endpoint) tamamlanmÄ±ÅŸ olmalÄ±
-

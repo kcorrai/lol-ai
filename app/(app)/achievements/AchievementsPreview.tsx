@@ -16,10 +16,34 @@ interface SampleBadge {
 }
 
 const SAMPLE_BADGES: SampleBadge[] = [
-  { icon: "🎯", name: "Sharpshooter", description: "10+ kills in a ranked game", tier: "Gold", color: "#F5B942" },
-  { icon: "🛡️", name: "Unkillable", description: "Win a game with 0 deaths", tier: "Platinum", color: "#3FB7A6" },
-  { icon: "👁️", name: "Vision Lord", description: "40+ vision score in a match", tier: "Silver", color: "#B8C1D9" },
-  { icon: "🔥", name: "On a Heater", description: "Win 5 ranked games in a row", tier: "Diamond", color: "#5B8DEF" },
+  {
+    icon: "🎯",
+    name: "Sharpshooter",
+    description: "10+ kills in a ranked game",
+    tier: "Gold",
+    color: "#F5B942",
+  },
+  {
+    icon: "🛡️",
+    name: "Unkillable",
+    description: "Win a game with 0 deaths",
+    tier: "Platinum",
+    color: "#3FB7A6",
+  },
+  {
+    icon: "👁️",
+    name: "Vision Lord",
+    description: "40+ vision score in a match",
+    tier: "Silver",
+    color: "#B8C1D9",
+  },
+  {
+    icon: "🔥",
+    name: "On a Heater",
+    description: "Win 5 ranked games in a row",
+    tier: "Diamond",
+    color: "#5B8DEF",
+  },
 ];
 
 function SampleCard({ badge, index }: { badge: SampleBadge; index: number }): React.JSX.Element {

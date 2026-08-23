@@ -86,7 +86,11 @@ export function WeeklyScheduleEditor({
 
   return (
     <div className="grid gap-4">
-      <HudPanel label="Your week · click to open or close an hour" action={<WeekGridLegend />} padded={false}>
+      <HudPanel
+        label="Your week · click to open or close an hour"
+        action={<WeekGridLegend />}
+        padded={false}
+      >
         <div className="p-5">
           {!aligned && (
             <p className="mb-3 border-l-2 border-warning bg-warning/10 px-3 py-2 text-[12.5px] text-warning">
@@ -196,7 +200,9 @@ export function WeeklyScheduleEditor({
 
         <div className="px-5 py-3">
           <GhostAction
-            onClick={() => change([...rules, { days: [1, 2, 3, 4, 5], startMinute: 1140, endMinute: 1320 }])}
+            onClick={() =>
+              change([...rules, { days: [1, 2, 3, 4, 5], startMinute: 1140, endMinute: 1320 }])
+            }
           >
             <Plus className="mr-1 inline h-3 w-3" aria-hidden />
             Add a row
@@ -205,7 +211,9 @@ export function WeeklyScheduleEditor({
       </HudPanel>
 
       {error && (
-        <p className="border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>
+        <p className="border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">
+          {error}
+        </p>
       )}
     </div>
   );

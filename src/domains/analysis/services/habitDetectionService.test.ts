@@ -36,9 +36,7 @@ describe("detectAndPersistHabits", () => {
   beforeEach(() => vi.clearAllMocks());
 
   it("returns early without creating habits when fewer than 2 snapshots", async () => {
-    vi.mocked(prisma.performanceSnapshot.findMany).mockResolvedValue([
-      makeSnapshot({}) as never,
-    ]);
+    vi.mocked(prisma.performanceSnapshot.findMany).mockResolvedValue([makeSnapshot({}) as never]);
 
     await detectAndPersistHabits("acc-1");
 
@@ -121,8 +119,8 @@ describe("detectAndPersistHabits", () => {
     await detectAndPersistHabits("acc-1");
 
     const createCalls = vi.mocked(prisma.playerHabit.create).mock.calls;
-    const tiltCall = createCalls.find((call) =>
-      (call[0] as { data: { habitType: string } }).data.habitType === "tilt_prone"
+    const tiltCall = createCalls.find(
+      (call) => (call[0] as { data: { habitType: string } }).data.habitType === "tilt_prone"
     );
     expect(tiltCall).toBeUndefined();
   });

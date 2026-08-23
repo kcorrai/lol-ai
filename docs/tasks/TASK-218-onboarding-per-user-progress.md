@@ -19,7 +19,7 @@ Repro: complete onboarding once, register a new account in the same browser, log
 ## Goal
 
 Step progress is isolated per user so a fresh account always starts at step 0, while the
-DB completion flag remains the single source of truth for *whether* onboarding runs.
+DB completion flag remains the single source of truth for _whether_ onboarding runs.
 
 ## Decision
 

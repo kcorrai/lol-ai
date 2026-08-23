@@ -181,6 +181,8 @@ export const getProSample = perRequest(async function getProSample({
  * do it (TASK-310) — so a cold cache means no pro strip on that page, not a
  * slower page.
  */
-export const getCachedProSample = perRequest(async function getCachedProSample(): Promise<ProSample | null> {
-  return cachedValue<ProSample>("pro-sample:all", SAMPLE_SHAPE_VERSION);
-});
+export const getCachedProSample = perRequest(
+  async function getCachedProSample(): Promise<ProSample | null> {
+    return cachedValue<ProSample>("pro-sample:all", SAMPLE_SHAPE_VERSION);
+  }
+);

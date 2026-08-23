@@ -35,7 +35,11 @@ export const autoSessionReview = inngest.createFunction(
 
     if (limits.reportsPerMonth !== -1) {
       const monthCount = await prisma.coachingReport.count({
-        where: { riotAccount: { userId }, createdAt: { gte: monthStart }, status: { in: ["complete", "pending"] } },
+        where: {
+          riotAccount: { userId },
+          createdAt: { gte: monthStart },
+          status: { in: ["complete", "pending"] },
+        },
       });
       if (monthCount >= limits.reportsPerMonth) {
         logger.info("[autoSession] Monthly limit reached, skipping", { userId });
@@ -45,7 +49,11 @@ export const autoSessionReview = inngest.createFunction(
 
     if (limits.reportsPerDay !== -1) {
       const todayCount = await prisma.coachingReport.count({
-        where: { riotAccount: { userId }, createdAt: { gte: todayStart }, status: { in: ["complete", "pending"] } },
+        where: {
+          riotAccount: { userId },
+          createdAt: { gte: todayStart },
+          status: { in: ["complete", "pending"] },
+        },
       });
       if (todayCount >= limits.reportsPerDay) {
         logger.info("[autoSession] Daily limit reached, skipping", { userId });
@@ -79,7 +87,10 @@ export const autoSessionReview = inngest.createFunction(
     });
 
     if (participants.length < MIN_MATCHES) {
-      logger.info("[autoSession] Not enough ranked matches, skipping", { riotAccountId, count: participants.length });
+      logger.info("[autoSession] Not enough ranked matches, skipping", {
+        riotAccountId,
+        count: participants.length,
+      });
       return { skipped: "not_enough_matches" };
     }
 

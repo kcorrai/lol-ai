@@ -28,10 +28,14 @@ export const runCoachingJob = inngest.createFunction(
 
     await runCoachingPipeline(reportId, riotAccountId, matchIds, reportType, focusArea);
 
-    await inngest.send({
-      name: "report/completed",
-      data: { reportId, riotAccountId, reportType },
-    }).catch(() => { /* non-critical */ });
+    await inngest
+      .send({
+        name: "report/completed",
+        data: { reportId, riotAccountId, reportType },
+      })
+      .catch(() => {
+        /* non-critical */
+      });
 
     return { reportId, status: "complete" };
   }

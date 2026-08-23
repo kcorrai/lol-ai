@@ -50,4 +50,3 @@
 ## BaÄŸÄ±mlÄ±lÄ±klar
 
 - TASK-062 (draftAnalysisService + prompt) tamamlanmÄ±ÅŸ olmalÄ±
-

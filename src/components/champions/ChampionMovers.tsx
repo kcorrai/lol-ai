@@ -83,7 +83,9 @@ export function ChampionMovers({ movers }: { movers: ChampionMover[] }): React.R
                       {mover.winRate.toFixed(1)}%
                     </span>
                     <span className="hud-label text-[10.5px]">
-                      win · {mover.games >= 1000 ? `${Math.round(mover.games / 1000)}k` : mover.games} games
+                      win ·{" "}
+                      {mover.games >= 1000 ? `${Math.round(mover.games / 1000)}k` : mover.games}{" "}
+                      games
                     </span>
                   </div>
                 </div>

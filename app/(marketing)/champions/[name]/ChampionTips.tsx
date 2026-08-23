@@ -4,7 +4,13 @@ interface ChampionTipsProps {
   against: string[];
 }
 
-function TipList({ tips, tone }: { tips: string[]; tone: "accent" | "danger" }): React.ReactElement {
+function TipList({
+  tips,
+  tone,
+}: {
+  tips: string[];
+  tone: "accent" | "danger";
+}): React.ReactElement {
   return (
     <div className="grid gap-3">
       {tips.map((tip) => (

@@ -16,9 +16,17 @@ export async function getActiveChallenges(userId: string): Promise<ChallengeWith
   return rows.map((c) => {
     const uc = c.userChallenges[0];
     return {
-      id: c.id, type: c.type, metric: c.metric, targetValue: c.targetValue,
-      description: c.description, xpReward: c.xpReward, validFrom: c.validFrom, validUntil: c.validUntil,
-      progress: uc?.progress ?? 0, completed: uc?.completed ?? false, completedAt: uc?.completedAt ?? null,
+      id: c.id,
+      type: c.type,
+      metric: c.metric,
+      targetValue: c.targetValue,
+      description: c.description,
+      xpReward: c.xpReward,
+      validFrom: c.validFrom,
+      validUntil: c.validUntil,
+      progress: uc?.progress ?? 0,
+      completed: uc?.completed ?? false,
+      completedAt: uc?.completedAt ?? null,
     };
   });
 }
@@ -27,8 +35,18 @@ async function computeProgress(c: ChallengeWithProgress, riotAccountId: string):
   const puuid = await getAccountPuuid(riotAccountId);
   const metric = c.metric as ChallengeMetric;
   const recentMatches = await prisma.matchParticipant.findMany({
-    where: { puuid: puuid ?? "", match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: c.validFrom } } },
-    select: { csPerMinute: true, deaths: true, visionScore: true, kills: true, assists: true, won: true },
+    where: {
+      puuid: puuid ?? "",
+      match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: c.validFrom } },
+    },
+    select: {
+      csPerMinute: true,
+      deaths: true,
+      visionScore: true,
+      kills: true,
+      assists: true,
+      won: true,
+    },
     orderBy: { match: { gameStart: "asc" } },
     take: 20,
   });
@@ -41,8 +59,10 @@ async function computeProgress(c: ChallengeWithProgress, riotAccountId: string):
     let streak = 0;
     let best = 0;
     for (const m of recentMatches) {
-      if (m.won) { streak++; best = Math.max(best, streak); }
-      else streak = 0;
+      if (m.won) {
+        streak++;
+        best = Math.max(best, streak);
+      } else streak = 0;
     }
     return Math.min(best / c.targetValue, 1.0);
   }
@@ -51,11 +71,20 @@ async function computeProgress(c: ChallengeWithProgress, riotAccountId: string):
   for (const m of recentMatches) {
     let val: number;
     switch (metric) {
-      case "cs_per_min":   val = Number(m.csPerMinute); break;
-      case "deaths":       val = m.deaths; break;
-      case "vision_score": val = m.visionScore; break;
-      case "kda":          val = (m.kills + m.assists) / Math.max(m.deaths, 1); break;
-      default: continue;
+      case "cs_per_min":
+        val = Number(m.csPerMinute);
+        break;
+      case "deaths":
+        val = m.deaths;
+        break;
+      case "vision_score":
+        val = m.visionScore;
+        break;
+      case "kda":
+        val = (m.kills + m.assists) / Math.max(m.deaths, 1);
+        break;
+      default:
+        continue;
     }
     const met = metric === "deaths" ? val <= c.targetValue : val >= c.targetValue;
     if (met) satisfying++;
@@ -86,7 +115,10 @@ export async function awardXp(
   }
 }
 
-export async function checkAndUpdateChallengeProgress(userId: string, riotAccountId: string): Promise<void> {
+export async function checkAndUpdateChallengeProgress(
+  userId: string,
+  riotAccountId: string
+): Promise<void> {
   const activeChallenges = await getActiveChallenges(userId);
   const incomplete = activeChallenges.filter((c) => !c.completed);
   if (incomplete.length === 0) return;
@@ -119,7 +151,12 @@ export async function checkAndUpdateChallengeProgress(userId: string, riotAccoun
 export async function getActiveChallengeStreak(userId: string): Promise<number> {
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
   const completed = await prisma.userChallenge.findMany({
-    where: { userId, completed: true, completedAt: { gte: sevenDaysAgo }, challenge: { type: "daily" } },
+    where: {
+      userId,
+      completed: true,
+      completedAt: { gte: sevenDaysAgo },
+      challenge: { type: "daily" },
+    },
     select: { completedAt: true },
     orderBy: { completedAt: "desc" },
   });
@@ -134,8 +171,13 @@ export async function getActiveChallengeStreak(userId: string): Promise<number> 
   return streak;
 }
 
-export async function getUserXpLevel(userId: string): Promise<{ xp: number; level: number; xpToNext: number }> {
-  const user = await prisma.user.findUnique({ where: { id: userId }, select: { xp: true, level: true } });
+export async function getUserXpLevel(
+  userId: string
+): Promise<{ xp: number; level: number; xpToNext: number }> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { xp: true, level: true },
+  });
   const xp = user?.xp ?? 0;
   const level = user?.level ?? 1;
   return { xp, level, xpToNext: XP_PER_LEVEL - (xp % XP_PER_LEVEL) };

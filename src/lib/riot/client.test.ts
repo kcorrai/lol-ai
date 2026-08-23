@@ -41,7 +41,10 @@ describe("RiotHttpClient caching", () => {
     const client = new RiotHttpClient("key", cache, limiter);
 
     const res = await client.get<string[]>("http://x", {
-      cacheTtl: 60, cacheKey: "k", noCacheEmptyArray: true, skipRateLimit: true,
+      cacheTtl: 60,
+      cacheKey: "k",
+      noCacheEmptyArray: true,
+      skipRateLimit: true,
     });
 
     expect(res).toEqual([]);
@@ -54,7 +57,10 @@ describe("RiotHttpClient caching", () => {
     const client = new RiotHttpClient("key", cache, limiter);
 
     await client.get<string[]>("http://x", {
-      cacheTtl: 60, cacheKey: "k", noCacheEmptyArray: true, skipRateLimit: true,
+      cacheTtl: 60,
+      cacheKey: "k",
+      noCacheEmptyArray: true,
+      skipRateLimit: true,
     });
 
     expect(cache.store.get("k")).toEqual(["a", "b"]);
@@ -100,11 +106,14 @@ describe("RiotHttpClient timeouts", () => {
     global.fetch = fetchMock as unknown as typeof fetch;
 
     const client = new RiotHttpClient("key", makeCache(), limiter);
-    const out = await withRetry(() => client.get<{ ok: number }>("http://x", { skipRateLimit: true }), {
-      maxAttempts: 2,
-      baseDelayMs: 1,
-      maxDelayMs: 2,
-    });
+    const out = await withRetry(
+      () => client.get<{ ok: number }>("http://x", { skipRateLimit: true }),
+      {
+        maxAttempts: 2,
+        baseDelayMs: 1,
+        maxDelayMs: 2,
+      }
+    );
 
     expect(out).toEqual({ ok: 1 });
     expect(fetchMock).toHaveBeenCalledTimes(2);

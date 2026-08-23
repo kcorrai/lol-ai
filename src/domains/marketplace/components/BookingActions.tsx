@@ -184,12 +184,7 @@ function ActionBar({
 }): React.ReactElement {
   return (
     <section className={cn("notch border bg-surface p-5", TONE[tone].shell)}>
-      <p
-        className={cn(
-          "font-mono text-[10px] uppercase tracking-[0.18em]",
-          TONE[tone].kicker
-        )}
-      >
+      <p className={cn("font-mono text-[10px] uppercase tracking-[0.18em]", TONE[tone].kicker)}>
         {`// ${kicker}`}
       </p>
       <h2 className="mt-2.5 font-display text-[18px] font-extrabold uppercase tracking-[0.03em] text-text">

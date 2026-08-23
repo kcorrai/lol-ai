@@ -10,6 +10,7 @@ export default function Image() {
   return renderOgImage({
     badge: "100% Free · No login",
     title: "Free LoL Tools",
-    subtitle: "Counter picker, matchup analyzer, draft analyzer, tier lists and champion builds — from real ranked data.",
+    subtitle:
+      "Counter picker, matchup analyzer, draft analyzer, tier lists and champion builds — from real ranked data.",
   });
 }

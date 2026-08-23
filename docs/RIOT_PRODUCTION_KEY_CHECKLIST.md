@@ -77,7 +77,7 @@ Two Riot documents conflict and nothing reconciles them:
 - **API Terms:** if you "charge for access to Game Information … You must notify
   Riot and obtain Riot's prior written approval."
 
-The defensible reading is that production approval *is* that written approval,
+The defensible reading is that production approval _is_ that written approval,
 since the application form asks about monetization. **Declare the subscription
 and B2B team plans on the form, and ask Dev Relations in writing.** Keep the
 reply. Do not rely on inference for a revenue model.
@@ -94,21 +94,21 @@ launching B2B.
 
 ## ✅ Verified compliant — no action needed
 
-| Requirement | Status | Evidence |
-|---|---|---|
-| Approved use case | ✅ | Riot explicitly approves "training tools that allow players to view their own match histories and aggregate stats" |
-| Post-game asynchronous coaching | ✅ | The preferred pattern; no live prescriptive direction |
-| Exact disclaimer wording | ✅ | `MarketingFooter.tsx:76`, verbatim Riot text, visible sitewide |
-| Terms of Service page | ✅ | `app/(marketing)/terms` |
-| Privacy Policy page | ✅ | `app/(marketing)/privacy` |
-| Free tier (mandatory) | ✅ | `SubscriptionPlan.free` is the default |
-| Transformative paid tier | ✅ | Sells AI analysis, not access to raw Riot data |
-| No MMR/ELO calculator (prohibited) | ✅ | Only match is the word "high-elo" in a prompt string |
-| No gambling or betting | ✅ | No matches in codebase |
-| No cryptocurrency or blockchain | ✅ | No matches in codebase |
-| No player scouting | ✅ | See TASK-288 — live lookup is ownership-checked to your own account |
-| GDPR right-to-be-forgotten | ✅ | TASK-287 — daily sweep, 30-day refresh window |
-| LoL public match history | ✅ | Permitted without opt-in (unlike VALORANT). Custom-queue history is the only carve-out and is not surfaced |
+| Requirement                        | Status | Evidence                                                                                                           |
+| ---------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------ |
+| Approved use case                  | ✅     | Riot explicitly approves "training tools that allow players to view their own match histories and aggregate stats" |
+| Post-game asynchronous coaching    | ✅     | The preferred pattern; no live prescriptive direction                                                              |
+| Exact disclaimer wording           | ✅     | `MarketingFooter.tsx:76`, verbatim Riot text, visible sitewide                                                     |
+| Terms of Service page              | ✅     | `app/(marketing)/terms`                                                                                            |
+| Privacy Policy page                | ✅     | `app/(marketing)/privacy`                                                                                          |
+| Free tier (mandatory)              | ✅     | `SubscriptionPlan.free` is the default                                                                             |
+| Transformative paid tier           | ✅     | Sells AI analysis, not access to raw Riot data                                                                     |
+| No MMR/ELO calculator (prohibited) | ✅     | Only match is the word "high-elo" in a prompt string                                                               |
+| No gambling or betting             | ✅     | No matches in codebase                                                                                             |
+| No cryptocurrency or blockchain    | ✅     | No matches in codebase                                                                                             |
+| No player scouting                 | ✅     | See TASK-288 — live lookup is ownership-checked to your own account                                                |
+| GDPR right-to-be-forgotten         | ✅     | TASK-287 — daily sweep, 30-day refresh window                                                                      |
+| LoL public match history           | ✅     | Permitted without opt-in (unlike VALORANT). Custom-queue history is the only carve-out and is not surfaced         |
 
 ---
 

@@ -90,9 +90,8 @@ export function CreatorSettingsForm({
         <div>
           <p className="text-sm font-medium text-text">Stream-safe mode</p>
           <p className="text-sm text-text-muted">
-            Hides your Riot ID from every overlay and chat reply. Riot&apos;s own Streamer Mode
-            does not hide it from the other players in your game — this hides it from your
-            viewers.
+            Hides your Riot ID from every overlay and chat reply. Riot&apos;s own Streamer Mode does
+            not hide it from the other players in your game — this hides it from your viewers.
           </p>
         </div>
         <Toggle
@@ -105,8 +104,8 @@ export function CreatorSettingsForm({
       <label className="flex flex-col gap-1">
         <span className="text-sm font-medium text-text">Broadcast delay (seconds)</span>
         <span className="text-sm text-text-muted">
-          Set this to the delay you run in OBS. Every overlay then reports the game as of that
-          many seconds ago, so it cannot show a result your stream has not reached.
+          Set this to the delay you run in OBS. Every overlay then reports the game as of that many
+          seconds ago, so it cannot show a result your stream has not reached.
         </span>
         <input
           type="number"

@@ -139,8 +139,8 @@ export default async function SummonerPage({ params }: Props): Promise<React.Rea
           Where {summoner.gameName} is losing games
         </p>
         <p className="mx-auto mt-1.5 max-w-[440px] text-sm text-text-muted">
-          The full report reads twenty games, not ten, and tells you which habit is costing you
-          the most LP. Claiming this profile is the whole setup — the Riot ID is already known.
+          The full report reads twenty games, not ten, and tells you which habit is costing you the
+          most LP. Claiming this profile is the whole setup — the Riot ID is already known.
         </p>
         <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
           <ClaimProfileButton

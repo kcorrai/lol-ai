@@ -1,11 +1,19 @@
 // Public API of the riot domain
-export { connectAccount, disconnectAccount, listAccounts } from "@/domains/riot/services/accountService";
+export {
+  connectAccount,
+  disconnectAccount,
+  listAccounts,
+} from "@/domains/riot/services/accountService";
 export { syncAccount, backfillMatchNicknames } from "@/domains/riot/services/matchSyncService";
 // The durable entry the sync routes use: it owns `syncStatus` as well as the pull, so a
 // caller cannot leave an account marked RUNNING after a failure. The desktop companion
 // reports a finished game through it (ADR-038 phase 5).
 export { runSyncWithStatus } from "@/domains/riot/services/matchSyncService";
-export { getCurrentRank, getLpHistory, getLastRankedSnapshot } from "@/domains/riot/services/rankedService";
+export {
+  getCurrentRank,
+  getLpHistory,
+  getLastRankedSnapshot,
+} from "@/domains/riot/services/rankedService";
 export { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 export { buildAccountPreview } from "@/domains/riot/services/previewService";
 // The public profile page's superset: the same rows plus each match's ten-player scoreboard and
@@ -21,7 +29,11 @@ export { indexPlayers, searchPlayers } from "@/domains/riot/services/playerIndex
 export type { IndexablePlayer, IndexedPlayer } from "@/domains/riot/services/playerIndexService";
 export type { ConnectedAccount } from "@/domains/riot/services/accountService";
 export type { SyncResult } from "@/domains/riot/services/matchSyncService";
-export type { CurrentRank, LpSnapshot, RankedSnapshot } from "@/domains/riot/services/rankedService";
+export type {
+  CurrentRank,
+  LpSnapshot,
+  RankedSnapshot,
+} from "@/domains/riot/services/rankedService";
 // The Discord bot's /match card. Deeper than the preview's recent-match list,
 // which carries no CS, damage or items.
 export { getLastMatchSummary } from "@/domains/riot/services/lastMatchService";

@@ -98,5 +98,6 @@ rather than a failed build. If the push contains anything under
 ## Rollback
 
 If a deploy causes issues:
+
 1. Vercel dashboard → Deployments → click previous deployment → Promote to Production
 2. Or: `git revert HEAD && git push origin main`

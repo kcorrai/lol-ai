@@ -4,7 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api/fetcher";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/domains/marketplace/components/hud/panelCard";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/domains/marketplace/components/hud/panelCard";
 import { tierColorClass, tierLabel } from "@/lib/riot/rankDisplay";
 import type { SessionPrep } from "@/domains/marketplace";
 
@@ -54,7 +60,9 @@ export function SessionPrepPanel({ bookingId }: Props): React.ReactElement {
               <span className="font-mono text-sm text-text">{prep.riotId}</span>
 
               {prep.rank && (
-                <span className={`font-mono text-sm font-semibold ${tierColorClass(prep.rank.tier)}`}>
+                <span
+                  className={`font-mono text-sm font-semibold ${tierColorClass(prep.rank.tier)}`}
+                >
                   {tierLabel(prep.rank.tier)} {prep.rank.division}
                   <span className="ml-1 text-text-faint">{prep.rank.lp} LP</span>
                 </span>

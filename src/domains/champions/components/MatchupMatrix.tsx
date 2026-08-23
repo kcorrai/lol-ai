@@ -9,12 +9,12 @@ import type { MatchupCell } from "@/domains/analysis/services/matchupService";
 import { cn } from "@/lib/utils";
 
 const POSITIONS = [
-  { value: undefined,    label: "All" },
-  { value: "TOP",        label: "Top" },
-  { value: "JUNGLE",     label: "Jungle" },
-  { value: "MIDDLE",     label: "Mid" },
-  { value: "BOTTOM",     label: "ADC" },
-  { value: "UTILITY",    label: "Support" },
+  { value: undefined, label: "All" },
+  { value: "TOP", label: "Top" },
+  { value: "JUNGLE", label: "Jungle" },
+  { value: "MIDDLE", label: "Mid" },
+  { value: "BOTTOM", label: "ADC" },
+  { value: "UTILITY", label: "Support" },
 ];
 
 interface Props {
@@ -73,12 +73,30 @@ export function MatchupMatrix({ riotAccountId }: Props) {
 
       {/* Legend */}
       <div className="mb-3 flex flex-wrap items-center gap-3 text-[10px] text-text-muted">
-        <span className="flex items-center gap-1"><span className="inline-block h-3 w-3 rounded bg-success/40" />≥60%</span>
-        <span className="flex items-center gap-1"><span className="inline-block h-3 w-3 rounded bg-success/20" />50-59%</span>
-        <span className="flex items-center gap-1"><span className="inline-block h-3 w-3 rounded bg-warning/20" />45-49%</span>
-        <span className="flex items-center gap-1"><span className="inline-block h-3 w-3 rounded bg-danger/20" />40-44%</span>
-        <span className="flex items-center gap-1"><span className="inline-block h-3 w-3 rounded bg-danger/40" />&lt;40%</span>
-        <span className="flex items-center gap-1"><span className="inline-block h-3 w-3 rounded bg-surface-2" />{"<3 games"}</span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-3 w-3 rounded bg-success/40" />
+          ≥60%
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-3 w-3 rounded bg-success/20" />
+          50-59%
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-3 w-3 rounded bg-warning/20" />
+          45-49%
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-3 w-3 rounded bg-danger/20" />
+          40-44%
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-3 w-3 rounded bg-danger/40" />
+          &lt;40%
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-3 w-3 rounded bg-surface-2" />
+          {"<3 games"}
+        </span>
       </div>
 
       {/* Scrollable matrix */}
@@ -88,7 +106,11 @@ export function MatchupMatrix({ riotAccountId }: Props) {
             <tr>
               <th className="sticky left-0 z-10 min-w-[100px] bg-surface px-3 py-2 text-left text-text-muted" />
               {data.opponentChampions.map((opp) => (
-                <th key={opp} className="px-1 py-2 text-center font-normal text-text-muted" title={opp}>
+                <th
+                  key={opp}
+                  className="px-1 py-2 text-center font-normal text-text-muted"
+                  title={opp}
+                >
                   <div className="w-16 overflow-hidden text-ellipsis whitespace-nowrap">{opp}</div>
                 </th>
               ))}
@@ -115,7 +137,8 @@ export function MatchupMatrix({ riotAccountId }: Props) {
       </div>
 
       <p className="mt-2 text-[10px] text-text-muted">
-        Last calculated: {data.generatedAt ? new Date(data.generatedAt).toLocaleTimeString("en-US") : "—"}
+        Last calculated:{" "}
+        {data.generatedAt ? new Date(data.generatedAt).toLocaleTimeString("en-US") : "—"}
         {" · "}Click cell → AI matchup guide
       </p>
 

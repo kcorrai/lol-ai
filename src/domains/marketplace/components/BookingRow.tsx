@@ -28,7 +28,9 @@ export function BookingRow({ booking, side }: Props): React.ReactElement {
       className={cn(
         "grid items-center gap-3.5 border-b border-line-1 px-4 py-3 transition-colors last:border-b-0 hover:bg-surface-2",
         "grid-cols-[110px_minmax(0,1fr)] md:grid-cols-[110px_minmax(0,1fr)_120px_70px_140px]",
-        booking.status === "PENDING_COACH" ? "border-l-2 border-l-warning" : "border-l-2 border-l-transparent"
+        booking.status === "PENDING_COACH"
+          ? "border-l-2 border-l-warning"
+          : "border-l-2 border-l-transparent"
       )}
     >
       <StatusChip tone={status.tone} className="justify-center">

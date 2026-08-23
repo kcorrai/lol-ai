@@ -81,8 +81,18 @@ export default async function ChampionCountersPage({ params, searchParams }: Pag
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Free Tools", item: `${BASE_URL}/tools` },
-      { "@type": "ListItem", position: 2, name: "Counters", item: `${BASE_URL}/tools/counter-picker` },
-      { "@type": "ListItem", position: 3, name: `${detail.name} Counters`, item: `${BASE_URL}/counters/${detail.id}` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Counters",
+        item: `${BASE_URL}/tools/counter-picker`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: `${detail.name} Counters`,
+        item: `${BASE_URL}/counters/${detail.id}`,
+      },
     ],
   };
   const faqJsonLd = {
@@ -95,9 +105,15 @@ export default async function ChampionCountersPage({ params, searchParams }: Pag
         name: `Who counters ${detail.name}?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: data && data.strongAgainstSubject.length > 0
-            ? `${data.strongAgainstSubject.slice(0, 3).map((c) => c.name).join(", ")} are among the strongest counters to ${detail.name} this patch, based on ranked win rate.`
-            : `Counter picks for ${detail.name} are ranked by real ranked win rate and updated every patch.`,
+          text:
+            data && data.strongAgainstSubject.length > 0
+              ? `${data.strongAgainstSubject
+                  .slice(0, 3)
+                  .map((c) => c.name)
+                  .join(
+                    ", "
+                  )} are among the strongest counters to ${detail.name} this patch, based on ranked win rate.`
+              : `Counter picks for ${detail.name} are ranked by real ranked win rate and updated every patch.`,
         },
       },
     ],
@@ -109,9 +125,13 @@ export default async function ChampionCountersPage({ params, searchParams }: Pag
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdProps(faqJsonLd)} />
 
       <nav className="mb-6 text-xs text-text-muted">
-        <Link href="/tools" className="hover:text-text">Free Tools</Link>
+        <Link href="/tools" className="hover:text-text">
+          Free Tools
+        </Link>
         <span className="mx-1.5">/</span>
-        <Link href="/tools/counter-picker" className="hover:text-text">Counters</Link>
+        <Link href="/tools/counter-picker" className="hover:text-text">
+          Counters
+        </Link>
         <span className="mx-1.5">/</span>
         <span className="text-text">{detail.name}</span>
       </nav>
@@ -134,7 +154,10 @@ export default async function ChampionCountersPage({ params, searchParams }: Pag
           </h1>
           <p className="mt-1 max-w-2xl text-sm text-text-muted">
             Best champions to beat {detail.name}
-            {data ? ` in ${POSITION_LABELS[data.position]} — Patch ${formatGamePatch(data.patch)}` : ""}, by ranked win rate.
+            {data
+              ? ` in ${POSITION_LABELS[data.position]} — Patch ${formatGamePatch(data.patch)}`
+              : ""}
+            , by ranked win rate.
           </p>
         </div>
       </div>
@@ -227,13 +250,22 @@ export default async function ChampionCountersPage({ params, searchParams }: Pag
 
       {/* Internal links */}
       <div className="mt-12 flex flex-wrap gap-3 text-sm">
-        <Link href={`/tools/counter-picker?champion=${detail.id}`} className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text">
+        <Link
+          href={`/tools/counter-picker?champion=${detail.id}`}
+          className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
+        >
           Explore {detail.name} in the counter picker →
         </Link>
-        <Link href={`/champions/${detail.id}`} className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text">
+        <Link
+          href={`/champions/${detail.id}`}
+          className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
+        >
           {detail.name} champion guide →
         </Link>
-        <Link href="/tools/tier-list" className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text">
+        <Link
+          href="/tools/tier-list"
+          className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
+        >
           Current tier list →
         </Link>
       </div>

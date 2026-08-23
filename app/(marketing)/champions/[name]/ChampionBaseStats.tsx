@@ -43,7 +43,10 @@ export function ChampionBaseStats({
           const high = value >= average * 1.1;
           const low = value <= average * 0.9;
           return (
-            <div key={row.label} className="grid grid-cols-[96px_minmax(0,1fr)_62px] items-center gap-3">
+            <div
+              key={row.label}
+              className="grid grid-cols-[96px_minmax(0,1fr)_62px] items-center gap-3"
+            >
               <span className="font-mono text-[10.5px] uppercase tracking-label text-text-body">
                 {row.label}
               </span>

@@ -17,7 +17,10 @@ test.describe("Public free tools", () => {
 
   test("anonymous user can open the counter picker from the hub", async ({ page }) => {
     await page.goto("/tools");
-    await page.getByRole("link", { name: /Counter picker/i }).first().click();
+    await page
+      .getByRole("link", { name: /Counter picker/i })
+      .first()
+      .click();
     await expect(page).toHaveURL(/\/tools\/counter-picker/);
     await expect(page).not.toHaveURL(/\/login/);
     await expect(page.getByRole("heading", { name: "Counter Picker" })).toBeVisible();

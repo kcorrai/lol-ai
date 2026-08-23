@@ -44,7 +44,8 @@ export function CancelRetentionModal({ onClose, onCancelAnyway }: Props) {
           <CheckCircle2 className="mx-auto mb-3 h-12 w-12 text-success" />
           <h2 className="mb-2 font-display text-xl font-bold text-text">Discount Applied!</h2>
           <p className="text-sm text-text-muted">
-            A 20% discount will be applied to your next invoice. Your Pro membership will continue to remain active.
+            A 20% discount will be applied to your next invoice. Your Pro membership will continue
+            to remain active.
           </p>
           <Button onClick={onClose} className="mt-5 w-full">
             Great, keep me subscribed!
@@ -84,18 +85,15 @@ export function CancelRetentionModal({ onClose, onCancelAnyway }: Props) {
         <div className="mb-5 rounded-xl border border-accent/30 bg-accent/5 p-4 text-center">
           <p className="text-sm font-semibold text-text">Special offer: 20% off next month</p>
           <p className="mt-0.5 text-xs text-text-muted">
-            If you accept this offer, your plan will remain active and the discount will be applied to your next invoice.
+            If you accept this offer, your plan will remain active and the discount will be applied
+            to your next invoice.
           </p>
         </div>
 
         {error && <p className="mb-3 text-center text-xs text-danger">{error}</p>}
 
         <div className="space-y-2">
-          <Button
-            onClick={handleAcceptOffer}
-            disabled={loading}
-            className="w-full"
-          >
+          <Button onClick={handleAcceptOffer} disabled={loading} className="w-full">
             {loading ? "Applying..." : "Continue with 20% Off"}
           </Button>
           <Button

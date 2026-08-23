@@ -1,8 +1,4 @@
-import {
-  linkCommand,
-  statusCommand,
-  unlinkCommand,
-} from "@/domains/discord/commands/account";
+import { linkCommand, statusCommand, unlinkCommand } from "@/domains/discord/commands/account";
 import { coachCommand } from "@/domains/discord/commands/coach";
 import { helpCommand } from "@/domains/discord/commands/help";
 import {

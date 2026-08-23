@@ -34,6 +34,7 @@ Old authed tool URLs (`/counter`, `/matchup`, `/draft`) permanently redirect to 
 ## Feature Overview
 
 ### Core Coaching
+
 - **AI Session Review** — AI-generated coaching report for your last 5 matches; strengths, weaknesses, and 3 prioritized action items
 - **Champion Focus Report** — Deep-dive analysis on a single champion: mechanics, build path, matchup patterns
 - **Climb Roadmap** — AI-generated personalized rank-climbing plan with target rank, champion focus, and timeline estimate
@@ -42,6 +43,7 @@ Old authed tool URLs (`/counter`, `/matchup`, `/draft`) permanently redirect to 
 - **Report PDF Export** — Export any coaching report to a styled PDF
 
 ### Analytics & Tracking
+
 - **Match History View** — Last 20 ranked games with KDA, CS/min, vision score, LP change
 - **Match Detail View** — Full stat breakdown, items, runes, team comparison
 - **Champion Performance Stats** — Per-champion aggregated stats, win rate, avg KDA, grade
@@ -52,6 +54,7 @@ Old authed tool URLs (`/counter`, `/matchup`, `/draft`) permanently redirect to 
 - **Performance Snapshot Automation** — Weekly automated performance snapshots via Inngest
 
 ### Engagement & Retention
+
 - **Tilt Early Warning** — Streak detection with AI recovery message and dashboard banner
 - **Patch Impact Notifier** — Win rate before/after patch analysis per champion
 - **Achievement & Badge System** — Gamification with milestone badges and XP rewards
@@ -64,6 +67,7 @@ Old authed tool URLs (`/counter`, `/matchup`, `/draft`) permanently redirect to 
 - **A/B Test Infrastructure** — Feature flag framework for gradual rollouts
 
 ### Champion Tools
+
 - **Champion Pool Health Analysis** — Role coverage, meta alignment, pool depth recommendations
 - **Matchup Matrix** — Visual win rate matrix across all played champion matchups
 - **Counter Pick Database** — Per-champion counters with AI explanation
@@ -71,18 +75,21 @@ Old authed tool URLs (`/counter`, `/matchup`, `/draft`) permanently redirect to 
 - **Death Heatmap** — Map overlay showing where you die most often
 
 ### Social & Sharing
+
 - **Public Profile** — `/u/[slug]` profile page with OG image and privacy controls
 - **Discord Integration** — Webhook notifications for rank changes, badge unlocks
 - **Web Push Notifications** — VAPID-based push for report ready, rank change alerts
 - **Report Sharing** — Shareable coaching report pages with full Turkish metadata
 
 ### B2B / Teams
+
 - **Team Dashboard** — Esports analytics for team managers: roster performance, member stats
 - **Team Win Rate Trend** — Line chart + per-member sparklines over time
 - **Team Comparison** — Head-to-head team performance comparison
 - **B2B Esports Analytics** — Multi-member team accounts with coach/member access roles
 
 ### Security & Account
+
 - **TOTP 2FA** — Time-based one-time password via `otplib`
 - **Session Management** — Active session list with individual revocation
 - **GDPR Data Export & Account Deletion** — Full user data export + self-serve account deletion
@@ -91,6 +98,7 @@ Old authed tool URLs (`/counter`, `/matchup`, `/draft`) permanently redirect to 
 - **API Versioning** — `/api/v1/` with deprecation policy and sunset headers
 
 ### Infrastructure
+
 - **Inngest Background Jobs** — Match sync, report generation, referral reward processing, daily challenges
 - **SSE Report Status** — Real-time coaching report progress via Server-Sent Events
 - **Upstash Redis Rate Limiting** — Per-user, per-IP rate limiting on all public endpoints
@@ -104,25 +112,25 @@ Old authed tool URLs (`/counter`, `/matchup`, `/draft`) permanently redirect to 
 
 ## Tech Stack
 
-| Concern | Technology |
-|---|---|
-| Framework | Next.js 14 (App Router) |
-| Language | TypeScript (strict mode) |
-| Styling | TailwindCSS + gaming aesthetic (purple gradients, grid texture, glow effects) |
-| UI Components | shadcn/ui |
-| Database | PostgreSQL via Prisma ORM (Neon serverless in production) |
-| Cache | Upstash Redis (production) / local Redis (development) |
-| Auth | NextAuth.js v4 (JWT strategy, email + OAuth, TOTP 2FA) |
-| Payments | LemonSqueezy |
-| Background Jobs | Inngest |
-| AI | OpenAI (GPT-4) + Anthropic (Claude) — provider-abstracted via `src/lib/ai/` |
-| Voice | OpenAI Whisper (STT) + TTS |
-| Analytics | PostHog (client + server) |
-| Errors | Sentry |
-| PDF Generation | @react-pdf/renderer (server-side, no Chromium) |
-| Charts | Recharts |
-| Deploy | Vercel (Fluid Compute) |
-| Localization | Turkish (full UI localization) |
+| Concern         | Technology                                                                    |
+| --------------- | ----------------------------------------------------------------------------- |
+| Framework       | Next.js 14 (App Router)                                                       |
+| Language        | TypeScript (strict mode)                                                      |
+| Styling         | TailwindCSS + gaming aesthetic (purple gradients, grid texture, glow effects) |
+| UI Components   | shadcn/ui                                                                     |
+| Database        | PostgreSQL via Prisma ORM (Neon serverless in production)                     |
+| Cache           | Upstash Redis (production) / local Redis (development)                        |
+| Auth            | NextAuth.js v4 (JWT strategy, email + OAuth, TOTP 2FA)                        |
+| Payments        | LemonSqueezy                                                                  |
+| Background Jobs | Inngest                                                                       |
+| AI              | OpenAI (GPT-4) + Anthropic (Claude) — provider-abstracted via `src/lib/ai/`   |
+| Voice           | OpenAI Whisper (STT) + TTS                                                    |
+| Analytics       | PostHog (client + server)                                                     |
+| Errors          | Sentry                                                                        |
+| PDF Generation  | @react-pdf/renderer (server-side, no Chromium)                                |
+| Charts          | Recharts                                                                      |
+| Deploy          | Vercel (Fluid Compute)                                                        |
+| Localization    | Turkish (full UI localization)                                                |
 
 ---
 
@@ -166,16 +174,17 @@ The system follows a **domain-driven, feature-cohesive** architecture. Code is o
 
 ### Domains
 
-| Domain | Responsibility |
-|---|---|
-| `identity` | User auth, sessions, 2FA, GDPR, referrals |
-| `riot` | Riot API client, account connection, match sync |
-| `analysis` | Match data processing, KDA, CS, vision metrics |
-| `coaching` | AI report generation, PDF export, improvement plans |
-| `champions` | Champion stats, pool analysis, matchup matrix |
-| `teams` | B2B team accounts, roster analytics |
+| Domain      | Responsibility                                      |
+| ----------- | --------------------------------------------------- |
+| `identity`  | User auth, sessions, 2FA, GDPR, referrals           |
+| `riot`      | Riot API client, account connection, match sync     |
+| `analysis`  | Match data processing, KDA, CS, vision metrics      |
+| `coaching`  | AI report generation, PDF export, improvement plans |
+| `champions` | Champion stats, pool analysis, matchup matrix       |
+| `teams`     | B2B team accounts, roster analytics                 |
 
 **Key architectural rules:**
+
 - No business logic in API route handlers — handlers validate, delegate, respond only
 - No direct DB access outside the data layer — Prisma repository patterns only
 - No AI provider SDK calls outside `src/lib/ai/`
@@ -276,19 +285,19 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Scripts
 
-| Command | Description |
-|---|---|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run typecheck` | TypeScript type check |
-| `npm run lint` | ESLint check |
-| `npm run lint:fix` | Auto-fix ESLint issues |
-| `npm run format` | Format all files with Prettier |
-| `npm run format:check` | Check formatting without writing |
+| Command                       | Description                                                                       |
+| ----------------------------- | --------------------------------------------------------------------------------- |
+| `npm run dev`                 | Start development server                                                          |
+| `npm run build`               | Build for production                                                              |
+| `npm run typecheck`           | TypeScript type check                                                             |
+| `npm run lint`                | ESLint check                                                                      |
+| `npm run lint:fix`            | Auto-fix ESLint issues                                                            |
+| `npm run format`              | Format all files with Prettier                                                    |
+| `npm run format:check`        | Check formatting without writing                                                  |
 | `npm run capture:screenshots` | Re-shoot the landing page's product imagery from a running dev server (see below) |
-| `npx prisma studio` | Open Prisma database browser |
-| `npx prisma migrate dev` | Run pending migrations |
-| `npx inngest-cli dev` | Start local Inngest dev server |
+| `npx prisma studio`           | Open Prisma database browser                                                      |
+| `npx prisma migrate dev`      | Run pending migrations                                                            |
+| `npx inngest-cli dev`         | Start local Inngest dev server                                                    |
 
 ### Landing page screenshots
 
@@ -348,22 +357,22 @@ src/
 
 ## Documentation
 
-| Document | Description |
-|---|---|
-| [`CLAUDE.md`](./CLAUDE.md) | Coding standards, architecture rules, AI assistant guidelines |
-| [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) | System design, component overview, scaling strategy |
-| [`docs/PRD.md`](./docs/PRD.md) | Product requirements and user stories |
-| [`docs/FEATURES.md`](./docs/FEATURES.md) | Feature catalog (F-001 through F-029) with difficulty ratings |
-| [`docs/ROADMAP.md`](./docs/ROADMAP.md) | Phase roadmap — MVP through AI Platform |
-| [`docs/PROJECT_STRUCTURE.md`](./docs/PROJECT_STRUCTURE.md) | Full directory layout and folder rules |
-| [`docs/DATABASE_SCHEMA.md`](./docs/DATABASE_SCHEMA.md) | All Prisma models and relationships |
-| [`docs/API_DESIGN.md`](./docs/API_DESIGN.md) | REST API endpoints, request/response shapes |
-| [`docs/AI_ARCHITECTURE.md`](./docs/AI_ARCHITECTURE.md) | AI pipeline design, prompt strategy, provider abstraction |
-| [`docs/FRONTEND_ARCHITECTURE.md`](./docs/FRONTEND_ARCHITECTURE.md) | Rendering strategy, state management, component rules |
-| [`docs/DEPENDENCIES.md`](./docs/DEPENDENCIES.md) | Every production dependency with rationale and alternatives |
-| [`docs/DEPLOYMENT_CHECKLIST.md`](./docs/DEPLOYMENT_CHECKLIST.md) | Pre-launch production checklist |
-| [`docs/adr/`](./docs/adr/) | Architecture Decision Records |
-| [`docs/tasks/`](./docs/tasks/) | Full task backlog (TASK-001 through TASK-151) |
+| Document                                                           | Description                                                   |
+| ------------------------------------------------------------------ | ------------------------------------------------------------- |
+| [`CLAUDE.md`](./CLAUDE.md)                                         | Coding standards, architecture rules, AI assistant guidelines |
+| [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)                   | System design, component overview, scaling strategy           |
+| [`docs/PRD.md`](./docs/PRD.md)                                     | Product requirements and user stories                         |
+| [`docs/FEATURES.md`](./docs/FEATURES.md)                           | Feature catalog (F-001 through F-029) with difficulty ratings |
+| [`docs/ROADMAP.md`](./docs/ROADMAP.md)                             | Phase roadmap — MVP through AI Platform                       |
+| [`docs/PROJECT_STRUCTURE.md`](./docs/PROJECT_STRUCTURE.md)         | Full directory layout and folder rules                        |
+| [`docs/DATABASE_SCHEMA.md`](./docs/DATABASE_SCHEMA.md)             | All Prisma models and relationships                           |
+| [`docs/API_DESIGN.md`](./docs/API_DESIGN.md)                       | REST API endpoints, request/response shapes                   |
+| [`docs/AI_ARCHITECTURE.md`](./docs/AI_ARCHITECTURE.md)             | AI pipeline design, prompt strategy, provider abstraction     |
+| [`docs/FRONTEND_ARCHITECTURE.md`](./docs/FRONTEND_ARCHITECTURE.md) | Rendering strategy, state management, component rules         |
+| [`docs/DEPENDENCIES.md`](./docs/DEPENDENCIES.md)                   | Every production dependency with rationale and alternatives   |
+| [`docs/DEPLOYMENT_CHECKLIST.md`](./docs/DEPLOYMENT_CHECKLIST.md)   | Pre-launch production checklist                               |
+| [`docs/adr/`](./docs/adr/)                                         | Architecture Decision Records                                 |
+| [`docs/tasks/`](./docs/tasks/)                                     | Full task backlog (TASK-001 through TASK-151)                 |
 
 ---
 
@@ -378,6 +387,7 @@ git push origin main
 Environment variables are managed in the Vercel dashboard. Run `vercel env pull` to sync them locally.
 
 **Production stack:**
+
 - Vercel (Fluid Compute, Node.js 24)
 - Neon (serverless PostgreSQL, pgbouncer pooler)
 - Upstash (serverless Redis)
@@ -402,14 +412,14 @@ This project has strict development rules enforced via [`CLAUDE.md`](./CLAUDE.md
 
 ## Known Limitations
 
-| Item | Notes |
-|---|---|
-| Admin panel | API routes exist but no UI; auth via `ADMIN_EMAIL` env var |
-| Champion tips | English — sourced directly from Riot API data |
-| Privacy & Terms pages | English content — not a code issue |
-| AI report summaries | Generated in English — prompt-level change required for Turkish |
-| Live in-game overlay | Declined (ADR-138) — Riot compliance risk |
-| Replay file analysis | Declined (ADR-131) — `.rofl` parsing complexity |
+| Item                  | Notes                                                           |
+| --------------------- | --------------------------------------------------------------- |
+| Admin panel           | API routes exist but no UI; auth via `ADMIN_EMAIL` env var      |
+| Champion tips         | English — sourced directly from Riot API data                   |
+| Privacy & Terms pages | English content — not a code issue                              |
+| AI report summaries   | Generated in English — prompt-level change required for Turkish |
+| Live in-game overlay  | Declined (ADR-138) — Riot compliance risk                       |
+| Replay file analysis  | Declined (ADR-131) — `.rofl` parsing complexity                 |
 
 ---
 

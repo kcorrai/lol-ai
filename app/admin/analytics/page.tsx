@@ -74,7 +74,9 @@ export default async function AnalyticsPage({
 
       {/* Funnel */}
       <div className="rounded-xl border border-border bg-surface p-6">
-        <h2 className="mb-5 text-xs font-bold uppercase tracking-widest text-text-muted">Signup Funnel</h2>
+        <h2 className="mb-5 text-xs font-bold uppercase tracking-widest text-text-muted">
+          Signup Funnel
+        </h2>
         <div className="space-y-3">
           {funnelSteps.map((step, i) => {
             const pct = Math.round((step.count / funnelMax) * 100);
@@ -82,13 +84,15 @@ export default async function AnalyticsPage({
             return (
               <div key={step.label} className="flex items-center gap-4">
                 <p className="w-28 shrink-0 text-xs text-text-muted">{step.label}</p>
-                <div className="flex-1 overflow-hidden rounded-full bg-surface-2 h-2">
+                <div className="h-2 flex-1 overflow-hidden rounded-full bg-surface-2">
                   <div
                     className={`h-full rounded-full ${colors[i]}`}
                     style={{ width: `${pct}%` }}
                   />
                 </div>
-                <p className="w-16 text-right text-sm font-semibold text-text">{step.count.toLocaleString()}</p>
+                <p className="w-16 text-right text-sm font-semibold text-text">
+                  {step.count.toLocaleString()}
+                </p>
                 <p className="w-10 text-right text-xs text-text-muted">{pct}%</p>
               </div>
             );
@@ -98,7 +102,9 @@ export default async function AnalyticsPage({
 
       {/* Feature usage */}
       <div className="rounded-xl border border-border bg-surface p-6">
-        <h2 className="mb-1 text-xs font-bold uppercase tracking-widest text-text-muted">Feature Usage</h2>
+        <h2 className="mb-1 text-xs font-bold uppercase tracking-widest text-text-muted">
+          Feature Usage
+        </h2>
         <p className="mb-5 text-xs text-text-muted">Last {validRange} days</p>
         <div className="space-y-3">
           {metrics.featureUsage.map((f) => {
@@ -107,10 +113,12 @@ export default async function AnalyticsPage({
             return (
               <div key={f.label} className="flex items-center gap-4">
                 <p className="w-36 shrink-0 text-xs text-text-muted">{f.label}</p>
-                <div className="flex-1 overflow-hidden rounded-full bg-surface-2 h-2">
+                <div className="h-2 flex-1 overflow-hidden rounded-full bg-surface-2">
                   <div className="h-full rounded-full bg-accent/60" style={{ width: `${pct}%` }} />
                 </div>
-                <p className="w-16 text-right text-sm font-semibold text-text">{f.count.toLocaleString()}</p>
+                <p className="w-16 text-right text-sm font-semibold text-text">
+                  {f.count.toLocaleString()}
+                </p>
               </div>
             );
           })}
@@ -119,7 +127,9 @@ export default async function AnalyticsPage({
 
       <p className="text-xs text-text-muted">
         Check AI spending:{" "}
-        <Link href="/admin/ai-cost" className="text-accent hover:underline">AI Cost Dashboard →</Link>
+        <Link href="/admin/ai-cost" className="text-accent hover:underline">
+          AI Cost Dashboard →
+        </Link>
       </p>
     </div>
   );

@@ -22,13 +22,21 @@ function game(
 }
 
 const ME = { championName: "Ahri", team: "ORDER", position: "MIDDLE", summonerName: "Kaan" };
-const OPPONENT = { championName: "Zed", team: "CHAOS", position: "MIDDLE", summonerName: "Zed guy" };
+const OPPONENT = {
+  championName: "Zed",
+  team: "CHAOS",
+  position: "MIDDLE",
+  summonerName: "Zed guy",
+};
 const ELSEWHERE = { championName: "Jinx", team: "CHAOS", position: "BOTTOM", summonerName: "adc" };
 
 describe("activePlayerOf", () => {
   it("finds the player by the modern riot id", () => {
     const data = game(
-      [{ ...ME, riotId: "Kaan#TR1" }, { ...OPPONENT, riotId: "Zed#EUW" }],
+      [
+        { ...ME, riotId: "Kaan#TR1" },
+        { ...OPPONENT, riotId: "Zed#EUW" },
+      ],
       { riotId: "Kaan#TR1" }
     );
     expect(activePlayerOf(data)?.championName).toBe("Ahri");
@@ -67,19 +75,24 @@ describe("laneOpponentOf", () => {
   });
 
   it("never takes a team mate in the same lane", () => {
-    const data = game(
-      [ME, { ...OPPONENT, team: "ORDER", summonerName: "duo" }],
-      { summonerName: "Kaan" }
-    );
+    const data = game([ME, { ...OPPONENT, team: "ORDER", summonerName: "duo" }], {
+      summonerName: "Kaan",
+    });
     const me = activePlayerOf(data)!;
     expect(laneOpponentOf(data, me)).toBeNull();
   });
 
   // Routine, not a fault: the client leaves the position empty for every ARAM player.
   it("answers null when the client resolved no lane", () => {
-    const data = game([{ ...ME, position: "" }, { ...OPPONENT, position: "" }], {
-      summonerName: "Kaan",
-    });
+    const data = game(
+      [
+        { ...ME, position: "" },
+        { ...OPPONENT, position: "" },
+      ],
+      {
+        summonerName: "Kaan",
+      }
+    );
     const me = activePlayerOf(data)!;
     expect(laneOpponentOf(data, me)).toBeNull();
   });
@@ -109,7 +122,10 @@ describe("describeMatchup", () => {
 
   it("describes an ARAM game as a champion with no lane", () => {
     const data = game(
-      [{ ...ME, position: "" }, { ...OPPONENT, position: "" }],
+      [
+        { ...ME, position: "" },
+        { ...OPPONENT, position: "" },
+      ],
       { summonerName: "Kaan" },
       "ARAM"
     );

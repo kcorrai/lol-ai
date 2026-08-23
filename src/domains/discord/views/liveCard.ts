@@ -31,10 +31,7 @@ const GAME_MODE_LABELS: Record<string, string> = {
 };
 
 function gameModeLabel(mode: string): string {
-  return (
-    GAME_MODE_LABELS[mode] ??
-    mode.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())
-  );
+  return GAME_MODE_LABELS[mode] ?? mode.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 /**

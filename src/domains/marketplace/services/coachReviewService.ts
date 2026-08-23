@@ -35,9 +35,7 @@ export interface ApplicationRow {
 }
 
 /** A review queue, oldest first — nobody works a queue from the back. */
-export async function listApplications(
-  status: CoachStatus = "PENDING"
-): Promise<ApplicationRow[]> {
+export async function listApplications(status: CoachStatus = "PENDING"): Promise<ApplicationRow[]> {
   const rows = await prisma.coachProfile.findMany({
     where: { status },
     orderBy: { submittedAt: "asc" },
@@ -147,7 +145,14 @@ export async function rejectApplication(
   adminId: string,
   note: string
 ): Promise<DecisionOutcome> {
-  return decide(coachProfileId, adminId, note, "REJECTED", ["PENDING"], "coach.application.rejected");
+  return decide(
+    coachProfileId,
+    adminId,
+    note,
+    "REJECTED",
+    ["PENDING"],
+    "coach.application.rejected"
+  );
 }
 
 /** Take a live coach down. Bookings already made still run their course. */
@@ -168,10 +173,7 @@ export async function reinstateCoach(
   return decide(coachProfileId, adminId, note, "APPROVED", ["SUSPENDED"], "coach.reinstated");
 }
 
-type DecisionAction =
-  | "coach.application.rejected"
-  | "coach.suspended"
-  | "coach.reinstated";
+type DecisionAction = "coach.application.rejected" | "coach.suspended" | "coach.reinstated";
 
 async function decide(
   coachProfileId: string,

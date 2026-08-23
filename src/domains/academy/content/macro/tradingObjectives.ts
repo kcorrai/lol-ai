@@ -29,10 +29,26 @@ export const tradingObjectives: Lesson = {
       caption: "What is actually worth a fight",
       head: ["Objective", "Contest when", "Trade instead when"],
       rows: [
-        ["Early drakes (1st, 2nd)", "You are set up and they are not", "Anything at all is off — they are worth less than a turret"],
-        ["Soul point drake", "Almost always", "You are three players down in items and have no front line"],
-        ["Herald", "It is free, or it is nearly free", "It costs a fight — a herald is a turret, not a game"],
-        ["Baron", "You won the last fight, or you are set up first", "They set up first with vision — take two turrets instead"],
+        [
+          "Early drakes (1st, 2nd)",
+          "You are set up and they are not",
+          "Anything at all is off — they are worth less than a turret",
+        ],
+        [
+          "Soul point drake",
+          "Almost always",
+          "You are three players down in items and have no front line",
+        ],
+        [
+          "Herald",
+          "It is free, or it is nearly free",
+          "It costs a fight — a herald is a turret, not a game",
+        ],
+        [
+          "Baron",
+          "You won the last fight, or you are set up first",
+          "They set up first with vision — take two turrets instead",
+        ],
       ],
     },
     {
@@ -139,7 +155,8 @@ export const tradingObjectives: Lesson = {
       options: [
         {
           id: "a",
-          label: "You did, slightly — a mid turret opens the map and an early drake is a small buff",
+          label:
+            "You did, slightly — a mid turret opens the map and an early drake is a small buff",
           explain:
             "Correct. Early drakes are the cheapest objective on the map, and a mid turret is map access plus gold for everyone. The trade only flips later, when their drake stack approaches soul.",
           correct: true,

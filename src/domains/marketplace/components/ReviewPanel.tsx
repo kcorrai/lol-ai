@@ -6,7 +6,13 @@ import { useMutation } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api/fetcher";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/domains/marketplace/components/hud/panelCard";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/domains/marketplace/components/hud/panelCard";
 import type { BookingDetail } from "@/domains/marketplace/types";
 
 interface Props {
@@ -44,8 +50,8 @@ export function ReviewPanel({ booking, onDone }: Props): React.ReactElement | nu
         <CardHeader>
           <CardTitle>Thanks</CardTitle>
           <CardDescription>
-            Your review is in. It appears once the other side has written theirs, or after two
-            weeks — whichever comes first.
+            Your review is in. It appears once the other side has written theirs, or after two weeks
+            — whichever comes first.
           </CardDescription>
         </CardHeader>
       </Card>
@@ -55,7 +61,9 @@ export function ReviewPanel({ booking, onDone }: Props): React.ReactElement | nu
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{booking.role === "student" ? "Review your coach" : "Review your student"}</CardTitle>
+        <CardTitle>
+          {booking.role === "student" ? "Review your coach" : "Review your student"}
+        </CardTitle>
         <CardDescription>
           Neither review is shown until you have both written one, or two weeks pass. Say what
           actually happened.

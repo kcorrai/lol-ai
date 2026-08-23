@@ -71,13 +71,19 @@ export function ConsoleRail({
           />
           <MeterRow
             label="Accept rate"
-            value={stats.acceptRate === null ? "no requests yet" : `${Math.round(stats.acceptRate * 100)}%`}
+            value={
+              stats.acceptRate === null
+                ? "no requests yet"
+                : `${Math.round(stats.acceptRate * 100)}%`
+            }
             percent={(stats.acceptRate ?? 0) * 100}
             compact
           />
           <MeterRow
             label="Rating"
-            value={profile.rating === null ? `${profile.ratingCount} reviews` : profile.rating.toFixed(1)}
+            value={
+              profile.rating === null ? `${profile.ratingCount} reviews` : profile.rating.toFixed(1)
+            }
             percent={((profile.rating ?? 0) / 5) * 100}
             compact
           />

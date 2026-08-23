@@ -61,7 +61,9 @@ function Frame({ shot, title, caption, href, wide }: Shot): React.ReactElement {
       href={href}
       className="notch group relative block overflow-hidden border border-border bg-surface transition-colors duration-[160ms] ease-out hover:border-accent motion-reduce:transition-none"
     >
-      <div className={`relative w-full overflow-hidden ${wide ? "aspect-[16/9]" : "aspect-[16/10]"}`}>
+      <div
+        className={`relative w-full overflow-hidden ${wide ? "aspect-[16/9]" : "aspect-[16/10]"}`}
+      >
         <Image
           src={`/screenshots/${shot}.jpg`}
           alt={`${title} — a screenshot of LoL AI Coach`}

@@ -10,7 +10,7 @@ two players rather than one.
 
 ## Why a rail and not a widget
 
-Everything else on the dashboard answers *how am I playing*. A duo answers *how are we playing* —
+Everything else on the dashboard answers _how am I playing_. A duo answers _how are we playing_ —
 a different unit of analysis, which is why `DuoWidget` never worked as a third box in a row of
 three: it sat at the same visual weight as a champion pool while saying something categorically
 different, and had room for one sentence.
@@ -21,17 +21,17 @@ beside whatever the player has scrolled to.
 
 ## What is in it
 
-| Section | Answers |
-|---|---|
-| `DuoIdentity` | Who, plus a run of two or more wins/losses together |
-| `DuoVerdict` | **The headline.** ±N win-rate points, together vs alone as two meters |
-| `DuoFormShift` | What changes about *your* game with them — KDA, deaths, vision, CS/min, each against the same figure without them |
-| `DuoPairs` | Which champion pairings win, and which roles they actually queue |
-| `DuoQuestList` | This week's three quests with progress and days left |
-| `DuoRecentGames` | The last five games together, both champions and the result |
+| Section          | Answers                                                                                                           |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `DuoIdentity`    | Who, plus a run of two or more wins/losses together                                                               |
+| `DuoVerdict`     | **The headline.** ±N win-rate points, together vs alone as two meters                                             |
+| `DuoFormShift`   | What changes about _your_ game with them — KDA, deaths, vision, CS/min, each against the same figure without them |
+| `DuoPairs`       | Which champion pairings win, and which roles they actually queue                                                  |
+| `DuoQuestList`   | This week's three quests with progress and days left                                                              |
+| `DuoRecentGames` | The last five games together, both champions and the result                                                       |
 
 `DuoFormShift` is the one that earns the space: "we won more" is the verdict above it, and this is
-*why*. A partner who halves your CS is a different problem from one who gets you killed.
+_why_. A partner who halves your CS is a different problem from one who gets you killed.
 
 ## What it refuses to say
 
@@ -83,7 +83,7 @@ The rail measured x=1080 w=336 at 1440px, and 390px showed no horizontal overflo
 server. Not a defect in this work: that server started at 00:07, and the Prisma client containing
 `DuoQuest` was generated at 00:45, so its in-memory client has no such model. The same service
 call succeeds in a fresh process against the same database (TASK-313's verification: XP 0 → 210,
-then 0 on re-read), and `/api/public/search` — whose model was generated *before* that server
+then 0 on re-read), and `/api/public/search` — whose model was generated _before_ that server
 started — answers 200 from it. **Restart the dev server** and the section renders; the quest
 rendering itself is covered by `DuoPanel.test.tsx`.
 

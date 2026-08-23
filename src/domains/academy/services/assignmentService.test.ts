@@ -81,16 +81,17 @@ beforeEach(() => {
   vi.mocked(getAccountPuuid).mockResolvedValue(PUUID);
   vi.mocked(prisma.academyAssignment.findFirst).mockResolvedValue(null as never);
   // Run the transaction body against the same mocked client.
-  vi.mocked(prisma.$transaction).mockImplementation(
-    (async (fn: (tx: unknown) => Promise<unknown>) => fn(prisma)) as never
-  );
+  vi.mocked(prisma.$transaction).mockImplementation((async (
+    fn: (tx: unknown) => Promise<unknown>
+  ) => fn(prisma)) as never);
   vi.mocked(prisma.academyProgress.findUnique).mockResolvedValue({ xpAwarded: 40 } as never);
   // Baseline sample: five ranked games averaging 5.1 CS/min.
   withMatchRows(4.9, 5.0, 5.1, 5.2, 5.3);
-  vi.mocked(prisma.academyAssignment.create).mockImplementation(
-    (async ({ data }: { data: Record<string, unknown> }) =>
-      assignmentRow(data)) as never
-  );
+  vi.mocked(prisma.academyAssignment.create).mockImplementation((async ({
+    data,
+  }: {
+    data: Record<string, unknown>;
+  }) => assignmentRow(data)) as never);
 });
 
 describe("openAssignment", () => {

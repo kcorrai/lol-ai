@@ -22,9 +22,7 @@ import { previewMatchFixture } from "@/types/preview.fixture";
 const PREVIEW: PreviewResponse = {
   summoner: { gameName: "Faker", tagLine: "KR1", summonerLevel: 843, profileIconId: 6 },
   rank: { tier: "GOLD", division: "II", lp: 47, wins: 23, losses: 19 },
-  recentMatches: [
-    previewMatchFixture(),
-  ],
+  recentMatches: [previewMatchFixture()],
   topChampions: [{ championName: "Ahri", games: 24, wins: 15, winRate: 62.5 }],
   aiInsight: "Your deaths spike after 20 minutes.",
 };

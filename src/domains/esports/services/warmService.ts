@@ -1,7 +1,15 @@
 import { logger } from "@/lib/utils/logger";
-import { getLeagues, prominentLeagues, getCurrentTournament } from "@/domains/esports/services/leagueService";
+import {
+  getLeagues,
+  prominentLeagues,
+  getCurrentTournament,
+} from "@/domains/esports/services/leagueService";
 import { getStandings } from "@/domains/esports/services/standingsService";
-import { getLiveEvents, getUpcoming, getCompleted } from "@/domains/esports/services/scheduleService";
+import {
+  getLiveEvents,
+  getUpcoming,
+  getCompleted,
+} from "@/domains/esports/services/scheduleService";
 import { getProSample } from "@/domains/esports/services/proSampleService";
 import { getTeams } from "@/domains/esports/services/teamService";
 import { getVodArchive } from "@/domains/esports/services/vodArchiveService";

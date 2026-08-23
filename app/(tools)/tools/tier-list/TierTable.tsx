@@ -56,7 +56,13 @@ export function TierTable({
           style={{ gridTemplateColumns }}
         >
           <span>#</span>
-          <SortButton label="Tier" column="tier" sort={sort} direction={direction} onSort={onSort} />
+          <SortButton
+            label="Tier"
+            column="tier"
+            sort={sort}
+            direction={direction}
+            onSort={onSort}
+          />
           {/* Champion is not sortable — the name column identifies a row, it doesn't rank it. */}
           <span>Champion</span>
           {showMovement && (
@@ -70,14 +76,38 @@ export function TierTable({
               />
             </span>
           )}
-          <SortButton label="Win" column="winRate" sort={sort} direction={direction} onSort={onSort} />
-          <SortButton label="Pick" column="pickRate" sort={sort} direction={direction} onSort={onSort} />
+          <SortButton
+            label="Win"
+            column="winRate"
+            sort={sort}
+            direction={direction}
+            onSort={onSort}
+          />
+          <SortButton
+            label="Pick"
+            column="pickRate"
+            sort={sort}
+            direction={direction}
+            onSort={onSort}
+          />
           {showBan && (
-            <SortButton label="Ban" column="banRate" sort={sort} direction={direction} onSort={onSort} />
+            <SortButton
+              label="Ban"
+              column="banRate"
+              sort={sort}
+              direction={direction}
+              onSort={onSort}
+            />
           )}
           {showPro && (
             <span title="Share of recent professional games this champion was picked in">
-              <SortButton label="Pro" column="pro" sort={sort} direction={direction} onSort={onSort} />
+              <SortButton
+                label="Pro"
+                column="pro"
+                sort={sort}
+                direction={direction}
+                onSort={onSort}
+              />
             </span>
           )}
         </div>
@@ -104,13 +134,21 @@ export function TierTable({
                 <div
                   key={entry.championKey}
                   className={`grid items-center gap-3.5 border-b border-line-1 px-5 py-2.5 transition-colors hover:bg-surface-2/60 ${
-                    strong ? "border-l-2 border-l-accent" : weak ? "border-l-2 border-l-danger/45" : "border-l-2 border-l-transparent"
+                    strong
+                      ? "border-l-2 border-l-accent"
+                      : weak
+                        ? "border-l-2 border-l-danger/45"
+                        : "border-l-2 border-l-transparent"
                   }`}
                   style={{ gridTemplateColumns }}
                 >
                   <span className={`${CELL} text-text-faint`}>{ordinal}</span>
                   <span
-                    title={entry.lowConfidence ? `Low sample — ${formatGames(entry.games)} games` : undefined}
+                    title={
+                      entry.lowConfidence
+                        ? `Low sample — ${formatGames(entry.games)} games`
+                        : undefined
+                    }
                     className={`tag-cut inline-grid h-[22px] w-[22px] place-items-center border font-mono text-[11.5px] font-bold ${tierChipClass(group.letter, entry.lowConfidence)}`}
                   >
                     {group.letter}
@@ -125,7 +163,8 @@ export function TierTable({
                       <span
                         className={`block font-mono text-[10.5px] tracking-[0.1em] ${entry.lowConfidence ? "text-warning/70" : "text-text-faint"}`}
                       >
-                        {formatGames(entry.games)} games{entry.lowConfidence ? " · low confidence" : ""}
+                        {formatGames(entry.games)} games
+                        {entry.lowConfidence ? " · low confidence" : ""}
                       </span>
                     </span>
                   </Link>
@@ -145,15 +184,22 @@ export function TierTable({
                       {entry.winRate.toFixed(1)}%
                     </span>
                   </span>
-                  <span className={`${CELL} text-right text-text-body`}>{entry.pickRate.toFixed(1)}%</span>
+                  <span className={`${CELL} text-right text-text-body`}>
+                    {entry.pickRate.toFixed(1)}%
+                  </span>
                   {showBan && (
-                    <span className={`${CELL} text-right text-text-muted`}>{entry.banRate.toFixed(1)}%</span>
+                    <span className={`${CELL} text-right text-text-muted`}>
+                      {entry.banRate.toFixed(1)}%
+                    </span>
                   )}
                   {showPro &&
                     (entry.proPickRate === null ? (
                       // An em dash, not 0% — the champion is absent from the pro
                       // sample, which is a different statement from "picked, never".
-                      <span className={`${CELL} text-right text-text-faint`} title="No games in the pro sample">
+                      <span
+                        className={`${CELL} text-right text-text-faint`}
+                        title="No games in the pro sample"
+                      >
                         &mdash;
                       </span>
                     ) : (

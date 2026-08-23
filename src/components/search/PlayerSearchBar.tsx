@@ -51,7 +51,7 @@ export function PlayerSearchBar({
       setOwnQuery(next);
       onQueryChange?.(next);
     },
-    [onQueryChange],
+    [onQueryChange]
   );
   const setRegion = useCallback(
     (next: string) => {
@@ -61,7 +61,7 @@ export function PlayerSearchBar({
       // just chosen are visible without another click into the input.
       setOpen(true);
     },
-    [onRegionChange],
+    [onRegionChange]
   );
 
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -80,7 +80,7 @@ export function PlayerSearchBar({
 
   const rows = useMemo(
     () => buildSearchRows({ query, region, hits, recent, favorites }),
-    [query, region, hits, recent, favorites],
+    [query, region, hits, recent, favorites]
   );
 
   const favoriteKeys = useMemo(() => new Set(favorites.map(playerKey)), [favorites]);
@@ -107,7 +107,7 @@ export function PlayerSearchBar({
       setOpen(false);
       router.push(profileHref(row.hit));
     },
-    [addRecent, router],
+    [addRecent, router]
   );
 
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>): void {
@@ -123,7 +123,7 @@ export function PlayerSearchBar({
       setActiveIndex((i) =>
         // From nothing highlighted, down enters at the top and up enters at the bottom. Falling
         // through to the modulo would send both to the first row.
-        i < 0 ? (step === 1 ? 0 : rows.length - 1) : (i + step + rows.length) % rows.length,
+        i < 0 ? (step === 1 ? 0 : rows.length - 1) : (i + step + rows.length) % rows.length
       );
       return;
     }
@@ -142,7 +142,9 @@ export function PlayerSearchBar({
 
   return (
     <div ref={rootRef} className="relative w-full">
-      <div className={`flex ${height} items-center border border-border bg-surface-dark well focus-within:border-accent`}>
+      <div
+        className={`flex ${height} well items-center border border-border bg-surface-dark focus-within:border-accent`}
+      >
         <Search className="ml-3 h-4 w-4 shrink-0 text-text-muted" strokeWidth={1.75} />
         <input
           type="text"

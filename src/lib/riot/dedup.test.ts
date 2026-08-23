@@ -4,7 +4,12 @@ import { dedup } from "@/lib/riot/dedup";
 describe("dedup", () => {
   it("collapses concurrent callers of the same key into one call", async () => {
     let resolveIt: (v: string) => void = () => {};
-    const fn = vi.fn(() => new Promise<string>((r) => { resolveIt = r; }));
+    const fn = vi.fn(
+      () =>
+        new Promise<string>((r) => {
+          resolveIt = r;
+        })
+    );
 
     const a = dedup("k", fn);
     const b = dedup("k", fn);
@@ -30,7 +35,9 @@ describe("dedup", () => {
   });
 
   it("releases the key after a rejection too", async () => {
-    const failing = vi.fn(async () => { throw new Error("boom"); });
+    const failing = vi.fn(async () => {
+      throw new Error("boom");
+    });
     await expect(dedup("k3", failing)).rejects.toThrow("boom");
     await expect(dedup("k3", failing)).rejects.toThrow("boom");
     expect(failing).toHaveBeenCalledTimes(2);

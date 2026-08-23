@@ -17,7 +17,11 @@ import {
 } from "@/domains/match/services/matchArchiveService";
 
 const db = prisma as unknown as {
-  matchParticipant: { findMany: ReturnType<typeof vi.fn>; aggregate: ReturnType<typeof vi.fn>; count: ReturnType<typeof vi.fn> };
+  matchParticipant: {
+    findMany: ReturnType<typeof vi.fn>;
+    aggregate: ReturnType<typeof vi.fn>;
+    count: ReturnType<typeof vi.fn>;
+  };
   match: { findMany: ReturnType<typeof vi.fn> };
   $queryRaw: ReturnType<typeof vi.fn>;
 };

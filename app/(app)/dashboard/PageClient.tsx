@@ -137,7 +137,7 @@ export default function DashboardPage(): React.ReactElement {
               unit of analysis and so gets its own column rather than a widget slot.
               On phones the rail comes first — under the verdict, above the analysis. */}
           <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,1fr)_336px]">
-            <aside className="order-first min-w-0 lg:order-none lg:sticky lg:top-6">
+            <aside className="order-first min-w-0 lg:sticky lg:top-6 lg:order-none">
               <DuoPanel riotAccountId={primaryId} />
             </aside>
 
@@ -164,17 +164,13 @@ export default function DashboardPage(): React.ReactElement {
                 </div>
                 <div className="flex min-w-0 flex-col gap-4">
                   <PlaystyleProfile profile={profile} isLoading={profileLoading} />
-                  <WinrateTrendWidget
-                    matches={profile?.recentMatches}
-                    isLoading={profileLoading}
-                  />
+                  <WinrateTrendWidget matches={profile?.recentMatches} isLoading={profileLoading} />
                   <WeekSummaryWidget matches={profile?.recentMatches} isLoading={profileLoading} />
                   <PatchImpactWidget riotAccountId={primaryId} />
                   <MetaRecommendationsWidget riotAccountId={primaryId} />
                   <HabitDetectionCard riotAccountId={primaryId} />
                 </div>
               </div>
-
             </div>
           </div>
 

@@ -43,11 +43,7 @@ export function PickRow({
   // class leaves two border-color utilities of equal specificity on the element,
   // and which one wins is then down to stylesheet order rather than intent.
   const borderColor =
-    pending || champion
-      ? blue
-        ? "border-accent-blue"
-        : "border-danger"
-      : "border-line-1";
+    pending || champion ? (blue ? "border-accent-blue" : "border-danger") : "border-line-1";
 
   return (
     <div

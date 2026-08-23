@@ -56,10 +56,7 @@ export function RankBadgeChip({ badge, detailed, className }: Props): React.Reac
       {detailed && (
         <span className="text-[10.5px] text-text-faint">
           {badge.peakTier && (
-            <>
-              peak{" "}
-              {formatRank({ tier: badge.peakTier, division: badge.peakDivision ?? "I" })} ·{" "}
-            </>
+            <>peak {formatRank({ tier: badge.peakTier, division: badge.peakDivision ?? "I" })} · </>
           )}
           {badge.stale ? "needs a refresh" : `checked ${formatDay(badge.checkedAt)}`}
         </span>

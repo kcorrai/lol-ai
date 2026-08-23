@@ -12,32 +12,32 @@
   :root {
     /* Raw scales */
     --ink-1000: #050706;
-    --ink-900: #080B0A;
-    --ink-800: #0C1110;
+    --ink-900: #080b0a;
+    --ink-800: #0c1110;
     --ink-700: #111817;
-    --ink-600: #17201F;
-    --ink-500: #1E2A28;
+    --ink-600: #17201f;
+    --ink-500: #1e2a28;
     --ink-400: #283634;
 
-    --line-1: #20302D;
-    --line-2: #2E4340;
+    --line-1: #20302d;
+    --line-2: #2e4340;
     --line-3: #456460;
 
-    --fg-1: #E9F5EE;
-    --fg-2: #A7BCB5;
-    --fg-3: #6C817B;
+    --fg-1: #e9f5ee;
+    --fg-2: #a7bcb5;
+    --fg-3: #6c817b;
     --fg-4: #485954;
 
-    --acid-300: #E4FF9B;
-    --acid-400: #D4FF6A;
-    --acid-500: #C6FF3D;
-    --acid-600: #A9E01B;
-    --acid-700: #7FA914;
+    --acid-300: #e4ff9b;
+    --acid-400: #d4ff6a;
+    --acid-500: #c6ff3d;
+    --acid-600: #a9e01b;
+    --acid-700: #7fa914;
 
-    --teal-500: #3FE0C8;
-    --blue-500: #4C8FFF;
-    --amber-500: #FFC24B;
-    --red-500: #FF5A5A;
+    --teal-500: #3fe0c8;
+    --blue-500: #4c8fff;
+    --amber-500: #ffc24b;
+    --red-500: #ff5a5a;
 
     /* Semantic surfaces */
     --bg-page: var(--ink-900);
@@ -46,7 +46,7 @@
     --surface-raised: var(--ink-700);
     --surface-inset: var(--ink-1000);
     --surface-hover: var(--ink-600);
-    --surface-accent: rgba(198, 255, 61, 0.10);
+    --surface-accent: rgba(198, 255, 61, 0.1);
     --surface-scrim: rgba(5, 7, 6, 0.78);
     --surface-glass: rgba(12, 17, 16, 0.72);
 
@@ -66,16 +66,25 @@
     --bg-grid:
       linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 32px 32px,
       linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 32px 32px;
-    --bg-scanline: repeating-linear-gradient(180deg, rgba(255,255,255,.025) 0 1px, transparent 1px 3px);
+    --bg-scanline: repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.025) 0 1px,
+      transparent 1px 3px
+    );
     --bg-hero-fade: radial-gradient(120% 80% at 50% 0%, rgba(198, 255, 61, 0.14), transparent 62%);
-    --bg-protect-bottom: linear-gradient(to top, var(--ink-900) 12%, rgba(8, 11, 10, 0.6) 55%, transparent 100%);
+    --bg-protect-bottom: linear-gradient(
+      to top,
+      var(--ink-900) 12%,
+      rgba(8, 11, 10, 0.6) 55%,
+      transparent 100%
+    );
 
     /* Motion */
     --dur-1: 90ms;
     --dur-2: 160ms;
     --dur-3: 260ms;
     --dur-4: 420ms;
-    --ease-out: cubic-bezier(.16, .84, .44, 1);
+    --ease-out: cubic-bezier(0.16, 0.84, 0.44, 1);
 
     /* shadcn/ui tokens, converted from the scales above */
     --background: 160 16% 4%;
@@ -117,7 +126,9 @@
 
   body {
     @apply bg-background text-text-body antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
     /* Layered, never flat: a 32px instrument grid over the ink ground. */
     background-image: var(--bg-grid);
     background-attachment: fixed;
@@ -133,39 +144,65 @@
     font-variant-numeric: tabular-nums;
   }
 
-  ::selection { background: var(--acid-500); color: var(--ink-1000); }
+  ::selection {
+    background: var(--acid-500);
+    color: var(--ink-1000);
+  }
 
-  :focus-visible { outline: 2px solid var(--acid-400); outline-offset: 2px; }
+  :focus-visible {
+    outline: 2px solid var(--acid-400);
+    outline-offset: 2px;
+  }
 
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { @apply bg-surface; }
-  ::-webkit-scrollbar-thumb { @apply bg-line-2; }
-  ::-webkit-scrollbar-thumb:hover { @apply bg-line-3; }
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-surface;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-line-2;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-line-3;
+  }
 }
 
 @layer utilities {
-  .text-balance { text-wrap: balance; }
+  .text-balance {
+    text-wrap: balance;
+  }
 
   /* ── The HUD frame ──────────────────────────────────────────────────── */
   .notch {
     clip-path: polygon(
-      var(--notch) 0, 100% 0,
-      100% calc(100% - var(--notch)), calc(100% - var(--notch)) 100%,
-      0 100%, 0 var(--notch)
+      var(--notch) 0,
+      100% 0,
+      100% calc(100% - var(--notch)),
+      calc(100% - var(--notch)) 100%,
+      0 100%,
+      0 var(--notch)
     );
   }
   .notch-sm {
     clip-path: polygon(
-      var(--notch-sm) 0, 100% 0,
-      100% calc(100% - var(--notch-sm)), calc(100% - var(--notch-sm)) 100%,
-      0 100%, 0 var(--notch-sm)
+      var(--notch-sm) 0,
+      100% 0,
+      100% calc(100% - var(--notch-sm)),
+      calc(100% - var(--notch-sm)) 100%,
+      0 100%,
+      0 var(--notch-sm)
     );
   }
   .notch-lg {
     clip-path: polygon(
-      var(--notch-lg) 0, 100% 0,
-      100% calc(100% - var(--notch-lg)), calc(100% - var(--notch-lg)) 100%,
-      0 100%, 0 var(--notch-lg)
+      var(--notch-lg) 0,
+      100% 0,
+      100% calc(100% - var(--notch-lg)),
+      calc(100% - var(--notch-lg)) 100%,
+      0 100%,
+      0 var(--notch-lg)
     );
   }
   /* Small chips take a single bottom-right cut. */
@@ -179,22 +216,38 @@
   }
 
   /* ── Emission ───────────────────────────────────────────────────────── */
-  .glow-accent { box-shadow: var(--glow-accent); }
-  .glow-accent-soft { box-shadow: var(--glow-accent-soft); }
-  .glow-text { text-shadow: var(--glow-text); }
-  .well { box-shadow: var(--inset-well); }
+  .glow-accent {
+    box-shadow: var(--glow-accent);
+  }
+  .glow-accent-soft {
+    box-shadow: var(--glow-accent-soft);
+  }
+  .glow-text {
+    text-shadow: var(--glow-text);
+  }
+  .well {
+    box-shadow: var(--inset-well);
+  }
 
   /* ── Section grounds ────────────────────────────────────────────────── */
-  .bg-scanline { background-image: var(--bg-scanline); }
-  .bg-hero-fade { background-image: var(--bg-hero-fade); }
-  .bg-protect-bottom { background-image: var(--bg-protect-bottom); }
+  .bg-scanline {
+    background-image: var(--bg-scanline);
+  }
+  .bg-hero-fade {
+    background-image: var(--bg-hero-fade);
+  }
+  .bg-protect-bottom {
+    background-image: var(--bg-protect-bottom);
+  }
 
   /* Skeleton shimmer */
-  .skeleton { @apply relative overflow-hidden bg-surface-2; }
+  .skeleton {
+    @apply relative overflow-hidden bg-surface-2;
+  }
   .skeleton::after {
     @apply absolute inset-0;
     content: "";
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
     animation: shimmer 2s infinite;
   }
 
@@ -241,8 +294,12 @@
   }
 
   /* Accent controls go lighter on hover, darker on press — never scale. */
-  .btn-glow:hover { box-shadow: var(--glow-accent-soft); }
-  .btn-glow:active { transform: translateY(1px); }
+  .btn-glow:hover {
+    box-shadow: var(--glow-accent-soft);
+  }
+  .btn-glow:active {
+    transform: translateY(1px);
+  }
 
   /* The LaneIQ Daily stage leans on motion to narrate a guess (cells flip, the
      crop widens, the solve sweeps). Scoped rather than global: the rest of the

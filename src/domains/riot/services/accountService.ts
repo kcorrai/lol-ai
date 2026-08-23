@@ -120,10 +120,7 @@ export async function connectAccount(
   };
 }
 
-export async function disconnectAccount(
-  userId: string,
-  riotAccountId: string
-): Promise<void> {
+export async function disconnectAccount(userId: string, riotAccountId: string): Promise<void> {
   const account = await prisma.riotAccount.findFirst({
     where: { id: riotAccountId, userId },
   });
@@ -151,10 +148,7 @@ export async function disconnectAccount(
   });
 }
 
-export async function setPrimaryAccount(
-  userId: string,
-  riotAccountId: string
-): Promise<void> {
+export async function setPrimaryAccount(userId: string, riotAccountId: string): Promise<void> {
   const account = await prisma.riotAccount.findFirst({
     where: { id: riotAccountId, userId },
     select: { id: true },

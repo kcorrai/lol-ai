@@ -12,7 +12,7 @@ interface ChallengesResponse {
 async function fetchChallenges(): Promise<ChallengesResponse> {
   const res = await fetch("/api/challenges");
   if (!res.ok) throw new Error("Failed to fetch challenges");
-  const json = await res.json() as { data: ChallengesResponse };
+  const json = (await res.json()) as { data: ChallengesResponse };
   return json.data;
 }
 

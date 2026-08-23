@@ -5,8 +5,7 @@ import type { MonthlyMilestone } from "@/domains/analysis/services/milestoneServ
 export function useMilestone(year: number, month: number) {
   return useQuery({
     queryKey: ["milestone", year, month],
-    queryFn: () =>
-      apiFetch<MonthlyMilestone | null>(`/api/milestone?year=${year}&month=${month}`),
+    queryFn: () => apiFetch<MonthlyMilestone | null>(`/api/milestone?year=${year}&month=${month}`),
     staleTime: 10 * 60 * 1000,
   });
 }

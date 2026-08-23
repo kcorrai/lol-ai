@@ -1,5 +1,10 @@
 import Anthropic from "@anthropic-ai/sdk";
-import type { AiProvider, AiCompletionOptions, AiCompletionResult, ChatMessage } from "@/lib/ai/types";
+import type {
+  AiProvider,
+  AiCompletionOptions,
+  AiCompletionResult,
+  ChatMessage,
+} from "@/lib/ai/types";
 import type { AiTier } from "@/lib/ai/client";
 
 const FULL_MODEL = process.env.AI_FULL_MODEL ?? "claude-sonnet-4-6";
@@ -25,7 +30,8 @@ export function createAnthropicProvider(tier: AiTier = "full"): AiProvider {
           max_tokens: options.maxTokens ?? DEFAULT_MAX_TOKENS,
           temperature: options.temperature ?? DEFAULT_TEMPERATURE,
           // Instruct JSON output — Anthropic has no response_format param
-          system: systemPrompt + "\n\nRespond with valid JSON only. Do not include markdown fences.",
+          system:
+            systemPrompt + "\n\nRespond with valid JSON only. Do not include markdown fences.",
           messages: [{ role: "user", content: userMessage }],
         },
         { signal: AbortSignal.timeout(45_000) }

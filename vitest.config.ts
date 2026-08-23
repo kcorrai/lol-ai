@@ -23,20 +23,70 @@ export default defineConfig({
         // Files where coverage was built deliberately and a drop means a real defence was removed.
         // These are all at 100% today (TASK-263/265/266/267/276), so anything less is a regression
         // rather than a shortfall — which is why they are pinned per file instead of per directory.
-        "src/lib/api/withAdminAuth.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
-        "src/lib/auth/authorization.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
-        "src/lib/auth/planLimits.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
-        "src/lib/auth/totpService.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
+        "src/lib/api/withAdminAuth.ts": {
+          statements: 100,
+          branches: 100,
+          functions: 100,
+          lines: 100,
+        },
+        "src/lib/auth/authorization.ts": {
+          statements: 100,
+          branches: 100,
+          functions: 100,
+          lines: 100,
+        },
+        "src/lib/auth/planLimits.ts": {
+          statements: 100,
+          branches: 100,
+          functions: 100,
+          lines: 100,
+        },
+        "src/lib/auth/totpService.ts": {
+          statements: 100,
+          branches: 100,
+          functions: 100,
+          lines: 100,
+        },
         "src/lib/db/userLock.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
-        "src/lib/lemonsqueezy/lsWebhookVerify.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
-        "src/lib/subscription/subscriptionService.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
+        "src/lib/lemonsqueezy/lsWebhookVerify.ts": {
+          statements: 100,
+          branches: 100,
+          functions: 100,
+          lines: 100,
+        },
+        "src/lib/subscription/subscriptionService.ts": {
+          statements: 100,
+          branches: 100,
+          functions: 100,
+          lines: 100,
+        },
         // The marketplace's money and its state machine. A drop here means a
         // defence was removed from the part of the section that decides who
         // gets paid (LA-19).
-        "src/domains/marketplace/policy.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
-        "src/domains/marketplace/transitions.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
-        "src/domains/marketplace/rating.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
-        "src/domains/marketplace/redact.ts": { statements: 100, branches: 100, functions: 100, lines: 100 },
+        "src/domains/marketplace/policy.ts": {
+          statements: 100,
+          branches: 100,
+          functions: 100,
+          lines: 100,
+        },
+        "src/domains/marketplace/transitions.ts": {
+          statements: 100,
+          branches: 100,
+          functions: 100,
+          lines: 100,
+        },
+        "src/domains/marketplace/rating.ts": {
+          statements: 100,
+          branches: 100,
+          functions: 100,
+          lines: 100,
+        },
+        "src/domains/marketplace/redact.ts": {
+          statements: 100,
+          branches: 100,
+          functions: 100,
+          lines: 100,
+        },
       },
     },
     projects: [

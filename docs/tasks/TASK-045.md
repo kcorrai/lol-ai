@@ -44,7 +44,7 @@ src/domains/matchup/
 ### Tip TanÄ±mlarÄ± (`matchup.types.ts`)
 
 ```typescript
-import type { Position } from '@/types/common.types';
+import type { Position } from "@/types/common.types";
 
 export interface PowerSpike {
   level?: number;
@@ -54,7 +54,7 @@ export interface PowerSpike {
 
 export interface TradeScenario {
   scenario: string;
-  advantage: 'you' | 'opponent' | 'even';
+  advantage: "you" | "opponent" | "even";
   tip: string;
 }
 
@@ -63,7 +63,7 @@ export interface MatchupAnalysis {
   opponent: string;
   role: Position;
   laneAnalysis: {
-    advantage: 'favorable' | 'unfavorable' | 'even';
+    advantage: "favorable" | "unfavorable" | "even";
     summary: string;
     levels1to3: string;
     level6Plan: string;
@@ -96,4 +96,3 @@ export interface MatchupAnalysis {
 ## BaÄŸÄ±mlÄ±lÄ±klar
 
 - BaÄŸÄ±msÄ±z â€” paralel baÅŸlanabilir.
-

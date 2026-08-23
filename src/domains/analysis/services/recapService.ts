@@ -74,8 +74,18 @@ export async function buildRecapData(userId: string, riotAccountId: string): Pro
   const start = seasonStart();
 
   const matches = await prisma.matchParticipant.findMany({
-    where: { puuid: puuid ?? "", match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: start } } },
-    select: { won: true, kills: true, deaths: true, assists: true, championName: true, match: { select: { gameStart: true } } },
+    where: {
+      puuid: puuid ?? "",
+      match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: start } },
+    },
+    select: {
+      won: true,
+      kills: true,
+      deaths: true,
+      assists: true,
+      championName: true,
+      match: { select: { gameStart: true } },
+    },
     orderBy: { match: { gameStart: "asc" } },
   });
 
@@ -88,7 +98,12 @@ export async function buildRecapData(userId: string, riotAccountId: string): Pro
   // Best streak
   let bestStreak = 0;
   let streak = 0;
-  for (const m of matches) { if (m.won) { streak++; bestStreak = Math.max(bestStreak, streak); } else streak = 0; }
+  for (const m of matches) {
+    if (m.won) {
+      streak++;
+      bestStreak = Math.max(bestStreak, streak);
+    } else streak = 0;
+  }
 
   // Worst day (most losses in a single day)
   const byDay = new Map<string, number>();
@@ -104,26 +119,34 @@ export async function buildRecapData(userId: string, riotAccountId: string): Pro
   }
 
   // Total K/D/A
-  let totalKills = 0, totalDeaths = 0, totalAssists = 0;
+  let totalKills = 0,
+    totalDeaths = 0,
+    totalAssists = 0;
   for (const m of matches) {
     totalKills += m.kills;
     totalDeaths += m.deaths;
     totalAssists += m.assists;
   }
-  const estimatedHours = Math.round(totalMatches * 30 / 60);
+  const estimatedHours = Math.round((totalMatches * 30) / 60);
 
   // Top champions by games
   const champGames = new Map<string, { w: number; g: number; kda: number }>();
   for (const m of matches) {
     const s = champGames.get(m.championName) ?? { w: 0, g: 0, kda: 0 };
-    s.g++; if (m.won) s.w++;
+    s.g++;
+    if (m.won) s.w++;
     s.kda += (m.kills + m.assists) / Math.max(m.deaths, 1);
     champGames.set(m.championName, s);
   }
   const topChampions = [...champGames.entries()]
     .sort((a, b) => b[1].g - a[1].g)
     .slice(0, 3)
-    .map(([name, s]) => ({ name, games: s.g, winRate: Math.round((s.w / s.g) * 100), kda: Math.round((s.kda / s.g) * 100) / 100 }));
+    .map(([name, s]) => ({
+      name,
+      games: s.g,
+      winRate: Math.round((s.w / s.g) * 100),
+      kda: Math.round((s.kda / s.g) * 100) / 100,
+    }));
   const topChamp = topChampions[0] ?? { name: "Unknown", games: 0, winRate: 0, kda: 0 };
 
   // Rank journey from RankedHistory
@@ -151,16 +174,40 @@ export async function buildRecapData(userId: string, riotAccountId: string): Pro
     select: { targets: true },
   });
   let nextGoal: string | null = null;
-  if (plan && Array.isArray(plan.targets) && (plan.targets as Array<{ label?: string }>)[0]?.label) {
+  if (
+    plan &&
+    Array.isArray(plan.targets) &&
+    (plan.targets as Array<{ label?: string }>)[0]?.label
+  ) {
     nextGoal = (plan.targets as Array<{ label: string }>)[0].label;
   }
 
-  const base = { seasonLabel: label, totalMatches, winRate, lpDelta, startRank, endRank, topChampion: topChamp, topChampions, bestStreak, totalKills, totalDeaths, totalAssists, estimatedHours, worstDay, resolvedHabit: habit?.habitType ?? null, nextGoal };
+  const base = {
+    seasonLabel: label,
+    totalMatches,
+    winRate,
+    lpDelta,
+    startRank,
+    endRank,
+    topChampion: topChamp,
+    topChampions,
+    bestStreak,
+    totalKills,
+    totalDeaths,
+    totalAssists,
+    estimatedHours,
+    worstDay,
+    resolvedHabit: habit?.habitType ?? null,
+    nextGoal,
+  };
   const summary = await aiSummary(base);
   return { ...base, aiSummary: summary };
 }
 
-export async function generateOrGetRecap(userId: string, riotAccountId: string): Promise<SeasonRecap> {
+export async function generateOrGetRecap(
+  userId: string,
+  riotAccountId: string
+): Promise<SeasonRecap> {
   const label = currentSeasonLabel();
   const existing = await prisma.seasonRecap.findUnique({
     where: { userId_seasonLabel: { userId, seasonLabel: label } },
@@ -169,7 +216,9 @@ export async function generateOrGetRecap(userId: string, riotAccountId: string):
     const d = existing.data as Record<string, unknown>;
     // Invalidate cache if missing new fields added in schema update
     if (d.topChampions !== undefined) return existing;
-    await prisma.seasonRecap.delete({ where: { userId_seasonLabel: { userId, seasonLabel: label } } });
+    await prisma.seasonRecap.delete({
+      where: { userId_seasonLabel: { userId, seasonLabel: label } },
+    });
   }
 
   const data = await buildRecapData(userId, riotAccountId);

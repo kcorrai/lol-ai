@@ -55,7 +55,13 @@ const GROUPS: CompareGroup[] = [
 
 function Cell({ value, tone }: { value: string; tone?: "pro" | "team" }): React.JSX.Element {
   const color =
-    value === "—" ? "text-ink-400" : tone === "pro" ? "text-acid-500" : tone === "team" ? "text-fg-1" : "text-fg-2";
+    value === "—"
+      ? "text-ink-400"
+      : tone === "pro"
+        ? "text-acid-500"
+        : tone === "team"
+          ? "text-fg-1"
+          : "text-fg-2";
   return (
     <span className={`text-center font-mono text-[12.5px] tabular-nums ${color}`}>{value}</span>
   );
@@ -104,7 +110,8 @@ export function PricingCompare(): React.JSX.Element {
       </div>
 
       <p className="mt-3 font-mono text-[10px] uppercase tracking-wide text-fg-4">
-        All plans include unlimited match sync, the free tools, and dashboard access. No hidden fees.
+        All plans include unlimited match sync, the free tools, and dashboard access. No hidden
+        fees.
       </p>
     </section>
   );

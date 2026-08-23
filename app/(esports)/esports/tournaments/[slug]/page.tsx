@@ -36,7 +36,10 @@ interface PageProps {
 function tournamentName(entry: TournamentEntry): string {
   const { tournament, league } = entry;
   const titleCase = (value: string): string =>
-    value.replace(/[_-]+/g, " ").replace(/\b\w/g, (character) => character.toUpperCase()).trim();
+    value
+      .replace(/[_-]+/g, " ")
+      .replace(/\b\w/g, (character) => character.toUpperCase())
+      .trim();
 
   const slug = tournament.slug.toLowerCase();
   const prefix = league.slug.toLowerCase();
@@ -230,7 +233,11 @@ export default async function TournamentPage({ params }: PageProps): Promise<Rea
         </p>
       ) : (
         stages.map((stage, index) => (
-          <Stage key={`${stage.stageName}-${stage.sectionName}-${index}`} stage={stage} startTimes={startTimes} />
+          <Stage
+            key={`${stage.stageName}-${stage.sectionName}-${index}`}
+            stage={stage}
+            startTimes={startTimes}
+          />
         ))
       )}
 

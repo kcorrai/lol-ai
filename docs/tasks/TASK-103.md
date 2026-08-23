@@ -59,17 +59,17 @@ Regional endpoint: match details, account lookup by puuid
 // src/domains/riot/config/regions.ts
 
 export const RIOT_REGIONS = {
-  EUW1:  { label: "Batı Avrupa",    platform: "euw1",  regional: "europe"   },
+  EUW1: { label: "Batı Avrupa", platform: "euw1", regional: "europe" },
   EUNE1: { label: "Kuzey Doğu Avrupa", platform: "eune1", regional: "europe" },
-  TR1:   { label: "Türkiye",        platform: "tr1",   regional: "europe"   },
-  RU:    { label: "Rusya",          platform: "ru",    regional: "europe"   },
-  NA1:   { label: "Kuzey Amerika",  platform: "na1",   regional: "americas" },
-  BR1:   { label: "Brezilya",       platform: "br1",   regional: "americas" },
-  LAN1:  { label: "Latin Am. Kuzey", platform: "lan",  regional: "americas" },
-  LAS1:  { label: "Latin Am. Güney", platform: "las",  regional: "americas" },
-  KR:    { label: "Kore",           platform: "kr",    regional: "asia"     },
-  JP1:   { label: "Japonya",        platform: "jp1",   regional: "asia"     },
-  OC1:   { label: "Okyanusya",      platform: "oc1",   regional: "sea"      },
+  TR1: { label: "Türkiye", platform: "tr1", regional: "europe" },
+  RU: { label: "Rusya", platform: "ru", regional: "europe" },
+  NA1: { label: "Kuzey Amerika", platform: "na1", regional: "americas" },
+  BR1: { label: "Brezilya", platform: "br1", regional: "americas" },
+  LAN1: { label: "Latin Am. Kuzey", platform: "lan", regional: "americas" },
+  LAS1: { label: "Latin Am. Güney", platform: "las", regional: "americas" },
+  KR: { label: "Kore", platform: "kr", regional: "asia" },
+  JP1: { label: "Japonya", platform: "jp1", regional: "asia" },
+  OC1: { label: "Okyanusya", platform: "oc1", regional: "sea" },
 } as const;
 
 export type RiotRegion = keyof typeof RIOT_REGIONS;
@@ -152,16 +152,16 @@ src/types/common.types.ts                             ← RiotRegion tipi ekle
 ## Test Plan
 
 ```typescript
-describe('RiotApiClient', () => {
-  it('TR1 region → tr1.api.riotgames.com platform URL kullanıyor')
-  it('TR1 region → europe.api.riotgames.com regional URL kullanıyor')
-  it('KR region → asia.api.riotgames.com regional URL kullanıyor')
-  it('geçersiz region → type error (TS compile-time)')
-})
+describe("RiotApiClient", () => {
+  it("TR1 region → tr1.api.riotgames.com platform URL kullanıyor");
+  it("TR1 region → europe.api.riotgames.com regional URL kullanıyor");
+  it("KR region → asia.api.riotgames.com regional URL kullanıyor");
+  it("geçersiz region → type error (TS compile-time)");
+});
 
-describe('rateLimit', () => {
-  it('EUW1 ve TR1 için ayrı Redis key kullanıyor')
-})
+describe("rateLimit", () => {
+  it("EUW1 ve TR1 için ayrı Redis key kullanıyor");
+});
 ```
 
 ---

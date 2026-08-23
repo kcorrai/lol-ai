@@ -20,7 +20,9 @@ export function LessonClip({ block }: { block: ClipBlock }): React.ReactElement 
         />
         <p className="mt-4 text-[13.5px] leading-relaxed text-text-body">{block.note}</p>
       </div>
-      <figcaption className="mt-2 font-mono text-[11px] text-text-faint">{block.caption}</figcaption>
+      <figcaption className="mt-2 font-mono text-[11px] text-text-faint">
+        {block.caption}
+      </figcaption>
     </figure>
   );
 }

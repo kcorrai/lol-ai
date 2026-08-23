@@ -12,18 +12,19 @@ The question is: what approach should we use, and are we ready for it?
 
 The `performance_snapshots` table is the primary feature store:
 
-| Feature | Column | Type | ML readiness |
-|---|---|---|---|
-| Win rate | `winRate` | Decimal | ✅ Target variable |
-| KDA | `avgKda` | Decimal | ✅ Strong predictor |
-| CS/min | `avgCsPerMinute` | Decimal | ✅ Strong predictor |
-| Vision score | `avgVisionScore` | Decimal | ✅ Moderate predictor |
-| Tilt score | `tiltScore` | Decimal? | ⚠️ Nullable (~30% fill rate) |
-| Champion pool | `mostPlayedChampionIds` | Int[] | ⚠️ Needs embedding |
-| Period bounds | `periodStart`, `periodEnd` | DateTime | ✅ Temporal features |
-| Games analyzed | `gamesAnalyzed` | Int | ✅ Sample size weight |
+| Feature        | Column                     | Type     | ML readiness                 |
+| -------------- | -------------------------- | -------- | ---------------------------- |
+| Win rate       | `winRate`                  | Decimal  | ✅ Target variable           |
+| KDA            | `avgKda`                   | Decimal  | ✅ Strong predictor          |
+| CS/min         | `avgCsPerMinute`           | Decimal  | ✅ Strong predictor          |
+| Vision score   | `avgVisionScore`           | Decimal  | ✅ Moderate predictor        |
+| Tilt score     | `tiltScore`                | Decimal? | ⚠️ Nullable (~30% fill rate) |
+| Champion pool  | `mostPlayedChampionIds`    | Int[]    | ⚠️ Needs embedding           |
+| Period bounds  | `periodStart`, `periodEnd` | DateTime | ✅ Temporal features         |
+| Games analyzed | `gamesAnalyzed`            | Int      | ✅ Sample size weight        |
 
 Missing features that would improve model accuracy:
+
 - **Rank tier** — absolute skill level matters (challenger CS/min ≠ gold CS/min)
 - **Position/role** — CS/min is irrelevant for supports, critical for carries
 - **Champion mastery** — playing off-meta champions has confounding effect on WR
@@ -36,12 +37,12 @@ These are available in `RankedHistory` and `MatchParticipant` but would require 
 
 Minimum data thresholds for reliable model training:
 
-| Approach | Min snapshots | Min unique accounts |
-|---|---|---|
-| Rule-based (current) | 0 | 0 |
-| Linear regression per role | ~5,000 | ~2,000 |
-| Gradient boosting (no role split) | ~10,000 | ~5,000 |
-| Gradient boosting (per-role models) | ~50,000 | ~20,000 |
+| Approach                            | Min snapshots | Min unique accounts |
+| ----------------------------------- | ------------- | ------------------- |
+| Rule-based (current)                | 0             | 0                   |
+| Linear regression per role          | ~5,000        | ~2,000              |
+| Gradient boosting (no role split)   | ~10,000       | ~5,000              |
+| Gradient boosting (per-role models) | ~50,000       | ~20,000             |
 
 Current estimate: the product launched recently — we have well under 5,000 snapshots. Statistical models would overfit or produce misleading confidence intervals at this stage.
 
@@ -49,13 +50,13 @@ Current estimate: the product launched recently — we have well under 5,000 sna
 
 Published academic research and community analyses ([op.gg data studies, League of Graphs](https://www.leagueofgraphs.com)) consistently identify the following metrics as win-rate correlated:
 
-| Metric | Empirical coefficient (approximate) | Source quality |
-|---|---|---|
-| CS/min +1 | +1.5–2% WR (ADC/Mid) | High confidence |
-| CS/min +1 | +0.5–1% WR (Top/Jungle) | High confidence |
-| Deaths/game -1 | +2–3% WR | High confidence |
-| Vision score +5 | +0.4–0.8% WR (Support) | Moderate confidence |
-| KDA +1 | +1.5–2.5% WR | High confidence (circular: WR causes KDA) |
+| Metric          | Empirical coefficient (approximate) | Source quality                            |
+| --------------- | ----------------------------------- | ----------------------------------------- |
+| CS/min +1       | +1.5–2% WR (ADC/Mid)                | High confidence                           |
+| CS/min +1       | +0.5–1% WR (Top/Jungle)             | High confidence                           |
+| Deaths/game -1  | +2–3% WR                            | High confidence                           |
+| Vision score +5 | +0.4–0.8% WR (Support)              | Moderate confidence                       |
+| KDA +1          | +1.5–2.5% WR                        | High confidence (circular: WR causes KDA) |
 
 These coefficients are role-dependent and approximate — they should be treated as illustrative, not precise, until we have our own data to calibrate against.
 
@@ -66,6 +67,7 @@ These coefficients are role-dependent and approximate — they should be treated
 ### Phase 5 (now): Rule-based prediction service
 
 Ship a `performancePredictionService.ts` that uses the empirical coefficients above with explicit uncertainty intervals. Key design choices:
+
 - Predictions are **estimates with ranges**, not point predictions
 - Coefficients are **role-aware** (different tables for ADC vs. Support vs. Jungle)
 - The service interface is designed so that a future ML model can drop in as a replacement
@@ -74,6 +76,7 @@ Ship a `performancePredictionService.ts` that uses the empirical coefficients ab
 ### Phase 7 (post 10k snapshots): Gradient boosting model
 
 Once we have sufficient data, train a **LightGBM** model (via Python microservice):
+
 - Features: all `performance_snapshots` columns + position from match history + rank tier
 - Target: 28-day win rate delta (did improving metric X correlate with WR improvement?)
 - Deployment: Python inference endpoint behind `/api/ml/predict-improvement`, called from the existing service interface
@@ -111,12 +114,14 @@ LightGBM model artifacts (S3/R2 bucket)
 ## Consequences
 
 **Positive:**
+
 - Immediate value: rule-based predictions ship now with no data dependency
 - Interface is stable: upgrading to ML model later requires zero UI changes
 - Transparent uncertainty: ranges are shown to users, not false precision
 - Data collection is already happening via `performanceSnapshotWorker`
 
 **Negative:**
+
 - Rule-based coefficients are approximate and not calibrated to our user base
 - Real ML requires a Python microservice — adds operational complexity
 - Position data is not yet in `performance_snapshots` — rule-based predictions use conservative blended coefficients for now

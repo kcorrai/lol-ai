@@ -63,9 +63,7 @@ export async function middleware(req: NextRequest) {
   // public storefront, and the acquisition surface for the whole marketplace —
   // starts with `/coach`, so a plain `startsWith` would put a login wall in
   // front of it the moment the matcher below grew to cover it.
-  const isProtected = PROTECTED_PATHS.some(
-    (p) => pathname === p || pathname.startsWith(`${p}/`)
-  );
+  const isProtected = PROTECTED_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
   if (isProtected && !isAuthenticated) {
     const loginUrl = new URL("/login", req.url);
     loginUrl.searchParams.set("callbackUrl", pathname);

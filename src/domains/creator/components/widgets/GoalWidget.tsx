@@ -53,11 +53,7 @@ export function GoalWidget({ payload }: { payload: OverlayPayload }): JSX.Elemen
       </div>
 
       <span className="font-mono text-sm text-fg-2">
-        {reached ? (
-          <OverlayAccent>Goal reached</OverlayAccent>
-        ) : (
-          `${goal.lpRemaining} LP to go`
-        )}
+        {reached ? <OverlayAccent>Goal reached</OverlayAccent> : `${goal.lpRemaining} LP to go`}
       </span>
       <OverlayBadge />
     </OverlayShell>

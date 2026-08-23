@@ -21,10 +21,9 @@ const getTournamentIndex = vi.fn<() => Promise<{ tournament: { slug: string } }[
 
 // `prominentLeagues` is the rule under test here, so the real one runs.
 vi.mock("@/domains/esports/services/leagueService", async () => {
-  const actual =
-    await vi.importActual<typeof import("@/domains/esports/services/leagueService")>(
-      "@/domains/esports/services/leagueService"
-    );
+  const actual = await vi.importActual<typeof import("@/domains/esports/services/leagueService")>(
+    "@/domains/esports/services/leagueService"
+  );
   return {
     prominentLeagues: actual.prominentLeagues,
     getLeagues: () => getLeagues(),
@@ -44,10 +43,9 @@ vi.mock("@/domains/esports/services/scheduleService", () => ({
 // The has-content rule itself is `indexableTeams`, and it has its own tests —
 // this suite asserts that the sitemap actually applies it, so the real one runs.
 vi.mock("@/domains/esports/services/teamService", async () => {
-  const actual =
-    await vi.importActual<typeof import("@/domains/esports/services/teamService")>(
-      "@/domains/esports/services/teamService"
-    );
+  const actual = await vi.importActual<typeof import("@/domains/esports/services/teamService")>(
+    "@/domains/esports/services/teamService"
+  );
   return { indexableTeams: actual.indexableTeams, getTeams: () => getTeams() };
 });
 

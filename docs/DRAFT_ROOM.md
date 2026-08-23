@@ -1,7 +1,7 @@
 # Live Draft Room — Feature Specification
 
-Shared reference for TASK-297 … TASK-306. Individual task files describe *what to
-build*; this file describes *what it is*.
+Shared reference for TASK-297 … TASK-306. Individual task files describe _what to
+build_; this file describes _what it is_.
 
 ---
 
@@ -17,23 +17,23 @@ you can see what the pick actually does to your comp.
 
 ### Parity targets (drafter.lol)
 
-| Their feature | Ours |
-|---|---|
-| One link for the whole series | Yes — `/draft/<code>`, `?game=N` selects the game |
-| Normal / Fearless / Ironman | Normal / Fearless / Team Fearless (§3) |
-| 1–5 games | Yes |
-| Blue / Red drafter + spectator roles | Yes, token-based (§4) |
-| Ready check before the draft starts | Yes |
-| Champion grid with role filter + search | Yes |
-| Per-turn countdown | Yes, 30 s default, configurable |
-| Disabled champions before the draft | Yes |
-| Copy draft link | Yes |
-| Save / export the finished draft | Export into `/tools/draft-analyzer` (§6) |
+| Their feature                           | Ours                                              |
+| --------------------------------------- | ------------------------------------------------- |
+| One link for the whole series           | Yes — `/draft/<code>`, `?game=N` selects the game |
+| Normal / Fearless / Ironman             | Normal / Fearless / Team Fearless (§3)            |
+| 1–5 games                               | Yes                                               |
+| Blue / Red drafter + spectator roles    | Yes, token-based (§4)                             |
+| Ready check before the draft starts     | Yes                                               |
+| Champion grid with role filter + search | Yes                                               |
+| Per-turn countdown                      | Yes, 30 s default, configurable                   |
+| Disabled champions before the draft     | Yes                                               |
+| Copy draft link                         | Yes                                               |
+| Save / export the finished draft        | Export into `/tools/draft-analyzer` (§6)          |
 
 ### Where we go further
 
 1. **Live Draft Intelligence** — a side panel, visible only to your own team
-   during the draft, that ranks the champions you should take *right now* from the
+   during the draft, that ranks the champions you should take _right now_ from the
    patch's real win-rate and counter data, and flags what to ban.
 2. **Live comp readout** — AD/AP split, frontline, engage and scaling recomputed
    after every lock, reusing `draftTeamEval`.
@@ -48,20 +48,20 @@ you can see what the pick actually does to your comp.
 
 Standard competitive tournament order. 20 steps, indexed 0–19.
 
-| # | Side | Type | | # | Side | Type |
-|---|---|---|---|---|---|---|
-| 0 | Blue | Ban 1 | | 10 | Blue | Pick 3 |
-| 1 | Red | Ban 1 | | 11 | Red | Pick 3 |
-| 2 | Blue | Ban 2 | | 12 | Red | Ban 4 |
-| 3 | Red | Ban 2 | | 13 | Blue | Ban 4 |
-| 4 | Blue | Ban 3 | | 14 | Red | Ban 5 |
-| 5 | Red | Ban 3 | | 15 | Blue | Ban 5 |
-| 6 | Blue | Pick 1 | | 16 | Red | Pick 4 |
-| 7 | Red | Pick 1 | | 17 | Blue | Pick 4 |
-| 8 | Red | Pick 2 | | 18 | Blue | Pick 5 |
-| 9 | Blue | Pick 2 | | 19 | Red | Pick 5 |
+| #   | Side | Type   |     | #   | Side | Type   |
+| --- | ---- | ------ | --- | --- | ---- | ------ |
+| 0   | Blue | Ban 1  |     | 10  | Blue | Pick 3 |
+| 1   | Red  | Ban 1  |     | 11  | Red  | Pick 3 |
+| 2   | Blue | Ban 2  |     | 12  | Red  | Ban 4  |
+| 3   | Red  | Ban 2  |     | 13  | Blue | Ban 4  |
+| 4   | Blue | Ban 3  |     | 14  | Red  | Ban 5  |
+| 5   | Red  | Ban 3  |     | 15  | Blue | Ban 5  |
+| 6   | Blue | Pick 1 |     | 16  | Red  | Pick 4 |
+| 7   | Red  | Pick 1 |     | 17  | Blue | Pick 4 |
+| 8   | Red  | Pick 2 |     | 18  | Blue | Pick 5 |
+| 9   | Blue | Pick 2 |     | 19  | Red  | Pick 5 |
 
-Blue side always acts first — that is how the game itself works. Which *team*
+Blue side always acts first — that is how the game itself works. Which _team_
 sits on blue side is a per-game property (§3), so "first selection" is expressed
 by putting that team on blue rather than by mutating the sequence.
 
@@ -119,7 +119,7 @@ Series expire 7 days after creation and are pruned by the existing cleanup cron.
 - Default 30 s per action, settable 15–120 s at creation, or `0` for untimed.
 - The server stores `turnStartedAt`; clients derive the countdown locally
   (ADR-016).
-- On expiry the turn auto-locks. Bans auto-lock to *no ban*; picks auto-lock to
+- On expiry the turn auto-locks. Bans auto-lock to _no ban_; picks auto-lock to
   the highest-win-rate legal champion for the role still missing. This is a pure
   function of stored state, so every observer resolves it identically.
 
@@ -127,16 +127,16 @@ Series expire 7 days after creation and are pruned by the existing cleanup cron.
 
 ## 6. Surfaces
 
-| Route | Purpose |
-|---|---|
-| `/draft` | Create form — team names, mode, game count, timer, disabled champions |
-| `/draft/[code]` | The room. `?game=N` selects a game, `?as=<token>` claims a seat |
-| `/api/draft` | `POST` create |
-| `/api/draft/[code]` | `GET` state |
-| `/api/draft/[code]/ready` | `POST` toggle ready for a side |
-| `/api/draft/[code]/action` | `POST` lock a ban or pick |
-| `/api/draft/[code]/undo` | `POST` step back one action (both sides must consent) |
-| `/api/draft/[code]/result` | `POST` record the winner of a completed game |
+| Route                      | Purpose                                                               |
+| -------------------------- | --------------------------------------------------------------------- |
+| `/draft`                   | Create form — team names, mode, game count, timer, disabled champions |
+| `/draft/[code]`            | The room. `?game=N` selects a game, `?as=<token>` claims a seat       |
+| `/api/draft`               | `POST` create                                                         |
+| `/api/draft/[code]`        | `GET` state                                                           |
+| `/api/draft/[code]/ready`  | `POST` toggle ready for a side                                        |
+| `/api/draft/[code]/action` | `POST` lock a ban or pick                                             |
+| `/api/draft/[code]/undo`   | `POST` step back one action (both sides must consent)                 |
+| `/api/draft/[code]/result` | `POST` record the winner of a completed game                          |
 
 The finished draft links out to
 `/tools/draft-analyzer?blue=…&red=…`, which already renders the full evaluation.

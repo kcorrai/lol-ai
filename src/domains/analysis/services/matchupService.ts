@@ -39,7 +39,7 @@ export async function buildMatchupMatrix(
   const cached = await getCached(cacheKey);
   if (cached) return cached as MatchupMatrix;
 
-  const positionFilter = position ? ({ position: position as Position }) : {};
+  const positionFilter = position ? { position: position as Position } : {};
 
   const userParticipants = await prisma.matchParticipant.findMany({
     where: { puuid: puuid ?? "", match: { queueType: "RANKED_SOLO_5x5" }, ...positionFilter },
@@ -58,7 +58,13 @@ export async function buildMatchupMatrix(
   });
 
   if (userParticipants.length === 0) {
-    return { playerChampions: [], opponentChampions: [], cells: [], generatedAt: new Date().toISOString(), position: position ?? null };
+    return {
+      playerChampions: [],
+      opponentChampions: [],
+      cells: [],
+      generatedAt: new Date().toISOString(),
+      position: position ?? null,
+    };
   }
 
   const matchIds = [...new Set(userParticipants.map((p) => p.matchId))];
@@ -85,9 +91,7 @@ export async function buildMatchupMatrix(
 
   for (const up of userParticipants) {
     const others = byMatch.get(up.matchId) ?? [];
-    const laneOp = others.find(
-      (o) => o.position === up.position && o.teamId !== up.teamId
-    );
+    const laneOp = others.find((o) => o.position === up.position && o.teamId !== up.teamId);
     if (!laneOp) continue;
 
     const key = `${up.championName}|||${laneOp.championName}`;
@@ -118,10 +122,19 @@ export async function buildMatchupMatrix(
   const opponentFreq = new Map<string, number>();
   for (const c of cells) {
     playerGames.set(c.playerChampion, (playerGames.get(c.playerChampion) ?? 0) + c.gamesPlayed);
-    opponentFreq.set(c.opponentChampion, (opponentFreq.get(c.opponentChampion) ?? 0) + c.gamesPlayed);
+    opponentFreq.set(
+      c.opponentChampion,
+      (opponentFreq.get(c.opponentChampion) ?? 0) + c.gamesPlayed
+    );
   }
-  const topPlayers = [...playerGames.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([k]) => k);
-  const topOpponents = [...opponentFreq.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12).map(([k]) => k);
+  const topPlayers = [...playerGames.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8)
+    .map(([k]) => k);
+  const topOpponents = [...opponentFreq.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 12)
+    .map(([k]) => k);
 
   const filteredCells = cells.filter(
     (c) => topPlayers.includes(c.playerChampion) && topOpponents.includes(c.opponentChampion)

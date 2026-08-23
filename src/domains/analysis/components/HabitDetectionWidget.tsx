@@ -6,15 +6,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 const SEVERITY_STYLE: Record<string, string> = {
-  high:   "border-danger/30 bg-danger/5",
+  high: "border-danger/30 bg-danger/5",
   medium: "border-warning/30 bg-warning/5",
-  low:    "border-border bg-surface-2",
+  low: "border-border bg-surface-2",
 };
 
 const SEVERITY_ICON_COLOR: Record<string, string> = {
-  high:   "text-danger",
+  high: "text-danger",
   medium: "text-warning",
-  low:    "text-text-muted",
+  low: "text-text-muted",
 };
 
 const WEEK_LABEL: Record<number, string> = {
@@ -49,7 +49,9 @@ export function HabitDetectionWidget({ riotAccountId }: Props) {
         <CheckCircle2 className="h-5 w-5 shrink-0 text-success" />
         <div>
           <p className="text-sm font-medium text-text">No detected habits</p>
-          <p className="text-xs text-text-muted">Your gameplay looks consistent — play a lot this week!</p>
+          <p className="text-xs text-text-muted">
+            Your gameplay looks consistent — play a lot this week!
+          </p>
         </div>
       </div>
     );

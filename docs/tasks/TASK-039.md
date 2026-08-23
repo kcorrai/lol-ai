@@ -45,16 +45,16 @@ src/domains/counter/
 ### Tip TanÄ±mlarÄ± (`counter.types.ts`)
 
 ```typescript
-import type { Position } from '@/types/common.types';
+import type { Position } from "@/types/common.types";
 
 export interface CounterEntry {
   champion: string;
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: "easy" | "medium" | "hard";
   reasonWhy: string;
   laneAdvantage: string;
   watchOut: string;
   buildHint: string;
-  tier: 'S' | 'A' | 'B';
+  tier: "S" | "A" | "B";
 }
 
 export interface GeneralCounterResult {
@@ -82,4 +82,3 @@ export interface GeneralCounterResult {
 
 - `index.ts`'de ÅŸimdilik sadece tipleri export et. Servis ve component'ler ilgili task'larda eklenecek.
 - Component dosyalarÄ± ÅŸimdilik `export {}` ile boÅŸ bÄ±rakÄ±labilir â€” sadece klasÃ¶r yapÄ±sÄ± kurulsun.
-

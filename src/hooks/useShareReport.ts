@@ -10,7 +10,6 @@ interface ShareResult {
 
 export function useShareReport(reportId: string) {
   return useMutation<ShareResult, Error>({
-    mutationFn: () =>
-      apiFetch(`/api/coaching/reports/${reportId}/share`, { method: "POST" }),
+    mutationFn: () => apiFetch(`/api/coaching/reports/${reportId}/share`, { method: "POST" }),
   });
 }

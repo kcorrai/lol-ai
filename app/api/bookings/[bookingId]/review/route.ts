@@ -17,15 +17,7 @@ const ReviewBody = z.object({
         timestampSeconds: z.number().int().min(0).max(36_000),
         title: z.string().trim().min(1).max(120),
         body: z.string().trim().max(2000).default(""),
-        category: z.enum([
-          "LANING",
-          "MACRO",
-          "MICRO",
-          "VISION",
-          "DRAFT",
-          "POSITIONING",
-          "MENTAL",
-        ]),
+        category: z.enum(["LANING", "MACRO", "MICRO", "VISION", "DRAFT", "POSITIONING", "MENTAL"]),
       })
     )
     .max(60)

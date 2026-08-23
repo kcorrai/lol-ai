@@ -3,6 +3,7 @@
 Scored **78/100**.
 
 ## Problem
+
 `src/inngest/client.ts` logged a warning when `INNGEST_SIGNING_KEY` was missing in production, then
 carried on:
 
@@ -18,11 +19,13 @@ Without the key the Inngest SDK falls back to dev mode and accepts every request
 silently published all of that to the internet, and the only signal was a log line nobody reads.
 
 ## Change
+
 The guard now throws at module load, so a misconfigured deployment fails on its first cold start
 instead of serving an open endpoint. A broken deploy is recoverable; an unauthenticated
 GDPR-erasure endpoint is not.
 
 ## Why the build phase is exempt
+
 Throwing unconditionally on `NODE_ENV === "production"` would have broken `next build`, which also
 runs with `NODE_ENV=production` — and 35 files import this module, so the build evaluates it.
 
@@ -36,6 +39,7 @@ assigns it at `node_modules/next/dist/build/index.js:1054` from `PHASE_PRODUCTIO
 `shared/lib/constants.js:294`.
 
 ## ⚠️ Deployment prerequisite
+
 **`INNGEST_SIGNING_KEY` must be set in the Vercel production environment before this ships.** It is
 absent from `.env.local`. If it is also absent in Vercel, the first request after deploy will throw —
 which is the intended behaviour, and is the correct reading of the situation: it means the endpoint
@@ -44,6 +48,7 @@ was already accepting unsigned requests and the app was relying on obscurity.
 It is documented in `.env.example:126`.
 
 ## Tests
+
 `src/inngest/client.test.ts` — 6 tests. The guard is a module-load side effect, so each case runs
 `vi.resetModules()` then a dynamic `import()`; re-reading env against an already-loaded module would
 not re-run it. Covers: production without a key throws; production with a key loads; `development`
@@ -54,6 +59,7 @@ The `inngest` mock is a `class`, not `vi.fn().mockImplementation(() => …)`: th
 `new Inngest(...)` and an arrow function is not newable.
 
 ## Verification
+
 `npx vitest run src/inngest/client.test.ts` — 6 passed. Full suite green, `tsc` and ESLint clean.
 
 **Not run:** a full `next build`. Dev servers were listening on ports 3000 and 3001 during this work

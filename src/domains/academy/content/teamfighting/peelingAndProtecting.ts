@@ -29,10 +29,22 @@ export const peelingAndProtecting: Lesson = {
       caption: "What peel actually buys",
       head: ["Tool", "Buys", "Best against"],
       rows: [
-        ["Hard CC on the diver", "2–3 seconds and their whole rotation", "An assassin who has committed with no escape"],
+        [
+          "Hard CC on the diver",
+          "2–3 seconds and their whole rotation",
+          "An assassin who has committed with no escape",
+        ],
         ["A shield or heal", "One burst, if it lands before it", "Burst you can see coming"],
-        ["A knock-back or slow", "Distance, which is time", "Anything melee that has to stay next to your carry"],
-        ["Your own body", "One or two attacks", "Almost nothing — it is what you do when everything else is down"],
+        [
+          "A knock-back or slow",
+          "Distance, which is time",
+          "Anything melee that has to stay next to your carry",
+        ],
+        [
+          "Your own body",
+          "One or two attacks",
+          "Almost nothing — it is what you do when everything else is down",
+        ],
       ],
     },
     { kind: "gate" },
@@ -100,7 +112,8 @@ export const peelingAndProtecting: Lesson = {
     {
       id: "peel-quiz",
       kind: "quiz",
-      prompt: "Their assassin has landed their full rotation and your carry's health bar is already gone. What is the correct response?",
+      prompt:
+        "Their assassin has landed their full rotation and your carry's health bar is already gone. What is the correct response?",
       options: [
         {
           id: "a",

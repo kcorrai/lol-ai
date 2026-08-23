@@ -16,7 +16,7 @@ const PRIORITY_STYLES: Record<1 | 2 | 3, string> = {
 
 export function BanPriority({ bans }: BanPriorityProps) {
   return (
-    <div className="rounded-xl border border-border bg-surface p-4 space-y-3">
+    <div className="space-y-3 rounded-xl border border-border bg-surface p-4">
       <h3 className="text-sm font-semibold text-text">Ban Priorities</h3>
       <div className="space-y-2">
         {bans.map((ban) => (

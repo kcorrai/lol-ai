@@ -82,7 +82,11 @@ export function MarketingHeader(): React.ReactElement {
             aria-expanded={open}
             className="p-2 text-text-muted transition-transform hover:text-text active:scale-95"
           >
-            {open ? <X className="h-5 w-5" strokeWidth={1.75} /> : <Menu className="h-5 w-5" strokeWidth={1.75} />}
+            {open ? (
+              <X className="h-5 w-5" strokeWidth={1.75} />
+            ) : (
+              <Menu className="h-5 w-5" strokeWidth={1.75} />
+            )}
           </button>
         </div>
       </div>
@@ -91,7 +95,12 @@ export function MarketingHeader(): React.ReactElement {
         <nav className="flex flex-col gap-4 border-t border-border bg-background px-5 py-4 lg:hidden">
           <PlayerSearchBar placeholder="Search a player" />
           {NAV.map((item) => (
-            <Link key={item.href} href={item.href} className={NAV_LINK} onClick={() => setOpen(false)}>
+            <Link
+              key={item.href}
+              href={item.href}
+              className={NAV_LINK}
+              onClick={() => setOpen(false)}
+            >
               {item.label}
             </Link>
           ))}

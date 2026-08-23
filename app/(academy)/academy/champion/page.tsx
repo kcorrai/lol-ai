@@ -50,9 +50,9 @@ export default async function ChampionMasteryPage(): Promise<React.ReactElement>
           you spend on one champion
         </h1>
         <p className="mt-4 text-[15px] leading-relaxed text-text-body">
-          The curriculum teaches the game. This teaches the champion you actually play — which
-          lanes go your way, which do not, and the plan for each of them. Written fresh from a
-          current analysis rather than from a page somebody wrote three patches ago.
+          The curriculum teaches the game. This teaches the champion you actually play — which lanes
+          go your way, which do not, and the plan for each of them. Written fresh from a current
+          analysis rather than from a page somebody wrote three patches ago.
         </p>
       </header>
 

@@ -44,6 +44,7 @@ GET /lol/match/v5/matches/{matchId}/timeline
 ```
 
 Event tipi `CHAMPION_KILL`:
+
 ```json
 {
   "type": "CHAMPION_KILL",
@@ -87,7 +88,7 @@ export async function fetchAndPersistDeathEvents(
   riotMatchId: string,
   riotAccountId: string,
   participantId: number
-): Promise<number> // kaydedilen event sayÄ±sÄ±
+): Promise<number>; // kaydedilen event sayÄ±sÄ±
 ```
 
 Match sync sÄ±rasÄ±nda veya lazy (ilk heat map isteÄŸinde) Ã§alÄ±ÅŸabilir.
@@ -122,7 +123,7 @@ Alternatif: SVG overlay (daha hafif, daha az animasyon).
 // 4000-10000: orta bÃ¶lge / lane
 // x > 10000: dÃ¼ÅŸman bÃ¶lgesi
 
-async function generateDeathSummary(deathEvents: MatchDeathEvent[]): Promise<string>
+async function generateDeathSummary(deathEvents: MatchDeathEvent[]): Promise<string>;
 // "Ã–lÃ¼mlerinin %47'si dÃ¼ÅŸman jungleda, genellikle 20-30. dakikada."
 ```
 
@@ -138,9 +139,11 @@ Response: { deaths: { x, y, gameTimeMs }[], summary: string, totalDeaths: number
 ## Ward HaritasÄ± (Ä°kinci AÅŸama)
 
 AynÄ± altyapÄ±yla ward event'leri de eklenebilir:
+
 ```json
 { "type": "WARD_PLACED", "position": { "x": ..., "y": ... } }
 ```
+
 Toggle ile Ã¶lÃ¼m haritasÄ± â†” ward haritasÄ± geÃ§iÅŸi.
 
 ---
@@ -174,16 +177,16 @@ public/images/lol-map.png                                   â† statik harit
 ## Test Plan
 
 ```typescript
-describe('timelineService', () => {
-  it('CHAMPION_KILL event â†’ MatchDeathEvent kaydÄ± oluÅŸturulur')
-  it('katil olmak Ã¶lÃ¼m olarak sayÄ±lmaz (victimId kontrolÃ¼)')
-  it('duplicate event â†’ upsert ile Ã§ift kayÄ±t olmaz')
-})
+describe("timelineService", () => {
+  it("CHAMPION_KILL event â†’ MatchDeathEvent kaydÄ± oluÅŸturulur");
+  it("katil olmak Ã¶lÃ¼m olarak sayÄ±lmaz (victimId kontrolÃ¼)");
+  it("duplicate event â†’ upsert ile Ã§ift kayÄ±t olmaz");
+});
 
-describe('heatmapService', () => {
-  it('x > 10000 â†’ dÃ¼ÅŸman bÃ¶lgesi doÄŸru etiketleniyor')
-  it('gameTimeMs < 900000 â†’ erken oyun (0-15dk) doÄŸru gruplanÄ±yor')
-})
+describe("heatmapService", () => {
+  it("x > 10000 â†’ dÃ¼ÅŸman bÃ¶lgesi doÄŸru etiketleniyor");
+  it("gameTimeMs < 900000 â†’ erken oyun (0-15dk) doÄŸru gruplanÄ±yor");
+});
 ```
 
 ---
@@ -212,4 +215,3 @@ ve `WARD_PLACED` event'lerini parse et, geri kalanÄ±nÄ± discard et.
 - Mobile'da harita kabul edilebilir boyutta gÃ¶rÃ¼nÃ¼yor
 - `docs/DATABASE_SCHEMA.md` gÃ¼ncellendi
 - `docs/DEPENDENCIES.md` gÃ¼ncellendi
-

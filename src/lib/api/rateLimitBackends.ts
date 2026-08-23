@@ -72,11 +72,7 @@ interface InMemoryEntry {
 
 const inMemoryStore = new Map<string, InMemoryEntry>();
 
-export function checkInMemory(
-  key: string,
-  config: RateLimitConfig,
-  now: number
-): RateLimitResult {
+export function checkInMemory(key: string, config: RateLimitConfig, now: number): RateLimitResult {
   const entry = inMemoryStore.get(key);
 
   if (!entry || now >= entry.resetAt) {
@@ -89,5 +85,10 @@ export function checkInMemory(
   }
 
   entry.count++;
-  return { allowed: true, retryAfterMs: 0, limit: config.limit, remaining: config.limit - entry.count };
+  return {
+    allowed: true,
+    retryAfterMs: 0,
+    limit: config.limit,
+    remaining: config.limit - entry.count,
+  };
 }

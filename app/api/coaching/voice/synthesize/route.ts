@@ -27,7 +27,10 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   if (!parsed.success) throw Errors.validation(parsed.error.issues[0].message);
 
   const buffer = await generateSpeech(parsed.data.text);
-  const ab = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer;
+  const ab = buffer.buffer.slice(
+    buffer.byteOffset,
+    buffer.byteOffset + buffer.byteLength
+  ) as ArrayBuffer;
 
   return new NextResponse(ab, {
     headers: {

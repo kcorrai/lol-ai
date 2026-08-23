@@ -1,8 +1,14 @@
 "use client";
 
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, ReferenceLine,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  ReferenceLine,
 } from "recharts";
 import type { DailyWinRate } from "@/domains/teams/services/teamStatsService";
 
@@ -30,11 +36,25 @@ export function TeamWinRateTrend({ data }: TeamWinRateTrendProps) {
     <ResponsiveContainer width="100%" height={180}>
       <LineChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-        <XAxis dataKey="date" tick={{ fontSize: 10, fill: "rgba(255,255,255,0.4)" }} tickLine={false} />
-        <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: "rgba(255,255,255,0.4)" }} tickLine={false} unit="%" />
+        <XAxis
+          dataKey="date"
+          tick={{ fontSize: 10, fill: "rgba(255,255,255,0.4)" }}
+          tickLine={false}
+        />
+        <YAxis
+          domain={[0, 100]}
+          tick={{ fontSize: 10, fill: "rgba(255,255,255,0.4)" }}
+          tickLine={false}
+          unit="%"
+        />
         <ReferenceLine y={50} stroke="rgba(255,255,255,0.15)" strokeDasharray="4 4" />
         <Tooltip
-          contentStyle={{ background: "#0d0f1a", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, fontSize: 12 }}
+          contentStyle={{
+            background: "#0d0f1a",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: 8,
+            fontSize: 12,
+          }}
           labelStyle={{ color: "rgba(255,255,255,0.6)" }}
           formatter={(value: unknown) => [`${String(value)}%`, "Win Rate"]}
         />

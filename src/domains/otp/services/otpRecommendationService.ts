@@ -22,7 +22,10 @@ export function scoreOtp(gamesPlayed: number, wins: number, masteryScore: number
 }
 
 // Recommends which champions the user should one-trick, from their own ranked data (TASK-235).
-export async function getRecommendedOtps(riotAccountId: string, limit = 3): Promise<OtpRecommendation[]> {
+export async function getRecommendedOtps(
+  riotAccountId: string,
+  limit = 3
+): Promise<OtpRecommendation[]> {
   const puuid = await getAccountPuuid(riotAccountId);
   if (!puuid) return [];
 

@@ -15,7 +15,7 @@ export function OtpTips({ powerSpikes, laneStrategies, hiddenMechanics, isPro }:
   return (
     <div className="space-y-4">
       {/* Power spikes */}
-      <div className="rounded-xl border border-border bg-surface p-4 space-y-3">
+      <div className="space-y-3 rounded-xl border border-border bg-surface p-4">
         <h3 className="text-sm font-semibold text-text">Power Spikes</h3>
         <div className="space-y-2">
           {powerSpikes.map((spike, i) => (
@@ -32,7 +32,7 @@ export function OtpTips({ powerSpikes, laneStrategies, hiddenMechanics, isPro }:
       </div>
 
       {/* Lane strategies */}
-      <div className="rounded-xl border border-border bg-surface p-4 space-y-3">
+      <div className="space-y-3 rounded-xl border border-border bg-surface p-4">
         <h3 className="text-sm font-semibold text-text">Lane Strategies</h3>
         <ul className="space-y-1.5">
           {laneStrategies.map((strategy, i) => (
@@ -45,7 +45,7 @@ export function OtpTips({ powerSpikes, laneStrategies, hiddenMechanics, isPro }:
       </div>
 
       {/* Hidden mechanics */}
-      <div className="rounded-xl border border-border bg-surface p-4 space-y-3">
+      <div className="space-y-3 rounded-xl border border-border bg-surface p-4">
         <div className="flex items-center gap-2">
           <h3 className="text-sm font-semibold text-text">Hidden Mechanics</h3>
           {!isPro && (

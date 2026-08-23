@@ -89,11 +89,16 @@ export function ListingForm({ initial, saving, onSubmit, onCancel }: Props): Rea
           {initial ? "// Edit listing" : "// New listing"}
         </span>
         <span className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-text-faint">
-          {initial ? "Changes show on your profile immediately" : "Goes on sale as soon as you save"}
+          {initial
+            ? "Changes show on your profile immediately"
+            : "Goes on sale as soon as you save"}
         </span>
       </div>
 
-      <Field label="What is it called" hint="Students read this first. Say the role and the thing you fix.">
+      <Field
+        label="What is it called"
+        hint="Students read this first. Say the role and the thing you fix."
+      >
         <Input
           id="title"
           placeholder="Jungle VOD review — one game, in depth"
@@ -132,7 +137,13 @@ export function ListingForm({ initial, saving, onSubmit, onCancel }: Props): Rea
 
       <div className="grid gap-3 sm:grid-cols-3">
         <Field label={`Price · ${currency}`}>
-          <Input id="price" type="number" min={5} step="1" {...register("price", { valueAsNumber: true })} />
+          <Input
+            id="price"
+            type="number"
+            min={5}
+            step="1"
+            {...register("price", { valueAsNumber: true })}
+          />
         </Field>
         <Field label="Minutes">
           <Input
@@ -171,17 +182,30 @@ export function ListingForm({ initial, saving, onSubmit, onCancel }: Props): Rea
       </Field>
 
       <div className="grid gap-px border border-border bg-line-1 sm:grid-cols-3">
-        <Split label="Student pays" value={price ? formatMoney(split.platformFeeCents + split.coachEarningsCents, currency, true) : "—"} />
+        <Split
+          label="Student pays"
+          value={
+            price
+              ? formatMoney(split.platformFeeCents + split.coachEarningsCents, currency, true)
+              : "—"
+          }
+        />
         <Split
           label="You keep · 80%"
           value={price ? formatMoney(split.coachEarningsCents, currency, true) : "—"}
           accent
         />
-        <Split label="Platform · 20%" value={price ? formatMoney(split.platformFeeCents, currency, true) : "—"} muted />
+        <Split
+          label="Platform · 20%"
+          value={price ? formatMoney(split.platformFeeCents, currency, true) : "—"}
+          muted
+        />
       </div>
 
       {error && (
-        <p className="border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">{error}</p>
+        <p className="border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger">
+          {error}
+        </p>
       )}
 
       <div className="flex flex-wrap items-center gap-3.5">

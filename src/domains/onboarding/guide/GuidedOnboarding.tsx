@@ -10,7 +10,8 @@ import { useGuidedOnboarding } from "./useGuidedOnboarding";
 // survives navigation; only rendered for users whose onboarding is not yet complete.
 export function GuidedOnboarding({ userId }: { userId: string | null }): React.JSX.Element | null {
   const [container, setContainer] = useState<HTMLElement | null>(null);
-  const { active, step, index, total, rect, stepHasTarget, manualAdvance, goTo, dismiss } = useGuidedOnboarding(userId);
+  const { active, step, index, total, rect, stepHasTarget, manualAdvance, goTo, dismiss } =
+    useGuidedOnboarding(userId);
 
   useEffect(() => setContainer(document.body), []);
 
@@ -31,6 +32,6 @@ export function GuidedOnboarding({ userId }: { userId: string | null }): React.J
         onDismiss={dismiss}
       />
     </div>,
-    container,
+    container
   );
 }

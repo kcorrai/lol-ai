@@ -66,9 +66,7 @@ function TierEmblem({ tier }: { tier: string }) {
 function LpChart({ history }: { history: LpSnapshot[] }) {
   if (history.length < 3) {
     return (
-      <p className="text-xs text-text-muted italic">
-        Play more games to see your LP progression.
-      </p>
+      <p className="text-xs italic text-text-muted">Play more games to see your LP progression.</p>
     );
   }
 
@@ -146,9 +144,7 @@ export function RankedCard({ riotAccountId }: Props) {
                 key={q}
                 onClick={() => setQueue(q)}
                 className={`rounded px-2 py-0.5 text-xs transition-colors ${
-                  queue === q
-                    ? "bg-accent/20 text-accent"
-                    : "text-text-muted hover:text-text"
+                  queue === q ? "bg-accent/20 text-accent" : "text-text-muted hover:text-text"
                 }`}
               >
                 {q === "solo" ? "Solo/Duo" : "Flex"}
@@ -160,8 +156,8 @@ export function RankedCard({ riotAccountId }: Props) {
       <CardContent className="space-y-3">
         {!rank ? (
           <p className="text-sm text-text-muted">
-            No {queue === "solo" ? "Solo/Duo" : "Flex"} ranked data found.
-            Sync your account or play a ranked game first.
+            No {queue === "solo" ? "Solo/Duo" : "Flex"} ranked data found. Sync your account or play
+            a ranked game first.
           </p>
         ) : (
           <>
@@ -169,8 +165,9 @@ export function RankedCard({ riotAccountId }: Props) {
               <TierEmblem tier={rank.tier} />
               <div>
                 <div className="flex items-baseline gap-2">
-                  <span className={`text-xl font-display font-bold ${tierColor}`}>
-                    {rank.tier}{APEX_TIERS.has(rank.tier) ? "" : ` ${rank.division}`}
+                  <span className={`font-display text-xl font-bold ${tierColor}`}>
+                    {rank.tier}
+                    {APEX_TIERS.has(rank.tier) ? "" : ` ${rank.division}`}
                   </span>
                   <span className="text-base font-semibold text-text">{rank.lp} LP</span>
                 </div>

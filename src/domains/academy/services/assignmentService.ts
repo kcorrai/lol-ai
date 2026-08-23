@@ -108,7 +108,10 @@ export async function previewAssignmentTarget(
  * there is nothing to measure against — no linked account, or too few ranked games — because a
  * lesson must still complete for a player we cannot follow into their next match.
  */
-export async function openAssignment(userId: string, lessonId: string): Promise<AssignmentView | null> {
+export async function openAssignment(
+  userId: string,
+  lessonId: string
+): Promise<AssignmentView | null> {
   const resolved = await resolveLesson(userId, lessonId);
   if (!resolved) return null;
 
@@ -196,7 +199,10 @@ async function grantMastery(userId: string, lessonId: string, now: Date): Promis
  * so it sees the games the moment they land. Passing is the only thing in the product that can
  * mark a lesson `mastered` — drills prove you read it, matches prove you did it.
  */
-export async function checkAssignments(userId: string, riotAccountId: string): Promise<CheckResult> {
+export async function checkAssignments(
+  userId: string,
+  riotAccountId: string
+): Promise<CheckResult> {
   const result: CheckResult = { checked: 0, passed: [], failed: [], expired: [] };
 
   const [open, puuid] = await Promise.all([

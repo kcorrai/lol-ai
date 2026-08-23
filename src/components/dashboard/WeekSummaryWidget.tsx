@@ -28,7 +28,8 @@ function winRate(matches: MatchPerformance[]): number {
 
 function avgKda(matches: MatchPerformance[]): string {
   if (matches.length === 0) return "—";
-  const kda = matches.reduce((s, m) => s + (m.kills + m.assists) / Math.max(m.deaths, 1), 0) / matches.length;
+  const kda =
+    matches.reduce((s, m) => s + (m.kills + m.assists) / Math.max(m.deaths, 1), 0) / matches.length;
   return kda.toFixed(2);
 }
 
@@ -41,14 +42,16 @@ function topChampion(matches: MatchPerformance[]): string | null {
 
 function estimatedHours(matches: MatchPerformance[]): number {
   const totalMins = matches.reduce((s, m) => s + m.gameDurationMinutes, 0);
-  return Math.round(totalMins / 60 * 10) / 10;
+  return Math.round((totalMins / 60) * 10) / 10;
 }
 
 function Stat({ label, value, sub }: { label: string; value: React.ReactNode; sub?: string }) {
   return (
     <div className="flex flex-col">
-      <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted/60">{label}</span>
-      <span className="mt-0.5 text-lg font-bold text-text leading-none">{value}</span>
+      <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted/60">
+        {label}
+      </span>
+      <span className="mt-0.5 text-lg font-bold leading-none text-text">{value}</span>
       {sub && <span className="mt-0.5 text-[10px] text-text-muted">{sub}</span>}
     </div>
   );
@@ -57,18 +60,34 @@ function Stat({ label, value, sub }: { label: string; value: React.ReactNode; su
 function WrTrend({ current, prev }: { current: number; prev: number }) {
   const diff = current - prev;
   if (prev === 0) return null;
-  if (Math.abs(diff) < 2) return <span className="flex items-center gap-0.5 text-[10px] text-text-muted"><Minus className="h-3 w-3" /> Stable</span>;
-  if (diff > 0) return <span className="flex items-center gap-0.5 text-[10px] text-success"><TrendingUp className="h-3 w-3" /> +{diff}pp vs last week</span>;
-  return <span className="flex items-center gap-0.5 text-[10px] text-danger"><TrendingDown className="h-3 w-3" /> {diff}pp vs last week</span>;
+  if (Math.abs(diff) < 2)
+    return (
+      <span className="flex items-center gap-0.5 text-[10px] text-text-muted">
+        <Minus className="h-3 w-3" /> Stable
+      </span>
+    );
+  if (diff > 0)
+    return (
+      <span className="flex items-center gap-0.5 text-[10px] text-success">
+        <TrendingUp className="h-3 w-3" /> +{diff}pp vs last week
+      </span>
+    );
+  return (
+    <span className="flex items-center gap-0.5 text-[10px] text-danger">
+      <TrendingDown className="h-3 w-3" /> {diff}pp vs last week
+    </span>
+  );
 }
 
 export function WeekSummaryWidget({ matches, isLoading }: Props) {
   if (isLoading) {
     return (
-      <div className="rounded-xl border border-border bg-surface p-4 space-y-3 animate-pulse">
+      <div className="animate-pulse space-y-3 rounded-xl border border-border bg-surface p-4">
         <Skeleton className="h-3 w-28" />
         <div className="grid grid-cols-4 gap-3">
-          {[0, 1, 2, 3].map(i => <Skeleton key={i} className="h-10 w-full" />)}
+          {[0, 1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-10 w-full" />
+          ))}
         </div>
       </div>
     );
@@ -114,14 +133,14 @@ export function WeekSummaryWidget({ matches, isLoading }: Props) {
         />
         <Stat
           label="Win Rate"
-          value={<span className={wr >= 55 ? "text-success" : wr < 45 ? "text-danger" : "text-text"}>{wr}%</span>}
+          value={
+            <span className={wr >= 55 ? "text-success" : wr < 45 ? "text-danger" : "text-text"}>
+              {wr}%
+            </span>
+          }
         />
         <Stat label="KDA" value={kda} />
-        <Stat
-          label="Time"
-          value={`${hours}h`}
-          sub="total"
-        />
+        <Stat label="Time" value={`${hours}h`} sub="total" />
       </div>
 
       {champ && (

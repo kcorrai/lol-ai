@@ -29,9 +29,21 @@ export const tiltAndTheNextGame: Lesson = {
       caption: "The three signals, and what they look like from inside",
       head: ["Signal", "What you notice", "What it means"],
       rows: [
-        ["Typing", "Explaining to a stranger why the last fight was their fault", "Attention has left the game"],
-        ["Chasing", "Following a kill past a turret you would normally respect", "Time horizon has collapsed to right now"],
-        ["Silence on the map", "You have not looked at the minimap in a minute", "The narrow-attention part has already started"],
+        [
+          "Typing",
+          "Explaining to a stranger why the last fight was their fault",
+          "Attention has left the game",
+        ],
+        [
+          "Chasing",
+          "Following a kill past a turret you would normally respect",
+          "Time horizon has collapsed to right now",
+        ],
+        [
+          "Silence on the map",
+          "You have not looked at the minimap in a minute",
+          "The narrow-attention part has already started",
+        ],
       ],
     },
     {

@@ -9,7 +9,7 @@ export function XpLevelWidget() {
   const { data, isLoading } = useChallenges();
 
   if (isLoading) {
-    return <div className="animate-pulse rounded-xl border border-border bg-surface p-4 h-20" />;
+    return <div className="h-20 animate-pulse rounded-xl border border-border bg-surface p-4" />;
   }
 
   const xp = data?.xp ?? 0;
@@ -20,7 +20,7 @@ export function XpLevelWidget() {
   const pct = Math.round((xpInLevel / XP_PER_LEVEL) * 100);
 
   return (
-    <div className="rounded-xl border border-border bg-surface p-4 space-y-2">
+    <div className="space-y-2 rounded-xl border border-border bg-surface p-4">
       <div className="flex items-center justify-between">
         <span className="text-sm font-semibold text-text">Level {level}</span>
         {streak > 0 && (

@@ -28,10 +28,7 @@ export type LiveContextState =
 export function useLiveContext(read: LiveRead<AllGameData>): LiveContextState {
   const [state, setState] = useState<LiveContextState>({ status: "idle" });
 
-  const request = useMemo(
-    () => (read.status === "ok" ? describeMatchup(read.data) : null),
-    [read]
-  );
+  const request = useMemo(() => (read.status === "ok" ? describeMatchup(read.data) : null), [read]);
   const key = matchupKey(request);
 
   // The effect runs on the matchup, not on the request object, which is rebuilt every

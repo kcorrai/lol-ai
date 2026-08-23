@@ -21,9 +21,7 @@ export function ArchiveTotalsStrip({
   isLoading,
 }: ArchiveTotalsStripProps): React.JSX.Element | null {
   if (isLoading && !totals) {
-    return (
-      <div className="notch h-[74px] animate-pulse border border-line-1 bg-surface-2/40" />
-    );
+    return <div className="notch h-[74px] animate-pulse border border-line-1 bg-surface-2/40" />;
   }
   if (!totals || totals.games === 0) return null;
 
@@ -33,10 +31,7 @@ export function ArchiveTotalsStrip({
       className="notch grid grid-cols-2 gap-px overflow-hidden border border-line-1 bg-line-1 sm:grid-cols-3 lg:grid-cols-6"
     >
       <Cell label="Games" value={String(totals.games)} />
-      <Cell
-        label="Record"
-        value={`${totals.wins}W ${totals.losses}L`}
-      />
+      <Cell label="Record" value={`${totals.wins}W ${totals.losses}L`} />
       <Cell
         label="Win rate"
         value={`${totals.winRate.toFixed(1)}%`}

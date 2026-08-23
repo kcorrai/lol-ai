@@ -13,7 +13,15 @@ interface PlanStatusHeroProps {
   isPending: boolean;
 }
 
-function StatBlock({ label, value, unit }: { label: string; value: string; unit?: string }): React.JSX.Element {
+function StatBlock({
+  label,
+  value,
+  unit,
+}: {
+  label: string;
+  value: string;
+  unit?: string;
+}): React.JSX.Element {
   return (
     <div>
       <div className="font-mono text-[9.5px] uppercase tracking-label text-fg-4">{label}</div>
@@ -63,7 +71,9 @@ export function PlanStatusHero({
     <section
       className={cn(
         "notch relative overflow-hidden border",
-        ended ? "border-warning shadow-[0_0_30px_rgba(255,194,75,0.10)]" : "border-acid-500 glow-accent-soft"
+        ended
+          ? "border-warning shadow-[0_0_30px_rgba(255,194,75,0.10)]"
+          : "glow-accent-soft border-acid-500"
       )}
     >
       <div

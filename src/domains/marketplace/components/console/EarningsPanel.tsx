@@ -77,7 +77,9 @@ export function EarningsPanel({ workload, stats }: Props): React.ReactElement {
                 key={week.weekStart}
                 title={`${weekLabel(week.weekStart)} · ${formatMoney(week.earnedCents, currency)}`}
                 className={
-                  i === stats.weeks.length - 1 ? "block flex-1 bg-acid-400" : "block flex-1 bg-accent/55"
+                  i === stats.weeks.length - 1
+                    ? "block flex-1 bg-acid-400"
+                    : "block flex-1 bg-accent/55"
                 }
                 style={{ height: `${Math.max(3, Math.round((week.earnedCents / peak) * 88))}%` }}
               />
@@ -86,9 +88,7 @@ export function EarningsPanel({ workload, stats }: Props): React.ReactElement {
 
           <p className="mt-2.5 flex justify-between font-mono text-[9.5px] uppercase tracking-[0.12em] text-text-faint">
             <span>{weekLabel(stats.weeks[0].weekStart)}</span>
-            <span>
-              this week &middot; {formatMoney(thisWeek.earnedCents, currency)}
-            </span>
+            <span>this week &middot; {formatMoney(thisWeek.earnedCents, currency)}</span>
           </p>
         </div>
       </div>

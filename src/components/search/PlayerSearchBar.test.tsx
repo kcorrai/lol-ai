@@ -138,7 +138,7 @@ describe("PlayerSearchBar", () => {
     await user.type(screen.getByRole("combobox"), "fa{Enter}");
 
     expect(useSearchStore.getState().recent[0]).toEqual(
-      expect.objectContaining({ gameName: "Faker", tagLine: "KR1", region: "kr" }),
+      expect.objectContaining({ gameName: "Faker", tagLine: "KR1", region: "kr" })
     );
   });
 

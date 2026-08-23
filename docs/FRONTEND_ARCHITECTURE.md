@@ -6,18 +6,18 @@
 
 ## 1. Technology Stack
 
-| Concern | Choice | Rationale |
-|---|---|---|
-| Framework | Next.js 14 (App Router) | SSR/SSG, file-based routing, React Server Components |
-| Language | TypeScript (strict) | Type safety across the board |
-| Styling | TailwindCSS | Utility-first, design system compatible |
-| Components | shadcn/ui | Headless, accessible primitives, fully owned |
-| Server State | TanStack Query (React Query) | Caching, deduplication, background refetch |
-| Client State | Zustand | Lightweight, no boilerplate |
-| Forms | React Hook Form + Zod | Performance, co-located validation |
-| Charts | Recharts | Composable, React-native |
-| Animations | Framer Motion | Declarative, smooth transitions |
-| Icons | Lucide React | Consistent, tree-shakeable |
+| Concern      | Choice                       | Rationale                                            |
+| ------------ | ---------------------------- | ---------------------------------------------------- |
+| Framework    | Next.js 14 (App Router)      | SSR/SSG, file-based routing, React Server Components |
+| Language     | TypeScript (strict)          | Type safety across the board                         |
+| Styling      | TailwindCSS                  | Utility-first, design system compatible              |
+| Components   | shadcn/ui                    | Headless, accessible primitives, fully owned         |
+| Server State | TanStack Query (React Query) | Caching, deduplication, background refetch           |
+| Client State | Zustand                      | Lightweight, no boilerplate                          |
+| Forms        | React Hook Form + Zod        | Performance, co-located validation                   |
+| Charts       | Recharts                     | Composable, React-native                             |
+| Animations   | Framer Motion                | Declarative, smooth transitions                      |
+| Icons        | Lucide React                 | Consistent, tree-shakeable                           |
 
 ---
 
@@ -84,6 +84,7 @@ The authenticated app uses a persistent shell:
 ```
 
 **Sidebar navigation items:**
+
 - Dashboard
 - Match History
 - AI Coaching
@@ -134,6 +135,7 @@ Page Compositions (app/(app)/<page>/page.tsx)
 ### 4.3 Key Component Categories
 
 **Design System Primitives** (`src/components/ui/`):
+
 - `Button` — variants: primary, secondary, ghost, destructive
 - `Card` — with CardHeader, CardContent, CardFooter
 - `Badge` — for ranks, labels, tiers
@@ -143,6 +145,7 @@ Page Compositions (app/(app)/<page>/page.tsx)
 - `Tooltip`, `Dialog`, `Sheet`, `Tabs`, `Select`, `Input`
 
 **Domain Components** (examples):
+
 - `MatchCard` — single match row in history list
 - `ChampionPoolChart` — radar chart of champion pool stats
 - `ReportCard` — coaching report preview
@@ -157,27 +160,28 @@ Page Compositions (app/(app)/<page>/page.tsx)
 
 ### 5.1 State Categories
 
-| State Type | Tool | Where |
-|---|---|---|
-| Server data (fetched) | TanStack Query | Hooks in `src/hooks/` |
-| Authentication | NextAuth session | `useSession()` |
-| UI state (sidebar, modals) | Zustand | `src/lib/stores/uiStore.ts` |
-| Form state | React Hook Form | Inside form components |
-| URL state (filters, pagination) | `useSearchParams` | In page components |
+| State Type                      | Tool              | Where                       |
+| ------------------------------- | ----------------- | --------------------------- |
+| Server data (fetched)           | TanStack Query    | Hooks in `src/hooks/`       |
+| Authentication                  | NextAuth session  | `useSession()`              |
+| UI state (sidebar, modals)      | Zustand           | `src/lib/stores/uiStore.ts` |
+| Form state                      | React Hook Form   | Inside form components      |
+| URL state (filters, pagination) | `useSearchParams` | In page components          |
 
 ### 5.2 TanStack Query Configuration
 
 ```typescript
 // Query key conventions
 const QUERY_KEYS = {
-  matches: (accountId: string) => ['matches', accountId],
-  matchDetail: (matchId: string) => ['match', matchId],
-  coachingReports: (accountId: string) => ['coaching', accountId],
-  championStats: (accountId: string) => ['champions', accountId],
-}
+  matches: (accountId: string) => ["matches", accountId],
+  matchDetail: (matchId: string) => ["match", matchId],
+  coachingReports: (accountId: string) => ["coaching", accountId],
+  championStats: (accountId: string) => ["champions", accountId],
+};
 ```
 
 **Stale time defaults:**
+
 - Match history: 5 minutes (changes frequently)
 - Champion stats: 30 minutes (aggregated, stable)
 - Coaching reports: 10 minutes (user-triggered)
@@ -202,6 +206,7 @@ interface UIStore {
 ### 6.1 Server Components (RSC)
 
 Use for initial page data that doesn't change after load:
+
 - Match history list (first page)
 - Champion pool summary
 - User subscription status
@@ -218,6 +223,7 @@ async function MatchesPage() {
 ### 6.2 Client-Side Fetching (TanStack Query)
 
 Use for:
+
 - Paginated / infinite scroll data
 - Data that changes in response to user actions
 - Polling (e.g., report generation status)
@@ -229,11 +235,11 @@ When a coaching report is being generated, the client polls the status endpoint 
 
 ```typescript
 useQuery({
-  queryKey: ['report-status', reportId],
+  queryKey: ["report-status", reportId],
   queryFn: () => fetchReportStatus(reportId),
-  refetchInterval: (data) => data?.status === 'complete' ? false : 3000,
-  enabled: status === 'processing',
-})
+  refetchInterval: (data) => (data?.status === "complete" ? false : 3000),
+  enabled: status === "processing",
+});
 ```
 
 ---
@@ -269,6 +275,7 @@ Weight:       400/500/600/700
 ### 7.3 Rank Colors
 
 Each LoL rank has a defined color constant:
+
 ```
 Iron:        #8C8C8C
 Bronze:      #CD7F32
@@ -295,12 +302,12 @@ Challenger:  #F1C40F
 
 ### 8.1 Core Web Vitals Targets
 
-| Metric | Target |
-|---|---|
-| LCP | < 2.5s |
-| FID | < 100ms |
-| CLS | < 0.1 |
-| TTFB | < 600ms |
+| Metric | Target  |
+| ------ | ------- |
+| LCP    | < 2.5s  |
+| FID    | < 100ms |
+| CLS    | < 0.1   |
+| TTFB   | < 600ms |
 
 ### 8.2 Optimization Techniques
 
@@ -331,10 +338,10 @@ if (isError) return <ErrorMessage message="Failed to load matches" retry={refetc
 
 All error messages are user-friendly. Technical details go to Sentry, not the UI.
 
-| Internal Error | User Message |
-|---|---|
-| `RIOT_API_UNAVAILABLE` | "Riot's servers are having issues. Try again shortly." |
-| `AI_PROVIDER_ERROR` | "Our AI coach is busy right now. Your report will be ready soon." |
+| Internal Error         | User Message                                                            |
+| ---------------------- | ----------------------------------------------------------------------- |
+| `RIOT_API_UNAVAILABLE` | "Riot's servers are having issues. Try again shortly."                  |
+| `AI_PROVIDER_ERROR`    | "Our AI coach is busy right now. Your report will be ready soon."       |
 | `REPORT_LIMIT_REACHED` | "You've used your free report this week. Upgrade to Pro for unlimited." |
 
 ---

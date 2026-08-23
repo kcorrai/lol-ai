@@ -6,10 +6,10 @@ export function MasteryCard({ d }: { d: MasteryCardData }) {
     d.masteryTier === "Legend"
       ? C.gold
       : d.masteryTier === "Master"
-      ? C.brand
-      : d.masteryTier === "Expert"
-      ? C.green
-      : C.muted;
+        ? C.brand
+        : d.masteryTier === "Expert"
+          ? C.green
+          : C.muted;
 
   return (
     <div

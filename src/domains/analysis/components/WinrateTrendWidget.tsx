@@ -29,7 +29,9 @@ function WinRateBar({ label, wins, total }: { label: string; wins: number; total
       <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2">
         <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
       </div>
-      <span className={`w-8 text-right font-medium ${pct >= 55 ? "text-success" : pct >= 50 ? "text-warning" : "text-danger"}`}>
+      <span
+        className={`w-8 text-right font-medium ${pct >= 55 ? "text-success" : pct >= 50 ? "text-warning" : "text-danger"}`}
+      >
         {pct}%
       </span>
     </div>
@@ -40,8 +42,12 @@ export function WinrateTrendWidget({ matches, isLoading }: Props) {
   if (isLoading) {
     return (
       <Card>
-        <CardHeader><Skeleton className="h-4 w-32" /></CardHeader>
-        <CardContent><Skeleton className="h-20 w-full" /></CardContent>
+        <CardHeader>
+          <Skeleton className="h-4 w-32" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-20 w-full" />
+        </CardContent>
       </Card>
     );
   }
@@ -75,11 +81,16 @@ export function WinrateTrendWidget({ matches, isLoading }: Props) {
           </CardTitle>
           <div className="flex items-center gap-2">
             {streak && (
-              <span className={`rounded px-1.5 py-0.5 text-xs font-semibold ${streak.type === "W" ? "bg-success/20 text-success" : "bg-danger/20 text-danger"}`}>
-                {streak.count}{streak.type} streak
+              <span
+                className={`rounded px-1.5 py-0.5 text-xs font-semibold ${streak.type === "W" ? "bg-success/20 text-success" : "bg-danger/20 text-danger"}`}
+              >
+                {streak.count}
+                {streak.type} streak
               </span>
             )}
-            <span className={`text-sm font-bold ${totalWr >= 55 ? "text-success" : totalWr >= 50 ? "text-warning" : "text-danger"}`}>
+            <span
+              className={`text-sm font-bold ${totalWr >= 55 ? "text-success" : totalWr >= 50 ? "text-warning" : "text-danger"}`}
+            >
               {totalWr}% WR
             </span>
           </div>

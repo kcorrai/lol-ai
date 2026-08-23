@@ -45,7 +45,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    return NextResponse.json({ data: await buildPublicMatchPage(gameName, tagLine, region, start) });
+    return NextResponse.json({
+      data: await buildPublicMatchPage(gameName, tagLine, region, start),
+    });
   } catch (err) {
     return riotErrorResponse(err, { gameName, tagLine, region });
   }
@@ -74,7 +76,9 @@ function riotErrorResponse(err: unknown, ctx: Record<string, string>): NextRespo
   const mapped = code ? byCode[code] : undefined;
 
   return NextResponse.json(
-    { error: { message: mapped?.message ?? "Server error occurred.", code: code ?? "SERVER_ERROR" } },
+    {
+      error: { message: mapped?.message ?? "Server error occurred.", code: code ?? "SERVER_ERROR" },
+    },
     { status: mapped?.status ?? 500 }
   );
 }

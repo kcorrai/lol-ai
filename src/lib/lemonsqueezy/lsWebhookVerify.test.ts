@@ -104,8 +104,7 @@ describe("verifyLsWebhookSignature", () => {
 
   it("is sensitive to a single flipped character in the signature", () => {
     const signature = sign(VALID_BODY);
-    const flipped =
-      (signature[0] === "a" ? "b" : "a") + signature.slice(1);
+    const flipped = (signature[0] === "a" ? "b" : "a") + signature.slice(1);
 
     expect(verifyLsWebhookSignature(VALID_BODY, flipped, SECRET)).toBe(false);
   });
@@ -124,10 +123,18 @@ describe("buildEventKey", () => {
   it.each([
     ["event name", () => buildEventKey("subscription_cancelled", "sub_1", attrs())],
     ["subscription id", () => buildEventKey("subscription_updated", "sub_2", attrs())],
-    ["status", () => buildEventKey("subscription_updated", "sub_1", attrs({ status: "cancelled" }))],
+    [
+      "status",
+      () => buildEventKey("subscription_updated", "sub_1", attrs({ status: "cancelled" })),
+    ],
     [
       "renewal date",
-      () => buildEventKey("subscription_updated", "sub_1", attrs({ renews_at: "2026-09-20T00:00:00.000Z" })),
+      () =>
+        buildEventKey(
+          "subscription_updated",
+          "sub_1",
+          attrs({ renews_at: "2026-09-20T00:00:00.000Z" })
+        ),
     ],
   ])("changes when the %s differs", (_label, build) => {
     const base = buildEventKey("subscription_updated", "sub_1", attrs());
@@ -146,7 +153,11 @@ describe("buildEventKey", () => {
   });
 
   it("tolerates both dates being null", () => {
-    const key = buildEventKey("subscription_expired", "sub_1", attrs({ renews_at: null, ends_at: null }));
+    const key = buildEventKey(
+      "subscription_expired",
+      "sub_1",
+      attrs({ renews_at: null, ends_at: null })
+    );
 
     expect(key).toBe("subscription_expired:sub_1:active:");
   });

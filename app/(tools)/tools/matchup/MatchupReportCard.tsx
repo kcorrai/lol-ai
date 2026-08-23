@@ -24,7 +24,9 @@ export function MatchupReportCard({ report }: { report: MatchupReport }) {
         <div className="text-center">
           {hasData ? (
             <>
-              <div className={`font-display text-4xl font-black ${winColor}`}>{aWin.toFixed(1)}%</div>
+              <div className={`font-display text-4xl font-black ${winColor}`}>
+                {aWin.toFixed(1)}%
+              </div>
               <div className="text-xs text-text-muted">{report.championA.name} win rate</div>
               <div className={`mt-1 text-sm font-bold ${verdict.className}`}>{verdict.label}</div>
             </>
@@ -49,8 +51,12 @@ export function MatchupReportCard({ report }: { report: MatchupReport }) {
             <div className="bg-danger" style={{ width: `${bWin}%` }} />
           </div>
           <div className="mt-1 flex justify-between text-[11px] font-semibold">
-            <span className="text-info">{report.championA.name} {aWin.toFixed(1)}%</span>
-            <span className="text-danger">{bWin.toFixed(1)}% {report.championB.name}</span>
+            <span className="text-info">
+              {report.championA.name} {aWin.toFixed(1)}%
+            </span>
+            <span className="text-danger">
+              {bWin.toFixed(1)}% {report.championB.name}
+            </span>
           </div>
         </div>
       )}

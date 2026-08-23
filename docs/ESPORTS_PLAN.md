@@ -18,7 +18,7 @@ and the pages are static.
 
 The strategic point is not the traffic itself but where it lands. Someone reading
 "Chovy's Azir build at Worlds" is one click from `/builds/azir`, and one more from
-"see how *your* Azir compares." The esports section is a funnel with a
+"see how _your_ Azir compares." The esports section is a funnel with a
 scoreboard attached — which is why the cross-linking task (TASK-310) and the
 you-vs-pro task (TASK-311) are not optional garnish.
 
@@ -26,15 +26,15 @@ you-vs-pro task (TASK-311) are not optional garnish.
 
 Ordered by how much of the section's value each cluster carries.
 
-| Cluster | Representative queries | Pages | Refresh |
-|---|---|---|---|
-| Schedule & live | "lol esports schedule", "who is playing today", live scores | Hub, `/schedule` | 15 min / 30 s |
-| Standings | "lec standings", "lck standings 2026" | League + tournament pages | 1 h |
-| Teams & rosters | "t1 roster", "g2 lineup", "[team] next match" | `/teams/[slug]` | 24 h |
-| Players | "faker stats", "[player] champion pool" | `/players/[slug]` | 24 h |
-| Results & drafts | "[a] vs [b] result", "worlds final draft" | `/matches/[id]` | immutable |
-| Pro meta | "worlds pick ban stats", "most picked champions pro play" | `/champions` | 1 h |
-| Pro builds | "faker azir build", "pro build [champion]" | `/champions/[champion]` | 24 h |
+| Cluster          | Representative queries                                      | Pages                     | Refresh       |
+| ---------------- | ----------------------------------------------------------- | ------------------------- | ------------- |
+| Schedule & live  | "lol esports schedule", "who is playing today", live scores | Hub, `/schedule`          | 15 min / 30 s |
+| Standings        | "lec standings", "lck standings 2026"                       | League + tournament pages | 1 h           |
+| Teams & rosters  | "t1 roster", "g2 lineup", "[team] next match"               | `/teams/[slug]`           | 24 h          |
+| Players          | "faker stats", "[player] champion pool"                     | `/players/[slug]`         | 24 h          |
+| Results & drafts | "[a] vs [b] result", "worlds final draft"                   | `/matches/[id]`           | immutable     |
+| Pro meta         | "worlds pick ban stats", "most picked champions pro play"   | `/champions`              | 1 h           |
+| Pro builds       | "faker azir build", "pro build [champion]"                  | `/champions/[champion]`   | 24 h          |
 
 The last two clusters are the ones that connect to the existing product surface,
 and they are also the ones no schedule aggregator does well.
@@ -74,26 +74,26 @@ logic in the route handler, services under 250 lines, components under 200.
 Each task is one commit. Tasks 297–304 are the spine and ship in order; 305–314
 are independently shippable once the spine exists.
 
-| Task | Title | Ships |
-|---|---|---|
-| TASK-297 | Esports domain foundation — API client, leagues, schedule | data layer, no UI |
-| TASK-298 | `/esports` hub, section chrome, nav, image/CSP hosts | first public page |
-| TASK-299 | `/esports/schedule` | schedule cluster |
-| TASK-300 | Leagues + standings | standings cluster |
-| TASK-301 | Team index and team pages | teams cluster |
-| TASK-302 | Player pages | players cluster |
-| TASK-303 | Match pages with drafts and scoreboards | results cluster |
-| TASK-304 | Live scoreboard (API route + hook + polling island) | live surface |
-| TASK-305 | Cache warming and revalidation on the match calendar | freshness |
-| TASK-306 | Tournament pages and brackets | tournament cluster |
-| TASK-307 | Pro pick/ban meta table | pro meta cluster |
-| TASK-308 | Champion-in-pro-play pages with pro builds | pro builds cluster |
-| TASK-309 | SEO layer — JSON-LD, OG cards, sitemap, canonicals | indexation |
-| TASK-310 | Cross-linking into builds, champions, tier lists | funnel |
-| TASK-311 | "You vs the pros" comparison | conversion |
-| TASK-312 | AI match previews and recaps (cached, top leagues) | content depth |
-| TASK-313 | Follow teams — `followed_teams`, approved 17 Aug 2026 | retention |
-| TASK-314 | E2E coverage, docs, launch checklist | launch readiness — `docs/ESPORTS_LAUNCH_CHECKLIST.md` |
+| Task     | Title                                                     | Ships                                                 |
+| -------- | --------------------------------------------------------- | ----------------------------------------------------- |
+| TASK-297 | Esports domain foundation — API client, leagues, schedule | data layer, no UI                                     |
+| TASK-298 | `/esports` hub, section chrome, nav, image/CSP hosts      | first public page                                     |
+| TASK-299 | `/esports/schedule`                                       | schedule cluster                                      |
+| TASK-300 | Leagues + standings                                       | standings cluster                                     |
+| TASK-301 | Team index and team pages                                 | teams cluster                                         |
+| TASK-302 | Player pages                                              | players cluster                                       |
+| TASK-303 | Match pages with drafts and scoreboards                   | results cluster                                       |
+| TASK-304 | Live scoreboard (API route + hook + polling island)       | live surface                                          |
+| TASK-305 | Cache warming and revalidation on the match calendar      | freshness                                             |
+| TASK-306 | Tournament pages and brackets                             | tournament cluster                                    |
+| TASK-307 | Pro pick/ban meta table                                   | pro meta cluster                                      |
+| TASK-308 | Champion-in-pro-play pages with pro builds                | pro builds cluster                                    |
+| TASK-309 | SEO layer — JSON-LD, OG cards, sitemap, canonicals        | indexation                                            |
+| TASK-310 | Cross-linking into builds, champions, tier lists          | funnel                                                |
+| TASK-311 | "You vs the pros" comparison                              | conversion                                            |
+| TASK-312 | AI match previews and recaps (cached, top leagues)        | content depth                                         |
+| TASK-313 | Follow teams — `followed_teams`, approved 17 Aug 2026     | retention                                             |
+| TASK-314 | E2E coverage, docs, launch checklist                      | launch readiness — `docs/ESPORTS_LAUNCH_CHECKLIST.md` |
 
 ## 5. Non-goals for this section
 
@@ -105,20 +105,20 @@ are independently shippable once the spine exists.
   Twitch and YouTube players are embedded click-to-load (ADR-018), which is a
   different thing: the rightsholder's own player, on our page, playing only when
   a reader asks it to.
-- **No writing esports *data* into Postgres.** TASK-313 was approved and added
+- **No writing esports _data_ into Postgres.** TASK-313 was approved and added
   `followed_teams`, and that is the whole of it: a reader's choice of team, not
   a copy of the feed. The section stays a cache over a feed, which is what makes
   it cheap.
 
 ## 6. Risks
 
-| Risk | Mitigation |
-|---|---|
-| Upstream feed changes shape or blocks us | Zod boundary + never-expiring last-good snapshots; pages degrade to schedule-only rather than 500 (ADR-016) |
-| Thin auto-generated pages get filtered | No-content pages are `noindex` and excluded from the sitemap (ADR-017 §4) |
-| Live polling costs run away | One route, one hook, polling only while something is live; rate limited like the other public endpoints (TASK-278) |
+| Risk                                           | Mitigation                                                                                                              |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Upstream feed changes shape or blocks us       | Zod boundary + never-expiring last-good snapshots; pages degrade to schedule-only rather than 500 (ADR-016)             |
+| Thin auto-generated pages get filtered         | No-content pages are `noindex` and excluded from the sitemap (ADR-017 §4)                                               |
+| Live polling costs run away                    | One route, one hook, polling only while something is live; rate limited like the other public endpoints (TASK-278)      |
 | Section cannibalises champion-cluster rankings | Distinct intent, distinct canonicals, and deliberate one-directional linking into `/builds` and `/champions` (TASK-310) |
-| AI recaps become a per-view cost | Generated once per match, cached permanently, top-tier leagues only (TASK-312) |
+| AI recaps become a per-view cost               | Generated once per match, cached permanently, top-tier leagues only (TASK-312)                                          |
 
 ## 7. Definition of done for the section
 

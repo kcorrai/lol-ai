@@ -14,7 +14,9 @@ export function InviteLinkBox({ teamId }: Props) {
   const revoke = useRevokeInviteLink(teamId);
   const [copied, setCopied] = useState(false);
 
-  const joinUrl = data ? `${typeof window !== "undefined" ? window.location.origin : ""}/join/${data.token}` : "";
+  const joinUrl = data
+    ? `${typeof window !== "undefined" ? window.location.origin : ""}/join/${data.token}`
+    : "";
 
   function handleCopy() {
     if (!joinUrl) return;
@@ -25,7 +27,7 @@ export function InviteLinkBox({ teamId }: Props) {
   }
 
   return (
-    <div className="rounded-xl border border-border bg-surface p-4 space-y-3">
+    <div className="space-y-3 rounded-xl border border-border bg-surface p-4">
       <div className="flex items-center gap-2">
         <Link2 className="h-4 w-4 text-info" />
         <p className="text-sm font-bold text-text">Shareable Invite Link</p>
@@ -39,15 +41,17 @@ export function InviteLinkBox({ teamId }: Props) {
       ) : (
         <>
           <div className="flex items-center gap-2 rounded-lg border border-border bg-surface-2 px-3 py-2">
-            <p className="min-w-0 flex-1 truncate text-xs text-text-muted font-mono">
-              {joinUrl}
-            </p>
+            <p className="min-w-0 flex-1 truncate font-mono text-xs text-text-muted">{joinUrl}</p>
             <button
               onClick={handleCopy}
               title="Copy"
-              className="shrink-0 rounded p-1 text-text-muted hover:text-text transition-colors"
+              className="shrink-0 rounded p-1 text-text-muted transition-colors hover:text-text"
             >
-              {copied ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
+              {copied ? (
+                <Check className="h-3.5 w-3.5 text-success" />
+              ) : (
+                <Copy className="h-3.5 w-3.5" />
+              )}
             </button>
           </div>
 
@@ -62,9 +66,13 @@ export function InviteLinkBox({ teamId }: Props) {
             variant="ghost"
             onClick={() => revoke.mutate()}
             disabled={revoke.isPending}
-            className="gap-1.5 text-xs text-text-muted border border-border hover:text-text"
+            className="gap-1.5 border border-border text-xs text-text-muted hover:text-text"
           >
-            {revoke.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
+            {revoke.isPending ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : (
+              <RefreshCw className="h-3 w-3" />
+            )}
             Generate New Link
           </Button>
         </>

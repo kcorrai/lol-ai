@@ -64,6 +64,7 @@ Draft Analyzer'Ä±n tam kullanÄ±cÄ± arayÃ¼zÃ¼nÃ¼ yaz. 10 champion pic
 ### TeamCompositionCard BileÅŸeni
 
 5 metrik iÃ§in bar chart (CSS ile, external chart kÃ¼tÃ¼phanesi gerekmez):
+
 - Her metrik: etiket + iki taraflÄ± bar (blue vs red)
 - Blue = sol taraf mavi, Red = saÄŸ taraf kÄ±rmÄ±zÄ±
 - SayÄ±sal deÄŸer (1-10) gÃ¶ster
@@ -71,6 +72,7 @@ Draft Analyzer'Ä±n tam kullanÄ±cÄ± arayÃ¼zÃ¼nÃ¼ yaz. 10 champion pic
 ### ScalingChart BileÅŸeni
 
 Early/Mid/Late game iÃ§in basit progress gÃ¶sterge:
+
 - Her aÅŸama iÃ§in iki renk dot (blue/red) + skor
 - AÃ§Ä±klama metnini hover/click'te gÃ¶ster
 
@@ -87,4 +89,3 @@ Early/Mid/Late game iÃ§in basit progress gÃ¶sterge:
 
 - TASK-038 (RoleBasedTeamPicker)
 - TASK-064 (useDraftAnalysis hook)
-

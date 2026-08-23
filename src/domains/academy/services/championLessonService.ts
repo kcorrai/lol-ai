@@ -1,6 +1,10 @@
 import { getCachedOtpAnalysis, getOtpAnalysis, getRecommendedOtps } from "@/domains/otp";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
-import { buildChampionLesson, championSlug, CHAMPION_TRACK_ID } from "@/domains/academy/championLesson";
+import {
+  buildChampionLesson,
+  championSlug,
+  CHAMPION_TRACK_ID,
+} from "@/domains/academy/championLesson";
 import { ROLE_IDS, positionFromRole, roleFromPosition } from "@/domains/academy/roles";
 import { primaryRiotAccountId } from "@/domains/academy/services/assignmentReadings";
 import type { Lesson, RoleId } from "@/domains/academy/types";
@@ -68,7 +72,9 @@ export async function getChampionLesson(
   const option = await optionForSlug(userId, slug);
   if (!option) return null;
 
-  const analysis = await getOtpAnalysis(option.champion, positionFromRole(option.role)).catch(() => null);
+  const analysis = await getOtpAnalysis(option.champion, positionFromRole(option.role)).catch(
+    () => null
+  );
   if (!analysis) return null;
 
   const lesson = buildChampionLesson({

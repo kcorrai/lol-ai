@@ -5,7 +5,7 @@
 ## Problem
 
 The forced first-journey skips several sections. The user wants the tour to also visit Champions,
-Coach Chat, OTP Assistant, the Profile *Invite a friend*, and the Discord *webhook*, and point the
+Coach Chat, OTP Assistant, the Profile _Invite a friend_, and the Discord _webhook_, and point the
 user at the key control on each.
 
 ## Fix

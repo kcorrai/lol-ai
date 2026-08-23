@@ -41,8 +41,14 @@ export function useVoiceCoach(riotAccountId: string): VoiceCoachState {
       const audio = new Audio(url);
       audioRef.current = audio;
       await new Promise<void>((resolve) => {
-        audio.onended = () => { URL.revokeObjectURL(url); resolve(); };
-        audio.onerror = () => { URL.revokeObjectURL(url); resolve(); };
+        audio.onended = () => {
+          URL.revokeObjectURL(url);
+          resolve();
+        };
+        audio.onerror = () => {
+          URL.revokeObjectURL(url);
+          resolve();
+        };
         audio.play().catch(resolve);
       });
     } finally {
@@ -64,7 +70,7 @@ export function useVoiceCoach(riotAccountId: string): VoiceCoachState {
         body: JSON.stringify({ messages: history, persona: "direct" }),
       });
       if (!res.ok) {
-        const json = await res.json().catch(() => ({})) as { error?: { message?: string } };
+        const json = (await res.json().catch(() => ({}))) as { error?: { message?: string } };
         throw new Error(json.error?.message ?? `Error ${res.status}`);
       }
 
@@ -100,7 +106,7 @@ export function useVoiceCoach(riotAccountId: string): VoiceCoachState {
       form.append("audio", blob, "voice.webm");
       const res = await fetch("/api/coaching/voice/transcribe", { method: "POST", body: form });
       if (!res.ok) throw new Error("Transcription failed");
-      const { data } = await res.json() as { data: { text: string } };
+      const { data } = (await res.json()) as { data: { text: string } };
       if (data.text.trim()) await sendToChat(data.text);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not understand audio.");
@@ -145,5 +151,15 @@ export function useVoiceCoach(riotAccountId: string): VoiceCoachState {
     setError(null);
   }
 
-  return { messages, isRecording, isTranscribing, isSpeaking, isStreaming, error, startRecording, stopRecording, clear };
+  return {
+    messages,
+    isRecording,
+    isTranscribing,
+    isSpeaking,
+    isStreaming,
+    error,
+    startRecording,
+    stopRecording,
+    clear,
+  };
 }

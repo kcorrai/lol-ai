@@ -16,10 +16,16 @@ import type { LeaderboardEntry } from "@/domains/analysis/services/leaderboardSe
 // Rank crest colours are game data, not brand — they use the dedicated `rank.*`
 // scale rather than raw Tailwind palette, which the token layer never reaches.
 const TIER_COLORS: Record<string, string> = {
-  IRON: "text-rank-iron", BRONZE: "text-rank-bronze", SILVER: "text-rank-silver",
-  GOLD: "text-rank-gold", PLATINUM: "text-rank-platinum", EMERALD: "text-rank-emerald",
-  DIAMOND: "text-rank-diamond", MASTER: "text-rank-master",
-  GRANDMASTER: "text-rank-grandmaster", CHALLENGER: "text-rank-challenger",
+  IRON: "text-rank-iron",
+  BRONZE: "text-rank-bronze",
+  SILVER: "text-rank-silver",
+  GOLD: "text-rank-gold",
+  PLATINUM: "text-rank-platinum",
+  EMERALD: "text-rank-emerald",
+  DIAMOND: "text-rank-diamond",
+  MASTER: "text-rank-master",
+  GRANDMASTER: "text-rank-grandmaster",
+  CHALLENGER: "text-rank-challenger",
 };
 
 const RANK_MEDALS = ["🥇", "🥈", "🥉"];
@@ -32,16 +38,19 @@ function RankNumber({ rank }: { rank: number }) {
 }
 
 function LpChange({ lp }: { lp: number }) {
-  if (lp > 0) return (
-    <span className="flex items-center gap-0.5 text-sm font-bold text-success">
-      <TrendingUp className="h-3.5 w-3.5" />+{lp}
-    </span>
-  );
-  if (lp < 0) return (
-    <span className="flex items-center gap-0.5 text-sm font-bold text-danger">
-      <TrendingDown className="h-3.5 w-3.5" />{lp}
-    </span>
-  );
+  if (lp > 0)
+    return (
+      <span className="flex items-center gap-0.5 text-sm font-bold text-success">
+        <TrendingUp className="h-3.5 w-3.5" />+{lp}
+      </span>
+    );
+  if (lp < 0)
+    return (
+      <span className="flex items-center gap-0.5 text-sm font-bold text-danger">
+        <TrendingDown className="h-3.5 w-3.5" />
+        {lp}
+      </span>
+    );
   return <span className="text-sm text-text-muted">±0</span>;
 }
 
@@ -69,8 +78,14 @@ function PlayerRow({ entry, index: _index }: { entry: LeaderboardEntry; index: n
       {/* Avatar */}
       <div className="shrink-0">
         {iconUrl ? (
-          <Image src={iconUrl} alt={entry.displayName} width={36} height={36} unoptimized
-            className="rounded-full border border-border" />
+          <Image
+            src={iconUrl}
+            alt={entry.displayName}
+            width={36}
+            height={36}
+            unoptimized
+            className="rounded-full border border-border"
+          />
         ) : (
           <div className="h-9 w-9 rounded-full border border-border bg-surface-2" />
         )}
@@ -86,9 +101,13 @@ function PlayerRow({ entry, index: _index }: { entry: LeaderboardEntry; index: n
             <Image src={emblemUrl} alt={entry.currentTier} width={16} height={16} unoptimized />
           )}
           <span className={`text-xs font-medium ${tierColor}`}>
-            {entry.currentTier.charAt(0)}{entry.currentTier.slice(1).toLowerCase()}{" "}
-            {["MASTER", "GRANDMASTER", "CHALLENGER"].includes(entry.currentTier) ? "" : entry.currentDivision}
-            {" · "}{entry.currentLp} LP
+            {entry.currentTier.charAt(0)}
+            {entry.currentTier.slice(1).toLowerCase()}{" "}
+            {["MASTER", "GRANDMASTER", "CHALLENGER"].includes(entry.currentTier)
+              ? ""
+              : entry.currentDivision}
+            {" · "}
+            {entry.currentLp} LP
           </span>
         </div>
       </div>
@@ -104,7 +123,16 @@ function PlayerRow({ entry, index: _index }: { entry: LeaderboardEntry; index: n
         </div>
         <div className="w-14 text-right">
           <p className="text-xs text-text-muted">WR</p>
-          <p className={cn("text-sm font-bold", entry.winRate >= 55 ? "text-success" : entry.winRate < 45 ? "text-danger" : "text-text")}>
+          <p
+            className={cn(
+              "text-sm font-bold",
+              entry.winRate >= 55
+                ? "text-success"
+                : entry.winRate < 45
+                  ? "text-danger"
+                  : "text-text"
+            )}
+          >
             {entry.winRate}%
           </p>
         </div>
@@ -123,7 +151,10 @@ function SkeletonRows() {
   return (
     <div className="space-y-2">
       {Array.from({ length: 10 }).map((_, i) => (
-        <div key={i} className="flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3">
+        <div
+          key={i}
+          className="flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3"
+        >
           <Skeleton className="h-5 w-8 rounded" />
           <Skeleton className="h-9 w-9 shrink-0 rounded-full" />
           <div className="flex-1 space-y-1.5">
@@ -153,7 +184,7 @@ export default function LeaderboardPage() {
       />
 
       {/* Period tabs */}
-      <div className="flex gap-1 rounded-lg border border-border bg-surface-2 p-1 w-fit">
+      <div className="flex w-fit gap-1 rounded-lg border border-border bg-surface-2 p-1">
         {(["week", "month"] as const).map((p) => (
           <button
             key={p}

@@ -71,11 +71,9 @@ export async function getPlanLimits(userId: string): Promise<PlanLimits> {
     select: { plan: true, status: true },
   });
 
-  const isActive =
-    subscription?.status === "active" || subscription?.status === "trialing";
+  const isActive = subscription?.status === "active" || subscription?.status === "trialing";
 
-  const plan: SubscriptionPlan =
-    isActive && subscription ? subscription.plan : "free";
+  const plan: SubscriptionPlan = isActive && subscription ? subscription.plan : "free";
 
   return PLAN_LIMITS[plan];
 }

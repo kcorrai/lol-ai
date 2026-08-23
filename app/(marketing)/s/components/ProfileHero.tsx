@@ -77,14 +77,15 @@ export function ProfileHero({ data, region }: Props): React.ReactElement {
                   unoptimized
                 />
               )}
-              <span className={`font-mono text-base font-bold ${rank ? tierColorClass(rank.tier) : "text-text-muted"}`}>
+              <span
+                className={`font-mono text-base font-bold ${rank ? tierColorClass(rank.tier) : "text-text-muted"}`}
+              >
                 {rank ? `${tierLabel(rank.tier)} ${rank.division}` : "Unranked"}
               </span>
             </div>
             {rank && (
               <p className="mt-0.5 font-mono text-[11px] text-text-muted">
-                {rank.lp} LP · {rank.wins}W {rank.losses}L
-                {seasonWr !== null && ` · ${seasonWr}%`}
+                {rank.lp} LP · {rank.wins}W {rank.losses}L{seasonWr !== null && ` · ${seasonWr}%`}
               </p>
             )}
           </div>

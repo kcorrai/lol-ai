@@ -3,9 +3,14 @@ import { rankUpEmbed, achievementEmbed, weeklyRecapEmbed, testEmbed } from "./em
 
 describe("rankUpEmbed", () => {
   const params = {
-    gameName: "KaaN", tagLine: "TR1",
-    prevTier: "GOLD", prevDivision: "II", prevLp: 80,
-    newTier: "PLATINUM", newDivision: "IV", newLp: 12,
+    gameName: "KaaN",
+    tagLine: "TR1",
+    prevTier: "GOLD",
+    prevDivision: "II",
+    prevLp: 80,
+    newTier: "PLATINUM",
+    newDivision: "IV",
+    newLp: 12,
   };
 
   it("contains gameName in description", () => {
@@ -62,7 +67,13 @@ describe("weeklyRecapEmbed", () => {
   });
 
   it("optionally includes top champion", () => {
-    const embed = weeklyRecapEmbed({ gameName: "KaaN", wins: 5, losses: 5, lpDelta: 0, topChampion: "Ahri" });
+    const embed = weeklyRecapEmbed({
+      gameName: "KaaN",
+      wins: 5,
+      losses: 5,
+      lpDelta: 0,
+      topChampion: "Ahri",
+    });
     const champField = embed.fields?.find((f) => f.name === "Top Champion");
     expect(champField?.value).toBe("Ahri");
   });

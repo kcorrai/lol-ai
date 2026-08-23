@@ -19,16 +19,16 @@ export function PairingScreen(): React.ReactElement {
           // Three states, not two. Saying "not paired" where nothing could be asked would
           // be a guess dressed as a fact.
           <p className="text-sm text-text-body">
-            This preview has no credential store to ask. Run the desktop app to see whether
-            this machine is paired.
+            This preview has no credential store to ask. Run the desktop app to see whether this
+            machine is paired.
           </p>
         ) : state.status === "paired" ? (
           <PairedDevice pairing={state.pairing} onForget={forget} />
         ) : state.status === "offline" ? (
           <div className="grid gap-3">
             <p className="text-sm text-text-body">
-              This machine holds a token, but LoL AI Coach could not be reached to confirm
-              it. Nothing is wrong with the pairing — the website is out of reach.
+              This machine holds a token, but LoL AI Coach could not be reached to confirm it.
+              Nothing is wrong with the pairing — the website is out of reach.
             </p>
             <p className="text-xs text-text-muted">{state.error}</p>
             <button
@@ -72,8 +72,8 @@ export function PairingScreen(): React.ReactElement {
           ))}
         </ol>
         <p className="mt-4 border-t border-line-1 pt-3 text-xs text-text-muted">
-          Your password is never stored on this machine, and revoking the device on the
-          website is enough to cut it off.
+          Your password is never stored on this machine, and revoking the device on the website is
+          enough to cut it off.
         </p>
       </HudPanel>
     </div>

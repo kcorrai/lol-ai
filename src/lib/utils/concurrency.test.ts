@@ -30,13 +30,17 @@ describe("mapWithConcurrency", () => {
     let inFlight = 0;
     let peak = 0;
 
-    await mapWithConcurrency(Array.from({ length: 20 }, (_, i) => i), 4, async () => {
-      inFlight++;
-      peak = Math.max(peak, inFlight);
-      await wait(2);
-      inFlight--;
-      return null;
-    });
+    await mapWithConcurrency(
+      Array.from({ length: 20 }, (_, i) => i),
+      4,
+      async () => {
+        inFlight++;
+        peak = Math.max(peak, inFlight);
+        await wait(2);
+        inFlight--;
+        return null;
+      }
+    );
 
     expect(peak).toBe(4);
   });
@@ -79,11 +83,15 @@ describe("mapWithConcurrency", () => {
 
     it("stops handing out new items", async () => {
       const started: number[] = [];
-      await mapWithConcurrency(Array.from({ length: 50 }, (_, i) => i), 2, async (n) => {
-        started.push(n);
-        await wait(1);
-        throw new Error("always");
-      }).catch(() => undefined);
+      await mapWithConcurrency(
+        Array.from({ length: 50 }, (_, i) => i),
+        2,
+        async (n) => {
+          started.push(n);
+          await wait(1);
+          throw new Error("always");
+        }
+      ).catch(() => undefined);
 
       // The two runners in flight when the first failure lands may each pick up one more before
       // observing it, but nothing like all fifty should have been started.

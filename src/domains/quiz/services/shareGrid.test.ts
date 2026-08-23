@@ -66,7 +66,10 @@ describe("buildShareGrid", () => {
       results: [solved("emoji", 1), solved("classic", 2), solved("splash", 3)],
       streak: 0,
     });
-    const order = text.split("\n").filter((l) => /^[A-Z]+\s/.test(l)).map((l) => l.split(" ")[0]);
+    const order = text
+      .split("\n")
+      .filter((l) => /^[A-Z]+\s/.test(l))
+      .map((l) => l.split(" ")[0]);
     expect(order).toEqual(["CLASSIC", "SPLASH", "EMOJI"]);
   });
 

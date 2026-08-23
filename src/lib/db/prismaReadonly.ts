@@ -24,7 +24,10 @@ function createReadonlyClient(): PrismaClient {
             { emit: "event", level: "query" },
             { emit: "stdout", level: "error" },
           ]
-        : [{ emit: "event", level: "query" }, { emit: "stdout", level: "error" }],
+        : [
+            { emit: "event", level: "query" },
+            { emit: "stdout", level: "error" },
+          ],
   });
 
   // Log queries slower than 500ms to catch analytics N+1 and missing indexes
@@ -56,8 +59,7 @@ function createReadonlyClient(): PrismaClient {
   return client;
 }
 
-export const prismaReadonly =
-  globalForPrismaReadonly.prismaReadonly ?? createReadonlyClient();
+export const prismaReadonly = globalForPrismaReadonly.prismaReadonly ?? createReadonlyClient();
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrismaReadonly.prismaReadonly = prismaReadonly;

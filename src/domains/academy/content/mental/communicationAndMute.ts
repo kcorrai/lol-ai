@@ -58,7 +58,8 @@ export const communicationAndMute: Lesson = {
     {
       id: "comms-quiz",
       kind: "quiz",
-      prompt: "Your team is about to take Baron and you think it is a mistake. What is the useful thing to send?",
+      prompt:
+        "Your team is about to take Baron and you think it is a mistake. What is the useful thing to send?",
       options: [
         {
           id: "a",

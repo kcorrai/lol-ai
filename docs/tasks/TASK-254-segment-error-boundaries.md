@@ -1,6 +1,7 @@
 # TASK-254 — No segment-level error boundaries
 
 ## Problem
+
 The app had exactly three boundary files, all at the root:
 
 ```
@@ -36,13 +37,13 @@ boundary does not.
 
 **Five thin segment boundaries**, each ~8 lines, delegating to it:
 
-| File | area | recovery target |
-|---|---|---|
-| `app/(app)/error.tsx` | your dashboard | `/dashboard` |
-| `app/(tools)/error.tsx` | this tool | `/tools` — tools are public, so anonymous users get a usable destination |
-| `app/(marketing)/error.tsx` | this page | `/` |
-| `app/(team)/error.tsx` | this team | `/teams` |
-| `app/(auth)/error.tsx` | this page | `/login` — an unauthenticated user cannot reach `/dashboard` |
+| File                        | area           | recovery target                                                          |
+| --------------------------- | -------------- | ------------------------------------------------------------------------ |
+| `app/(app)/error.tsx`       | your dashboard | `/dashboard`                                                             |
+| `app/(tools)/error.tsx`     | this tool      | `/tools` — tools are public, so anonymous users get a usable destination |
+| `app/(marketing)/error.tsx` | this page      | `/`                                                                      |
+| `app/(team)/error.tsx`      | this team      | `/teams`                                                                 |
+| `app/(auth)/error.tsx`      | this page      | `/login` — an unauthenticated user cannot reach `/dashboard`             |
 
 `app/error.tsx` and `app/global-error.tsx` are unchanged; they remain the last-resort boundary for
 anything thrown outside a group (layout failures, `app/teams/join`, `app/u`, `app/share`, `app/recap`).
@@ -51,11 +52,13 @@ All five recovery targets were verified to resolve to real pages — note `/team
 `app/(app)/teams/page.tsx`, since route groups do not affect the URL.
 
 ## Not included
+
 `loading.tsx` files are deliberately out of scope. The pages already render their own React Query
 loading skeletons, so adding route-level suspense fallbacks would double up the loading UI and is a
 separate design decision. Filed as follow-up TASK-258.
 
 ## Verification
+
 `tsc --noEmit` and ESLint clean; full unit suite green. Manual: throwing inside a page under each
 group renders the scoped boundary with the shell intact, and "Try Again" re-runs the segment.
 

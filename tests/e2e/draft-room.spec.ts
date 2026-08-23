@@ -69,7 +69,6 @@ async function lockIn(page: Page, champion: string): Promise<void> {
   await page.getByRole("button", { name: /^Lock (ban|pick)$/ }).click();
 }
 
-
 test.describe("live draft room", () => {
   test("two drafters share one board", async ({ browser, request }) => {
     const draft = await createDraft(request);

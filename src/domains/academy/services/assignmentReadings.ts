@@ -62,7 +62,11 @@ export async function loadReadings({
       visionScore: true,
       teamId: true,
       match: {
-        select: { id: true, gameStart: true, participants: { select: { teamId: true, kills: true } } },
+        select: {
+          id: true,
+          gameStart: true,
+          participants: { select: { teamId: true, kills: true } },
+        },
       },
     },
     orderBy: { match: { gameStart: order } },

@@ -40,7 +40,7 @@ export interface LiveMatchup {
 export function findMatchup(
   draft: LiveDraftTeams,
   yourSide: "blue" | "red",
-  yourChampion: string | undefined,
+  yourChampion: string | undefined
 ): LiveMatchup | null {
   if (!yourChampion) return null;
 
@@ -72,7 +72,7 @@ export function findMatchup(
 export function assignLanes(
   participants: LiveParticipant[],
   laneFrequency: LaneFrequency,
-  championKeys: Map<number, string>,
+  championKeys: Map<number, string>
 ): LiveDraftTeams {
   const result: LiveDraftTeams = { blue: {}, red: {} };
 
@@ -96,13 +96,16 @@ export function assignLanes(
     const ranked = unplaced
       .map((p) => {
         const entries = rankLanes(p.championId, laneFrequency);
-        return { participant: p, lanes: entries.map((e) => e.position), confidence: concentration(entries) };
+        return {
+          participant: p,
+          lanes: entries.map((e) => e.position),
+          confidence: concentration(entries),
+        };
       })
       .sort((a, b) => b.confidence - a.confidence);
 
     for (const { participant, lanes } of ranked) {
-      const lane =
-        lanes.find((l) => !taken.has(l)) ?? LANES.find((l) => !taken.has(l)) ?? null;
+      const lane = lanes.find((l) => !taken.has(l)) ?? LANES.find((l) => !taken.has(l)) ?? null;
       if (lane) place(side, taken, lane, participant.championId, championKeys);
     }
   }
@@ -115,7 +118,7 @@ function place(
   taken: Set<CanonicalPosition>,
   lane: CanonicalPosition,
   championId: number,
-  championKeys: Map<number, string>,
+  championKeys: Map<number, string>
 ): void {
   const key = championKeys.get(championId);
   // A champion we can't name is one the draft analyzer couldn't evaluate anyway — leave the slot
@@ -128,7 +131,7 @@ function place(
 /** The champion's lanes, most-played first. */
 function rankLanes(
   championId: number,
-  laneFrequency: LaneFrequency,
+  laneFrequency: LaneFrequency
 ): { position: CanonicalPosition; games: number }[] {
   return [...(laneFrequency.get(championId) ?? [])].sort((a, b) => b.games - a.games);
 }

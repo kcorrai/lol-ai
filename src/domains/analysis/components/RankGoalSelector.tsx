@@ -4,8 +4,16 @@ import type { RankTier, RankDivision } from "@/types/common.types";
 import type { CurrentRank } from "@/domains/riot";
 
 const TIERS: RankTier[] = [
-  "IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM",
-  "EMERALD", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER",
+  "IRON",
+  "BRONZE",
+  "SILVER",
+  "GOLD",
+  "PLATINUM",
+  "EMERALD",
+  "DIAMOND",
+  "MASTER",
+  "GRANDMASTER",
+  "CHALLENGER",
 ];
 
 const DIVISIONS: RankDivision[] = ["IV", "III", "II", "I"];
@@ -13,9 +21,16 @@ const DIVISIONS: RankDivision[] = ["IV", "III", "II", "I"];
 const SINGLE_DIVISION_TIERS: RankTier[] = ["MASTER", "GRANDMASTER", "CHALLENGER"];
 
 const TIER_LABELS: Record<RankTier, string> = {
-  IRON: "Iron", BRONZE: "Bronze", SILVER: "Silver", GOLD: "Gold",
-  PLATINUM: "Platinum", EMERALD: "Emerald", DIAMOND: "Diamond",
-  MASTER: "Master", GRANDMASTER: "Grandmaster", CHALLENGER: "Challenger",
+  IRON: "Iron",
+  BRONZE: "Bronze",
+  SILVER: "Silver",
+  GOLD: "Gold",
+  PLATINUM: "Platinum",
+  EMERALD: "Emerald",
+  DIAMOND: "Diamond",
+  MASTER: "Master",
+  GRANDMASTER: "Grandmaster",
+  CHALLENGER: "Challenger",
 };
 
 export interface RankGoal {
@@ -73,7 +88,9 @@ export function RankGoalSelector({ currentRank, value, onChange }: RankGoalSelec
             >
               <option value="">Choose...</option>
               {availableTiers.map((t) => (
-                <option key={t} value={t}>{TIER_LABELS[t]}</option>
+                <option key={t} value={t}>
+                  {TIER_LABELS[t]}
+                </option>
               ))}
             </select>
           </div>
@@ -87,7 +104,9 @@ export function RankGoalSelector({ currentRank, value, onChange }: RankGoalSelec
                 className="rounded-md border border-border bg-surface px-3 py-1.5 text-sm text-text"
               >
                 {DIVISIONS.map((d) => (
-                  <option key={d} value={d}>{d}</option>
+                  <option key={d} value={d}>
+                    {d}
+                  </option>
                 ))}
               </select>
             </div>

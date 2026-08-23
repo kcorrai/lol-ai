@@ -11,8 +11,18 @@ import { MilestoneRankJourney } from "./MilestoneRankJourney";
 import { MilestoneChampionList } from "./MilestoneChampionList";
 
 const MONTH_NAMES = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 function LoadingSkeleton(): React.JSX.Element {

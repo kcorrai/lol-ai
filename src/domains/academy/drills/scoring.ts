@@ -1,4 +1,9 @@
-import { isChoiceDrill, type Drill, type DrillOption, type WaveSimDrill } from "@/domains/academy/types";
+import {
+  isChoiceDrill,
+  type Drill,
+  type DrillOption,
+  type WaveSimDrill,
+} from "@/domains/academy/types";
 import { isWaveAction, meetsGoal, simulateWave } from "./waveSim";
 
 /** One attempt at one drill. `answer` is an option id, or the ordered ids for an order drill. */
@@ -18,7 +23,10 @@ function optionById(options: DrillOption[], id: string): DrillOption | undefined
   return options.find((o) => o.id === id);
 }
 
-function gradeChoice(options: DrillOption[], answer: string[]): { correct: boolean; explanation: string } {
+function gradeChoice(
+  options: DrillOption[],
+  answer: string[]
+): { correct: boolean; explanation: string } {
   const picked = answer.length === 1 ? optionById(options, answer[0]) : undefined;
   if (!picked) {
     return { correct: false, explanation: "No answer recorded." };
@@ -41,7 +49,10 @@ function gradeOrder(
  * and judged only on where the wave ended up. A plan that reaches the goal early and holds it
  * is as correct as one that arrives on the last cycle — the goal is a state, not a route.
  */
-function gradeWaveSim(drill: WaveSimDrill, answer: string[]): { correct: boolean; explanation: string } {
+function gradeWaveSim(
+  drill: WaveSimDrill,
+  answer: string[]
+): { correct: boolean; explanation: string } {
   if (answer.length !== drill.cycles || !answer.every(isWaveAction)) {
     return { correct: false, explanation: drill.explain };
   }

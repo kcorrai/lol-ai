@@ -42,9 +42,7 @@ export function SessionProgress({ booking, history }: Props): React.ReactElement
     { label: "Delivered", at: delivered ?? "not yet", done: delivered !== null, bad: false },
     {
       label: endLabel(booking.status),
-      at:
-        ended ??
-        (booking.autoCompleteAt ? whenLabel(booking.autoCompleteAt) : "not yet"),
+      at: ended ?? (booking.autoCompleteAt ? whenLabel(booking.autoCompleteAt) : "not yet"),
       done: ended !== null,
       bad: booking.status === "DISPUTED" || booking.status === "REFUNDED",
     },

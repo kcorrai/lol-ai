@@ -40,19 +40,21 @@ function wrongAnswers() {
 
 beforeEach(() => {
   vi.resetAllMocks();
-  vi.mocked(prisma.$transaction).mockImplementation(
-    (async (fn: (tx: unknown) => Promise<unknown>) => fn(prisma)) as never
-  );
+  vi.mocked(prisma.$transaction).mockImplementation((async (
+    fn: (tx: unknown) => Promise<unknown>
+  ) => fn(prisma)) as never);
   vi.mocked(prisma.academyProgress.findUnique).mockResolvedValue(null as never);
-  vi.mocked(prisma.academyProgress.upsert).mockImplementation(
-    (async ({ create }: { create: Record<string, unknown> }) => ({
-      lessonId: LESSON,
-      status: create.status ?? "in_progress",
-      attempts: 1,
-      bestScore: create.bestScore ?? 0,
-      completedAt: create.completedAt ?? null,
-    })) as never
-  );
+  vi.mocked(prisma.academyProgress.upsert).mockImplementation((async ({
+    create,
+  }: {
+    create: Record<string, unknown>;
+  }) => ({
+    lessonId: LESSON,
+    status: create.status ?? "in_progress",
+    attempts: 1,
+    bestScore: create.bestScore ?? 0,
+    completedAt: create.completedAt ?? null,
+  })) as never);
 });
 
 describe("submitLessonAttempt", () => {

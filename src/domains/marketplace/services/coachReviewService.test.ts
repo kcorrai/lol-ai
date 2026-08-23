@@ -188,9 +188,7 @@ describe("suspendCoach and reinstateCoach", () => {
       ok: true,
       slug: "rekkles",
     });
-    expect(audit).toHaveBeenCalledWith(
-      expect.objectContaining({ action: "coach.suspended" })
-    );
+    expect(audit).toHaveBeenCalledWith(expect.objectContaining({ action: "coach.suspended" }));
   });
 
   it("will not suspend someone who was never approved", async () => {

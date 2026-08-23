@@ -117,7 +117,7 @@ describe("computeDuoSynergy", () => {
 
     const losing = computeDuoSynergy(
       ownRows.map((r) => ({ ...r, won: !r.won })),
-      partnerRows,
+      partnerRows
     );
     expect(losing.streak).toBe(-2);
   });

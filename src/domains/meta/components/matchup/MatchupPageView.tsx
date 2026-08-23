@@ -19,14 +19,25 @@ function analysis(d: MatchupPageData): string {
       `Across ${d.games.toLocaleString()} ranked games, ${d.a.name} wins ${d.aWinRate.toFixed(1)}% of the time.`
     );
   } else {
-    parts.push(`There isn't a large ranked sample for this exact matchup yet, so play to your win conditions.`);
+    parts.push(
+      `There isn't a large ranked sample for this exact matchup yet, so play to your win conditions.`
+    );
   }
   const lateA = d.curveA.find((p) => p.minutes === 40)?.winRate;
   const lateB = d.curveB.find((p) => p.minutes === 40)?.winRate;
   if (lateA !== undefined && lateB !== undefined) {
-    if (lateA >= lateB + 1) parts.push(`${d.a.name} scales better into the late game, so ${d.b.name} should look to end early.`);
-    else if (lateB >= lateA + 1) parts.push(`${d.b.name} out-scales ${d.a.name}, so ${d.a.name} wants to press its lead before 40 minutes.`);
-    else parts.push(`Both champions scale similarly, so the lane is decided by early trades and roams.`);
+    if (lateA >= lateB + 1)
+      parts.push(
+        `${d.a.name} scales better into the late game, so ${d.b.name} should look to end early.`
+      );
+    else if (lateB >= lateA + 1)
+      parts.push(
+        `${d.b.name} out-scales ${d.a.name}, so ${d.a.name} wants to press its lead before 40 minutes.`
+      );
+    else
+      parts.push(
+        `Both champions scale similarly, so the lane is decided by early trades and roams.`
+      );
   }
   if (d.coreA.length > 0) parts.push(`${d.a.name} typically builds ${d.coreA.join(", ")}.`);
   if (d.coreB.length > 0) parts.push(`${d.b.name} rushes ${d.coreB.join(", ")}.`);
@@ -46,9 +57,10 @@ export function MatchupPageView({ d }: { d: MatchupPageData }) {
         name: `Who wins ${d.a.name} vs ${d.b.name}?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: d.games > 0
-            ? `${d.a.name} wins ${d.aWinRate.toFixed(1)}% of ${d.laneLabel} games against ${d.b.name} on patch ${d.gamePatch}.`
-            : `The ${d.a.name} vs ${d.b.name} matchup is close to even by ranked win rate this patch.`,
+          text:
+            d.games > 0
+              ? `${d.a.name} wins ${d.aWinRate.toFixed(1)}% of ${d.laneLabel} games against ${d.b.name} on patch ${d.gamePatch}.`
+              : `The ${d.a.name} vs ${d.b.name} matchup is close to even by ranked win rate this patch.`,
         },
       },
     ],
@@ -59,7 +71,12 @@ export function MatchupPageView({ d }: { d: MatchupPageData }) {
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Free Tools", item: `${BASE_URL}/tools` },
       { "@type": "ListItem", position: 2, name: "Matchups", item: `${BASE_URL}/tools/matchup` },
-      { "@type": "ListItem", position: 3, name: `${d.a.name} vs ${d.b.name}`, item: `${BASE_URL}/matchups/${d.a.key.toLowerCase()}-vs-${d.b.key.toLowerCase()}` },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: `${d.a.name} vs ${d.b.name}`,
+        item: `${BASE_URL}/matchups/${d.a.key.toLowerCase()}-vs-${d.b.key.toLowerCase()}`,
+      },
     ],
   };
 
@@ -72,7 +89,10 @@ export function MatchupPageView({ d }: { d: MatchupPageData }) {
         items={[
           { name: "Free Tools", href: "/tools" },
           { name: "Matchups", href: "/tools/matchup" },
-          { name: `${d.a.name} vs ${d.b.name}`, href: `/matchups/${d.a.key.toLowerCase()}-vs-${d.b.key.toLowerCase()}` },
+          {
+            name: `${d.a.name} vs ${d.b.name}`,
+            href: `/matchups/${d.a.key.toLowerCase()}-vs-${d.b.key.toLowerCase()}`,
+          },
         ]}
       />
 
@@ -82,7 +102,12 @@ export function MatchupPageView({ d }: { d: MatchupPageData }) {
         </h1>
       </header>
 
-      <DataFreshness fetchedAt={d.fetchedAt} patch={d.rawPatch} matchCount={d.matchCount} className="mb-6" />
+      <DataFreshness
+        fetchedAt={d.fetchedAt}
+        patch={d.rawPatch}
+        matchCount={d.matchCount}
+        className="mb-6"
+      />
 
       {/* Head-to-head card */}
       <div className="mb-8 flex items-center justify-center gap-6 rounded-2xl border border-border bg-surface/60 p-6">
@@ -91,7 +116,9 @@ export function MatchupPageView({ d }: { d: MatchupPageData }) {
           <span className="text-sm font-semibold text-text">{d.a.name}</span>
         </div>
         <div className="text-center">
-          <div className={`font-display text-4xl font-black ${good ? "text-success" : bad ? "text-danger" : "text-text"}`}>
+          <div
+            className={`font-display text-4xl font-black ${good ? "text-success" : bad ? "text-danger" : "text-text"}`}
+          >
             {d.aWinRate.toFixed(1)}%
           </div>
           <div className="text-xs text-text-muted">{d.a.name} win rate</div>
@@ -105,7 +132,12 @@ export function MatchupPageView({ d }: { d: MatchupPageData }) {
       <p className="mb-8 leading-relaxed text-text-muted">{analysis(d)}</p>
 
       <div className="grid gap-5 md:grid-cols-2">
-        <MatchupCurveCompare nameA={d.a.name} nameB={d.b.name} curveA={d.curveA} curveB={d.curveB} />
+        <MatchupCurveCompare
+          nameA={d.a.name}
+          nameB={d.b.name}
+          curveA={d.curveA}
+          curveB={d.curveB}
+        />
         {d.hints.length > 0 && (
           <div className="rounded-2xl border border-border bg-surface/60 p-5">
             <h2 className="mb-3 font-display text-lg font-bold text-text">Lane Tips</h2>
@@ -124,12 +156,20 @@ export function MatchupPageView({ d }: { d: MatchupPageData }) {
       {/* Internal links */}
       <div className="mt-10 flex flex-wrap gap-3 text-sm">
         {[d.a, d.b].map((c) => (
-          <Link key={c.key} href={`/builds/${c.key}`} className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text">
+          <Link
+            key={c.key}
+            href={`/builds/${c.key}`}
+            className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
+          >
             {c.name} build →
           </Link>
         ))}
         {[d.a, d.b].map((c) => (
-          <Link key={`${c.key}-c`} href={`/counters/${c.key}`} className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text">
+          <Link
+            key={`${c.key}-c`}
+            href={`/counters/${c.key}`}
+            className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
+          >
             {c.name} counters →
           </Link>
         ))}

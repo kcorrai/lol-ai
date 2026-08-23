@@ -61,9 +61,7 @@ export async function generateShareableCard(
   return { token: card.token, expiresAt: expiresAt.toISOString() };
 }
 
-export async function getCardByToken(
-  token: string
-): Promise<{ data: CardData; expired: boolean }> {
+export async function getCardByToken(token: string): Promise<{ data: CardData; expired: boolean }> {
   const card = await prisma.shareableCard.findUnique({ where: { token } });
   if (!card) throw new Error("NOT_FOUND");
 

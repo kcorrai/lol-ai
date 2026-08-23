@@ -14,10 +14,7 @@ type AuthContext = {
   requestId: string;
 };
 
-type AuthenticatedHandler = (
-  req: NextRequest,
-  ctx: AuthContext
-) => Promise<NextResponse>;
+type AuthenticatedHandler = (req: NextRequest, ctx: AuthContext) => Promise<NextResponse>;
 
 export interface WithAuthOptions {
   /**

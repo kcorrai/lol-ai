@@ -17,7 +17,11 @@ export const PATCH = withAuth(async (req: NextRequest, { userId }) => {
   if (!riotAccountId) throw Errors.validation("Missing riotAccountId");
 
   let body: unknown;
-  try { body = await req.json(); } catch { throw Errors.validation("Invalid JSON body"); }
+  try {
+    body = await req.json();
+  } catch {
+    throw Errors.validation("Invalid JSON body");
+  }
 
   const parsed = patchSchema.safeParse(body);
   if (!parsed.success) throw Errors.validation(parsed.error.issues[0].message);

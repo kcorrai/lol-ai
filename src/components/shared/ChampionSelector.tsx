@@ -131,10 +131,7 @@ export function ChampionSelector({
           <>
             <ChampionIcon name={selectedChampion.name} size={iconSize} />
             <span className="flex-1 text-left font-medium">{selectedChampion.name}</span>
-            <X
-              className="h-4 w-4 shrink-0 text-text-muted hover:text-text"
-              onClick={clear}
-            />
+            <X className="h-4 w-4 shrink-0 text-text-muted hover:text-text" onClick={clear} />
           </>
         ) : (
           <>
@@ -158,11 +155,7 @@ export function ChampionSelector({
               className="w-full bg-transparent text-sm text-text placeholder:text-text-muted focus:outline-none"
             />
           </div>
-          <ul
-            ref={listRef}
-            className="max-h-60 overflow-y-auto py-1"
-            role="listbox"
-          >
+          <ul ref={listRef} className="max-h-60 overflow-y-auto py-1" role="listbox">
             {filtered.length === 0 && (
               <li className="px-3 py-2 text-sm text-text-muted">No results found</li>
             )}

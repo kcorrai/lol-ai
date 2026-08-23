@@ -29,13 +29,31 @@ export interface MonthlyMilestone {
 }
 
 const MONTH_NAMES = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 const TIER_ORDER: Record<string, number> = {
-  IRON: 0, BRONZE: 1, SILVER: 2, GOLD: 3, PLATINUM: 4,
-  EMERALD: 5, DIAMOND: 6, MASTER: 7, GRANDMASTER: 8, CHALLENGER: 9,
+  IRON: 0,
+  BRONZE: 1,
+  SILVER: 2,
+  GOLD: 3,
+  PLATINUM: 4,
+  EMERALD: 5,
+  DIAMOND: 6,
+  MASTER: 7,
+  GRANDMASTER: 8,
+  CHALLENGER: 9,
 };
 const DIV_ORDER: Record<string, number> = { IV: 0, III: 1, II: 2, I: 3 };
 
@@ -82,10 +100,7 @@ export async function getMonthlyMilestone(
     0
   );
 
-  const totalDurationMin = participants.reduce(
-    (s, p) => s + (p.match.gameDuration ?? 0) / 60,
-    0
-  );
+  const totalDurationMin = participants.reduce((s, p) => s + (p.match.gameDuration ?? 0) / 60, 0);
 
   const avgCsPerMin =
     participants.reduce((s, p) => s + p.cs / Math.max((p.match.gameDuration ?? 1) / 60, 1), 0) /
@@ -141,10 +156,18 @@ export async function getMonthlyMilestone(
   });
 
   const rankStart = rankHistory[0]
-    ? { tier: String(rankHistory[0].tier), division: String(rankHistory[0].division), lp: rankHistory[0].lp }
+    ? {
+        tier: String(rankHistory[0].tier),
+        division: String(rankHistory[0].division),
+        lp: rankHistory[0].lp,
+      }
     : null;
   const rankEnd = rankHistory[rankHistory.length - 1]
-    ? { tier: String(rankHistory[rankHistory.length - 1]!.tier), division: String(rankHistory[rankHistory.length - 1]!.division), lp: rankHistory[rankHistory.length - 1]!.lp }
+    ? {
+        tier: String(rankHistory[rankHistory.length - 1]!.tier),
+        division: String(rankHistory[rankHistory.length - 1]!.division),
+        lp: rankHistory[rankHistory.length - 1]!.lp,
+      }
     : null;
 
   const lpChange =
@@ -163,7 +186,7 @@ export async function getMonthlyMilestone(
     winRate: Math.round((wins / participants.length) * 100),
     avgKda: Math.round((totalKda / participants.length) * 100) / 100,
     avgCsPerMin: Math.round(avgCsPerMin * 10) / 10,
-    estimatedHours: Math.round(totalDurationMin / 60 * 10) / 10,
+    estimatedHours: Math.round((totalDurationMin / 60) * 10) / 10,
     topChampions,
     rankStart,
     rankEnd,

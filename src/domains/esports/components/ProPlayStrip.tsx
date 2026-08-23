@@ -36,8 +36,8 @@ export async function ProPlayStrip({
   if (variant === "line") {
     return (
       <p className="text-sm text-text-muted">
-        Pros have picked {name} in {build.games} of the last {meta.games} recorded games (
-        {pickRate}%), winning {winRate}% of them.{" "}
+        Pros have picked {name} in {build.games} of the last {meta.games} recorded games ({pickRate}
+        %), winning {winRate}% of them.{" "}
         <Link href={href} className="text-accent hover:underline">
           See the pro build
         </Link>
@@ -56,8 +56,8 @@ export async function ProPlayStrip({
           How pros build {name}
         </h2>
         <span className="hud-label">
-          {build.games} pro {build.games === 1 ? "game" : "games"} · {pickRate}% picked ·{" "}
-          {winRate}% win
+          {build.games} pro {build.games === 1 ? "game" : "games"} · {pickRate}% picked · {winRate}%
+          win
         </span>
       </div>
 

@@ -1,15 +1,13 @@
-import {
-  spellIconUrl,
-  passiveIconUrl,
-  abilityVideoUrl,
-  type AbilitySlot,
-} from "@/lib/ddragon";
+import { spellIconUrl, passiveIconUrl, abilityVideoUrl, type AbilitySlot } from "@/lib/ddragon";
 import { cleanAbilityText, type DdragonChampionDetail } from "@/lib/ddragon/championsData";
 import type { AbilityView } from "./ChampionAbilities";
 
 const SLOTS: { slot: AbilityView["slot"]; video: AbilitySlot }[] = [
-  { slot: "P", video: "P1" }, { slot: "Q", video: "Q1" }, { slot: "W", video: "W1" },
-  { slot: "E", video: "E1" }, { slot: "R", video: "R1" },
+  { slot: "P", video: "P1" },
+  { slot: "Q", video: "Q1" },
+  { slot: "W", video: "W1" },
+  { slot: "E", video: "E1" },
+  { slot: "R", video: "R1" },
 ];
 
 const keepRange = (v: string) => (v && v !== "self" && v !== "0" ? v : undefined);

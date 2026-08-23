@@ -20,13 +20,7 @@ interface Input {
  * has been typed that the index does not know. That last row is what keeps an incomplete index
  * from being a dead end: the profile page resolves the Riot ID itself.
  */
-export function buildSearchRows({
-  query,
-  region,
-  hits,
-  recent,
-  favorites,
-}: Input): SearchRow[] {
+export function buildSearchRows({ query, region, hits, recent, favorites }: Input): SearchRow[] {
   const parsed = parseSearchQuery(query);
 
   if (!parsed) {
@@ -45,7 +39,7 @@ export function buildSearchRows({
   if (parsed.tag === null) return rows;
 
   const alreadyListed = hits.some(
-    (h) => h.gameName.toLowerCase() === parsed.name && h.tagLine.toLowerCase() === parsed.tag,
+    (h) => h.gameName.toLowerCase() === parsed.name && h.tagLine.toLowerCase() === parsed.tag
   );
   if (alreadyListed) return rows;
 

@@ -25,21 +25,21 @@ Draft Analyzer sayfasÄ±nÄ±n kullanacaÄŸÄ± TanStack Query mutation hook'u
 
 ```typescript
 // src/hooks/useDraftAnalysis.ts
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { DraftInput, DraftAnalysis } from '@/domains/draft/types/draft.types';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { DraftInput, DraftAnalysis } from "@/domains/draft/types/draft.types";
 
 export function useDraftAnalysis() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation<DraftAnalysis, Error, DraftInput>({
     mutationFn: (input) =>
-      fetch('/api/draft/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      fetch("/api/draft/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(input),
       })
-        .then(res => res.json())
-        .then(data => data.data),
+        .then((res) => res.json())
+        .then((data) => data.data),
   });
 
   return {
@@ -58,4 +58,3 @@ export function useDraftAnalysis() {
 ## BaÄŸÄ±mlÄ±lÄ±klar
 
 - TASK-063 (Draft API endpoint) tamamlanmÄ±ÅŸ olmalÄ±
-

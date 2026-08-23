@@ -31,12 +31,14 @@ işlem kaydıdır).
 ## Consequences
 
 **Artılar:**
+
 - Değiştirilemez kayıt — DB seviyesinde audit integrity
 - GDPR erasure ile uyumlu (userId null, event varlığını korur)
 - Admin panelinde filtrelenebilir, sayfalandırılmış görünüm
 - SOC2 CC6.2, CC6.3 ve CC7.2 gereksinimlerini karşılar
 
 **Eksileri:**
+
 - Tablo zamanla büyüyecek. 2 yıl sonrası için cold storage archival (S3) planlanmalı.
 - Uygulama katmanında `UPDATE`/`DELETE` yasağı zımni kuraldır; DB trigger eklenerek
   mekanik olarak da zorlanabilir (future hardening).

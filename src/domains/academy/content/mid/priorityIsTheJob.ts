@@ -29,9 +29,21 @@ export const priorityIsTheJob: Lesson = {
       caption: "What priority buys, by minute",
       head: ["Minute", "What is happening", "What priority is worth"],
       rows: [
-        ["0–8", "Scuttle and first ganks", "Your jungler wins the river fight because you can arrive"],
-        ["8–14", "Herald, first turrets", "The herald is taken by whoever can put four bodies near it"],
-        ["14–25", "Drakes, plates, first rotations", "You are the fourth player at every objective, on time"],
+        [
+          "0–8",
+          "Scuttle and first ganks",
+          "Your jungler wins the river fight because you can arrive",
+        ],
+        [
+          "8–14",
+          "Herald, first turrets",
+          "The herald is taken by whoever can put four bodies near it",
+        ],
+        [
+          "14–25",
+          "Drakes, plates, first rotations",
+          "You are the fourth player at every objective, on time",
+        ],
         ["25+", "Baron, sieges", "The team with mid priority chooses where the fight happens"],
       ],
     },
@@ -74,7 +86,8 @@ export const priorityIsTheJob: Lesson = {
         },
         {
           id: "b",
-          label: "The player who is three kills ahead but under their own turret with a wave incoming",
+          label:
+            "The player who is three kills ahead but under their own turret with a wave incoming",
           explain:
             "Ahead and stuck. If they leave now they give up a whole wave and probably a plate, which means they cannot leave — which means no priority, whatever the scoreboard says.",
           correct: false,

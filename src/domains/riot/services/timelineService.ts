@@ -64,7 +64,13 @@ export async function captureMatchTimeline(
   const result: TimelineCaptureResult = { deaths: 0, frames: 0, events: 0, skipped: false };
 
   if (needDeaths) {
-    result.deaths = await persistDeathEvents(matchDbId, riotAccountId, puuid, championName, timeline);
+    result.deaths = await persistDeathEvents(
+      matchDbId,
+      riotAccountId,
+      puuid,
+      championName,
+      timeline
+    );
   }
 
   if (needTimeline) {
@@ -132,7 +138,14 @@ async function persistDeathEvents(
 
   if (deaths.length === 0) {
     await prisma.matchDeathEvent.create({
-      data: { matchId: matchDbId, riotAccountId, positionX: -1, positionY: -1, gameTimeMs: 0, championName },
+      data: {
+        matchId: matchDbId,
+        riotAccountId,
+        positionX: -1,
+        positionY: -1,
+        gameTimeMs: 0,
+        championName,
+      },
     });
     return 0;
   }

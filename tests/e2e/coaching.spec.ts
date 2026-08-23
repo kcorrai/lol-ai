@@ -27,7 +27,9 @@ test.describe("Coaching Report", () => {
     const { reportId } = getState();
 
     await page.goto(`/coaching/${reportId}`);
-    await expect(page.getByRole("button", { name: "Copy share link" })).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole("button", { name: "Copy share link" })).toBeVisible({
+      timeout: 10_000,
+    });
   });
 
   test("Pending report — polling shows processing state", async ({ page }) => {

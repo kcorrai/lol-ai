@@ -2,9 +2,9 @@ import { prisma } from "@/lib/db/prisma";
 import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 
 export interface DeathTimingDistribution {
-  early: number;  // 0-15 min
-  mid: number;    // 15-25 min
-  late: number;   // 25+ min
+  early: number; // 0-15 min
+  mid: number; // 15-25 min
+  late: number; // 25+ min
 }
 
 export interface TeamfightAnalysis {
@@ -55,7 +55,9 @@ export async function getTeamfightAnalysis(
     };
   }
 
-  let early = 0, mid = 0, late = 0;
+  let early = 0,
+    mid = 0,
+    late = 0;
   let totalMs = 0;
 
   for (const e of deathEvents) {
@@ -68,9 +70,11 @@ export async function getTeamfightAnalysis(
   const pct = (n: number) => Math.round((n / totalDeaths) * 100);
   const peakCount = Math.max(early, mid, late);
   const peakDangerWindow =
-    peakCount === early ? "Early game (0-15 min)"
-    : peakCount === mid ? "Mid game (15-25 min)"
-    : "Late game (25+ min)";
+    peakCount === early
+      ? "Early game (0-15 min)"
+      : peakCount === mid
+        ? "Mid game (15-25 min)"
+        : "Late game (25+ min)";
 
   return {
     totalDeaths,

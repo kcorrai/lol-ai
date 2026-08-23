@@ -22,7 +22,10 @@ export function CoachPagination({ page, hasNext, basePath }: Props): React.React
   const href = (n: number) => (n === 1 ? basePath : `${basePath}${join}page=${n}`);
 
   return (
-    <nav className="mt-5 flex items-center justify-between gap-3 border-t border-line-1 pt-5" aria-label="Pagination">
+    <nav
+      className="mt-5 flex items-center justify-between gap-3 border-t border-line-1 pt-5"
+      aria-label="Pagination"
+    >
       {page > 1 ? (
         <Link
           href={href(page - 1)}
@@ -35,7 +38,9 @@ export function CoachPagination({ page, hasNext, basePath }: Props): React.React
         <span />
       )}
 
-      <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-text-faint">Page {page}</span>
+      <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-text-faint">
+        Page {page}
+      </span>
 
       {hasNext ? (
         <Link

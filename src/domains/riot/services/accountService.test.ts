@@ -25,7 +25,9 @@ function fakeTx() {
 }
 
 function runsTransactionWith(tx: ReturnType<typeof fakeTx>) {
-  vi.mocked(prisma.$transaction).mockImplementation((fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never);
+  vi.mocked(prisma.$transaction).mockImplementation(
+    (fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never
+  );
 }
 
 /** The account being disconnected, as the ownership lookup returns it. */

@@ -47,8 +47,8 @@ export default async function RolePathsPage(): Promise<React.ReactElement> {
         </h1>
         <p className="mt-4 text-[15px] leading-relaxed text-text-body">
           Wave management, vision and teamfighting are the same job in every role, and the main
-          curriculum teaches them once. These five paths cover what is left: the decisions that
-          only exist because of where you stand at fourteen minutes.
+          curriculum teaches them once. These five paths cover what is left: the decisions that only
+          exist because of where you stand at fourteen minutes.
         </p>
         {role && (
           <p className="mt-3 font-mono text-[11px] uppercase tracking-label text-accent">

@@ -17,11 +17,7 @@ interface Props {
 // positive here costs a moment's hesitation, a false negative costs trust.
 const CONTACTISH = /(\+?\d[\d\s-]{7,})|(@[\w.]+)|(discord\.gg)|(t\.me)/i;
 
-const QUICK_REPLIES = [
-  "Can we move it an hour?",
-  "Sent the VOD",
-  "Which champion should I bring?",
-];
+const QUICK_REPLIES = ["Can we move it an hour?", "Sent the VOD", "Which champion should I bring?"];
 
 /**
  * One conversation.
@@ -142,7 +138,11 @@ export function ThreadView({ conversationId }: Props): React.ReactElement {
         />
 
         <div className="flex flex-wrap items-center gap-3.5">
-          <Button size="sm" disabled={send.isPending || !draft.trim()} onClick={() => void submit()}>
+          <Button
+            size="sm"
+            disabled={send.isPending || !draft.trim()}
+            onClick={() => void submit()}
+          >
             <Send className="h-3.5 w-3.5" aria-hidden />
             Send
           </Button>

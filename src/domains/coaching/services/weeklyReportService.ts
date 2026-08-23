@@ -45,13 +45,22 @@ export async function sendWeeklyReports(): Promise<{
   let errors = 0;
 
   for (const user of users) {
-    if (!user.email) { skipped++; continue; }
+    if (!user.email) {
+      skipped++;
+      continue;
+    }
 
     const account = user.riotAccounts[0];
-    if (!account) { skipped++; continue; }
+    if (!account) {
+      skipped++;
+      continue;
+    }
 
     // Respect unsubscribe preference — users without a profile row are treated as opted in
-    if (user.profile?.emailWeeklyReport === false) { skipped++; continue; }
+    if (user.profile?.emailWeeklyReport === false) {
+      skipped++;
+      continue;
+    }
 
     // Idempotency: skip users already emailed this ISO week.
     // Reuses the WebhookEvent table (same pattern as LemonSqueezy webhook dedup).
@@ -59,15 +68,23 @@ export async function sendWeeklyReports(): Promise<{
     const alreadySent = await prisma.webhookEvent.findUnique({
       where: { eventKey: idempotencyKey },
     });
-    if (alreadySent) { skipped++; continue; }
+    if (alreadySent) {
+      skipped++;
+      continue;
+    }
 
     const isPro =
-      (user.subscription?.plan === "pro" || user.subscription?.plan === "elite" || user.subscription?.plan === "team") &&
+      (user.subscription?.plan === "pro" ||
+        user.subscription?.plan === "elite" ||
+        user.subscription?.plan === "team") &&
       (user.subscription?.status === "active" || user.subscription?.status === "trialing");
 
     try {
       const stats = await buildWeeklyStats(account.id, account.gameName, isPro, now);
-      if (!stats) { skipped++; continue; }
+      if (!stats) {
+        skipped++;
+        continue;
+      }
 
       const { subject, html } = renderWeeklyEmail(stats);
 

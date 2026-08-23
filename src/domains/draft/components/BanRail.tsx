@@ -46,10 +46,12 @@ function BanTile({ slot, side }: { slot: BanSlot; side: DraftSide }): React.JSX.
       className={`tag-cut relative flex h-[34px] w-[34px] shrink-0 items-center justify-center border bg-surface-dark ${
         slot.pending ? `${accent} animate-glow-pulse` : slot.championKey ? accent : "border-line-1"
       }`}
-      title={slot.championKey ? `${slot.championKey} banned` : slot.filled ? "Ban passed" : "Ban slot"}
+      title={
+        slot.championKey ? `${slot.championKey} banned` : slot.filled ? "Ban passed" : "Ban slot"
+      }
     >
       {slot.championKey ? (
-        <ChampionIcon name={slot.championKey} size={32} className="grayscale brightness-75" />
+        <ChampionIcon name={slot.championKey} size={32} className="brightness-75 grayscale" />
       ) : (
         // A filled slot with no champion is a passed or lapsed ban — it has to
         // read differently from a slot the draft has not reached yet.

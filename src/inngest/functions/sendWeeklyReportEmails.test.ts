@@ -26,7 +26,8 @@ import { sendWeeklyReports } from "@/domains/coaching/services/weeklyReportServi
 import { sendDiscordWebhook } from "@/lib/discord/webhookService";
 import { sendWeeklyReportEmails } from "./sendWeeklyReportEmails";
 
-const run = () => (sendWeeklyReportEmails as unknown as { handler: () => Promise<unknown> }).handler();
+const run = () =>
+  (sendWeeklyReportEmails as unknown as { handler: () => Promise<unknown> }).handler();
 
 /** One Discord subscriber with a primary account that played `wins + losses` ranked games. */
 function subscriber(accountId: string, currentLp: number, wins = 2, losses = 1) {
@@ -121,7 +122,9 @@ describe("sendWeeklyReportEmails — Discord summaries", () => {
   });
 
   it("reports a zero delta when the subscriber has no snapshot in the window", async () => {
-    vi.mocked(prisma.discordIntegration.findMany).mockResolvedValue([subscriber("acc-1", 80)] as never);
+    vi.mocked(prisma.discordIntegration.findMany).mockResolvedValue([
+      subscriber("acc-1", 80),
+    ] as never);
     vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([]);
 
     await run();
@@ -131,7 +134,9 @@ describe("sendWeeklyReportEmails — Discord summaries", () => {
 
   // Rows come back newest first, so the first one seen per account is the one nearest a week ago.
   it("uses the most recent snapshot when an account has several in the window", async () => {
-    vi.mocked(prisma.discordIntegration.findMany).mockResolvedValue([subscriber("acc-1", 80)] as never);
+    vi.mocked(prisma.discordIntegration.findMany).mockResolvedValue([
+      subscriber("acc-1", 80),
+    ] as never);
     vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([
       priorRank("acc-1", 60),
       priorRank("acc-1", 10),
@@ -144,7 +149,9 @@ describe("sendWeeklyReportEmails — Discord summaries", () => {
 
   // Bounded on both sides — without the lower bound a months-old row became the "week ago" baseline.
   it("bounds the lookup window at both ends", async () => {
-    vi.mocked(prisma.discordIntegration.findMany).mockResolvedValue([subscriber("acc-1", 50)] as never);
+    vi.mocked(prisma.discordIntegration.findMany).mockResolvedValue([
+      subscriber("acc-1", 50),
+    ] as never);
 
     await run();
 

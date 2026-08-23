@@ -33,10 +33,7 @@ export async function getCachedOtpAnalysis(
   return parsed.success ? parsed.data : null;
 }
 
-export async function getOtpAnalysis(
-  champion: string,
-  role: Position
-): Promise<OtpAnalysis> {
+export async function getOtpAnalysis(champion: string, role: Position): Promise<OtpAnalysis> {
   const cacheKey = otpCacheKey(champion, role);
 
   const cached = await getCached(cacheKey);

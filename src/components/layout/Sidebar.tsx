@@ -11,7 +11,12 @@ import { cn } from "@/lib/utils";
 import { NAV_SECTIONS, NAV_SETTINGS, ALL_NAV_HREFS } from "./navConfig";
 
 function NavItem({
-  href, icon: Icon, label, collapsed, tourId, newTab,
+  href,
+  icon: Icon,
+  label,
+  collapsed,
+  tourId,
+  newTab,
 }: {
   href: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -41,7 +46,7 @@ function NavItem({
       )}
     >
       {active && (
-        <span className="absolute left-0 top-1 h-[calc(100%-8px)] w-0.5 rounded-full bg-accent animate-glow-pulse" />
+        <span className="absolute left-0 top-1 h-[calc(100%-8px)] w-0.5 animate-glow-pulse rounded-full bg-accent" />
       )}
       <Icon className={cn("h-4 w-4 shrink-0 transition-colors", active ? "text-accent" : "")} />
       {!collapsed && <span>{label}</span>}
@@ -66,7 +71,8 @@ interface SidebarProps {
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { user } = useAuth();
   const { data: subscription } = useSubscription();
-  const isPro = subscription?.plan === "pro" || subscription?.plan === "elite" || subscription?.plan === "team";
+  const isPro =
+    subscription?.plan === "pro" || subscription?.plan === "elite" || subscription?.plan === "team";
   const displayName = user?.name ?? user?.email ?? "Player";
 
   return (
@@ -75,15 +81,25 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         "sticky top-0 hidden h-screen shrink-0 flex-col border-r border-white/5 transition-[width] duration-200 md:flex",
         collapsed ? "w-16" : "w-56"
       )}
-      style={{ background: "linear-gradient(180deg, #08091280 0%, #050706 100%)", backdropFilter: "blur(12px)" }}
+      style={{
+        background: "linear-gradient(180deg, #08091280 0%, #050706 100%)",
+        backdropFilter: "blur(12px)",
+      }}
     >
       {/* Brand */}
-      <div className={cn("flex h-14 items-center border-b border-white/5", collapsed ? "justify-center px-2" : "gap-2 px-4")}>
+      <div
+        className={cn(
+          "flex h-14 items-center border-b border-white/5",
+          collapsed ? "justify-center px-2" : "gap-2 px-4"
+        )}
+      >
         <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-accent/15 ring-1 ring-accent/30">
           <Zap className="h-4 w-4 text-accent" />
         </div>
         {!collapsed && (
-          <span className="font-display text-base font-bold tracking-wide text-text">LoL AI Coach</span>
+          <span className="font-display text-base font-bold tracking-wide text-text">
+            LoL AI Coach
+          </span>
         )}
       </div>
 
@@ -92,21 +108,33 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         {NAV_SECTIONS.map((section) => (
           <div key={section.label}>
             <SectionLabel label={section.label} collapsed={collapsed} />
-            {section.items.map((item) => <NavItem key={item.href} {...item} collapsed={collapsed} />)}
+            {section.items.map((item) => (
+              <NavItem key={item.href} {...item} collapsed={collapsed} />
+            ))}
           </div>
         ))}
         <SectionLabel label="Settings" collapsed={collapsed} />
-        {NAV_SETTINGS.map((item) => <NavItem key={item.href} {...item} collapsed={collapsed} />)}
+        {NAV_SETTINGS.map((item) => (
+          <NavItem key={item.href} {...item} collapsed={collapsed} />
+        ))}
       </nav>
 
       {/* Pro upgrade banner */}
       {!isPro && !collapsed && (
-        <div className="mx-2 mb-2 rounded-xl border border-accent/25 p-3" style={{ background: "linear-gradient(135deg, rgba(198,255,61,0.12) 0%, rgba(198,255,61,0.04) 100%)" }}>
+        <div
+          className="mx-2 mb-2 rounded-xl border border-accent/25 p-3"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(198,255,61,0.12) 0%, rgba(198,255,61,0.04) 100%)",
+          }}
+        >
           <div className="mb-1 flex items-center gap-1.5">
             <Sparkles className="h-3.5 w-3.5 text-accent" />
             <p className="text-xs font-bold text-accent">Upgrade to Pro</p>
           </div>
-          <p className="mb-2 text-[11px] leading-relaxed text-text-muted">Unlimited reports, all tools, and priority support.</p>
+          <p className="mb-2 text-[11px] leading-relaxed text-text-muted">
+            Unlimited reports, all tools, and priority support.
+          </p>
           <Link
             href="/settings/billing"
             className="block w-full rounded-lg bg-accent/20 py-1.5 text-center text-[11px] font-bold text-accent transition-colors hover:bg-accent/30"
@@ -130,7 +158,9 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       {/* User */}
       <div className={cn("border-t border-white/5 p-3", collapsed ? "flex justify-center" : "")}>
         {collapsed ? (
-          <div title={displayName}><Avatar name={displayName} size="sm" /></div>
+          <div title={displayName}>
+            <Avatar name={displayName} size="sm" />
+          </div>
         ) : (
           <div className="flex items-center gap-2">
             <Avatar name={displayName} size="sm" />

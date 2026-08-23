@@ -29,7 +29,7 @@ function Row({
   reading: string | null;
 }): React.ReactElement {
   return (
-    <tr className="border-b border-border/60 last:border-0 align-top">
+    <tr className="border-b border-border/60 align-top last:border-0">
       <th scope="row" className="px-3 py-2 text-left font-normal text-text-body">
         {label}
         {reading && <span className="mt-0.5 block text-xs text-text-faint">{reading}</span>}

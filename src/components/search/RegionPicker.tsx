@@ -65,7 +65,7 @@ export function RegionPicker({ value, onChange, onOpenChange }: Props): React.Re
         aria-label={`Region: ${regionLabel(value)}`}
         className={cn(
           "flex h-full items-center gap-1 border-l border-border px-2.5 font-mono text-[11px] uppercase tracking-label transition-colors",
-          open ? "text-accent" : "text-text-body hover:text-text",
+          open ? "text-accent" : "text-text-body hover:text-text"
         )}
       >
         {regionLabel(value)}
@@ -95,7 +95,7 @@ export function RegionPicker({ value, onChange, onOpenChange }: Props): React.Re
               }}
               className={cn(
                 "flex w-full items-center px-2 py-1.5 text-left font-mono text-[11px] uppercase tracking-label transition-colors",
-                r.value === value ? "bg-accent/10 text-accent" : "text-text-body hover:bg-surface",
+                r.value === value ? "bg-accent/10 text-accent" : "text-text-body hover:bg-surface"
               )}
             >
               {r.label}

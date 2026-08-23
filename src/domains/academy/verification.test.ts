@@ -85,9 +85,9 @@ describe("judgeAssignment", () => {
   // A target the player hit exactly is a target they hit.
   it("counts landing exactly on the target as a pass, in both directions", () => {
     expect(judge({ readings: readings(6, 6, 6) }).outcome).toBe("passed");
-    expect(
-      judge({ direction: "decrease", target: 4, readings: readings(4, 4, 4) }).outcome
-    ).toBe("passed");
+    expect(judge({ direction: "decrease", target: 4, readings: readings(4, 4, 4) }).outcome).toBe(
+      "passed"
+    );
   });
 
   it("reads a decrease assignment the right way round", () => {

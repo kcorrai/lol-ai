@@ -1,12 +1,6 @@
 import type { CanonicalPosition } from "@/domains/meta/types";
 
-export const ALL_POSITIONS: CanonicalPosition[] = [
-  "TOP",
-  "JUNGLE",
-  "MIDDLE",
-  "BOTTOM",
-  "UTILITY",
-];
+export const ALL_POSITIONS: CanonicalPosition[] = ["TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"];
 
 export const POSITION_LABELS: Record<CanonicalPosition, string> = {
   TOP: "Top",

@@ -30,8 +30,16 @@ export const shopAndPowerSpikes: Lesson = {
       head: ["Spike", "When", "What it lets you do"],
       rows: [
         ["Level", "2, 3, 6, 11, 16", "Level 2 first is the single biggest early advantage in lane"],
-        ["Item", "First component, first completed item, first legendary", "A completed item usually beats one extra level"],
-        ["Cooldown", "Their flash, their ultimate, their jungler's position", "The enemy without flash is a different champion"],
+        [
+          "Item",
+          "First component, first completed item, first legendary",
+          "A completed item usually beats one extra level",
+        ],
+        [
+          "Cooldown",
+          "Their flash, their ultimate, their jungler's position",
+          "The enemy without flash is a different champion",
+        ],
       ],
     },
     {

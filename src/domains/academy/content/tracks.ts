@@ -98,7 +98,14 @@ export const TRACKS: readonly Track[] = [
     description:
       "The single biggest skill gap between ranks. Read the wave, build one on purpose, trade only when the maths is already in your favour, and know where the enemy jungler is without warding for it.",
     level: "core",
-    lessons: [waveStates, slowPushAndCrash, freezing, tradingPatterns, jungleTracking, theFirstBack],
+    lessons: [
+      waveStates,
+      slowPushAndCrash,
+      freezing,
+      tradingPatterns,
+      jungleTracking,
+      theFirstBack,
+    ],
   },
   {
     id: "vision",
@@ -218,13 +225,7 @@ export const TRACKS: readonly Track[] = [
     description:
       "The role that is weak until it is not. Farming toward an item rather than a kill, the only lane with four people in it, the spacing that is worth more than any defensive item, the window where your support leaves, and why your damage is measured in seconds alive.",
     level: "core",
-    lessons: [
-      farmingForTheItem,
-      theTwoPlayerLane,
-      oneStepBack,
-      aloneInLane,
-      damageIsADuration,
-    ],
+    lessons: [farmingForTheItem, theTwoPlayerLane, oneStepBack, aloneInLane, damageIsADuration],
   },
   {
     id: "support",

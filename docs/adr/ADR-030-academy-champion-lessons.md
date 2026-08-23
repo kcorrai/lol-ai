@@ -8,7 +8,7 @@ ADR-025 decided that Academy content lives in code: one typed module per lesson,
 `curriculum.test.ts`. That works because the curriculum is finite — 61 lessons, all authored.
 
 Champion Mastery cannot be. There are around 170 champions in five roles, the right content
-changes every patch, and the lesson worth reading is the one about the champion *this* player
+changes every patch, and the lesson worth reading is the one about the champion _this_ player
 has been playing. Authoring that is not a content problem, it is an impossible one.
 
 The product already has the missing half. `getOtpAnalysis` (`@/domains/otp`) returns a
@@ -21,7 +21,7 @@ for fourteen days.
 
 **A champion lesson is generated, and the generator is a pure function of the analysis.**
 `buildChampionLesson(analysis) → Lesson | null` reaches nothing: no network, no database, no
-second model call. The drill *shapes* are authored in `championDrills.ts` and the analysis only
+second model call. The drill _shapes_ are authored in `championDrills.ts` and the analysis only
 fills them in.
 
 That purity is what makes the rest safe. `championLesson.test.ts` runs the same contract
@@ -33,11 +33,11 @@ Three shapes, chosen because the analysis can actually support them:
 
 - **Tier recognition** (quiz) — one lane the champion is favoured in against three it loses.
 - **The plan for the hardest lane** (decision) — the correct option is that matchup's key tip;
-  every wrong option is a *real* tip for a *different* opponent, so the mistake being corrected
+  every wrong option is a _real_ tip for a _different_ opponent, so the mistake being corrected
   is "right idea, wrong lane", which is the mistake players actually make.
 - **Ban priority** (order) — the only field that carries its own sequence, so it is the only one
   that can be graded as an order without inventing a ranking the source never claimed.
-  Deliberately *not* power spikes: nothing promises that array is chronological.
+  Deliberately _not_ power spikes: nothing promises that array is chronological.
 
 **A thin analysis produces no lesson.** Every builder returns null rather than a weak drill, and
 `buildChampionLesson` returns null if either matchup drill is missing. A lesson with an
@@ -81,13 +81,13 @@ foreign key (ADR-025), which is exactly the property that decision was taken for
 
 **Bad**
 
-- Lesson quality is `getOtpAnalysis` quality. The null path bounds the *shape*, not the truth of
+- Lesson quality is `getOtpAnalysis` quality. The null path bounds the _shape_, not the truth of
   the claims — a confident, wrong tip becomes a confident, wrong drill. This is the real cost of
   the decision and it is accepted knowingly.
 - A player's first visit to a champion pays for a generation. Cached fourteen days per champion
   and role across all users, so the second player on the same champion pays nothing.
-- Champion lessons cannot be certified: a certificate is issued for a finished *track*, and this
+- Champion lessons cannot be certified: a certificate is issued for a finished _track_, and this
   is not a track. That is correct rather than a limitation — there is no defined set to finish.
 - The drills reuse a fixed set of ids (`champion-tier`, `champion-matchup`, `champion-bans`)
-  across every champion. They are only ever unique *within* a lesson, which is all the contract
+  across every champion. They are only ever unique _within_ a lesson, which is all the contract
   and the grader require, but it means a drill id is not globally meaningful for these lessons.

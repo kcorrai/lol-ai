@@ -39,7 +39,9 @@ describe("parseArchiveFilters", () => {
   });
 
   it("coerces numeric thresholds off the query string", () => {
-    const parsed = parseArchiveFilters(new URLSearchParams("minKda=3.5&maxDeaths=4&minDuration=25"));
+    const parsed = parseArchiveFilters(
+      new URLSearchParams("minKda=3.5&maxDeaths=4&minDuration=25")
+    );
     expect(parsed.minKda).toBe(3.5);
     expect(parsed.maxDeaths).toBe(4);
     expect(parsed.minDuration).toBe(25);
@@ -84,7 +86,9 @@ describe("buildArchiveWhere — core facets", () => {
   });
 
   it("converts the duration filter from minutes to the stored seconds", () => {
-    const clause = matchClause(buildArchiveWhere(PUUID, filters({ minDuration: 25, maxDuration: 40 })));
+    const clause = matchClause(
+      buildArchiveWhere(PUUID, filters({ minDuration: 25, maxDuration: 40 }))
+    );
     expect(clause.gameDuration).toEqual({ gte: 1500, lte: 2400 });
   });
 
@@ -120,9 +124,13 @@ describe("buildArchiveWhere — played with / against", () => {
   });
 
   it("inverts the team for `against`", () => {
-    const where = buildArchiveWhere(PUUID, filters({ playerPuuid: "them", playerSide: "against" }), {
-      coPlayer,
-    });
+    const where = buildArchiveWhere(
+      PUUID,
+      filters({ playerPuuid: "them", playerSide: "against" }),
+      {
+        coPlayer,
+      }
+    );
     expect(where.AND).toEqual([
       {
         OR: [

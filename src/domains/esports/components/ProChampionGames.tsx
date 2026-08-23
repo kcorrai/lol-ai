@@ -6,9 +6,7 @@ const ITEMS_SHOWN = 6;
 
 function Result({ won }: { won: boolean | null }): React.ReactElement {
   if (won === null) return <span className="text-text-faint">—</span>;
-  return (
-    <span className={won ? "text-accent" : "text-text-muted"}>{won ? "Win" : "Loss"}</span>
-  );
+  return <span className={won ? "text-accent" : "text-text-muted"}>{won ? "Win" : "Loss"}</span>;
 }
 
 export function TopPlayers({

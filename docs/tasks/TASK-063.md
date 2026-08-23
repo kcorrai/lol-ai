@@ -38,6 +38,7 @@ Body: {
 ```
 
 Zod body schema:
+
 ```typescript
 const teamSchema = z.object({
   TOP: z.string().min(1),
@@ -70,4 +71,3 @@ draftAnalysis: {
 ## BaÄŸÄ±mlÄ±lÄ±klar
 
 - TASK-062 (draftAnalysisService) tamamlanmÄ±ÅŸ olmalÄ±
-

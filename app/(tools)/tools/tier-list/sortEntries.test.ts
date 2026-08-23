@@ -18,9 +18,33 @@ const entry = (over: Partial<TierRow> & { championKey: string }): TierRow => ({
 const keys = (list: TierRow[]) => list.map((e) => e.championKey);
 
 const LIST: TierRow[] = [
-  entry({ championKey: "Ahri", rank: 1, tier: 1, winRate: 51.4, pickRate: 9.2, banRate: 2.9, prevPatchRank: 2 }),
-  entry({ championKey: "Sylas", rank: 2, tier: 1, winRate: 50.6, pickRate: 9.2, banRate: 19.4, prevPatchRank: 1 }),
-  entry({ championKey: "Zed", rank: 3, tier: 2, winRate: 50.2, pickRate: 7.2, banRate: 19.0, prevPatchRank: 8 }),
+  entry({
+    championKey: "Ahri",
+    rank: 1,
+    tier: 1,
+    winRate: 51.4,
+    pickRate: 9.2,
+    banRate: 2.9,
+    prevPatchRank: 2,
+  }),
+  entry({
+    championKey: "Sylas",
+    rank: 2,
+    tier: 1,
+    winRate: 50.6,
+    pickRate: 9.2,
+    banRate: 19.4,
+    prevPatchRank: 1,
+  }),
+  entry({
+    championKey: "Zed",
+    rank: 3,
+    tier: 2,
+    winRate: 50.2,
+    pickRate: 7.2,
+    banRate: 19.0,
+    prevPatchRank: 8,
+  }),
 ];
 
 describe("sortEntries", () => {

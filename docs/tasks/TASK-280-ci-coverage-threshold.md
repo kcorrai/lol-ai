@@ -2,7 +2,7 @@
 
 ## Status: Done
 
-`docs/BACKLOG-SCORED-2026-07-20.md` finding #17 (score 28), which notes this is "only useful *after*
+`docs/BACKLOG-SCORED-2026-07-20.md` finding #17 (score 28), which notes this is "only useful _after_
 #6 — a threshold on a 28% baseline that excludes `app/` measures the wrong thing". TASK-261 fixed
 the denominator, so the gate can now mean something.
 
@@ -14,21 +14,21 @@ anywhere. Setting it high enough to be meaningful would fail CI immediately and 
 
 So the gate is two-layer.
 
-**A global floor at 17%** (branches 13, functions 14, lines 17), deliberately just *under* the
+**A global floor at 17%** (branches 13, functions 14, lines 17), deliberately just _under_ the
 measured value. It is a ratchet: it catches coverage going backwards without pretending the current
 number is acceptable. Raise it as the number climbs.
 
 **Per-file locks at 100%** on the modules where coverage was built deliberately and where a drop
 means a defence was deleted rather than merely untested:
 
-| File | Built in |
-|---|---|
-| `src/lib/auth/authorization.ts` | TASK-265 — every IDOR check and paywall |
-| `src/lib/auth/planLimits.ts` | TASK-265 |
-| `src/lib/auth/totpService.ts` | TASK-266 — 2FA |
-| `src/lib/db/userLock.ts` | TASK-267 — the report-quota lock |
-| `src/lib/lemonsqueezy/lsWebhookVerify.ts` | TASK-263 — the only thing between a forged webhook and a free subscription |
-| `src/lib/subscription/subscriptionService.ts` | TASK-276 |
+| File                                          | Built in                                                                   |
+| --------------------------------------------- | -------------------------------------------------------------------------- |
+| `src/lib/auth/authorization.ts`               | TASK-265 — every IDOR check and paywall                                    |
+| `src/lib/auth/planLimits.ts`                  | TASK-265                                                                   |
+| `src/lib/auth/totpService.ts`                 | TASK-266 — 2FA                                                             |
+| `src/lib/db/userLock.ts`                      | TASK-267 — the report-quota lock                                           |
+| `src/lib/lemonsqueezy/lsWebhookVerify.ts`     | TASK-263 — the only thing between a forged webhook and a free subscription |
+| `src/lib/subscription/subscriptionService.ts` | TASK-276                                                                   |
 
 All six measure 100/100/100/100 today. Pinned per file rather than per directory because their
 neighbours are not: `src/lib/auth` as a whole is 56.88%, dragged down by `config.ts`.
@@ -48,7 +48,7 @@ exit 1
 
 ## Known gap, not covered by this gate
 
-`src/lib/api/withAdminAuth.ts` is at **0%** and guards every admin route. It is deliberately *not*
+`src/lib/api/withAdminAuth.ts` is at **0%** and guards every admin route. It is deliberately _not_
 in the locked list, because pinning a file at its current 0% would be theatre. It wants tests, which
 is its own task rather than something to smuggle into a CI-config change.
 

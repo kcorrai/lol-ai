@@ -295,6 +295,7 @@ src/components/
 ```
 
 Feature-specific components live inside the domain:
+
 ```
 src/domains/coaching/components/
 ├── ReportCard.tsx
@@ -468,7 +469,7 @@ barrel would drag Prisma and the Redis client into the browser bundle behind the
 engine. Server code imports `@/domains/draft/server`.
 
 **Why the engine is pure.** The server write and the client's optimistic echo run
-the *same* reducer (ADR-016), so they cannot disagree about what a draft looks
+the _same_ reducer (ADR-016), so they cannot disagree about what a draft looks
 like. Nothing in `engine/` reads the clock; `now` is always an argument.
 
 ---

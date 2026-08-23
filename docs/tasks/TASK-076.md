@@ -44,8 +44,8 @@ Inngest event altyapÄ±sÄ± zaten mevcut â€” bunu kullanacaÄŸÄ±z.
 ```typescript
 // MaÃ§ sync tamamlandÄ±ÄŸÄ±nda (matchSyncService.ts iÃ§inde):
 await inngest.send({
-  name: 'tilt/check-streak',
-  data: { riotAccountId, userId, latestMatchId }
+  name: "tilt/check-streak",
+  data: { riotAccountId, userId, latestMatchId },
 });
 ```
 
@@ -54,45 +54,45 @@ await inngest.send({
 ```typescript
 // src/inngest/functions/tiltStreakCheck.ts
 export const tiltStreakCheck = inngest.createFunction(
-  { id: 'tilt-streak-check' },
-  { event: 'tilt/check-streak' },
+  { id: "tilt-streak-check" },
+  { event: "tilt/check-streak" },
   async ({ event, step }) => {
     const { riotAccountId, userId } = event.data;
 
     // Son 5 maÃ§Ä±n sonuÃ§larÄ±nÄ± Ã§ek
-    const recentMatches = await step.run('fetch-recent', () =>
+    const recentMatches = await step.run("fetch-recent", () =>
       prisma.matchParticipant.findMany({
         where: { riotAccountId },
-        orderBy: { match: { gameEndTimestamp: 'desc' } },
+        orderBy: { match: { gameEndTimestamp: "desc" } },
         take: 5,
-        include: { match: true }
+        include: { match: true },
       })
     );
 
     const lastThree = recentMatches.slice(0, 3);
-    const isLoseStreak = lastThree.every(m => !m.win);
+    const isLoseStreak = lastThree.every((m) => !m.win);
     if (!isLoseStreak) return { skipped: true };
 
     // Spam kontrolÃ¼: son 12 saatte uyarÄ± gÃ¶nderildi mi?
-    const recentAlert = await step.run('check-recent-alert', () =>
+    const recentAlert = await step.run("check-recent-alert", () =>
       prisma.tiltAlert.findFirst({
         where: {
           userId,
-          createdAt: { gte: new Date(Date.now() - 12 * 60 * 60 * 1000) }
-        }
+          createdAt: { gte: new Date(Date.now() - 12 * 60 * 60 * 1000) },
+        },
       })
     );
-    if (recentAlert) return { skipped: 'cooldown' };
+    if (recentAlert) return { skipped: "cooldown" };
 
     // AI recovery mesajÄ± Ã¼ret
-    const message = await step.run('generate-message', () =>
+    const message = await step.run("generate-message", () =>
       generateTiltRecoveryMessage(recentMatches)
     );
 
     // DB'ye kaydet
-    await step.run('save-alert', () =>
+    await step.run("save-alert", () =>
       prisma.tiltAlert.create({
-        data: { userId, riotAccountId, message, streakLength: 3 }
+        data: { userId, riotAccountId, message, streakLength: 3 },
       })
     );
 
@@ -185,12 +185,12 @@ app/(app)/dashboard/page.tsx                            â† widget + banner 
 ## Test Plan
 
 ```typescript
-describe('tiltStreakCheck', () => {
-  it('3 Ã¼st Ã¼ste kayÄ±p â†’ TiltAlert oluÅŸturulur')
-  it('2 kayÄ±p 1 galibiyet â†’ uyarÄ± tetiklenmez')
-  it('12 saat iÃ§inde ikinci uyarÄ± â†’ cooldown, gÃ¶nderilmez')
-  it('acknowledge sonrasÄ± banner kaybolur')
-})
+describe("tiltStreakCheck", () => {
+  it("3 Ã¼st Ã¼ste kayÄ±p â†’ TiltAlert oluÅŸturulur");
+  it("2 kayÄ±p 1 galibiyet â†’ uyarÄ± tetiklenmez");
+  it("12 saat iÃ§inde ikinci uyarÄ± â†’ cooldown, gÃ¶nderilmez");
+  it("acknowledge sonrasÄ± banner kaybolur");
+});
 ```
 
 ---
@@ -210,4 +210,3 @@ describe('tiltStreakCheck', () => {
 - GÃ¼nde 2 limit Ã§alÄ±ÅŸÄ±yor
 - Dashboard tilt widget gÃ¶steriyor
 - Unit test coverage â‰¥ 80%
-

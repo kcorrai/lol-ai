@@ -16,47 +16,49 @@
 
 ### 1.1 Next.js Setup
 
-| Kontrol | Sonuç | Detay |
-|---|---|---|
-| Build (`npm run build`) | **PASS** | 6/6 sayfa üretildi, compile hatası yok |
-| TypeScript (`tsc --noEmit`) | **PASS** | 0 hata |
-| ESLint (`next lint`) | **PASS** | 0 hata, 0 uyarı |
-| Prettier (`--check`) | **PASS** | 9 dosya auto-fix edildi, şu an temiz |
-| Route grupları | **PASS** | `(marketing)`, `(auth)`, `(app)` çalışıyor |
-| Path alias `@/*` → `src/*` | **PASS** | tsconfig.json doğrulandı |
+| Kontrol                     | Sonuç    | Detay                                      |
+| --------------------------- | -------- | ------------------------------------------ |
+| Build (`npm run build`)     | **PASS** | 6/6 sayfa üretildi, compile hatası yok     |
+| TypeScript (`tsc --noEmit`) | **PASS** | 0 hata                                     |
+| ESLint (`next lint`)        | **PASS** | 0 hata, 0 uyarı                            |
+| Prettier (`--check`)        | **PASS** | 9 dosya auto-fix edildi, şu an temiz       |
+| Route grupları              | **PASS** | `(marketing)`, `(auth)`, `(app)` çalışıyor |
+| Path alias `@/*` → `src/*`  | **PASS** | tsconfig.json doğrulandı                   |
 
 **Build çıktısı:**
+
 ```
 Route (app)             Size     First Load JS
 ○ /                     153 B    87.4 kB
 ○ /dashboard            153 B    87.4 kB
 ○ /login                153 B    87.4 kB
 ```
+
 Tüm sayfalar statik — beklenen davranış, feature henüz yok.
 
 ---
 
 ### 1.2 TypeScript Health
 
-| Kontrol | Sonuç |
-|---|---|
-| strict mode | ✅ `"strict": true` |
-| noImplicitAny | ✅ strict kapsamında |
-| @typescript-eslint/no-explicit-any | ✅ ESLint kuralı aktif |
-| Tip tanımları (common, api) | ✅ `src/types/` mevcut |
-| Prisma client types | ⚠️ Henüz model yok — TASK-003 sonrası tamamlanacak |
+| Kontrol                            | Sonuç                                              |
+| ---------------------------------- | -------------------------------------------------- |
+| strict mode                        | ✅ `"strict": true`                                |
+| noImplicitAny                      | ✅ strict kapsamında                               |
+| @typescript-eslint/no-explicit-any | ✅ ESLint kuralı aktif                             |
+| Tip tanımları (common, api)        | ✅ `src/types/` mevcut                             |
+| Prisma client types                | ⚠️ Henüz model yok — TASK-003 sonrası tamamlanacak |
 
 ---
 
 ### 1.3 Prisma Durumu
 
-| Kontrol | Sonuç | Detay |
-|---|---|---|
-| Schema dosyası | **PASS** | `prisma/schema.prisma` geçerli sözdizimi |
-| Schema validate | **BEKLENEN HATA** | `DATABASE_URL` env var yok — lokal `.env.local` olmadan beklenen |
-| Prisma client singleton | **PASS** | `src/lib/db/prisma.ts` doğru pattern |
-| Versiyon | **5.22.0** | ADR-001: v7 breaking change nedeniyle v5 seçildi |
-| Model tanımları | **YOK** | TASK-003 kapsamında — doğru |
+| Kontrol                 | Sonuç             | Detay                                                            |
+| ----------------------- | ----------------- | ---------------------------------------------------------------- |
+| Schema dosyası          | **PASS**          | `prisma/schema.prisma` geçerli sözdizimi                         |
+| Schema validate         | **BEKLENEN HATA** | `DATABASE_URL` env var yok — lokal `.env.local` olmadan beklenen |
+| Prisma client singleton | **PASS**          | `src/lib/db/prisma.ts` doğru pattern                             |
+| Versiyon                | **5.22.0**        | ADR-001: v7 breaking change nedeniyle v5 seçildi                 |
+| Model tanımları         | **YOK**           | TASK-003 kapsamında — doğru                                      |
 
 **Prisma validate** `DATABASE_URL` olmadan başarısız olacak — bu **bir hata değil**. CI `prisma generate || echo skip` ile bu durumu zaten handle ediyor.
 
@@ -64,12 +66,12 @@ Tüm sayfalar statik — beklenen davranış, feature henüz yok.
 
 ### 1.4 Docker Environment
 
-| Kontrol | Sonuç | Detay |
-|---|---|---|
-| `docker-compose.yml` dosyası | **PASS** | Sözdizimi doğru, healthcheck'ler tanımlı |
-| Docker Desktop | **KURULU DEĞİL** | Bu makinede Docker bulunamadı |
-| PostgreSQL servisi | **ÇALIŞMIYOR** | Docker olmadan başlatılamaz |
-| Redis servisi | **ÇALIŞMIYOR** | Docker olmadan başlatılamaz |
+| Kontrol                      | Sonuç            | Detay                                    |
+| ---------------------------- | ---------------- | ---------------------------------------- |
+| `docker-compose.yml` dosyası | **PASS**         | Sözdizimi doğru, healthcheck'ler tanımlı |
+| Docker Desktop               | **KURULU DEĞİL** | Bu makinede Docker bulunamadı            |
+| PostgreSQL servisi           | **ÇALIŞMIYOR**   | Docker olmadan başlatılamaz              |
+| Redis servisi                | **ÇALIŞMIYOR**   | Docker olmadan başlatılamaz              |
 
 **Etki:** Lokal veritabanı testi şu an yapılamıyor. TASK-002 ve sonrası için Docker kurulumu **zorunlu**.
 
@@ -77,13 +79,13 @@ Tüm sayfalar statik — beklenen davranış, feature henüz yok.
 
 ### 1.5 CI Pipeline
 
-| Kontrol | Sonuç | Detay |
-|---|---|---|
-| `.github/workflows/ci.yml` | **PASS** | Sözdizimi geçerli |
-| `lint` job | **Tanımlı** | `next lint` çalıştırır |
-| `typecheck` job | **Tanımlı** | `tsc --noEmit` + `prisma generate \|\| skip` |
-| `test` job | **Placeholder** | TASK-003+ sonrası gerçek testler eklenecek |
-| GitHub repo bağlantısı | **YOK** | Uzak repo henüz tanımlanmamış — push yapılmamış |
+| Kontrol                    | Sonuç           | Detay                                           |
+| -------------------------- | --------------- | ----------------------------------------------- |
+| `.github/workflows/ci.yml` | **PASS**        | Sözdizimi geçerli                               |
+| `lint` job                 | **Tanımlı**     | `next lint` çalıştırır                          |
+| `typecheck` job            | **Tanımlı**     | `tsc --noEmit` + `prisma generate \|\| skip`    |
+| `test` job                 | **Placeholder** | TASK-003+ sonrası gerçek testler eklenecek      |
+| GitHub repo bağlantısı     | **YOK**         | Uzak repo henüz tanımlanmamış — push yapılmamış |
 
 ---
 
@@ -93,23 +95,23 @@ Tüm sayfalar statik — beklenen davranış, feature henüz yok.
 
 **npm audit** 5 vulnerability tespit etti: 4 HIGH, 1 MODERATE.
 
-| Paket | CVE | Tip | Fix |
-|---|---|---|---|
-| `next@14.2.35` | GHSA-9g9p-9gw9-jx7f | Image Optimizer DoS | `next@16+` (breaking) |
-| `next@14.2.35` | GHSA-h25m-26qc-wcjf | HTTP deserialization DoS | `next@16+` (breaking) |
-| `next@14.2.35` | GHSA-ggv3-7p47-pfv8 | HTTP request smuggling | `next@16+` (breaking) |
-| `next@14.2.35` | GHSA-q4gf-8mx6-v5v3 | Server Components DoS | `next@16+` (breaking) |
-| `postcss` (next internal) | GHSA-qx2v-qp2m-jg93 | XSS via CSS stringify | `next@16+` (breaking) |
+| Paket                     | CVE                 | Tip                      | Fix                   |
+| ------------------------- | ------------------- | ------------------------ | --------------------- |
+| `next@14.2.35`            | GHSA-9g9p-9gw9-jx7f | Image Optimizer DoS      | `next@16+` (breaking) |
+| `next@14.2.35`            | GHSA-h25m-26qc-wcjf | HTTP deserialization DoS | `next@16+` (breaking) |
+| `next@14.2.35`            | GHSA-ggv3-7p47-pfv8 | HTTP request smuggling   | `next@16+` (breaking) |
+| `next@14.2.35`            | GHSA-q4gf-8mx6-v5v3 | Server Components DoS    | `next@16+` (breaking) |
+| `postcss` (next internal) | GHSA-qx2v-qp2m-jg93 | XSS via CSS stringify    | `next@16+` (breaking) |
 
 **Değerlendirme:** Tüm CVE'lerin "fix available" yolu `next@16`'ya upgrade — bu mimari dokümanlarda tanımlanan `next@14` kararını değiştirir. Production deploy **öncesinde** bu kararın alınması gerekiyor.
 
 **Seçenekler:**
 
-| Seçenek | Artı | Eksi |
-|---|---|---|
-| Next.js 14'te kal | Mimari dokümana uygun | Bilinen HIGH güvenlik açıkları |
-| Next.js 15'e upgrade | Güvenli, aktif LTS | Bazı API değişiklikleri (async headers/cookies) |
-| Next.js 16'ya upgrade | En güncel | Erken aşama, daha fazla değişiklik |
+| Seçenek               | Artı                  | Eksi                                            |
+| --------------------- | --------------------- | ----------------------------------------------- |
+| Next.js 14'te kal     | Mimari dokümana uygun | Bilinen HIGH güvenlik açıkları                  |
+| Next.js 15'e upgrade  | Güvenli, aktif LTS    | Bazı API değişiklikleri (async headers/cookies) |
+| Next.js 16'ya upgrade | En güncel             | Erken aşama, daha fazla değişiklik              |
 
 **Öneri:** TASK-002 başlamadan ADR-002 yaz ve Next.js 15'e upgrade karar al. MVP aşamasında bilinen HIGH güvenlik açıklarıyla production'a gitmek doğru değil.
 
@@ -120,6 +122,7 @@ Tüm sayfalar statik — beklenen davranış, feature henüz yok.
 **Durum:** Prisma `^5.22.0` — v7 breaking change nedeniyle downgrade edildi (ADR-001).
 
 **Potansiyel Etki:**
+
 - Prisma 5 hâlâ aktif patch desteği alıyor (2024 release)
 - Yeni özellikler (Prisma Accelerate, v7 config API) kullanılamaz
 - Tüm `DATABASE_SCHEMA.md` örnekleri Prisma 5 sözdizimi ile uyumlu — sorun yok
@@ -162,16 +165,16 @@ TASK-001 sırasında `settings.local.json` yanlışlıkla staged oldu, fark edil
 
 **Hayır** — ama bu beklenen bir durum. TASK-001 bir foundation task'tı, feature değil.
 
-| Kriter | Durum | Açıklama |
-|---|---|---|
-| Temel build çalışıyor | ✅ | Production build başarılı |
-| Auth yok | ❌ | TASK-002 |
-| Veritabanı yok | ❌ | TASK-003 |
-| Riot API entegrasyonu yok | ❌ | TASK-004 |
-| Güvenlik açıkları | ❌ | Next.js 14 CVE'leri |
-| Gerçek içerik yok | ❌ | Placeholder sayfalar |
-| Monitoring yok | ❌ | Sentry, analytics (TASK-015) |
-| Rate limiting yok | ❌ | API protection (TASK-011+) |
+| Kriter                    | Durum | Açıklama                     |
+| ------------------------- | ----- | ---------------------------- |
+| Temel build çalışıyor     | ✅    | Production build başarılı    |
+| Auth yok                  | ❌    | TASK-002                     |
+| Veritabanı yok            | ❌    | TASK-003                     |
+| Riot API entegrasyonu yok | ❌    | TASK-004                     |
+| Güvenlik açıkları         | ❌    | Next.js 14 CVE'leri          |
+| Gerçek içerik yok         | ❌    | Placeholder sayfalar         |
+| Monitoring yok            | ❌    | Sentry, analytics (TASK-015) |
+| Rate limiting yok         | ❌    | API protection (TASK-011+)   |
 
 **Minimum Production Deploy için gereken:** TASK-001 + 002 + 003 + 004 + 005 + 006 + 009 + 011 + güvenlik fix'i tamamlanmış olmalı.
 
@@ -190,6 +193,7 @@ TASK-001 sırasında `settings.local.json` yanlışlıkla staged oldu, fark edil
 **B1 — Docker Desktop Kurulumu**
 
 TASK-002 `users`, `accounts`, `sessions` tablolarını oluşturacak. Prisma migrate dev çalıştırmak için PostgreSQL gerekiyor. Docker olmadan:
+
 - `prisma migrate dev` başarısız
 - `prisma db seed` başarısız
 - Auth session testi yapılamaz
@@ -199,6 +203,7 @@ TASK-002 `users`, `accounts`, `sessions` tablolarını oluşturacak. Prisma migr
 **B2 — `.env.local` Dosyası**
 
 `.env.example` kopyalanıp doldurulmalı:
+
 ```
 DATABASE_URL="postgresql://lolai:lolai_dev_password@localhost:5432/lolai_dev"
 AUTH_SECRET=<openssl rand -base64 32>
@@ -226,6 +231,7 @@ CI pipeline tanımlı ama hiçbir zaman çalışmadı. Commit'ler sadece lokal. 
 ### 4.3 Veritabanı Hazırlıkları
 
 TASK-002, NextAuth tablolarını ihtiyaç duyar:
+
 - `users` — TASK-003 kapsamında ama NextAuth bunu da oluşturuyor
 - `accounts` (OAuth bağlantıları)
 - `sessions`
@@ -243,27 +249,27 @@ Bu tablolar TASK-003'te yazılacak. Ancak **TASK-002, TASK-003'e bağımlı** �
 
 ### Zorunlu Fixler (Production öncesi kapatılmalı)
 
-| # | Fix | Kapsam | Task |
-|---|---|---|---|
-| F1 | Next.js güvenlik açıkları — upgrade karar ver | Security | ADR-002 + ayrı task |
-| F2 | Docker kurulumu + `.env.local` doldurulması | Dev environment | Lokalde yapılacak |
+| #   | Fix                                           | Kapsam          | Task                |
+| --- | --------------------------------------------- | --------------- | ------------------- |
+| F1  | Next.js güvenlik açıkları — upgrade karar ver | Security        | ADR-002 + ayrı task |
+| F2  | Docker kurulumu + `.env.local` doldurulması   | Dev environment | Lokalde yapılacak   |
 
 ### Opsiyonel İyileştirmeler (Yapılsa iyi olur)
 
-| # | İyileştirme | Öneri |
-|---|---|---|
-| O1 | GitHub remote push + CI aktifleştirme | TASK-002 başlamadan |
-| O2 | `lucide-react@1.17.0` versiyon doğrulaması | npm info lucide-react ile kontrol et |
-| O3 | `prettier-plugin-tailwindcss` sınıf sıralama kurallarını test et | Bir tailwind bileşeni yazıldıktan sonra |
+| #   | İyileştirme                                                      | Öneri                                   |
+| --- | ---------------------------------------------------------------- | --------------------------------------- |
+| O1  | GitHub remote push + CI aktifleştirme                            | TASK-002 başlamadan                     |
+| O2  | `lucide-react@1.17.0` versiyon doğrulaması                       | npm info lucide-react ile kontrol et    |
+| O3  | `prettier-plugin-tailwindcss` sınıf sıralama kurallarını test et | Bir tailwind bileşeni yazıldıktan sonra |
 
 ### Ertelenebilir Teknik Debt
 
-| # | Debt | Ne Zaman Kapatılır |
-|---|---|---|
-| D1 | Prisma v5 → v6/v7 upgrade | MVP sonrası dedicated task |
-| D2 | ESLint 8 → 9 (flat config) | Next.js 15 ile birlikte |
-| D3 | Test altyapısı (Vitest/Jest config) | TASK-003'ten sonra |
-| D4 | `app/(app)/` placeholder sayfaları gerçek içerikle | İlgili feature task'larında |
+| #   | Debt                                               | Ne Zaman Kapatılır          |
+| --- | -------------------------------------------------- | --------------------------- |
+| D1  | Prisma v5 → v6/v7 upgrade                          | MVP sonrası dedicated task  |
+| D2  | ESLint 8 → 9 (flat config)                         | Next.js 15 ile birlikte     |
+| D3  | Test altyapısı (Vitest/Jest config)                | TASK-003'ten sonra          |
+| D4  | `app/(app)/` placeholder sayfaları gerçek içerikle | İlgili feature task'larında |
 
 ---
 

@@ -13,7 +13,7 @@ const mate = (
   puuid: string,
   won = true,
   gameName = "Duo",
-  tagLine = "EUW",
+  tagLine = "EUW"
 ): TeammateRow => ({ matchId, teamId, puuid, gameName, tagLine, won });
 
 describe("rankTeammates", () => {
@@ -111,7 +111,7 @@ describe("rankTeammates", () => {
   it("honours the limit", () => {
     const ownRows = Array.from({ length: 4 }, (_, i) => own(`m${i}`, 100, i + 1));
     const teammates = ["a", "b", "c"].flatMap((p) =>
-      Array.from({ length: 4 }, (_, i) => mate(`m${i}`, 100, p)),
+      Array.from({ length: 4 }, (_, i) => mate(`m${i}`, 100, p))
     );
 
     expect(rankTeammates(ownRows, teammates, { limit: 2 })).toHaveLength(2);

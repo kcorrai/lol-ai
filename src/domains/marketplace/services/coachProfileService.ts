@@ -144,9 +144,7 @@ export async function approvedCoachProfileId(userId: string): Promise<string | n
   return row?.status === "APPROVED" ? row.id : null;
 }
 
-export type SaveOutcome =
-  | { ok: true; profile: OwnCoachProfile }
-  | { ok: false; reason: "locked" };
+export type SaveOutcome = { ok: true; profile: OwnCoachProfile } | { ok: false; reason: "locked" };
 
 /**
  * Create or update the caller's own profile.
@@ -184,10 +182,7 @@ export async function saveOwnProfile(
  * Deliberately not `status`: a coach stepping away for a fortnight has not been
  * taken down, and collapsing the two would lose the reason and the way back.
  */
-export async function setAcceptingStudents(
-  userId: string,
-  accepting: boolean
-): Promise<boolean> {
+export async function setAcceptingStudents(userId: string, accepting: boolean): Promise<boolean> {
   const { count } = await prisma.coachProfile.updateMany({
     where: { userId, status: "APPROVED" },
     data: { acceptingStudents: accepting },

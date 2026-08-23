@@ -41,9 +41,11 @@ win rate'in %3 dÃ¼ÅŸtÃ¼" gibi kiÅŸiselleÅŸtirilmiÅŸ patch analizi.
 ### Patch Versiyonu Takibi
 
 DDragon API'den versiyon listesi:
+
 ```
 https://ddragon.leagueoflegends.com/api/versions.json
 ```
+
 En son versiyon deÄŸiÅŸtiyse yeni `PatchVersion` kaydÄ± oluÅŸtur.
 
 ```prisma
@@ -81,24 +83,24 @@ model PatchChampionChange {
 // src/inngest/functions/patchVersionPoller.ts
 // Her gÃ¼n 08:00 UTC Ã§alÄ±ÅŸÄ±r
 export const patchVersionPoller = inngest.createFunction(
-  { id: 'patch-version-poller' },
-  { cron: '0 8 * * *' },
+  { id: "patch-version-poller" },
+  { cron: "0 8 * * *" },
   async ({ step }) => {
-    const latestVersion = await step.run('fetch-ddragon-version', fetchLatestDDragonVersion);
-    const existing = await step.run('check-db', () =>
+    const latestVersion = await step.run("fetch-ddragon-version", fetchLatestDDragonVersion);
+    const existing = await step.run("check-db", () =>
       prisma.patchVersion.findUnique({ where: { version: latestVersion } })
     );
     if (existing) return { upToDate: true };
 
-    await step.run('save-patch', () =>
+    await step.run("save-patch", () =>
       prisma.patchVersion.create({
-        data: { version: latestVersion, releasedAt: new Date() }
+        data: { version: latestVersion, releasedAt: new Date() },
       })
     );
 
     // TÃ¼m kullanÄ±cÄ±lara patch impact analizi tetikle
-    await step.sendEvent('patch/new-version-detected', {
-      data: { version: latestVersion }
+    await step.sendEvent("patch/new-version-detected", {
+      data: { version: latestVersion },
     });
 
     return { newPatch: latestVersion };
@@ -141,7 +143,7 @@ async function analyzePatchImpact(userId: string, riotAccountId: string, patchVe
 // app/api/notifications/route.ts â€” mevcut notification sistemi varsa kullan
 // yoksa basit: kullanÄ±cÄ± dashboard'a girince gÃ¶ster
 interface PatchNotification {
-  type: 'patch_impact';
+  type: "patch_impact";
   patchVersion: string;
   affectedChampions: { name: string; changeType: string; wrDelta: number }[];
   message: string; // AI Ã¼retilmiÅŸ Ã¶zet
@@ -153,15 +155,19 @@ interface PatchNotification {
 ## Patch Notes KaynaÄŸÄ±
 
 Resmi Riot patch notes URL pattern'i:
+
 ```
 https://www.leagueoflegends.com/tr-tr/news/game-updates/patch-{major}-{minor}-notes/
 ```
+
 Bunu link olarak widget'ta gÃ¶ster, iÃ§eriÄŸi parse etmeye Ã§alÄ±ÅŸma (ToS riski).
 
 Åampiyon deÄŸiÅŸikliklerini community API'den al:
+
 ```
 https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champions/
 ```
+
 veya manuel olarak DDragon'dan champion stat karÅŸÄ±laÅŸtÄ±rmasÄ± yap (Ã¶nceki versiyon vs yeni).
 
 ---
@@ -186,16 +192,16 @@ app/(app)/dashboard/page.tsx                            â† widget ekle
 ## Test Plan
 
 ```typescript
-describe('patchVersionPoller', () => {
-  it('yeni versiyon tespit edilince DB kaydÄ± oluÅŸturulur')
-  it('aynÄ± versiyon tekrar gelince duplicate oluÅŸturulmaz')
-})
+describe("patchVersionPoller", () => {
+  it("yeni versiyon tespit edilince DB kaydÄ± oluÅŸturulur");
+  it("aynÄ± versiyon tekrar gelince duplicate oluÅŸturulmaz");
+});
 
-describe('patchImpactAnalyzer', () => {
-  it('yama Ã¶ncesi/sonrasÄ± WR delta doÄŸru hesaplanÄ±yor')
-  it('delta < %2 â†’ bildirim tetiklenmiyor')
-  it('15 maÃ§tan az â†’ analiz bekleniyor')
-})
+describe("patchImpactAnalyzer", () => {
+  it("yama Ã¶ncesi/sonrasÄ± WR delta doÄŸru hesaplanÄ±yor");
+  it("delta < %2 â†’ bildirim tetiklenmiyor");
+  it("15 maÃ§tan az â†’ analiz bekleniyor");
+});
 ```
 
 ---
@@ -215,4 +221,3 @@ describe('patchImpactAnalyzer', () => {
 - Patch notes linki gÃ¶rÃ¼nÃ¼yor
 - Unit test coverage â‰¥ 80%
 - `docs/DATABASE_SCHEMA.md` gÃ¼ncellendi
-

@@ -18,7 +18,7 @@ export type AiCostSummary = {
   todayCostUsd: number;
   monthCostUsd: number;
   todayTokens: number;
-  todayCacheHitRate: number;   // 0–100
+  todayCacheHitRate: number; // 0–100
   avgLatencyMs: number;
   byModel: Array<{ model: string; calls: number; costUsd: number; tokens: number }>;
   topReports: Array<{ reportId: string | null; costUsd: number; model: string; createdAt: Date }>;
@@ -48,9 +48,10 @@ async function getRatingStats(): Promise<RatingStats> {
     }),
   ]);
 
-  const avgRating = rated.length > 0
-    ? Number((rated.reduce((s, r) => s + (r.userRating ?? 0), 0) / rated.length).toFixed(2))
-    : 0;
+  const avgRating =
+    rated.length > 0
+      ? Number((rated.reduce((s, r) => s + (r.userRating ?? 0), 0) / rated.length).toFixed(2))
+      : 0;
 
   const distribution: Record<string, number> = { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0 };
   for (const r of rated) {
@@ -67,7 +68,11 @@ async function getRatingStats(): Promise<RatingStats> {
   }
   const dailyTrend = [...byDay.entries()]
     .sort((a, b) => a[0].localeCompare(b[0]))
-    .map(([date, { sum, count }]) => ({ date, avgRating: Number((sum / count).toFixed(2)), count }));
+    .map(([date, { sum, count }]) => ({
+      date,
+      avgRating: Number((sum / count).toFixed(2)),
+      count,
+    }));
 
   return {
     avgRating,

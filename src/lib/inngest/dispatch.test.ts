@@ -29,7 +29,9 @@ describe("dispatchOrRunInProcess", () => {
   it("falls back to in-process when Inngest send throws", async () => {
     send.mockRejectedValueOnce(new Error("ECONNREFUSED"));
     let ran = false;
-    const inProcess = vi.fn(async () => { ran = true; });
+    const inProcess = vi.fn(async () => {
+      ran = true;
+    });
 
     await dispatchOrRunInProcess(EVENT, inProcess);
     await Promise.resolve(); // let the fire-and-forget microtask settle

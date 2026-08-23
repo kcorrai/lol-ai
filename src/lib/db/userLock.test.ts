@@ -45,7 +45,9 @@ describe("userLockKey", () => {
 describe("withUserLock", () => {
   it("runs the callback inside a transaction", async () => {
     const tx = fakeTx();
-    vi.mocked(prisma.$transaction).mockImplementation((fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never);
+    vi.mocked(prisma.$transaction).mockImplementation(
+      (fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never
+    );
 
     const result = await withUserLock(USER_ID, async () => "done");
 
@@ -55,7 +57,9 @@ describe("withUserLock", () => {
 
   it("hands the callback the same transaction client the lock was taken on", async () => {
     const tx = fakeTx();
-    vi.mocked(prisma.$transaction).mockImplementation((fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never);
+    vi.mocked(prisma.$transaction).mockImplementation(
+      (fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never
+    );
 
     let received: unknown;
     await withUserLock(USER_ID, async (received_) => {
@@ -70,7 +74,9 @@ describe("withUserLock", () => {
   // timingSafeEqual coverage in TASK-263).
   it("acquires the advisory lock before running the callback", async () => {
     const tx = fakeTx();
-    vi.mocked(prisma.$transaction).mockImplementation((fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never);
+    vi.mocked(prisma.$transaction).mockImplementation(
+      (fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never
+    );
 
     const order: string[] = [];
     tx.$executeRaw.mockImplementation(async () => {
@@ -87,7 +93,9 @@ describe("withUserLock", () => {
 
   it("locks on the calling user's key", async () => {
     const tx = fakeTx();
-    vi.mocked(prisma.$transaction).mockImplementation((fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never);
+    vi.mocked(prisma.$transaction).mockImplementation(
+      (fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never
+    );
 
     await withUserLock(USER_ID, async () => undefined);
 
@@ -100,7 +108,9 @@ describe("withUserLock", () => {
 
   it("propagates a callback failure so the transaction rolls back", async () => {
     const tx = fakeTx();
-    vi.mocked(prisma.$transaction).mockImplementation((fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never);
+    vi.mocked(prisma.$transaction).mockImplementation(
+      (fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never
+    );
 
     await expect(
       withUserLock(USER_ID, async () => {

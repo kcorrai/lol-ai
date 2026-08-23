@@ -35,8 +35,14 @@ export const recallTiming: Lesson = {
       rows: [
         ["Wave just crashed into their turret", "Best — free, and the bounce comes back to you"],
         ["Wave slow-pushing into your turret", "Good — nothing dies while you are away"],
-        ["You just hit an item threshold and the wave is neutral", "Acceptable — pay the wave, buy the spike"],
-        ["Low health, wave in the middle of the lane", "Bad — you pay the wave and they get the shove"],
+        [
+          "You just hit an item threshold and the wave is neutral",
+          "Acceptable — pay the wave, buy the spike",
+        ],
+        [
+          "Low health, wave in the middle of the lane",
+          "Bad — you pay the wave and they get the shove",
+        ],
         ["Bored / nothing happening", "Worst — a recall with no purchase behind it"],
       ],
     },
@@ -101,7 +107,8 @@ export const recallTiming: Lesson = {
     {
       id: "recall-quiz",
       kind: "quiz",
-      prompt: "What is the actual cost of recalling with the wave sitting in the middle of the lane?",
+      prompt:
+        "What is the actual cost of recalling with the wave sitting in the middle of the lane?",
       options: [
         {
           id: "a",

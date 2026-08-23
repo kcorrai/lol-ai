@@ -1,12 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  archiveLink,
-  inferVodProvider,
-  streamLink,
-  streamLinks,
-  vodLink,
-  vodLinks,
-} from "./watch";
+import { archiveLink, inferVodProvider, streamLink, streamLinks, vodLink, vodLinks } from "./watch";
 import type { EventStream, GameVod } from "./types";
 
 function vod(over: Partial<GameVod> = {}): GameVod {

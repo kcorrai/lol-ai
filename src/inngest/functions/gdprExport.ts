@@ -18,53 +18,52 @@ export const gdprExport = inngest.createFunction(
   async ({ event }) => {
     const { userId } = event.data as ExportRequestedPayload;
 
-    const [user, riotAccounts, reports, userAchievements, plans, auditLogs] =
-      await Promise.all([
-        prismaReadonly.user.findUnique({
-          where: { id: userId },
-          select: { email: true, name: true, createdAt: true, profileSettings: true },
-        }),
-        prismaReadonly.riotAccount.findMany({
-          where: { userId },
-          select: { gameName: true, tagLine: true, region: true, createdAt: true },
-        }),
-        prismaReadonly.coachingReport.findMany({
-          where: { riotAccount: { userId } },
-          select: {
-            id: true,
-            reportType: true,
-            status: true,
-            summary: true,
-            createdAt: true,
-            completedAt: true,
-          },
-          orderBy: { createdAt: "desc" },
-          take: 500,
-        }),
-        prismaReadonly.userAchievement.findMany({
-          where: { userId },
-          select: { achievementId: true, earnedAt: true },
-          orderBy: { earnedAt: "desc" },
-        }),
-        prismaReadonly.improvementPlan.findMany({
-          where: { riotAccount: { userId } },
-          select: {
-            id: true,
-            riotAccountId: true,
-            createdAt: true,
-            expiresAt: true,
-            status: true,
-            targets: true,
-          },
-          orderBy: { createdAt: "desc" },
-        }),
-        prismaReadonly.auditLog.findMany({
-          where: { userId },
-          select: { action: true, resource: true, createdAt: true, ipAddress: true },
-          orderBy: { createdAt: "desc" },
-          take: 1000,
-        }),
-      ]);
+    const [user, riotAccounts, reports, userAchievements, plans, auditLogs] = await Promise.all([
+      prismaReadonly.user.findUnique({
+        where: { id: userId },
+        select: { email: true, name: true, createdAt: true, profileSettings: true },
+      }),
+      prismaReadonly.riotAccount.findMany({
+        where: { userId },
+        select: { gameName: true, tagLine: true, region: true, createdAt: true },
+      }),
+      prismaReadonly.coachingReport.findMany({
+        where: { riotAccount: { userId } },
+        select: {
+          id: true,
+          reportType: true,
+          status: true,
+          summary: true,
+          createdAt: true,
+          completedAt: true,
+        },
+        orderBy: { createdAt: "desc" },
+        take: 500,
+      }),
+      prismaReadonly.userAchievement.findMany({
+        where: { userId },
+        select: { achievementId: true, earnedAt: true },
+        orderBy: { earnedAt: "desc" },
+      }),
+      prismaReadonly.improvementPlan.findMany({
+        where: { riotAccount: { userId } },
+        select: {
+          id: true,
+          riotAccountId: true,
+          createdAt: true,
+          expiresAt: true,
+          status: true,
+          targets: true,
+        },
+        orderBy: { createdAt: "desc" },
+      }),
+      prismaReadonly.auditLog.findMany({
+        where: { userId },
+        select: { action: true, resource: true, createdAt: true, ipAddress: true },
+        orderBy: { createdAt: "desc" },
+        take: 1000,
+      }),
+    ]);
 
     if (!user?.email) {
       logger.warn("[gdprExport] User not found or has no email", { userId });
@@ -99,12 +98,28 @@ export const gdprExport = inngest.createFunction(
 
     const files: Record<string, Uint8Array> = {
       "profile.json": strToU8(JSON.stringify({ exportedAt, ...user }, null, 2)),
-      "riot_accounts.json": strToU8(JSON.stringify({ exportedAt, accounts: riotAccounts }, null, 2)),
-      "matches.json": strToU8(JSON.stringify({ exportedAt, total: matches.length, matches }, null, 2)),
-      "coaching_reports.json": strToU8(JSON.stringify({ exportedAt, total: reports.length, reports }, null, 2)),
-      "achievements.json": strToU8(JSON.stringify({ exportedAt, total: userAchievements.length, achievements: userAchievements }, null, 2)),
-      "improvement_plans.json": strToU8(JSON.stringify({ exportedAt, total: plans.length, plans }, null, 2)),
-      "activity_log.json": strToU8(JSON.stringify({ exportedAt, total: auditLogs.length, log: auditLogs }, null, 2)),
+      "riot_accounts.json": strToU8(
+        JSON.stringify({ exportedAt, accounts: riotAccounts }, null, 2)
+      ),
+      "matches.json": strToU8(
+        JSON.stringify({ exportedAt, total: matches.length, matches }, null, 2)
+      ),
+      "coaching_reports.json": strToU8(
+        JSON.stringify({ exportedAt, total: reports.length, reports }, null, 2)
+      ),
+      "achievements.json": strToU8(
+        JSON.stringify(
+          { exportedAt, total: userAchievements.length, achievements: userAchievements },
+          null,
+          2
+        )
+      ),
+      "improvement_plans.json": strToU8(
+        JSON.stringify({ exportedAt, total: plans.length, plans }, null, 2)
+      ),
+      "activity_log.json": strToU8(
+        JSON.stringify({ exportedAt, total: auditLogs.length, log: auditLogs }, null, 2)
+      ),
     };
 
     const zipBuffer = Buffer.from(zipSync(files));

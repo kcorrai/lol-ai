@@ -10,15 +10,15 @@ than usual.
 
 ## Deliverables
 
-| Route | Method | Body | Returns |
-|---|---|---|---|
-| `/api/draft` | POST | create input | `{ code, blueToken, redToken }` |
-| `/api/draft/[code]` | GET | — | full state for the viewer's role |
-| `/api/draft/[code]/ready` | POST | `{ token, gameNumber, ready }` | new state |
-| `/api/draft/[code]/action` | POST | `{ token, gameNumber, championKey }` | new state |
-| `/api/draft/[code]/undo` | POST | `{ token, gameNumber }` | new state |
-| `/api/draft/[code]/result` | POST | `{ token, gameNumber, winnerSide }` | new state |
-| `/api/draft/[code]/side` | POST | `{ token, gameNumber, blueTeam }` | new state |
+| Route                      | Method | Body                                 | Returns                          |
+| -------------------------- | ------ | ------------------------------------ | -------------------------------- |
+| `/api/draft`               | POST   | create input                         | `{ code, blueToken, redToken }`  |
+| `/api/draft/[code]`        | GET    | —                                    | full state for the viewer's role |
+| `/api/draft/[code]/ready`  | POST   | `{ token, gameNumber, ready }`       | new state                        |
+| `/api/draft/[code]/action` | POST   | `{ token, gameNumber, championKey }` | new state                        |
+| `/api/draft/[code]/undo`   | POST   | `{ token, gameNumber }`              | new state                        |
+| `/api/draft/[code]/result` | POST   | `{ token, gameNumber, winnerSide }`  | new state                        |
+| `/api/draft/[code]/side`   | POST   | `{ token, gameNumber, blueTeam }`    | new state                        |
 
 ## Rules
 

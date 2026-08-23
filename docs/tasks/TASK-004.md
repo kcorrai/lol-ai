@@ -71,11 +71,11 @@ Implement: request queue with `p-limit` (concurrency limiter) and `p-retry` (ret
 
 ## Error Codes
 
-| Riot API Error | Our Error Code | User Message |
-|---|---|---|
-| 404 | `RIOT_ACCOUNT_NOT_FOUND` | "This Riot ID was not found." |
-| 429 | `RIOT_RATE_LIMIT` | "Too many requests. Please wait a moment." |
-| 503/500 | `RIOT_API_UNAVAILABLE` | "Riot's servers are having issues." |
+| Riot API Error | Our Error Code           | User Message                               |
+| -------------- | ------------------------ | ------------------------------------------ |
+| 404            | `RIOT_ACCOUNT_NOT_FOUND` | "This Riot ID was not found."              |
+| 429            | `RIOT_RATE_LIMIT`        | "Too many requests. Please wait a moment." |
+| 503/500        | `RIOT_API_UNAVAILABLE`   | "Riot's servers are having issues."        |
 
 ---
 

@@ -12,8 +12,15 @@ interface Props {
 
 export function VoiceCoachPanel({ riotAccountId, onClose }: Props) {
   const {
-    messages, isRecording, isTranscribing, isSpeaking, isStreaming,
-    error, startRecording, stopRecording, clear,
+    messages,
+    isRecording,
+    isTranscribing,
+    isSpeaking,
+    isStreaming,
+    error,
+    startRecording,
+    stopRecording,
+    clear,
   } = useVoiceCoach(riotAccountId);
 
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -26,12 +33,12 @@ export function VoiceCoachPanel({ riotAccountId, onClose }: Props) {
   const statusText = isRecording
     ? "Recording… release to send"
     : isTranscribing
-    ? "Converting speech to text…"
-    : isStreaming
-    ? "Coach is thinking…"
-    : isSpeaking
-    ? "Coach is speaking…"
-    : "Press and speak";
+      ? "Converting speech to text…"
+      : isStreaming
+        ? "Coach is thinking…"
+        : isSpeaking
+          ? "Coach is speaking…"
+          : "Press and speak";
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface">
@@ -77,17 +84,23 @@ export function VoiceCoachPanel({ riotAccountId, onClose }: Props) {
       {/* Push-to-talk */}
       <div className="flex flex-col items-center gap-2 border-t border-border p-5">
         <button
-          onPointerDown={() => { if (!busy && !isRecording) void startRecording(); }}
-          onPointerUp={() => { if (isRecording) stopRecording(); }}
-          onPointerLeave={() => { if (isRecording) stopRecording(); }}
+          onPointerDown={() => {
+            if (!busy && !isRecording) void startRecording();
+          }}
+          onPointerUp={() => {
+            if (isRecording) stopRecording();
+          }}
+          onPointerLeave={() => {
+            if (isRecording) stopRecording();
+          }}
           disabled={busy && !isRecording}
           className={[
             "flex h-16 w-16 items-center justify-center rounded-full transition-all duration-150",
             isRecording
               ? "scale-110 bg-danger shadow-[0_0_20px_rgba(239,68,68,0.5)]"
               : busy
-              ? "cursor-not-allowed bg-surface-2"
-              : "bg-accent shadow-[0_0_16px_rgba(198,255,61,0.3)] hover:bg-accent/90",
+                ? "cursor-not-allowed bg-surface-2"
+                : "bg-accent shadow-[0_0_16px_rgba(198,255,61,0.3)] hover:bg-accent/90",
           ].join(" ")}
         >
           {isTranscribing || isStreaming ? (

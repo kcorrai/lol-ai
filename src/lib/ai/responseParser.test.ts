@@ -13,9 +13,27 @@ const validOutput = {
     },
   ],
   actionItems: [
-    { priority: 1, action: "Last-hit under tower", howTo: "Practice tool.", expectedImpact: "+1 CS/min", timeframe: "2 weeks" },
-    { priority: 2, action: "Ward river", howTo: "Buy pink.", expectedImpact: "Vision improvement", timeframe: "Immediate" },
-    { priority: 3, action: "Recall timing", howTo: "Recall with full gold.", expectedImpact: "Better item timings", timeframe: "1 week" },
+    {
+      priority: 1,
+      action: "Last-hit under tower",
+      howTo: "Practice tool.",
+      expectedImpact: "+1 CS/min",
+      timeframe: "2 weeks",
+    },
+    {
+      priority: 2,
+      action: "Ward river",
+      howTo: "Buy pink.",
+      expectedImpact: "Vision improvement",
+      timeframe: "Immediate",
+    },
+    {
+      priority: 3,
+      action: "Recall timing",
+      howTo: "Recall with full gold.",
+      expectedImpact: "Better item timings",
+      timeframe: "1 week",
+    },
   ],
   coachPersonaResponse: "You have the mechanics, but fundamentals need work.",
 };
@@ -40,17 +58,13 @@ describe("parseCoachingResponse", () => {
   });
 
   it("throws when the response is not JSON", () => {
-    expect(() => parseCoachingResponse("This is not JSON at all.")).toThrow(
-      /not valid JSON/
-    );
+    expect(() => parseCoachingResponse("This is not JSON at all.")).toThrow(/not valid JSON/);
   });
 
   it("throws when summary field is missing", () => {
     // JSON.stringify omits undefined values — effectively removes the field
     const withoutSummary = { ...validOutput, summary: undefined };
-    expect(() => parseCoachingResponse(JSON.stringify(withoutSummary))).toThrow(
-      /schema/
-    );
+    expect(() => parseCoachingResponse(JSON.stringify(withoutSummary))).toThrow(/schema/);
   });
 
   it("throws when actionItems has fewer than 3 items", () => {
@@ -68,8 +82,6 @@ describe("parseCoachingResponse", () => {
 
   it("throws when coachPersonaResponse is missing", () => {
     const withoutPersona = { ...validOutput, coachPersonaResponse: undefined };
-    expect(() => parseCoachingResponse(JSON.stringify(withoutPersona))).toThrow(
-      /schema/
-    );
+    expect(() => parseCoachingResponse(JSON.stringify(withoutPersona))).toThrow(/schema/);
   });
 });

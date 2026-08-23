@@ -17,19 +17,25 @@ interface BuildExplanationPanelProps {
 function ItemRow({ item, itemId }: { item: ItemExplanation; itemId: number }) {
   const good = item.wasGoodChoice;
   return (
-    <div className={`rounded-lg border p-3 ${good ? "border-border bg-surface" : "border-danger/20 bg-danger/5"}`}>
+    <div
+      className={`rounded-lg border p-3 ${good ? "border-border bg-surface" : "border-danger/20 bg-danger/5"}`}
+    >
       <div className="flex items-start gap-3">
         <div className="relative shrink-0">
           <ItemIcon itemId={itemId} size={52} />
-          <span className={`absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold ${good ? "bg-success text-background" : "bg-danger text-background"}`}>
+          <span
+            className={`absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold ${good ? "bg-success text-background" : "bg-danger text-background"}`}
+          >
             {good ? "✓" : "✗"}
           </span>
         </div>
-        <div className="flex-1 min-w-0 space-y-1">
+        <div className="min-w-0 flex-1 space-y-1">
           <span className="text-sm font-semibold text-text">{item.itemName}</span>
           <p className="text-xs leading-relaxed text-text-muted">{item.reasoning}</p>
           {item.betterAlternative && (
-            <p className="text-xs font-medium text-warning">→ Alternatif: {item.betterAlternative}</p>
+            <p className="text-xs font-medium text-warning">
+              → Alternatif: {item.betterAlternative}
+            </p>
           )}
           <p className="text-xs italic text-text-muted/60">{item.whenToChoose}</p>
         </div>
@@ -38,7 +44,12 @@ function ItemRow({ item, itemId }: { item: ItemExplanation; itemId: number }) {
   );
 }
 
-export function BuildExplanationPanel({ matchId, puuid, isPro, itemIds = [] }: BuildExplanationPanelProps) {
+export function BuildExplanationPanel({
+  matchId,
+  puuid,
+  isPro,
+  itemIds = [],
+}: BuildExplanationPanelProps) {
   const nonZeroItemIds = itemIds.filter((id) => id > 0);
   const [open, setOpen] = useState(false);
   const { data, isLoading, trigger } = useBuildExplanation(matchId, puuid);
@@ -53,7 +64,7 @@ export function BuildExplanationPanel({ matchId, puuid, isPro, itemIds = [] }: B
       <button
         type="button"
         onClick={open ? () => setOpen(false) : handleOpen}
-        className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-surface-2 transition-colors"
+        className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-surface-2"
       >
         <span className="text-sm font-medium text-text">Analyze This Build with AI</span>
         <div className="flex items-center gap-2">
@@ -62,12 +73,16 @@ export function BuildExplanationPanel({ matchId, puuid, isPro, itemIds = [] }: B
               PRO
             </span>
           )}
-          {open ? <ChevronUp className="h-4 w-4 text-text-muted" /> : <ChevronDown className="h-4 w-4 text-text-muted" />}
+          {open ? (
+            <ChevronUp className="h-4 w-4 text-text-muted" />
+          ) : (
+            <ChevronDown className="h-4 w-4 text-text-muted" />
+          )}
         </div>
       </button>
 
       {open && (
-        <div className="border-t border-border p-4 space-y-4">
+        <div className="space-y-4 border-t border-border p-4">
           {!isPro && (
             <div className="flex flex-col items-center gap-3 rounded-lg border border-border bg-surface-2 py-8 text-center">
               <Lock className="h-6 w-6 text-text-muted" />

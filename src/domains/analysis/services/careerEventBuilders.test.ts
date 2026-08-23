@@ -33,7 +33,12 @@ function row(
 }
 
 /** `count` games of one champion inside one month, one per day from the 1st. */
-function month(monthKey: string, championName: string, count: number, won = false): CareerMatchRow[] {
+function month(
+  monthKey: string,
+  championName: string,
+  count: number,
+  won = false
+): CareerMatchRow[] {
   return Array.from({ length: count }, (_, i) =>
     row(`${monthKey}-${String(i + 1).padStart(2, "0")}T12:00:00Z`, championName, { won })
   );
@@ -41,7 +46,10 @@ function month(monthKey: string, championName: string, count: number, won = fals
 
 describe("buildChampionEras", () => {
   it("names the champion a run of months belonged to", () => {
-    const eras = buildChampionEras([...month("2026-06", "Yasuo", 8), ...month("2026-07", "Yasuo", 8)]);
+    const eras = buildChampionEras([
+      ...month("2026-06", "Yasuo", 8),
+      ...month("2026-07", "Yasuo", 8),
+    ]);
 
     expect(eras).toHaveLength(1);
     expect(eras[0].title).toBe("Your Yasuo era began");
@@ -62,10 +70,7 @@ describe("buildChampionEras", () => {
       ...month("2026-06", "Yasuo", 8),
       ...month("2026-07", "Zed", 8),
     ]);
-    expect(eras.map((e) => e.title)).toEqual([
-      "Your Yasuo era began",
-      "Your Zed era began",
-    ]);
+    expect(eras.map((e) => e.title)).toEqual(["Your Yasuo era began", "Your Zed era began"]);
   });
 
   it("ignores a champion tried for a couple of games", () => {
@@ -127,9 +132,7 @@ describe("buildRecords", () => {
       row("2026-06-10T12:00:00Z", "First", { visionScore: 80 }),
       row("2026-06-11T12:00:00Z", "Second", { visionScore: 80 }),
     ];
-    const vision = buildRecords([...filler, ...tied]).find((r) =>
-      r.id.startsWith("record:vision")
-    );
+    const vision = buildRecords([...filler, ...tied]).find((r) => r.id.startsWith("record:vision"));
     expect(vision?.detail).toBe("80 vision score on First");
   });
 

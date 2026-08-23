@@ -37,9 +37,7 @@ function rankLine(payload: OverlayPayload): string {
   if (!rank) return `${subjectOf(payload)} has no ranked games this season yet.`;
 
   const delta =
-    rank.sessionLpDelta === null
-      ? ""
-      : ` · ${formatLpDelta(rank.sessionLpDelta)} LP this session`;
+    rank.sessionLpDelta === null ? "" : ` · ${formatLpDelta(rank.sessionLpDelta)} LP this session`;
 
   return `${subjectOf(payload)} — ${rank.label}, ${rank.lp} LP${delta}`;
 }

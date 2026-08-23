@@ -74,10 +74,12 @@ export function useGuidedOnboarding(userId: string | null): GuidedOnboardingStat
     () => ({
       hasAccount: (accounts?.length ?? 0) > 0,
       hasMatches: (profile?.recentMatches?.length ?? 0) > 0,
-      hasCompleteReport: (reports?.pages ?? []).some((p) => p.reports.some((r) => r.status === "complete")),
+      hasCompleteReport: (reports?.pages ?? []).some((p) =>
+        p.reports.some((r) => r.status === "complete")
+      ),
       hasPlan: Boolean(plan),
     }),
-    [accounts, profile, reports, plan],
+    [accounts, profile, reports, plan]
   );
 
   useEffect(() => {
@@ -118,9 +120,20 @@ export function useGuidedOnboarding(userId: string | null): GuidedOnboardingStat
       const el = findTarget(step.target);
       if (el) {
         const r = el.getBoundingClientRect();
-        const next: SpotRect = { top: r.top - pad, left: r.left - pad, width: r.width + pad * 2, height: r.height + pad * 2 };
+        const next: SpotRect = {
+          top: r.top - pad,
+          left: r.left - pad,
+          width: r.width + pad * 2,
+          height: r.height + pad * 2,
+        };
         setRect((prev) =>
-          prev && prev.top === next.top && prev.left === next.left && prev.width === next.width && prev.height === next.height ? prev : next,
+          prev &&
+          prev.top === next.top &&
+          prev.left === next.left &&
+          prev.width === next.width &&
+          prev.height === next.height
+            ? prev
+            : next
         );
       } else {
         setRect(null);
@@ -204,5 +217,15 @@ export function useGuidedOnboarding(userId: string | null): GuidedOnboardingStat
   const active = mounted && !done;
 
   // Keep a stable ref-free return; consumers guard on `active`.
-  return { active, step, index, total: GUIDE_STEPS.length, rect, stepHasTarget: Boolean(step.target), manualAdvance, goTo, dismiss };
+  return {
+    active,
+    step,
+    index,
+    total: GUIDE_STEPS.length,
+    rect,
+    stepHasTarget: Boolean(step.target),
+    manualAdvance,
+    goTo,
+    dismiss,
+  };
 }

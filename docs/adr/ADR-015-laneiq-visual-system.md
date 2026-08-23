@@ -25,8 +25,8 @@ was already queued for the same treatment.
 
 Adopt LaneIQ as the product-wide visual system, applied at the token layer.
 
-The existing Tailwind semantic color *names* (`background`, `surface`, `border`,
-`text`, `accent`, `success`, `danger`, `warning`) are kept and their *values*
+The existing Tailwind semantic color _names_ (`background`, `surface`, `border`,
+`text`, `accent`, `success`, `danger`, `warning`) are kept and their _values_
 repointed to LaneIQ. The ~300 component files already consume those names, so the
 palette change reaches them without edits. Two further global levers do the rest:
 
@@ -51,7 +51,7 @@ next 95 literals do not accumulate.
 
 **Paid.** Every screen changes appearance in one commit. Components that leaned on
 gold-specific contrast, or on roundness to separate a card from its ground, need
-visual review; the token layer makes them *consistent*, not automatically *good*.
+visual review; the token layer makes them _consistent_, not automatically _good_.
 Transactional email and OG image templates carry inline colors that no token layer
 reaches, so they were swept by hand and will drift again unless watched.
 

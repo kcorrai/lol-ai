@@ -2,7 +2,10 @@ import { prisma } from "@/lib/db/prisma";
 import { Errors } from "@/lib/api/errors";
 import { getPlayerPerformanceProfile } from "@/domains/analysis/services/matchAnalysisService";
 import { getBenchmarkForTier } from "@/domains/analysis/services/rankBenchmarkService";
-import { getTeamfightAnalysis, teamfightContextForAi } from "@/domains/analysis/services/teamfightService";
+import {
+  getTeamfightAnalysis,
+  teamfightContextForAi,
+} from "@/domains/analysis/services/teamfightService";
 import type { CoachingInput, ChampionSummary } from "@/domains/coaching/types/coaching.types";
 
 export async function buildCoachingInput(
@@ -29,9 +32,9 @@ export async function buildCoachingInput(
   const profile = await getPlayerPerformanceProfile(riotAccountId, 100);
 
   // Filter to only the requested matches (latest N)
-  const requestedMatches = profile.recentMatches.filter((m) =>
-    matchIds.includes(m.matchDbId)
-  ).slice(0, 10); // token budget cap
+  const requestedMatches = profile.recentMatches
+    .filter((m) => matchIds.includes(m.matchDbId))
+    .slice(0, 10); // token budget cap
 
   if (requestedMatches.length === 0) {
     throw Errors.validation("No valid match data found for the requested matches.");
@@ -46,10 +49,14 @@ export async function buildCoachingInput(
     acc[m.queueType] = (acc[m.queueType] ?? 0) + 1;
     return acc;
   }, {});
-  const predominantQueue = Object.entries(queueCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "RANKED_SOLO_5x5";
+  const predominantQueue =
+    Object.entries(queueCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "RANKED_SOLO_5x5";
 
   // Champion pool summary (top 5 by games played in analyzed set)
-  const champMap = new Map<string, { wins: number; games: number; kdaSum: number; csSum: number }>();
+  const champMap = new Map<
+    string,
+    { wins: number; games: number; kdaSum: number; csSum: number }
+  >();
   for (const m of profile.recentMatches) {
     const existing = champMap.get(m.champion) ?? { wins: 0, games: 0, kdaSum: 0, csSum: 0 };
     champMap.set(m.champion, {

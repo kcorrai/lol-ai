@@ -19,20 +19,15 @@ export const CacheKeys = {
   matchIdsPrefix: (puuid: string, region: string) => `riot:matchids:${puuid}:${region}:`,
   matchDetail: (matchId: string) => `riot:match:${matchId}`,
   matchTimeline: (matchId: string) => `riot:timeline:${matchId}`,
-  rankedEntries: (summonerId: string, region: string) =>
-    `riot:ranked:${summonerId}:${region}`,
-  championMastery: (puuid: string, region: string) =>
-    `riot:mastery:${puuid}:${region}`,
+  rankedEntries: (summonerId: string, region: string) => `riot:ranked:${summonerId}:${region}`,
+  championMastery: (puuid: string, region: string) => `riot:mastery:${puuid}:${region}`,
 } as const;
 
 // ── Staleness Detection ─────────────────────────────────────────────────────
 
 // Returns true when the data is old enough that a refresh is warranted.
 // Default: 5 minutes — balances freshness against rate-limit consumption.
-export function isDataStale(
-  lastSyncedAt: Date | null | undefined,
-  maxAgeMinutes = 5
-): boolean {
+export function isDataStale(lastSyncedAt: Date | null | undefined, maxAgeMinutes = 5): boolean {
   if (!lastSyncedAt) return true;
   const ageMs = Date.now() - lastSyncedAt.getTime();
   return ageMs > maxAgeMinutes * 60 * 1000;
@@ -46,9 +41,7 @@ export function isDataStale(
 export function backgroundRefresh(fn: () => Promise<void>): void {
   Promise.resolve()
     .then(fn)
-    .catch((err: unknown) =>
-      logger.error("[lifecycle] Background refresh failed", err)
-    );
+    .catch((err: unknown) => logger.error("[lifecycle] Background refresh failed", err));
 }
 
 // ── Invalidation ───────────────────────────────────────────────────────────

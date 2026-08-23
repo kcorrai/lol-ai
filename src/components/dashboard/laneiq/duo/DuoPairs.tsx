@@ -29,9 +29,7 @@ export function DuoPairs({ championPairs, rolePairs }: Props): React.ReactElemen
                 <span className="min-w-0 flex-1 truncate text-[12.5px] text-text-body">
                   {p.ownChampion} <span className="text-text-muted">+</span> {p.partnerChampion}
                 </span>
-                <span className="shrink-0 font-mono text-[10.5px] text-text-muted">
-                  {p.games}g
-                </span>
+                <span className="shrink-0 font-mono text-[10.5px] text-text-muted">{p.games}g</span>
                 <span
                   className={`w-9 shrink-0 text-right font-mono text-[12px] font-bold ${
                     p.winRate >= 50 ? "text-accent" : "text-danger"

@@ -34,7 +34,9 @@ async function read(name: string): Promise<unknown | null> {
   try {
     const { readFile } = await import("node:fs/promises");
     const { join } = await import("node:path");
-    const parsed: unknown = JSON.parse(await readFile(join(process.cwd(), DIR, `${name}.json`), "utf8"));
+    const parsed: unknown = JSON.parse(
+      await readFile(join(process.cwd(), DIR, `${name}.json`), "utf8")
+    );
     cache.set(name, parsed);
     return parsed;
   } catch {
@@ -94,7 +96,8 @@ function rebase<T>(payload: T, capturedAt: string): T {
     if (typeof record.startTime === "string") {
       const at = Date.parse(record.startTime);
       if (Number.isFinite(at)) {
-        const moved = record.state === "completed" ? Math.min(at + delta, Date.now() - 60_000) : at + delta;
+        const moved =
+          record.state === "completed" ? Math.min(at + delta, Date.now() - 60_000) : at + delta;
         shifted.startTime = new Date(moved).toISOString();
       }
     }

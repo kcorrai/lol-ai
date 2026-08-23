@@ -36,6 +36,7 @@ Build the complete AI coaching pipeline for the Session Review report type. This
 `src/domains/coaching/pipeline/`:
 
 **`dataPreparator.ts`**
+
 - Input: `riotAccountId`, `matchIds` (array of 5 UUIDs)
 - Query MatchParticipant records for these matches
 - Query player's champion stats + ranked history
@@ -43,12 +44,14 @@ Build the complete AI coaching pipeline for the Session Review report type. This
 - Output: `CoachingInput` object
 
 **`promptBuilder.ts`**
+
 - Input: `CoachingInput` + `reportType` + optional `focusArea`
 - Selects correct prompt template
 - Injects structured data as JSON in user message
 - Output: `AIRequest` (systemPrompt + userMessage)
 
 **`responseParser.ts`**
+
 - Input: raw AI response string
 - Validates against `CoachingReportOutput` Zod schema
 - Checks: evidence fields non-empty, exactly 3 action items, valid rank string
@@ -56,6 +59,7 @@ Build the complete AI coaching pipeline for the Session Review report type. This
 - Output: validated `CoachingReportOutput`
 
 **`reportAssembler.ts`**
+
 - Input: `CoachingReportOutput` + `CoachingInput` + `coaching_report.id`
 - Merges AI output with statistical data
 - Updates `coaching_reports` record in DB (status: complete, all fields)
@@ -63,11 +67,12 @@ Build the complete AI coaching pipeline for the Session Review report type. This
 - Output: final `CoachingReport` domain object
 
 **`coachingService.ts`** (orchestrator)
+
 ```typescript
 async function generateSessionReview(
-  riotAccountId: string, 
+  riotAccountId: string,
   matchIds: string[]
-): Promise<{ reportId: string }>
+): Promise<{ reportId: string }>;
 ```
 
 ### System Prompt (Core)
@@ -77,6 +82,7 @@ Located in `src/domains/coaching/prompts/sessionReview.prompt.ts`.
 See `AI_ARCHITECTURE.md` section 4.2 for the full system prompt template.
 
 Key constraints:
+
 - Temperature: 0.4 (consistent analysis)
 - Max output tokens: 1,200
 - Output format: JSON only
@@ -84,6 +90,7 @@ Key constraints:
 ### Async Pattern (MVP)
 
 Since we have no queue in MVP:
+
 1. API route creates `coaching_report` with `status: 'processing'`
 2. Returns 202 with `reportId`
 3. Spawns background processing via `setImmediate` / promise (non-blocking)
@@ -105,6 +112,7 @@ Since we have no queue in MVP:
 ## UI to Build
 
 `src/domains/coaching/components/`:
+
 - `GenerateReportButton` — triggers generation, shows loading state
 - `ReportStatusPoller` — polls status, transitions to report view
 - `CoachingReportView` — full report display
@@ -114,6 +122,7 @@ Since we have no queue in MVP:
 - `ReportRatingWidget` — star rating input
 
 Pages:
+
 - `app/(app)/coaching/page.tsx` — list of reports + generate button
 - `app/(app)/coaching/[reportId]/page.tsx` — single report view
 

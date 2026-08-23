@@ -23,7 +23,8 @@ export default function GlobalError({ error, reset }: Props) {
         Something went wrong
       </h1>
       <p className="mt-3 max-w-sm text-sm text-text-muted">
-        An unexpected error occurred. Our team has been notified. You can try again or return to the dashboard.
+        An unexpected error occurred. Our team has been notified. You can try again or return to the
+        dashboard.
       </p>
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <button
@@ -39,9 +40,7 @@ export default function GlobalError({ error, reset }: Props) {
           Go to Dashboard
         </Link>
       </div>
-      {error.digest && (
-        <p className="mt-6 text-xs text-text-muted">Error ID: {error.digest}</p>
-      )}
+      {error.digest && <p className="mt-6 text-xs text-text-muted">Error ID: {error.digest}</p>}
     </div>
   );
 }

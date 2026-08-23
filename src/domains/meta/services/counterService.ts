@@ -38,9 +38,7 @@ export interface CounterResult {
 
 const LIST_SIZE = 8;
 
-function buildChampionIndex(
-  snapshot: MetaSnapshot
-): Map<number, { key: string; name: string }> {
+function buildChampionIndex(snapshot: MetaSnapshot): Map<number, { key: string; name: string }> {
   const index = new Map<number, { key: string; name: string }>();
   for (const c of snapshot.champions) {
     index.set(c.championId, { key: c.championKey, name: c.name });
@@ -109,9 +107,7 @@ export async function getCounterData(
 
   // counters are pre-sorted ascending by subject win rate (hardest first). The
   // exact-50.0 boundary belongs in one column, not dropped from both.
-  const strongAgainstSubject = matchups
-    .filter((m) => m.subjectWinRate < 50)
-    .slice(0, LIST_SIZE);
+  const strongAgainstSubject = matchups.filter((m) => m.subjectWinRate < 50).slice(0, LIST_SIZE);
   const weakAgainstSubject = matchups
     .filter((m) => m.subjectWinRate >= 50)
     .sort((a, b) => b.subjectWinRate - a.subjectWinRate)

@@ -21,7 +21,7 @@ function TeamJoinContent() {
     setState("loading");
     fetch(`/api/teams/invites/${token}/accept`, { method: "POST" })
       .then(async (res) => {
-        const body = await res.json() as {
+        const body = (await res.json()) as {
           data?: { teamId: string; teamName: string };
           error?: { message?: string };
         };
@@ -64,7 +64,8 @@ function TeamJoinContent() {
             <p className="mt-4 text-lg font-semibold text-success">You&apos;ve joined the team!</p>
             {teamName && (
               <p className="mt-1 text-sm text-text-muted">
-                You&apos;re now a member of the <strong className="text-text">{teamName}</strong> team.
+                You&apos;re now a member of the <strong className="text-text">{teamName}</strong>{" "}
+                team.
               </p>
             )}
             <p className="mt-3 text-xs text-text-muted">Redirecting to team dashboard…</p>
@@ -76,7 +77,9 @@ function TeamJoinContent() {
             <p className="mt-4 text-sm text-danger">{errorMsg}</p>
             <div className="mt-6 flex gap-3">
               <Link href="/dashboard" className="flex-1">
-                <Button variant="outline" className="w-full">Home</Button>
+                <Button variant="outline" className="w-full">
+                  Home
+                </Button>
               </Link>
               <Link href="/teams" className="flex-1">
                 <Button className="w-full">My Teams</Button>

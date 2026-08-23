@@ -33,9 +33,7 @@ export function parseCoachingResponse(rawText: string): CoachingReportOutput {
   try {
     parsed = JSON.parse(extracted);
   } catch {
-    throw new Error(
-      `AI response is not valid JSON. First 200 chars: ${extracted.slice(0, 200)}`
-    );
+    throw new Error(`AI response is not valid JSON. First 200 chars: ${extracted.slice(0, 200)}`);
   }
 
   if (!isValidCoachingOutput(parsed)) {

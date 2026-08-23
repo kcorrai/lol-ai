@@ -5,8 +5,18 @@ import type { CareerBand, CareerEvent, CareerMatchRow } from "./careerTimeline.t
 import { EVENTS_PER_BAND } from "./careerTimelineConstants";
 
 const MONTH_NAMES = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 /** "2026-08". UTC, matching every other day boundary in the app. */
@@ -20,9 +30,7 @@ export function monthLabel(key: string): string {
   return `${MONTH_NAMES[month - 1]} ${year}`;
 }
 
-export function groupByMonth(
-  rows: readonly CareerMatchRow[]
-): Map<string, CareerMatchRow[]> {
+export function groupByMonth(rows: readonly CareerMatchRow[]): Map<string, CareerMatchRow[]> {
   const byMonth = new Map<string, CareerMatchRow[]>();
   for (const row of rows) {
     const key = monthKey(row.gameStart);

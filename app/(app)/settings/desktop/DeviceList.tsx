@@ -41,8 +41,7 @@ export function DeviceList(): React.ReactElement {
       <div>
         <p className="text-sm font-semibold text-text">Paired devices</p>
         <p className="mt-0.5 text-xs text-text-muted">
-          Revoking cuts a machine off immediately. Its copy of the app will ask to be
-          paired again.
+          Revoking cuts a machine off immediately. Its copy of the app will ask to be paired again.
         </p>
       </div>
 
@@ -57,9 +56,7 @@ export function DeviceList(): React.ReactElement {
           {error instanceof Error ? error.message : "Could not load your devices"}
         </p>
       ) : !devices?.length ? (
-        <p className="text-xs text-text-muted">
-          No device has been paired with this account yet.
-        </p>
+        <p className="text-xs text-text-muted">No device has been paired with this account yet.</p>
       ) : (
         <div className="divide-y divide-border">
           {devices.map((device) => (

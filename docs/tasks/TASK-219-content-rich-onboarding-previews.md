@@ -4,11 +4,11 @@
 
 ## Problem
 
-The forced first-journey (TASK-217) walks a new user *to* each tab (Leaderboard, Badges,
+The forced first-journey (TASK-217) walks a new user _to_ each tab (Leaderboard, Badges,
 Improvement, …) but only shows a one-paragraph coach bubble and immediately advances on
 route match. Because a brand-new user has no data, those tabs are empty — the user is told
 "here is the Leaderboard" while staring at an empty page. The onboarding tells, but never
-*shows*.
+_shows_.
 
 ## Goal
 
@@ -33,7 +33,7 @@ user's own stats. The coach bubble explains it alongside. Media is framer-motion
 - Shared `<PreviewBadge/>` + a small `useOnboardingPreview()` hook.
 - Each targeted tab's empty state checks `previewActive`; if set, renders a framer-motion
   mock instead of the plain empty placeholder.
-- Expand `GUIDE_STEPS`: each tab stop becomes a *manual* "look at the inside" step so the
+- Expand `GUIDE_STEPS`: each tab stop becomes a _manual_ "look at the inside" step so the
   user actually sees the preview before advancing (instead of auto-advancing on route).
 
 ## Deliverables (incremental, one tab per commit after the framework)

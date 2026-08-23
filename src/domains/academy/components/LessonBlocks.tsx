@@ -36,7 +36,7 @@ export function LessonBlockView({ block }: { block: LessonBlock }): React.ReactE
     case "mistake":
       return (
         <div className="notch my-6 border border-line-1 bg-surface p-5">
-          <p className="flex items-center gap-2 hud-label text-danger">
+          <p className="hud-label flex items-center gap-2 text-danger">
             <AlertTriangle className="h-3.5 w-3.5" strokeWidth={2} />
             Common mistake — {block.title}
           </p>
@@ -57,7 +57,7 @@ export function LessonBlockView({ block }: { block: LessonBlock }): React.ReactE
               <thead>
                 <tr className="border-b border-line-2">
                   {block.head.map((cell) => (
-                    <th key={cell} className="px-3 py-2 hud-label">
+                    <th key={cell} className="hud-label px-3 py-2">
                       {cell}
                     </th>
                   ))}

@@ -3,10 +3,13 @@
 import { UserPlus, UserMinus, Activity, Loader2 } from "lucide-react";
 import { useTeamActivity } from "@/hooks/useTeamActivity";
 
-const ACTION_META: Record<string, { label: string; icon: React.ComponentType<{ className?: string }>; color: string }> = {
-  member_joined:  { label: "joined",       icon: UserPlus,   color: "text-success" },
-  member_removed: { label: "removed",      icon: UserMinus,  color: "text-danger"  },
-  default:        { label: "",             icon: Activity,   color: "text-text-muted" },
+const ACTION_META: Record<
+  string,
+  { label: string; icon: React.ComponentType<{ className?: string }>; color: string }
+> = {
+  member_joined: { label: "joined", icon: UserPlus, color: "text-success" },
+  member_removed: { label: "removed", icon: UserMinus, color: "text-danger" },
+  default: { label: "", icon: Activity, color: "text-text-muted" },
 };
 
 function relativeTime(iso: string): string {
@@ -28,7 +31,7 @@ export function TeamActivityFeed({ teamId }: Props) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center gap-2 py-6 justify-center text-text-muted">
+      <div className="flex items-center justify-center gap-2 py-6 text-text-muted">
         <Loader2 className="h-4 w-4 animate-spin" />
         <span className="text-sm">Loading…</span>
       </div>
@@ -45,7 +48,7 @@ export function TeamActivityFeed({ teamId }: Props) {
   }
 
   return (
-    <div className="space-y-0 rounded-xl border border-border bg-surface overflow-hidden">
+    <div className="space-y-0 overflow-hidden rounded-xl border border-border bg-surface">
       {activities.map((item, idx) => {
         const meta = ACTION_META[item.action] ?? ACTION_META.default;
         const Icon = meta.icon;
@@ -55,7 +58,9 @@ export function TeamActivityFeed({ teamId }: Props) {
             key={item.id}
             className={`flex items-start gap-3 px-4 py-3 ${idx < activities.length - 1 ? "border-b border-border" : ""}`}
           >
-            <div className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-surface-2 ${meta.color}`}>
+            <div
+              className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-surface-2 ${meta.color}`}
+            >
               <Icon className="h-3.5 w-3.5" />
             </div>
 

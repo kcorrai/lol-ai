@@ -54,13 +54,13 @@ wholesale:
 - **Fresh + last-good caching** through the existing `getCached`/`setCached`
   layer (ADR-014), with per-resource TTLs rather than one global number:
 
-  | Resource | Fresh TTL | Rationale |
-  |---|---|---|
-  | Leagues, teams, rosters | 24 h | Changes at most between splits |
-  | Tournaments, standings | 1 h | Moves after each match day |
-  | Schedule (upcoming/completed) | 15 min | Times shift, results land |
-  | Live events (`getLive`) | 30 s | It is the live surface |
-  | Completed game stats | 30 days | Immutable once the game ends |
+  | Resource                      | Fresh TTL | Rationale                      |
+  | ----------------------------- | --------- | ------------------------------ |
+  | Leagues, teams, rosters       | 24 h      | Changes at most between splits |
+  | Tournaments, standings        | 1 h       | Moves after each match day     |
+  | Schedule (upcoming/completed) | 15 min    | Times shift, results land      |
+  | Live events (`getLive`)       | 30 s      | It is the live surface         |
+  | Completed game stats          | 30 days   | Immutable once the game ends   |
 
   Every key also writes a never-expiring `:last-good` snapshot. If a feed changes
   shape or goes down, pages serve the last good data with a visible "as of"

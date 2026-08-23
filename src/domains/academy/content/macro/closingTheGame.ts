@@ -137,7 +137,8 @@ export const closingTheGame: Lesson = {
     {
       id: "closing-quiz",
       kind: "quiz",
-      prompt: "You have Baron buff and a five-thousand gold lead. What are you supposed to do with the next three minutes?",
+      prompt:
+        "You have Baron buff and a five-thousand gold lead. What are you supposed to do with the next three minutes?",
       options: [
         {
           id: "a",

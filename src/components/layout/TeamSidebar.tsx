@@ -4,8 +4,16 @@ import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import {
-  LayoutDashboard, LogOut, ChevronLeft, ChevronRight,
-  ArrowLeft, Users, Sparkles, Settings, FileText, Activity,
+  LayoutDashboard,
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+  ArrowLeft,
+  Users,
+  Sparkles,
+  Settings,
+  FileText,
+  Activity,
 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,16 +23,20 @@ import { TeamSwitcher } from "@/components/layout/TeamSwitcher";
 
 function makeTeamNav(teamId: string) {
   return [
-    { href: `/teams/${teamId}`,         icon: LayoutDashboard, label: "Dashboard",  exact: true  },
-    { href: `/teams/${teamId}/members`, icon: Users,           label: "Members",     exact: false },
-    { href: `/teams/${teamId}/report`,   icon: Sparkles,  label: "AI Report",     exact: false },
-    { href: `/teams/${teamId}/reports`,  icon: FileText,  label: "Coach Reports", exact: false },
-    { href: `/teams/${teamId}/activity`, icon: Activity,  label: "Activity",      exact: false },
+    { href: `/teams/${teamId}`, icon: LayoutDashboard, label: "Dashboard", exact: true },
+    { href: `/teams/${teamId}/members`, icon: Users, label: "Members", exact: false },
+    { href: `/teams/${teamId}/report`, icon: Sparkles, label: "AI Report", exact: false },
+    { href: `/teams/${teamId}/reports`, icon: FileText, label: "Coach Reports", exact: false },
+    { href: `/teams/${teamId}/activity`, icon: Activity, label: "Activity", exact: false },
   ] as const;
 }
 
 function NavItem({
-  href, icon: Icon, label, collapsed, exact,
+  href,
+  icon: Icon,
+  label,
+  collapsed,
+  exact,
 }: {
   href: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -70,10 +82,21 @@ export function TeamSidebar({ collapsed, onToggle }: TeamSidebarProps) {
   const displayName = user?.name ?? user?.email ?? "Player";
   const isOwner = currentTeam?.myRole === "OWNER";
 
-  const teamNav = teamId ? [
-    ...makeTeamNav(teamId),
-    ...(isOwner ? [{ href: `/teams/${teamId}/settings`, icon: Settings, label: "Settings", exact: false } as const] : []),
-  ] : [];
+  const teamNav = teamId
+    ? [
+        ...makeTeamNav(teamId),
+        ...(isOwner
+          ? [
+              {
+                href: `/teams/${teamId}/settings`,
+                icon: Settings,
+                label: "Settings",
+                exact: false,
+              } as const,
+            ]
+          : []),
+      ]
+    : [];
 
   return (
     <aside
@@ -81,7 +104,10 @@ export function TeamSidebar({ collapsed, onToggle }: TeamSidebarProps) {
         "sticky top-0 hidden h-screen shrink-0 flex-col border-r border-white/5 transition-[width] duration-200 md:flex",
         collapsed ? "w-16" : "w-56"
       )}
-      style={{ background: "linear-gradient(180deg, #08091280 0%, #050706 100%)", backdropFilter: "blur(12px)" }}
+      style={{
+        background: "linear-gradient(180deg, #08091280 0%, #050706 100%)",
+        backdropFilter: "blur(12px)",
+      }}
     >
       {/* Header / team switcher */}
       <TeamSwitcher collapsed={collapsed} />
@@ -127,7 +153,9 @@ export function TeamSidebar({ collapsed, onToggle }: TeamSidebarProps) {
       {/* User */}
       <div className={cn("border-t border-white/5 p-3", collapsed ? "flex justify-center" : "")}>
         {collapsed ? (
-          <div title={displayName}><Avatar name={displayName} size="sm" /></div>
+          <div title={displayName}>
+            <Avatar name={displayName} size="sm" />
+          </div>
         ) : (
           <div className="flex items-center gap-2">
             <Avatar name={displayName} size="sm" />

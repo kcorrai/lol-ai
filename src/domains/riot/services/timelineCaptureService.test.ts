@@ -71,7 +71,14 @@ describe("runTimelineCaptureForAccount", () => {
 
     await run(ACCOUNT);
 
-    expect(mockCapture).toHaveBeenCalledWith("db-TR1_1", "TR1_1", ACCOUNT, "puuid-1", "tr1", "Ahri");
+    expect(mockCapture).toHaveBeenCalledWith(
+      "db-TR1_1",
+      "TR1_1",
+      ACCOUNT,
+      "puuid-1",
+      "tr1",
+      "Ahri"
+    );
   });
 
   it("sums what the captures reported", async () => {

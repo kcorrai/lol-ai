@@ -1,6 +1,6 @@
 # TASK-312 — Duo synergy analytics
 
-Builds on [TASK-244](./TASK-244-duo-detection-and-selection.md), which stored *which* teammate is
+Builds on [TASK-244](./TASK-244-duo-detection-and-selection.md), which stored _which_ teammate is
 the duo. This works out what that duo is worth. Feeds the panel in TASK-314.
 
 ## Goal
@@ -46,10 +46,10 @@ Running it over a real 105-match account did not add up: 73 together + 27 apart 
    missing games were counted, and the sum now equals the account's real match count.
 
 2. **Fixing that introduced a worse one, caught the same way.** Excluding the player from the
-   teammate scan with `NOT (riotAccountId = … OR puuid = …)` returned *no teammates at all*: the
+   teammate scan with `NOT (riotAccountId = … OR puuid = …)` returned _no teammates at all_: the
    other nine participants have a null `riotAccountId`, and in SQL `NOT (NULL OR false)` is NULL,
    which filters the row out. The exclusion is now `puuid: { notIn: [...every PUUID the account
-   has used] }`. Without it the player would eventually have been ranked as their own duo partner.
+has used] }`. Without it the player would eventually have been ranked as their own duo partner.
 
 ## Tests
 
@@ -59,7 +59,7 @@ result, champion pairings ranked by win rate with one-offs dropped, role pairing
 frequency instead, per-game KDA averaging rather than dividing totals, and empty histories.
 
 `duoService.test.ts` — new, and written directly against both bugs above: the account's rows are
-selected by id *and* puuid, the teammate scan excludes every PUUID the account has used, and the
+selected by id _and_ puuid, the teammate scan excludes every PUUID the account has used, and the
 exclusion is a list rather than a negated nullable column.
 
 ## Verified against real data

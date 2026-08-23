@@ -9,10 +9,18 @@ vi.mock("@/lib/db/prisma", () => ({
   },
 }));
 
-function participant(overrides: Partial<{
-  won: boolean; kills: number; deaths: number; assists: number;
-  cs: number; championName: string; gameDuration: number; gameStart: Date;
-}> = {}) {
+function participant(
+  overrides: Partial<{
+    won: boolean;
+    kills: number;
+    deaths: number;
+    assists: number;
+    cs: number;
+    championName: string;
+    gameDuration: number;
+    gameStart: Date;
+  }> = {}
+) {
   return {
     won: overrides.won ?? true,
     kills: overrides.kills ?? 5,
@@ -86,12 +94,10 @@ describe("getMonthlyMilestone", () => {
   });
 
   it("calculates LP change using rank history", async () => {
-    vi.mocked(prisma.matchParticipant.findMany).mockResolvedValue([
-      participant(),
-    ] as never);
+    vi.mocked(prisma.matchParticipant.findMany).mockResolvedValue([participant()] as never);
     vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([
       { tier: "GOLD", division: "II", lp: 50, recordedAt: new Date(2026, 4, 1) },
-      { tier: "GOLD", division: "I",  lp: 20, recordedAt: new Date(2026, 4, 14) },
+      { tier: "GOLD", division: "I", lp: 20, recordedAt: new Date(2026, 4, 14) },
     ] as never);
 
     const result = await getMonthlyMilestone("acc-1", 2026, 5);

@@ -157,8 +157,7 @@ export function parseEvents(
         kind,
         timestampMs,
         participantId: subject.participantId,
-        puuid:
-          subject.participantId === null ? null : (puuids.get(subject.participantId) ?? null),
+        puuid: subject.participantId === null ? null : (puuids.get(subject.participantId) ?? null),
         positionX: x,
         positionY: y,
         payload: subject.payload,

@@ -3,11 +3,13 @@
 ## Status: Done
 
 ## Goal
+
 Fix two reported Draft Analyzer bugs: the same champion could be selected in
 multiple slots, and any champion could be dropped into any lane regardless of the
 roles it actually plays.
 
 ## Scope
+
 - `ChampionCombobox`: add optional `positions` on `ChampionOption` and a
   `position` prop; filter the dropdown to on-lane champions (champions with no
   role data still show, so the list never empties).
@@ -19,8 +21,10 @@ roles it actually plays.
   champion drafted twice across both teams (defends hand-crafted ?blue/?red URLs).
 
 ## Tests
+
 - `draftEvalService.test.ts`: dedupe across teams + within a team; evaluation
   strips the smuggled duplicate.
 
 ## Commit
+
 `fix(draft): prevent duplicate and off-role champion picks`

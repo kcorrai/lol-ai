@@ -2,11 +2,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import * as repo from "@/domains/teams/repositories/teamRepository";
 import { prismaReadonly } from "@/lib/db/prismaReadonly";
 import { ApiError } from "@/lib/api/errors";
-import {
-  createTeam,
-  assertCoachAccess,
-  removeMember,
-} from "@/domains/teams/services/teamService";
+import { createTeam, assertCoachAccess, removeMember } from "@/domains/teams/services/teamService";
 
 vi.mock("@/domains/teams/repositories/teamRepository");
 vi.mock("@/lib/db/prismaReadonly", () => ({
@@ -51,11 +47,7 @@ describe("createTeam", () => {
     const result = await createTeam("user-1", { name: "Test Team" });
 
     expect(result.id).toBe("team-1");
-    expect(mockRepo.createTeamWithOwner).toHaveBeenCalledWith(
-      "user-1",
-      "Test Team",
-      undefined
-    );
+    expect(mockRepo.createTeamWithOwner).toHaveBeenCalledWith("user-1", "Test Team", undefined);
   });
 
   it("Team Plan yoksa createTeam forbidden fırlatıyor", async () => {
@@ -125,16 +117,40 @@ describe("removeMember", () => {
 
   it("aynı kullanıcı iki kez aynı takıma eklenemiyor — unique constraint", async () => {
     mockRepo.findMembership
-      .mockResolvedValueOnce({ id: "m-1", teamId: "t-1", userId: "owner", role: "OWNER", joinedAt: new Date() })
-      .mockResolvedValueOnce({ id: "m-1", teamId: "t-1", userId: "owner", role: "OWNER", joinedAt: new Date() });
+      .mockResolvedValueOnce({
+        id: "m-1",
+        teamId: "t-1",
+        userId: "owner",
+        role: "OWNER",
+        joinedAt: new Date(),
+      })
+      .mockResolvedValueOnce({
+        id: "m-1",
+        teamId: "t-1",
+        userId: "owner",
+        role: "OWNER",
+        joinedAt: new Date(),
+      });
 
     await expect(removeMember("t-1", "owner", "owner")).rejects.toBeInstanceOf(ApiError);
   });
 
   it("OWNER üyeyi çıkarabilir", async () => {
     mockRepo.findMembership
-      .mockResolvedValueOnce({ id: "m-owner", teamId: "t-1", userId: "owner", role: "OWNER", joinedAt: new Date() })
-      .mockResolvedValueOnce({ id: "m-player", teamId: "t-1", userId: "player-1", role: "PLAYER", joinedAt: new Date() });
+      .mockResolvedValueOnce({
+        id: "m-owner",
+        teamId: "t-1",
+        userId: "owner",
+        role: "OWNER",
+        joinedAt: new Date(),
+      })
+      .mockResolvedValueOnce({
+        id: "m-player",
+        teamId: "t-1",
+        userId: "player-1",
+        role: "PLAYER",
+        joinedAt: new Date(),
+      });
     mockRepo.removeMember.mockResolvedValue({
       id: "m-player",
       teamId: "t-1",

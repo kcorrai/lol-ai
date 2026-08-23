@@ -21,9 +21,7 @@ export interface MatchupGuideResult {
 // the prompt or mint a new cache entry.
 async function resolveChampionName(name: string): Promise<string | null> {
   const champions = await fetchAllChampions();
-  const match = champions.find(
-    (c) => c.name.toLowerCase() === name.trim().toLowerCase()
-  );
+  const match = champions.find((c) => c.name.toLowerCase() === name.trim().toLowerCase());
   return match?.name ?? null;
 }
 
@@ -49,9 +47,7 @@ export class UnknownChampionError extends Error {
 // The guide is user-agnostic, so it is cached for 7 days per champion pair and
 // shared across users. Cache keys use the canonical Data Dragon spelling so
 // "kai'sa" and "Kai'Sa" resolve to one entry rather than two.
-export async function generateMatchupGuide(
-  input: MatchupGuideInput
-): Promise<MatchupGuideResult> {
+export async function generateMatchupGuide(input: MatchupGuideInput): Promise<MatchupGuideResult> {
   const [player, opponent] = await Promise.all([
     resolveChampionName(input.playerChampion),
     resolveChampionName(input.opponentChampion),

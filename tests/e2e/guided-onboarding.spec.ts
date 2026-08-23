@@ -38,7 +38,15 @@ async function visibleTitle(page: Page): Promise<string | null> {
   if (!(await b.isVisible().catch(() => false))) return null;
   // Short budget on purpose: this runs in a poll loop, so a locator that has
   // stopped matching must fail fast rather than eat the whole test timeout.
-  return (await b.locator("h3").first().innerText({ timeout: 2_000 }).catch(() => "")).trim() || null;
+  return (
+    (
+      await b
+        .locator("h3")
+        .first()
+        .innerText({ timeout: 2_000 })
+        .catch(() => "")
+    ).trim() || null
+  );
 }
 
 /**
@@ -57,7 +65,7 @@ async function waitForNextStep(
   page: Page,
   from: number,
   previousTitle: string | null,
-  budgetMs = 25_000,
+  budgetMs = 25_000
 ): Promise<{ step: GuideStep; index: number }> {
   const deadline = Date.now() + budgetMs;
   while (Date.now() < deadline) {

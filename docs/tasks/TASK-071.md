@@ -58,26 +58,26 @@ Migration dosyasÄ±: `prisma/migrations/YYYYMMDD_add_mastery_score/migration.sq
 
 ```typescript
 export interface MasterySubScores {
-  laning: number;          // CS/min normalize (aÄŸÄ±rlÄ±k: 0.20)
-  vision: number;          // vision score normalize (aÄŸÄ±rlÄ±k: 0.15)
-  teamfight: number;       // damage share + CC (aÄŸÄ±rlÄ±k: 0.20)
-  objectiveCtrl: number;   // objective participation (aÄŸÄ±rlÄ±k: 0.15)
-  consistency: number;     // KDA variance (aÄŸÄ±rlÄ±k: 0.15)
-  carry: number;           // KDA + damage share (aÄŸÄ±rlÄ±k: 0.15)
+  laning: number; // CS/min normalize (aÄŸÄ±rlÄ±k: 0.20)
+  vision: number; // vision score normalize (aÄŸÄ±rlÄ±k: 0.15)
+  teamfight: number; // damage share + CC (aÄŸÄ±rlÄ±k: 0.20)
+  objectiveCtrl: number; // objective participation (aÄŸÄ±rlÄ±k: 0.15)
+  consistency: number; // KDA variance (aÄŸÄ±rlÄ±k: 0.15)
+  carry: number; // KDA + damage share (aÄŸÄ±rlÄ±k: 0.15)
 }
 
 export interface ChampionMasteryScore {
   championId: number;
   championName: string;
-  total: number;           // 0-100
+  total: number; // 0-100
   subScores: MasterySubScores;
-  tier: MasteryTier;       // Apprentice | Adept | Expert | Master | Legend
+  tier: MasteryTier; // Apprentice | Adept | Expert | Master | Legend
   gamesAnalyzed: number;
   computedAt: string;
-  trend: number[];         // son 4 haftalÄ±k skor (haftalÄ±k hesaplanmÄ±ÅŸ)
+  trend: number[]; // son 4 haftalÄ±k skor (haftalÄ±k hesaplanmÄ±ÅŸ)
 }
 
-type MasteryTier = 'Apprentice' | 'Adept' | 'Expert' | 'Master' | 'Legend';
+type MasteryTier = "Apprentice" | "Adept" | "Expert" | "Master" | "Legend";
 ```
 
 ### Normalize Fonksiyonu
@@ -91,14 +91,14 @@ function normalize(value: number, min: number, max: number): number {
 
 ### Boyut Referans DeÄŸerleri (rank bazlÄ± deÄŸil â€” genel LoL ortalamalarÄ±na gÃ¶re)
 
-| Boyut | Min | Max | Kaynak |
-|---|---|---|---|
-| Laning (CS/min) | 3.0 | 9.0 | `avgCsPerMinute` |
-| Vision | 8 | 45 | `avgVisionScore` |
-| Teamfight | hesaplanmÄ±ÅŸ | â€” | damage share + CC/min |
-| Objective Ctrl | hesaplanmÄ±ÅŸ | â€” | turrets + objectives stolen |
-| Consistency | hesaplanmÄ±ÅŸ | â€” | KDA std deviation (inverse) |
-| Carry | 1.0 | 6.0 | `avgKda` |
+| Boyut           | Min           | Max | Kaynak                      |
+| --------------- | ------------- | --- | --------------------------- |
+| Laning (CS/min) | 3.0           | 9.0 | `avgCsPerMinute`            |
+| Vision          | 8             | 45  | `avgVisionScore`            |
+| Teamfight       | hesaplanmÄ±ÅŸ | â€” | damage share + CC/min       |
+| Objective Ctrl  | hesaplanmÄ±ÅŸ | â€” | turrets + objectives stolen |
+| Consistency     | hesaplanmÄ±ÅŸ | â€” | KDA std deviation (inverse) |
+| Carry           | 1.0           | 6.0 | `avgKda`                    |
 
 ### Teamfight Skoru
 
@@ -127,13 +127,13 @@ function computeConsistency(kdaValues: number[]): number {
 
 ### Mastery Tier EÅŸiÄŸi
 
-| Skor | Tier |
-|---|---|
-| 0â€“39 | Apprentice |
-| 40â€“54 | Adept |
-| 55â€“69 | Expert |
-| 70â€“84 | Master |
-| 85â€“100 | Legend |
+| Skor     | Tier       |
+| -------- | ---------- |
+| 0â€“39   | Apprentice |
+| 40â€“54  | Adept      |
+| 55â€“69  | Expert     |
+| 70â€“84  | Master     |
+| 85â€“100 | Legend     |
 
 ### Endpoint
 
@@ -177,15 +177,15 @@ src/hooks/useChampionMastery.ts                               â† YENÄ° (T
 ## Test Plan
 
 ```typescript
-describe('masteryScoreService', () => {
-  it('normalize: sÄ±nÄ±r deÄŸerler 0 ve 100 dÃ¶ner')
-  it('normalize: orta deÄŸer ~50 dÃ¶ner')
-  it('consistency: dÃ¼ÅŸÃ¼k std dev = yÃ¼ksek skor')
-  it('tier: 74 â†’ Expert')
-  it('tier: 85 â†’ Legend')
-  it('5 maÃ§ altÄ±nda hata fÄ±rlatÄ±r')
-  it('toplam skor aÄŸÄ±rlÄ±klÄ± ortalama ile eÅŸleÅŸiyor')
-})
+describe("masteryScoreService", () => {
+  it("normalize: sÄ±nÄ±r deÄŸerler 0 ve 100 dÃ¶ner");
+  it("normalize: orta deÄŸer ~50 dÃ¶ner");
+  it("consistency: dÃ¼ÅŸÃ¼k std dev = yÃ¼ksek skor");
+  it("tier: 74 â†’ Expert");
+  it("tier: 85 â†’ Legend");
+  it("5 maÃ§ altÄ±nda hata fÄ±rlatÄ±r");
+  it("toplam skor aÄŸÄ±rlÄ±klÄ± ortalama ile eÅŸleÅŸiyor");
+});
 ```
 
 ---
@@ -204,4 +204,3 @@ describe('masteryScoreService', () => {
 - Endpoint Postman'da test edildi
 - Unit test coverage â‰¥ 85%
 - `docs/DATABASE_SCHEMA.md` gÃ¼ncellendi
-

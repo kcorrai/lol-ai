@@ -124,7 +124,10 @@ export async function buildAchievementEvents(userId: string, since: Date): Promi
  */
 export async function buildHabitEvents(riotAccountId: string, since: Date): Promise<CareerEvent[]> {
   const rows = await prisma.playerHabit.findMany({
-    where: { riotAccountId, OR: [{ firstDetected: { gte: since } }, { resolvedAt: { gte: since } }] },
+    where: {
+      riotAccountId,
+      OR: [{ firstDetected: { gte: since } }, { resolvedAt: { gte: since } }],
+    },
     select: { id: true, habitType: true, firstDetected: true, resolvedAt: true },
   });
 

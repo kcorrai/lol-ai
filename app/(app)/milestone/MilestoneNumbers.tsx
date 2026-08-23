@@ -99,7 +99,7 @@ export function MilestoneNumbers({
               <div className="font-mono text-[9.5px] uppercase tracking-label text-text-muted">
                 {kpi.label}
               </div>
-              <div className="my-2.5 font-mono text-2xl font-bold leading-none tabular-nums text-fg-1">
+              <div className="my-2.5 font-mono text-2xl font-bold tabular-nums leading-none text-fg-1">
                 {kpi.value}
               </div>
               <div className="flex items-center justify-between gap-2.5">

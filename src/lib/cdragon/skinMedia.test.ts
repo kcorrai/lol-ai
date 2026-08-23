@@ -25,7 +25,8 @@ const CDRAGON: CdragonChampion = {
         "/lol-game-data/assets/ASSETS/Characters/Ahri/Skins/Base/Images/ahri_splash_uncentered_0.jpg",
       tilePath:
         "/lol-game-data/assets/ASSETS/Characters/Ahri/Skins/Base/Images/ahri_splash_tile_0.jpg",
-      loadScreenPath: "/lol-game-data/assets/ASSETS/Characters/Ahri/Skins/Base/AhriLoadscreen_0.jpg",
+      loadScreenPath:
+        "/lol-game-data/assets/ASSETS/Characters/Ahri/Skins/Base/AhriLoadscreen_0.jpg",
       chromas: null,
       skinFeaturePreviewData: null,
     },
@@ -40,7 +41,8 @@ const CDRAGON: CdragonChampion = {
         "/lol-game-data/assets/ASSETS/Characters/Ahri/Skins/Skin01/Images/ahri_splash_uncentered_1.jpg",
       tilePath:
         "/lol-game-data/assets/ASSETS/Characters/Ahri/Skins/Skin01/Images/ahri_splash_tile_1.jpg",
-      loadScreenPath: "/lol-game-data/assets/ASSETS/Characters/Ahri/Skins/Skin01/AhriLoadscreen_1.jpg",
+      loadScreenPath:
+        "/lol-game-data/assets/ASSETS/Characters/Ahri/Skins/Skin01/AhriLoadscreen_1.jpg",
       chromas: [
         {
           id: 103052,

@@ -238,7 +238,10 @@ export default async function LeaguePage({ params }: PageProps): Promise<React.R
 
       <p className="mt-12 text-sm text-text-muted">
         See which champions {league.name} teams are actually picking in the{" "}
-        <Link href={`/esports/champions?league=${league.slug}`} className="text-accent hover:underline">
+        <Link
+          href={`/esports/champions?league=${league.slug}`}
+          className="text-accent hover:underline"
+        >
           {league.name} champion meta
         </Link>
         .

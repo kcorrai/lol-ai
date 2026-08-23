@@ -9,7 +9,13 @@ const registerSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   name: z.string().min(2, "Name must be at least 2 characters").max(50).optional(),
-  refCode: z.string().min(1).max(16).toUpperCase().nullish().transform((v) => v ?? undefined),
+  refCode: z
+    .string()
+    .min(1)
+    .max(16)
+    .toUpperCase()
+    .nullish()
+    .transform((v) => v ?? undefined),
 });
 
 export async function POST(req: NextRequest) {
@@ -20,7 +26,10 @@ export async function POST(req: NextRequest) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: { code: "INVALID_JSON", message: "Invalid request body" } }, { status: 400 });
+    return NextResponse.json(
+      { error: { code: "INVALID_JSON", message: "Invalid request body" } },
+      { status: 400 }
+    );
   }
 
   const parsed = registerSchema.safeParse(body);

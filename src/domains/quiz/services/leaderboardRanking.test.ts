@@ -19,10 +19,7 @@ describe("rankPlayers", () => {
   it("ranks more modes solved above fewer, whatever the guess counts", () => {
     // Solving one puzzle in two must not beat solving six in three each — the
     // board is for a game about solving puzzles, not about a single lucky pick.
-    const ranked = rankPlayers([
-      player("lucky", [2]),
-      player("thorough", [3, 3, 3, 3, 3, 3]),
-    ]);
+    const ranked = rankPlayers([player("lucky", [2]), player("thorough", [3, 3, 3, 3, 3, 3])]);
     expect(ranked.map((r) => r.userId)).toEqual(["thorough", "lucky"]);
     expect(ranked[0].modesSolved).toBe(6);
     expect(ranked[0].totalGuesses).toBe(18);

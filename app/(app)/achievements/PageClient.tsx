@@ -32,10 +32,14 @@ function AchievementCard({
         "relative flex flex-col items-center gap-3 rounded-xl border p-5 text-center transition-all duration-200",
         earned ? "bg-surface hover:scale-[1.02]" : "bg-surface/50 opacity-50"
       )}
-      style={earned ? {
-        borderColor: `${tierColor}55`,
-        boxShadow: `0 0 28px ${tierColor}14, inset 0 1px 0 rgba(255,255,255,0.04)`,
-      } : {}}
+      style={
+        earned
+          ? {
+              borderColor: `${tierColor}55`,
+              boxShadow: `0 0 28px ${tierColor}14, inset 0 1px 0 rgba(255,255,255,0.04)`,
+            }
+          : {}
+      }
     >
       {/* Icon */}
       <div
@@ -62,7 +66,9 @@ function AchievementCard({
       </span>
 
       <div>
-        <p className={cn("font-semibold", earned ? "text-text" : "text-text-muted")}>{achievement.name}</p>
+        <p className={cn("font-semibold", earned ? "text-text" : "text-text-muted")}>
+          {achievement.name}
+        </p>
         <p className="mt-0.5 text-xs text-text-muted">{achievement.description}</p>
       </div>
 
@@ -105,9 +111,14 @@ export default function AchievementsPage() {
     <div className="mx-auto max-w-4xl space-y-8 p-6">
       {/* Header — cinematic banner */}
       <div className="relative overflow-hidden rounded-2xl border border-border">
-        <Image fill alt="" aria-hidden src={championSplashUrl("Jinx")}
+        <Image
+          fill
+          alt=""
+          aria-hidden
+          src={championSplashUrl("Jinx")}
           className="object-cover object-[40%_20%] opacity-[0.2]"
-          style={{ filter: "blur(2px) saturate(0.5)" }} />
+          style={{ filter: "blur(2px) saturate(0.5)" }}
+        />
         <div className="absolute inset-0 bg-gradient-to-r from-surface/95 via-surface/80 to-transparent" />
         <div className="relative flex items-center gap-4 p-5">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-accent/30 bg-accent/10">
@@ -116,8 +127,8 @@ export default function AchievementsPage() {
           <div>
             <h1 className="font-display text-2xl font-bold text-text">My Badges</h1>
             <p className="text-sm text-text-muted">
-              <span className="font-semibold text-accent">{data?.earnedCount ?? 0}</span>
-              {" "}/{" "}{data?.total ?? 0} badges earned
+              <span className="font-semibold text-accent">{data?.earnedCount ?? 0}</span> /{" "}
+              {data?.total ?? 0} badges earned
             </p>
           </div>
         </div>

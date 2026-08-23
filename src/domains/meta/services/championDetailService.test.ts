@@ -63,7 +63,11 @@ const DETAIL_BODY = {
 };
 
 function mockFetchOk(body: unknown): void {
-  global.fetch = vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => body }) as unknown as typeof fetch;
+  global.fetch = vi.fn().mockResolvedValue({
+    ok: true,
+    status: 200,
+    json: async () => body,
+  }) as unknown as typeof fetch;
 }
 
 beforeEach(() => {
@@ -92,7 +96,24 @@ describe("getChampionDetail", () => {
     expect(b.lateItemOptions).toHaveLength(2);
     // 15 levels in, 18 out — the last R at 16, then the two E points still owed.
     expect(b.skillOrder).toEqual([
-      "W", "Q", "E", "Q", "Q", "R", "Q", "W", "Q", "W", "R", "W", "W", "E", "E", "R", "E", "E",
+      "W",
+      "Q",
+      "E",
+      "Q",
+      "Q",
+      "R",
+      "Q",
+      "W",
+      "Q",
+      "W",
+      "R",
+      "W",
+      "W",
+      "E",
+      "E",
+      "R",
+      "E",
+      "E",
     ]);
     expect(b.skillMaxOrder).toEqual(["Q", "W", "E"]);
     expect(b.gameLengths).toEqual([
@@ -133,7 +154,9 @@ describe("getChampionDetail", () => {
 
   it("falls back to last-good on an API error", async () => {
     const lastGood = { counters: [], build: { championId: 103 } };
-    mockGetCached.mockImplementation(async (key: string) => (key.endsWith(":last-good") ? lastGood : null));
+    mockGetCached.mockImplementation(async (key: string) =>
+      key.endsWith(":last-good") ? lastGood : null
+    );
     global.fetch = vi.fn().mockResolvedValue({ ok: false, status: 500 }) as unknown as typeof fetch;
 
     expect(await getChampionDetail(103, "MIDDLE")).toBe(lastGood);

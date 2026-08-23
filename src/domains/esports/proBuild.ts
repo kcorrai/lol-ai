@@ -59,7 +59,10 @@ const TOP_RUNE_PAGES = 3;
 const TOP_PLAYERS = 5;
 const RECENT_GAMES = 6;
 
-function frequencies<T>(items: T[], key: (item: T) => string): Map<string, { value: T; count: number }> {
+function frequencies<T>(
+  items: T[],
+  key: (item: T) => string
+): Map<string, { value: T; count: number }> {
   const counts = new Map<string, { value: T; count: number }>();
   for (const item of items) {
     const id = key(item);
@@ -133,7 +136,9 @@ function buildItems(
  * reader can tell apart, and the perk list shown for each is the most common
  * one inside its group rather than an average of them.
  */
-function runePages(entries: { participant: GameParticipant; won: boolean | null }[]): RuneVariant[] {
+function runePages(
+  entries: { participant: GameParticipant; won: boolean | null }[]
+): RuneVariant[] {
   interface Group {
     variant: RuneVariant;
     perkCounts: Map<string, { perks: number[]; count: number }>;

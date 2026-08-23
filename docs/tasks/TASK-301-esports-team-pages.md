@@ -53,7 +53,7 @@ plays for them, when they play next, and how they have been doing. "t1 roster",
 ## Notes from the build
 
 - **Slugs are not unique.** The feed reuses 53 of them, 17 with more than one
-  *active* entry — usually an archived record holding an old roster beside the
+  _active_ entry — usually an archived record holding an old roster beside the
   live org, or two records for one university team. `resolveTeamBySlug` ranks
   candidates: active over archived, then the one with a roster, then a stable id
   tie-break so a slug always resolves to the same team. Deliberately, an active

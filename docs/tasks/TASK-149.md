@@ -11,11 +11,11 @@ CLAUDE.md kuralı: "No frontend components that fetch data directly. Data fetchi
 
 Üç domain component bu kuralı ihlal ediyor:
 
-| Dosya | Sorun |
-|---|---|
-| `src/domains/identity/components/ReferralWidget.tsx:13` | `useQuery` doğrudan import |
+| Dosya                                                    | Sorun                               |
+| -------------------------------------------------------- | ----------------------------------- |
+| `src/domains/identity/components/ReferralWidget.tsx:13`  | `useQuery` doğrudan import          |
 | `src/domains/teams/components/PendingInvitesList.tsx:37` | `useQuery` + `useMutation` doğrudan |
-| `src/domains/teams/components/TeamDashboard.tsx:46` | `useQuery` + `useMutation` doğrudan |
+| `src/domains/teams/components/TeamDashboard.tsx:46`      | `useQuery` + `useMutation` doğrudan |
 
 ## Acceptance Criteria
 

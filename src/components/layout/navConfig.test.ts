@@ -17,8 +17,17 @@ describe("navConfig", () => {
   // any of these while regrouping would freeze the guided overlay on a missing anchor (TASK-220).
   it("preserves every onboarding tour id the guided journey depends on", () => {
     const REQUIRED_TOUR_IDS = [
-      "nav-dashboard", "nav-champions", "nav-reports", "nav-coach-chat", "nav-improvement",
-      "nav-otp", "nav-badges", "nav-leaderboard", "nav-accounts", "nav-profile", "nav-discord",
+      "nav-dashboard",
+      "nav-champions",
+      "nav-reports",
+      "nav-coach-chat",
+      "nav-improvement",
+      "nav-otp",
+      "nav-badges",
+      "nav-leaderboard",
+      "nav-accounts",
+      "nav-profile",
+      "nav-discord",
     ];
     const present = new Set(ALL_ITEMS.map((i) => i.tourId).filter(Boolean));
     for (const id of REQUIRED_TOUR_IDS) {

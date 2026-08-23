@@ -16,64 +16,64 @@ type errors.
 
 ### Auth Group (NextAuth v4 Prisma Adapter contract)
 
-| Model | Table | PK Type | Notes |
-|---|---|---|---|
-| `User` | `users` | `uuid` | Extended with `createdAt`, `updatedAt` vs NextAuth default |
-| `Account` | `accounts` | `uuid` | `expires_at Int?` — NextAuth requirement |
-| `Session` | `sessions` | `uuid` | Standard adapter shape |
-| `VerificationToken` | `verification_tokens` | none | Composite `@@unique([identifier, token])` |
+| Model               | Table                 | PK Type | Notes                                                      |
+| ------------------- | --------------------- | ------- | ---------------------------------------------------------- |
+| `User`              | `users`               | `uuid`  | Extended with `createdAt`, `updatedAt` vs NextAuth default |
+| `Account`           | `accounts`            | `uuid`  | `expires_at Int?` — NextAuth requirement                   |
+| `Session`           | `sessions`            | `uuid`  | Standard adapter shape                                     |
+| `VerificationToken` | `verification_tokens` | none    | Composite `@@unique([identifier, token])`                  |
 
 ### Profile & Billing Group
 
-| Model | Table | PK Type |
-|---|---|---|
-| `Profile` | `profiles` | `uuid` |
-| `Subscription` | `subscriptions` | `uuid` |
+| Model          | Table           | PK Type |
+| -------------- | --------------- | ------- |
+| `Profile`      | `profiles`      | `uuid`  |
+| `Subscription` | `subscriptions` | `uuid`  |
 
 ### Riot Integration Group
 
-| Model | Table | PK Type |
-|---|---|---|
-| `RiotAccount` | `riot_accounts` | `uuid` |
-| `Match` | `matches` | `uuid` |
-| `MatchParticipant` | `match_participants` | `uuid` |
-| `Champion` | `champions` | `Int` (Riot champion ID) |
+| Model              | Table                | PK Type                  |
+| ------------------ | -------------------- | ------------------------ |
+| `RiotAccount`      | `riot_accounts`      | `uuid`                   |
+| `Match`            | `matches`            | `uuid`                   |
+| `MatchParticipant` | `match_participants` | `uuid`                   |
+| `Champion`         | `champions`          | `Int` (Riot champion ID) |
 
 ### Analytics Group
 
-| Model | Table | PK Type |
-|---|---|---|
-| `ChampionStat` | `champion_stats` | `uuid` |
-| `RankedHistory` | `ranked_history` | `uuid` |
-| `PerformanceSnapshot` | `performance_snapshots` | `uuid` |
+| Model                 | Table                   | PK Type |
+| --------------------- | ----------------------- | ------- |
+| `ChampionStat`        | `champion_stats`        | `uuid`  |
+| `RankedHistory`       | `ranked_history`        | `uuid`  |
+| `PerformanceSnapshot` | `performance_snapshots` | `uuid`  |
 
 ### AI Coaching Group
 
-| Model | Table | PK Type |
-|---|---|---|
-| `CoachingReport` | `coaching_reports` | `uuid` |
-| `AiAnalysis` | `ai_analyses` | `uuid` |
+| Model            | Table              | PK Type |
+| ---------------- | ------------------ | ------- |
+| `CoachingReport` | `coaching_reports` | `uuid`  |
+| `AiAnalysis`     | `ai_analyses`      | `uuid`  |
 
 ### Notifications Group
 
-| Model | Table | PK Type |
-|---|---|---|
-| `Notification` | `notifications` | `uuid` |
+| Model          | Table           | PK Type |
+| -------------- | --------------- | ------- |
+| `Notification` | `notifications` | `uuid`  |
 
 ---
 
 ## 3. Enums
 
-| Enum | Values |
-|---|---|
-| `SubscriptionPlan` | `free`, `pro`, `elite` |
-| `SubscriptionStatus` | `active`, `canceled`, `past_due`, `trialing` |
-| `QueueType` | `RANKED_SOLO_5x5`, `RANKED_FLEX_SR`, `NORMAL_BLIND`, `NORMAL_DRAFT`, `ARAM` |
-| `Position` | `TOP`, `JUNGLE`, `MIDDLE`, `BOTTOM`, `UTILITY` |
-| `RankTier` | `IRON`…`CHALLENGER` (10 values) |
-| `RankDivision` | `I`, `II`, `III`, `IV` |
-| `ReportType` | `session_review`, `champion_focus`, `climb_roadmap` |
-| `ReportStatus` | `pending`, `processing`, `complete`, `failed` |
+| Enum                 | Values                                                                      |
+| -------------------- | --------------------------------------------------------------------------- |
+| `SubscriptionPlan`   | `free`, `pro`, `elite`                                                      |
+| `SubscriptionStatus` | `active`, `canceled`, `past_due`, `trialing`                                |
+| `QueueType`          | `RANKED_SOLO_5x5`, `RANKED_FLEX_SR`, `NORMAL_BLIND`, `NORMAL_DRAFT`, `ARAM` |
+| `Position`           | `TOP`, `JUNGLE`, `MIDDLE`, `BOTTOM`, `UTILITY`                              |
+| `RankTier`           | `IRON`…`CHALLENGER` (10 values)                                             |
+| `RankDivision`       | `I`, `II`, `III`, `IV`                                                      |
+| `ReportType`         | `session_review`, `champion_focus`, `climb_roadmap`                         |
+| `ReportStatus`       | `pending`, `processing`, `complete`, `failed`                               |
 
 ---
 
@@ -114,6 +114,7 @@ verification_tokens              [standalone — no FK]
 ```
 
 **Cascade rules:**
+
 - `User` delete → cascades to `accounts`, `sessions`, `profile`, `subscription`,
   `riot_accounts`, `notifications`
 - `RiotAccount` delete → cascades to `match_participants`, `champion_stats`,
@@ -234,10 +235,10 @@ npx prisma migrate deploy   # applies all pending migrations, no prompts
 
 ## 7. Known Constraints
 
-| Constraint | Detail |
-|---|---|
-| `Champion.id` is `Int`, not `UUID` | Riot assigns integer IDs to champions — intentional design |
-| `Account.expires_at` is `Int?` | NextAuth Prisma Adapter writes Unix timestamp as integer, not DateTime |
-| `Region` is `String`, not Enum | Riot regions can change; kept as string for flexibility |
+| Constraint                                     | Detail                                                                             |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `Champion.id` is `Int`, not `UUID`             | Riot assigns integer IDs to champions — intentional design                         |
+| `Account.expires_at` is `Int?`                 | NextAuth Prisma Adapter writes Unix timestamp as integer, not DateTime             |
+| `Region` is `String`, not Enum                 | Riot regions can change; kept as string for flexibility                            |
 | `matchesAnalyzed String[]` in coaching_reports | Prisma doesn't support typed UUID arrays; values are UUID strings in TEXT[] column |
-| `BigInt` in `ChampionStat.masteryPoints` | Requires `Number(bigintValue)` in API responses — serialize explicitly |
+| `BigInt` in `ChampionStat.masteryPoints`       | Requires `Number(bigintValue)` in API responses — serialize explicitly             |

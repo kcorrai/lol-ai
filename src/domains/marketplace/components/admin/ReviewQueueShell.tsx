@@ -62,8 +62,8 @@ export function ReviewQueueShell({
             Review queue
           </h1>
           <p className="mt-3 max-w-[64ch] text-[15px] text-text-body">
-            Coach applications and disputes. Every decision is made against a record both sides
-            have been able to read the whole time.
+            Coach applications and disputes. Every decision is made against a record both sides have
+            been able to read the whole time.
           </p>
         </div>
 

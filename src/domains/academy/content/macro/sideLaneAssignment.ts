@@ -29,10 +29,26 @@ export const sideLaneAssignment: Lesson = {
       caption: "Who is a side laner",
       head: ["What they have", "Which lane", "What they do there"],
       rows: [
-        ["Can win a 1v1 outright", "The dangerous side", "Push, threaten the turret, force two of them to answer"],
-        ["Has teleport up", "Either — teleport is the safety net", "Push and rotate on the objective when it starts"],
-        ["Fast wave clear, no duel", "The safe side, nearest your own turrets", "Clear and leave; never fight for it"],
-        ["The carry with no escape", "Nowhere alone", "Mid, with the team, farming behind the front line"],
+        [
+          "Can win a 1v1 outright",
+          "The dangerous side",
+          "Push, threaten the turret, force two of them to answer",
+        ],
+        [
+          "Has teleport up",
+          "Either — teleport is the safety net",
+          "Push and rotate on the objective when it starts",
+        ],
+        [
+          "Fast wave clear, no duel",
+          "The safe side, nearest your own turrets",
+          "Clear and leave; never fight for it",
+        ],
+        [
+          "The carry with no escape",
+          "Nowhere alone",
+          "Mid, with the team, farming behind the front line",
+        ],
       ],
     },
     {
@@ -56,13 +72,13 @@ export const sideLaneAssignment: Lesson = {
       caption: "Three in the middle, one on each side — and the two sides are not the same job",
       annotations: [
         {
-          at: { x: 0.48, y: 0.50, r: 0.055 },
+          at: { x: 0.48, y: 0.5, r: 0.055 },
           label: "The three",
           tone: "good",
           note: "Mid, holding the objective and the fight that might happen at it. This is the part everybody already does — the lesson is that it is three people and not five.",
         },
         {
-          at: { x: 0.70, y: 0.15, r: 0.055 },
+          at: { x: 0.7, y: 0.15, r: 0.055 },
           label: "The side they are near",
           tone: "bad",
           note: "Whichever side lane is closest to where the enemy is standing. It goes to the player who wins a 1v1 outright, because he is the only one for whom two of them walking over is a good outcome rather than a death.",

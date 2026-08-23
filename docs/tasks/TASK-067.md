@@ -34,24 +34,24 @@ Mevcut sidebar component'ini bul ve "AraÃ§lar" section'Ä± ekle (veya mevcut 
 ```typescript
 const toolsNavItems = [
   {
-    label: 'Counter Pick',
-    href: '/counter',
-    icon: Shield,          // lucide-react
+    label: "Counter Pick",
+    href: "/counter",
+    icon: Shield, // lucide-react
   },
   {
-    label: 'Matchup KoÃ§u',
-    href: '/matchup',
-    icon: Swords,          // lucide-react
+    label: "Matchup KoÃ§u",
+    href: "/matchup",
+    icon: Swords, // lucide-react
   },
   {
-    label: 'Draft Analizci',
-    href: '/draft',
-    icon: Users,           // lucide-react
+    label: "Draft Analizci",
+    href: "/draft",
+    icon: Users, // lucide-react
   },
   {
-    label: 'OTP AsistanÄ±',
-    href: '/otp',
-    icon: Star,            // lucide-react
+    label: "OTP AsistanÄ±",
+    href: "/otp",
+    icon: Star, // lucide-react
   },
 ];
 ```
@@ -59,6 +59,7 @@ const toolsNavItems = [
 ### Mobile BottomNav
 
 Mevcut `BottomNav` bileÅŸenine en Ã§ok kullanÄ±lacak 2 sayfa ekle:
+
 - Counter Pick (yÃ¼ksek kullanÄ±m sÄ±klÄ±ÄŸÄ±)
 - Matchup KoÃ§u (yÃ¼ksek kullanÄ±m sÄ±klÄ±ÄŸÄ±)
 
@@ -67,6 +68,7 @@ Mobil nav'da alan sÄ±nÄ±rlÄ± â€” mevcut Ã¶ÄŸeleri kaldÄ±rmadan 
 ### PROJECT_STRUCTURE.md GÃ¼ncellemesi
 
 `docs/PROJECT_STRUCTURE.md` dosyasÄ±nda `app/(app)/` bÃ¶lÃ¼mÃ¼ne yeni sayfalarÄ± ekle:
+
 ```
 app/(app)/
 â”œâ”€â”€ counter/page.tsx    â†’ Counter Pick Generator
@@ -95,4 +97,3 @@ Bu task tÃ¼m sayfa task'larÄ±ndan sonra yapÄ±lmalÄ±.
 - Nav Ã¶ÄŸe sÄ±rasÄ±: sÄ±k kullanÄ±landan az kullanÄ±lana (Counter â†’ Matchup â†’ OTP â†’ Draft).
 - Sidebar'da section baÅŸlÄ±ÄŸÄ± "AraÃ§lar" veya mevcut yapÄ±ya uyan bir etiket.
 - `Swords` ikonu Lucide'da olmayabilir â€” alternatif: `Crosshair` veya `Target`.
-

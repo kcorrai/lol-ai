@@ -49,10 +49,10 @@ export function useSendMessage(conversationId: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (body: string) =>
-      apiFetch<{ message: MessageView; notice: string | null }>(
-        `/api/threads/${conversationId}`,
-        { method: "POST", body: JSON.stringify({ body }) }
-      ),
+      apiFetch<{ message: MessageView; notice: string | null }>(`/api/threads/${conversationId}`, {
+        method: "POST",
+        body: JSON.stringify({ body }),
+      }),
     onSuccess: () => qc.invalidateQueries({ queryKey: KEY }),
   });
 }

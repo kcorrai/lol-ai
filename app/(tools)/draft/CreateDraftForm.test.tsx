@@ -41,7 +41,9 @@ describe("CreateDraftForm", () => {
 
   it("carries the chosen format, length and timer through", async () => {
     render(<CreateDraftForm />);
-    await userEvent.click(screen.getByRole("button", { name: /Fearless[\s\S]*locked out for both teams/ }));
+    await userEvent.click(
+      screen.getByRole("button", { name: /Fearless[\s\S]*locked out for both teams/ })
+    );
     await userEvent.click(screen.getByRole("button", { name: "5" }));
     await userEvent.click(screen.getByRole("button", { name: "Untimed" }));
     await userEvent.click(screen.getByRole("button", { name: "Create draft" }));

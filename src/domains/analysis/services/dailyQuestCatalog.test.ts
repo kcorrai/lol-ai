@@ -46,9 +46,7 @@ describe("pickOnSiteTask", () => {
   });
 
   it("changes the task the next day", () => {
-    expect(pickOnSiteTask(USER, "2026-08-18").id).not.toBe(
-      pickOnSiteTask(USER, "2026-08-19").id
-    );
+    expect(pickOnSiteTask(USER, "2026-08-18").id).not.toBe(pickOnSiteTask(USER, "2026-08-19").id);
   });
 
   it("does not hand every player the same task on the same day", () => {

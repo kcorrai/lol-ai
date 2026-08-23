@@ -25,8 +25,16 @@ export const losingMatchups: Lesson = {
       head: ["Kind", "What it means", "What you play for"],
       rows: [
         ["Even", "Cooldowns decide trades", "Wave control and the first back"],
-        ["Hard", "You lose short trades, win long ones — or the reverse", "Only the pattern you win; refuse the other one entirely"],
-        ["Unplayable", "You lose every trade at every stage", "CS under turret, a freeze if you can get one, and nothing else"],
+        [
+          "Hard",
+          "You lose short trades, win long ones — or the reverse",
+          "Only the pattern you win; refuse the other one entirely",
+        ],
+        [
+          "Unplayable",
+          "You lose every trade at every stage",
+          "CS under turret, a freeze if you can get one, and nothing else",
+        ],
       ],
     },
     {
@@ -69,7 +77,8 @@ export const losingMatchups: Lesson = {
       options: [
         {
           id: "a",
-          label: "Roughly even CS, no deaths, and their jungler wasted time on a lane that was already won",
+          label:
+            "Roughly even CS, no deaths, and their jungler wasted time on a lane that was already won",
           explain:
             "Correct. Even gold and no shutdowns means the counterpick achieved nothing, and every minute their jungler spends helping a winning lane is a minute not spent on the two lanes that are actually close.",
           correct: true,

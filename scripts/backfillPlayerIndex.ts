@@ -55,7 +55,7 @@ async function main(): Promise<void> {
     if (existing > 0 && !force) {
       process.stderr.write(
         `player_index already holds ${existing} rows. Re-running would double every appearance ` +
-          `count. Pass --force if that is what you want.\n`,
+          `count. Pass --force if that is what you want.\n`
       );
       process.exit(1);
     }
@@ -103,7 +103,7 @@ async function main(): Promise<void> {
           gameName: p.gameName,
           tagLine: p.tagLine,
           region: p.match.region,
-        })),
+        }))
       );
       scanned += page.length;
       cursor = page[page.length - 1].id;
@@ -119,8 +119,6 @@ async function main(): Promise<void> {
 }
 
 main().catch((err: unknown) => {
-  process.stderr.write(
-    `Backfill failed: ${err instanceof Error ? err.message : String(err)}\n`,
-  );
+  process.stderr.write(`Backfill failed: ${err instanceof Error ? err.message : String(err)}\n`);
   process.exit(1);
 });

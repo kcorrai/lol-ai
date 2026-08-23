@@ -121,10 +121,7 @@ export default function SessionPage({ bookingId }: { bookingId: string }): React
             </div>
 
             <div className="flex flex-wrap items-end gap-6">
-              <MarketStat
-                label="Price"
-                value={formatMoney(booking.priceCents, booking.currency)}
-              />
+              <MarketStat label="Price" value={formatMoney(booking.priceCents, booking.currency)} />
               {booking.payment && (
                 <MarketStat
                   label={moneyLabel(booking)}

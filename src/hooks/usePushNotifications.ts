@@ -9,7 +9,11 @@ export function usePushNotifications() {
   const [subscription, setSubscription] = useState<PushSubscription | null>(null);
 
   useEffect(() => {
-    if (typeof window === "undefined" || !("serviceWorker" in navigator) || !("PushManager" in window)) {
+    if (
+      typeof window === "undefined" ||
+      !("serviceWorker" in navigator) ||
+      !("PushManager" in window)
+    ) {
       setState("unsupported");
       return;
     }
@@ -34,7 +38,7 @@ export function usePushNotifications() {
     setState("loading");
     try {
       const keyRes = await fetch("/api/push/vapid-key");
-      const { key } = await keyRes.json() as { key: string | null };
+      const { key } = (await keyRes.json()) as { key: string | null };
       if (!key) return false;
 
       const reg = await navigator.serviceWorker.ready;

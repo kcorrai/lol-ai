@@ -33,17 +33,12 @@ interface SessionReadinessWidgetProps {
   riotAccountId: string | null | undefined;
 }
 
-export function SessionReadinessWidget({
-  riotAccountId,
-}: SessionReadinessWidgetProps) {
+export function SessionReadinessWidget({ riotAccountId }: SessionReadinessWidgetProps) {
   const { data: tilt, isLoading: tiltLoading } = useTiltStatus(riotAccountId);
-  const { data: warmup, isLoading: warmupLoading } =
-    useWarmupStatus(riotAccountId);
+  const { data: warmup, isLoading: warmupLoading } = useWarmupStatus(riotAccountId);
 
   if (tiltLoading || warmupLoading) {
-    return (
-      <div className="h-28 animate-pulse rounded-xl border border-border bg-surface" />
-    );
+    return <div className="h-28 animate-pulse rounded-xl border border-border bg-surface" />;
   }
 
   if (!tilt || !warmup) return null;
@@ -83,8 +78,8 @@ export function SessionReadinessWidget({
               f.positive
                 ? "bg-success/10 text-success"
                 : f.neutral
-                ? "bg-border text-text-muted"
-                : "bg-danger/10 text-danger"
+                  ? "bg-border text-text-muted"
+                  : "bg-danger/10 text-danger"
             }`}
           >
             {f.positive ? "✓" : f.neutral ? "–" : "✗"} {f.label}

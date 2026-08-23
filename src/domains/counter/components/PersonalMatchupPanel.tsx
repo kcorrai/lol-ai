@@ -74,8 +74,11 @@ function PersonalMatchupInner({ championId, championName }: Props) {
       {data.banSuggestion && (
         <p className="mt-3 text-xs text-text-muted">
           Suggested ban:{" "}
-          <span className="font-semibold text-danger">{data.banSuggestion.opponentChampionName}</span>{" "}
-          — you win only {data.banSuggestion.winRate.toFixed(0)}% across {data.banSuggestion.games} games.
+          <span className="font-semibold text-danger">
+            {data.banSuggestion.opponentChampionName}
+          </span>{" "}
+          — you win only {data.banSuggestion.winRate.toFixed(0)}% across {data.banSuggestion.games}{" "}
+          games.
         </p>
       )}
     </Shell>
@@ -94,7 +97,9 @@ function MatchupColumn({
   const up = tone === "up";
   return (
     <div>
-      <p className={`mb-2 text-xs font-semibold uppercase tracking-wide ${up ? "text-success" : "text-danger"}`}>
+      <p
+        className={`mb-2 text-xs font-semibold uppercase tracking-wide ${up ? "text-success" : "text-danger"}`}
+      >
         {title}
       </p>
       {entries.length === 0 ? (

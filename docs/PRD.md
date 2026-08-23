@@ -34,14 +34,14 @@ Millions of players are stuck in rank stagnation. They play consistently but do 
 
 ### 3.2 User Pain Points
 
-| Pain Point | Severity | Frequency |
-|---|---|---|
-| "I don't know why I'm hardstuck" | Critical | Daily |
-| "I don't know which champion to main" | High | Weekly |
-| "I keep making the same mistakes" | Critical | Daily |
-| "I don't know my champion pool weaknesses" | High | Weekly |
-| "I can't afford a human coach" | High | Persistent |
-| "Stats tools don't tell me HOW to fix things" | High | Daily |
+| Pain Point                                    | Severity | Frequency  |
+| --------------------------------------------- | -------- | ---------- |
+| "I don't know why I'm hardstuck"              | Critical | Daily      |
+| "I don't know which champion to main"         | High     | Weekly     |
+| "I keep making the same mistakes"             | Critical | Daily      |
+| "I don't know my champion pool weaknesses"    | High     | Weekly     |
+| "I can't afford a human coach"                | High     | Persistent |
+| "Stats tools don't tell me HOW to fix things" | High     | Daily      |
 
 ---
 
@@ -109,13 +109,13 @@ Millions of players are stuck in rank stagnation. They play consistently but do 
 
 ### 6.1 Direct Competitors
 
-| Product | Strengths | Weaknesses | Pricing |
-|---|---|---|---|
-| **op.gg** | Brand recognition, large user base, clean UI | Data display only, no actionable coaching, shallow insights | Free (ads) |
-| **u.gg** | Tier lists, champion stats, fast | No personalized analysis, no AI, purely informational | Free + $5/mo Pro |
+| Product        | Strengths                                          | Weaknesses                                                                         | Pricing          |
+| -------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------- |
+| **op.gg**      | Brand recognition, large user base, clean UI       | Data display only, no actionable coaching, shallow insights                        | Free (ads)       |
+| **u.gg**       | Tier lists, champion stats, fast                   | No personalized analysis, no AI, purely informational                              | Free + $5/mo Pro |
 | **Mobalytics** | GPI score, improvement tracking, coach marketplace | AI insights are shallow, coaching marketplace is expensive, not truly personalized | Free + $12.99/mo |
-| **Blitz.gg** | In-game overlay, champion suggestions | Overlay focus, limited post-game depth | Free + $9.99/mo |
-| **Porofessor** | Live game data, counter pick | No coaching depth, dated design | Free (ads) |
+| **Blitz.gg**   | In-game overlay, champion suggestions              | Overlay focus, limited post-game depth                                             | Free + $9.99/mo  |
+| **Porofessor** | Live game data, counter pick                       | No coaching depth, dated design                                                    | Free (ads)       |
 
 ### 6.2 Competitive Positioning
 
@@ -144,17 +144,17 @@ The MVP must deliver a complete "wow moment" for a single user journey: connect 
 
 ### 7.2 MVP Features
 
-| Feature | Priority | Rationale |
-|---|---|---|
-| Riot account connection (OAuth / Riot ID) | P0 | Gateway to all data |
-| Match history display (last 20 games) | P0 | Core data surface |
-| Champion performance summary | P0 | Most requested by players |
-| AI coaching report (per session, last 5 games) | P0 | Core value proposition |
-| Ranked history & LP tracking | P1 | Progress visualization |
-| Specific mistake detection (death analysis, positioning notes) | P1 | Proof of intelligence |
-| Champion pool recommendation | P1 | High perceived value |
-| User account & authentication | P0 | Required for persistence |
-| Basic subscription / paywall (freemium gating) | P1 | Revenue |
+| Feature                                                        | Priority | Rationale                 |
+| -------------------------------------------------------------- | -------- | ------------------------- |
+| Riot account connection (OAuth / Riot ID)                      | P0       | Gateway to all data       |
+| Match history display (last 20 games)                          | P0       | Core data surface         |
+| Champion performance summary                                   | P0       | Most requested by players |
+| AI coaching report (per session, last 5 games)                 | P0       | Core value proposition    |
+| Ranked history & LP tracking                                   | P1       | Progress visualization    |
+| Specific mistake detection (death analysis, positioning notes) | P1       | Proof of intelligence     |
+| Champion pool recommendation                                   | P1       | High perceived value      |
+| User account & authentication                                  | P0       | Required for persistence  |
+| Basic subscription / paywall (freemium gating)                 | P1       | Revenue                   |
 
 ### 7.3 Out of MVP Scope
 
@@ -172,38 +172,38 @@ The MVP must deliver a complete "wow moment" for a single user journey: connect 
 
 ### 8.1 Acquisition
 
-| Metric | MVP Target (Month 3) | Year 1 Target |
-|---|---|---|
-| Registered Users | 5,000 | 50,000 |
-| Riot Accounts Connected | 3,500 | 35,000 |
-| Monthly Active Users (MAU) | 2,000 | 25,000 |
+| Metric                     | MVP Target (Month 3) | Year 1 Target |
+| -------------------------- | -------------------- | ------------- |
+| Registered Users           | 5,000                | 50,000        |
+| Riot Accounts Connected    | 3,500                | 35,000        |
+| Monthly Active Users (MAU) | 2,000                | 25,000        |
 
 ### 8.2 Engagement
 
-| Metric | Target |
-|---|---|
-| Session Frequency (per user/week) | ≥ 2 |
-| AI Reports Generated per User/Month | ≥ 4 |
-| Report Completion Rate (viewed in full) | ≥ 60% |
-| 30-Day Retention | ≥ 35% |
-| 90-Day Retention | ≥ 20% |
+| Metric                                  | Target |
+| --------------------------------------- | ------ |
+| Session Frequency (per user/week)       | ≥ 2    |
+| AI Reports Generated per User/Month     | ≥ 4    |
+| Report Completion Rate (viewed in full) | ≥ 60%  |
+| 30-Day Retention                        | ≥ 35%  |
+| 90-Day Retention                        | ≥ 20%  |
 
 ### 8.3 Revenue
 
-| Metric | Target |
-|---|---|
-| Free → Paid Conversion Rate | ≥ 5% |
-| Monthly Paying Users (Month 6) | 500 |
-| MRR (Month 6) | $7,500 |
-| Churn Rate (Monthly) | ≤ 8% |
+| Metric                         | Target |
+| ------------------------------ | ------ |
+| Free → Paid Conversion Rate    | ≥ 5%   |
+| Monthly Paying Users (Month 6) | 500    |
+| MRR (Month 6)                  | $7,500 |
+| Churn Rate (Monthly)           | ≤ 8%   |
 
 ### 8.4 Product Quality
 
-| Metric | Target |
-|---|---|
-| AI Report User Rating (1–5) | ≥ 4.0 |
-| "This helped me improve" response rate | ≥ 70% |
-| NPS Score | ≥ 40 |
+| Metric                                 | Target |
+| -------------------------------------- | ------ |
+| AI Report User Rating (1–5)            | ≥ 4.0  |
+| "This helped me improve" response rate | ≥ 70%  |
+| NPS Score                              | ≥ 40   |
 
 ---
 
@@ -249,13 +249,13 @@ The MVP must deliver a complete "wow moment" for a single user journey: connect 
 
 ## 10. Long-Term Product Roadmap (High-Level)
 
-| Phase | Timeline | Theme |
-|---|---|---|
-| Phase 1 | Months 1–3 | MVP: Core analysis loop |
-| Phase 2 | Months 4–6 | AI depth & personalization |
+| Phase   | Timeline    | Theme                         |
+| ------- | ----------- | ----------------------------- |
+| Phase 1 | Months 1–3  | MVP: Core analysis loop       |
+| Phase 2 | Months 4–6  | AI depth & personalization    |
 | Phase 3 | Months 7–12 | Advanced features & retention |
-| Phase 4 | Year 2 | Scale & expansion |
-| Phase 5 | Year 2–3 | AI coaching platform |
+| Phase 4 | Year 2      | Scale & expansion             |
+| Phase 5 | Year 2–3    | AI coaching platform          |
 
 See `ROADMAP.md` for detailed phase breakdown.
 
@@ -265,25 +265,25 @@ See `ROADMAP.md` for detailed phase breakdown.
 
 Priority is assigned using the **RICE score**: Reach × Impact × Confidence / Effort.
 
-| Feature | Reach | Impact | Confidence | Effort | RICE |
-|---|---|---|---|---|---|
-| AI Coaching Report | 10 | 10 | 9 | 5 | 180 |
-| Champion Pool Analysis | 9 | 8 | 9 | 3 | 216 |
-| Climb Roadmap | 8 | 9 | 7 | 5 | 100 |
-| Tilt Detection | 7 | 8 | 6 | 4 | 84 |
-| Draft Coach | 6 | 7 | 7 | 6 | 49 |
-| Replay Analysis | 4 | 10 | 5 | 9 | 22 |
-| Voice Coaching | 3 | 9 | 4 | 9 | 12 |
+| Feature                | Reach | Impact | Confidence | Effort | RICE |
+| ---------------------- | ----- | ------ | ---------- | ------ | ---- |
+| AI Coaching Report     | 10    | 10     | 9          | 5      | 180  |
+| Champion Pool Analysis | 9     | 8      | 9          | 3      | 216  |
+| Climb Roadmap          | 8     | 9      | 7          | 5      | 100  |
+| Tilt Detection         | 7     | 8      | 6          | 4      | 84   |
+| Draft Coach            | 6     | 7      | 7          | 6      | 49   |
+| Replay Analysis        | 4     | 10     | 5          | 9      | 22   |
+| Voice Coaching         | 3     | 9      | 4          | 9      | 12   |
 
 ---
 
 ## 12. Assumptions & Risks
 
-| Risk | Likelihood | Impact | Mitigation |
-|---|---|---|---|
-| Riot API rate limiting at scale | Medium | High | Caching layer, request queuing |
-| Riot ToS / API policy changes | Low | Critical | Stay compliant, monitor policy |
-| AI cost overruns at scale | Medium | High | Caching, tiered analysis depth |
-| Low conversion from free to paid | Medium | High | Improve "wow moment" in free tier |
-| Competitor copies AI coaching | Medium | Medium | Move fast, build data moat |
-| AI hallucination in coaching reports | Medium | High | Structured prompts, validation layer |
+| Risk                                 | Likelihood | Impact   | Mitigation                           |
+| ------------------------------------ | ---------- | -------- | ------------------------------------ |
+| Riot API rate limiting at scale      | Medium     | High     | Caching layer, request queuing       |
+| Riot ToS / API policy changes        | Low        | Critical | Stay compliant, monitor policy       |
+| AI cost overruns at scale            | Medium     | High     | Caching, tiered analysis depth       |
+| Low conversion from free to paid     | Medium     | High     | Improve "wow moment" in free tier    |
+| Competitor copies AI coaching        | Medium     | Medium   | Move fast, build data moat           |
+| AI hallucination in coaching reports | Medium     | High     | Structured prompts, validation layer |

@@ -35,7 +35,15 @@ function avg(vals: number[]): number {
 
 function buildSummaryPrompt(
   name: string,
-  stats: { winRate: number; avgKda: number; avgCsPerMinute: number; avgVisionScore: number; avgDeathsPerGame: number; deathTiming: DeathCluster; gamesPlayed: number }
+  stats: {
+    winRate: number;
+    avgKda: number;
+    avgCsPerMinute: number;
+    avgVisionScore: number;
+    avgDeathsPerGame: number;
+    deathTiming: DeathCluster;
+    gamesPlayed: number;
+  }
 ): { system: string; user: string } {
   const timingLabel: Record<DeathCluster, string> = {
     early_game: "early-game trades",
@@ -138,8 +146,13 @@ export async function getChampionDeepDive(
       try {
         const ai = getAiClient();
         const { system, user } = buildSummaryPrompt(championName, {
-          winRate, avgKda, avgCsPerMinute, avgVisionScore, avgDeathsPerGame,
-          deathTiming, gamesPlayed: matches.length,
+          winRate,
+          avgKda,
+          avgCsPerMinute,
+          avgVisionScore,
+          avgDeathsPerGame,
+          deathTiming,
+          gamesPlayed: matches.length,
         });
         const result = await ai.complete(system, user, { maxTokens: 250, temperature: 0.5 });
         const parsed = JSON.parse(result.content) as { summary?: string };

@@ -93,11 +93,18 @@ Level hesabÄ±: `Math.floor(xp / 500) + 1`
 ```typescript
 // src/domains/analysis/services/challengeService.ts
 
-export async function generateDailyChallenge(userId: string, riotAccountId: string): Promise<Challenge>
-export async function generateWeeklyChallenge(userId: string, riotAccountId: string): Promise<Challenge>
+export async function generateDailyChallenge(
+  userId: string,
+  riotAccountId: string
+): Promise<Challenge>;
+export async function generateWeeklyChallenge(
+  userId: string,
+  riotAccountId: string
+): Promise<Challenge>;
 ```
 
 Ãœretim mantÄ±ÄŸÄ±:
+
 1. KullanÄ±cÄ±nÄ±n son 14 gÃ¼nlÃ¼k en zayÄ±f metriÄŸini bul (habit detection'dan veya hesapla)
 2. O metriÄŸe gÃ¶re challenge ÅŸablonu seÃ§
 3. Target deÄŸeri kullanÄ±cÄ±nÄ±n mevcut ortalamasÄ±nÄ±n %10-15 Ã¼stÃ¼ne koy
@@ -105,11 +112,11 @@ export async function generateWeeklyChallenge(userId: string, riotAccountId: str
 
 ```typescript
 const CHALLENGE_TEMPLATES = {
-  cs_per_min:    { description: '{N} maÃ§ta {V}+ CS/dk yap', xp: 50 },
-  deaths:        { description: '{N} maÃ§ta {V} veya daha az Ã¶lÃ¼m', xp: 60 },
-  vision_score:  { description: '{N} maÃ§ta {V}+ vision score', xp: 40 },
-  win_streak:    { description: 'Ãœst Ã¼ste {N} maÃ§ kazan', xp: 80 },
-  kda:           { description: '{N} maÃ§ta {V}+ KDA yap', xp: 50 },
+  cs_per_min: { description: "{N} maÃ§ta {V}+ CS/dk yap", xp: 50 },
+  deaths: { description: "{N} maÃ§ta {V} veya daha az Ã¶lÃ¼m", xp: 60 },
+  vision_score: { description: "{N} maÃ§ta {V}+ vision score", xp: 40 },
+  win_streak: { description: "Ãœst Ã¼ste {N} maÃ§ kazan", xp: 80 },
+  kda: { description: "{N} maÃ§ta {V}+ KDA yap", xp: 50 },
 };
 ```
 
@@ -118,19 +125,20 @@ const CHALLENGE_TEMPLATES = {
 ```typescript
 // src/inngest/functions/challengeGenerator.ts
 export const dailyChallengeGenerator = inngest.createFunction(
-  { id: 'daily-challenge-generator' },
-  { cron: '0 8 * * *' }, // her gÃ¼n 08:00 UTC
+  { id: "daily-challenge-generator" },
+  { cron: "0 8 * * *" }, // her gÃ¼n 08:00 UTC
   async ({ step }) => {
     // Aktif tÃ¼m kullanÄ±cÄ±lara challenge Ã¼ret
-    const users = await step.run('fetch-active-users', () =>
+    const users = await step.run("fetch-active-users", () =>
       prisma.user.findMany({
         where: { lastLoginAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } },
-        include: { riotAccounts: { take: 1 } }
+        include: { riotAccounts: { take: 1 } },
       })
     );
     // Fan-out: her kullanÄ±cÄ± iÃ§in ayrÄ± event
-    await step.sendEvent('challenge/generate-for-users',
-      users.map(u => ({ name: 'challenge/generate', data: { userId: u.id } }))
+    await step.sendEvent(
+      "challenge/generate-for-users",
+      users.map((u) => ({ name: "challenge/generate", data: { userId: u.id } }))
     );
   }
 );
@@ -139,6 +147,7 @@ export const dailyChallengeGenerator = inngest.createFunction(
 ### Progress Tracking
 
 MaÃ§ sync sonrasÄ±:
+
 ```typescript
 // Aktif challenge'larÄ± kontrol et
 // MetriÄŸi gÃ¼ncelle
@@ -205,13 +214,13 @@ app/(app)/dashboard/page.tsx                                 â† widgetlar e
 ## Test Plan
 
 ```typescript
-describe('challengeService', () => {
-  it('generateDailyChallenge: kullanÄ±cÄ±nÄ±n zayÄ±f metriÄŸine gÃ¶re seÃ§im yapÄ±lÄ±yor')
-  it('target: mevcut ortalamanÄ±n %10-15 Ã¼stÃ¼nde')
-  it('tamamlama: xp kullanÄ±cÄ±ya ekleniyor')
-  it('aynÄ± gÃ¼n iki kez generate â†’ duplicate oluÅŸmuyor')
-  it('challenge sÃ¼resi dolunca expired olarak iÅŸaretleniyor')
-})
+describe("challengeService", () => {
+  it("generateDailyChallenge: kullanÄ±cÄ±nÄ±n zayÄ±f metriÄŸine gÃ¶re seÃ§im yapÄ±lÄ±yor");
+  it("target: mevcut ortalamanÄ±n %10-15 Ã¼stÃ¼nde");
+  it("tamamlama: xp kullanÄ±cÄ±ya ekleniyor");
+  it("aynÄ± gÃ¼n iki kez generate â†’ duplicate oluÅŸmuyor");
+  it("challenge sÃ¼resi dolunca expired olarak iÅŸaretleniyor");
+});
 ```
 
 ---
@@ -232,4 +241,3 @@ describe('challengeService', () => {
 - XP sistemi iÅŸletiyor
 - 7 gÃ¼nlÃ¼k streak rozeti verilebiliyor
 - Unit test coverage â‰¥ 80%
-

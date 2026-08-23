@@ -9,24 +9,19 @@ interface CounterPickCardProps {
 }
 
 function WinRatePip({ winRate }: { winRate: number }) {
-  const color =
-    winRate >= 60 ? "text-success" :
-    winRate >= 50 ? "text-warning" :
-    "text-danger";
+  const color = winRate >= 60 ? "text-success" : winRate >= 50 ? "text-warning" : "text-danger";
   return <span className={`font-semibold ${color}`}>{winRate}%</span>;
 }
 
 export function CounterPickCard({ riotAccountId, championName }: CounterPickCardProps) {
   const { data, isLoading } = useCounterPicks(riotAccountId, championName);
 
-  if (isLoading) return (
-    <div className="mt-2 h-16 animate-pulse rounded-lg bg-border/30" />
-  );
+  if (isLoading) return <div className="mt-2 h-16 animate-pulse rounded-lg bg-border/30" />;
 
   if (!data || (data.nemeses.length === 0 && data.prey.length === 0)) return null;
 
   return (
-    <div className="mt-2 rounded-lg border border-border bg-background p-3 space-y-2">
+    <div className="mt-2 space-y-2 rounded-lg border border-border bg-background p-3">
       {data.nemeses.length > 0 && (
         <div>
           <p className="mb-1 text-[10px] font-medium uppercase tracking-widest text-danger/70">

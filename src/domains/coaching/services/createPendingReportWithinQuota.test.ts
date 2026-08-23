@@ -93,7 +93,13 @@ describe("createPendingReportWithinQuota", () => {
     const tx = fakeTx();
     locked(tx);
 
-    await createPendingReportWithinQuota(USER_ID, RIOT_ACCOUNT_ID, MATCH_IDS, "champion_focus", "csing");
+    await createPendingReportWithinQuota(
+      USER_ID,
+      RIOT_ACCOUNT_ID,
+      MATCH_IDS,
+      "champion_focus",
+      "csing"
+    );
 
     expect(tx.coachingReport.create).toHaveBeenCalledWith(
       expect.objectContaining({

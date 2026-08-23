@@ -7,11 +7,7 @@ vi.mock("@/domains/riot/services/riotApiClient", () => ({
 }));
 
 import { getLastMatchSummary } from "@/domains/riot/services/lastMatchService";
-import {
-  getAccountByRiotId,
-  getMatch,
-  getMatchIds,
-} from "@/domains/riot/services/riotApiClient";
+import { getAccountByRiotId, getMatch, getMatchIds } from "@/domains/riot/services/riotApiClient";
 import type { MatchDTO, ParticipantDTO } from "@/domains/riot/types/riot.types";
 
 const PUUID = "puuid-player";

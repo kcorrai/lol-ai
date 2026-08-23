@@ -39,16 +39,24 @@ Implement the monetization layer: Stripe Checkout for upgrading to Pro, Stripe C
 `src/domains/identity/services/subscriptionService.ts`:
 
 ```typescript
-async function createCheckoutSession(userId: string, plan: 'pro', interval: 'monthly' | 'yearly'): Promise<string>
-async function createPortalSession(userId: string): Promise<string>
-async function handleWebhookEvent(event: Stripe.Event): Promise<void>
-async function getUserPlanLimits(userId: string): Promise<PlanLimits>
-async function checkLimit(userId: string, limitType: LimitType): Promise<{ allowed: boolean; reason?: string }>
+async function createCheckoutSession(
+  userId: string,
+  plan: "pro",
+  interval: "monthly" | "yearly"
+): Promise<string>;
+async function createPortalSession(userId: string): Promise<string>;
+async function handleWebhookEvent(event: Stripe.Event): Promise<void>;
+async function getUserPlanLimits(userId: string): Promise<PlanLimits>;
+async function checkLimit(
+  userId: string,
+  limitType: LimitType
+): Promise<{ allowed: boolean; reason?: string }>;
 ```
 
 ### Plan Limits Enforcement
 
 `checkLimit()` is called in service layer before performing restricted actions:
+
 - `matchSyncService`: check `max_riot_accounts` before connecting
 - `coachingService`: check `reports_per_week` before generating
 - `matchSyncService`: check `match_history_depth` when fetching IDs

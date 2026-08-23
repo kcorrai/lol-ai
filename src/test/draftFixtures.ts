@@ -68,10 +68,26 @@ export function play(
 
 /** Twenty distinct champion keys — enough to drive a full draft in a test. */
 export const POOL: readonly string[] = [
-  "Aatrox", "Ahri", "Akali", "Alistar", "Amumu",
-  "Anivia", "Annie", "Ashe", "Azir", "Bard",
-  "Braum", "Caitlyn", "Camille", "Darius", "Diana",
-  "Draven", "Ekko", "Elise", "Ezreal", "Fiora",
+  "Aatrox",
+  "Ahri",
+  "Akali",
+  "Alistar",
+  "Amumu",
+  "Anivia",
+  "Annie",
+  "Ashe",
+  "Azir",
+  "Bard",
+  "Braum",
+  "Caitlyn",
+  "Camille",
+  "Darius",
+  "Diana",
+  "Draven",
+  "Ekko",
+  "Elise",
+  "Ezreal",
+  "Fiora",
 ];
 
 /** A catalogue entry with sane defaults; override only what the test is about. */

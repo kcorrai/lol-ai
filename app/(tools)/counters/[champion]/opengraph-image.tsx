@@ -11,7 +11,10 @@ export default async function Image({ params }: { params: { champion: string } }
   const name = detail?.name ?? params.champion;
   const data = detail ? await getCounterData(detail.id) : null;
 
-  const topCounters = data?.strongAgainstSubject.slice(0, 3).map((c) => c.name).join(" · ");
+  const topCounters = data?.strongAgainstSubject
+    .slice(0, 3)
+    .map((c) => c.name)
+    .join(" · ");
 
   return renderOgImage({
     badge: data ? `Patch ${formatGamePatch(data.patch)}` : "Counters",

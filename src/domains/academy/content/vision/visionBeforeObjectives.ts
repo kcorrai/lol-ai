@@ -29,10 +29,26 @@ export const visionBeforeObjectives: Lesson = {
       caption: "The last minute, in order",
       head: ["Clock", "What is happening", "Why it is that order"],
       rows: [
-        ["-60s", "Waves get shoved in the two nearest lanes", "So nobody is farming when it starts, and nothing crashes into your turret mid-fight"],
-        ["-45s", "Sweeper walks their approach", "Their vision has to die before yours goes up, or they just watch you place it"],
-        ["-30s", "Your wards go on their route in", "This is the ward that decides whether you start or back off"],
-        ["-15s", "Everyone stands on the objective side, together", "A pick in the last fifteen seconds is the objective, not a kill"],
+        [
+          "-60s",
+          "Waves get shoved in the two nearest lanes",
+          "So nobody is farming when it starts, and nothing crashes into your turret mid-fight",
+        ],
+        [
+          "-45s",
+          "Sweeper walks their approach",
+          "Their vision has to die before yours goes up, or they just watch you place it",
+        ],
+        [
+          "-30s",
+          "Your wards go on their route in",
+          "This is the ward that decides whether you start or back off",
+        ],
+        [
+          "-15s",
+          "Everyone stands on the objective side, together",
+          "A pick in the last fifteen seconds is the objective, not a kill",
+        ],
       ],
     },
     { kind: "drill", drillId: "objective-setup-order" },

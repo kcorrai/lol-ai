@@ -27,7 +27,7 @@ screenshot; we give you the evaluation the app already knows how to produce.
 
 ## Rules
 
-- No new evaluation logic. This task *composes* `evaluateDraft`,
+- No new evaluation logic. This task _composes_ `evaluateDraft`,
   `draftTeamEval` and TASK-304's advice service. If something is missing, it gets
   added there, not here.
 - Recording a winner is idempotent and only the two drafters may do it.

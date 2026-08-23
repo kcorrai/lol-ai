@@ -9,8 +9,7 @@ interface MilestoneChampionListProps {
   champions: ChampionMonth[];
 }
 
-const COLS =
-  "grid grid-cols-[34px_minmax(0,1.5fr)_84px_118px_66px] items-center gap-3.5 px-5";
+const COLS = "grid grid-cols-[34px_minmax(0,1.5fr)_84px_118px_66px] items-center gap-3.5 px-5";
 
 export function MilestoneChampionList({
   champions,

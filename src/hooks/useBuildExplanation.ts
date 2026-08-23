@@ -8,9 +8,7 @@ export function useBuildExplanation(matchId: string, puuid: string | null) {
   const query = useQuery<BuildExplanation>({
     queryKey: ["build-explanation", matchId, puuid],
     queryFn: () =>
-      apiFetch<BuildExplanation>(
-        `/api/match/${matchId}/build-explanation?puuid=${puuid}`
-      ),
+      apiFetch<BuildExplanation>(`/api/match/${matchId}/build-explanation?puuid=${puuid}`),
     enabled: false,
     staleTime: 1000 * 60 * 60 * 24 * 30,
     retry: 1,

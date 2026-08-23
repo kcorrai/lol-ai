@@ -27,7 +27,9 @@ export function tierBlurb(laneLabel: string, list: RoleTierList, patch: string):
     );
   }
   if (biggestFaller) {
-    parts.push(`${biggestFaller.name} has fallen ${rankDelta(biggestFaller)} spots and is worth benching.`);
+    parts.push(
+      `${biggestFaller.name} has fallen ${rankDelta(biggestFaller)} spots and is worth benching.`
+    );
   }
   parts.push("Rankings update automatically every patch.");
   return parts.join(" ");

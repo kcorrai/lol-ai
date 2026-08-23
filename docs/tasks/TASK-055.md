@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
 ```typescript
 const session = await getServerSession(authOptions);
 const isPro = session
-  ? await checkUserPlan(session.user.id)  // Pro veya Elite mi?
+  ? await checkUserPlan(session.user.id) // Pro veya Elite mi?
   : false;
 
 if (!isPro) {
@@ -73,4 +73,3 @@ otpAnalysis: {
 ## BaÄŸÄ±mlÄ±lÄ±klar
 
 - TASK-054 (otpAssistantService) tamamlanmÄ±ÅŸ olmalÄ±
-

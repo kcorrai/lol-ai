@@ -11,7 +11,13 @@ export interface SpotRect {
 // is *click-through on the target*: four dim panels tile the viewport around the target rect and
 // absorb clicks, while the rect itself is left uncovered so the real element underneath stays
 // interactive. Centered steps (no rect) dim the whole screen.
-export function SpotlightOverlay({ rect, hasTarget }: { rect: SpotRect | null; hasTarget: boolean }): React.JSX.Element {
+export function SpotlightOverlay({
+  rect,
+  hasTarget,
+}: {
+  rect: SpotRect | null;
+  hasTarget: boolean;
+}): React.JSX.Element {
   // `pointer-events-auto` on each panel makes the dimmed areas absorb clicks (so the rest of the app
   // is unusable), while the target rect is left uncovered so clicks pass through to the real element.
   const dimBase = "fixed bg-black/75 backdrop-blur-[2px] transition-all duration-300";
@@ -34,13 +40,22 @@ export function SpotlightOverlay({ rect, hasTarget }: { rect: SpotRect | null; h
       {/* Four panels around the hole — each absorbs pointer events; the hole is left open. */}
       <div className={dim} style={{ top: 0, left: 0, right: 0, height: Math.max(0, rect.top) }} />
       <div className={dim} style={{ top: bottom, left: 0, right: 0, bottom: 0 }} />
-      <div className={dim} style={{ top: rect.top, left: 0, width: Math.max(0, rect.left), height: rect.height }} />
+      <div
+        className={dim}
+        style={{ top: rect.top, left: 0, width: Math.max(0, rect.left), height: rect.height }}
+      />
       <div className={dim} style={{ top: rect.top, left: right, right: 0, height: rect.height }} />
 
       {/* Glowing ring hugging the lit element (never blocks its clicks). */}
       <div
-        className="pointer-events-none fixed rounded-xl ring-2 ring-accent/80 animate-glow-pulse transition-all duration-300"
-        style={{ top: rect.top, left: rect.left, width: rect.width, height: rect.height, boxShadow: "0 0 0 3px rgba(198,255,61,0.25), 0 0 22px 4px rgba(198,255,61,0.35)" }}
+        className="pointer-events-none fixed animate-glow-pulse rounded-xl ring-2 ring-accent/80 transition-all duration-300"
+        style={{
+          top: rect.top,
+          left: rect.left,
+          width: rect.width,
+          height: rect.height,
+          boxShadow: "0 0 0 3px rgba(198,255,61,0.25), 0 0 22px 4px rgba(198,255,61,0.35)",
+        }}
       />
 
       {/* Nudge chevron pointing at the target. */}

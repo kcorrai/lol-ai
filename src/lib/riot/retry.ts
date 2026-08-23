@@ -33,8 +33,10 @@ function statusOf(err: unknown): number | undefined {
 
 /** A timeout or an aborted request — no status, but as transient as a 503. */
 function isAbort(err: unknown): boolean {
-  return (err as { name?: string })?.name === "AbortError"
-    || (err as { name?: string })?.name === "TimeoutError";
+  return (
+    (err as { name?: string })?.name === "AbortError" ||
+    (err as { name?: string })?.name === "TimeoutError"
+  );
 }
 
 // Wraps any async function with retry logic.

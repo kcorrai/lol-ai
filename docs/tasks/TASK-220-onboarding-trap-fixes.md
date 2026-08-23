@@ -11,7 +11,7 @@ Root causes:
 
 1. **Missing spotlight anchor.** The `connect` step targets `data-tour="connect-form"`, but no
    element carries that attribute. `findTarget` returns null → `rect` is null → `SpotlightOverlay`
-   renders its full-screen `inset-0` dim panel with `pointer-events-auto`, which absorbs *every*
+   renders its full-screen `inset-0` dim panel with `pointer-events-auto`, which absorbs _every_
    click on the page. Confirmed live: `connectAnchorExists:false`, `fullScreenBlock:true`,
    `connectButtonCovered:true`. Not caught in TASK-217 testing because it was verified with an
    account-holding user, for whom the connect step is fast-forwarded and never rendered.
@@ -31,7 +31,7 @@ Root causes:
 2. **Escape hatch:** a subtle "Skip setup" control on the coach bubble → `dismiss()` (POST
    onboarding-complete + hide the overlay), so no gate can permanently trap anyone.
 3. **Graceful degradation:** thread `hasTarget` into `SpotlightOverlay`; when `rect` is null but a
-   target was expected, render a *non-blocking* dim (`pointer-events-none`) so the page stays
+   target was expected, render a _non-blocking_ dim (`pointer-events-none`) so the page stays
    usable instead of freezing.
 
 ## Deliverables

@@ -34,7 +34,17 @@ const AHRI: ChampionMetaStats = {
   overallRank: 5,
   prevPatchRank: 7,
   positions: [
-    { position: "MIDDLE", games: 300000, winRate: 51, pickRate: 8, banRate: 6, tier: 1, rank: 2, prevPatchRank: 4, counters: [] },
+    {
+      position: "MIDDLE",
+      games: 300000,
+      winRate: 51,
+      pickRate: 8,
+      banRate: 6,
+      tier: 1,
+      rank: 2,
+      prevPatchRank: 4,
+      counters: [],
+    },
   ],
 };
 
@@ -55,7 +65,17 @@ const ZED: ChampionMetaStats = {
   overallRank: 12,
   prevPatchRank: 9,
   positions: [
-    { position: "MIDDLE", games: 250000, winRate: 50, pickRate: 9, banRate: 20, tier: 2, rank: 8, prevPatchRank: 6, counters: [] },
+    {
+      position: "MIDDLE",
+      games: 250000,
+      winRate: 50,
+      pickRate: 9,
+      banRate: 20,
+      tier: 2,
+      rank: 8,
+      prevPatchRank: 6,
+      counters: [],
+    },
   ],
 };
 
@@ -150,8 +170,28 @@ describe("getMatchupData", () => {
     const aFlex: ChampionMetaStats = {
       ...AHRI,
       positions: [
-        { position: "TOP", games: 20000, winRate: 50, pickRate: 3, banRate: 2, tier: 3, rank: 20, prevPatchRank: 22, counters: [] },
-        { position: "MIDDLE", games: 300000, winRate: 51, pickRate: 8, banRate: 6, tier: 1, rank: 2, prevPatchRank: 4, counters: [] },
+        {
+          position: "TOP",
+          games: 20000,
+          winRate: 50,
+          pickRate: 3,
+          banRate: 2,
+          tier: 3,
+          rank: 20,
+          prevPatchRank: 22,
+          counters: [],
+        },
+        {
+          position: "MIDDLE",
+          games: 300000,
+          winRate: 51,
+          pickRate: 8,
+          banRate: 6,
+          tier: 1,
+          rank: 2,
+          prevPatchRank: 4,
+          counters: [],
+        },
       ],
     };
     mockFind.mockImplementation((_s: MetaSnapshot, key: string | number) =>

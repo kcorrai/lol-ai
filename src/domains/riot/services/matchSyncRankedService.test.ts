@@ -82,7 +82,9 @@ describe("enrichParticipantRanks", () => {
 
     expect(prisma.matchParticipant.updateMany).toHaveBeenCalledTimes(2);
     const calls = vi.mocked(prisma.matchParticipant.updateMany).mock.calls;
-    const gold = calls.find((c) => (c[0] as never as { data: { rankTier: string } }).data.rankTier === "GOLD");
+    const gold = calls.find(
+      (c) => (c[0] as never as { data: { rankTier: string } }).data.rankTier === "GOLD"
+    );
     expect((gold?.[0] as never as { where: { puuid: { in: string[] } } }).where.puuid.in).toEqual([
       "puuid-0",
       "puuid-1",
@@ -96,8 +98,11 @@ describe("enrichParticipantRanks", () => {
 
     await enrichParticipantRanks(MATCH, puuids(10), REGION);
 
-    const written = vi.mocked(prisma.matchParticipant.updateMany).mock.calls
-      .flatMap((c) => (c[0] as never as { where: { puuid: { in: string[] } } }).where.puuid.in);
+    const written = vi
+      .mocked(prisma.matchParticipant.updateMany)
+      .mock.calls.flatMap(
+        (c) => (c[0] as never as { where: { puuid: { in: string[] } } }).where.puuid.in
+      );
     expect(written).toHaveLength(9);
     expect(written).not.toContain("puuid-0");
   });

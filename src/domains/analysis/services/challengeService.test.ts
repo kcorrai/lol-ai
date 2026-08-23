@@ -32,9 +32,7 @@ describe("getActiveChallengeStreak", () => {
 
   it("returns 1 when only today has a completion", async () => {
     const today = new Date();
-    vi.mocked(prisma.userChallenge.findMany).mockResolvedValue([
-      { completedAt: today },
-    ] as never);
+    vi.mocked(prisma.userChallenge.findMany).mockResolvedValue([{ completedAt: today }] as never);
     const streak = await getActiveChallengeStreak(userId);
     expect(streak).toBe(1);
   });

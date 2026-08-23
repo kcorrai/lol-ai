@@ -27,7 +27,7 @@ export function InviteModal({ teamId, onClose, onInvited }: Props) {
         body: JSON.stringify({ email, role }),
       });
       if (!res.ok) {
-        const body = await res.json() as { error?: { message?: string } };
+        const body = (await res.json()) as { error?: { message?: string } };
         throw new Error(body.error?.message ?? "Invite could not be sent");
       }
       onInvited();
@@ -52,9 +52,7 @@ export function InviteModal({ teamId, onClose, onInvited }: Props) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="mb-1 block text-xs font-medium text-text-muted">
-              Email address
-            </label>
+            <label className="mb-1 block text-xs font-medium text-text-muted">Email address</label>
             <input
               type="email"
               value={email}

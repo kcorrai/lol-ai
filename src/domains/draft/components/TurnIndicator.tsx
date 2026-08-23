@@ -107,7 +107,6 @@ export function TurnIndicator({
           {redName}
         </span>
       </div>
-
     </div>
   );
 }

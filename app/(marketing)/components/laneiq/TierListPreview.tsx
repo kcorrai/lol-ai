@@ -13,7 +13,8 @@ interface Row {
   delta: number;
 }
 
-const COLS = "grid-cols-[38px_1fr_88px_74px_74px_72px] md:grid-cols-[48px_1fr_100px_90px_90px_96px]";
+const COLS =
+  "grid-cols-[38px_1fr_88px_74px_74px_72px] md:grid-cols-[48px_1fr_100px_90px_90px_96px]";
 
 // Server component — the top of the live tier list, one champion per lane so the
 // preview reads as a meta summary rather than five bot-lane picks.

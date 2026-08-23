@@ -53,7 +53,14 @@ export function ChampionAbilities({ abilities }: { abilities: AbilityView[] }) {
             )}
           >
             <span className="relative h-9 w-9 shrink-0 overflow-hidden rounded-lg">
-              <Image src={a.iconUrl} alt={a.name} fill sizes="36px" className="object-cover" unoptimized />
+              <Image
+                src={a.iconUrl}
+                alt={a.name}
+                fill
+                sizes="36px"
+                className="object-cover"
+                unoptimized
+              />
             </span>
             <span
               className={cn(
@@ -83,7 +90,14 @@ export function ChampionAbilities({ abilities }: { abilities: AbilityView[] }) {
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
-              <Image src={ability.iconUrl} alt={ability.name} width={72} height={72} unoptimized className="rounded-lg" />
+              <Image
+                src={ability.iconUrl}
+                alt={ability.name}
+                width={72}
+                height={72}
+                unoptimized
+                className="rounded-lg"
+              />
             </div>
           )}
           <span className="absolute left-2 top-2 rounded-md bg-black/60 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">

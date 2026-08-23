@@ -51,10 +51,7 @@ function computeTrend(recent: RecentGame[]): MatchupTrend {
 
 // ── Core aggregation ──────────────────────────────────────────────────────────
 
-async function fetchMatchupRows(
-  riotAccountId: string,
-  championId: number
-): Promise<MatchupRow[]> {
+async function fetchMatchupRows(riotAccountId: string, championId: number): Promise<MatchupRow[]> {
   // Prisma raw query: self-join match_participants to find same-lane opponent.
   // Fluent API cannot express same-match cross-team same-position join in one go.
   return prisma.$queryRaw<MatchupRow[]>`

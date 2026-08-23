@@ -94,10 +94,7 @@ const SESSION_PARTICIPANT_SELECT = {
   won: true,
 } satisfies Prisma.MatchParticipantSelect;
 
-async function buildSession(
-  riotAccountId: string,
-  window: SessionWindow
-): Promise<OverlaySession> {
+async function buildSession(riotAccountId: string, window: SessionWindow): Promise<OverlaySession> {
   const participants = await prisma.matchParticipant.findMany({
     where: {
       riotAccountId,

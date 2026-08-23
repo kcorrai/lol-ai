@@ -20,10 +20,7 @@ export function terminalStatusBody(status: string): string {
 
 // Server-Sent-Events stream that polls the report status until it is terminal,
 // the client disconnects, or the hard duration cap is hit.
-export function createReportStatusStream(
-  reportId: string,
-  signal: AbortSignal
-): ReadableStream {
+export function createReportStatusStream(reportId: string, signal: AbortSignal): ReadableStream {
   return new ReadableStream({
     async start(controller) {
       const encoder = new TextEncoder();
@@ -66,7 +63,11 @@ export function createReportStatusStream(
       };
 
       poll().catch(() => {
-        try { controller.close(); } catch { /* already closed */ }
+        try {
+          controller.close();
+        } catch {
+          /* already closed */
+        }
       });
     },
   });

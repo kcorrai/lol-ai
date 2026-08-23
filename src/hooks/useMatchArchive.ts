@@ -4,15 +4,9 @@ import { useInfiniteQuery, type InfiniteData } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api/fetcher";
 import { filtersToSearchParams } from "@/domains/match/archive/archiveQuery";
 import type { ArchiveFilters } from "@/domains/match/services/matchArchiveFilters";
-import type {
-  ArchivePage,
-  ArchiveTotals,
-} from "@/domains/match/services/matchArchiveService";
+import type { ArchivePage, ArchiveTotals } from "@/domains/match/services/matchArchiveService";
 
-export function useMatchArchive(
-  riotAccountId: string | null | undefined,
-  filters: ArchiveFilters
-) {
+export function useMatchArchive(riotAccountId: string | null | undefined, filters: ArchiveFilters) {
   const facets = filtersToSearchParams(filters);
   // The serialised facets *are* the cache key. Keying on the filter object would miss the cache on
   // every render, and keying on the fields by hand would need editing every time a facet is added.
@@ -43,9 +37,7 @@ export function useMatchArchive(
  * zero rather than the newest page is what keeps the strip on screen: taking the last page's value
  * would paint a `null` over a number the player already had as soon as they asked for more.
  */
-export function archiveTotals(
-  data: InfiniteData<ArchivePage> | undefined
-): ArchiveTotals | null {
+export function archiveTotals(data: InfiniteData<ArchivePage> | undefined): ArchiveTotals | null {
   return data?.pages[0]?.totals ?? null;
 }
 

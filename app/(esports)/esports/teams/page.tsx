@@ -42,7 +42,10 @@ interface LeagueGroup {
 }
 
 function anchorId(name: string): string {
-  return `league-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
+  return `league-${name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")}`;
 }
 
 function groupByLeague(teams: EsportsTeam[]): LeagueGroup[] {

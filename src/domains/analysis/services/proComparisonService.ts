@@ -67,10 +67,13 @@ async function getHighEloStats(championId: number): Promise<{
   const avgDmg = totalDamage / rows.length;
 
   const wins = rows.filter((r) => r.won).length;
-  const avgKda = rows.reduce((s, r) => s + (r.kills + r.assists) / Math.max(r.deaths, 1), 0) / rows.length;
+  const avgKda =
+    rows.reduce((s, r) => s + (r.kills + r.assists) / Math.max(r.deaths, 1), 0) / rows.length;
 
   const result = {
-    avgCsPerMinute: Number((rows.reduce((s, r) => s + Number(r.csPerMinute), 0) / rows.length).toFixed(2)),
+    avgCsPerMinute: Number(
+      (rows.reduce((s, r) => s + Number(r.csPerMinute), 0) / rows.length).toFixed(2)
+    ),
     avgVisionScore: Number((rows.reduce((s, r) => s + r.visionScore, 0) / rows.length).toFixed(1)),
     avgKda: Number(avgKda.toFixed(2)),
     avgDamageShare: Number((avgDmg / 10000).toFixed(2)),
@@ -116,11 +119,14 @@ async function getPlayerChampionStats(
   if (rows.length === 0) return null;
 
   const wins = rows.filter((r) => r.won).length;
-  const avgKda = rows.reduce((s, r) => s + (r.kills + r.assists) / Math.max(r.deaths, 1), 0) / rows.length;
+  const avgKda =
+    rows.reduce((s, r) => s + (r.kills + r.assists) / Math.max(r.deaths, 1), 0) / rows.length;
   const avgDmg = rows.reduce((s, r) => s + r.damageDealt, 0) / rows.length;
 
   return {
-    avgCsPerMinute: Number((rows.reduce((s, r) => s + Number(r.csPerMinute), 0) / rows.length).toFixed(2)),
+    avgCsPerMinute: Number(
+      (rows.reduce((s, r) => s + Number(r.csPerMinute), 0) / rows.length).toFixed(2)
+    ),
     avgVisionScore: Number((rows.reduce((s, r) => s + r.visionScore, 0) / rows.length).toFixed(1)),
     avgKda: Number(avgKda.toFixed(2)),
     avgDamageShare: Number((avgDmg / 10000).toFixed(2)),

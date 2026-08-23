@@ -17,7 +17,9 @@ test.describe("Share Report", () => {
     const { reportId } = getState();
 
     await page.goto(`/coaching/${reportId}`);
-    await expect(page.getByRole("button", { name: "Copy share link" })).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole("button", { name: "Copy share link" })).toBeVisible({
+      timeout: 10_000,
+    });
 
     await page.getByRole("button", { name: "Copy share link" }).click();
 
@@ -36,7 +38,9 @@ test.describe("Share Report", () => {
     await page.goto(`/share/report/${E2E_SHARE_TOKEN}`);
 
     // Player name from seeded Riot account
-    await expect(page.locator(`h1:has-text("${E2E_RIOT_PRE.gameName}")`)).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator(`h1:has-text("${E2E_RIOT_PRE.gameName}")`)).toBeVisible({
+      timeout: 10_000,
+    });
 
     // Tag line displayed
     await expect(page.locator(`text=#${E2E_RIOT_PRE.tagLine}`)).toBeVisible();

@@ -7,7 +7,7 @@
 ADR-005 evaluated Riot's Live Client Data API in 2026 and returned "Conditional Go —
 Deferred". Its blocker has not moved: the API listens on `127.0.0.1:2999` on the player's
 own machine, and a Vercel function has no route to it. The 2026-07-20 addendum recovered
-part of the value from the server — Spectator-v5 sees a game once it has *started*, which
+part of the value from the server — Spectator-v5 sees a game once it has _started_, which
 is enough to prefill the draft analyzer — and concentrated the rest on the two things only
 a local process can do: advice during picks and bans, and live in-game events.
 

@@ -47,7 +47,7 @@ interface AuthInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 /** An inset well with the icon inside it — the same box the search bar uses. */
 export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(function AuthInput(
   { icon: Icon, ...props },
-  ref,
+  ref
 ) {
   return (
     <div className="well flex h-11 items-center border border-border bg-surface-dark focus-within:border-accent">
@@ -95,7 +95,7 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
         <AuthInput id={id} type={visible ? "text" : "password"} icon={Lock} ref={ref} {...props} />
       </AuthField>
     );
-  },
+  }
 );
 
 const BANDS = [

@@ -31,17 +31,15 @@ export function useCoachingReport(reportId: string | null | undefined) {
 
     const handleStatus = (e: MessageEvent<string>) => {
       const payload = JSON.parse(e.data) as { status: string };
-      queryClient.setQueryData<CoachingReportDetail>(
-        ["coaching-report", reportId],
-        (prev) => (prev ? { ...prev, status: payload.status as CoachingReportDetail["status"] } : prev)
+      queryClient.setQueryData<CoachingReportDetail>(["coaching-report", reportId], (prev) =>
+        prev ? { ...prev, status: payload.status as CoachingReportDetail["status"] } : prev
       );
     };
 
     const handleDone = (e: MessageEvent<string>) => {
       const payload = JSON.parse(e.data) as { status: string };
-      queryClient.setQueryData<CoachingReportDetail>(
-        ["coaching-report", reportId],
-        (prev) => (prev ? { ...prev, status: payload.status as CoachingReportDetail["status"] } : prev)
+      queryClient.setQueryData<CoachingReportDetail>(["coaching-report", reportId], (prev) =>
+        prev ? { ...prev, status: payload.status as CoachingReportDetail["status"] } : prev
       );
       // Refresh full report data once complete
       if (payload.status === "complete") {

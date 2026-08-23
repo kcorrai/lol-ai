@@ -57,17 +57,31 @@ export const sendReengagementEmails = inngest.createFunction(
       },
     });
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTAUTH_URL ?? "https://lolaicoach.gg";
-    let sent = 0, skipped = 0, errors = 0;
+    const appUrl =
+      process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTAUTH_URL ?? "https://lolaicoach.gg";
+    let sent = 0,
+      skipped = 0,
+      errors = 0;
 
     for (const user of users) {
-      if (!user.email || user.emailOptOut) { skipped++; continue; }
+      if (!user.email || user.emailOptOut) {
+        skipped++;
+        continue;
+      }
       const account = user.riotAccounts[0];
-      if (!account) { skipped++; continue; }
+      if (!account) {
+        skipped++;
+        continue;
+      }
 
       const idempotencyKey = `${IDEMPOTENCY_PREFIX}:${user.id}:${weekKey}`;
-      const alreadySent = await prisma.webhookEvent.findUnique({ where: { eventKey: idempotencyKey } });
-      if (alreadySent) { skipped++; continue; }
+      const alreadySent = await prisma.webhookEvent.findUnique({
+        where: { eventKey: idempotencyKey },
+      });
+      if (alreadySent) {
+        skipped++;
+        continue;
+      }
 
       try {
         const signals = await computeRetentionSignals(account.id);

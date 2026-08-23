@@ -51,11 +51,7 @@ function poolFor(mode: QuizMode): readonly QuizChampion[] {
  * With a practice seed the answer comes off that seed instead of the date, which
  * is what keeps practice from being a way to fish for today's puzzle.
  */
-export function answerFor(
-  mode: QuizMode,
-  dateKey: string,
-  practiceSeed?: string
-): QuizChampion {
+export function answerFor(mode: QuizMode, dateKey: string, practiceSeed?: string): QuizChampion {
   const pool = poolFor(mode);
   return practiceSeed ? pickBySeed(pool, mode, practiceSeed) : pickDaily(pool, mode, dateKey);
 }
@@ -76,11 +72,7 @@ export function abilityFor(
 }
 
 /** Which skin's splash art to crop. Base art is the giveaway, so skins are fair game. */
-export function skinNumFor(
-  champion: QuizChampion,
-  dateKey: string,
-  practiceSeed?: string
-): number {
+export function skinNumFor(champion: QuizChampion, dateKey: string, practiceSeed?: string): number {
   const scope = practiceSeed ?? dateKey;
   const index = fnv1a(`splash-skin:${scope}:${champion.id}`) % champion.skinNums.length;
   return champion.skinNums[index];

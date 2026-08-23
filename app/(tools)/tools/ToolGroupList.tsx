@@ -48,7 +48,10 @@ export function ToolGroupList({ groups, stats }: ToolGroupListProps): React.JSX.
                 <span className="hidden text-right font-mono text-[11.5px] tracking-wide text-acid-500 md:block">
                   {stat ? (stats[stat] ?? "") : ""}
                 </span>
-                <span className="hidden text-right font-mono text-xs text-fg-4 md:block" aria-hidden>
+                <span
+                  className="hidden text-right font-mono text-xs text-fg-4 md:block"
+                  aria-hidden
+                >
                   →
                 </span>
               </Link>

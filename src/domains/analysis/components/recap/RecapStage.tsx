@@ -106,7 +106,7 @@ export function RecapStage({ chapter, onShare, copied }: RecapStageProps): React
         </div>
 
         {chapter.figure && !cover && !end && (
-          <div className="glow-text font-mono text-[64px] font-bold leading-[0.86] tabular-nums text-accent md:text-[104px]">
+          <div className="glow-text font-mono text-[64px] font-bold tabular-nums leading-[0.86] text-accent md:text-[104px]">
             {chapter.figure}
           </div>
         )}

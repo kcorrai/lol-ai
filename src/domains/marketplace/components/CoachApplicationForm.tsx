@@ -99,7 +99,11 @@ export function CoachApplicationForm({ profile, saving, onSave }: Props): React.
       }
     >
       <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 p-5">
-        <Field label="Display name" hint="How students should know you." error={errors.displayName?.message}>
+        <Field
+          label="Display name"
+          hint="How students should know you."
+          error={errors.displayName?.message}
+        >
           <Input id="displayName" placeholder="Mert 'Vergil' Kaya" {...register("displayName")} />
         </Field>
 
@@ -135,7 +139,9 @@ export function CoachApplicationForm({ profile, saving, onSave }: Props): React.
                 bioOk ? "text-accent" : "text-text-faint"
               }`}
             >
-              {bioOk ? "Good — this is what reviewers read" : `At least ${MIN_BIO_LENGTH} characters`}
+              {bioOk
+                ? "Good — this is what reviewers read"
+                : `At least ${MIN_BIO_LENGTH} characters`}
             </span>
             <span className="font-mono text-[9px] tracking-[0.14em] text-text-faint">
               {bio.trim().length} chars
@@ -145,7 +151,12 @@ export function CoachApplicationForm({ profile, saving, onSave }: Props): React.
         </div>
 
         <ChipGroup label="Roles you coach" count={roles.length}>
-          <ChipSelect aria-label="Roles" options={ROLE_OPTIONS} selected={roles} onChange={setRoles} />
+          <ChipSelect
+            aria-label="Roles"
+            options={ROLE_OPTIONS}
+            selected={roles}
+            onChange={setRoles}
+          />
         </ChipGroup>
 
         <ChipGroup label="Languages you coach in" count={languages.length}>

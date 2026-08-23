@@ -40,7 +40,10 @@ const QUEUE_LABELS: Record<string, string> = {
 export function queueLabel(queue: string): string {
   return (
     QUEUE_LABELS[queue] ??
-    queue.toLowerCase().replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+    queue
+      .toLowerCase()
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase())
   );
 }
 
@@ -70,10 +73,7 @@ export const THRESHOLD_LABELS = {
  * header says the player asked for. Built from the filters rather than from the URL so a saved
  * search that was never in the address bar describes itself just as well.
  */
-export function describeFilters(
-  filters: ArchiveFilters,
-  playerName?: string
-): string[] {
+export function describeFilters(filters: ArchiveFilters, playerName?: string): string[] {
   const parts: string[] = [];
 
   if (filters.champions?.length) parts.push(filters.champions.join(", "));

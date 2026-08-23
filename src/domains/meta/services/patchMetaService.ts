@@ -56,9 +56,7 @@ export async function getMetaReport(limit = 10): Promise<MetaReport | null> {
   if (!snapshot) return null;
 
   const movers = snapshot.champions
-    .filter(
-      (c) => c.overallRank > 0 && c.prevPatchRank > 0 && c.overallPickRate >= MIN_PICK_RATE
-    )
+    .filter((c) => c.overallRank > 0 && c.prevPatchRank > 0 && c.overallPickRate >= MIN_PICK_RATE)
     .map(toMover)
     .filter((m) => Math.abs(m.delta) >= MIN_RANK_DELTA);
 

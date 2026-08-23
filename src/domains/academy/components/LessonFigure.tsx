@@ -34,7 +34,9 @@ export function LessonFigure({ block }: { block: FigureBlock }): React.ReactElem
           })}
         </ul>
       </div>
-      <figcaption className="mt-2 font-mono text-[11px] text-text-faint">{block.caption}</figcaption>
+      <figcaption className="mt-2 font-mono text-[11px] text-text-faint">
+        {block.caption}
+      </figcaption>
     </figure>
   );
 }

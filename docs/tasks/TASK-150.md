@@ -9,14 +9,14 @@
 
 CLAUDE.md limitleri aşılan dosyalar (component max 200, service max 250 satır):
 
-| Dosya | Satır | Limit |
-|---|---|---|
-| `app/(app)/settings/security/page.tsx` | 371 | 200 |
-| `app/(app)/match/[matchId]/page.tsx` | 350 | 200 |
-| `app/(app)/milestone/page.tsx` | 342 | 200 |
-| `app/u/[slug]/page.tsx` | 340 | 200 |
-| `src/domains/analysis/services/challengeService.ts` | 391 | 250 |
-| `src/domains/riot/services/matchSyncService.ts` | 380 | 250 |
+| Dosya                                               | Satır | Limit |
+| --------------------------------------------------- | ----- | ----- |
+| `app/(app)/settings/security/page.tsx`              | 371   | 200   |
+| `app/(app)/match/[matchId]/page.tsx`                | 350   | 200   |
+| `app/(app)/milestone/page.tsx`                      | 342   | 200   |
+| `app/u/[slug]/page.tsx`                             | 340   | 200   |
+| `src/domains/analysis/services/challengeService.ts` | 391   | 250   |
+| `src/domains/riot/services/matchSyncService.ts`     | 380   | 250   |
 
 ## Acceptance Criteria
 

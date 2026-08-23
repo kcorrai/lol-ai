@@ -13,7 +13,11 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
   return pairs.map((p) => ({ slug: `${p.a.toLowerCase()}-vs-${p.b.toLowerCase()}` }));
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
   const parsed = parseMatchupSlug(params.slug);
   if (!parsed) return { title: "Matchup not found" };
   const data = await loadMatchupData(parsed.first, parsed.second);
@@ -29,7 +33,8 @@ export default async function MatchupPage({ params }: { params: { slug: string }
   const parsed = parseMatchupSlug(params.slug);
   if (!parsed) notFound();
   // Enforce the alphabetical canonical URL (308 permanent for SEO).
-  if (params.slug.toLowerCase() !== parsed.canonical) permanentRedirect(`/matchups/${parsed.canonical}`);
+  if (params.slug.toLowerCase() !== parsed.canonical)
+    permanentRedirect(`/matchups/${parsed.canonical}`);
 
   const data = await loadMatchupData(parsed.first, parsed.second);
   if (!data) notFound();

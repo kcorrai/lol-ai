@@ -114,7 +114,7 @@ describe("identifyStrongestArea", () => {
   });
 
   it("returns fighting when KDA is disproportionately high", () => {
-    const area = identifyStrongestArea(9.0, 5.0, 20, 0.20, 45);
+    const area = identifyStrongestArea(9.0, 5.0, 20, 0.2, 45);
     expect(area).toBe("fighting (KDA)");
   });
 });

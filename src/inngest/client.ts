@@ -16,11 +16,7 @@ import { Inngest } from "inngest";
 // build failure.
 const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
 
-if (
-  process.env.NODE_ENV === "production" &&
-  !isBuildPhase &&
-  !process.env.INNGEST_SIGNING_KEY
-) {
+if (process.env.NODE_ENV === "production" && !isBuildPhase && !process.env.INNGEST_SIGNING_KEY) {
   throw new Error(
     "[inngest] INNGEST_SIGNING_KEY is required in production — without it " +
       "/api/inngest accepts unsigned requests. Set it in the Vercel environment."

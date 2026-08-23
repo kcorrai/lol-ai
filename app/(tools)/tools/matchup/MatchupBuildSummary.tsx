@@ -34,7 +34,15 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function SideBuild({ name, side, accent }: { name: string; side: MatchupSideBuild; accent: string }) {
+function SideBuild({
+  name,
+  side,
+  accent,
+}: {
+  name: string;
+  side: MatchupSideBuild;
+  accent: string;
+}) {
   if (side.coreItems.length === 0 && !side.keystone) return null;
   const spellUrls = side.summonerSpellIds.map(summonerSpellUrl).filter(Boolean);
   return (
@@ -56,20 +64,34 @@ function SideBuild({ name, side, accent }: { name: string; side: MatchupSideBuil
               />
             )}
             {spellUrls.map((url, i) => (
-              <Image key={i} src={url} alt="Summoner spell" width={26} height={26} unoptimized className="rounded ring-1 ring-border" />
+              <Image
+                key={i}
+                src={url}
+                alt="Summoner spell"
+                width={26}
+                height={26}
+                unoptimized
+                className="rounded ring-1 ring-border"
+              />
             ))}
           </div>
         </Field>
       )}
 
       {side.coreItems.length > 0 && (
-        <Field label="Core"><ItemRow items={side.coreItems} /></Field>
+        <Field label="Core">
+          <ItemRow items={side.coreItems} />
+        </Field>
       )}
       {side.boots.length > 0 && (
-        <Field label="Boots"><ItemRow items={side.boots} /></Field>
+        <Field label="Boots">
+          <ItemRow items={side.boots} />
+        </Field>
       )}
       {side.situationalItems.length > 0 && (
-        <Field label="Options"><ItemRow items={side.situationalItems} /></Field>
+        <Field label="Options">
+          <ItemRow items={side.situationalItems} />
+        </Field>
       )}
       {side.skillMaxOrder.length > 0 && (
         <Field label="Skills">
@@ -97,7 +119,12 @@ export function MatchupBuildSummary({
         <SideBuild name={nameA} side={extras.a} accent="text-info" />
         <SideBuild name={nameB} side={extras.b} accent="text-danger" />
       </div>
-      <MatchupCurveCompare nameA={nameA} nameB={nameB} curveA={extras.a.curve} curveB={extras.b.curve} />
+      <MatchupCurveCompare
+        nameA={nameA}
+        nameB={nameB}
+        curveA={extras.a.curve}
+        curveB={extras.b.curve}
+      />
     </div>
   );
 }

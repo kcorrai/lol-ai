@@ -23,11 +23,7 @@ export function GameScreen({ read }: { read: LiveRead<AllGameData> }): React.Rea
     <div className="grid gap-4">
       {/* Above the rest once a game has ended: it is the only thing on this screen with
           something for the player to do. */}
-      <PostGamePanel
-        state={postGame.state}
-        open={postGame.open}
-        openError={postGame.openError}
-      />
+      <PostGamePanel state={postGame.state} open={postGame.open} openError={postGame.openError} />
 
       <HudPanel title="Current game">
         {read.status === "ok" ? <GameSummary data={read.data} /> : <NoGame read={read} />}
@@ -40,7 +36,11 @@ export function GameScreen({ read }: { read: LiveRead<AllGameData> }): React.Rea
 }
 
 /** Only ever rendered for the non-`ok` branches, so the prop excludes the one that carries data. */
-function NoGame({ read }: { read: Exclude<LiveRead<AllGameData>, { status: "ok" }> }): React.ReactElement {
+function NoGame({
+  read,
+}: {
+  read: Exclude<LiveRead<AllGameData>, { status: "ok" }>;
+}): React.ReactElement {
   return (
     <div className="px-4 py-10 text-center">
       <p className="font-display text-sm font-bold uppercase tracking-[0.08em] text-text-muted">

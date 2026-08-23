@@ -13,7 +13,12 @@ vi.mock("@/lib/utils/logger", () => ({
 }));
 
 import { prisma } from "@/lib/db/prisma";
-import { authenticateAs, authenticateAsNobody, readApiResponse, routeRequest } from "@/test/apiRoute";
+import {
+  authenticateAs,
+  authenticateAsNobody,
+  readApiResponse,
+  routeRequest,
+} from "@/test/apiRoute";
 import { POST } from "./route";
 
 const ADMIN = "admin@lolai.test";

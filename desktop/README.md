@@ -56,27 +56,27 @@ resolved answers with nothing and says so, because a confident wrong reading is 
 an empty panel. The website is asked **once per matchup**, not once per poll: the game is
 read about once a second and this answer changes when a game starts and not once more.
 
-| Phase | | Needs Rust | Changes the schema |
-|---|---|---|---|
-| 1 | Shell, LaneIQ chrome, Live Client reader | no | no |
-| 2 | Tauri core, IPC surface, OS keychain | yes | no |
-| 3 | Pairing — `DesktopDevice`, `/api/desktop/*` | yes | yes |
-| 4 | Live dashboard — matchup, game plan | yes | no |
-| 5a | Post-game handoff | yes | no |
-| 5b | Tray, launch on start-up, signed updates | yes | no |
+| Phase |                                             | Needs Rust | Changes the schema |
+| ----- | ------------------------------------------- | ---------- | ------------------ |
+| 1     | Shell, LaneIQ chrome, Live Client reader    | no         | no                 |
+| 2     | Tauri core, IPC surface, OS keychain        | yes        | no                 |
+| 3     | Pairing — `DesktopDevice`, `/api/desktop/*` | yes        | yes                |
+| 4     | Live dashboard — matchup, game plan         | yes        | no                 |
+| 5a    | Post-game handoff                           | yes        | no                 |
+| 5b    | Tray, launch on start-up, signed updates    | yes        | no                 |
 
 ### The IPC surface
 
-| Command | Answers |
-|---|---|
-| `live_client_get(path)` | One Live Client Data API path, or `null` when no game is running. The path is checked against a fixed allowlist, so the webview cannot aim the privileged client somewhere it should not go. |
-| `pair_device(code)` | Exchanges a pairing code for this machine's token. The token goes to the credential store here; what comes back is the account it belongs to. |
-| `device_account()` | Who this machine is acting as, asked of the website, or `null`. A 401 means the device was revoked — the token is forgotten locally and this answers `null`. |
-| `device_status()` | Whether this machine holds a token, asked of the credential store alone. Never the token, and no network — which is what lets an app opened offline know it is still paired. |
-| `live_context(request)` | What the website knows about the game on screen — the lane read and the game plan — or `null` when this machine is no longer paired. Goes through the core because the reading is personal, so the request has to carry the device token, and the token is not allowed to exist in a webview. |
-| `post_game()` | Tells the website a game has ended so the account is pulled now, or `null` when this machine is no longer paired. Takes no argument: the account is read from the device row and what game it was is read from Riot, so all the app contributes is the timing. |
-| `open_report()` | Opens the player's match list in their **own** browser. Takes no URL — the address is built in the core from the compiled-in base, so a renderer that went wrong could not choose what gets opened. Not a navigation inside this window: a companion to a running game must not turn itself into a browser. |
-| `clear_device_token()` | Forgets it locally. |
+| Command                 | Answers                                                                                                                                                                                                                                                                                                     |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `live_client_get(path)` | One Live Client Data API path, or `null` when no game is running. The path is checked against a fixed allowlist, so the webview cannot aim the privileged client somewhere it should not go.                                                                                                                |
+| `pair_device(code)`     | Exchanges a pairing code for this machine's token. The token goes to the credential store here; what comes back is the account it belongs to.                                                                                                                                                               |
+| `device_account()`      | Who this machine is acting as, asked of the website, or `null`. A 401 means the device was revoked — the token is forgotten locally and this answers `null`.                                                                                                                                                |
+| `device_status()`       | Whether this machine holds a token, asked of the credential store alone. Never the token, and no network — which is what lets an app opened offline know it is still paired.                                                                                                                                |
+| `live_context(request)` | What the website knows about the game on screen — the lane read and the game plan — or `null` when this machine is no longer paired. Goes through the core because the reading is personal, so the request has to carry the device token, and the token is not allowed to exist in a webview.               |
+| `post_game()`           | Tells the website a game has ended so the account is pulled now, or `null` when this machine is no longer paired. Takes no argument: the account is read from the device row and what game it was is read from Riot, so all the app contributes is the timing.                                              |
+| `open_report()`         | Opens the player's match list in their **own** browser. Takes no URL — the address is built in the core from the compiled-in base, so a renderer that went wrong could not choose what gets opened. Not a navigation inside this window: a companion to a running game must not turn itself into a browser. |
+| `clear_device_token()`  | Forgets it locally.                                                                                                                                                                                                                                                                                         |
 
 ### Where it points
 

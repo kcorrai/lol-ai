@@ -1,4 +1,8 @@
-import type { DeathCluster, ConsistencyLevel, NotableEvent } from "@/domains/analysis/types/analysis.types";
+import type {
+  DeathCluster,
+  ConsistencyLevel,
+  NotableEvent,
+} from "@/domains/analysis/types/analysis.types";
 
 // Re-exported rather than redefined: the shared definition lives in lib because five domains use
 // it (CLAUDE.md §4). Kept exported from here so the existing callers do not all have to move.
@@ -9,7 +13,11 @@ export function computeDamageShare(playerDamage: number, teamDamage: number): nu
   return parseFloat((playerDamage / teamDamage).toFixed(4));
 }
 
-export function computeKillParticipation(kills: number, assists: number, teamKills: number): number {
+export function computeKillParticipation(
+  kills: number,
+  assists: number,
+  teamKills: number
+): number {
   if (teamKills === 0) return 0;
   return parseFloat(((kills + assists) / teamKills).toFixed(4));
 }
@@ -53,12 +61,14 @@ export function detectNotableEvents(
 
   if (firstBlood) events.push({ type: "first_blood", description: "Secured first blood" });
   if (deaths === 0) events.push({ type: "perfect_kda", description: "Perfect KDA (0 deaths)" });
-  if (csPerMinute > 8) events.push({ type: "high_cs", description: `Excellent CS: ${csPerMinute}/min` });
+  if (csPerMinute > 8)
+    events.push({ type: "high_cs", description: `Excellent CS: ${csPerMinute}/min` });
   if (visionScore < 10 && position !== "UTILITY") {
     events.push({ type: "poor_vision", description: `Low vision score: ${visionScore}` });
   }
-  if (visionScore > 40) events.push({ type: "high_vision", description: `Outstanding vision: ${visionScore}` });
-  if (won && (kills + 0) >= teamKills * 0.4) {
+  if (visionScore > 40)
+    events.push({ type: "high_vision", description: `Outstanding vision: ${visionScore}` });
+  if (won && kills + 0 >= teamKills * 0.4) {
     events.push({ type: "mvp", description: "Dominant contribution to team win" });
   }
 

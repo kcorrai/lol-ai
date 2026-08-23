@@ -118,8 +118,8 @@ export default function CoachListingsPage(): React.ReactElement {
                 Nothing on sale yet
               </p>
               <p className="mx-auto mt-3 max-w-[48ch] text-[14.5px] text-text-body">
-                Students cannot book you until there is at least one listing. A single replay
-                review is enough to start.
+                Students cannot book you until there is at least one listing. A single replay review
+                is enough to start.
               </p>
               <Button className="mt-5" onClick={() => setAdding(true)}>
                 <Plus className="h-4 w-4" aria-hidden />

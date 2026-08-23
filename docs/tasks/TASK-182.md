@@ -1,13 +1,16 @@
 # TASK-182: Champion Build Pages — /builds/[champion] (+ per-lane)
 
 ## Status: Pending
+
 ## Score: 95/100
 
 ## Goal
+
 "[champion] build" is the highest-volume LoL search pattern (u.gg has ~875 such pages).
 Publish role-aware build pages powered by getChampionBuild.
 
 ## Scope
+
 - `app/(tools)/builds/[champion]/page.tsx` (most-played lane) +
   `app/(tools)/builds/[champion]/[role]/page.tsx` (top/jungle/mid/bot/support slugs) —
   only lanes with pickRate ≥ 2 get pages (~350-450 total).
@@ -22,4 +25,5 @@ Publish role-aware build pages powered by getChampionBuild.
 - Internal links: build ↔ counters ↔ champion guide ↔ tier list; sitemap additions.
 
 ## Commit
+
 `feat(seo): champion build pages with runes, items, skill order and win curves`

@@ -39,7 +39,9 @@ export const gdprErasure = inngest.createFunction(
       userId,
       action: "data.deletion.completed",
       metadata: { reason: "gdpr_erasure" },
-    }).catch(() => { /* best effort */ });
+    }).catch(() => {
+      /* best effort */
+    });
 
     // Hard delete — cascade constraints handle related records
     await prisma.user.delete({ where: { id: userId } });

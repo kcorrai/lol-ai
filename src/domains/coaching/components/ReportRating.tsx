@@ -55,10 +55,7 @@ export function ReportRating({ reportId, currentRating }: Props) {
         Was this report helpful?
       </p>
 
-      <div
-        className="flex justify-center gap-2"
-        onMouseLeave={() => setHovered(null)}
-      >
+      <div className="flex justify-center gap-2" onMouseLeave={() => setHovered(null)}>
         {Array.from({ length: 5 }).map((_, i) => {
           const value = i + 1;
           return (
@@ -79,9 +76,7 @@ export function ReportRating({ reportId, currentRating }: Props) {
       </div>
 
       {activeIndex > 0 && (
-        <p className="mt-1 text-center text-xs text-text-muted">
-          {STAR_LABELS[activeIndex - 1]}
-        </p>
+        <p className="mt-1 text-center text-xs text-text-muted">{STAR_LABELS[activeIndex - 1]}</p>
       )}
 
       {selected !== null && (
@@ -95,11 +90,7 @@ export function ReportRating({ reportId, currentRating }: Props) {
             className="w-full resize-none rounded-md border border-border bg-surface px-3 py-2 text-xs text-text placeholder-text-muted/60 focus:outline-none focus:ring-1 focus:ring-accent/50"
           />
           <div className="flex justify-end">
-            <Button
-              size="sm"
-              onClick={handleSubmit}
-              disabled={isPending}
-            >
+            <Button size="sm" onClick={handleSubmit} disabled={isPending}>
               {isPending ? "Submitting…" : "Submit Rating"}
             </Button>
           </div>

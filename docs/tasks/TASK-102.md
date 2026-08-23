@@ -62,14 +62,14 @@ prismaReadonly.$on("query", (e) => {
 
 ### Hangi Sorgular Read Replica'ya Taşınır
 
-| Servis | Fonksiyon | Taşı? |
-|---|---|---|
-| `adminMetricsService` | `getDau`, `getMau`, `getSignupFunnel` | ✅ |
-| `leaderboardService` | `getWeeklyLeaderboard`, `getMonthlyLeaderboard` | ✅ |
-| `championStatsService` | `getPoolSummary` | ✅ |
-| `matchAnalysisService` | `getMatchHistory` (liste sorgusu) | ✅ |
-| `userService` | `createUser`, `updateSubscription` | ❌ (write) |
-| `matchSyncService` | `upsertMatch` | ❌ (write) |
+| Servis                 | Fonksiyon                                       | Taşı?      |
+| ---------------------- | ----------------------------------------------- | ---------- |
+| `adminMetricsService`  | `getDau`, `getMau`, `getSignupFunnel`           | ✅         |
+| `leaderboardService`   | `getWeeklyLeaderboard`, `getMonthlyLeaderboard` | ✅         |
+| `championStatsService` | `getPoolSummary`                                | ✅         |
+| `matchAnalysisService` | `getMatchHistory` (liste sorgusu)               | ✅         |
+| `userService`          | `createUser`, `updateSubscription`              | ❌ (write) |
+| `matchSyncService`     | `upsertMatch`                                   | ❌ (write) |
 
 ### Repository Pattern Güncellemesi
 
@@ -138,15 +138,15 @@ prisma/migrations/YYYYMMDD_analytics_indexes/            ← YENİ
 ## Test Plan
 
 ```typescript
-describe('prismaReadonly', () => {
-  it('DATABASE_READONLY_URL tanımlı değilse hata fırlatıyor')
-  it('500ms+ sorgular logger.warn çağırıyor')
-})
+describe("prismaReadonly", () => {
+  it("DATABASE_READONLY_URL tanımlı değilse hata fırlatıyor");
+  it("500ms+ sorgular logger.warn çağırıyor");
+});
 
-describe('metricsRepository', () => {
-  it('getDau readonly client kullanıyor (spy ile doğrula)')
-  it('upsert işlemleri readonly client kullanmıyor')
-})
+describe("metricsRepository", () => {
+  it("getDau readonly client kullanıyor (spy ile doğrula)");
+  it("upsert işlemleri readonly client kullanmıyor");
+});
 ```
 
 ---

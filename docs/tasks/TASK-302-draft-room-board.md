@@ -20,7 +20,7 @@ grid in the middle, and a turn indicator that makes it obvious whose move it is.
   - Search box, focused by default, matching name and common aliases
     (`asol` → Aurelion Sol, `mf` → Miss Fortune, `tk` → Tahm Kench).
   - Unavailable champions render dimmed, never hidden, with the reason on hover:
-    *banned this game* · *already picked* · *locked by fearless* · *disabled*.
+    _banned this game_ · _already picked_ · _locked by fearless_ · _disabled_.
     Hiding them is what the reference tool does and it makes fearless series
     confusing — you cannot see what the series has already burned.
 - `TurnIndicator.tsx` — "Blue ban 3" / "Red pick 2" plus the countdown ring, and
@@ -45,7 +45,7 @@ grid in the middle, and a turn indicator that makes it obvious whose move it is.
 - No component over 200 lines. `ChampionGrid` splits its cell into
   `ChampionCell.tsx` if it approaches the limit.
 - Champion portraits via `next/image` (CLAUDE.md §10).
-- Grid virtualisation is *not* in scope — 170 cells render fine.
+- Grid virtualisation is _not_ in scope — 170 cells render fine.
 
 ## Done when
 

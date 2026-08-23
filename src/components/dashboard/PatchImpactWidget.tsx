@@ -13,11 +13,13 @@ export function PatchImpactWidget({ riotAccountId }: Props) {
 
   if (isLoading) {
     return (
-      <div className="rounded-xl border border-border bg-surface p-4 animate-pulse space-y-2">
+      <div className="animate-pulse space-y-2 rounded-xl border border-border bg-surface p-4">
         <div className="h-3 w-32 rounded bg-border" />
         <div className="h-4 w-48 rounded bg-border" />
         <div className="space-y-1.5 pt-1">
-          {[0, 1, 2].map(i => <div key={i} className="h-5 w-full rounded bg-border" />)}
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="h-5 w-full rounded bg-border" />
+          ))}
         </div>
       </div>
     );
@@ -57,8 +59,11 @@ export function PatchImpactWidget({ riotAccountId }: Props) {
       </div>
 
       <div className="space-y-2">
-        {data.champions.map(c => (
-          <div key={c.championName} className="grid grid-cols-[1fr_2.5rem_1rem_2.5rem_3rem] items-center gap-x-2 text-sm">
+        {data.champions.map((c) => (
+          <div
+            key={c.championName}
+            className="grid grid-cols-[1fr_2.5rem_1rem_2.5rem_3rem] items-center gap-x-2 text-sm"
+          >
             <span className="truncate font-medium text-text">{c.championName}</span>
             <span className="text-right text-xs text-text-muted">{c.beforeWr}%</span>
             <span className="text-center text-text-muted">→</span>
@@ -68,7 +73,8 @@ export function PatchImpactWidget({ riotAccountId }: Props) {
                 c.wrDelta > 0 ? "text-success" : "text-danger"
               }`}
             >
-              {c.wrDelta > 0 ? "+" : ""}{c.wrDelta}%
+              {c.wrDelta > 0 ? "+" : ""}
+              {c.wrDelta}%
             </span>
           </div>
         ))}

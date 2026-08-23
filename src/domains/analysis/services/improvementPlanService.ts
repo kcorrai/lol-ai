@@ -13,9 +13,7 @@ import type { ImprovementTarget, PlanWithProgress } from "@/domains/analysis/typ
 
 export { computeWeeklyScore } from "./improvementPlanCompute";
 
-export async function getActivePlan(
-  riotAccountId: string
-): Promise<PlanWithProgress | null> {
+export async function getActivePlan(riotAccountId: string): Promise<PlanWithProgress | null> {
   const plan = await prisma.improvementPlan.findFirst({
     where: { riotAccountId },
     orderBy: { createdAt: "desc" },

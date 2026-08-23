@@ -1,6 +1,9 @@
 import { prisma } from "@/lib/db/prisma";
 import { Errors } from "@/lib/api/errors";
-import { archiveFilterSchema, type ArchiveFilters } from "@/domains/match/services/matchArchiveFilters";
+import {
+  archiveFilterSchema,
+  type ArchiveFilters,
+} from "@/domains/match/services/matchArchiveFilters";
 
 export type SavedSearchSummary = {
   id: string;

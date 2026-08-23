@@ -18,10 +18,7 @@ export function MatchupGuidePanel({ cell, onClose }: Props) {
   return (
     <>
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
       {/* Panel */}
       <aside className="fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col border-l border-border bg-surface shadow-2xl">
@@ -67,15 +64,16 @@ export function MatchupGuidePanel({ cell, onClose }: Props) {
                 AI Coach Advice
               </p>
               <div className="rounded-lg border border-border bg-surface-2 p-4 text-sm leading-relaxed text-text">
-                {data.guide.split("\n").filter(Boolean).map((line, i) => (
-                  <p key={i} className="mb-2 last:mb-0">
-                    {line}
-                  </p>
-                ))}
+                {data.guide
+                  .split("\n")
+                  .filter(Boolean)
+                  .map((line, i) => (
+                    <p key={i} className="mb-2 last:mb-0">
+                      {line}
+                    </p>
+                  ))}
               </div>
-              {data.cacheHit && (
-                <p className="text-[10px] text-text-muted">Cached guide</p>
-              )}
+              {data.cacheHit && <p className="text-[10px] text-text-muted">Cached guide</p>}
             </div>
           )}
         </div>

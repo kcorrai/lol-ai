@@ -141,7 +141,11 @@ export type {
   AvailabilityOutcome,
 } from "@/domains/marketplace/services/availabilityService";
 
-export { freeSlots, isSlotFree, coachSlotsBySlug } from "@/domains/marketplace/services/slotService";
+export {
+  freeSlots,
+  isSlotFree,
+  coachSlotsBySlug,
+} from "@/domains/marketplace/services/slotService";
 
 export { createBooking } from "@/domains/marketplace/services/bookingService";
 export type { BookingRequest, CreateOutcome } from "@/domains/marketplace/services/bookingService";
@@ -159,10 +163,7 @@ export {
   performBookingCommand,
 } from "@/domains/marketplace/services/bookingCommandService";
 
-export {
-  autoComplete,
-  expireBooking,
-} from "@/domains/marketplace/services/bookingSweepService";
+export { autoComplete, expireBooking } from "@/domains/marketplace/services/bookingSweepService";
 
 export {
   runBookingSweeps,
@@ -176,8 +177,15 @@ export type {
 } from "@/domains/marketplace/services/bookingLifecycleService";
 export type { BookingCommand } from "@/domains/marketplace/services/bookingCommandService";
 
-export { transition, recordCreation, bookingHistory } from "@/domains/marketplace/services/bookingEventService";
-export type { TransitionInput, TransitionOutcome } from "@/domains/marketplace/services/bookingEventService";
+export {
+  transition,
+  recordCreation,
+  bookingHistory,
+} from "@/domains/marketplace/services/bookingEventService";
+export type {
+  TransitionInput,
+  TransitionOutcome,
+} from "@/domains/marketplace/services/bookingEventService";
 
 export {
   getReview,
@@ -186,7 +194,11 @@ export {
 } from "@/domains/marketplace/services/vodReviewService";
 export type { AnnotationInput, VodOutcome } from "@/domains/marketplace/services/vodReviewService";
 
-export { ANNOTATION_CATEGORIES, secondsToClock, clockToSeconds } from "@/domains/marketplace/vodClock";
+export {
+  ANNOTATION_CATEGORIES,
+  secondsToClock,
+  clockToSeconds,
+} from "@/domains/marketplace/vodClock";
 
 export {
   listThreads,
@@ -211,11 +223,7 @@ export {
 } from "@/domains/marketplace/services/reviewService";
 export type { ReviewOutcome } from "@/domains/marketplace/services/reviewService";
 
-export {
-  bayesianAverage,
-  wilsonLowerBound,
-  aggregateRatings,
-} from "@/domains/marketplace/rating";
+export { bayesianAverage, wilsonLowerBound, aggregateRatings } from "@/domains/marketplace/rating";
 export type { RatingAggregate } from "@/domains/marketplace/rating";
 
 export { redactContacts, redactionNotice } from "@/domains/marketplace/redact";
@@ -245,7 +253,11 @@ export { spectateStatus } from "@/domains/marketplace/services/spectateService";
 export type { SpectateStatus } from "@/domains/marketplace/services/spectateService";
 export type { SessionPrep } from "@/domains/marketplace/services/sessionPrepService";
 
-export { listBookings, getBookingFor, coachWorkload } from "@/domains/marketplace/services/bookingQueryService";
+export {
+  listBookings,
+  getBookingFor,
+  coachWorkload,
+} from "@/domains/marketplace/services/bookingQueryService";
 export type { CoachWorkload } from "@/domains/marketplace/services/bookingQueryService";
 
 export {

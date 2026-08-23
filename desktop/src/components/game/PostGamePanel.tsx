@@ -26,7 +26,10 @@ export function PostGamePanel({
   if (state.status === "idle") return null;
 
   return (
-    <HudPanel title="Game over" action={state.status === "reported" ? <OpenButton open={open} /> : null}>
+    <HudPanel
+      title="Game over"
+      action={state.status === "reported" ? <OpenButton open={open} /> : null}
+    >
       <Body state={state} />
       {openError ? <p className="mt-3 text-sm text-danger">{openError}</p> : null}
     </HudPanel>
@@ -55,8 +58,7 @@ function Body({ state }: { state: PostGameState }): React.ReactElement {
     case "unavailable":
       return (
         <PanelNote>
-          This preview cannot report the game. Run the desktop app, which has the credential
-          store.
+          This preview cannot report the game. Run the desktop app, which has the credential store.
         </PanelNote>
       );
     case "reporting":
@@ -87,8 +89,8 @@ function Reported({ status }: { status: string }): React.ReactElement {
       <p className="mx-auto mt-2 max-w-sm text-sm text-text-body">
         {/* Said plainly, because it is the reason this app is worth having open: without
             it the match waits until someone next opens the dashboard. */}
-        Normally this waits until you next open the site. It is happening now because this
-        machine saw the game end.
+        Normally this waits until you next open the site. It is happening now because this machine
+        saw the game end.
       </p>
     </div>
   );

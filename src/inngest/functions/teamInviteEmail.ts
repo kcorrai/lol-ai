@@ -20,8 +20,7 @@ export const teamInviteEmail = inngest.createFunction(
     retries: 2,
   },
   async ({ event }) => {
-    const { teamName, inviterUserId, email, token } =
-      event.data as TeamInvitePayload;
+    const { teamName, inviterUserId, email, token } = event.data as TeamInvitePayload;
 
     const emailClient = getEmailClient();
     if (!emailClient) return { skipped: "no_email_client" };

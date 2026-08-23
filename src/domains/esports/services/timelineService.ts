@@ -94,7 +94,11 @@ function toSample(frame: Frame, startedAt: string): TimelineSample | null {
  * game is over, and firing twenty speculative requests to find out is exactly
  * the traffic the sampling exists to avoid.
  */
-async function walk(gameId: string, startedAt: string, completed: boolean): Promise<TimelineSample[]> {
+async function walk(
+  gameId: string,
+  startedAt: string,
+  completed: boolean
+): Promise<TimelineSample[]> {
   const start = Date.parse(startedAt);
   const samples: TimelineSample[] = [];
   let requests = 0;
@@ -160,7 +164,10 @@ export async function getGameTimeline(
     // The walk stops at MAX_SAMPLES whatever the game was doing, and a reader
     // looking at a curve that ends before the game did has to be told so.
     truncated: samples.length >= MAX_SAMPLES,
-    durationSeconds: elapsedSeconds(startedAt, new Date(Date.parse(startedAt) + last.seconds * 1000).toISOString()),
+    durationSeconds: elapsedSeconds(
+      startedAt,
+      new Date(Date.parse(startedAt) + last.seconds * 1000).toISOString()
+    ),
     samples,
   };
 }

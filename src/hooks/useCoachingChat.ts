@@ -5,7 +5,7 @@ import type { ChatMessage } from "@/lib/ai/types";
 import type { CoachPersona } from "@/lib/ai/chatSystemPrompt";
 
 const STORAGE_KEY = (id: string) => `coaching-chat-${id}`;
-const MAX_STORED   = 40;
+const MAX_STORED = 40;
 
 export interface ChatState {
   messages: ChatMessage[];
@@ -66,7 +66,7 @@ export function useCoachingChat(
         });
 
         if (!res.ok) {
-          const json = await res.json().catch(() => ({})) as { error?: { message?: string } };
+          const json = (await res.json().catch(() => ({}))) as { error?: { message?: string } };
           throw new Error(json.error?.message ?? `Error ${res.status}`);
         }
 
@@ -97,9 +97,7 @@ export function useCoachingChat(
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong.");
         // Remove the optimistically added empty assistant message if streaming never started
-        setMessages((prev) =>
-          prev[prev.length - 1]?.content === "" ? prev.slice(0, -1) : prev
-        );
+        setMessages((prev) => (prev[prev.length - 1]?.content === "" ? prev.slice(0, -1) : prev));
       } finally {
         setIsStreaming(false);
       }

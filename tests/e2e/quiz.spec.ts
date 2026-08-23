@@ -166,7 +166,10 @@ test.describe("LaneIQ Daily", () => {
 
   test("is linked from the tools hub", async ({ page }) => {
     await page.goto("/tools");
-    await page.getByRole("link", { name: /LaneIQ Daily/ }).first().click();
+    await page
+      .getByRole("link", { name: /LaneIQ Daily/ })
+      .first()
+      .click();
     await expect(page).toHaveURL(/\/quiz/);
   });
 });

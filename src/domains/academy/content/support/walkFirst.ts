@@ -29,10 +29,26 @@ export const walkFirst: Lesson = {
       caption: "What to be in front of",
       head: ["Moment", "Who walks first", "What it saves"],
       rows: [
-        ["Rotating through the river", "You, one screen ahead", "The carry walking into a waiting team"],
-        ["Approaching a pit", "You, into the brush beside it", "Starting an objective on top of five people"],
-        ["Sieging a turret", "You, at the front of the wave", "Your carry being the closest target"],
-        ["Retreating through your own jungle", "Not you — you are last", "The person being chased is not the cheapest one"],
+        [
+          "Rotating through the river",
+          "You, one screen ahead",
+          "The carry walking into a waiting team",
+        ],
+        [
+          "Approaching a pit",
+          "You, into the brush beside it",
+          "Starting an objective on top of five people",
+        ],
+        [
+          "Sieging a turret",
+          "You, at the front of the wave",
+          "Your carry being the closest target",
+        ],
+        [
+          "Retreating through your own jungle",
+          "Not you — you are last",
+          "The person being chased is not the cheapest one",
+        ],
       ],
     },
     { kind: "drill", drillId: "walkfirst-map" },

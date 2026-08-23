@@ -85,7 +85,7 @@ export default async function TrackPage({ params }: PageProps): Promise<React.Re
                 <span
                   className={`notch-sm mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center font-mono text-[12px] font-bold ${
                     mastered
-                      ? "bg-accent text-background glow-accent-soft"
+                      ? "glow-accent-soft bg-accent text-background"
                       : review
                         ? "border border-warning text-warning"
                         : done

@@ -10,10 +10,7 @@ export function useChampionMastery(
 ) {
   return useQuery<ChampionMasteryScore>({
     queryKey: ["champion-mastery", riotAccountId, championId],
-    queryFn: () =>
-      apiFetch(
-        `/api/champions/${championId}/mastery?riotAccountId=${riotAccountId}`
-      ),
+    queryFn: () => apiFetch(`/api/champions/${championId}/mastery?riotAccountId=${riotAccountId}`),
     enabled: !!riotAccountId && !!championId,
     staleTime: 24 * 60 * 60 * 1000,
     retry: false,

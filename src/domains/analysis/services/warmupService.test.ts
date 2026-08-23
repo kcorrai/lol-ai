@@ -36,11 +36,7 @@ describe("getWarmupStatus", () => {
   });
 
   it("detects warm-up when normal played within 2h before ranked", async () => {
-    setupMocks(
-      [normal(90), ranked(30, true)],
-      [ranked(30, true)],
-      [normal(90)],
-    );
+    setupMocks([normal(90), ranked(30, true)], [ranked(30, true)], [normal(90)]);
     const r = await getWarmupStatus("acc-1");
     expect(r.status).toBe("warmed_up");
     expect(r.warmupGames).toBe(1);
@@ -55,11 +51,7 @@ describe("getWarmupStatus", () => {
   });
 
   it("ignores normal games outside the 2h window (150min > 120min)", async () => {
-    setupMocks(
-      [normal(150), ranked(20, true)],
-      [ranked(20, true)],
-      [normal(150)],
-    );
+    setupMocks([normal(150), ranked(20, true)], [ranked(20, true)], [normal(150)]);
     const r = await getWarmupStatus("acc-1");
     expect(r.status).toBe("no_warmup");
   });

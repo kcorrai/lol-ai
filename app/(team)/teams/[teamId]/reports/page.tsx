@@ -7,9 +7,16 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { useTeamDashboard } from "@/hooks/useTeamDashboard";
 
 const TIER_TR: Record<string, string> = {
-  IRON: "Iron", BRONZE: "Bronze", SILVER: "Silver", GOLD: "Gold",
-  PLATINUM: "Platinum", EMERALD: "Emerald", DIAMOND: "Diamond",
-  MASTER: "Master", GRANDMASTER: "Grandmaster", CHALLENGER: "Challenger",
+  IRON: "Iron",
+  BRONZE: "Bronze",
+  SILVER: "Silver",
+  GOLD: "Gold",
+  PLATINUM: "Platinum",
+  EMERALD: "Emerald",
+  DIAMOND: "Diamond",
+  MASTER: "Master",
+  GRANDMASTER: "Grandmaster",
+  CHALLENGER: "Challenger",
 };
 
 export default function TeamReportsPage() {
@@ -26,7 +33,11 @@ export default function TeamReportsPage() {
   }
 
   if (error || !data) {
-    return <p className="text-sm text-danger px-4 py-6">{error instanceof Error ? error.message : "Failed to load"}</p>;
+    return (
+      <p className="px-4 py-6 text-sm text-danger">
+        {error instanceof Error ? error.message : "Failed to load"}
+      </p>
+    );
   }
 
   const { members } = data;
@@ -65,7 +76,7 @@ export default function TeamReportsPage() {
 
               <Link
                 href={`/coaching/${m.lastReportId}`}
-                className="flex shrink-0 items-center gap-1.5 rounded-lg border border-accent/30 bg-accent/10 px-3 py-1.5 text-xs font-medium text-accent hover:bg-accent/20 transition-colors"
+                className="flex shrink-0 items-center gap-1.5 rounded-lg border border-accent/30 bg-accent/10 px-3 py-1.5 text-xs font-medium text-accent transition-colors hover:bg-accent/20"
               >
                 <FileText className="h-3.5 w-3.5" />
                 View Report

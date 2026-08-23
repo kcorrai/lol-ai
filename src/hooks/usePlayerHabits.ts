@@ -12,8 +12,7 @@ interface HabitsResponse {
 export function usePlayerHabits(riotAccountId: string | null | undefined) {
   return useQuery<HabitsResponse>({
     queryKey: ["player-habits", riotAccountId],
-    queryFn: () =>
-      apiFetch(`/api/analysis/habits?riotAccountId=${riotAccountId}`),
+    queryFn: () => apiFetch(`/api/analysis/habits?riotAccountId=${riotAccountId}`),
     enabled: !!riotAccountId,
     staleTime: 30 * 60 * 1000,
   });

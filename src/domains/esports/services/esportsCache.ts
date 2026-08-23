@@ -37,7 +37,6 @@ export const TTL = {
  */
 export const LAST_GOOD_TTL_DAYS = 365;
 
-
 /**
  * Read a cached value without ever producing one.
  *

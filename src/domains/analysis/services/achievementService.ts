@@ -4,8 +4,16 @@ import { ACHIEVEMENT_CATALOG } from "@/types/achievement";
 import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 
 const TIER_ORDER: Record<string, number> = {
-  IRON: 0, BRONZE: 1, SILVER: 2, GOLD: 3, PLATINUM: 4,
-  EMERALD: 5, DIAMOND: 6, MASTER: 7, GRANDMASTER: 8, CHALLENGER: 9,
+  IRON: 0,
+  BRONZE: 1,
+  SILVER: 2,
+  GOLD: 3,
+  PLATINUM: 4,
+  EMERALD: 5,
+  DIAMOND: 6,
+  MASTER: 7,
+  GRANDMASTER: 8,
+  CHALLENGER: 9,
 };
 const DIV_ORDER: Record<string, number> = { IV: 0, III: 1, II: 2, I: 3 };
 
@@ -45,7 +53,9 @@ async function checkRisingStar(riotAccountId: string): Promise<boolean> {
   if (history.length < 2) return false;
   const first = history[0];
   const last = history[history.length - 1];
-  return toAbsLp(last.tier, last.division, last.lp) - toAbsLp(first.tier, first.division, first.lp) >= 50;
+  return (
+    toAbsLp(last.tier, last.division, last.lp) - toAbsLp(first.tier, first.division, first.lp) >= 50
+  );
 }
 
 async function checkOnFire(riotAccountId: string): Promise<boolean> {
@@ -181,7 +191,9 @@ export async function checkAndAwardAchievements(
       earnedSet.add(entry.id);
       logger.info(`[achievements] Awarded "${entry.id}" to user ${userId}`);
     } catch (err) {
-      logger.warn(`[achievements] Checker failed for "${entry.id}": ${err instanceof Error ? err.message : String(err)}`);
+      logger.warn(
+        `[achievements] Checker failed for "${entry.id}": ${err instanceof Error ? err.message : String(err)}`
+      );
     }
   }
 

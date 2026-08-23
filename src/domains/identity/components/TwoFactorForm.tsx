@@ -24,9 +24,8 @@ export function TwoFactorForm(): React.ReactElement {
   // arrives in the query string — so an absolute one would turn the login flow into
   // an open redirect straight off the site's own domain.
   const rawCallback = searchParams.get("callbackUrl") ?? "/dashboard";
-  const callbackUrl = rawCallback.startsWith("/") && !rawCallback.startsWith("//")
-    ? rawCallback
-    : "/dashboard";
+  const callbackUrl =
+    rawCallback.startsWith("/") && !rawCallback.startsWith("//") ? rawCallback : "/dashboard";
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();

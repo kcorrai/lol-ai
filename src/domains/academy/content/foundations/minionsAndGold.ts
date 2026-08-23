@@ -91,8 +91,7 @@ export const minionsAndGold: Lesson = {
         {
           id: "c",
           label: "About 300 gold, the same as a kill",
-          explain:
-            "That would be roughly two waves. One cannon wave is about half of that.",
+          explain: "That would be roughly two waves. One cannon wave is about half of that.",
           correct: false,
         },
       ],

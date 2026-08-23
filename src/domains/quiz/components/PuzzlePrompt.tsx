@@ -85,7 +85,9 @@ export function PuzzlePrompt({ prompt, misses, revealed }: PuzzlePromptProps): R
     case "splash":
       return (
         <div className="grid animate-quiz-stage gap-4">
-          <Frame badge={revealed ? "Full art" : `Zoom ${splashScale(misses, revealed).toFixed(1)}×`}>
+          <Frame
+            badge={revealed ? "Full art" : `Zoom ${splashScale(misses, revealed).toFixed(1)}×`}
+          >
             {/* eslint-disable-next-line @next/next/no-img-element -- see above */}
             <img
               src={prompt.assetUrl}
@@ -100,7 +102,7 @@ export function PuzzlePrompt({ prompt, misses, revealed }: PuzzlePromptProps): R
 
     case "lore":
       return (
-        <blockquote className="notch bg-scanline relative animate-quiz-stage overflow-hidden border border-line-1 border-l-2 border-l-accent bg-surface-dark px-6 py-5">
+        <blockquote className="notch bg-scanline relative animate-quiz-stage overflow-hidden border border-l-2 border-line-1 border-l-accent bg-surface-dark px-6 py-5">
           <p className="max-w-[64ch] text-[15px] leading-[1.7] text-fg-1">{prompt.text}</p>
           <footer className="mt-4 font-mono text-[10px] uppercase tracking-label text-fg-4">
             Names, titles and abilities are blanked out
@@ -110,7 +112,7 @@ export function PuzzlePrompt({ prompt, misses, revealed }: PuzzlePromptProps): R
 
     case "quote":
       return (
-        <blockquote className="notch bg-scanline relative flex min-h-[190px] animate-quiz-stage flex-col justify-center overflow-hidden border border-line-1 border-l-2 border-l-accent bg-surface-dark px-7 py-6">
+        <blockquote className="notch bg-scanline relative flex min-h-[190px] animate-quiz-stage flex-col justify-center overflow-hidden border border-l-2 border-line-1 border-l-accent bg-surface-dark px-7 py-6">
           <p className="font-mono text-[10px] uppercase tracking-label text-accent">
             {"// Voice line"}
           </p>
@@ -147,7 +149,8 @@ export function PuzzlePrompt({ prompt, misses, revealed }: PuzzlePromptProps): R
             ))}
           </div>
           <Caption>
-            {prompt.emojis.length} of {EMOJI_PER_CHAMPION} clues revealed — each miss reveals another
+            {prompt.emojis.length} of {EMOJI_PER_CHAMPION} clues revealed — each miss reveals
+            another
           </Caption>
         </div>
       );
@@ -164,7 +167,7 @@ export function PuzzlePrompt({ prompt, misses, revealed }: PuzzlePromptProps): R
     case "impostor":
       return (
         <div className="grid animate-quiz-stage gap-4">
-          <div className="notch bg-scanline relative overflow-hidden border border-line-1 border-l-2 border-l-accent bg-surface-dark px-6 py-5">
+          <div className="notch bg-scanline relative overflow-hidden border border-l-2 border-line-1 border-l-accent bg-surface-dark px-6 py-5">
             <p className="font-mono text-[10px] uppercase tracking-label text-accent">
               {"// Odd one out"}
             </p>

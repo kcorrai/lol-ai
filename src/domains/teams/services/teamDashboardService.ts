@@ -2,10 +2,7 @@ import { prismaReadonly } from "@/lib/db/prismaReadonly";
 import { Errors } from "@/lib/api/errors";
 import * as repo from "@/domains/teams/repositories/teamRepository";
 import { assertMemberAccess } from "@/domains/teams/services/teamService";
-import type {
-  TeamDashboardData,
-  TeamMemberSummary,
-} from "@/domains/teams/types/teams.types";
+import type { TeamDashboardData, TeamMemberSummary } from "@/domains/teams/types/teams.types";
 
 const RANGE_DAYS: Record<"7d" | "30d" | "90d", number> = { "7d": 7, "30d": 30, "90d": 90 };
 
@@ -113,7 +110,10 @@ export async function getTeamDashboard(
       let avgVisionScore7d: number | null = null;
       if (recentStats.length > 0) {
         const n = recentStats.length;
-        const sumKDA = recentStats.reduce((s, m) => s + (m.kills + m.assists) / Math.max(m.deaths, 1), 0);
+        const sumKDA = recentStats.reduce(
+          (s, m) => s + (m.kills + m.assists) / Math.max(m.deaths, 1),
+          0
+        );
         const sumCS = recentStats.reduce((s, m) => s + Number(m.csPerMinute), 0);
         const sumVision = recentStats.reduce((s, m) => s + m.visionScore, 0);
         avgKDA7d = parseFloat((sumKDA / n).toFixed(2));
@@ -143,7 +143,8 @@ export async function getTeamDashboard(
   );
 
   const rates = memberDataList.map((m) => m.winRate7d).filter((r): r is number => r !== null);
-  const avgWinRate7d = rates.length > 0 ? Math.round(rates.reduce((a, b) => a + b, 0) / rates.length) : null;
+  const avgWinRate7d =
+    rates.length > 0 ? Math.round(rates.reduce((a, b) => a + b, 0) / rates.length) : null;
 
   return {
     team: {

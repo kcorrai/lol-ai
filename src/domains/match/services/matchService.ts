@@ -96,7 +96,8 @@ export async function getMatchDetail(
   const userParticipant = match.participants.find((p) => accountPuuids.has(p.puuid));
   if (!userParticipant) return null;
 
-  const userAccount = riotAccounts.find((a) => a.puuid === userParticipant.puuid) ?? riotAccounts[0] ?? null;
+  const userAccount =
+    riotAccounts.find((a) => a.puuid === userParticipant.puuid) ?? riotAccounts[0] ?? null;
 
   // Fetch user's latest rank to enrich their participant row (others don't have stored rank)
   const latestUserRank = userAccount
@@ -154,7 +155,9 @@ export async function getMatchDetail(
       runePrimaryPath: p.runePrimaryPath,
       runeSecondaryPath: p.runeSecondaryPath,
       rankTier: isUser ? (latestUserRank?.tier ?? p.rankTier ?? null) : (p.rankTier ?? null),
-      rankDivision: isUser ? (latestUserRank?.division ?? p.rankDivision ?? null) : (p.rankDivision ?? null),
+      rankDivision: isUser
+        ? (latestUserRank?.division ?? p.rankDivision ?? null)
+        : (p.rankDivision ?? null),
       rankLp: isUser ? (latestUserRank?.lp ?? p.rankLp ?? null) : (p.rankLp ?? null),
     };
   });

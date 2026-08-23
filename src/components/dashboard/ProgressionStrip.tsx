@@ -7,11 +7,22 @@ const XP_PER_LEVEL = 500;
 
 // Clash-Royale-style progression header: the player's own level, XP bar and daily streak — the
 // gamified surface the coach tour spotlights. Data comes from useChallenges() (no new API).
-export function ProgressionStrip({ summonerLevel, isPro }: { summonerLevel?: number; isPro?: boolean }): React.JSX.Element {
+export function ProgressionStrip({
+  summonerLevel,
+  isPro,
+}: {
+  summonerLevel?: number;
+  isPro?: boolean;
+}): React.JSX.Element {
   const { data, isLoading } = useChallenges();
 
   if (isLoading) {
-    return <div className="h-16 animate-pulse rounded-2xl border border-border bg-surface" data-tour="progression" />;
+    return (
+      <div
+        className="h-16 animate-pulse rounded-2xl border border-border bg-surface"
+        data-tour="progression"
+      />
+    );
   }
 
   const level = data?.level ?? 1;
@@ -43,10 +54,15 @@ export function ProgressionStrip({ summonerLevel, isPro }: { summonerLevel?: num
       <div className="min-w-[180px] flex-1">
         <div className="mb-1 flex items-center justify-between text-[11px] text-text-muted">
           <span>Progress</span>
-          <span>{xpToNext} XP → Level {level + 1}</span>
+          <span>
+            {xpToNext} XP → Level {level + 1}
+          </span>
         </div>
         <div className="h-2.5 w-full overflow-hidden rounded-full bg-surface-2">
-          <div className="h-full rounded-full bg-accent transition-all duration-700" style={{ width: `${pct}%` }} />
+          <div
+            className="h-full rounded-full bg-accent transition-all duration-700"
+            style={{ width: `${pct}%` }}
+          />
         </div>
       </div>
 
@@ -60,7 +76,9 @@ export function ProgressionStrip({ summonerLevel, isPro }: { summonerLevel?: num
             Summoner {summonerLevel}
           </span>
         )}
-        <span className={`rounded-lg px-2.5 py-1.5 text-xs font-bold ${isPro ? "bg-success/15 text-success" : "bg-surface-2 text-text-muted"}`}>
+        <span
+          className={`rounded-lg px-2.5 py-1.5 text-xs font-bold ${isPro ? "bg-success/15 text-success" : "bg-surface-2 text-text-muted"}`}
+        >
           {isPro ? "Pro" : "Free"}
         </span>
       </div>

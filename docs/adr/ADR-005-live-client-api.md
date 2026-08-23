@@ -8,13 +8,13 @@ Riot Games provides the **Live Client Data API** (port `2999`) during an active 
 
 ### What the API provides
 
-| Endpoint | Data |
-|---|---|
-| `GET /liveclientdata/allgamedata` | Full game state snapshot |
+| Endpoint                           | Data                                         |
+| ---------------------------------- | -------------------------------------------- |
+| `GET /liveclientdata/allgamedata`  | Full game state snapshot                     |
 | `GET /liveclientdata/activeplayer` | Active player stats (gold, level, abilities) |
-| `GET /liveclientdata/playerlist` | All players + items |
-| `GET /liveclientdata/eventdata` | All game events (kills, turrets, dragons) |
-| `GET /liveclientdata/gamestats` | Clock, game mode, map |
+| `GET /liveclientdata/playerlist`   | All players + items                          |
+| `GET /liveclientdata/eventdata`    | All game events (kills, turrets, dragons)    |
+| `GET /liveclientdata/gamestats`    | Clock, game mode, map                        |
 
 - Base URL: `https://127.0.0.1:2999` (self-signed TLS cert, requires `rejectUnauthorized: false`)
 - No authentication — accessible from any process running on the same machine
@@ -24,6 +24,7 @@ Riot Games provides the **Live Client Data API** (port `2999`) during an active 
 ### Riot ToS compliance
 
 Checked against [Riot Games Developer Policies](https://developer.riotgames.com/policies/general):
+
 - ✅ Live Client Data API is explicitly permitted for personal non-commercial apps
 - ✅ Desktop companion apps and browser extensions are allowed
 - ✅ No Riot API key required for the live-client endpoints
@@ -54,13 +55,14 @@ async function getLiveGameData() {
 
 ### Architecture gap
 
-| Layer | Current | Required for Live Client |
-|---|---|---|
-| Data source | Riot API (server-side) | `localhost:2999` (client-side) |
-| Execution environment | Vercel serverless | Player's desktop |
-| Latency | Post-game | Real-time (sub-second) |
+| Layer                 | Current                | Required for Live Client       |
+| --------------------- | ---------------------- | ------------------------------ |
+| Data source           | Riot API (server-side) | `localhost:2999` (client-side) |
+| Execution environment | Vercel serverless      | Player's desktop               |
+| Latency               | Post-game              | Real-time (sub-second)         |
 
 To bridge this gap, one of the following is required:
+
 1. **Electron companion app** — runs alongside League, polls `localhost:2999`, sends events to our WebSocket endpoint
 2. **Browser extension** — same approach via `chrome.runtime.connectNative` or a content script proxy
 3. **Native overlay** — full overlay application (similar to Overwolf apps)
@@ -84,11 +86,13 @@ The Live Client API is technically viable and Riot ToS compliant. Real-time coac
 ## Consequences
 
 **Positive:**
+
 - Clear, bounded architecture: companion app is a separate deployment unit
 - No changes required to the existing Vercel/Next.js stack
 - Live coaching can be added as a Pro-tier feature with a clear distribution path (downloadable app)
 
 **Negative:**
+
 - Requires users to install a separate app → higher friction vs. web-only
 - Electron app adds a new platform to maintain (Windows focus initially, macOS later)
 - Companion app version must stay compatible with League client updates
@@ -113,7 +117,7 @@ actually be most useful — still requires the companion app.
 **Consequences for the deferred work.** The companion app remains the only route to champ select
 and to real-time in-game coaching. Its value is now marginally lower for the "what am I up
 against" use case, since players can get a comp read once loading screen hits, and correspondingly
-concentrated on the two things only it can do: advice *during* picks and bans, and live in-game
+concentrated on the two things only it can do: advice _during_ picks and bans, and live in-game
 events.
 
 **Caveat carried forward.** Spectator counts against the Riot key's rate limit, so it is wired to

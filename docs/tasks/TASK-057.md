@@ -81,6 +81,7 @@ OTP Assistant'Ä±n tam kullanÄ±cÄ± arayÃ¼zÃ¼nÃ¼ yaz. Champion seÃ§i
 ### Free KullanÄ±cÄ± Gating
 
 `hiddenMechanics` bÃ¶lÃ¼mÃ¼ne:
+
 - Ä°lk 2 mekanik gÃ¶rÃ¼nÃ¼r
 - Gerisi iÃ§in blur CSS filter uygula
 - "TÃ¼m gizli mekanikleri gÃ¶rmek iÃ§in Pro'ya geÃ§in" overlay CTA
@@ -92,4 +93,3 @@ OTP Assistant'Ä±n tam kullanÄ±cÄ± arayÃ¼zÃ¼nÃ¼ yaz. Champion seÃ§i
 - TASK-038 (ChampionSelector)
 - TASK-056 (useOtpAssistant hook)
 - `useSubscription` hook'u (plan kontrolÃ¼ iÃ§in, zaten var)
-

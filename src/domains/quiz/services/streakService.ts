@@ -27,13 +27,15 @@ export interface QuizProgress {
   nextResetAt: string;
 }
 
-function toState(row: {
-  current: number;
-  longest: number;
-  lastPlayedDate: Date | null;
-  freezesLeft: number;
-  freezeWeekKey: string | null;
-} | null): StreakState {
+function toState(
+  row: {
+    current: number;
+    longest: number;
+    lastPlayedDate: Date | null;
+    freezesLeft: number;
+    freezeWeekKey: string | null;
+  } | null
+): StreakState {
   if (!row) return INITIAL_STREAK;
   return {
     current: row.current,

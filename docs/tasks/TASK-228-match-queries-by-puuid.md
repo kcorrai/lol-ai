@@ -17,16 +17,16 @@ For a single-user account this returns the exact same rows (that account owns it
 participant rows), so **no regression**; for a shared account, every linking user sees the same
 matches.
 
-- Per-account *record* tables stay keyed by `riotAccountId` (each user keeps their own):
+- Per-account _record_ tables stay keyed by `riotAccountId` (each user keeps their own):
   `ChampionStat`, `RankedHistory`, `CoachingReport`, `ImprovementPlan`, `PlayerHabit`, `TiltAlert`,
   `Achievement`/`UserAchievement`, `Challenge`, and `MatchDeathEvent` (has no puuid; each account
-  generates its own via its timeline sync). Their *computation* now reads matches by puuid.
+  generates its own via its timeline sync). Their _computation_ now reads matches by puuid.
 - Helper `getAccountPuuid(riotAccountId)` (`src/domains/riot/services/accountLookup.ts`).
 
 ## Scope (matchParticipant read sites → puuid)
 
 ~38 sites across analysis + champions + coaching services (matchAnalysisService, championCacheService,
-tiltService, warmupService, achievementService, challenge*, heatmapService, teamfightService,
+tiltService, warmupService, achievementService, challenge\*, heatmapService, teamfightService,
 recapService, retentionService, milestoneService, matchupService, patchService,
 performanceSnapshotService, proComparisonService, rankBenchmarkService, rankUpService,
 championDeepDive/StatsService, counterPickService, masteryScoreService, cardDataBuilders,

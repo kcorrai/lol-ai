@@ -1,11 +1,6 @@
 import { BRAND_COLOR } from "@/domains/discord/brand";
 import type { BotRequest } from "@/domains/discord/request";
-import {
-  formDots,
-  rankHeadline,
-  riotIdLabel,
-  winRateLine,
-} from "@/domains/discord/views/format";
+import { formDots, rankHeadline, riotIdLabel, winRateLine } from "@/domains/discord/views/format";
 import { card, cardActions, cardFooter } from "@/domains/discord/views/shell";
 import { section, separator, textDisplay, thumbnail } from "@/lib/discord/components";
 import type { DiscordMessagePayload } from "@/lib/discord/componentTypes";

@@ -15,7 +15,13 @@ describe("kdaRatio", () => {
   // that this differs from the floor form is wrong — at zero deaths both give kills + assists —
   // and this is that equivalence pinned down, since it is why they could be consolidated.
   it("agrees with the longhand form at every death count, zero included", () => {
-    for (const [k, d, a] of [[10, 0, 5], [10, 1, 5], [0, 0, 0], [7, 3, 9], [1, 12, 30]]) {
+    for (const [k, d, a] of [
+      [10, 0, 5],
+      [10, 1, 5],
+      [0, 0, 0],
+      [7, 3, 9],
+      [1, 12, 30],
+    ]) {
       const longhand = d > 0 ? (k + a) / d : k + a;
       expect(kdaRatio(k, d, a)).toBe(longhand);
     }
@@ -36,7 +42,12 @@ describe("computeKDA", () => {
   });
 
   it("matches the Math.round(x * 100) / 100 form the overlay used to do by hand", () => {
-    for (const [k, d, a] of [[7, 3, 9], [10, 3, 0], [1, 7, 2], [0, 1, 0]]) {
+    for (const [k, d, a] of [
+      [7, 3, 9],
+      [10, 3, 0],
+      [1, 7, 2],
+      [0, 1, 0],
+    ]) {
       expect(computeKDA(k, d, a)).toBe(Math.round(((k + a) / Math.max(d, 1)) * 100) / 100);
     }
   });

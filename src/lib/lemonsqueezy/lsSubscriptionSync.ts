@@ -7,7 +7,8 @@ import type { SubscriptionPlan, SubscriptionStatus } from "@prisma/client";
 function variantToPlan(variantId: number | undefined, isActive: boolean): SubscriptionPlan {
   if (!isActive) return "free";
   const teamVariantId = process.env.LEMONSQUEEZY_TEAM_VARIANT_ID;
-  if (teamVariantId && variantId !== undefined && String(variantId) === teamVariantId) return "team";
+  if (teamVariantId && variantId !== undefined && String(variantId) === teamVariantId)
+    return "team";
   return "pro";
 }
 

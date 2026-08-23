@@ -37,7 +37,11 @@ const TAG =
 const FILTERS = ["All", "Problems", "Strengths"] as const;
 
 /** Weaknesses and strengths as one ordered list, worst first, each with its evidence beside it. */
-export function ReportFindings({ report }: { report: CoachingReportDetail }): React.ReactElement | null {
+export function ReportFindings({
+  report,
+}: {
+  report: CoachingReportDetail;
+}): React.ReactElement | null {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("All");
 
   const findings = useMemo<Finding[]>(() => {

@@ -55,9 +55,21 @@ export const engageAndDisengage: Lesson = {
       caption: "The follow-up window",
       head: ["After the engage lands", "You have", "If you miss it"],
       rows: [
-        ["Hard crowd control on a target", "1–2 seconds", "The target walks out and your engage dies alone"],
-        ["A knock-up into the enemy team", "About 1 second", "The knock-up was a free ability for them to dodge"],
-        ["A dive onto the backline", "Immediately, or not at all", "Your diver is a kill and the fight starts four-versus-five"],
+        [
+          "Hard crowd control on a target",
+          "1–2 seconds",
+          "The target walks out and your engage dies alone",
+        ],
+        [
+          "A knock-up into the enemy team",
+          "About 1 second",
+          "The knock-up was a free ability for them to dodge",
+        ],
+        [
+          "A dive onto the backline",
+          "Immediately, or not at all",
+          "Your diver is a kill and the fight starts four-versus-five",
+        ],
       ],
     },
     { kind: "gate" },

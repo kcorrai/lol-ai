@@ -32,7 +32,11 @@ export const farmingForTheItem: Lesson = {
         ["0–800", "Nothing new", "Get to the first component"],
         ["First item done", "Trade in lane, clear faster", "This is your first real spike"],
         ["Two items", "Win a 2v2, threaten a turret", "The number the mid game is decided by"],
-        ["Three items", "Kill anybody you can reach", "By now the game has usually chosen a winner"],
+        [
+          "Three items",
+          "Kill anybody you can reach",
+          "By now the game has usually chosen a winner",
+        ],
       ],
     },
     { kind: "drill", drillId: "farm-quiz" },

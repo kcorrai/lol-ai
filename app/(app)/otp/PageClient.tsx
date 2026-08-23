@@ -36,9 +36,7 @@ export default function OtpPage() {
   const { data: accounts } = useRiotAccounts();
   const { data: recs } = useOtpRecommendations(accounts?.[0]?.id);
 
-  const isPro =
-    subscription?.plan === "pro" ||
-    subscription?.plan === "elite";
+  const isPro = subscription?.plan === "pro" || subscription?.plan === "elite";
 
   const showEmpty = !champion || !role;
 
@@ -53,16 +51,17 @@ export default function OtpPage() {
       {recs?.recommendations && (
         <RecommendedOtps
           recommendations={recs.recommendations}
-          onSelect={(champ, pos) => { setChampion(champ); setRole(pos); }}
+          onSelect={(champ, pos) => {
+            setChampion(champ);
+            setRole(pos);
+          }}
         />
       )}
 
       {/* Inputs */}
       <div className="mb-6 space-y-3">
         <div>
-          <label className="mb-1.5 block text-xs font-medium text-text-muted">
-            Your Champion
-          </label>
+          <label className="mb-1.5 block text-xs font-medium text-text-muted">Your Champion</label>
           <ChampionSelector value={champion} onChange={setChampion} />
         </div>
         <div>

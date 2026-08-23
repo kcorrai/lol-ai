@@ -77,7 +77,7 @@ export function TierPodium({ entries, roleLabel, hrefBase }: TierPodiumProps): R
                   </div>
                 </div>
                 <div className="mt-3.5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <span className="font-mono text-[32px] font-bold leading-none tabular-nums text-accent">
+                  <span className="font-mono text-[32px] font-bold tabular-nums leading-none text-accent">
                     {entry.winRate.toFixed(1)}%
                   </span>
                   <span className="hud-label text-[11px]">

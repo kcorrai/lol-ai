@@ -15,14 +15,14 @@ all, and not without shipping a desktop client, which is a different product wit
 release process and a different support burden.
 
 **It is also the most restricted surface Riot has.** Riot's third-party rules, as documented in
-Overwolf's Riot compliance guide, prohibit tracking or timing *enemy* abilities and summoner
+Overwolf's Riot compliance guide, prohibit tracking or timing _enemy_ abilities and summoner
 spells outright, call ultimate timers "strictly forbidden", and ban power-spike notifications
 and action-dictating alerts ("gank top now"). An overlay "may only provide static data available
 prior to the game". Even the parts we could build would need a compliance review, and the
 LeagueBroadcast project's history shows the adjacent workaround — reading game memory — is now
 closed off by Vanguard. Building toward that lane means building toward a review we might lose.
 
-Meanwhile there is a second lane that our competitors in the *stat-site* category already
+Meanwhile there is a second lane that our competitors in the _stat-site_ category already
 monetise and that no LoL product does well: the **OBS browser source**. OP.GG runs a Custom
 Streamer Overlay at `streamer-overlay.op.gg`; Tracker.gg ships `tracker.gg/overlays` for
 Valorant. The streamer picks a widget, gets a URL, pastes it into OBS as a Browser Source. No
@@ -86,6 +86,7 @@ cost, and it can reuse everything here.
 ## Consequences
 
 **Good.**
+
 - Ships without a desktop client, without a Twitch application, and without a Riot compliance
   review.
 - Works on Twitch, Kick and YouTube from the first commit, because it is just a URL.
@@ -94,6 +95,7 @@ cost, and it can reuse everything here.
   an acquisition surface rather than a revenue line.
 
 **Bad, and accepted.**
+
 - We do not compete on the in-game overlay, so anyone comparing us feature-for-feature with
   Porofessor will find us absent there. That is the correct trade, but it is a real gap.
 - The overlay is only as fresh as the last match sync, which was previously driven by dashboard

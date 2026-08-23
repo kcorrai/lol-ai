@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { ROLE_IDS, ROLE_LABEL, roleFromPosition } from "./roles";
-import { TRACKS, coreTracks, isRolePath, roleTracks, roleTracksFor, trackForRole } from "./curriculum";
+import {
+  TRACKS,
+  coreTracks,
+  isRolePath,
+  roleTracks,
+  roleTracksFor,
+  trackForRole,
+} from "./curriculum";
 
 describe("role mapping", () => {
   it("maps every Riot position onto a role the Academy names", () => {

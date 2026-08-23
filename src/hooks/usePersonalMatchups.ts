@@ -10,10 +10,7 @@ export function usePersonalMatchups(
 ) {
   return useQuery<PersonalMatchupReport>({
     queryKey: ["personal-matchups", riotAccountId, championId],
-    queryFn: () =>
-      apiFetch(
-        `/api/champions/${championId}/matchups?riotAccountId=${riotAccountId}`
-      ),
+    queryFn: () => apiFetch(`/api/champions/${championId}/matchups?riotAccountId=${riotAccountId}`),
     enabled: !!riotAccountId && !!championId,
     staleTime: 60 * 60 * 1000,
     retry: false,

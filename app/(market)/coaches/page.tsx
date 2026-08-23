@@ -55,7 +55,9 @@ export default async function CoachesPage({ searchParams }: Props) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={jsonLdProps(coachesIndexJsonLd(`${baseUrl}/coaches`, result.total))}
+        dangerouslySetInnerHTML={jsonLdProps(
+          coachesIndexJsonLd(`${baseUrl}/coaches`, result.total)
+        )}
       />
 
       <section className="relative overflow-hidden border-b border-line-1">

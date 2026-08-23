@@ -59,7 +59,9 @@ export function buildProfileForm(
 
   const metrics: FormMetric[] = [
     metric("KDA", kda, benchmarks?.avgKDA ?? null, 2),
-    ...(laned.length > 0 ? [metric("CS / min", csPerMin, benchmarks?.avgCSPerMinute ?? null, 1)] : []),
+    ...(laned.length > 0
+      ? [metric("CS / min", csPerMin, benchmarks?.avgCSPerMinute ?? null, 1)]
+      : []),
     metric("Vision", vision, benchmarks?.avgVisionScore ?? null, 0),
     // Kill participation has no published tier average, so it stands on its own.
     metric("Kill part.", kp, null, 0, "%"),

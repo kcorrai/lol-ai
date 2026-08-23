@@ -10,11 +10,11 @@ not tangled logic."
 
 20 files exceed their §3.3 limit. The distribution matters more than the count:
 
-| Over by | Count | Examples |
-|---|---|---|
-| **1–11 lines** | 8 | `RankedCard.tsx` 202/200, `teamRepository.ts` 153/150, `matchMapper.ts` 155/150 |
-| 17–68 lines | 9 | `RecentMatchList.tsx` 217/200, `CoachingReportDetail.tsx` 258/200 |
-| 100+ lines | 3 | `guideSteps.ts` 360/150, `billing/PageClient.tsx` 309/200, `ReportPDF.tsx` 303/200 |
+| Over by        | Count | Examples                                                                           |
+| -------------- | ----- | ---------------------------------------------------------------------------------- |
+| **1–11 lines** | 8     | `RankedCard.tsx` 202/200, `teamRepository.ts` 153/150, `matchMapper.ts` 155/150    |
+| 17–68 lines    | 9     | `RecentMatchList.tsx` 217/200, `CoachingReportDetail.tsx` 258/200                  |
+| 100+ lines     | 3     | `guideSteps.ts` 360/150, `billing/PageClient.tsx` 309/200, `ReportPDF.tsx` 303/200 |
 
 ## What was fixed, and why only this one
 
@@ -49,5 +49,5 @@ layering violation, so fixing the layering fixed the number.
   tests written first.
 
 **Recommendation:** treat the remaining 19 as a standing observation, not a work item. If one of the
-large components is being modified for a real feature anyway, split it *then*, with tests. Do not
+large components is being modified for a real feature anyway, split it _then_, with tests. Do not
 schedule a sweep.

@@ -372,8 +372,8 @@ export function findChampionStats(
   const indexed = [...snapshotMemo.values()].find((e) => e.value === snapshot)?.derived;
   if (indexed) {
     return typeof championKeyOrId === "number"
-      ? indexed.byId.get(championKeyOrId) ?? null
-      : indexed.byKey.get(championKeyOrId.toLowerCase()) ?? null;
+      ? (indexed.byId.get(championKeyOrId) ?? null)
+      : (indexed.byKey.get(championKeyOrId.toLowerCase()) ?? null);
   }
 
   if (typeof championKeyOrId === "number") {

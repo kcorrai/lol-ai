@@ -26,7 +26,5 @@ const tauriTransport: LiveClientTransport = (path) =>
   invoke<unknown | null>("live_client_get", { path });
 
 const browserTransport: LiveClientTransport = async () => {
-  throw new Error(
-    "Reading the League client needs the desktop core. This is the browser preview."
-  );
+  throw new Error("Reading the League client needs the desktop core. This is the browser preview.");
 };

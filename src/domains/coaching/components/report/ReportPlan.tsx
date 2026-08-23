@@ -72,7 +72,9 @@ export function ReportChampions({
   return (
     <section className={PANEL}>
       <div className="border-b border-line-1 px-5 py-3.5">
-        <span className="hud-label text-[10.5px]">{"// Focus champions · keep queueing these"}</span>
+        <span className="hud-label text-[10.5px]">
+          {"// Focus champions · keep queueing these"}
+        </span>
       </div>
       {recs.map((rec) => (
         <div

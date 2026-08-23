@@ -1,6 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { prisma } from "@/lib/db/prisma";
-import { searchCoaches, sortPageByPrice } from "@/domains/marketplace/services/coachDiscoveryService";
+import {
+  searchCoaches,
+  sortPageByPrice,
+} from "@/domains/marketplace/services/coachDiscoveryService";
 import { parseSearchQuery } from "@/domains/marketplace/searchQuery";
 import type { CoachCard } from "@/domains/marketplace/types";
 

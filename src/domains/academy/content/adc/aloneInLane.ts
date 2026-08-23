@@ -29,7 +29,11 @@ export const aloneInLane: Lesson = {
       caption: "Two people versus one person, same lane",
       head: ["", "With a support", "Alone"],
       rows: [
-        ["Where the wave should be", "Pushed, taking plates", "Near your turret, or slowly pushing"],
+        [
+          "Where the wave should be",
+          "Pushed, taking plates",
+          "Near your turret, or slowly pushing",
+        ],
         ["A gank costs you", "A summoner, usually", "The lane and 300 gold"],
         ["What you want", "Pressure", "Minions and the next item"],
         ["Their jungler", "Has to bring somebody", "Comes alone, and that is enough"],

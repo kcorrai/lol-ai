@@ -86,9 +86,9 @@ describe("searchParamsToFilters tolerance", () => {
 
   it("passes an unknown queue through, so a widened QueueType is not deleted from a shared link", () => {
     // LA-37 widens the enum. A client-side allowlist would silently drop tomorrow's queues.
-    expect(searchParamsToFilters(new URLSearchParams("queueTypes=SOME_NEW_QUEUE")).queueTypes).toEqual(
-      ["SOME_NEW_QUEUE"]
-    );
+    expect(
+      searchParamsToFilters(new URLSearchParams("queueTypes=SOME_NEW_QUEUE")).queueTypes
+    ).toEqual(["SOME_NEW_QUEUE"]);
   });
 });
 

@@ -176,7 +176,8 @@ export const wardPlacementsByPhase: Lesson = {
       options: [
         {
           id: "a",
-          label: "No — it let you push those ninety seconds knowing you were not being collapsed on",
+          label:
+            "No — it let you push those ninety seconds knowing you were not being collapsed on",
           explain:
             "Correct. A ward that shows nothing has still answered its question, and the answer was 'no, he is not here'. That answer is what let you farm forward instead of standing behind your minions guessing.",
           correct: true,

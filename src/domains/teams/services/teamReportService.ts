@@ -76,10 +76,7 @@ export async function getTeamReport(teamId: string): Promise<TeamReportData | nu
   return null;
 }
 
-export async function generateTeamReport(
-  teamId: string,
-  userId: string
-): Promise<TeamReportData> {
+export async function generateTeamReport(teamId: string, userId: string): Promise<TeamReportData> {
   const dashboard = await getTeamDashboard(teamId, userId);
 
   if (dashboard.members.length === 0) {

@@ -29,12 +29,12 @@ Polish the product UI to a consistent, production-grade standard. No new feature
 
 ## Components Built
 
-| Component | Path | Purpose |
-|---|---|---|
-| `ErrorState` | `src/components/ui/error-state.tsx` | Standardized error display with icon + retry |
-| `EmptyState` | `src/components/ui/empty-state.tsx` | Standardized no-data state with icon + CTA |
-| `PageHeader` | `src/components/layout/PageHeader.tsx` | Page title + subtitle + back link + action |
-| `PageSkeleton` | `src/components/layout/PageSkeleton.tsx` | Full-page loading skeleton |
+| Component      | Path                                     | Purpose                                      |
+| -------------- | ---------------------------------------- | -------------------------------------------- |
+| `ErrorState`   | `src/components/ui/error-state.tsx`      | Standardized error display with icon + retry |
+| `EmptyState`   | `src/components/ui/empty-state.tsx`      | Standardized no-data state with icon + CTA   |
+| `PageHeader`   | `src/components/layout/PageHeader.tsx`   | Page title + subtitle + back link + action   |
+| `PageSkeleton` | `src/components/layout/PageSkeleton.tsx` | Full-page loading skeleton                   |
 
 ---
 

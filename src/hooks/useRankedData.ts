@@ -17,8 +17,7 @@ export function useRankedData(
 ) {
   return useQuery<RankedData>({
     queryKey: ["ranked", riotAccountId, queue],
-    queryFn: () =>
-      apiFetch(`/api/riot/${riotAccountId}/ranked?queue=${queue}`),
+    queryFn: () => apiFetch(`/api/riot/${riotAccountId}/ranked?queue=${queue}`),
     enabled: !!riotAccountId,
     staleTime: 5 * 60 * 1000,
   });

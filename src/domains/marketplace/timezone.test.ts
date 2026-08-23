@@ -105,14 +105,22 @@ describe("instantFromWallTime", () => {
 
 describe("existsInZone", () => {
   it("is false only inside the gap", () => {
-    expect(existsInZone({ year: 2026, month: 3, day: 29, hour: 1, minute: 30 }, "Europe/London")).toBe(false);
-    expect(existsInZone({ year: 2026, month: 3, day: 29, hour: 3, minute: 0 }, "Europe/London")).toBe(true);
-    expect(existsInZone({ year: 2026, month: 3, day: 28, hour: 1, minute: 30 }, "Europe/London")).toBe(true);
+    expect(
+      existsInZone({ year: 2026, month: 3, day: 29, hour: 1, minute: 30 }, "Europe/London")
+    ).toBe(false);
+    expect(
+      existsInZone({ year: 2026, month: 3, day: 29, hour: 3, minute: 0 }, "Europe/London")
+    ).toBe(true);
+    expect(
+      existsInZone({ year: 2026, month: 3, day: 28, hour: 1, minute: 30 }, "Europe/London")
+    ).toBe(true);
   });
 
   it("is always true in a zone with no DST", () => {
     for (let hour = 0; hour < 24; hour += 1) {
-      expect(existsInZone({ year: 2026, month: 3, day: 29, hour, minute: 0 }, "Europe/Istanbul")).toBe(true);
+      expect(
+        existsInZone({ year: 2026, month: 3, day: 29, hour, minute: 0 }, "Europe/Istanbul")
+      ).toBe(true);
     }
   });
 });

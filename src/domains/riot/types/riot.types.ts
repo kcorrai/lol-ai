@@ -74,12 +74,12 @@ export interface TeamDTO {
   teamId: number; // 100 = blue, 200 = red
   win: boolean;
   objectives: {
-    baron:      ObjectiveDTO;
-    dragon:     ObjectiveDTO;
-    inhibitor:  ObjectiveDTO;
-    tower:      ObjectiveDTO;
+    baron: ObjectiveDTO;
+    dragon: ObjectiveDTO;
+    inhibitor: ObjectiveDTO;
+    tower: ObjectiveDTO;
     riftHerald: ObjectiveDTO;
-    champion:   ObjectiveDTO;
+    champion: ObjectiveDTO;
   };
 }
 

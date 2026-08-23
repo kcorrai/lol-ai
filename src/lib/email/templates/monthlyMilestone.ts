@@ -2,7 +2,7 @@ import { escapeHtml } from "./emailShell";
 
 export interface MonthlyMilestoneData {
   gameName: string;
-  monthLabel: string;        // e.g. "May 2026"
+  monthLabel: string; // e.g. "May 2026"
   gamesThisMonth: number;
   gamesPrevMonth: number;
   winRate: number;
@@ -16,37 +16,49 @@ export interface MonthlyMilestoneData {
   appUrl: string;
 }
 
-export function buildMonthlyMilestoneEmail(
-  data: MonthlyMilestoneData
-): { subject: string; html: string } {
+export function buildMonthlyMilestoneEmail(data: MonthlyMilestoneData): {
+  subject: string;
+  html: string;
+} {
   const {
-    gameName, monthLabel, gamesThisMonth, gamesPrevMonth, winRate,
-    lpChange, startRank, endRank, bestChampion, bestChampionWinRate,
-    reportsGenerated, isPro, appUrl,
+    gameName,
+    monthLabel,
+    gamesThisMonth,
+    gamesPrevMonth,
+    winRate,
+    lpChange,
+    startRank,
+    endRank,
+    bestChampion,
+    bestChampionWinRate,
+    reportsGenerated,
+    isPro,
+    appUrl,
   } = data;
 
-  const safeName    = escapeHtml(gameName);
-  const safeMonth   = escapeHtml(monthLabel);
-  const safeChamp   = bestChampion ? escapeHtml(bestChampion) : null;
-  const safeStart   = startRank ? escapeHtml(startRank) : null;
-  const safeEnd     = endRank   ? escapeHtml(endRank)   : null;
-  const safeAppUrl  = escapeHtml(appUrl);
+  const safeName = escapeHtml(gameName);
+  const safeMonth = escapeHtml(monthLabel);
+  const safeChamp = bestChampion ? escapeHtml(bestChampion) : null;
+  const safeStart = startRank ? escapeHtml(startRank) : null;
+  const safeEnd = endRank ? escapeHtml(endRank) : null;
+  const safeAppUrl = escapeHtml(appUrl);
 
-  const gamesDelta  = gamesThisMonth - gamesPrevMonth;
-  const lpText      = lpChange !== null ? `${lpChange >= 0 ? "+" : ""}${lpChange} LP` : "—";
-  const lpColor     = lpChange === null ? "#6C817B" : lpChange >= 0 ? "#C6FF3D" : "#FF5A5A";
-  const wrColor     = winRate >= 55 ? "#C6FF3D" : winRate >= 50 ? "#C6FF3D" : "#FF5A5A";
-  const gamesColor  = gamesDelta >= 0 ? "#C6FF3D" : "#FF5A5A";
+  const gamesDelta = gamesThisMonth - gamesPrevMonth;
+  const lpText = lpChange !== null ? `${lpChange >= 0 ? "+" : ""}${lpChange} LP` : "—";
+  const lpColor = lpChange === null ? "#6C817B" : lpChange >= 0 ? "#C6FF3D" : "#FF5A5A";
+  const wrColor = winRate >= 55 ? "#C6FF3D" : winRate >= 50 ? "#C6FF3D" : "#FF5A5A";
+  const gamesColor = gamesDelta >= 0 ? "#C6FF3D" : "#FF5A5A";
 
-  const rankRow = safeStart && safeEnd && safeStart !== safeEnd
-    ? `<p style="margin:0 0 12px;font-size:13px;color:#6C817B;">
+  const rankRow =
+    safeStart && safeEnd && safeStart !== safeEnd
+      ? `<p style="margin:0 0 12px;font-size:13px;color:#6C817B;">
         Rank: <strong style="color:#E9F5EE">${safeStart}</strong>
         <span style="margin:0 8px;color:#C6FF3D">→</span>
         <strong style="color:#C6FF3D">${safeEnd}</strong>
        </p>`
-    : safeEnd
-      ? `<p style="margin:0 0 12px;font-size:13px;color:#6C817B;">Current rank: <strong style="color:#E9F5EE">${safeEnd}</strong></p>`
-      : "";
+      : safeEnd
+        ? `<p style="margin:0 0 12px;font-size:13px;color:#6C817B;">Current rank: <strong style="color:#E9F5EE">${safeEnd}</strong></p>`
+        : "";
 
   const champRow = safeChamp
     ? `<p style="margin:0 0 12px;font-size:13px;color:#6C817B;">
@@ -55,9 +67,10 @@ export function buildMonthlyMilestoneEmail(
        </p>`
     : "";
 
-  const reportsRow = reportsGenerated > 0
-    ? `<p style="margin:0 0 12px;font-size:13px;color:#6C817B;">AI reports generated: <strong style="color:#E9F5EE">${reportsGenerated}</strong></p>`
-    : "";
+  const reportsRow =
+    reportsGenerated > 0
+      ? `<p style="margin:0 0 12px;font-size:13px;color:#6C817B;">AI reports generated: <strong style="color:#E9F5EE">${reportsGenerated}</strong></p>`
+      : "";
 
   const proUpsell = !isPro
     ? `<tr><td style="padding:0 0 16px">

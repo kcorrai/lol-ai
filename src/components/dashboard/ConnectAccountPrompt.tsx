@@ -38,10 +38,7 @@ export function ConnectAccountPrompt() {
             <Button size="lg">Connect Riot Account</Button>
           </Link>
           {/* Not everyone is ready to link an account — keep a way out of this page. */}
-          <Link
-            href="/tools"
-            className="text-xs text-text-muted transition-colors hover:text-text"
-          >
+          <Link href="/tools" className="text-xs text-text-muted transition-colors hover:text-text">
             Or explore the free tools first
           </Link>
         </div>

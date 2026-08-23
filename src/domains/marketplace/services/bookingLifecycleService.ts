@@ -96,7 +96,10 @@ export async function declineBooking(
   if (!actor) return { ok: false, reason: "not-found" };
   if (actor.role !== "coach") return { ok: false, reason: "forbidden" };
 
-  return apply(actor, "DECLINED", userId, reason, { cancelledAt: new Date(), cancelReason: reason });
+  return apply(actor, "DECLINED", userId, reason, {
+    cancelledAt: new Date(),
+    cancelReason: reason,
+  });
 }
 
 /**

@@ -64,7 +64,9 @@ function LiveGameButtonInner({ mode }: { mode: Mode }) {
     setLoading(true);
     setMessage(null);
     try {
-      const res = await apiFetch<LiveGameResponse>(`/api/riot/live-game?riotAccountId=${accountId}`);
+      const res = await apiFetch<LiveGameResponse>(
+        `/api/riot/live-game?riotAccountId=${accountId}`
+      );
       if (!res.inGame) {
         setMessage("You're not in a game right now. Start one and try again.");
         return;
@@ -73,16 +75,14 @@ function LiveGameButtonInner({ mode }: { mode: Mode }) {
       if (mode === "matchup") {
         if (!res.yourMatchup) {
           setMessage(
-            "Found your game, but couldn't work out your lane opponent. Pick the two champions below.",
+            "Found your game, but couldn't work out your lane opponent. Pick the two champions below."
           );
           return;
         }
         const { champion, opponent, position } = res.yourMatchup;
-        router.push(
-          `/tools/matchup?a=${champion}&b=${opponent}&role=${position}`,
-        );
+        router.push(`/tools/matchup?a=${champion}&b=${opponent}&role=${position}`);
         setMessage(
-          `Loaded ${champion} vs ${opponent} in ${POSITION_LABELS[position]} — we guessed the lane, change it if that's not your matchup.`,
+          `Loaded ${champion} vs ${opponent} in ${POSITION_LABELS[position]} — we guessed the lane, change it if that's not your matchup.`
         );
         return;
       }
@@ -97,7 +97,7 @@ function LiveGameButtonInner({ mode }: { mode: Mode }) {
       });
       router.push(`/tools/draft-analyzer?${params}`);
       setMessage(
-        `Loaded your live game — you're on ${res.yourSide === "red" ? "red" : "blue"}. Lanes are a best guess, correct any that are wrong.`,
+        `Loaded your live game — you're on ${res.yourSide === "red" ? "red" : "blue"}. Lanes are a best guess, correct any that are wrong.`
       );
     } catch {
       setMessage("Couldn't reach the live game right now. Try again in a moment.");

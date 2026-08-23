@@ -46,11 +46,11 @@ src/domains/otp/
 ### Tip TanÄ±mlarÄ± (`otp.types.ts`)
 
 ```typescript
-import type { Position } from '@/types/common.types';
+import type { Position } from "@/types/common.types";
 
 export interface OtpMatchupEntry {
   opponent: string;
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: "easy" | "medium" | "hard";
   summary: string;
   keyTip: string;
 }
@@ -93,4 +93,3 @@ export interface OtpAnalysis {
 ## BaÄŸÄ±mlÄ±lÄ±klar
 
 - BaÄŸÄ±msÄ±z â€” paralel baÅŸlanabilir.
-

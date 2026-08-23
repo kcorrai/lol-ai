@@ -11,5 +11,4 @@ export function getEmailClient(): Resend | null {
   return _client;
 }
 
-export const EMAIL_FROM =
-  process.env.EMAIL_FROM ?? "LoL AI Coach <noreply@lolaicoach.gg>";
+export const EMAIL_FROM = process.env.EMAIL_FROM ?? "LoL AI Coach <noreply@lolaicoach.gg>";

@@ -115,12 +115,7 @@ describe("createBooking", () => {
     await createBooking(REQUEST);
 
     expect(mockLock).toHaveBeenCalledWith("coach:coach-1", expect.any(Function));
-    expect(mockSlotFree).toHaveBeenCalledWith(
-      "coach-1",
-      REQUEST.startTime,
-      60,
-      expect.any(Date)
-    );
+    expect(mockSlotFree).toHaveBeenCalledWith("coach-1", REQUEST.startTime, 60, expect.any(Date));
   });
 
   it("refuses a slot that went while the page was open", async () => {

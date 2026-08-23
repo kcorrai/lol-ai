@@ -49,7 +49,9 @@ export function ApplicationStatusPanel({
     <HudPanel
       label={canSend ? "Step 3 · Send it" : "Application"}
       tone={statusTone(profile.status)}
-      action={<StatusChip tone={statusChip(profile.status)}>{statusLabel(profile.status)}</StatusChip>}
+      action={
+        <StatusChip tone={statusChip(profile.status)}>{statusLabel(profile.status)}</StatusChip>
+      }
     >
       <p className="text-[14.5px] text-text-body">{describe(profile)}</p>
 
@@ -83,7 +85,9 @@ export function ApplicationStatusPanel({
                     : "mt-1.5 block h-[7px] w-[7px] border border-warning"
                 }
               />
-              <span className={item.ok ? "text-[13.5px] text-text" : "text-[13.5px] text-text-muted"}>
+              <span
+                className={item.ok ? "text-[13.5px] text-text" : "text-[13.5px] text-text-muted"}
+              >
                 {item.text}
               </span>
             </li>

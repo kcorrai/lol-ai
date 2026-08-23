@@ -33,6 +33,7 @@ Build the public marketing landing page and pricing page. These pages must commu
 ### SEO
 
 Every marketing page exports metadata:
+
 ```typescript
 export const metadata: Metadata = {
   title: 'LoL AI Coach — AI-Powered League of Legends Coaching',
@@ -57,6 +58,7 @@ export const metadata: Metadata = {
 ## Components to Build
 
 `app/(marketing)/components/` (page-level, not reused):
+
 - `HeroSection.tsx`
 - `HowItWorksSection.tsx`
 - `FeaturesSection.tsx`

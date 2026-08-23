@@ -79,8 +79,7 @@ export async function listBookings(
   userId: string,
   as: "student" | "coach"
 ): Promise<BookingSummary[]> {
-  const where =
-    as === "student" ? { studentId: userId } : { coachProfile: { userId } };
+  const where = as === "student" ? { studentId: userId } : { coachProfile: { userId } };
 
   const rows = await prisma.booking.findMany({
     where,
@@ -99,7 +98,11 @@ export async function getBookingFor(bookingId: string, userId: string) {
       id: bookingId,
       OR: [{ studentId: userId }, { coachProfile: { userId } }],
     },
-    select: { ...SUMMARY_SELECT, studentId: true, coachProfile: { select: { slug: true, displayName: true, userId: true } } },
+    select: {
+      ...SUMMARY_SELECT,
+      studentId: true,
+      coachProfile: { select: { slug: true, displayName: true, userId: true } },
+    },
   });
 
   if (!row) return null;

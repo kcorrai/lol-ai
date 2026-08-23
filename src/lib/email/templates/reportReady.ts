@@ -21,7 +21,10 @@ export interface ReportReadyEmailData {
   appUrl: string;
 }
 
-export function buildReportReadyEmail(data: ReportReadyEmailData): { subject: string; html: string } {
+export function buildReportReadyEmail(data: ReportReadyEmailData): {
+  subject: string;
+  html: string;
+} {
   const label = REPORT_TYPE_LABELS[data.reportType] ?? data.reportType;
   const subject = `${data.gameName}, your report is ready — ${label}`;
   const safeName = escapeHtml(data.gameName);

@@ -47,7 +47,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   for (const user of usersWithoutSlug) {
     const account = user.riotAccounts[0];
-    if (!account) { skipped++; continue; }
+    if (!account) {
+      skipped++;
+      continue;
+    }
 
     const slug = toProfileSlug(account.gameName, account.tagLine);
 

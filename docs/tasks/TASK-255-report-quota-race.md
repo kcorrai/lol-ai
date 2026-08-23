@@ -3,6 +3,7 @@
 Status: **open — not yet implemented**
 
 ## Problem
+
 `assertCanGenerateReport` in `src/lib/auth/authorization.ts:49-83` counts existing reports and throws
 if the count is at the limit. The caller then inserts the new report as a separate statement:
 
@@ -24,6 +25,7 @@ The same shape exists in `src/domains/riot/services/accountService.ts:70`, where
 counted before create — concurrent connects can leave two primary accounts.
 
 ## Suggested approach
+
 Serialize the check and the insert per user. Options, cheapest first:
 
 1. **Conditional insert in a transaction.** Wrap count + create in `prisma.$transaction` at
@@ -37,6 +39,7 @@ Serialize the check and the insert per user. Options, cheapest first:
 Recommend (2) — it also makes the current usage cheaply readable for the UI, which today re-counts.
 
 ## Tests to add
+
 Concurrent-call test asserting exactly `limit` reports are created when `limit + 5` requests race;
 plus the existing single-request limit behaviour.
 

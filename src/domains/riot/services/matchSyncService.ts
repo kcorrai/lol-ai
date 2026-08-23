@@ -26,7 +26,10 @@ export type SyncResult = {
 // Runs syncAccount while managing the account's sync status lifecycle
 // (RUNNING → COMPLETED / FAILED). Shared by the durable Inngest worker and the route's in-process
 // fallback (TASK-223), so both paths report status identically. Rethrows so Inngest can retry.
-export async function runSyncWithStatus(riotAccountId: string, userId: string): Promise<SyncResult> {
+export async function runSyncWithStatus(
+  riotAccountId: string,
+  userId: string
+): Promise<SyncResult> {
   await prisma.riotAccount.update({
     where: { id: riotAccountId },
     data: { syncStatus: "RUNNING", syncStartedAt: new Date(), lastSyncError: null },
@@ -104,25 +107,29 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
 
   // Each task swallows its own failure, so one unreadable match cannot end the run — the same
   // guarantee the sequential loop gave, kept inside the task rather than around the pool.
-  const outcomes = await mapWithConcurrency(newMatchIds, INGEST_CONCURRENCY, async (riotMatchId) => {
-    try {
-      const dto = await getMatch(riotMatchId, region);
-      const matchDbId = randomUUID();
-      const mapped = mapMatch(dto, matchDbId, puuid, accountId);
-      if (!mapped) return { kind: "skipped" as const };
+  const outcomes = await mapWithConcurrency(
+    newMatchIds,
+    INGEST_CONCURRENCY,
+    async (riotMatchId) => {
+      try {
+        const dto = await getMatch(riotMatchId, region);
+        const matchDbId = randomUUID();
+        const mapped = mapMatch(dto, matchDbId, puuid, accountId);
+        if (!mapped) return { kind: "skipped" as const };
 
-      await prisma.$transaction(async (tx) => {
-        await tx.match.create({ data: mapped.match });
-        await tx.matchParticipant.createMany({ data: mapped.participants });
-      });
+        await prisma.$transaction(async (tx) => {
+          await tx.match.create({ data: mapped.match });
+          await tx.matchParticipant.createMany({ data: mapped.participants });
+        });
 
-      return { kind: "ingested" as const, participants: mapped.participants };
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      logger.warn(`[sync] Failed for match ${riotMatchId}: ${msg}`);
-      return { kind: "failed" as const, error: `${riotMatchId}: ${msg}` };
+        return { kind: "ingested" as const, participants: mapped.participants };
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        logger.warn(`[sync] Failed for match ${riotMatchId}: ${msg}`);
+        return { kind: "failed" as const, error: `${riotMatchId}: ${msg}` };
+      }
     }
-  });
+  );
 
   // Folded after the fact rather than mutated from inside the tasks, so the counts do not depend
   // on the order things happened to finish in.
@@ -166,12 +173,19 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   }
 
   // ── Ranked snapshot ────────────────────────────────────────────────────────
-  const { rankedSnapshotted, errors: rankedErrors, updatedAccount } = await syncRankedSnapshot(account);
+  const {
+    rankedSnapshotted,
+    errors: rankedErrors,
+    updatedAccount,
+  } = await syncRankedSnapshot(account);
   account = updatedAccount;
   errors.push(...rankedErrors);
 
   // ── Finalize ───────────────────────────────────────────────────────────────
-  await prisma.riotAccount.update({ where: { id: account.id }, data: { lastSyncedAt: new Date() } });
+  await prisma.riotAccount.update({
+    where: { id: account.id },
+    data: { lastSyncedAt: new Date() },
+  });
   await invalidateAccountCache(account.puuid, account.summonerId ?? "", account.region);
 
   // Mastery is chained rather than fired alongside: it annotates the rows the stats
@@ -191,18 +205,27 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
   const events = [
     { name: "tilt/check-streak", data: { riotAccountId: account.id, userId: account.userId } },
     { name: "achievement/check", data: { riotAccountId: account.id, userId: account.userId } },
-    { name: "challenge/check-progress", data: { riotAccountId: account.id, userId: account.userId } },
+    {
+      name: "challenge/check-progress",
+      data: { riotAccountId: account.id, userId: account.userId },
+    },
     { name: "snapshot/compute", data: { riotAccountId: account.id } },
     ...(newCount >= 3
       ? [{ name: "match/session.synced", data: { riotAccountId: account.id } }]
       : []),
     ...(forNewMatches
       ? [
-          { name: "academy/check-assignments", data: { riotAccountId: account.id, userId: account.userId } },
+          {
+            name: "academy/check-assignments",
+            data: { riotAccountId: account.id, userId: account.userId },
+          },
           // Replaces both the per-match fan-out that used to sit in the ingest loop and the
           // fifteen-match backfill sweep that used to run here. The sweep only existed because
           // the fan-out kept losing its work.
-          { name: "match/enrich-ranks", data: { riotAccountId: account.id, region: account.region } },
+          {
+            name: "match/enrich-ranks",
+            data: { riotAccountId: account.id, region: account.region },
+          },
         ]
       : []),
   ];
@@ -224,11 +247,15 @@ export async function syncAccount(riotAccountId: string, force = false): Promise
     // for each — twelve round trips to forget six things.
     const positions = ["all", "TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"];
     await deleteCachedMany(
-      positions.map((pos) => buildCacheKey("matchup-matrix", { riotAccountId: account.id, position: pos }))
+      positions.map((pos) =>
+        buildCacheKey("matchup-matrix", { riotAccountId: account.id, position: pos })
+      )
     ).catch((err) => logger.warn("[sync] Cache bust failed", err));
   }
 
-  logger.info(`[sync] Done: +${newCount} new, ${skipped} skipped, ${errors.length} errors, ranked=${rankedSnapshotted}`);
+  logger.info(
+    `[sync] Done: +${newCount} new, ${skipped} skipped, ${errors.length} errors, ranked=${rankedSnapshotted}`
+  );
   if (errors.length > 0) logger.warn(`[sync] First error sample: ${errors[0]}`);
 
   return { newMatches: newCount, skipped, rankedSnapshotted, errors };

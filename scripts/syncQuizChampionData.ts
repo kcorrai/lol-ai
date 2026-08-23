@@ -123,7 +123,10 @@ async function fetchDetail(
   const slots: AbilitySlot[] = ["Q", "W", "E", "R"];
   return {
     skinNums: detail.skins.map((s) => s.num),
-    lore: detail.lore.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim(),
+    lore: detail.lore
+      .replace(/<[^>]+>/g, "")
+      .replace(/\s+/g, " ")
+      .trim(),
     abilities: [
       { slot: "P" as AbilitySlot, name: detail.passive.name, image: detail.passive.image.full },
       ...detail.spells.slice(0, 4).map((spell, i) => ({
@@ -169,8 +172,7 @@ function build(
           ? "Ranged"
           : "Melee"),
     releaseYear:
-      overlay.releaseYear ??
-      (meraki?.releaseDate ? Number(meraki.releaseDate.slice(0, 4)) : 0),
+      overlay.releaseYear ?? (meraki?.releaseDate ? Number(meraki.releaseDate.slice(0, 4)) : 0),
     ...detail,
   };
 }

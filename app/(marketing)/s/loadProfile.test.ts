@@ -7,7 +7,7 @@ vi.mock("@/domains/riot/services/previewService", () => ({ buildPublicProfile: v
 // verified against the running server, not here.
 vi.mock("react", async (importOriginal) => ({
   ...(await importOriginal<object>()),
-  cache: <T,>(fn: T): T => fn,
+  cache: <T>(fn: T): T => fn,
 }));
 
 import { buildPublicProfile } from "@/domains/riot/services/previewService";
@@ -44,7 +44,7 @@ describe("loadProfile", () => {
 
   it("separates Riot throttling from a missing player, because only one is worth retrying", async () => {
     vi.mocked(buildPublicProfile).mockRejectedValue(
-      new ApiError("RIOT_RATE_LIMITED", "slow down", 503),
+      new ApiError("RIOT_RATE_LIMITED", "slow down", 503)
     );
 
     expect(await loadProfile("throttled", "TR1", "tr1")).toEqual({

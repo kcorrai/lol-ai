@@ -75,7 +75,9 @@ describe("saveSearch", () => {
 
   it("replaces a search of the same name rather than making a duplicate", async () => {
     db.savedSearch.findUnique.mockResolvedValue({ id: "existing" });
-    db.savedSearch.upsert.mockResolvedValue(stored("My search", { result: "win", playerSide: "either" }));
+    db.savedSearch.upsert.mockResolvedValue(
+      stored("My search", { result: "win", playerSide: "either" })
+    );
 
     await saveSearch(USER, "My search", filters);
 
@@ -86,10 +88,12 @@ describe("saveSearch", () => {
     expect(db.savedSearch.count).not.toHaveBeenCalled();
   });
 
-  it("trims the name, so \"  Ahri  \" and \"Ahri\" are the same search", async () => {
+  it('trims the name, so "  Ahri  " and "Ahri" are the same search', async () => {
     db.savedSearch.findUnique.mockResolvedValue(null);
     db.savedSearch.count.mockResolvedValue(0);
-    db.savedSearch.upsert.mockResolvedValue(stored("Ahri", { result: "win", playerSide: "either" }));
+    db.savedSearch.upsert.mockResolvedValue(
+      stored("Ahri", { result: "win", playerSide: "either" })
+    );
 
     await saveSearch(USER, "  Ahri  ", filters);
 
@@ -111,7 +115,9 @@ describe("saveSearch", () => {
 
   it("still lets an existing search be overwritten at the cap", async () => {
     db.savedSearch.findUnique.mockResolvedValue({ id: "existing" });
-    db.savedSearch.upsert.mockResolvedValue(stored("At cap", { result: "win", playerSide: "either" }));
+    db.savedSearch.upsert.mockResolvedValue(
+      stored("At cap", { result: "win", playerSide: "either" })
+    );
 
     await expect(saveSearch(USER, "At cap", filters)).resolves.toMatchObject({ name: "At cap" });
   });

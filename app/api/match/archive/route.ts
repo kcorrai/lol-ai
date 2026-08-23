@@ -34,7 +34,8 @@ export const GET = withAuth(async (req: NextRequest, { userId }) => {
 
   const limitParam = params.get("limit");
   const limit = limitParam ? Number(limitParam) : undefined;
-  if (limit !== undefined && !Number.isFinite(limit)) throw Errors.validation("limit must be a number");
+  if (limit !== undefined && !Number.isFinite(limit))
+    throw Errors.validation("limit must be a number");
 
   const page = await searchArchive(puuid, filters, params.get("cursor") ?? undefined, limit);
   return apiSuccess(page);

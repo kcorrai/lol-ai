@@ -6,7 +6,7 @@ import type { TeamDashboardData } from "@/domains/teams/types/teams.types";
 async function fetchDashboard(teamId: string, range: string): Promise<TeamDashboardData> {
   const res = await fetch(`/api/teams/${teamId}/dashboard?range=${range}`);
   if (!res.ok) throw new Error("Failed to load dashboard");
-  const body = await res.json() as { data: TeamDashboardData };
+  const body = (await res.json()) as { data: TeamDashboardData };
   return body.data;
 }
 

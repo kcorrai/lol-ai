@@ -57,16 +57,12 @@ export function CareerCard({ d }: { d: CareerCardData }) {
           <span style={{ color: C.brand, fontSize: 26, fontWeight: 700 }}>
             {d.signatureChampion}
           </span>
-          <span style={{ color: C.muted, fontSize: 18 }}>
-            {d.signatureChampionGames} games
-          </span>
+          <span style={{ color: C.muted, fontSize: 18 }}>{d.signatureChampionGames} games</span>
         </div>
       )}
 
       {d.headline && (
-        <span style={{ color: C.text, fontSize: 22, marginTop: 18 }}>
-          Best game — {d.headline}
-        </span>
+        <span style={{ color: C.text, fontSize: 22, marginTop: 18 }}>Best game — {d.headline}</span>
       )}
 
       <div

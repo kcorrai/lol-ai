@@ -76,9 +76,7 @@ export function PairingCodePanel(): React.ReactElement {
       {/* Said out loud because generating again is also the "I lost it" button,
           and a player who does that mid-pairing needs to know why the app just
           started refusing the code they were typing. */}
-      <p className="text-[11px] text-text-muted">
-        Generating a new code cancels the previous one.
-      </p>
+      <p className="text-[11px] text-text-muted">Generating a new code cancels the previous one.</p>
     </div>
   );
 }

@@ -45,7 +45,7 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   // Durable via Inngest in production; runs in-process if Inngest is unavailable (TASK-223).
   await dispatchOrRunInProcess(
     { name: "riot/sync.requested", data: { riotAccountId, userId } satisfies MatchSyncPayload },
-    () => runSyncWithStatus(riotAccountId, userId),
+    () => runSyncWithStatus(riotAccountId, userId)
   );
 
   return apiSuccess({ status: "pending", riotAccountId }, 202);

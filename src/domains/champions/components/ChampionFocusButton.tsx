@@ -46,7 +46,7 @@ export function ChampionFocusButton({ riotAccountId, championName }: ChampionFoc
     return (
       <button
         onClick={() => router.push("/coaching")}
-        className="mt-2 w-full rounded-md bg-success/10 px-2 py-1.5 text-xs font-medium text-success hover:bg-success/20 transition-colors"
+        className="mt-2 w-full rounded-md bg-success/10 px-2 py-1.5 text-xs font-medium text-success transition-colors hover:bg-success/20"
       >
         Report queued — view in reports →
       </button>
@@ -65,9 +65,7 @@ export function ChampionFocusButton({ riotAccountId, championName }: ChampionFoc
         <Sparkles className="mr-1.5 h-3 w-3" />
         {generateReport.isPending ? "Generating…" : "AI Analysis"}
       </Button>
-      {error && (
-        <p className="mt-1 text-center text-[11px] text-danger">{error}</p>
-      )}
+      {error && <p className="mt-1 text-center text-[11px] text-danger">{error}</p>}
     </div>
   );
 }

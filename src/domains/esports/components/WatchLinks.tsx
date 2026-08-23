@@ -42,19 +42,19 @@ export function WatchLinks({
         />
       )}
       <div className="flex flex-wrap items-center gap-1.5">
-      <span className="hud-label mr-1">{label}</span>
-      {links.map((link) => (
-        <a
-          key={link.url}
-          href={link.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="tag-cut bg-surface-2 px-2.5 py-1 font-mono text-[11px] uppercase tracking-label text-text-body transition-colors hover:bg-surface hover:text-text"
-        >
-          {PROVIDER_LABEL[link.provider]}
-          <span className="ml-1.5 text-text-faint">{link.language}</span>
-        </a>
-      ))}
+        <span className="hud-label mr-1">{label}</span>
+        {links.map((link) => (
+          <a
+            key={link.url}
+            href={link.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="tag-cut bg-surface-2 px-2.5 py-1 font-mono text-[11px] uppercase tracking-label text-text-body transition-colors hover:bg-surface hover:text-text"
+          >
+            {PROVIDER_LABEL[link.provider]}
+            <span className="ml-1.5 text-text-faint">{link.language}</span>
+          </a>
+        ))}
       </div>
     </div>
   );

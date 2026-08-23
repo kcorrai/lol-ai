@@ -39,9 +39,7 @@ export interface CoachConsoleStats {
 
 /** The Monday 00:00 UTC on or before `date`. */
 function weekStartOf(date: Date): Date {
-  const d = new Date(
-    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
-  );
+  const d = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
   // getUTCDay is 0 on Sunday, which is the end of the week we want, not the start.
   const shift = (d.getUTCDay() + 6) % 7;
   d.setUTCDate(d.getUTCDate() - shift);
@@ -215,9 +213,7 @@ export async function listingPerformance(
           acceptRate: decided === 0 ? null : (decided - refused) / decided,
           delivered: countOf(row.listingId, (s) => s === "DELIVERED" || s === "COMPLETED"),
           rating:
-            scores.length === 0
-              ? null
-              : scores.reduce((sum, n) => sum + n, 0) / scores.length,
+            scores.length === 0 ? null : scores.reduce((sum, n) => sum + n, 0) / scores.length,
         },
       ];
     })

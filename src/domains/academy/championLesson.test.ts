@@ -18,16 +18,39 @@ function analysis(overrides: Partial<OtpAnalysis> = {}): OtpAnalysis {
     role: "MIDDLE",
     matchupTierList: {
       easy: [matchup("Lux", "easy"), matchup("Veigar", "easy"), matchup("Ziggs", "easy")],
-      medium: [matchup("Orianna", "medium"), matchup("Syndra", "medium"), matchup("Azir", "medium")],
+      medium: [
+        matchup("Orianna", "medium"),
+        matchup("Syndra", "medium"),
+        matchup("Azir", "medium"),
+      ],
       hard: [matchup("Zed", "hard"), matchup("Fizz", "hard"), matchup("Yasuo", "hard")],
     },
     banPriority: [
-      { champion: "Zed", priority: 2, reason: "Kills you through the charm window after level six." },
-      { champion: "Fizz", priority: 1, reason: "Ignores your only escape and out-trades every wave." },
-      { champion: "Yasuo", priority: 3, reason: "Blocks the poke that the whole lane is built on." },
+      {
+        champion: "Zed",
+        priority: 2,
+        reason: "Kills you through the charm window after level six.",
+      },
+      {
+        champion: "Fizz",
+        priority: 1,
+        reason: "Ignores your only escape and out-trades every wave.",
+      },
+      {
+        champion: "Yasuo",
+        priority: 3,
+        reason: "Blocks the poke that the whole lane is built on.",
+      },
     ],
-    hiddenMechanics: ["The charm applies before the projectile finishes travelling, which matters at max range."],
-    powerSpikes: [{ trigger: "Level 6", description: "Three dashes turn a lost trade into a kill on anybody below half." }],
+    hiddenMechanics: [
+      "The charm applies before the projectile finishes travelling, which matters at max range.",
+    ],
+    powerSpikes: [
+      {
+        trigger: "Level 6",
+        description: "Three dashes turn a lost trade into a kill on anybody below half.",
+      },
+    ],
     laneStrategies: ["Push the first three waves and take the level-two advantage into a roam."],
     metaRating: {
       score: 7,
@@ -142,7 +165,9 @@ describe("refusing to generate", () => {
 
   it("returns null when the analysis came back with no summaries to explain with", () => {
     const stripped = analysis().matchupTierList.hard.map((m) => ({ ...m, summary: "" }));
-    expect(build({ matchupTierList: { ...analysis().matchupTierList, hard: stripped } })).toBeNull();
+    expect(
+      build({ matchupTierList: { ...analysis().matchupTierList, hard: stripped } })
+    ).toBeNull();
   });
 
   // A thin ban list is not a reason to withhold the matchup half, which is the valuable one.
@@ -162,7 +187,11 @@ describe("refusing to generate", () => {
 
 describe("the assignment", () => {
   it("asks a support for vision and a laner for CS, because that is what their games produce", () => {
-    const support = buildChampionLesson({ champion: "Thresh", role: "support", analysis: analysis() });
+    const support = buildChampionLesson({
+      champion: "Thresh",
+      role: "support",
+      analysis: analysis(),
+    });
     const adc = buildChampionLesson({ champion: "Jinx", role: "adc", analysis: analysis() });
 
     expect(support?.assignment.metric).toBe("visionScore");

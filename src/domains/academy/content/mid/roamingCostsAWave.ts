@@ -31,9 +31,17 @@ export const roamingCostsAWave: Lesson = {
       rows: [
         ["Drake or herald fight", "Yes, always", "Leave 30–40 seconds before it spawns"],
         ["Gank a lane with a pushed wave", "Yes", "Their wave near your turret and CC available"],
-        ["Gank a lane pushed into their turret", "No", "There is nothing to close the distance with"],
+        [
+          "Gank a lane pushed into their turret",
+          "No",
+          "There is nothing to close the distance with",
+        ],
         ["Warding the enemy jungle", "Sometimes", "Only on the way to something else"],
-        ["Following your jungler because he pinged", "Only if it is one of the above", "A ping is not a reason"],
+        [
+          "Following your jungler because he pinged",
+          "Only if it is one of the above",
+          "A ping is not a reason",
+        ],
       ],
     },
     { kind: "drill", drillId: "roam-quiz" },

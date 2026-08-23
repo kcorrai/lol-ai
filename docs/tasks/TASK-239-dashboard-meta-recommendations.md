@@ -1,11 +1,13 @@
 # TASK-239 — Dashboard "This Patch" meta-recommendation widget
 
 ## Goal
+
 Turn the free tools' patch data into personal advice on the dashboard: cross-reference the
 user's champion pool against the current tier lists and tell them which champions to keep, which
 to fix, and which to drop — deep-linking into the (now in-app) tools.
 
 ## Change
+
 - `src/domains/champions/index.ts` (new) — public API exposing `getChampionPool` so other
   domains import through the interface, not the service file.
 - `src/domains/analysis/services/metaRecommendationService.ts` (new):
@@ -26,6 +28,7 @@ to fix, and which to drop — deep-linking into the (now in-app) tools.
 - `docs/API_DESIGN.md` — documents the endpoint.
 
 ## Tests
+
 `metaRecommendationService.test.ts` — keep / improve / switch / dropped / ordering+limit / empty
 pool / missing tier data. (No route-handler test: the repo has no route-test harness and the
 handler is boilerplate; the risk lives in the pure builder, which is covered.)

@@ -30,9 +30,10 @@ export interface TeamSubscriptionCancelledEmailData {
   appUrl: string;
 }
 
-export function buildTeamSubscriptionCancelledEmail(
-  data: TeamSubscriptionCancelledEmailData
-): { subject: string; html: string } {
+export function buildTeamSubscriptionCancelledEmail(data: TeamSubscriptionCancelledEmailData): {
+  subject: string;
+  html: string;
+} {
   const subject = "Your Team Plan has been cancelled";
   const safeOwnerName = escapeHtml(data.ownerName);
   const safeDate = escapeHtml(data.periodEndDate);
@@ -60,9 +61,10 @@ export interface TeamSubscriptionExpiredEmailData {
   appUrl: string;
 }
 
-export function buildTeamSubscriptionExpiredEmail(
-  data: TeamSubscriptionExpiredEmailData
-): { subject: string; html: string } {
+export function buildTeamSubscriptionExpiredEmail(data: TeamSubscriptionExpiredEmailData): {
+  subject: string;
+  html: string;
+} {
   const subject = "Your Team Plan access has ended";
   const safeOwnerName = escapeHtml(data.ownerName);
 

@@ -11,7 +11,7 @@ export const roamingIsYourFarm: Lesson = {
   objectives: [
     "Leave bot lane on a wave state that does not punish your ADC",
     "Name what the roam is going to produce before walking",
-    "Return, or commit — never drift between the two"
+    "Return, or commit — never drift between the two",
   ],
   fixes: ["objective_neglect", "low_vision"],
   blocks: [
@@ -29,11 +29,27 @@ export const roamingIsYourFarm: Lesson = {
       caption: "Roams that are worth the walk",
       head: ["Roam", "Produces", "Leave when"],
       rows: [
-        ["Mid gank with a pushed mid wave", "A kill, or a flash and a plate", "Your bot wave is coming back toward your turret"],
-        ["Vision before an objective", "The fight starting on your terms", "60–90 seconds before the pit"],
+        [
+          "Mid gank with a pushed mid wave",
+          "A kill, or a flash and a plate",
+          "Your bot wave is coming back toward your turret",
+        ],
+        [
+          "Vision before an objective",
+          "The fight starting on your terms",
+          "60–90 seconds before the pit",
+        ],
         ["Warding their jungle entrance", "Their jungler's route", "Right after your lane resets"],
-        ["Following your jungler to a gank", "A second body they cannot answer", "Only if you can be back for the next wave"],
-        ["Walking mid because nothing is happening", "Nothing", "Never — this is the one that loses lanes"],
+        [
+          "Following your jungler to a gank",
+          "A second body they cannot answer",
+          "Only if you can be back for the next wave",
+        ],
+        [
+          "Walking mid because nothing is happening",
+          "Nothing",
+          "Never — this is the one that loses lanes",
+        ],
       ],
     },
     { kind: "drill", drillId: "roam-support-quiz" },

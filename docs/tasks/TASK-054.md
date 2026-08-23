@@ -30,10 +30,7 @@ OTP Assistant'Ä±n iÅŸ mantÄ±ÄŸÄ±nÄ± yaz. Bir champion ve rol iÃ§in
 ### Servis (`otpAssistantService.ts`)
 
 ```typescript
-export async function getOtpAnalysis(
-  champion: string,
-  role: Position
-): Promise<OtpAnalysis>
+export async function getOtpAnalysis(champion: string, role: Position): Promise<OtpAnalysis>;
 ```
 
 Cache key: `buildCacheKey('otp', { champion: champion.toLowerCase(), role })`
@@ -42,10 +39,12 @@ TTL: 14 gÃ¼n.
 ### Prompt (`otpPrompt.ts`)
 
 `buildOtpSystemPrompt()`:
+
 - "Sen {champion} konusunda uzmanlaÅŸmÄ±ÅŸ bir OTP koÃ§usun. Bu ÅŸampiyonu yÃ¼zlerce saat oynadÄ±n."
 - Casual overview deÄŸil, derinlemesine OTP-specific bilgi ver.
 
 `buildOtpUserPrompt(champion, role)`:
+
 - `matchupTierList`: easy (kolay), medium (eÅŸit), hard (zor) â€” her kategoride en az 5 opponent
 - `banPriority`: en Ã¶ncelikli 3 ban + neden
 - `hiddenMechanics`: 3-5 gizli mekanik veya interact (casual oyuncularÄ±n bilmediÄŸi)
@@ -83,4 +82,3 @@ export const otpAnalysisSchema = z.object({
 
 - TASK-037 (AiCache)
 - TASK-053 (OTP domain tipleri)
-

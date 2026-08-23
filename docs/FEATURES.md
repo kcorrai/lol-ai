@@ -7,6 +7,7 @@
 ## Feature Notation
 
 Each feature includes:
+
 - **User Benefit:** What value does this deliver to the player?
 - **Difficulty:** Low / Medium / High / Very High
 - **Dependencies:** What must exist before this can be built?

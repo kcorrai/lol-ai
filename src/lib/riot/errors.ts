@@ -29,10 +29,9 @@ export function normalizeRiotError(
       );
     case 429: {
       const retryAfterMs = retryAfterSeconds ? retryAfterSeconds * 1000 : undefined;
-      return Object.assign(
-        new ApiError("RIOT_RATE_LIMITED", "Riot API rate limit exceeded", 429),
-        { retryAfterMs }
-      );
+      return Object.assign(new ApiError("RIOT_RATE_LIMITED", "Riot API rate limit exceeded", 429), {
+        retryAfterMs,
+      });
     }
     case 500:
     case 502:
@@ -44,11 +43,7 @@ export function normalizeRiotError(
       );
     default:
       return Object.assign(
-        new ApiError(
-          "RIOT_API_ERROR",
-          `Unexpected Riot API response: HTTP ${status}`,
-          502
-        ),
+        new ApiError("RIOT_API_ERROR", `Unexpected Riot API response: HTTP ${status}`, 502),
         {}
       );
   }

@@ -22,7 +22,11 @@ export const GET = withAuth(async (req, { userId }) => {
 
   const comparison = await getProComparison(riotAccountId, championId);
   if (!comparison) {
-    return apiError("NOT_FOUND", "Not enough data for comparison (need 20+ Master+ games and 1+ player games for this champion)", 404);
+    return apiError(
+      "NOT_FOUND",
+      "Not enough data for comparison (need 20+ Master+ games and 1+ player games for this champion)",
+      404
+    );
   }
 
   return apiSuccess(comparison);

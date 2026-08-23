@@ -29,10 +29,26 @@ export const invading: Lesson = {
       caption: "When the invade is on",
       head: ["Situation", "Invade?", "Why"],
       rows: [
-        ["You just watched him gank the far lane", "Yes", "He is committed and cannot answer for forty seconds"],
-        ["You have priority in mid and he does not", "Yes", "Your mid can walk in with you; his cannot walk in behind you"],
-        ["You have not seen him for a minute", "No", "You are walking into a coinflip in the worst half of the map"],
-        ["You are behind in levels and want to catch up", "No", "The invade is a tempo play, and tempo is what you do not have"],
+        [
+          "You just watched him gank the far lane",
+          "Yes",
+          "He is committed and cannot answer for forty seconds",
+        ],
+        [
+          "You have priority in mid and he does not",
+          "Yes",
+          "Your mid can walk in with you; his cannot walk in behind you",
+        ],
+        [
+          "You have not seen him for a minute",
+          "No",
+          "You are walking into a coinflip in the worst half of the map",
+        ],
+        [
+          "You are behind in levels and want to catch up",
+          "No",
+          "The invade is a tempo play, and tempo is what you do not have",
+        ],
       ],
     },
     { kind: "drill", drillId: "invade-quiz" },

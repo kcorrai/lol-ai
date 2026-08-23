@@ -39,6 +39,7 @@ GET /api/match/[matchId]/build-explanation?puuid={participantPuuid}
 ```
 
 Auth kontrolÃ¼:
+
 ```typescript
 // session.user.id â†’ RiotAccount.userId â†’ MatchParticipant.riotAccountId baÄŸlantÄ±sÄ±nÄ± doÄŸrula
 // Kendi maÃ§Ä± deÄŸilse: 403 Forbidden
@@ -51,11 +52,12 @@ Rate limit: 10 req/saat per user.
 ```typescript
 export function useBuildExplanation(matchId: string, puuid: string | null) {
   const query = useQuery({
-    queryKey: ['build-explanation', matchId, puuid],
-    queryFn: () => fetch(`/api/match/${matchId}/build-explanation?puuid=${puuid}`)
-      .then(res => res.json())
-      .then(d => d.data),
-    enabled: false,  // manuel tetikle
+    queryKey: ["build-explanation", matchId, puuid],
+    queryFn: () =>
+      fetch(`/api/match/${matchId}/build-explanation?puuid=${puuid}`)
+        .then((res) => res.json())
+        .then((d) => d.data),
+    enabled: false, // manuel tetikle
   });
 
   return {
@@ -69,6 +71,7 @@ export function useBuildExplanation(matchId: string, puuid: string | null) {
 ### UI Entegrasyonu (`BuildExplanationPanel.tsx`)
 
 `src/domains/match/components/BuildExplanationPanel.tsx`:
+
 - Accordion (closed default)
 - Trigger: "Bu Buildi AI ile Analiz Et" butonu (spinner loading durumunda)
 - Ä°Ã§erik: summary metni + item listesi
@@ -79,6 +82,7 @@ export function useBuildExplanation(matchId: string, puuid: string | null) {
 ### Pro Gate
 
 `useSubscription` hook ile plan kontrol et. Free kullanÄ±cÄ± iÃ§in:
+
 - Panel'in Ã¼zerinde blur overlay
 - "Build analizi Pro Ã¶zelliÄŸidir. Upgrade yapÄ±n â†’" CTA
 
@@ -87,4 +91,3 @@ export function useBuildExplanation(matchId: string, puuid: string | null) {
 ## BaÄŸÄ±mlÄ±lÄ±klar
 
 - TASK-059 (buildExplanationService) tamamlanmÄ±ÅŸ olmalÄ±
-

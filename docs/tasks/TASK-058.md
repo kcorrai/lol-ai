@@ -50,4 +50,3 @@
 ## BaÄŸÄ±mlÄ±lÄ±klar
 
 - TASK-054 (otpAssistantService + prompt) tamamlanmÄ±ÅŸ olmalÄ±
-

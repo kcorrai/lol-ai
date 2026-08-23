@@ -45,10 +45,7 @@ const validAiResponse = {
     { trigger: "Sterak's Gage", description: "Survive burst damage" },
     { trigger: "Level 9", description: "Q max complete" },
   ],
-  laneStrategies: [
-    "Trade when E is off cooldown",
-    "Push wave before backing",
-  ],
+  laneStrategies: ["Trade when E is off cooldown", "Push wave before backing"],
   metaRating: {
     score: 7,
     assessment: "Güçlü",

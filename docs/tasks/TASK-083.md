@@ -48,10 +48,11 @@ profileSettings Json?    // { showRank: true, showWR: true, showBadges: true, sh
 ```
 
 Slug Ã¼retimi:
+
 ```typescript
 // Riot hesabÄ± baÄŸlanÄ±nca: "KaaN#TR1" â†’ "KaaN-TR1"
 function toProfileSlug(gameName: string, tagLine: string): string {
-  return `${gameName}-${tagLine}`.replace(/[^a-zA-Z0-9-_]/g, '-');
+  return `${gameName}-${tagLine}`.replace(/[^a-zA-Z0-9-_]/g, "-");
 }
 ```
 
@@ -64,7 +65,7 @@ function toProfileSlug(gameName: string, tagLine: string): string {
 interface PublicProfileResponse {
   displayName: string;
   rank: { tier: string; division: string; lp: number } | null;
-  winRate: number | null;  // gizliyse null
+  winRate: number | null; // gizliyse null
   topChampions: { name: string; games: number; winRate: number }[];
   badges: { id: string; name: string; tier: string; iconSlug: string }[];
   joinedAt: string;
@@ -144,12 +145,12 @@ src/domains/riot/services/riotAccountService.ts         â† Riot baÄŸlant�
 ## Test Plan
 
 ```typescript
-describe('profileService', () => {
-  it('toProfileSlug: "KaaN#TR1" â†’ "KaaN-TR1"')
-  it('toProfileSlug: Ã¶zel karakterler temizleniyor')
-  it('getPublicProfile: gizli alan null dÃ¶ndÃ¼rÃ¼yor')
-  it('getPublicProfile: profil gizliyse isPrivate: true')
-})
+describe("profileService", () => {
+  it('toProfileSlug: "KaaN#TR1" â†’ "KaaN-TR1"');
+  it("toProfileSlug: Ã¶zel karakterler temizleniyor");
+  it("getPublicProfile: gizli alan null dÃ¶ndÃ¼rÃ¼yor");
+  it("getPublicProfile: profil gizliyse isPrivate: true");
+});
 ```
 
 ---
@@ -167,4 +168,3 @@ describe('profileService', () => {
 - Discord'da link paylaÅŸÄ±lÄ±nca OG preview gÃ¶rÃ¼nÃ¼yor
 - Gizlilik ayarlarÄ± kaydediliyor
 - CTA ile landing page'e yÃ¶nlendirme Ã§alÄ±ÅŸÄ±yor
-

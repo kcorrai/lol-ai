@@ -29,9 +29,21 @@ export const warmUpAndFirstGame: Lesson = {
       caption: "A ten-minute warm-up that is worth doing",
       head: ["Minutes", "Do", "Warms"],
       rows: [
-        ["0–5", "Practice tool: last-hit a wave without abilities", "The last-hit rhythm, at the exact timing of your champion"],
-        ["5–8", "Practice tool or a normal game: force a minimap look every wave", "Map attention, before it costs LP"],
-        ["8–10", "Check the patch notes for your champion and the enemy meta picks", "The five seconds of surprise you would otherwise pay in game one"],
+        [
+          "0–5",
+          "Practice tool: last-hit a wave without abilities",
+          "The last-hit rhythm, at the exact timing of your champion",
+        ],
+        [
+          "5–8",
+          "Practice tool or a normal game: force a minimap look every wave",
+          "Map attention, before it costs LP",
+        ],
+        [
+          "8–10",
+          "Check the patch notes for your champion and the enemy meta picks",
+          "The five seconds of surprise you would otherwise pay in game one",
+        ],
       ],
     },
     { kind: "gate" },
@@ -56,7 +68,8 @@ export const warmUpAndFirstGame: Lesson = {
       options: [
         {
           id: "a",
-          label: "It is a timing pattern in your hands, and it decides the first ten minutes of every game",
+          label:
+            "It is a timing pattern in your hands, and it decides the first ten minutes of every game",
           explain:
             "Correct. Combos are knowledge you still have; last-hit timing is motor memory that decays between sessions, and it is the skill the early game is made of.",
           correct: true,
@@ -91,7 +104,8 @@ export const warmUpAndFirstGame: Lesson = {
       options: [
         {
           id: "a",
-          label: "Spend ten minutes warming up, then queue — about two and a half games instead of three",
+          label:
+            "Spend ten minutes warming up, then queue — about two and a half games instead of three",
           explain:
             "Correct. You trade a fraction of a game for a first game that is played at your actual level. Three cold games is not more LP than two and a half warm ones — for most players it is considerably less.",
           correct: true,

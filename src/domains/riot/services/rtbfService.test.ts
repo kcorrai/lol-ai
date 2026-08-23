@@ -47,13 +47,21 @@ describe("isRtbfName", () => {
 
 describe("checkForgotten", () => {
   it("reports a renamed account as forgotten", async () => {
-    vi.mocked(getAccountByPuuid).mockResolvedValue({ puuid: "p1", gameName: "rtbf12345", tagLine: "TR1" });
+    vi.mocked(getAccountByPuuid).mockResolvedValue({
+      puuid: "p1",
+      gameName: "rtbf12345",
+      tagLine: "TR1",
+    });
 
     expect(await checkForgotten("p1", "tr1")).toEqual({ forgotten: true, reason: "renamed" });
   });
 
   it("reports a live account as not forgotten", async () => {
-    vi.mocked(getAccountByPuuid).mockResolvedValue({ puuid: "p1", gameName: "kaanproak0", tagLine: "TR1" });
+    vi.mocked(getAccountByPuuid).mockResolvedValue({
+      puuid: "p1",
+      gameName: "kaanproak0",
+      tagLine: "TR1",
+    });
 
     expect(await checkForgotten("p1", "tr1")).toEqual({ forgotten: false });
   });

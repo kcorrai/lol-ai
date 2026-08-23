@@ -7,9 +7,7 @@ import type { CreatorKit, CreatorSettings } from "@/domains/creator/types";
 // The creator's own side of the Streamer Kit — everything here is reached with a
 // session, unlike the overlay itself, which is reached with the key (ADR-026).
 
-export type SaveResult =
-  | { ok: true; kit: CreatorKit }
-  | { ok: false; reason: string };
+export type SaveResult = { ok: true; kit: CreatorKit } | { ok: false; reason: string };
 
 function toKit(profile: CreatorProfile): CreatorKit {
   return {
@@ -68,10 +66,7 @@ function goalIsWellFormed(settings: CreatorSettings): boolean {
   return hasTier === hasDivision;
 }
 
-export async function saveSettings(
-  userId: string,
-  settings: CreatorSettings
-): Promise<SaveResult> {
+export async function saveSettings(userId: string, settings: CreatorSettings): Promise<SaveResult> {
   const profile = await prisma.creatorProfile.findUnique({ where: { userId } });
   if (!profile) return { ok: false, reason: "Creator mode is not enabled." };
 

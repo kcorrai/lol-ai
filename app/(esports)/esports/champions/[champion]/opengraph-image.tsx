@@ -35,6 +35,7 @@ export default async function Image({
   return renderOgImage({
     badge: `${build.games} pro ${build.games === 1 ? "game" : "games"} · ${winRate}% win rate`,
     title: `${name} Pro Builds`,
-    subtitle: players.length > 0 ? `Played by ${players}` : "Items, runes and skill order from pro games.",
+    subtitle:
+      players.length > 0 ? `Played by ${players}` : "Items, runes and skill order from pro games.",
   });
 }

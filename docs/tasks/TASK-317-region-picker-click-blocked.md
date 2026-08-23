@@ -23,17 +23,17 @@ blocked.
 `PlayerSearchBar` renders two overlays that start at the same Y and share a
 stacking level:
 
-| Overlay | Positioned against | Classes |
-|---|---|---|
-| Suggestions | `rootRef` (whole bar) | `absolute left-0 right-0 top-[calc(100%+6px)] z-50` |
-| Region listbox | `RegionPicker`'s own wrapper | `absolute right-0 top-[calc(100%+6px)] z-50` |
+| Overlay        | Positioned against           | Classes                                             |
+| -------------- | ---------------------------- | --------------------------------------------------- |
+| Suggestions    | `rootRef` (whole bar)        | `absolute left-0 right-0 top-[calc(100%+6px)] z-50` |
+| Region listbox | `RegionPicker`'s own wrapper | `absolute right-0 top-[calc(100%+6px)] z-50`        |
 
 The region chip sits inside the bar and is `h-full`, so both overlays resolve to
 the same top edge. With equal `z-index` the later element in DOM order wins, and
 the suggestions panel is rendered after the chip — so it covers the options.
 
 Nothing closes the suggestions first: the panel only closes on a mousedown
-*outside* `rootRef` (`PlayerSearchBar.tsx`), and the region chip is inside it.
+_outside_ `rootRef` (`PlayerSearchBar.tsx`), and the region chip is inside it.
 
 Confirmed in the browser — `document.elementFromPoint()` at the centre of the
 `EUW` option returns the suggestions panel's empty-state `<p>`, not the option.

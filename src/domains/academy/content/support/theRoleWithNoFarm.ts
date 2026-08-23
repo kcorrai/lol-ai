@@ -29,10 +29,26 @@ export const theRoleWithNoFarm: Lesson = {
       caption: "Where the gold goes",
       head: ["Purchase", "What it buys", "When it is wrong"],
       rows: [
-        ["Control wards", "Vision that fights back — always the first thing", "Never; you should be buying one every single back"],
-        ["Your first item", "The thing your kit actually needs to function", "Delaying it to save for a bigger one"],
-        ["Boots early", "Roams that arrive in time", "When the lane is losing and you cannot leave anyway"],
-        ["Damage components", "Poke pressure", "When your team needed the utility item three minutes ago"],
+        [
+          "Control wards",
+          "Vision that fights back — always the first thing",
+          "Never; you should be buying one every single back",
+        ],
+        [
+          "Your first item",
+          "The thing your kit actually needs to function",
+          "Delaying it to save for a bigger one",
+        ],
+        [
+          "Boots early",
+          "Roams that arrive in time",
+          "When the lane is losing and you cannot leave anyway",
+        ],
+        [
+          "Damage components",
+          "Poke pressure",
+          "When your team needed the utility item three minutes ago",
+        ],
       ],
     },
     {
@@ -135,7 +151,8 @@ export const theRoleWithNoFarm: Lesson = {
       options: [
         {
           id: "a",
-          label: "Hold the wave off the turret if you can, and ward the drake approach while you wait",
+          label:
+            "Hold the wave off the turret if you can, and ward the drake approach while you wait",
           explain:
             "Correct. Minions dying to your own turret are minions nobody gets, so keeping them alive for the twenty seconds is real value — and warding the pit in the same twenty seconds is the part only you can do without paying for it.",
           correct: true,

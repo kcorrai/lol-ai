@@ -20,6 +20,7 @@ RIOT:ROFL:                  magic bytes (10 bytes)
 ```
 
 The metadata JSON header is **unencrypted** and contains:
+
 - `statsJSON` — post-game player stats (kills, deaths, CS, items, etc.)
 - `gameLength`, `gameVersion`, `queueId`
 - Player names and champion IDs
@@ -28,19 +29,20 @@ The game event payload (the frame-by-frame event stream: positions, abilities ca
 
 ### Parser evaluation
 
-| Library | Language | Encrypted payload | Status |
-|---|---|---|---|
-| `js-rofl-parser` (npm) | JavaScript | Metadata only | Unmaintained (2018) |
-| `lol-replay-parser` (npm) | JavaScript | Metadata only | Unmaintained (2020) |
-| `awpy` / `bayes-api` | Python | Metadata only | LoL-specific forks, limited |
-| `ReplayBook` | C# | Metadata + limited events | Requires decryption workaround |
-| Overwolf / companion apps | C++ | Full access | Requires native desktop app |
+| Library                   | Language   | Encrypted payload         | Status                         |
+| ------------------------- | ---------- | ------------------------- | ------------------------------ |
+| `js-rofl-parser` (npm)    | JavaScript | Metadata only             | Unmaintained (2018)            |
+| `lol-replay-parser` (npm) | JavaScript | Metadata only             | Unmaintained (2020)            |
+| `awpy` / `bayes-api`      | Python     | Metadata only             | LoL-specific forks, limited    |
+| `ReplayBook`              | C#         | Metadata + limited events | Requires decryption workaround |
+| Overwolf / companion apps | C++        | Full access               | Requires native desktop app    |
 
 **No JavaScript/Node.js library can decode the encrypted event payload** without the runtime encryption key, which is only available during an active League session via native process injection.
 
 ### PoC findings
 
 See `src/domains/analysis/poc/roflParser.ts` — a working PoC that:
+
 1. Reads the `.rofl` header magic bytes to validate the file
 2. Extracts the unencrypted metadata JSON (player stats, game metadata)
 3. Returns structured participant data
@@ -51,19 +53,20 @@ The rich event stream (exact positions, ability casts, item purchases per frame)
 
 ### Compute and storage cost estimate
 
-| Scenario | Volume | Cost |
-|---|---|---|
-| `.rofl` file size | 50–200 MB per game | ~$0.004/file on R2 storage |
-| Upload bandwidth | 100MB avg | ~$0.009/file on Vercel |
-| Processing | 2–5s CPU | ~$0.001/file on serverless |
-| Per-user per-month (10 uploads) | — | ~$0.15/user |
-| At 1,000 MAU | — | ~$150/month storage + $90/month bandwidth |
+| Scenario                        | Volume             | Cost                                      |
+| ------------------------------- | ------------------ | ----------------------------------------- |
+| `.rofl` file size               | 50–200 MB per game | ~$0.004/file on R2 storage                |
+| Upload bandwidth                | 100MB avg          | ~$0.009/file on Vercel                    |
+| Processing                      | 2–5s CPU           | ~$0.001/file on serverless                |
+| Per-user per-month (10 uploads) | —                  | ~$0.15/user                               |
+| At 1,000 MAU                    | —                  | ~$150/month storage + $90/month bandwidth |
 
 Upload-based replay analysis is **cost-viable** for metadata extraction only. Full event parsing would require storing 50-200MB blobs per game, which adds meaningful storage cost with no additional value (same data is free via Riot API).
 
 ### What the Timeline API already provides
 
 The `/lol/match/v5/matches/{matchId}/timeline` endpoint (already integrated in TASK-122) provides:
+
 - Kill events with positions
 - Building destruction events
 - Item purchase events (every purchase logged)
@@ -95,10 +98,12 @@ Close the replay upload feature track for Phase 5. The PoC parser (`src/domains/
 ## Consequences
 
 **Positive:**
+
 - Zero engineering effort wasted on file upload infrastructure
 - No new storage costs
 - Timeline API continues to deliver event-level coaching data
 
 **Negative:**
+
 - Cannot offer frame-level position heatmaps (would require full event stream)
 - Cannot show "you walked here and died to this gank" visualization

@@ -70,11 +70,11 @@ export default function RootLayout({
       <body
         className={`${orbitron.variable} ${chakraPetch.variable} ${jetbrainsMono.variable} font-sans`}
       >
-          <PostHogProvider>
+        <PostHogProvider>
           <AuthProvider>{children}</AuthProvider>
         </PostHogProvider>
         <Analytics />
-        </body>
+      </body>
     </html>
   );
 }

@@ -3,10 +3,12 @@
 ## Status: Done
 
 ## Goal
+
 Enrich the patch meta report (thin: names + rank delta + WR/PR only) and fix a
 freshness-strip rendering bug.
 
 ## Scope
+
 - Defect: `{report.matchCount && (...)}` rendered a literal "0" when the feed
   returns 0. Replace the hand-rolled strip with the existing `DataFreshness`
   component (correct ternary + dedups `hoursAgo`).
@@ -21,8 +23,10 @@ freshness-strip rendering bug.
   rank movement, not win-rate change.
 
 ## Tests
+
 - `patchMetaService.test.ts` (new): climber/faller split, sub-threshold drop, and
   tier/banRate/games carried onto movers.
 
 ## Commit
+
 `feat(meta): enrich patch report with tiers, ban rate, sample size and fix strip`

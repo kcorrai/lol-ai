@@ -62,7 +62,9 @@ export function FinishedGame({
       <Section
         title="Scoreboard"
         aside={
-          stats.durationSeconds !== null ? `${formatDuration(stats.durationSeconds)} game` : undefined
+          stats.durationSeconds !== null
+            ? `${formatDuration(stats.durationSeconds)} game`
+            : undefined
         }
       >
         <Scoreboard {...sides} durationSeconds={stats.durationSeconds} />

@@ -1,20 +1,10 @@
 import { BRAND_COLOR, LOSS_COLOR, WIN_COLOR } from "@/domains/discord/brand";
 import type { BotRequest } from "@/domains/discord/request";
-import {
-  compact,
-  duration,
-  positionLabel,
-} from "@/domains/discord/views/format";
+import { compact, duration, positionLabel } from "@/domains/discord/views/format";
 import { card, cardActions, cardFooter } from "@/domains/discord/views/shell";
 import { queueLabel } from "@/domains/match";
 import type { LastMatchSummary } from "@/domains/riot";
-import {
-  mediaGallery,
-  section,
-  separator,
-  textDisplay,
-  thumbnail,
-} from "@/lib/discord/components";
+import { mediaGallery, section, separator, textDisplay, thumbnail } from "@/lib/discord/components";
 import type { ContainerChild, DiscordMessagePayload } from "@/lib/discord/componentTypes";
 import { championIconUrl, itemIconUrl } from "@/lib/ddragon";
 
@@ -59,7 +49,9 @@ export function matchCard(
       body.push(textDisplay(`**Lane opponent** \`${match.opponent.championName}\``));
     }
     if (match.items.length > 0) {
-      body.push(mediaGallery(match.items.map((id) => ({ url: itemIconUrl(id), description: `Item ${id}` }))));
+      body.push(
+        mediaGallery(match.items.map((id) => ({ url: itemIconUrl(id), description: `Item ${id}` })))
+      );
     }
   }
 

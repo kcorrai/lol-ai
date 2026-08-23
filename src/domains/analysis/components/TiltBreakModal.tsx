@@ -37,8 +37,8 @@ export function TiltBreakModal({ riotAccountId }: TiltBreakModalProps) {
       <div className="mx-4 w-full max-w-md rounded-2xl border border-border bg-surface p-6 shadow-2xl">
         <p className="mb-1 text-lg font-semibold text-text">You might be on tilt.</p>
         <p className="mb-4 text-sm text-text-muted">
-          {tilt.lossStreak} losses in a row. Your performance typically drops during streaks like this —
-          playing ranked right now is likely to cost you LP, not earn it.
+          {tilt.lossStreak} losses in a row. Your performance typically drops during streaks like
+          this — playing ranked right now is likely to cost you LP, not earn it.
         </p>
 
         <div className="mb-5 rounded-lg bg-danger/10 px-4 py-3">

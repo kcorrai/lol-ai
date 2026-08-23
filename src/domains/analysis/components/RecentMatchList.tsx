@@ -17,7 +17,11 @@ interface Props {
 
 const ROLES = ["TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"] as const;
 const ROLE_SHORT: Record<string, string> = {
-  TOP: "Top", JUNGLE: "Jungle", MIDDLE: "Mid", BOTTOM: "ADC", UTILITY: "Support",
+  TOP: "Top",
+  JUNGLE: "Jungle",
+  MIDDLE: "Mid",
+  BOTTOM: "ADC",
+  UTILITY: "Support",
 };
 
 function timeAgo(iso: string): string {
@@ -32,8 +36,14 @@ function timeAgo(iso: string): string {
 }
 
 function RoleFilterBtn({
-  role, active, onClick,
-}: { role: string; active: boolean; onClick: () => void }) {
+  role,
+  active,
+  onClick,
+}: {
+  role: string;
+  active: boolean;
+  onClick: () => void;
+}) {
   const [errored, setErrored] = useState(false);
   return (
     <button
@@ -44,8 +54,14 @@ function RoleFilterBtn({
       }`}
     >
       {!errored ? (
-        <Image src={roleIconUrl(role)} alt={role} width={18} height={18}
-          onError={() => setErrored(true)} unoptimized />
+        <Image
+          src={roleIconUrl(role)}
+          alt={role}
+          width={18}
+          height={18}
+          onError={() => setErrored(true)}
+          unoptimized
+        />
       ) : (
         <span className="text-[10px] font-bold text-text-muted">{ROLE_SHORT[role]}</span>
       )}
@@ -55,7 +71,8 @@ function RoleFilterBtn({
 
 function MatchRow({ match, isFirst }: { match: MatchPerformance; isFirst?: boolean }) {
   const kda = ((match.kills + match.assists) / Math.max(match.deaths, 1)).toFixed(2);
-  const kdaColor = Number(kda) >= 4 ? "text-success" : Number(kda) >= 2 ? "text-warning" : "text-text-muted";
+  const kdaColor =
+    Number(kda) >= 4 ? "text-success" : Number(kda) >= 2 ? "text-warning" : "text-text-muted";
   return (
     <Link
       // `match-row` anchors the guided-onboarding "open a match" spotlight to the newest game.
@@ -69,12 +86,48 @@ function MatchRow({ match, isFirst }: { match: MatchPerformance; isFirst?: boole
       <ChampionIcon name={match.champion} size={48} className="shrink-0" />
       <div className="hidden shrink-0 flex-col gap-0.5 sm:flex">
         <div className="flex gap-0.5">
-          {summonerSpellUrl(match.summonerSpell1) && <Image src={summonerSpellUrl(match.summonerSpell1)} alt="spell1" width={20} height={20} unoptimized className="rounded-sm" />}
-          {summonerSpellUrl(match.summonerSpell2) && <Image src={summonerSpellUrl(match.summonerSpell2)} alt="spell2" width={20} height={20} unoptimized className="rounded-sm" />}
+          {summonerSpellUrl(match.summonerSpell1) && (
+            <Image
+              src={summonerSpellUrl(match.summonerSpell1)}
+              alt="spell1"
+              width={20}
+              height={20}
+              unoptimized
+              className="rounded-sm"
+            />
+          )}
+          {summonerSpellUrl(match.summonerSpell2) && (
+            <Image
+              src={summonerSpellUrl(match.summonerSpell2)}
+              alt="spell2"
+              width={20}
+              height={20}
+              unoptimized
+              className="rounded-sm"
+            />
+          )}
         </div>
         <div className="flex gap-0.5">
-          {match.runePrimaryKeystone && keystoneIconUrl(match.runePrimaryKeystone) && <Image src={keystoneIconUrl(match.runePrimaryKeystone)} alt="keystone" width={20} height={20} unoptimized className="rounded-full" />}
-          {match.runeSecondaryPath && runePathIconUrl(match.runeSecondaryPath) && <Image src={runePathIconUrl(match.runeSecondaryPath)} alt="rune-path" width={20} height={20} unoptimized className="rounded-full opacity-70" />}
+          {match.runePrimaryKeystone && keystoneIconUrl(match.runePrimaryKeystone) && (
+            <Image
+              src={keystoneIconUrl(match.runePrimaryKeystone)}
+              alt="keystone"
+              width={20}
+              height={20}
+              unoptimized
+              className="rounded-full"
+            />
+          )}
+          {match.runeSecondaryPath && runePathIconUrl(match.runeSecondaryPath) && (
+            <Image
+              src={runePathIconUrl(match.runeSecondaryPath)}
+              alt="rune-path"
+              width={20}
+              height={20}
+              unoptimized
+              className="rounded-full opacity-70"
+            />
+          )}
         </div>
       </div>
       {/* Identity stays pinned to the champion icon; KDA, stats and items split the rest of the
@@ -94,7 +147,9 @@ function MatchRow({ match, isFirst }: { match: MatchPerformance; isFirst?: boole
       </div>
       <div className="hidden w-28 shrink-0 text-xs text-text-muted sm:block lg:w-auto lg:flex-1">
         <p>{match.csPerMinute.toFixed(1)} CS/min</p>
-        <p>{match.visionScore} vision · {match.gameDurationMinutes}m</p>
+        <p>
+          {match.visionScore} vision · {match.gameDurationMinutes}m
+        </p>
         {match.teamObjectives && (
           <p className="text-text-muted/70">
             <span className="text-info">D</span>:{match.teamObjectives.dragons}{" "}
@@ -108,7 +163,9 @@ function MatchRow({ match, isFirst }: { match: MatchPerformance; isFirst?: boole
           the whole page now, and left-hugging items left a long dead strip after the stats. */}
       {match.itemIds?.length > 0 && (
         <div className="hidden flex-1 flex-wrap justify-end gap-0.5 lg:flex">
-          {match.itemIds.slice(0, 6).map((id, i) => <ItemIcon key={i} itemId={id} size={24} />)}
+          {match.itemIds.slice(0, 6).map((id, i) => (
+            <ItemIcon key={i} itemId={id} size={24} />
+          ))}
         </div>
       )}
     </Link>
@@ -141,11 +198,14 @@ export function RecentMatchList({ matches, isLoading }: Props) {
   if (isLoading) {
     return (
       <div className="space-y-2">
-        {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-20 w-full rounded-xl" />)}
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Skeleton key={i} className="h-20 w-full rounded-xl" />
+        ))}
       </div>
     );
   }
-  if (!matches || matches.length === 0) return <p className="text-sm text-text-muted">No recent matches found.</p>;
+  if (!matches || matches.length === 0)
+    return <p className="text-sm text-text-muted">No recent matches found.</p>;
 
   const activeRoles = [...new Set(matches.map((m) => m.position))];
 
@@ -158,7 +218,9 @@ export function RecentMatchList({ matches, isLoading }: Props) {
           <button
             onClick={() => setRoleFilter(null)}
             className={`rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
-              !roleFilter ? "bg-accent/20 text-accent" : "bg-surface-2 text-text-muted hover:text-text"
+              !roleFilter
+                ? "bg-accent/20 text-accent"
+                : "bg-surface-2 text-text-muted hover:text-text"
             }`}
           >
             All Roles
@@ -180,7 +242,9 @@ export function RecentMatchList({ matches, isLoading }: Props) {
           <button
             onClick={() => setChampFilter("")}
             className={`rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
-              !champFilter ? "bg-accent/20 text-accent" : "bg-surface-2 text-text-muted hover:text-text"
+              !champFilter
+                ? "bg-accent/20 text-accent"
+                : "bg-surface-2 text-text-muted hover:text-text"
             }`}
           >
             All Champions
@@ -201,7 +265,7 @@ export function RecentMatchList({ matches, isLoading }: Props) {
         </div>
 
         {/* Win/Loss filter */}
-        <div className="flex items-center rounded-md border border-border bg-surface overflow-hidden text-xs">
+        <div className="flex items-center overflow-hidden rounded-md border border-border bg-surface text-xs">
           {(["all", "win", "loss"] as ResultFilter[]).map((r) => (
             <button
               key={r}
@@ -211,8 +275,8 @@ export function RecentMatchList({ matches, isLoading }: Props) {
                   ? r === "win"
                     ? "bg-success/20 text-success"
                     : r === "loss"
-                    ? "bg-danger/20 text-danger"
-                    : "bg-accent/20 text-accent"
+                      ? "bg-danger/20 text-danger"
+                      : "bg-accent/20 text-accent"
                   : "text-text-muted hover:text-text"
               }`}
             >
@@ -223,15 +287,21 @@ export function RecentMatchList({ matches, isLoading }: Props) {
 
         {/* Result count */}
         {(roleFilter || champFilter || resultFilter !== "all") && (
-          <span className="text-xs text-text-muted">{filtered.length} match{filtered.length !== 1 ? "es" : ""}</span>
+          <span className="text-xs text-text-muted">
+            {filtered.length} match{filtered.length !== 1 ? "es" : ""}
+          </span>
         )}
       </div>
 
       {/* Match list */}
       {filtered.length === 0 ? (
-        <p className="py-6 text-center text-sm text-text-muted">No matches match the selected filters.</p>
+        <p className="py-6 text-center text-sm text-text-muted">
+          No matches match the selected filters.
+        </p>
       ) : (
-        filtered.slice(0, 20).map((m, i) => <MatchRow key={m.riotMatchId} match={m} isFirst={i === 0} />)
+        filtered
+          .slice(0, 20)
+          .map((m, i) => <MatchRow key={m.riotMatchId} match={m} isFirst={i === 0} />)
       )}
     </div>
   );

@@ -1,9 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  chatSubject,
-  formatRiotId,
-  resolveIdentity,
-} from "@/domains/creator/redaction";
+import { chatSubject, formatRiotId, resolveIdentity } from "@/domains/creator/redaction";
 
 const RIOT = { gameName: "kaanproak0", tagLine: "TR1" };
 

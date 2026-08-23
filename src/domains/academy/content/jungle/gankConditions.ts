@@ -24,9 +24,21 @@ export const gankConditions: Lesson = {
       caption: "The three conditions",
       head: ["Condition", "What it means", "What happens without it"],
       rows: [
-        ["Wave", "Pushing toward your side, or frozen near your turret", "They walk backwards to their own turret and nothing happens"],
-        ["Crowd control", "You or your laner can stop them for a second", "They walk away at 40% health and you spent 30 seconds"],
-        ["Follow-up", "Your laner is even or ahead, with mana and cooldowns", "You do all the damage, they get the kill, and you are still level 4"],
+        [
+          "Wave",
+          "Pushing toward your side, or frozen near your turret",
+          "They walk backwards to their own turret and nothing happens",
+        ],
+        [
+          "Crowd control",
+          "You or your laner can stop them for a second",
+          "They walk away at 40% health and you spent 30 seconds",
+        ],
+        [
+          "Follow-up",
+          "Your laner is even or ahead, with mana and cooldowns",
+          "You do all the damage, they get the kill, and you are still level 4",
+        ],
       ],
     },
     { kind: "drill", drillId: "gank-quiz" },
@@ -104,7 +116,8 @@ export const gankConditions: Lesson = {
       options: [
         {
           id: "a",
-          label: "Gank mid — the wave, the missing flash and an even laner are all three conditions",
+          label:
+            "Gank mid — the wave, the missing flash and an even laner are all three conditions",
           explain:
             "Correct. Every condition is true at once, and it puts you mid at level six ninety seconds before a drake, which is where you want to be standing anyway. Bot will still be losing either way; this is the gank that changes something.",
           correct: true,

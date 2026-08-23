@@ -10,8 +10,7 @@ import "@/types/auth.types";
 
 // A real bcrypt hash of a value nobody can supply. Only ever used to spend the same
 // time on a missing account as on a present one.
-const ABSENT_ACCOUNT_HASH =
-  "$2a$12$C6UzMDM.H6dfI/f/IKcEe.7Ee3l9y1lQ3TCkyz0h1qhX6kPFVvHNu";
+const ABSENT_ACCOUNT_HASH = "$2a$12$C6UzMDM.H6dfI/f/IKcEe.7Ee3l9y1lQ3TCkyz0h1qhX6kPFVvHNu";
 
 /**
  * Whether this sign-in still owes a second factor.
@@ -185,14 +184,18 @@ export const authOptions: NextAuthOptions = {
 
     // Track active sessions for the session management UI
     async signIn({ user }) {
-      await prisma.userSession.create({
-        data: {
-          userId: user.id,
-          // userAgent and ip are available in the request, but events don't
-          // receive the request object. Sessions are enriched on first API call
-          // via the /api/sessions/touch endpoint.
-        },
-      }).catch(() => { /* non-critical */ });
+      await prisma.userSession
+        .create({
+          data: {
+            userId: user.id,
+            // userAgent and ip are available in the request, but events don't
+            // receive the request object. Sessions are enriched on first API call
+            // via the /api/sessions/touch endpoint.
+          },
+        })
+        .catch(() => {
+          /* non-critical */
+        });
     },
   },
 };

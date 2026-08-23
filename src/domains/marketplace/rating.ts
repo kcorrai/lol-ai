@@ -86,7 +86,8 @@ export function aggregateRatings(
   const sum = ratings.reduce((total, rating) => total + rating, 0);
 
   return {
-    display: count >= MIN_REVIEWS_FOR_SCORE ? round(bayesianAverage(sum, count, platformMean)) : null,
+    display:
+      count >= MIN_REVIEWS_FOR_SCORE ? round(bayesianAverage(sum, count, platformMean)) : null,
     sort: wilsonLowerBound(sum, count),
     count,
   };

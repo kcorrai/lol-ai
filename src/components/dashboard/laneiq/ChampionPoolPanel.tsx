@@ -22,7 +22,10 @@ interface PoolRow {
 }
 
 function aggregate(matches: MatchPerformance[]): { pool: PoolRow[]; roles: [string, number][] } {
-  const byChampion = new Map<string, { games: number; wins: number; k: number; d: number; a: number }>();
+  const byChampion = new Map<
+    string,
+    { games: number; wins: number; k: number; d: number; a: number }
+  >();
   const byRole = new Map<string, number>();
 
   for (const m of matches) {

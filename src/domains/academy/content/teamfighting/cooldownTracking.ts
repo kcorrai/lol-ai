@@ -29,7 +29,11 @@ export const cooldownTracking: Lesson = {
       caption: "What each one buys you",
       head: ["Cooldown", "Roughly", "The window it opens"],
       rows: [
-        ["Their engage ultimate", "80–120s", "Their team cannot start a fight — take objectives freely"],
+        [
+          "Their engage ultimate",
+          "80–120s",
+          "Their team cannot start a fight — take objectives freely",
+        ],
         ["Their disengage", "60–100s", "A fight you start now cannot be walked away from"],
         ["A carry's flash", "300s", "Five minutes where they can be reached and cannot leave"],
       ],
@@ -72,7 +76,8 @@ export const cooldownTracking: Lesson = {
     {
       id: "cooldown-quiz",
       kind: "quiz",
-      prompt: "Their ADC flashes over a wall to escape a skirmish at 22:00. What has just changed about the next five minutes?",
+      prompt:
+        "Their ADC flashes over a wall to escape a skirmish at 22:00. What has just changed about the next five minutes?",
       options: [
         {
           id: "a",

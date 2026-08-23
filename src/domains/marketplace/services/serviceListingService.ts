@@ -65,10 +65,7 @@ export async function publicListings(coachProfileId: string): Promise<Listing[]>
   });
 }
 
-export async function createListing(
-  userId: string,
-  input: ListingInput
-): Promise<ListingOutcome> {
+export async function createListing(userId: string, input: ListingInput): Promise<ListingOutcome> {
   const profileId = await ownCoachProfileId(userId);
   if (!profileId) return { ok: false, reason: "no-profile" };
 
@@ -169,7 +166,10 @@ function validate(input: ListingInput): string | null {
   if (input.priceCents < MIN_PRICE_CENTS || input.priceCents > MAX_PRICE_CENTS) {
     return `Price must be between ${MIN_PRICE_CENTS / 100} and ${MAX_PRICE_CENTS / 100}.`;
   }
-  if (input.durationMinutes < MIN_DURATION_MINUTES || input.durationMinutes > MAX_DURATION_MINUTES) {
+  if (
+    input.durationMinutes < MIN_DURATION_MINUTES ||
+    input.durationMinutes > MAX_DURATION_MINUTES
+  ) {
     return `Length must be between ${MIN_DURATION_MINUTES} and ${MAX_DURATION_MINUTES} minutes.`;
   }
   if (!isScheduled(input.kind) && (input.deliveryHours ?? 0) < 1) {

@@ -16,11 +16,14 @@ export interface ImprovementPrediction {
 // Values represent estimated win-rate change per unit improvement.
 // These are blended across roles until we have enough per-position data.
 // See ADR-006 for methodology and Phase 7 ML upgrade plan.
-const COEFFICIENTS: Record<PredictableMetric, { minPct: number; maxPct: number; unit: string; direction: "increase" | "decrease" }> = {
-  csPerMinute:  { minPct: 1.0, maxPct: 2.0, unit: "CS/min",        direction: "increase" },
-  deaths:       { minPct: 2.0, maxPct: 3.0, unit: "deaths/game",   direction: "decrease" },
-  visionScore:  { minPct: 0.1, maxPct: 0.2, unit: "vision score",  direction: "increase" },
-  kda:          { minPct: 1.0, maxPct: 2.0, unit: "KDA",           direction: "increase" },
+const COEFFICIENTS: Record<
+  PredictableMetric,
+  { minPct: number; maxPct: number; unit: string; direction: "increase" | "decrease" }
+> = {
+  csPerMinute: { minPct: 1.0, maxPct: 2.0, unit: "CS/min", direction: "increase" },
+  deaths: { minPct: 2.0, maxPct: 3.0, unit: "deaths/game", direction: "decrease" },
+  visionScore: { minPct: 0.1, maxPct: 0.2, unit: "vision score", direction: "increase" },
+  kda: { minPct: 1.0, maxPct: 2.0, unit: "KDA", direction: "increase" },
 };
 
 function buildPrediction(

@@ -15,12 +15,10 @@ export default function NotificationsSettingsPage() {
     <div className="mx-auto max-w-lg space-y-6 p-6">
       <div>
         <h1 className="font-display text-2xl font-bold text-text">Notification Settings</h1>
-        <p className="mt-1 text-sm text-text-muted">
-          Manage browser push notifications.
-        </p>
+        <p className="mt-1 text-sm text-text-muted">Manage browser push notifications.</p>
       </div>
 
-      <div className="rounded-xl border border-border bg-surface p-5 space-y-4">
+      <div className="space-y-4 rounded-xl border border-border bg-surface p-5">
         <div className="flex items-start gap-4">
           <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/10">
             {isEnabled ? (
@@ -32,7 +30,8 @@ export default function NotificationsSettingsPage() {
           <div className="flex-1">
             <p className="text-sm font-semibold text-text">Push Notifications</p>
             <p className="mt-0.5 text-xs text-text-muted">
-              Receive browser notifications when your report is ready, you rank up, or a tilt warning is triggered.
+              Receive browser notifications when your report is ready, you rank up, or a tilt
+              warning is triggered.
             </p>
           </div>
         </div>
@@ -83,7 +82,7 @@ export default function NotificationsSettingsPage() {
         )}
 
         <div className="border-t border-border pt-3">
-          <p className="text-xs font-medium text-text-muted mb-2">Notification types:</p>
+          <p className="mb-2 text-xs font-medium text-text-muted">Notification types:</p>
           <ul className="space-y-1 text-xs text-text-muted">
             <li className="flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />

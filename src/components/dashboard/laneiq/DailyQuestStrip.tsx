@@ -36,7 +36,9 @@ export function DailyQuestStrip(): React.ReactElement | null {
 
   // Rendered before hydration the strip would flash for someone who dismissed it.
   if (!hydrated || isLoading) {
-    return isLoading ? <div className="notch h-[104px] animate-pulse border border-border bg-surface" /> : null;
+    return isLoading ? (
+      <div className="notch h-[104px] animate-pulse border border-border bg-surface" />
+    ) : null;
   }
   // A quest that could not be loaded is not worth an error banner above the
   // readiness verdict — the dashboard's own states already speak for failures.
@@ -48,7 +50,9 @@ export function DailyQuestStrip(): React.ReactElement | null {
         <Target className="h-3.5 w-3.5 text-accent" />
         <span className="hud-label">{"// Today's quest"}</span>
         <span className="ml-auto flex items-center gap-3">
-          <span className="font-mono text-[11.5px] text-text-muted">{hoursLeft(data.expiresAt)}</span>
+          <span className="font-mono text-[11.5px] text-text-muted">
+            {hoursLeft(data.expiresAt)}
+          </span>
           <button
             type="button"
             onClick={dismiss}
@@ -68,8 +72,12 @@ export function DailyQuestStrip(): React.ReactElement | null {
 
       <footer className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-line-1 px-4 py-2.5">
         <span className="flex items-center gap-1.5 text-[12.5px] text-text-body">
-          <Flame className={`h-3.5 w-3.5 ${data.streak > 0 ? "text-warning" : "text-text-muted"}`} />
-          {data.streak > 0 ? `${data.streak} day quest streak` : "No streak yet — finish today's to start one"}
+          <Flame
+            className={`h-3.5 w-3.5 ${data.streak > 0 ? "text-warning" : "text-text-muted"}`}
+          />
+          {data.streak > 0
+            ? `${data.streak} day quest streak`
+            : "No streak yet — finish today's to start one"}
         </span>
         <span className="ml-auto font-mono text-[11.5px] text-text-muted">
           {data.completed ? "Quest complete" : `+${data.xpReward} XP on the line`}
@@ -97,7 +105,9 @@ function ObjectiveCell({ objective }: { objective: QuestObjective }): React.Reac
         )}
       </div>
 
-      <p className={`text-[13.5px] leading-snug ${objective.completed ? "text-text-muted line-through" : "text-text"}`}>
+      <p
+        className={`text-[13.5px] leading-snug ${objective.completed ? "text-text-muted line-through" : "text-text"}`}
+      >
         {objective.title}
       </p>
       <p className="mt-0.5 text-[11.5px] leading-snug text-text-muted">{objective.hint}</p>

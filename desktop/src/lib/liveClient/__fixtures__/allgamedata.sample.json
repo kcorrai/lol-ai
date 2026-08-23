@@ -37,38 +37,39 @@
       }
     },
     "championStats": {
-      "abilityPower": 0.00000000000000,
-      "armor": 0.00000000000000,
+      "abilityPower": 0.0,
+      "armor": 0.0,
       "armorPenetrationFlat": 0.0,
       "armorPenetrationPercent": 0.0,
-      "attackDamage": 0.00000000000000,
+      "attackDamage": 0.0,
       "attackRange": 0.0,
-      "attackSpeed": 0.00000000000000,
+      "attackSpeed": 0.0,
       "bonusArmorPenetrationPercent": 0.0,
       "bonusMagicPenetrationPercent": 0.0,
-      "cooldownReduction": -0.00,
+      "cooldownReduction": -0.0,
       "critChance": 0.0,
       "critDamage": 0.0,
       "currentHealth": 0.0,
-      "healthRegenRate": 0.00000000000000,
+      "healthRegenRate": 0.0,
       "lifeSteal": 0.0,
       "magicLethality": 0.0,
       "magicPenetrationFlat": 0.0,
       "magicPenetrationPercent": 0.0,
-      "magicResist": 0.00000000000000,
-      "maxHealth": 0.00000000000000,
-      "moveSpeed": 0.00000000000000,
+      "magicResist": 0.0,
+      "maxHealth": 0.0,
+      "moveSpeed": 0.0,
       "physicalLethality": 0.0,
-      "resourceMax": 0.00000000000000,
-      "resourceRegenRate": 0.00000000000000,
+      "resourceMax": 0.0,
+      "resourceRegenRate": 0.0,
       "resourceType": "MANA",
-      "resourceValue": 0.00000000000000,
+      "resourceValue": 0.0,
       "spellVamp": 0.0,
       "tenacity": 0.0
     },
-    "currentGold": 0.00000000000000,
+    "currentGold": 0.0,
     "fullRunes": {
-      "generalRunes": [{
+      "generalRunes": [
+        {
           "displayName": "Electrocute",
           "id": 8112,
           "rawDescription": "perk_tooltip_Electrocute",
@@ -123,7 +124,8 @@
         "rawDescription": "perkstyle_tooltip_7202",
         "rawDisplayName": "perkstyle_displayname_7202"
       },
-      "statRunes": [{
+      "statRunes": [
+        {
           "id": 5008,
           "rawDescription": "perk_tooltip_StatModAdaptive"
         },
@@ -140,68 +142,72 @@
     "level": 1,
     "summonerName": "Riot Tuxedo"
   },
-  "allPlayers": [{
-    "championName": "Annie",
-    "isBot": false,
-    "isDead": false,
-    "items": [],
-    "level": 1,
-    "position": "",
-    "rawChampionName": "game_character_displayname_Annie",
-    "respawnTimer": 0.0,
-    "runes": {
-      "keystone": {
-        "displayName": "Electrocute",
-        "id": 8112,
-        "rawDescription": "perk_tooltip_Electrocute",
-        "rawDisplayName": "perk_displayname_Electrocute"
+  "allPlayers": [
+    {
+      "championName": "Annie",
+      "isBot": false,
+      "isDead": false,
+      "items": [],
+      "level": 1,
+      "position": "",
+      "rawChampionName": "game_character_displayname_Annie",
+      "respawnTimer": 0.0,
+      "runes": {
+        "keystone": {
+          "displayName": "Electrocute",
+          "id": 8112,
+          "rawDescription": "perk_tooltip_Electrocute",
+          "rawDisplayName": "perk_displayname_Electrocute"
+        },
+        "primaryRuneTree": {
+          "displayName": "Domination",
+          "id": 8100,
+          "rawDescription": "perkstyle_tooltip_7200",
+          "rawDisplayName": "perkstyle_displayname_7200"
+        },
+        "secondaryRuneTree": {
+          "displayName": "Sorcery",
+          "id": 8200,
+          "rawDescription": "perkstyle_tooltip_7202",
+          "rawDisplayName": "perkstyle_displayname_7202"
+        }
       },
-      "primaryRuneTree": {
-        "displayName": "Domination",
-        "id": 8100,
-        "rawDescription": "perkstyle_tooltip_7200",
-        "rawDisplayName": "perkstyle_displayname_7200"
+      "scores": {
+        "assists": 0,
+        "creepScore": 0,
+        "deaths": 0,
+        "kills": 0,
+        "wardScore": 0.0
       },
-      "secondaryRuneTree": {
-        "displayName": "Sorcery",
-        "id": 8200,
-        "rawDescription": "perkstyle_tooltip_7202",
-        "rawDisplayName": "perkstyle_displayname_7202"
-      }
-    },
-    "scores": {
-      "assists": 0,
-      "creepScore": 0,
-      "deaths": 0,
-      "kills": 0,
-      "wardScore": 0.0
-    },
-    "skinID": 0,
-    "summonerName": "Riot Tuxedo",
-    "summonerSpells": {
-      "summonerSpellOne": {
-        "displayName": "Flash",
-        "rawDescription": "GeneratedTip_SummonerSpell_SummonerFlash_Description",
-        "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+      "skinID": 0,
+      "summonerName": "Riot Tuxedo",
+      "summonerSpells": {
+        "summonerSpellOne": {
+          "displayName": "Flash",
+          "rawDescription": "GeneratedTip_SummonerSpell_SummonerFlash_Description",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerFlash_DisplayName"
+        },
+        "summonerSpellTwo": {
+          "displayName": "Ignite",
+          "rawDescription": "GeneratedTip_SummonerSpell_SummonerDot_Description",
+          "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerDot_DisplayName"
+        }
       },
-      "summonerSpellTwo": {
-        "displayName": "Ignite",
-        "rawDescription": "GeneratedTip_SummonerSpell_SummonerDot_Description",
-        "rawDisplayName": "GeneratedTip_SummonerSpell_SummonerDot_DisplayName"
-      }
-    },
-    "team": "ORDER"
-  }],
+      "team": "ORDER"
+    }
+  ],
   "events": {
-    "Events": [{
-      "EventID": 0,
-      "EventName": "GameStart",
-      "EventTime": 0.00000000000000000
-    }]
+    "Events": [
+      {
+        "EventID": 0,
+        "EventName": "GameStart",
+        "EventTime": 0.0
+      }
+    ]
   },
   "gameData": {
     "gameMode": "CLASSIC",
-    "gameTime": 0.000000000,
+    "gameTime": 0.0,
     "mapName": "Map11",
     "mapNumber": 11,
     "mapTerrain": "Default"

@@ -1,16 +1,26 @@
 import { prisma } from "@/lib/db/prisma";
 import { getCurrentRank } from "@/domains/riot";
 import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
-import type { RankUpResult, RankUpLevel, RankUpComponents } from "@/domains/analysis/types/analysis.types";
+import type {
+  RankUpResult,
+  RankUpLevel,
+  RankUpComponents,
+} from "@/domains/analysis/types/analysis.types";
 
 const LP_GAIN = 20;
 const LP_LOSS = 16;
 
 const TIER_ORDER = [
-  "IRON", "BRONZE", "SILVER", "GOLD",
-  "PLATINUM", "EMERALD", "DIAMOND", "MASTER",
+  "IRON",
+  "BRONZE",
+  "SILVER",
+  "GOLD",
+  "PLATINUM",
+  "EMERALD",
+  "DIAMOND",
+  "MASTER",
 ] as const;
-type Tier = typeof TIER_ORDER[number];
+type Tier = (typeof TIER_ORDER)[number];
 
 const APEX_TIERS = new Set(["MASTER", "GRANDMASTER", "CHALLENGER"]);
 
@@ -26,9 +36,9 @@ function nextLabel(tier: string, division: string): string {
 }
 
 function winRatePts(wr: number): number {
-  if (wr >= 0.60) return 35;
+  if (wr >= 0.6) return 35;
   if (wr >= 0.55) return 28;
-  if (wr >= 0.50) return 20;
+  if (wr >= 0.5) return 20;
   if (wr >= 0.45) return 10;
   return 0;
 }
@@ -58,9 +68,11 @@ function mentalPts(matches: { won: boolean }[]): number {
 
 function buildMessage(level: RankUpLevel, estimated: number | null, atRisk: boolean): string {
   if (atRisk) return "Struggling right now — work on consistency before grinding LP.";
-  if (level === "high" && estimated !== null) return `You're on track — ~${estimated} games to rank up at this rate.`;
+  if (level === "high" && estimated !== null)
+    return `You're on track — ~${estimated} games to rank up at this rate.`;
   if (level === "high") return "Strong performance. Keep the consistency.";
-  if (level === "moderate" && estimated !== null) return `Possible in ~${estimated} games — maintain your current form.`;
+  if (level === "moderate" && estimated !== null)
+    return `Possible in ~${estimated} games — maintain your current form.`;
   if (level === "moderate") return "You have a path up, but consistency will be key.";
   return "Focus on fundamentals to build momentum before grinding.";
 }

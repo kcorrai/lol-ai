@@ -39,15 +39,27 @@ type TierListMap = Partial<Record<CanonicalPosition, RoleTierList | null>>;
 function bestPlacement(
   championName: string,
   tierLists: TierListMap
-): { position: CanonicalPosition; list: RoleTierList; entry: RoleTierList["entries"][number] } | null {
+): {
+  position: CanonicalPosition;
+  list: RoleTierList;
+  entry: RoleTierList["entries"][number];
+} | null {
   const key = norm(championName);
-  let best: { position: CanonicalPosition; list: RoleTierList; entry: RoleTierList["entries"][number] } | null = null;
+  let best: {
+    position: CanonicalPosition;
+    list: RoleTierList;
+    entry: RoleTierList["entries"][number];
+  } | null = null;
   for (const position of ALL_POSITIONS) {
     const list = tierLists[position];
     if (!list) continue;
     const entry = list.entries.find((e) => norm(e.name) === key);
     if (!entry) continue;
-    if (!best || entry.tier < best.entry.tier || (entry.tier === best.entry.tier && entry.rank < best.entry.rank)) {
+    if (
+      !best ||
+      entry.tier < best.entry.tier ||
+      (entry.tier === best.entry.tier && entry.rank < best.entry.rank)
+    ) {
       best = { position, list, entry };
     }
   }
@@ -63,7 +75,9 @@ function suggestAlternative(
   const alt = list.entries.find(
     (e) => e.tier <= 2 && !e.lowConfidence && !poolNames.has(norm(e.name))
   );
-  return alt ? { championKey: alt.championKey, championName: alt.name, tier: tierLetter(alt.tier) } : null;
+  return alt
+    ? { championKey: alt.championKey, championName: alt.name, tier: tierLetter(alt.tier) }
+    : null;
 }
 
 // Pure: turn a champion pool + the current tier lists into a short, prioritized set of
@@ -94,11 +108,21 @@ export function buildRecommendations(
     // …crossed with the user's own results. A meta-strong champ the user keeps losing on isn't a
     // "keep spamming" — the problem is the player/matchups, not the pick.
     const userLosing = champ.gamesPlayed >= 5 && champ.winRate < 45;
-    const base = { championKey: entry.championKey, championName: champ.championName, position, positionLabel, tier, winRate: champ.winRate, games: champ.gamesPlayed };
+    const base = {
+      championKey: entry.championKey,
+      championName: champ.championName,
+      position,
+      positionLabel,
+      tier,
+      winRate: champ.winRate,
+      games: champ.gamesPlayed,
+    };
 
     if (weak || dropped) {
       const alternative = suggestAlternative(list, poolNames) ?? undefined;
-      const altText = alternative ? ` Consider ${alternative.championName} (${alternative.tier}-tier) instead.` : "";
+      const altText = alternative
+        ? ` Consider ${alternative.championName} (${alternative.tier}-tier) instead.`
+        : "";
       recs.push({
         ...base,
         kind: "switch",

@@ -1,9 +1,5 @@
 import type { BotRequest } from "@/domains/discord/request";
-import {
-  resolveTarget,
-  type RiotTarget,
-  type TargetReason,
-} from "@/domains/discord/resolveTarget";
+import { resolveTarget, type RiotTarget, type TargetReason } from "@/domains/discord/resolveTarget";
 import { championsCard } from "@/domains/discord/views/championsCard";
 import { liveCard } from "@/domains/discord/views/liveCard";
 import { matchCard } from "@/domains/discord/views/matchCard";
@@ -28,7 +24,9 @@ type CardRenderer = (
 const ANALYSE_PATH = "/";
 
 function regionName(region: string): string {
-  return RIOT_REGION_CONFIG[region as keyof typeof RIOT_REGION_CONFIG]?.label ?? region.toUpperCase();
+  return (
+    RIOT_REGION_CONFIG[region as keyof typeof RIOT_REGION_CONFIG]?.label ?? region.toUpperCase()
+  );
 }
 
 function targetErrorCard(reason: TargetReason): DiscordMessagePayload {
@@ -119,9 +117,7 @@ export async function liveCommand(req: BotRequest): Promise<DiscordMessagePayloa
     if (!live.inGame) {
       // Not an error — "they are not playing" is a perfectly good answer, and
       // an ephemeral red box would be the wrong shape for it.
-      return card([
-        textDisplay(`### 💤 Not in game\n**${riotId}** is not in a game right now.`),
-      ]);
+      return card([textDisplay(`### 💤 Not in game\n**${riotId}** is not in a game right now.`)]);
     }
     return liveCard(live, riotId, { ...req, region: target.region }, ANALYSE_PATH);
   } catch (error) {

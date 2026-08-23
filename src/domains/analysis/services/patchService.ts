@@ -10,9 +10,9 @@ const SIGNIFICANT_DELTA_THRESHOLD = 3; // percentage points
 
 export interface ChampionPatchImpact {
   championName: string;
-  beforeWr: number;    // win rate % before patch
-  afterWr: number;     // win rate % after patch
-  wrDelta: number;     // positive = improved, negative = declined
+  beforeWr: number; // win rate % before patch
+  afterWr: number; // win rate % after patch
+  wrDelta: number; // positive = improved, negative = declined
   beforeGames: number;
   afterGames: number;
 }
@@ -27,14 +27,19 @@ export interface PatchImpactResult {
 
 // Fetches latest DDragon version and upserts into DB if new.
 // Returns the current tracked version.
-export async function getOrCreateCurrentPatch(): Promise<{ version: string; detectedAt: Date; isNew: boolean }> {
+export async function getOrCreateCurrentPatch(): Promise<{
+  version: string;
+  detectedAt: Date;
+  isNew: boolean;
+}> {
   const versions = await fetchJsonLastGood<string[]>(DDRAGON_VERSIONS_URL, { ttlSeconds: 3600 });
   const latestVersion = versions?.[0];
 
   if (!latestVersion) {
     logger.warn("[patchService] DDragon version feed unavailable, falling back to the DB");
     const fallback = await prisma.patchVersion.findFirst({ orderBy: { detectedAt: "desc" } });
-    if (fallback) return { version: fallback.version, detectedAt: fallback.detectedAt, isNew: false };
+    if (fallback)
+      return { version: fallback.version, detectedAt: fallback.detectedAt, isNew: false };
     throw new Error("No patch version available from Data Dragon or the database");
   }
 
@@ -65,9 +70,17 @@ export async function getPatchImpact(riotAccountId: string): Promise<PatchImpact
   });
 
   // Group by champion
-  const champMap = new Map<string, { beforeWins: number; beforeGames: number; afterWins: number; afterGames: number }>();
+  const champMap = new Map<
+    string,
+    { beforeWins: number; beforeGames: number; afterWins: number; afterGames: number }
+  >();
   for (const p of allParticipants) {
-    const entry = champMap.get(p.championName) ?? { beforeWins: 0, beforeGames: 0, afterWins: 0, afterGames: 0 };
+    const entry = champMap.get(p.championName) ?? {
+      beforeWins: 0,
+      beforeGames: 0,
+      afterWins: 0,
+      afterGames: 0,
+    };
     if (p.match.gameStart >= patchDate) {
       entry.afterGames++;
       if (p.won) entry.afterWins++;
@@ -86,7 +99,14 @@ export async function getPatchImpact(riotAccountId: string): Promise<PatchImpact
     const afterWr = Math.round((s.afterWins / s.afterGames) * 100);
     const wrDelta = afterWr - beforeWr;
     if (Math.abs(wrDelta) < SIGNIFICANT_DELTA_THRESHOLD) continue;
-    impacts.push({ championName, beforeWr, afterWr, wrDelta, beforeGames: s.beforeGames, afterGames: s.afterGames });
+    impacts.push({
+      championName,
+      beforeWr,
+      afterWr,
+      wrDelta,
+      beforeGames: s.beforeGames,
+      afterGames: s.afterGames,
+    });
   }
 
   impacts.sort((a, b) => Math.abs(b.wrDelta) - Math.abs(a.wrDelta));

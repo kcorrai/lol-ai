@@ -15,7 +15,10 @@ const ProfileBody = z.object({
   bio: z.string().trim().min(1).max(4000),
   languages: z.array(z.string().trim().length(2)).min(1).max(8),
   regions: z.array(z.string().trim().min(2).max(8)).min(1).max(8),
-  roles: z.array(z.enum(["TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"])).min(1).max(5),
+  roles: z
+    .array(z.enum(["TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"]))
+    .min(1)
+    .max(5),
   championIds: z.array(z.number().int().positive()).max(30).default([]),
   timezone: z.string().trim().min(1).max(64),
 });

@@ -19,7 +19,9 @@ const TIER_CLASS: Record<string, string> = {
 
 function TierBadge({ tier }: { tier: string }) {
   return (
-    <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${TIER_CLASS[tier] ?? "bg-surface-2 text-text-muted"}`}>
+    <span
+      className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${TIER_CLASS[tier] ?? "bg-surface-2 text-text-muted"}`}
+    >
       {tier}
     </span>
   );
@@ -32,7 +34,9 @@ export function MetaRecommendationsWidget({ riotAccountId }: Props) {
     return (
       <div className="animate-pulse space-y-2 rounded-xl border border-border bg-surface p-4">
         <div className="h-3 w-32 rounded bg-border" />
-        {[0, 1].map((i) => <div key={i} className="h-12 w-full rounded bg-border" />)}
+        {[0, 1].map((i) => (
+          <div key={i} className="h-12 w-full rounded bg-border" />
+        ))}
       </div>
     );
   }
@@ -51,7 +55,10 @@ export function MetaRecommendationsWidget({ riotAccountId }: Props) {
   return (
     <div className="space-y-2">
       {data.map((rec) => (
-        <div key={`${rec.kind}-${rec.championKey}`} className="rounded-xl border border-border bg-surface p-3">
+        <div
+          key={`${rec.kind}-${rec.championKey}`}
+          className="rounded-xl border border-border bg-surface p-3"
+        >
           <div className="flex items-start gap-3">
             <ChampionIcon name={rec.championKey} size={36} className="mt-0.5 shrink-0 rounded-lg" />
             <div className="min-w-0 flex-1">

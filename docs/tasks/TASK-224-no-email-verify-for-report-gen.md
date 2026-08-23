@@ -6,7 +6,7 @@
 
 `POST /api/coaching/generate` blocks report generation unless the user's email is verified
 ("Please verify your email address before generating AI reports.", 7.png). A brand-new user who
-just wants a report is stopped. Email verification should only gate features that actually *send*
+just wants a report is stopped. Email verification should only gate features that actually _send_
 email (weekly report emails, activation), not in-app report generation.
 
 ## Fix

@@ -27,7 +27,7 @@ export interface DuoMatches {
 export async function loadDuoMatches(
   riotAccountId: string,
   partnerPuuid: string,
-  opts: { since?: Date } = {},
+  opts: { since?: Date } = {}
 ): Promise<DuoMatches> {
   const puuid = await getAccountPuuid(riotAccountId);
   if (!puuid) return { own: [], partner: [] };
@@ -92,7 +92,7 @@ export async function loadDuoMatches(
 export function sharedOnly({ own, partner }: DuoMatches): OwnRow[] {
   const ownTeamByMatch = new Map(own.map((r) => [r.matchId, r.teamId]));
   const sharedMatchIds = new Set(
-    partner.filter((p) => ownTeamByMatch.get(p.matchId) === p.teamId).map((p) => p.matchId),
+    partner.filter((p) => ownTeamByMatch.get(p.matchId) === p.teamId).map((p) => p.matchId)
   );
   return own.filter((r) => sharedMatchIds.has(r.matchId));
 }

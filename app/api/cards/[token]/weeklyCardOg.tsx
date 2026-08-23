@@ -1,15 +1,7 @@
 import type { WeeklyCardData } from "@/domains/coaching/services/cardService";
 import { W, H, C } from "./cardOgTokens";
 
-function StatBox({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: string;
-  color: string;
-}) {
+function StatBox({ label, value, color }: { label: string; value: string; color: string }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
       <span style={{ color: C.muted, fontSize: 16 }}>{label}</span>
@@ -57,9 +49,7 @@ export function WeeklyCard({ d }: { d: WeeklyCardData }) {
         <StatBox label="LP Change" value={`${lpSign}${d.lpDelta}`} color={lpColor} />
         <StatBox label="Win Rate" value={`${d.winRate}%`} color={C.text} />
         <StatBox label="Games" value={`${d.gamesPlayed} Matches`} color={C.muted} />
-        {d.coachGrade && (
-          <StatBox label="AI Coach Notu" value={d.coachGrade} color={C.gold} />
-        )}
+        {d.coachGrade && <StatBox label="AI Coach Notu" value={d.coachGrade} color={C.gold} />}
       </div>
 
       {/* Best champion */}
@@ -77,14 +67,10 @@ export function WeeklyCard({ d }: { d: WeeklyCardData }) {
           }}
         >
           <span style={{ color: C.muted, fontSize: 18 }}>Best Champion</span>
-          <span style={{ color: C.text, fontSize: 22, fontWeight: 700 }}>
-            {d.bestChampionName}
-          </span>
+          <span style={{ color: C.text, fontSize: 22, fontWeight: 700 }}>{d.bestChampionName}</span>
           <span style={{ color: C.green, fontSize: 20 }}>{d.bestChampionWinRate}% WR</span>
           {d.masteryScore !== null && (
-            <span style={{ color: C.brand, fontSize: 18 }}>
-              Mastery {d.masteryScore}/100
-            </span>
+            <span style={{ color: C.brand, fontSize: 18 }}>Mastery {d.masteryScore}/100</span>
           )}
         </div>
       )}

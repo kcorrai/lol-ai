@@ -16,7 +16,7 @@ codebase: `challengeGenerator.ts` is an Inngest cron that writes a row per user
 per day. Copying it would have been the path of least resistance.
 
 **How the answer stays secret.** A quiz whose answer is in the page is not a
-quiz. Data Dragon makes this sharper than it sounds: its asset paths *are* the
+quiz. Data Dragon makes this sharper than it sounds: its asset paths _are_ the
 answer — `/img/spell/AatroxQ.png`, `/img/champion/splash/Aatrox_0.jpg`.
 
 **Where champion facts come from.** Classic mode needs gender, species, region,
@@ -69,7 +69,7 @@ seed instead of the date. Because practice never consults the date, no seed
 reproduces the day's puzzle.
 
 **Adding a leaderboard forced the guess count server-side.** Guesses were judged
-on the server from the start, but the *total* was reported by the client when a
+on the server from the start, but the _total_ was reported by the client when a
 mode finished — fine for a streak, worthless for a ranking, since it is a
 position anyone can claim by editing one request. `/api/quiz/guess` now appends
 each guess to the attempt row and derives the count from the stored list, and
@@ -84,12 +84,12 @@ and the slowest feed the app reads, so a request-time call would be the worst
 version of the failure ADR-024 already rules out. The cost this one adds is that
 two champions with an identical build make a puzzle with two answers: ten of them
 share a full signature and are dropped, leaving 163 of 173 in the pool. A shared
-*opening* is kept and logged — boots, starters, spells and skill order still
+_opening_ is kept and logged — boots, starters, spells and skill order still
 separate them as the misses arrive.
 
 **Item icons need no asset proxy, and splash art still does.** The proxy exists
 because a Data Dragon path names the champion. An item icon's path names the
-*item*, so the Build board can load it straight from Data Dragon without solving
+_item_, so the Build board can load it straight from Data Dragon without solving
 itself in the network tab. Impostor's portraits are deliberately public for the
 same reason: recognising eight champions is not the puzzle, and a button needs an
 accessible name anyway.

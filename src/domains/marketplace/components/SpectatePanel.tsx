@@ -4,7 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api/fetcher";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/domains/marketplace/components/hud/panelCard";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/domains/marketplace/components/hud/panelCard";
 import { regionLabel } from "@/lib/riot/regions";
 import type { SpectateStatus } from "@/domains/marketplace";
 
@@ -37,7 +43,9 @@ export function SpectatePanel({ bookingId }: Props): React.ReactElement {
     <Card>
       <CardHeader>
         <CardTitle>Your student right now</CardTitle>
-        <CardDescription>Spectate from your own client — nothing streams through us.</CardDescription>
+        <CardDescription>
+          Spectate from your own client — nothing streams through us.
+        </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-3">

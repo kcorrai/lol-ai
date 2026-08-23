@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 
-type State = { status: "idle" | "saving" } | { status: "done" } | { status: "error"; message: string };
+type State =
+  | { status: "idle" | "saving" }
+  | { status: "done" }
+  | { status: "error"; message: string };
 
 export default function LinkClient({
   token,
@@ -29,7 +32,10 @@ export default function LinkClient({
       }
       setState({ status: "done" });
     } catch {
-      setState({ status: "error", message: "Linking failed. Check your connection and try again." });
+      setState({
+        status: "error",
+        message: "Linking failed. Check your connection and try again.",
+      });
     }
   }
 

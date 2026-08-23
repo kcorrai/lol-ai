@@ -12,7 +12,7 @@ export const AUTO_SYNC_STALE_MS = 30 * 60 * 1000;
 export function shouldAutoSync(
   lastSyncedAt: string | Date | null | undefined,
   status: SyncStatus | undefined,
-  now: number,
+  now: number
 ): boolean {
   if (isSyncActive(status)) return false; // a sync is already running — don't stack another
   const last = lastSyncedAt ? new Date(lastSyncedAt).getTime() : 0; // never synced → always stale
@@ -25,7 +25,7 @@ export function shouldAutoSync(
 // completes, so the dashboard updates with the new matches on its own.
 export function useAutoSync(
   riotAccountId: string | null | undefined,
-  lastSyncedAt: string | Date | null | undefined,
+  lastSyncedAt: string | Date | null | undefined
 ): void {
   const sync = useSyncAccount();
   const { data: status } = useSyncStatus(riotAccountId);

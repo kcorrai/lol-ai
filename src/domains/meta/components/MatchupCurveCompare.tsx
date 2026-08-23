@@ -38,8 +38,7 @@ export function MatchupCurveCompare({
     <div className="rounded-2xl border border-border bg-surface/60 p-5">
       <h2 className="mb-1 font-display text-lg font-bold text-text">Scaling Comparison</h2>
       <p className="mb-4 text-xs text-text-muted">
-        Win rate by game length —{" "}
-        <span className="font-semibold text-info">{nameA}</span> vs{" "}
+        Win rate by game length — <span className="font-semibold text-info">{nameA}</span> vs{" "}
         <span className="font-semibold text-danger">{nameB}</span>.
         {oneSided && " Scaling data is only available for one champion in this lane."}
       </p>
@@ -54,12 +53,20 @@ export function MatchupCurveCompare({
                 {wrA === undefined ? (
                   <EmptyBar />
                 ) : (
-                  <Bar width={Math.max(4, Math.min(100, (wrA - 44) * (100 / 12)))} value={wrA} color="bg-info" />
+                  <Bar
+                    width={Math.max(4, Math.min(100, (wrA - 44) * (100 / 12)))}
+                    value={wrA}
+                    color="bg-info"
+                  />
                 )}
                 {wrB === undefined ? (
                   <EmptyBar />
                 ) : (
-                  <Bar width={Math.max(4, Math.min(100, (wrB - 44) * (100 / 12)))} value={wrB} color="bg-danger" />
+                  <Bar
+                    width={Math.max(4, Math.min(100, (wrB - 44) * (100 / 12)))}
+                    value={wrB}
+                    color="bg-danger"
+                  />
                 )}
               </div>
             </div>

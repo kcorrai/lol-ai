@@ -157,10 +157,7 @@ interface TeamDashboardData {
 // Owner: koç ile aynı + takım yönetimi
 
 // src/domains/teams/services/teamService.ts
-export async function assertCoachAccess(
-  teamId: string,
-  requestingUserId: string
-): Promise<void>
+export async function assertCoachAccess(teamId: string, requestingUserId: string): Promise<void>;
 ```
 
 ### Davet Email Akışı
@@ -230,13 +227,13 @@ docs/API_DESIGN.md                                 ← GÜNCELLE
 ## Test Plan
 
 ```typescript
-describe('teamService', () => {
-  it('takım oluşturunca owner otomatik OWNER rolüyle ekleniyor')
-  it('COACH rolündeki kullanıcı üye verilerine erişebiliyor')
-  it('PLAYER rolündeki kullanıcı başka üye verisine erişemiyor')
-  it('süresi dolmuş davet tokenı kabul edilmiyor')
-  it('aynı kullanıcı iki kez aynı takıma eklenemiyor')
-})
+describe("teamService", () => {
+  it("takım oluşturunca owner otomatik OWNER rolüyle ekleniyor");
+  it("COACH rolündeki kullanıcı üye verilerine erişebiliyor");
+  it("PLAYER rolündeki kullanıcı başka üye verisine erişemiyor");
+  it("süresi dolmuş davet tokenı kabul edilmiyor");
+  it("aynı kullanıcı iki kez aynı takıma eklenemiyor");
+});
 ```
 
 ---

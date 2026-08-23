@@ -18,9 +18,10 @@ function computePosition(
   w: number,
   h: number,
   vw: number,
-  vh: number,
+  vh: number
 ): { top: number; left: number } {
-  const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(v, Math.max(min, max)));
+  const clamp = (v: number, min: number, max: number) =>
+    Math.max(min, Math.min(v, Math.max(min, max)));
 
   if (!rect || placement === "center") {
     return { top: (vh - h) / 2, left: (vw - w) / 2 };
@@ -74,7 +75,15 @@ interface CoachBubbleProps {
   onDismiss: () => void;
 }
 
-export function CoachBubble({ step, rect, index, total, onManualAdvance, onGoTo, onDismiss }: CoachBubbleProps): React.JSX.Element {
+export function CoachBubble({
+  step,
+  rect,
+  index,
+  total,
+  onManualAdvance,
+  onGoTo,
+  onDismiss,
+}: CoachBubbleProps): React.JSX.Element {
   const [typed, setTyped] = useState("");
   const bubbleRef = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
@@ -86,7 +95,16 @@ export function CoachBubble({ step, rect, index, total, onManualAdvance, onGoTo,
     if (!el) return;
     const recompute = () => {
       const r = el.getBoundingClientRect();
-      setPos(computePosition(rect, step.placement, r.width, r.height, window.innerWidth, window.innerHeight));
+      setPos(
+        computePosition(
+          rect,
+          step.placement,
+          r.width,
+          r.height,
+          window.innerWidth,
+          window.innerHeight
+        )
+      );
     };
     recompute();
     const ro = new ResizeObserver(recompute);
@@ -150,7 +168,10 @@ export function CoachBubble({ step, rect, index, total, onManualAdvance, onGoTo,
       <div className="mt-3 flex items-center justify-between">
         <div className="flex gap-1.5">
           {Array.from({ length: total }).map((_, i) => (
-            <span key={i} className={`h-1.5 rounded-full transition-all ${i === index ? "w-5 bg-accent" : i < index ? "w-1.5 bg-accent/50" : "w-1.5 bg-surface-2"}`} />
+            <span
+              key={i}
+              className={`h-1.5 rounded-full transition-all ${i === index ? "w-5 bg-accent" : i < index ? "w-1.5 bg-accent/50" : "w-1.5 bg-surface-2"}`}
+            />
           ))}
         </div>
 

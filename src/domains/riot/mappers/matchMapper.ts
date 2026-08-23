@@ -6,13 +6,13 @@ import { logger } from "@/lib/utils/logger";
 export const QUEUE_MAP: Partial<Record<number, QueueType>> = {
   420: "RANKED_SOLO_5x5",
   440: "RANKED_FLEX_SR",
-  490: "NORMAL_BLIND",  // Quick Play
-  430: "NORMAL_BLIND",  // Legacy Blind Pick
+  490: "NORMAL_BLIND", // Quick Play
+  430: "NORMAL_BLIND", // Legacy Blind Pick
   400: "NORMAL_DRAFT",
   450: "ARAM",
-  1700: "ARENA",        // Arena (2v2v2v2)
-  900:  "URF",          // ARURF
-  1900: "URF",          // Pick URF
+  1700: "ARENA", // Arena (2v2v2v2)
+  900: "URF", // ARURF
+  1900: "URF", // Pick URF
   1020: "ONE_FOR_ALL",
   1300: "NEXUS_BLITZ",
 };
@@ -94,7 +94,9 @@ export function mapMatch(
 ): MappedMatch | null {
   const queueType = QUEUE_MAP[dto.info.queueId];
   if (!queueType) {
-    logger.debug(`[matchMapper] skipping unknown queueId=${dto.info.queueId} matchId=${dto.metadata.matchId}`);
+    logger.debug(
+      `[matchMapper] skipping unknown queueId=${dto.info.queueId} matchId=${dto.metadata.matchId}`
+    );
     return null;
   }
 
@@ -105,24 +107,24 @@ export function mapMatch(
       ? Math.round(dto.info.gameDuration / 1000)
       : dto.info.gameDuration;
 
-  const winningTeam =
-    dto.info.teams.find((t) => t.win)?.teamId ?? 100;
+  const winningTeam = dto.info.teams.find((t) => t.win)?.teamId ?? 100;
 
-  const rawHash = createHash("sha256")
-    .update(JSON.stringify(dto.info))
-    .digest("hex");
+  const rawHash = createHash("sha256").update(JSON.stringify(dto.info)).digest("hex");
 
   const gameStart = new Date(dto.info.gameCreation);
   const gameEnd = new Date(dto.info.gameCreation + durationSeconds * 1000);
 
-  const teamObjectives: Record<string, { towers: number; dragons: number; barons: number; inhibitors: number; heralds: number }> = {};
+  const teamObjectives: Record<
+    string,
+    { towers: number; dragons: number; barons: number; inhibitors: number; heralds: number }
+  > = {};
   for (const t of dto.info.teams) {
     teamObjectives[String(t.teamId)] = {
-      towers:    t.objectives?.tower?.kills     ?? 0,
-      dragons:   t.objectives?.dragon?.kills    ?? 0,
-      barons:    t.objectives?.baron?.kills     ?? 0,
+      towers: t.objectives?.tower?.kills ?? 0,
+      dragons: t.objectives?.dragon?.kills ?? 0,
+      barons: t.objectives?.baron?.kills ?? 0,
       inhibitors: t.objectives?.inhibitor?.kills ?? 0,
-      heralds:   t.objectives?.riftHerald?.kills ?? 0,
+      heralds: t.objectives?.riftHerald?.kills ?? 0,
     };
   }
 
@@ -143,12 +145,7 @@ export function mapMatch(
   };
 
   const participants = dto.info.participants.map((p) =>
-    mapParticipant(
-      p,
-      matchDbId,
-      durationSeconds,
-      p.puuid === trackedPuuid ? riotAccountId : null
-    )
+    mapParticipant(p, matchDbId, durationSeconds, p.puuid === trackedPuuid ? riotAccountId : null)
   );
 
   return { queueType, match, participants };

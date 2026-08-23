@@ -59,9 +59,7 @@ export function RouteError({
           {homeLabel}
         </Link>
       </div>
-      {error.digest && (
-        <p className="mt-5 text-xs text-text-muted">Error ID: {error.digest}</p>
-      )}
+      {error.digest && <p className="mt-5 text-xs text-text-muted">Error ID: {error.digest}</p>}
     </div>
   );
 }

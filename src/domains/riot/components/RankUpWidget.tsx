@@ -4,9 +4,9 @@ import { useRankUpProbability } from "@/hooks/useRankUpProbability";
 import type { RankUpLevel } from "@/domains/analysis/types/analysis.types";
 
 const LEVEL_CONFIG: Record<RankUpLevel, { label: string; color: string; bar: string }> = {
-  high:     { label: "High Chance",   color: "text-success", bar: "bg-success" },
-  moderate: { label: "Moderate",      color: "text-warning", bar: "bg-warning" },
-  low:      { label: "Low Chance",    color: "text-danger",  bar: "bg-danger"  },
+  high: { label: "High Chance", color: "text-success", bar: "bg-success" },
+  moderate: { label: "Moderate", color: "text-warning", bar: "bg-warning" },
+  low: { label: "Low Chance", color: "text-danger", bar: "bg-danger" },
 };
 
 interface FactorRowProps {
@@ -86,19 +86,17 @@ export function RankUpWidget({ riotAccountId }: RankUpWidgetProps) {
           max={35}
           detail={`${wrPct}% WR`}
         />
-        <FactorRow
-          label="Trend"
-          pts={result.components.trend}
-          max={20}
-          detail={result.trend}
-        />
+        <FactorRow label="Trend" pts={result.components.trend} max={20} detail={result.trend} />
         <FactorRow
           label="Mental"
           pts={result.components.mental}
           max={15}
           detail={
-            result.components.mental === 15 ? "focused" :
-            result.components.mental >= 8  ? "caution" : "tilt risk"
+            result.components.mental === 15
+              ? "focused"
+              : result.components.mental >= 8
+                ? "caution"
+                : "tilt risk"
           }
         />
       </div>

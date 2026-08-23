@@ -42,7 +42,9 @@ test.describe("Esports section", () => {
     await expect(page.getByRole("heading", { name: "Esports Teams", level: 1 })).toBeVisible();
 
     const firstTeam = page.getByRole("link", { name: /roster|team/i }).first();
-    const anyTeam = (await firstTeam.count()) ? firstTeam : page.locator("a[href^='/esports/teams/']").first();
+    const anyTeam = (await firstTeam.count())
+      ? firstTeam
+      : page.locator("a[href^='/esports/teams/']").first();
     await anyTeam.click();
 
     await expect(page).toHaveURL(/\/esports\/teams\/[^/]+$/);

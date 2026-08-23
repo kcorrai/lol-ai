@@ -5,8 +5,7 @@ import { usePathname } from "next/navigation";
 import { GraduationCap } from "lucide-react";
 import { coreTracks, roleTracks } from "@/domains/academy/curriculum";
 
-const LINK =
-  "font-mono text-[11px] uppercase tracking-label transition-colors whitespace-nowrap";
+const LINK = "font-mono text-[11px] uppercase tracking-label transition-colors whitespace-nowrap";
 
 /**
  * The Academy's own navigation. The section reads as a separate place inside the site,

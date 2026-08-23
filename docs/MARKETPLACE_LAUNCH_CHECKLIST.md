@@ -24,7 +24,7 @@ the first block stops being optional.
       `coach_payout_accounts.payoutsEnabled = false` must not be bookable. The
       column exists and is read; the Connect onboarding link does not exist yet.
 - [ ] **Refund path tested against real Stripe test keys**, including the
-      dispute resolution that reverses the transfer *and* the application fee.
+      dispute resolution that reverses the transfer _and_ the application fee.
 - [ ] **Tax and invoicing decision.** Destination charges make us the merchant
       of record for the platform fee. Ask an accountant before the first payout,
       not after.
@@ -71,15 +71,15 @@ the first block stops being optional.
 
 These are not oversights. Each is written up with its reasoning.
 
-| Not done | Where the decision lives |
-|---|---|
-| Real payments | ADR-020 — ledger first, driver later |
-| Video hosting / embedded calls | ADR-021 — link plus timestamps, Mux and Daily costed as upgrade paths |
-| `RIOT_VERIFIED` badge tier | ADR-023 — needs an RSO invite we do not have; the column and the UI branch are ready |
-| Websockets for messaging | ADR-016 precedent — polling, same as live draft |
-| Packages / bundles | Plan §6 — the single most damaging complaint in the category |
-| Google / iCal calendar sync | Plan §6 — next round |
-| AI anywhere in this section | Kaan's call, recorded in the plan. The product on sale is a person |
+| Not done                       | Where the decision lives                                                             |
+| ------------------------------ | ------------------------------------------------------------------------------------ |
+| Real payments                  | ADR-020 — ledger first, driver later                                                 |
+| Video hosting / embedded calls | ADR-021 — link plus timestamps, Mux and Daily costed as upgrade paths                |
+| `RIOT_VERIFIED` badge tier     | ADR-023 — needs an RSO invite we do not have; the column and the UI branch are ready |
+| Websockets for messaging       | ADR-016 precedent — polling, same as live draft                                      |
+| Packages / bundles             | Plan §6 — the single most damaging complaint in the category                         |
+| Google / iCal calendar sync    | Plan §6 — next round                                                                 |
+| AI anywhere in this section    | Kaan's call, recorded in the plan. The product on sale is a person                   |
 
 ## 5. Verification that was actually run
 

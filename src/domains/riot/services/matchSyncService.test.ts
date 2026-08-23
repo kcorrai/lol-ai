@@ -56,7 +56,11 @@ vi.mock("@/inngest/client", () => ({
 
 vi.mock("@/domains/riot/services/timelineCaptureService", () => ({
   runTimelineCaptureForAccount: vi.fn().mockResolvedValue({
-    processed: 0, fetched: 0, totalDeaths: 0, totalFrames: 0, totalEvents: 0,
+    processed: 0,
+    fetched: 0,
+    totalDeaths: 0,
+    totalFrames: 0,
+    totalEvents: 0,
   }),
 }));
 
@@ -173,8 +177,14 @@ describe("syncAccount", () => {
 
   it("returns early with zero counts when data is not stale", async () => {
     vi.mocked(prisma.riotAccount.findUnique).mockResolvedValue({
-      id: "acc-1", lastSyncedAt: new Date(), gameName: "KaaN", tagLine: "TR1",
-      puuid: "puuid-1", region: "euw1", summonerId: "sum-1", userId: "user-1",
+      id: "acc-1",
+      lastSyncedAt: new Date(),
+      gameName: "KaaN",
+      tagLine: "TR1",
+      puuid: "puuid-1",
+      region: "euw1",
+      summonerId: "sum-1",
+      userId: "user-1",
     } as never);
     vi.mocked(isDataStale).mockReturnValue(false);
 
@@ -188,14 +198,19 @@ describe("syncAccount", () => {
   // zero rows. It has to stay one statement covering every known match.
   it("links every already-known match in a single statement", async () => {
     vi.mocked(prisma.riotAccount.findUnique).mockResolvedValue({
-      id: "acc-1", lastSyncedAt: null, gameName: "KaaN", tagLine: "TR1",
-      puuid: "puuid-1", region: "euw1", summonerId: "sum-1", userId: "user-1",
+      id: "acc-1",
+      lastSyncedAt: null,
+      gameName: "KaaN",
+      tagLine: "TR1",
+      puuid: "puuid-1",
+      region: "euw1",
+      summonerId: "sum-1",
+      userId: "user-1",
     } as never);
     vi.mocked(isDataStale).mockReturnValue(true);
 
-    const { getMatchIds, getRankedEntriesByPuuidDirect } = await import(
-      "@/domains/riot/services/riotApiClient"
-    );
+    const { getMatchIds, getRankedEntriesByPuuidDirect } =
+      await import("@/domains/riot/services/riotApiClient");
     vi.mocked(getMatchIds).mockResolvedValue(["EUW_1", "EUW_2", "EUW_3"]);
     // All three already in the database, so nothing is ingested and only the link pass runs.
     vi.mocked(prisma.match.findMany).mockResolvedValue([
@@ -224,14 +239,19 @@ describe("syncAccount", () => {
 
   it("issues no linking statement when nothing is already known", async () => {
     vi.mocked(prisma.riotAccount.findUnique).mockResolvedValue({
-      id: "acc-1", lastSyncedAt: null, gameName: "KaaN", tagLine: "TR1",
-      puuid: "puuid-1", region: "euw1", summonerId: "sum-1", userId: "user-1",
+      id: "acc-1",
+      lastSyncedAt: null,
+      gameName: "KaaN",
+      tagLine: "TR1",
+      puuid: "puuid-1",
+      region: "euw1",
+      summonerId: "sum-1",
+      userId: "user-1",
     } as never);
     vi.mocked(isDataStale).mockReturnValue(true);
 
-    const { getMatchIds, getRankedEntriesByPuuidDirect } = await import(
-      "@/domains/riot/services/riotApiClient"
-    );
+    const { getMatchIds, getRankedEntriesByPuuidDirect } =
+      await import("@/domains/riot/services/riotApiClient");
     vi.mocked(getMatchIds).mockResolvedValue([]);
     vi.mocked(prisma.match.findMany).mockResolvedValue([]);
     vi.mocked(prisma.matchParticipant.findMany).mockResolvedValue([]);
@@ -254,14 +274,19 @@ describe("syncAccount", () => {
       onFetch?: (id: string) => Promise<void>
     ) {
       vi.mocked(prisma.riotAccount.findUnique).mockResolvedValue({
-        id: "acc-1", lastSyncedAt: null, gameName: "KaaN", tagLine: "TR1",
-        puuid: "puuid-1", region: "euw1", summonerId: "sum-1", userId: "user-1",
+        id: "acc-1",
+        lastSyncedAt: null,
+        gameName: "KaaN",
+        tagLine: "TR1",
+        puuid: "puuid-1",
+        region: "euw1",
+        summonerId: "sum-1",
+        userId: "user-1",
       } as never);
       vi.mocked(isDataStale).mockReturnValue(true);
 
-      const { getMatchIds, getRankedEntriesByPuuidDirect } = await import(
-        "@/domains/riot/services/riotApiClient"
-      );
+      const { getMatchIds, getRankedEntriesByPuuidDirect } =
+        await import("@/domains/riot/services/riotApiClient");
       const { mapMatch } = await import("@/domains/riot/mappers/matchMapper");
 
       vi.mocked(getMatchIds).mockResolvedValue(ids);
@@ -282,8 +307,8 @@ describe("syncAccount", () => {
         if (onFetch) await onFetch(id);
         return { id } as never;
       });
-      vi.mocked(mapMatch).mockImplementation((dto: unknown) =>
-        mapper((dto as { id: string }).id) as never
+      vi.mocked(mapMatch).mockImplementation(
+        (dto: unknown) => mapper((dto as { id: string }).id) as never
       );
 
       return syncAccount("acc-1", true);
@@ -341,7 +366,9 @@ describe("syncAccount", () => {
       const { indexPlayers } = await import("@/domains/riot/services/playerIndexService");
       await ingest(["A", "B", "C"], ok);
 
-      const indexed = vi.mocked(indexPlayers).mock.calls[0][0] as unknown as Array<{ puuid: string }>;
+      const indexed = vi.mocked(indexPlayers).mock.calls[0][0] as unknown as Array<{
+        puuid: string;
+      }>;
       expect(indexed.map((p) => p.puuid).sort()).toEqual(["p-A", "p-B", "p-C"]);
     });
 
@@ -373,9 +400,8 @@ describe("syncAccount", () => {
     // must not lose it. LA-66: on a machine with no Inngest it had never run once.
     it("runs the timeline capture in-process when the send fails", async () => {
       const { inngest } = await import("@/inngest/client");
-      const { runTimelineCaptureForAccount } = await import(
-        "@/domains/riot/services/timelineCaptureService"
-      );
+      const { runTimelineCaptureForAccount } =
+        await import("@/domains/riot/services/timelineCaptureService");
       vi.mocked(inngest.send).mockRejectedValue(new Error("ECONNREFUSED"));
 
       await ingest(["A"], ok);
@@ -386,9 +412,8 @@ describe("syncAccount", () => {
     });
 
     it("does not capture timelines when nothing was ingested", async () => {
-      const { runTimelineCaptureForAccount } = await import(
-        "@/domains/riot/services/timelineCaptureService"
-      );
+      const { runTimelineCaptureForAccount } =
+        await import("@/domains/riot/services/timelineCaptureService");
       await ingest([], ok);
       expect(runTimelineCaptureForAccount).not.toHaveBeenCalled();
     });
@@ -415,16 +440,20 @@ describe("syncAccount", () => {
       let inFlight = 0;
       let peak = 0;
 
-      await ingest(Array.from({ length: 16 }, (_, i) => `M${i}`), ok, async (id) => {
-        events.push(`start:${id}`);
-        inFlight++;
-        peak = Math.max(peak, inFlight);
-        // One microtask turn is enough to let a sibling task start, and needs no timer.
-        await Promise.resolve();
-        await Promise.resolve();
-        inFlight--;
-        events.push(`end:${id}`);
-      });
+      await ingest(
+        Array.from({ length: 16 }, (_, i) => `M${i}`),
+        ok,
+        async (id) => {
+          events.push(`start:${id}`);
+          inFlight++;
+          peak = Math.max(peak, inFlight);
+          // One microtask turn is enough to let a sibling task start, and needs no timer.
+          await Promise.resolve();
+          await Promise.resolve();
+          inFlight--;
+          events.push(`end:${id}`);
+        }
+      );
 
       // Strictly sequential work reads start,end,start,end… A second start before the matching end
       // is only possible if two are in flight together.
@@ -441,8 +470,14 @@ describe("syncAccount", () => {
 
   it("force=true bypasses staleness check", async () => {
     vi.mocked(prisma.riotAccount.findUnique).mockResolvedValue({
-      id: "acc-1", lastSyncedAt: new Date(), gameName: "KaaN", tagLine: "TR1",
-      puuid: "puuid-1", region: "euw1", summonerId: "sum-1", userId: "user-1",
+      id: "acc-1",
+      lastSyncedAt: new Date(),
+      gameName: "KaaN",
+      tagLine: "TR1",
+      puuid: "puuid-1",
+      region: "euw1",
+      summonerId: "sum-1",
+      userId: "user-1",
     } as never);
     vi.mocked(isDataStale).mockReturnValue(false);
 

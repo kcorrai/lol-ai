@@ -77,7 +77,10 @@ export function ClueLadder({ mode, misses, hints }: ClueLadderProps): React.JSX.
           </p>
           <ul className="mt-2 grid gap-1.5">
             {hints.map((hint) => (
-              <li key={hint} className="tag-cut border border-accent/40 bg-accent/10 px-2 py-1 font-mono text-[11px] text-accent">
+              <li
+                key={hint}
+                className="tag-cut border border-accent/40 bg-accent/10 px-2 py-1 font-mono text-[11px] text-accent"
+              >
                 {hint}
               </li>
             ))}

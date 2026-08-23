@@ -17,7 +17,9 @@ export default function GlobalError({ error, reset }: Props) {
 
   return (
     <html lang="en" className="dark">
-      <body style={{ background: "#080B0A", color: "#E9F5EE", fontFamily: "system-ui, sans-serif" }}>
+      <body
+        style={{ background: "#080B0A", color: "#E9F5EE", fontFamily: "system-ui, sans-serif" }}
+      >
         <div
           style={{
             display: "flex",

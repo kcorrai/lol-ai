@@ -66,9 +66,7 @@ export default async function MatchupPage({ searchParams }: PageProps) {
             Free Tool · No login required
           </p>
         </PublicOnly>
-        <h1 className="font-display text-3xl font-black text-text md:text-4xl">
-          Matchup Analyzer
-        </h1>
+        <h1 className="font-display text-3xl font-black text-text md:text-4xl">Matchup Analyzer</h1>
         <p className="mt-2 text-text-muted">
           Compare two champions head-to-head and see who wins the lane, by real ranked win rate.
         </p>

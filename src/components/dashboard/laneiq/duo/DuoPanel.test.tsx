@@ -21,7 +21,15 @@ import {
 } from "@/hooks/useDuo";
 import { DuoPanel } from "./DuoPanel";
 
-const PARTNER = { puuid: "p", gameName: "Mate", tagLine: "TR1", games: 73, wins: 37, winRate: 51, lastPlayedAt: null };
+const PARTNER = {
+  puuid: "p",
+  gameName: "Mate",
+  tagLine: "TR1",
+  games: 73,
+  wins: 37,
+  winRate: 51,
+  lastPlayedAt: null,
+};
 
 const SYNERGY = {
   partner: PARTNER,
@@ -75,7 +83,7 @@ describe("DuoPanel", () => {
 
   it("calls a lifting duo a lifting duo", () => {
     vi.mocked(useDuoSynergy).mockReturnValue(
-      query({ ...SYNERGY, synergyDelta: 13, together: { games: 40, wins: 25, winRate: 62 } }),
+      query({ ...SYNERGY, synergyDelta: 13, together: { games: 40, wins: 25, winRate: 62 } })
     );
 
     render(<DuoPanel riotAccountId="acc-1" />);
@@ -91,7 +99,7 @@ describe("DuoPanel", () => {
         hasEnoughData: false,
         together: { games: 3, wins: 3, winRate: 100 },
         synergyDelta: 55,
-      }),
+      })
     );
 
     render(<DuoPanel riotAccountId="acc-1" />);
@@ -104,7 +112,7 @@ describe("DuoPanel", () => {
 
   it("says so rather than implying parity when they have never played apart", () => {
     vi.mocked(useDuoSynergy).mockReturnValue(
-      query({ ...SYNERGY, synergyDelta: null, apart: { games: 0, wins: 0, winRate: null } }),
+      query({ ...SYNERGY, synergyDelta: null, apart: { games: 0, wins: 0, winRate: null } })
     );
 
     render(<DuoPanel riotAccountId="acc-1" />);
@@ -154,7 +162,7 @@ describe("DuoPanel", () => {
             periodEnd: "2099-01-01T00:00:00.000Z",
           },
         ],
-      }),
+      })
     );
 
     render(<DuoPanel riotAccountId="acc-1" />);

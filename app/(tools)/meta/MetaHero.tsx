@@ -52,7 +52,8 @@ function HeroCard({ mover, numericKey, direction }: HeroCardProps) {
             <div className="min-w-0">
               <h3 className="truncate font-display text-2xl font-black text-text">{mover.name}</h3>
               <p className="mt-0.5 text-xs text-text-muted">
-                Now rank {mover.rank} · {tierLetter(mover.tier)}-tier · {mover.winRate.toFixed(1)}% WR
+                Now rank {mover.rank} · {tierLetter(mover.tier)}-tier · {mover.winRate.toFixed(1)}%
+                WR
               </p>
             </div>
             <p
@@ -84,10 +85,18 @@ export function MetaHero({
   return (
     <div className="mb-8 grid gap-4 sm:grid-cols-2">
       {climber && (
-        <HeroCard mover={climber} numericKey={numericKeys.get(climber.championKey)} direction="up" />
+        <HeroCard
+          mover={climber}
+          numericKey={numericKeys.get(climber.championKey)}
+          direction="up"
+        />
       )}
       {faller && (
-        <HeroCard mover={faller} numericKey={numericKeys.get(faller.championKey)} direction="down" />
+        <HeroCard
+          mover={faller}
+          numericKey={numericKeys.get(faller.championKey)}
+          direction="down"
+        />
       )}
     </div>
   );

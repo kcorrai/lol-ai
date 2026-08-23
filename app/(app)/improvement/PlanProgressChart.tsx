@@ -60,7 +60,10 @@ const TABS: ChartMetric[] = ["cs", "deaths", "kda"];
  * separate source would let the chart and the targets disagree about the same
  * games.
  */
-export function PlanProgressChart({ matches, targets }: PlanProgressChartProps): React.JSX.Element | null {
+export function PlanProgressChart({
+  matches,
+  targets,
+}: PlanProgressChartProps): React.JSX.Element | null {
   const [metric, setMetric] = useState<ChartMetric>("cs");
   const spec = METRICS[metric];
 
@@ -112,7 +115,9 @@ export function PlanProgressChart({ matches, targets }: PlanProgressChartProps):
             />
           )}
           {series.map((value, i) => {
-            const met = spec.invert ? goal !== null && value <= goal : goal !== null && value >= goal;
+            const met = spec.invert
+              ? goal !== null && value <= goal
+              : goal !== null && value >= goal;
             return (
               <span
                 key={i}

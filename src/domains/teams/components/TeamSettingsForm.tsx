@@ -37,7 +37,7 @@ export function TeamSettingsForm({ teamId, initialName }: TeamSettingsFormProps)
   const isDirty = name.trim() !== initialName;
 
   return (
-    <div className="rounded-xl border border-border bg-surface p-5 space-y-4">
+    <div className="space-y-4 rounded-xl border border-border bg-surface p-5">
       <p className="text-sm font-bold text-text">General Information</p>
 
       <div className="space-y-1.5">
@@ -54,12 +54,8 @@ export function TeamSettingsForm({ teamId, initialName }: TeamSettingsFormProps)
         />
       </div>
 
-      {error instanceof Error && (
-        <p className="text-xs text-danger">{error.message}</p>
-      )}
-      {isSuccess && (
-        <p className="text-xs text-success">Saved.</p>
-      )}
+      {error instanceof Error && <p className="text-xs text-danger">{error.message}</p>}
+      {isSuccess && <p className="text-xs text-success">Saved.</p>}
 
       <Button
         size="sm"
@@ -67,7 +63,11 @@ export function TeamSettingsForm({ teamId, initialName }: TeamSettingsFormProps)
         disabled={isPending || !isDirty || name.trim().length < 2}
         className="gap-1.5"
       >
-        {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
+        {isPending ? (
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+        ) : (
+          <Save className="h-3.5 w-3.5" />
+        )}
         Save
       </Button>
     </div>

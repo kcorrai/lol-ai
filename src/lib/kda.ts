@@ -30,6 +30,10 @@ export function computeKDA(kills: number, deaths: number, assists: number): numb
  * Both because it is what every LoL site means by an aggregate KDA, and because the mean is not
  * robust — one deathless game scores 20+ under the floor above and drags a hundred games with it.
  */
-export function aggregateKDA(totalKills: number, totalDeaths: number, totalAssists: number): number {
+export function aggregateKDA(
+  totalKills: number,
+  totalDeaths: number,
+  totalAssists: number
+): number {
   return computeKDA(totalKills, totalDeaths, totalAssists);
 }

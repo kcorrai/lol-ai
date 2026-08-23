@@ -15,7 +15,8 @@ function DeltaBadge({ delta, threshold = 0.1 }: { delta: number; threshold?: num
   const positive = delta > 0;
   return (
     <span className={`ml-1.5 text-xs font-medium ${positive ? "text-success" : "text-danger"}`}>
-      {positive ? "↑" : "↓"} {positive ? "+" : ""}{delta}
+      {positive ? "↑" : "↓"} {positive ? "+" : ""}
+      {delta}
     </span>
   );
 }
@@ -44,7 +45,9 @@ function MetricCard({
       </CardHeader>
       <CardContent>
         <div className="flex items-baseline">
-          <p className={`text-2xl font-display font-bold ${highlight ? "text-accent" : "text-text"}`}>
+          <p
+            className={`font-display text-2xl font-bold ${highlight ? "text-accent" : "text-text"}`}
+          >
             {value}
           </p>
           {delta !== undefined && <DeltaBadge delta={delta} threshold={deltaThreshold} />}
@@ -109,12 +112,10 @@ export function PerformanceSummaryCards({ profile, isLoading }: Props) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Badge variant="secondary" className="capitalize text-sm">
+          <Badge variant="secondary" className="text-sm capitalize">
             {playstyle}
           </Badge>
-          <p className="mt-1 text-xs text-text-muted">
-            Strong: {profile.strongestArea}
-          </p>
+          <p className="mt-1 text-xs text-text-muted">Strong: {profile.strongestArea}</p>
         </CardContent>
       </Card>
     </div>

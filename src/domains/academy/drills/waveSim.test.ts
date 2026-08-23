@@ -11,7 +11,10 @@ describe("stepWave", () => {
 
   it("walks the wave toward whoever has fewer minions", () => {
     expect(stepWave({ advantage: 1, position: 0 }, "thin")).toEqual({ advantage: 2, position: 1 });
-    expect(stepWave({ advantage: -1, position: 0 }, "hold")).toEqual({ advantage: -2, position: -1 });
+    expect(stepWave({ advantage: -1, position: 0 }, "hold")).toEqual({
+      advantage: -2,
+      position: -1,
+    });
   });
 
   it("walks it twice as fast once the gap is a full wave", () => {
@@ -20,7 +23,10 @@ describe("stepWave", () => {
 
   it("stops at the turrets and at a full wave of advantage", () => {
     expect(stepWave({ advantage: 6, position: 3 }, "clear")).toEqual({ advantage: 6, position: 3 });
-    expect(stepWave({ advantage: -6, position: -3 }, "hold")).toEqual({ advantage: -6, position: -3 });
+    expect(stepWave({ advantage: -6, position: -3 }, "hold")).toEqual({
+      advantage: -6,
+      position: -3,
+    });
   });
 });
 

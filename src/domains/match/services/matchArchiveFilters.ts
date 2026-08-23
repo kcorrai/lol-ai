@@ -49,7 +49,10 @@ export type ArchiveFilters = z.infer<typeof archiveFilterSchema>;
 /** Parses filters off a URL query string. Repeated keys (`champions=Ahri&champions=Zed`) become arrays. */
 export function parseArchiveFilters(params: URLSearchParams): ArchiveFilters {
   const list = (key: string): string[] | undefined => {
-    const all = params.getAll(key).flatMap((v) => v.split(",")).filter(Boolean);
+    const all = params
+      .getAll(key)
+      .flatMap((v) => v.split(","))
+      .filter(Boolean);
     return all.length > 0 ? all : undefined;
   };
   const one = (key: string): string | undefined => params.get(key) ?? undefined;

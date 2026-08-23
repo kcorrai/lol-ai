@@ -76,9 +76,9 @@ describe("getHeatmapData", () => {
   it("filters by time range 'early' (0–15 min)", async () => {
     vi.mocked(prisma.matchParticipant.findMany).mockResolvedValue([makeMatch("m1")] as never);
     vi.mocked(prisma.matchDeathEvent.findMany).mockResolvedValue([
-      makeDeathEvent(5000, 5000, 5 * 60 * 1000),   // 5 min — early ✓
-      makeDeathEvent(5000, 5000, 20 * 60 * 1000),  // 20 min — mid ✗
-      makeDeathEvent(5000, 5000, 40 * 60 * 1000),  // 40 min — late ✗
+      makeDeathEvent(5000, 5000, 5 * 60 * 1000), // 5 min — early ✓
+      makeDeathEvent(5000, 5000, 20 * 60 * 1000), // 20 min — mid ✗
+      makeDeathEvent(5000, 5000, 40 * 60 * 1000), // 40 min — late ✗
     ] as never);
 
     const result = await getHeatmapData("acc-1", { timeRange: "early" });
@@ -90,9 +90,9 @@ describe("getHeatmapData", () => {
   it("filters by time range 'late' (30+ min)", async () => {
     vi.mocked(prisma.matchParticipant.findMany).mockResolvedValue([makeMatch("m1")] as never);
     vi.mocked(prisma.matchDeathEvent.findMany).mockResolvedValue([
-      makeDeathEvent(5000, 5000, 10 * 60 * 1000),  // early ✗
-      makeDeathEvent(5000, 5000, 35 * 60 * 1000),  // late ✓
-      makeDeathEvent(5000, 5000, 45 * 60 * 1000),  // late ✓
+      makeDeathEvent(5000, 5000, 10 * 60 * 1000), // early ✗
+      makeDeathEvent(5000, 5000, 35 * 60 * 1000), // late ✓
+      makeDeathEvent(5000, 5000, 45 * 60 * 1000), // late ✓
     ] as never);
 
     const result = await getHeatmapData("acc-1", { timeRange: "late" });

@@ -127,9 +127,7 @@ export function getCurrentValue(metric: PlanMetric, profile: PlayerPerformancePr
 export function toProgress(target: ImprovementTarget, current: number): PlanProgress {
   const range = Math.abs(target.goal - target.baseline);
   const moved =
-    target.direction === "increase"
-      ? current - target.baseline
-      : target.baseline - current;
+    target.direction === "increase" ? current - target.baseline : target.baseline - current;
 
   const progress = range === 0 ? 0 : Math.min(Math.max(moved / range, 0), 1);
 
@@ -147,17 +145,12 @@ export function buildPlanWithProgress(
 ): PlanWithProgress {
   const targets = plan.targets as ImprovementTarget[];
   const now = Date.now();
-  const daysLeft = Math.max(
-    0,
-    Math.ceil((plan.expiresAt.getTime() - now) / (1000 * 60 * 60 * 24))
-  );
+  const daysLeft = Math.max(0, Math.ceil((plan.expiresAt.getTime() - now) / (1000 * 60 * 60 * 24)));
   const dayElapsed = PLAN_DAYS - daysLeft;
   const weekLabel = dayElapsed <= 7 ? "Week 1 of 2" : "Week 2 of 2";
   const isExpired = plan.expiresAt.getTime() < now || plan.status === "expired";
 
-  const progresses = targets.map((t) =>
-    toProgress(t, getCurrentValue(t.metric, profile))
-  );
+  const progresses = targets.map((t) => toProgress(t, getCurrentValue(t.metric, profile)));
 
   return {
     id: plan.id,

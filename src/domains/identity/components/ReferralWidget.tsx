@@ -14,18 +14,21 @@ export function ReferralWidget() {
 
   const { data, isLoading } = useReferralStats();
 
-  const appUrl =
-    typeof window !== "undefined"
-      ? window.location.origin
-      : "https://lolaicoach.gg";
+  const appUrl = typeof window !== "undefined" ? window.location.origin : "https://lolaicoach.gg";
 
   const shareUrl = data ? `${appUrl}/register?ref=${data.code}` : "";
   const enc = encodeURIComponent;
   const shareTargets = shareUrl
     ? [
-        { label: "X", href: `https://twitter.com/intent/tweet?text=${enc(SHARE_TEXT)}&url=${enc(shareUrl)}` },
+        {
+          label: "X",
+          href: `https://twitter.com/intent/tweet?text=${enc(SHARE_TEXT)}&url=${enc(shareUrl)}`,
+        },
         { label: "WhatsApp", href: `https://wa.me/?text=${enc(`${SHARE_TEXT} ${shareUrl}`)}` },
-        { label: "Reddit", href: `https://www.reddit.com/submit?url=${enc(shareUrl)}&title=${enc("Free 7-day Pro on LoL AI Coach")}` },
+        {
+          label: "Reddit",
+          href: `https://www.reddit.com/submit?url=${enc(shareUrl)}&title=${enc("Free 7-day Pro on LoL AI Coach")}`,
+        },
       ]
     : [];
 
@@ -56,7 +59,8 @@ export function ReferralWidget() {
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm text-text-muted">
-          When your friend signs up with your referral link and connects their Riot account, <span className="font-semibold text-accent">you both get 7 days of Pro</span>.
+          When your friend signs up with your referral link and connects their Riot account,{" "}
+          <span className="font-semibold text-accent">you both get 7 days of Pro</span>.
         </p>
 
         {isLoading ? (
@@ -112,9 +116,11 @@ export function ReferralWidget() {
             </div>
             <div className="space-y-1.5">
               <div className="flex items-center justify-between text-xs text-text-muted">
-                <span>{data.weeksEarned} / {data.maxWeeks} weeks</span>
+                <span>
+                  {data.weeksEarned} / {data.maxWeeks} weeks
+                </span>
                 {data.weeksEarned >= data.maxWeeks && (
-                  <span className="text-accent font-medium">Max rewards reached</span>
+                  <span className="font-medium text-accent">Max rewards reached</span>
                 )}
               </div>
               <div className="h-1.5 w-full rounded-full bg-surface-2">

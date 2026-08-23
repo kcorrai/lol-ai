@@ -20,7 +20,9 @@ export default async function globalTeardown(): Promise<void> {
     await prisma.championStat.deleteMany({ where: { riotAccount: { userId: user.id } } });
     await prisma.matchParticipant.deleteMany({ where: { riotAccount: { userId: user.id } } });
     await prisma.riotAccount.deleteMany({ where: { userId: user.id } });
-    await prisma.webhookEvent.deleteMany({ where: { eventKey: { startsWith: `weekly-email:${user.id}` } } });
+    await prisma.webhookEvent.deleteMany({
+      where: { eventKey: { startsWith: `weekly-email:${user.id}` } },
+    });
     await prisma.subscription.deleteMany({ where: { userId: user.id } });
     await prisma.profile.deleteMany({ where: { userId: user.id } });
     await prisma.account.deleteMany({ where: { userId: user.id } });

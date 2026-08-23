@@ -6,7 +6,7 @@
 
 The live-game feature (`LiveGameButton` on `/tools/draft-analyzer` and
 `/tools/matchup`, backed by `app/api/riot/live-game/route.ts` and
-`liveGameService.getLiveDraft`) reads the player's *active* game from the
+`liveGameService.getLiveDraft`) reads the player's _active_ game from the
 Spectator API. Two Riot rules could plausibly bite it, so it was reviewed
 against the actual implementation before a production key application:
 
@@ -20,7 +20,7 @@ against the actual implementation before a production key application:
 
 **Not scouting.** The route is `withAuth` and calls
 `assertOwnsRiotAccount(userId, riotAccountId)` before anything else, so a caller
-can only read the game *they are currently in*. There is no path to query an
+can only read the game _they are currently in_. There is no path to query an
 arbitrary player. (This also rules out the corresponding IDOR.)
 
 **No opponent player data is read.** `getLiveDraft` uses the caller's own puuid
@@ -30,7 +30,7 @@ match history, win rate or summoner data for any other player is fetched.
 
 **Nothing previously unknown is revealed.** Every champion surfaced is already on
 the player's own screen in champ select and the loading screen. Lane assignment
-is *inferred* locally from meta position frequency (`assignLanes`), not read from
+is _inferred_ locally from meta position frequency (`assignLanes`), not read from
 a privileged source, and the code itself instructs callers to present it as
 correctable rather than certain.
 

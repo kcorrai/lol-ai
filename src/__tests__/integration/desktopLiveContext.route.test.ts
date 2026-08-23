@@ -55,7 +55,10 @@ const CONTEXT = {
   riotAccountLinked: true,
 };
 
-function post(body: unknown, headers: Record<string, string> = { authorization: `Bearer ${TOKEN}` }) {
+function post(
+  body: unknown,
+  headers: Record<string, string> = { authorization: `Bearer ${TOKEN}` }
+) {
   return liveContext(routeRequest("/api/desktop/live-context", { body, headers }));
 }
 

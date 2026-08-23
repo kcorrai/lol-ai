@@ -44,9 +44,21 @@ describe("coachConsoleStats", () => {
   it("buckets a delivery into the Monday-opening week it landed in", async () => {
     mockPrisma.booking.findMany.mockResolvedValue([
       // Sunday, which belongs to the week that opened six days earlier.
-      { deliveredAt: new Date("2026-08-16T22:00:00.000Z"), coachEarningsCents: 4000, currency: "USD" },
-      { deliveredAt: new Date("2026-08-18T09:00:00.000Z"), coachEarningsCents: 2400, currency: "USD" },
-      { deliveredAt: new Date("2026-08-19T09:00:00.000Z"), coachEarningsCents: 1600, currency: "USD" },
+      {
+        deliveredAt: new Date("2026-08-16T22:00:00.000Z"),
+        coachEarningsCents: 4000,
+        currency: "USD",
+      },
+      {
+        deliveredAt: new Date("2026-08-18T09:00:00.000Z"),
+        coachEarningsCents: 2400,
+        currency: "USD",
+      },
+      {
+        deliveredAt: new Date("2026-08-19T09:00:00.000Z"),
+        coachEarningsCents: 1600,
+        currency: "USD",
+      },
     ] as never);
 
     const stats = await coachConsoleStats("coach-1", NOW);
@@ -61,7 +73,11 @@ describe("coachConsoleStats", () => {
 
   it("drops a delivery older than the window instead of folding it into week one", async () => {
     mockPrisma.booking.findMany.mockResolvedValue([
-      { deliveredAt: new Date("2026-01-05T10:00:00.000Z"), coachEarningsCents: 9900, currency: "USD" },
+      {
+        deliveredAt: new Date("2026-01-05T10:00:00.000Z"),
+        coachEarningsCents: 9900,
+        currency: "USD",
+      },
     ] as never);
 
     const stats = await coachConsoleStats("coach-1", NOW);
@@ -185,7 +201,10 @@ describe("listingPerformance", () => {
   });
 
   it("averages only the revealed student reviews on that listing", async () => {
-    withBookings([{ listingId: "l1", count: 2 }], [{ listingId: "l1", status: "COMPLETED", count: 2 }]);
+    withBookings(
+      [{ listingId: "l1", count: 2 }],
+      [{ listingId: "l1", status: "COMPLETED", count: 2 }]
+    );
     mockPrisma.sessionReview.findMany.mockResolvedValue([
       { rating: 5, booking: { listingId: "l1" } },
       { rating: 4, booking: { listingId: "l1" } },

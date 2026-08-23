@@ -163,8 +163,7 @@ export default async function CoachProfilePage({ params }: Props) {
 
               {coach.listings.length === 0 ? (
                 <p className="notch border border-border bg-surface px-5 py-4 text-[13px] text-text-muted">
-                  Nothing on sale yet. This coach has been approved but has not published a
-                  listing.
+                  Nothing on sale yet. This coach has been approved but has not published a listing.
                 </p>
               ) : (
                 <div className="grid gap-3">
@@ -301,15 +300,7 @@ function Fact({ label, value }: { label: string; value: string }) {
   );
 }
 
-function Glance({
-  label,
-  value,
-  className,
-}: {
-  label: string;
-  value: string;
-  className?: string;
-}) {
+function Glance({ label, value, className }: { label: string; value: string; className?: string }) {
   return (
     <div className="flex items-baseline justify-between gap-3">
       <dt className="text-[13px] text-text-muted">{label}</dt>

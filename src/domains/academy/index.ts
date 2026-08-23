@@ -29,7 +29,12 @@ export type { DrillAttempt, DrillResult, LessonScore } from "./drills/scoring";
 
 export { ROLE_IDS, ROLE_LABEL, positionFromRole, roleFromPosition } from "./roles";
 
-export { CHAMPION_TRACK_ID, buildChampionLesson, championLessonId, championSlug } from "./championLesson";
+export {
+  CHAMPION_TRACK_ID,
+  buildChampionLesson,
+  championLessonId,
+  championSlug,
+} from "./championLesson";
 
 export {
   getChampionLesson,
@@ -72,7 +77,12 @@ export { checkMasteryDecay } from "./services/decayService";
 export type { DecayResult } from "./services/decayService";
 
 export { buildCertificate, getTranscript } from "./services/transcriptService";
-export type { Certificate, Transcript, TranscriptLesson, TranscriptTrack } from "./services/transcriptService";
+export type {
+  Certificate,
+  Transcript,
+  TranscriptLesson,
+  TranscriptTrack,
+} from "./services/transcriptService";
 
 export { getAcademyOverview, getPlayerRole } from "./services/academyService";
 export type { AcademyOverview } from "./services/academyService";

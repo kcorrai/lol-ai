@@ -130,7 +130,14 @@ export async function getMatchStoryForUser(
   // `toStoryEvent` (see matchStoryEvents.ts), so there is nothing to gain by fetching them.
   const eventRows = await prisma.matchTimelineEvent.findMany({
     where: { matchId: matchDbId, kind: { in: [...STORY_EVENT_KINDS] } },
-    select: { kind: true, timestampMs: true, puuid: true, positionX: true, positionY: true, payload: true },
+    select: {
+      kind: true,
+      timestampMs: true,
+      puuid: true,
+      positionX: true,
+      positionY: true,
+      payload: true,
+    },
     orderBy: { timestampMs: "asc" },
   });
 

@@ -47,7 +47,9 @@ describe("checkAndAwardAchievements", () => {
 
     const result = await checkAndAwardAchievements(userId, riotAccountId);
     const createCalls = vi.mocked(prisma.userAchievement.create).mock.calls;
-    const awardedIds = createCalls.map((c) => (c[0] as { data: { achievementId: string } }).data.achievementId);
+    const awardedIds = createCalls.map(
+      (c) => (c[0] as { data: { achievementId: string } }).data.achievementId
+    );
 
     expect(awardedIds).not.toContain("cs_machine");
     expect(awardedIds).not.toContain("first_report");

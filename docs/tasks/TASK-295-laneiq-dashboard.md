@@ -15,6 +15,7 @@ tilting, do not queue." There was no answer to "where do I look first."
 ## Structure
 
 **Layer 1 · Decision** — one panel, three columns, above the fold:
+
 - `ReadinessVerdict` — the 0–100 score as a 56px numeral, the verdict headline, and
   Mental + Warm-up meters. This consolidates what were three separate widgets
   (`SessionReadinessWidget`, `TiltWidget`, `WarmupWidget`) into one verdict, so the
@@ -23,6 +24,7 @@ tilting, do not queue." There was no answer to "where do I look first."
 - `LastGameColumn` — champion, result, four stats, and the AI insight lines.
 
 **Layer 2 · Analysis** — under a `// ANALYSIS · LAST 20 GAMES` rule:
+
 - `AnalysisDeltas` — win rate / KDA / CS-min / vision as **deltas first**, with
   "now X · was Y" as the footnote.
 - Momentum chart + form strip, `PlaystyleProfile`, improvement plan, week summary,
@@ -82,6 +84,7 @@ seeded data. Three defects were found and fixed this way:
 Interactions were exercised by hand: the momentum metric tabs redraw the chart, and
 the match-log filters narrow the list correctly (Top 2 · Mid 8 · Support 3 · all 10,
 W 3 · L 7). No `undefined` / `NaN` / `[object Object]` reaches the page.
+
 - **App shell unchanged.** The design specifies a 76px icon rail and a 56px top bar
   (`AppShell`/`Sidebar`/`TopBar`). Those still use the pre-rebrand layout; they pick
   up LaneIQ colors from the token layer but not the rail geometry.
@@ -98,14 +101,14 @@ W 3 · L 7). No `undefined` / `NaN` / `[object Object]` reaches the page.
 
 The rebrand is visual only, so every widget's job still has a home:
 
-| Removed | Replaced by |
-|---|---|
-| `SessionReadinessWidget` + `TiltWidget` + `WarmupWidget` | `ReadinessVerdict` |
-| `TodaysFocusCard` | `FocusColumn` |
-| `LastGameInsightCard` | `LastGameColumn` |
-| `PerformanceSummaryCards` + `RecentMatchesSummaryCard` | `AnalysisDeltas` + `PlaystyleProfile` |
-| `TopChampionsWidget` + `RoleDistributionWidget` | `ChampionPoolPanel` |
-| `ProgressionStrip` | `EngagementStrip` |
+| Removed                                                  | Replaced by                           |
+| -------------------------------------------------------- | ------------------------------------- |
+| `SessionReadinessWidget` + `TiltWidget` + `WarmupWidget` | `ReadinessVerdict`                    |
+| `TodaysFocusCard`                                        | `FocusColumn`                         |
+| `LastGameInsightCard`                                    | `LastGameColumn`                      |
+| `PerformanceSummaryCards` + `RecentMatchesSummaryCard`   | `AnalysisDeltas` + `PlaystyleProfile` |
+| `TopChampionsWidget` + `RoleDistributionWidget`          | `ChampionPoolPanel`                   |
+| `ProgressionStrip`                                       | `EngagementStrip`                     |
 
 `PerformanceTrendChart` had no equivalent — `DailyMomentumChart` plots days, not
 matches — so it is still rendered, under the momentum chart.

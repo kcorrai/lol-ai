@@ -50,7 +50,7 @@ function movement(entry: TierRow): number | null {
 export function sortEntries(
   entries: TierRow[],
   column: SortColumn,
-  direction: SortDirection,
+  direction: SortDirection
 ): TierRow[] {
   const factor = direction === "asc" ? 1 : -1;
 

@@ -2,7 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, MessageCircle, Shield, TrendingUp, Gamepad2, Search, type LucideIcon } from "lucide-react";
+import {
+  LayoutDashboard,
+  MessageCircle,
+  Shield,
+  TrendingUp,
+  Gamepad2,
+  Search,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavEntry {
@@ -15,12 +23,12 @@ interface NavEntry {
 // All in-app routes — the old /counter entry 308-redirected into the public
 // marketing-chrome tools and ejected the user from the app shell.
 const NAV: NavEntry[] = [
-  { href: "/dashboard",     icon: LayoutDashboard, label: "Home", tourId: "nav-dashboard" },
-  { href: "/matches",       icon: Search,          label: "Search" },
-  { href: "/coaching",      icon: TrendingUp,      label: "Reports", tourId: "nav-reports" },
-  { href: "/coaching/chat", icon: MessageCircle,   label: "Chat"  },
-  { href: "/champion-pool", icon: Shield,          label: "Champs" },
-  { href: "/settings/accounts", icon: Gamepad2,    label: "Accounts", tourId: "nav-accounts"  },
+  { href: "/dashboard", icon: LayoutDashboard, label: "Home", tourId: "nav-dashboard" },
+  { href: "/matches", icon: Search, label: "Search" },
+  { href: "/coaching", icon: TrendingUp, label: "Reports", tourId: "nav-reports" },
+  { href: "/coaching/chat", icon: MessageCircle, label: "Chat" },
+  { href: "/champion-pool", icon: Shield, label: "Champs" },
+  { href: "/settings/accounts", icon: Gamepad2, label: "Accounts", tourId: "nav-accounts" },
 ];
 
 export function BottomNav() {

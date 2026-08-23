@@ -30,11 +30,26 @@ export const jungleTracking: Lesson = {
       caption: "Turning a sighting into a window",
       head: ["What you saw", "What it means for the next 30 seconds"],
       rows: [
-        ["Enemy jungler on the opposite side of the map", "You are safe — push freely, take plates"],
-        ["Enemy jungler showed on your side 20s ago", "Assume they are still near. Do not push past the river."],
-        ["Enemy jungler died", "You have their full respawn timer plus the walk. This is your window to take everything."],
-        ["A camp of theirs is missing on the minimap", "They cleared it — you know where they were, count forward from there"],
-        ["You have seen nothing for 60+ seconds", "Treat every bush as occupied until proven otherwise"],
+        [
+          "Enemy jungler on the opposite side of the map",
+          "You are safe — push freely, take plates",
+        ],
+        [
+          "Enemy jungler showed on your side 20s ago",
+          "Assume they are still near. Do not push past the river.",
+        ],
+        [
+          "Enemy jungler died",
+          "You have their full respawn timer plus the walk. This is your window to take everything.",
+        ],
+        [
+          "A camp of theirs is missing on the minimap",
+          "They cleared it — you know where they were, count forward from there",
+        ],
+        [
+          "You have seen nothing for 60+ seconds",
+          "Treat every bush as occupied until proven otherwise",
+        ],
       ],
     },
     {

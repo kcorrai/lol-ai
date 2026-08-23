@@ -19,12 +19,12 @@ interface SavePayload {
 async function fetchDiscordSettings(): Promise<DiscordSettings | null> {
   const res = await fetch("/api/settings/discord");
   if (!res.ok) throw new Error("Failed to fetch Discord settings");
-  const json = await res.json() as { data: DiscordSettings | null };
+  const json = (await res.json()) as { data: DiscordSettings | null };
   return json.data;
 }
 
 async function extractError(res: Response, fallback: string): Promise<never> {
-  const json = await res.json().catch(() => null) as { error?: { message?: string } } | null;
+  const json = (await res.json().catch(() => null)) as { error?: { message?: string } } | null;
   throw new Error(json?.error?.message ?? fallback);
 }
 
@@ -48,7 +48,11 @@ async function sendTestMessage(): Promise<void> {
 }
 
 export function useDiscordSettings() {
-  return useQuery({ queryKey: ["discord-settings"], queryFn: fetchDiscordSettings, staleTime: 30_000 });
+  return useQuery({
+    queryKey: ["discord-settings"],
+    queryFn: fetchDiscordSettings,
+    staleTime: 30_000,
+  });
 }
 
 export function useSaveDiscordSettings() {

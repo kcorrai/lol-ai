@@ -54,16 +54,17 @@ export interface BuildExplanation {
 export async function explainBuild(
   matchId: string,
   participantPuuid: string
-): Promise<BuildExplanation>
+): Promise<BuildExplanation>;
 ```
 
 Veri toplama:
+
 ```typescript
 // MatchParticipant'tan item1-item6 + champion
 // Match'ten rakip takÄ±m pozisyon + champion listesi
 // Oyun sÃ¼resi, kazanan takÄ±m
 const participant = await prisma.matchParticipant.findFirst({
-  where: { matchId, /* puuid veya riotAccountId ile */ },
+  where: { matchId /* puuid veya riotAccountId ile */ },
   include: { match: { include: { participants: true } } },
 });
 ```
@@ -74,6 +75,7 @@ TTL: 30 gÃ¼n (maÃ§ datasÄ± deÄŸiÅŸmez).
 ### Prompt (`buildExplanationPrompt.ts`)
 
 `buildBuildExplanationPrompt(participant, enemyTeam)`:
+
 - Oyuncunun champion'Ä±nÄ± ve aldÄ±ÄŸÄ± 6 itemi listele
 - Rakip takÄ±m champion'larÄ±nÄ± liste olarak ver
 - Oyun sÃ¼resini ve kazananÄ± ver
@@ -87,4 +89,3 @@ TTL: 30 gÃ¼n (maÃ§ datasÄ± deÄŸiÅŸmez).
 
 - TASK-037 (AiCache)
 - Mevcut `src/domains/match/` domain'i â€” yeni dosyalar eklenecek, var olanlar deÄŸiÅŸmeyecek.
-

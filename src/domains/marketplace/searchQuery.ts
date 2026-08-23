@@ -11,8 +11,16 @@ export const SORTS: readonly CoachSort[] = ["rating", "price_asc", "price_desc",
 const ROLES = ["TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"] as const;
 const KINDS = ["VOD_REVIEW", "LIVE_SESSION", "LIVE_SPECTATE"] as const;
 const TIERS = [
-  "IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM",
-  "EMERALD", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER",
+  "IRON",
+  "BRONZE",
+  "SILVER",
+  "GOLD",
+  "PLATINUM",
+  "EMERALD",
+  "DIAMOND",
+  "MASTER",
+  "GRANDMASTER",
+  "CHALLENGER",
 ] as const;
 
 /** How many coaches one page shows. */
@@ -108,11 +116,11 @@ export function canonicalPath(query: CoachSearchQuery): string {
 export function isFiltered(query: CoachSearchQuery): boolean {
   return Boolean(
     query.role ||
-      query.kind ||
-      query.minTier ||
-      query.language ||
-      query.region ||
-      query.maxPriceCents ||
-      query.availableOnly === false
+    query.kind ||
+    query.minTier ||
+    query.language ||
+    query.region ||
+    query.maxPriceCents ||
+    query.availableOnly === false
   );
 }

@@ -108,10 +108,7 @@ export default async function ChampionDetailPage({ params }: Props): Promise<Rea
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={jsonLdProps(faqSchema)}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdProps(faqSchema)} />
 
       <div className="mx-auto max-w-[1240px] px-5 pt-6 md:px-8">
         <p className="font-mono text-[10.5px] uppercase tracking-label text-text-faint">

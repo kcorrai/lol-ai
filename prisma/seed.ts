@@ -72,7 +72,12 @@ async function main() {
 
   // ── Riot Account ─────────────────────────────────────────────
   const riotAccount = await prisma.riotAccount.upsert({
-    where: { userId_puuid: { userId: user.id, puuid: "mock-puuid-devplayer-euw1-0000000000000000000000000000" } },
+    where: {
+      userId_puuid: {
+        userId: user.id,
+        puuid: "mock-puuid-devplayer-euw1-0000000000000000000000000000",
+      },
+    },
     update: {},
     create: {
       userId: user.id,
@@ -309,8 +314,21 @@ async function main() {
   for (const achievement of ACHIEVEMENT_CATALOG) {
     await prisma.achievement.upsert({
       where: { id: achievement.id },
-      update: { name: achievement.name, description: achievement.description, iconSlug: achievement.iconSlug, tier: achievement.tier, isSecret: achievement.isSecret },
-      create: { id: achievement.id, name: achievement.name, description: achievement.description, iconSlug: achievement.iconSlug, tier: achievement.tier, isSecret: achievement.isSecret },
+      update: {
+        name: achievement.name,
+        description: achievement.description,
+        iconSlug: achievement.iconSlug,
+        tier: achievement.tier,
+        isSecret: achievement.isSecret,
+      },
+      create: {
+        id: achievement.id,
+        name: achievement.name,
+        description: achievement.description,
+        iconSlug: achievement.iconSlug,
+        tier: achievement.tier,
+        isSecret: achievement.isSecret,
+      },
     });
   }
   console.log(`  ✓ ${ACHIEVEMENT_CATALOG.length} achievements seeded`);
@@ -320,7 +338,6 @@ async function main() {
   console.log("   Riot ID: DevPlayer#TEST (euw1)");
   console.log("   Matches: 5 ranked games");
 }
-
 
 main()
   .catch((e) => {

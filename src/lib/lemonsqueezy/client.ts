@@ -20,8 +20,7 @@ export function getLsStoreId(): string {
 
 export function getLsProVariantId(): string {
   const variantId = process.env.LEMONSQUEEZY_PRO_VARIANT_ID;
-  if (!variantId)
-    throw new Error("LEMONSQUEEZY_PRO_VARIANT_ID environment variable is not set");
+  if (!variantId) throw new Error("LEMONSQUEEZY_PRO_VARIANT_ID environment variable is not set");
   return variantId;
 }
 
@@ -34,7 +33,6 @@ export function getLsProYearlyVariantId(): string {
 
 export function getLsTeamVariantId(): string {
   const variantId = process.env.LEMONSQUEEZY_TEAM_VARIANT_ID;
-  if (!variantId)
-    throw new Error("LEMONSQUEEZY_TEAM_VARIANT_ID environment variable is not set");
+  if (!variantId) throw new Error("LEMONSQUEEZY_TEAM_VARIANT_ID environment variable is not set");
   return variantId;
 }

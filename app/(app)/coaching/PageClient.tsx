@@ -19,9 +19,7 @@ import { FetchError } from "@/lib/api/fetcher";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mb-3 text-xs font-medium uppercase tracking-widest text-text-muted">
-      {children}
-    </p>
+    <p className="mb-3 text-xs font-medium uppercase tracking-widest text-text-muted">{children}</p>
   );
 }
 
@@ -55,18 +53,26 @@ export default function CoachingPage() {
     },
   });
 
-  const trackGenerated = { onSuccess: (data: { reportId: string }) => setPendingReportId(data.reportId) };
+  const trackGenerated = {
+    onSuccess: (data: { reportId: string }) => setPendingReportId(data.reportId),
+  };
 
   function handleSessionReview() {
     if (!primaryId || !profile) return;
     const matchIds = profile.recentMatches.slice(0, 5).map((m) => m.matchDbId);
-    generateReport.mutate({ riotAccountId: primaryId, reportType: "session_review", matchIds }, trackGenerated);
+    generateReport.mutate(
+      { riotAccountId: primaryId, reportType: "session_review", matchIds },
+      trackGenerated
+    );
   }
 
   function handleClimbRoadmap() {
     if (!primaryId || !profile) return;
     const matchIds = profile.recentMatches.slice(0, 10).map((m) => m.matchDbId);
-    generateReport.mutate({ riotAccountId: primaryId, reportType: "climb_roadmap", matchIds }, trackGenerated);
+    generateReport.mutate(
+      { riotAccountId: primaryId, reportType: "climb_roadmap", matchIds },
+      trackGenerated
+    );
   }
 
   function handleAramReview() {
@@ -76,14 +82,17 @@ export default function CoachingPage() {
       .slice(0, 5)
       .map((m) => m.matchDbId);
     if (aramMatchIds.length === 0) return;
-    generateReport.mutate({ riotAccountId: primaryId, reportType: "session_review", matchIds: aramMatchIds }, trackGenerated);
+    generateReport.mutate(
+      { riotAccountId: primaryId, reportType: "session_review", matchIds: aramMatchIds },
+      trackGenerated
+    );
   }
 
   // Auto-open the freshly generated report the moment it finishes (reports poll every 3s).
   useEffect(() => {
     if (!pendingReportId || autoOpenedRef.current === pendingReportId) return;
     const done = reportsData?.pages.some((p) =>
-      p.reports.some((r) => r.reportId === pendingReportId && r.status === "complete"),
+      p.reports.some((r) => r.reportId === pendingReportId && r.status === "complete")
     );
     if (done) {
       autoOpenedRef.current = pendingReportId;
@@ -114,7 +123,10 @@ export default function CoachingPage() {
 
   const showGenericError =
     generateReport.isError &&
-    !(generateReport.error instanceof FetchError && UPGRADE_ERROR_CODES.has(generateReport.error.errorCode ?? ""));
+    !(
+      generateReport.error instanceof FetchError &&
+      UPGRADE_ERROR_CODES.has(generateReport.error.errorCode ?? "")
+    );
 
   return (
     <div className="mx-auto max-w-4xl space-y-8 p-6">

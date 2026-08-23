@@ -101,7 +101,9 @@ export default async function LessonPage({ params }: PageProps): Promise<React.R
         />
       </div>
 
-      {stored && <AssignmentStatus assignment={stored} instruction={lesson.assignment.instruction} />}
+      {stored && (
+        <AssignmentStatus assignment={stored} instruction={lesson.assignment.instruction} />
+      )}
 
       {gated && <ProGate lessonTitle={lesson.title} />}
 

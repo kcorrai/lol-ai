@@ -97,15 +97,9 @@ function BillingPageContent() {
                 {isTeam ? "Team" : isPro ? "Pro" : "Free"}
               </span>
               <Badge variant={isUpgraded ? "success" : "secondary"}>
-                {sub?.status === "trialing"
-                  ? "Trialing"
-                  : isUpgraded
-                    ? "Active"
-                    : "Free"}
+                {sub?.status === "trialing" ? "Trialing" : isUpgraded ? "Active" : "Free"}
               </Badge>
-              {sub?.cancelAtPeriodEnd && (
-                <Badge variant="warning">Canceling at period end</Badge>
-              )}
+              {sub?.cancelAtPeriodEnd && <Badge variant="warning">Canceling at period end</Badge>}
             </div>
 
             <ul className="space-y-1.5">
@@ -138,7 +132,10 @@ function BillingPageContent() {
               {seats.teamsCount === 0 ? (
                 <p className="text-sm text-text-muted">
                   You haven&apos;t created a team yet.{" "}
-                  <Link href="/teams/create" className="text-accent underline underline-offset-2 hover:opacity-80">
+                  <Link
+                    href="/teams/create"
+                    className="text-accent underline underline-offset-2 hover:opacity-80"
+                  >
                     Create team →
                   </Link>
                 </p>
@@ -148,16 +145,20 @@ function BillingPageContent() {
                     <Users className="h-5 w-5 text-warning" />
                     <span className="text-2xl font-bold text-text">
                       {seats.totalMembers}
-                      <span className="text-base font-normal text-text-muted">/{seats.maxMembers}</span>
+                      <span className="text-base font-normal text-text-muted">
+                        /{seats.maxMembers}
+                      </span>
                     </span>
                     {seats.maxMembers > 0 && seats.totalMembers >= seats.maxMembers && (
                       <Badge variant="warning">Team full</Badge>
                     )}
                   </div>
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-surface-3">
+                  <div className="bg-surface-3 h-2 w-full overflow-hidden rounded-full">
                     <div
                       className="h-full rounded-full bg-warning transition-all"
-                      style={{ width: `${seats.maxMembers > 0 ? Math.min((seats.totalMembers / seats.maxMembers) * 100, 100) : 0}%` }}
+                      style={{
+                        width: `${seats.maxMembers > 0 ? Math.min((seats.totalMembers / seats.maxMembers) * 100, 100) : 0}%`,
+                      }}
                     />
                   </div>
                   <p className="text-xs text-text-muted">
@@ -199,9 +200,7 @@ function BillingPageContent() {
                 {checkout.isPending ? "Redirecting to checkout…" : "Upgrade to Pro — $9.99/month"}
               </Button>
 
-              {checkout.isError && (
-                <p className="text-xs text-danger">{checkout.error.message}</p>
-              )}
+              {checkout.isError && <p className="text-xs text-danger">{checkout.error.message}</p>}
 
               <p className="text-center text-xs text-text-muted">
                 Secure payment with LemonSqueezy · Cancel anytime
@@ -270,7 +269,7 @@ function BillingPageContent() {
               {!sub?.cancelAtPeriodEnd && (
                 <button
                   onClick={() => setShowRetentionModal(true)}
-                  className="text-xs text-text-muted hover:text-danger transition-colors"
+                  className="text-xs text-text-muted transition-colors hover:text-danger"
                 >
                   Cancel subscription
                 </button>

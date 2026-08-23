@@ -27,7 +27,10 @@ export async function buildCoachChatContext(
     orderBy: { completedAt: "desc" },
     select: { actionItems: true },
   });
-  const actionItems = latestReport?.actionItems as Array<{ priority: number; action: string }> | null;
+  const actionItems = latestReport?.actionItems as Array<{
+    priority: number;
+    action: string;
+  }> | null;
   const focusAction = actionItems?.sort((a, b) => a.priority - b.priority)[0]?.action ?? null;
 
   const rankRow = await prisma.rankedHistory.findFirst({

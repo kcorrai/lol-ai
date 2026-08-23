@@ -43,18 +43,20 @@ HÃ¼creye tÄ±klanÄ±nca AI matchup rehberi aÃ§Ä±lÄ±r. "Global ortalama
 ### Veri KaynaÄŸÄ±
 
 `match_participants` tablosundan tÃ¼retilecek. Mevcut match verisi:
+
 - `championName` â€” kullanÄ±cÄ±nÄ±n ÅŸampiyonu
 - `matchId` â€” aynÄ± maÃ§taki rakip ÅŸampiyon iÃ§in join lazÄ±m
 
 Rakip ÅŸampiyonu bulmak iÃ§in aynÄ± maÃ§taki karÅŸÄ± lane oyuncusunu bul:
+
 ```typescript
 // Basit yaklaÅŸÄ±m: aynÄ± maÃ§, farklÄ± team, aynÄ± individualPosition
 const opponents = await prisma.matchParticipant.findMany({
   where: {
     matchId: { in: userMatchIds },
     teamId: { not: userTeamId },
-    individualPosition: userPosition
-  }
+    individualPosition: userPosition,
+  },
 });
 ```
 
@@ -68,13 +70,13 @@ export interface MatchupCell {
   opponentChampion: string;
   wins: number;
   losses: number;
-  winRate: number;        // 0-100
+  winRate: number; // 0-100
   avgKda: number;
   gamesPlayed: number;
 }
 
 export interface MatchupMatrix {
-  playerChampions: string[];  // satÄ±rlar
+  playerChampions: string[]; // satÄ±rlar
   opponentChampions: string[]; // sÃ¼tunlar
   cells: MatchupCell[];
   generatedAt: string;
@@ -83,15 +85,17 @@ export interface MatchupMatrix {
 export async function buildMatchupMatrix(
   riotAccountId: string,
   position?: string
-): Promise<MatchupMatrix>
+): Promise<MatchupMatrix>;
 ```
 
 Sonucu 6 saat cache'le (Redis):
+
 - Key: `matchup:{riotAccountId}:{position}`
 
 ### AI Matchup Rehberi
 
 HÃ¼creye tÄ±klanÄ±nca:
+
 ```typescript
 // app/api/analysis/matchup-guide/route.ts
 // POST { playerChampion, opponentChampion, userStats: MatchupCell }
@@ -100,6 +104,7 @@ HÃ¼creye tÄ±klanÄ±nca:
 ```
 
 AI Prompt:
+
 ```
 Oyuncu {playerChampion} ile {opponentChampion} karÅŸÄ±sÄ±nda {wins}W/{losses}L oynuyor.
 KDA ortalamasÄ± {kda}. TÃ¼rkÃ§e, 4 bullet point matchup rehberi yaz:
@@ -127,6 +132,7 @@ Vic  | 71%  |  55% |   48%  |   -    | 67%  |
 ```
 
 Renk skalasÄ±:
+
 - â‰¥ 60%: `bg-green-500/70`
 - 50-59%: `bg-green-300/50`
 - 45-49%: `bg-yellow-400/50`
@@ -172,12 +178,12 @@ app/(app)/champions/page.tsx                                  â† "Matchup M
 ## Test Plan
 
 ```typescript
-describe('matchupService', () => {
-  it('buildMatchupMatrix: 3+ maÃ§ olan hÃ¼creler doÄŸru WR hesaplÄ±yor')
-  it('3 maÃ§tan az â†’ gamesPlayed < 3 flagleniyor')
-  it('farklÄ± position iÃ§in filtre Ã§alÄ±ÅŸÄ±yor')
-  it('aynÄ± riotAccountId â†’ Redis cache hit ikinci Ã§aÄŸrÄ±da')
-})
+describe("matchupService", () => {
+  it("buildMatchupMatrix: 3+ maÃ§ olan hÃ¼creler doÄŸru WR hesaplÄ±yor");
+  it("3 maÃ§tan az â†’ gamesPlayed < 3 flagleniyor");
+  it("farklÄ± position iÃ§in filtre Ã§alÄ±ÅŸÄ±yor");
+  it("aynÄ± riotAccountId â†’ Redis cache hit ikinci Ã§aÄŸrÄ±da");
+});
 ```
 
 ---
@@ -198,4 +204,3 @@ describe('matchupService', () => {
 - Mobile yatay scroll Ã§alÄ±ÅŸÄ±yor
 - Unit test coverage â‰¥ 80%
 - `docs/API_DESIGN.md` gÃ¼ncellendi
-

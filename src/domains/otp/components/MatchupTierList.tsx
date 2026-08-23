@@ -50,7 +50,7 @@ export function MatchupTierList({ tierList }: MatchupTierListProps) {
   ];
 
   return (
-    <div className="rounded-xl border border-border bg-surface p-4 space-y-3">
+    <div className="space-y-3 rounded-xl border border-border bg-surface p-4">
       <h3 className="text-sm font-semibold text-text">Matchup Tier List</h3>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {columns.map(({ key, entries }) => (

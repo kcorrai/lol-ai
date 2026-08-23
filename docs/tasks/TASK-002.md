@@ -47,6 +47,7 @@ Implement a complete authentication system: email/password registration + login,
 > Do not write any migration files in this task.
 
 Tables that must already exist when TASK-002 begins (created by TASK-003):
+
 - `users`
 - `accounts`
 - `sessions`
@@ -79,6 +80,7 @@ Tables that must already exist when TASK-002 begins (created by TASK-003):
 ## Pre-conditions Checklist
 
 Before writing a single line of auth code, verify:
+
 ```
 □ docker-compose up -d is running (postgres + redis healthy)
 □ .env.local has DATABASE_URL set

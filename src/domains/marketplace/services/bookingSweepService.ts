@@ -30,7 +30,10 @@ export async function autoComplete(
 }
 
 /** A sweep giving up on a request the coach never answered. */
-export async function expireBooking(bookingId: string, now = new Date()): Promise<LifecycleOutcome> {
+export async function expireBooking(
+  bookingId: string,
+  now = new Date()
+): Promise<LifecycleOutcome> {
   const result = await transition({
     bookingId,
     from: "PENDING_COACH",

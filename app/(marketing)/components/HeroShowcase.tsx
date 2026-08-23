@@ -27,12 +27,19 @@ export function HeroShowcase() {
           <span className="ml-auto text-[10px] text-text-muted">Yasuo · Mid · Gold II</span>
         </div>
         <p className="text-sm italic leading-relaxed text-text">
-          &ldquo;Your wave management is costing you winnable lanes. Fix your freeze and the LP follows.&rdquo;
+          &ldquo;Your wave management is costing you winnable lanes. Fix your freeze and the LP
+          follows.&rdquo;
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
-          <span className="rounded-full bg-success/15 px-2 py-0.5 text-[10px] font-semibold text-success">+ Roaming</span>
-          <span className="rounded-full bg-danger/15 px-2 py-0.5 text-[10px] font-semibold text-danger">! Wave control</span>
-          <span className="rounded-full bg-surface-2 px-2 py-0.5 text-[10px] text-text-muted">23s AI analysis</span>
+          <span className="rounded-full bg-success/15 px-2 py-0.5 text-[10px] font-semibold text-success">
+            + Roaming
+          </span>
+          <span className="rounded-full bg-danger/15 px-2 py-0.5 text-[10px] font-semibold text-danger">
+            ! Wave control
+          </span>
+          <span className="rounded-full bg-surface-2 px-2 py-0.5 text-[10px] text-text-muted">
+            23s AI analysis
+          </span>
         </div>
       </div>
     </div>

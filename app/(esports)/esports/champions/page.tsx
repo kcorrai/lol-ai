@@ -142,13 +142,7 @@ export default async function ProChampionsPage({
       )}
 
       <div className="mt-6">
-        <ProMetaFilters
-          scopes={scopes}
-          league={league}
-          sort={sort}
-          role={role}
-          href={scopeHref}
-        />
+        <ProMetaFilters scopes={scopes} league={league} sort={sort} role={role} href={scopeHref} />
       </div>
 
       {!meta || champions.length === 0 ? (

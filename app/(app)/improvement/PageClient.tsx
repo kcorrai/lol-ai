@@ -76,7 +76,9 @@ export default function ImprovementPage(): React.JSX.Element {
   }
 
   const historyEntries = Array.isArray(history) ? (history as PlanHistoryEntry[]) : [];
-  const lpChange = plan ? lpChangeInWindow(ranked?.lpHistory, plan.createdAt, plan.expiresAt) : null;
+  const lpChange = plan
+    ? lpChangeInWindow(ranked?.lpHistory, plan.createdAt, plan.expiresAt)
+    : null;
 
   const summaryRows: SummaryRow[] = [];
   if (profile) {

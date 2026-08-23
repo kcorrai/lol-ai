@@ -140,9 +140,7 @@ describe("chooseNextLesson", () => {
   it("reaches outside the placed track once that track is finished", () => {
     const laning = getTrack("laning")!;
     const survivor = getTrack("foundations")!.lessons[2];
-    const done = new Map(
-      laning.lessons.map((l) => [lessonId(l), "completed" as LessonStatus])
-    );
+    const done = new Map(laning.lessons.map((l) => [lessonId(l), "completed" as LessonStatus]));
 
     const result = chooseNextLesson({
       statuses: done,

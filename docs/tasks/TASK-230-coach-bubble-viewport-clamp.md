@@ -13,6 +13,7 @@ the bubble is drawn above the viewport and its text is clipped. Only the X axis 
 ## Fix
 
 Position the bubble from its **measured** size and clamp it fully into the viewport:
+
 - `ref` on the bubble; compute position in `useLayoutEffect` (deps: rect, placement, step id) and
   re-run on a `ResizeObserver` (the typewriter grows the bubble).
 - Place beside the rect per placement (no CSS translate), then clamp `left ∈ [12, vw-w-12]`,

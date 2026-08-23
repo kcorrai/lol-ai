@@ -35,7 +35,7 @@ Cascade: deleting a series deletes its games; deleting a game deletes its action
 
 ## Notes
 
-- `version` is the optimistic-concurrency guard *and* the polling change detector
+- `version` is the optimistic-concurrency guard _and_ the polling change detector
   (ADR-016). Every mutation bumps it inside the same transaction as the write.
 - `createdById` is nullable on purpose. Anonymous drafts are the primary path;
   a signed-in creator only gets the series listed on their profile later.

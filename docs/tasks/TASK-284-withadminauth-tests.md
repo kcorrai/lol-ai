@@ -17,7 +17,7 @@ where nothing would tell you if it stopped being correct.
 
 Beyond the obvious admin/non-admin/anonymous paths, three things that are easy to break silently:
 
-- **Check order.** An unset `ADMIN_EMAIL` is rejected *before* the session is read. Reversing those
+- **Check order.** An unset `ADMIN_EMAIL` is rejected _before_ the session is read. Reversing those
   two blocks would compare every user's email against `undefined` — the comment in the file claims
   it "falls back gracefully", and this is what makes that claim testable.
 - **Empty string is not a match.** `ADMIN_EMAIL=""` must behave as unset rather than matching a

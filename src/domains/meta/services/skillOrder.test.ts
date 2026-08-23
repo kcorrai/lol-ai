@@ -17,7 +17,7 @@ describe("completeSkillOrder", () => {
   it("never exceeds a champion's real point budget", () => {
     const counts = completeSkillOrder(YASUO_15, ["Q", "E", "W"]).reduce<Record<string, number>>(
       (acc, a) => ({ ...acc, [a]: (acc[a] ?? 0) + 1 }),
-      {},
+      {}
     );
     expect(counts).toEqual({ Q: 5, W: 5, E: 5, R: 3 });
   });

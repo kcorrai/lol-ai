@@ -11,6 +11,7 @@ The backlog treats `src/lib/stripe/subscriptionService.ts` as dead Stripe code. 
 nor Stripe.
 
 **It is live.** Three importers:
+
 - `app/api/subscription/route.ts` — the subscription endpoint
 - `src/hooks/useSubscription.ts`
 - `app/(tools)/ToolUpgradeNudge.tsx`
@@ -19,7 +20,7 @@ nor Stripe.
 table and the user's referral trial, and it is provider-agnostic. Deleting it would have broken the
 subscription endpoint.
 
-What *is* genuinely dead is the **`@stripe/stripe-js` package**: 0 imports across the whole
+What _is_ genuinely dead is the **`@stripe/stripe-js` package**: 0 imports across the whole
 repository. That is the actual liability — an unused payment SDK sitting in `dependencies`, shipped
 and dependabot-tracked, implying an integration that does not exist.
 
@@ -29,7 +30,7 @@ and dependabot-tracked, implying an integration that does not exist.
 2. **Move `src/lib/stripe/subscriptionService.ts` → `src/lib/subscription/subscriptionService.ts`**
    and delete the empty `lib/stripe/` directory. The misleading path is the whole reason this looked
    like a second payment integration in an audit; three import lines change. In scope rather than
-   unsolicited refactoring (CLAUDE.md §2.1) because the ambiguity *is* the task.
+   unsolicited refactoring (CLAUDE.md §2.1) because the ambiguity _is_ the task.
 
 ## Deliberately not changed
 

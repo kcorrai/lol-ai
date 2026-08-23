@@ -100,7 +100,11 @@ export default async function MetaReportPage() {
 
       {/* Freshness strip */}
       <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-muted">
-        <DataFreshness fetchedAt={report.fetchedAt} patch={report.patch} matchCount={report.matchCount} />
+        <DataFreshness
+          fetchedAt={report.fetchedAt}
+          patch={report.patch}
+          matchCount={report.matchCount}
+        />
         <span aria-hidden>·</span>
         <a
           href={patchNotesUrl(report.patch)}
@@ -114,11 +118,7 @@ export default async function MetaReportPage() {
 
       <div className="mb-8" />
 
-      <MetaHero
-        climber={report.climbers[0]}
-        faller={report.fallers[0]}
-        numericKeys={numericKeys}
-      />
+      <MetaHero climber={report.climbers[0]} faller={report.fallers[0]} numericKeys={numericKeys} />
 
       <div className="grid gap-4 md:grid-cols-2">
         <MoverList title="Biggest Winners" movers={report.climbers} direction="up" />
@@ -136,10 +136,10 @@ export default async function MetaReportPage() {
       </details>
 
       <p className="mt-4 text-xs leading-relaxed text-text-muted/70">
-        How this is calculated: movement is the change in a champion&apos;s overall op.gg rank versus
-        the previous patch. We only include champions picked in at least 0.5% of games that moved 3+
-        ranks, weighted by pick rate so popular shifts rank above fringe ones. Figures reflect rank
-        movement, not win-rate change. WR = win rate, PR = pick rate, BR = ban rate.
+        How this is calculated: movement is the change in a champion&apos;s overall op.gg rank
+        versus the previous patch. We only include champions picked in at least 0.5% of games that
+        moved 3+ ranks, weighted by pick rate so popular shifts rank above fringe ones. Figures
+        reflect rank movement, not win-rate change. WR = win rate, PR = pick rate, BR = ban rate.
       </p>
 
       {/* FAQ */}
@@ -157,16 +157,28 @@ export default async function MetaReportPage() {
 
       {/* Cross-links */}
       <div className="mt-10 flex flex-wrap gap-3 text-sm">
-        <Link href="/tools/tier-list" className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text">
+        <Link
+          href="/tools/tier-list"
+          className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
+        >
           Full tier list →
         </Link>
-        <Link href="/builds" className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text">
+        <Link
+          href="/builds"
+          className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
+        >
           Champion builds →
         </Link>
-        <Link href="/esports/champions" className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text">
+        <Link
+          href="/esports/champions"
+          className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
+        >
           What the pros are picking →
         </Link>
-        <Link href="/aram/tier-list" className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text">
+        <Link
+          href="/aram/tier-list"
+          className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
+        >
           ARAM tier list →
         </Link>
       </div>

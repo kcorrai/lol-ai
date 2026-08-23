@@ -66,10 +66,7 @@ describe("RankWidget", () => {
   it("omits the delta when there is nothing to compare against", () => {
     const p = payload();
     render(
-      <OverlayWidget
-        widget="rank"
-        payload={{ ...p, rank: { ...p.rank!, sessionLpDelta: null } }}
-      />
+      <OverlayWidget widget="rank" payload={{ ...p, rank: { ...p.rank!, sessionLpDelta: null } }} />
     );
 
     expect(screen.queryByText(/this session/)).not.toBeInTheDocument();
@@ -139,7 +136,10 @@ describe("LastGameWidget", () => {
   it("marks a loss", () => {
     const p = payload();
     render(
-      <OverlayWidget widget="lastgame" payload={{ ...p, lastGame: { ...p.lastGame!, win: false } }} />
+      <OverlayWidget
+        widget="lastgame"
+        payload={{ ...p, lastGame: { ...p.lastGame!, win: false } }}
+      />
     );
 
     expect(screen.getByText("LOSS")).toBeInTheDocument();
@@ -196,9 +196,7 @@ describe("the mark", () => {
   // Free on every plan is paid for by this being on the streamer's canvas.
   it("appears on every widget", () => {
     for (const widget of ["rank", "session", "lastgame", "champions", "goal"] as const) {
-      const { container, unmount } = render(
-        <OverlayWidget widget={widget} payload={payload()} />
-      );
+      const { container, unmount } = render(<OverlayWidget widget={widget} payload={payload()} />);
       expect(container.textContent).toContain("laneiq.gg");
       unmount();
     }

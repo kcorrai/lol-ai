@@ -18,11 +18,7 @@ export function App(): React.ReactElement {
   const read = useLiveGame();
 
   return (
-    <AppFrame
-      active={screen}
-      onSelect={setScreen}
-      connection={CONNECTION[read.status] ?? "idle"}
-    >
+    <AppFrame active={screen} onSelect={setScreen} connection={CONNECTION[read.status] ?? "idle"}>
       {screen === "game" ? <GameScreen read={read} /> : null}
       {screen === "pairing" ? <PairingScreen /> : null}
       {screen === "settings" ? <SettingsScreen /> : null}

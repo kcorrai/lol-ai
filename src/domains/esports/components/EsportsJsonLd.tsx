@@ -9,10 +9,5 @@ export function EsportsJsonLd({ schema }: { schema: EsportsSchema }): React.Reac
   const data = buildJsonLd(schema);
   if (!data) return null;
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={jsonLdProps(data)}
-    />
-  );
+  return <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdProps(data)} />;
 }

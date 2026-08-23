@@ -91,4 +91,3 @@ Matchup Coach'un tam kullanÄ±cÄ± arayÃ¼zÃ¼nÃ¼ yaz. Ä°ki champion se�
 - Sekme yÃ¶netimi iÃ§in `useState<'lane' | 'trade' | 'build' | 'mistakes'>` yeterli â€” Radix Tabs da kullanÄ±labilir.
 - Page component 200 satÄ±rÄ± geÃ§erse `MatchupSection.tsx`'e daha fazla mantÄ±k taÅŸÄ±.
 - Share: `navigator.clipboard.writeText(window.location.href)` + toast bildirimi.
-

@@ -11,7 +11,7 @@ pages). Neither made the user actually learn or use the app, and there was no en
 user completed onboarding before using the product.
 
 We wanted a single, forced, Clash-Royale-style guided journey: the user is driven step-by-step
-through the *real* application (connect an account on the real Accounts page, open a real match,
+through the _real_ application (connect an account on the real Accounts page, open a real match,
 generate a real AI report, visit Improvement/Badges/Leaderboard), with only the relevant element
 lit and interactive while everything else is dimmed and click-blocked. The user cannot use the site
 until the journey is complete.
@@ -41,7 +41,7 @@ until the journey is complete.
   gate; tiny schema footprint; reuses the real connect/sync/report flows (no duplicate UI).
 - **Negative / trade-offs:** The overlay lives in the app shell and runs a few extra queries while a
   user is un-onboarded (mitigated by only mounting it when `onboardingCompletedAt` is null). Step
-  position in localStorage means clearing storage restarts the *tour* (not completion). Mobile nav
+  position in localStorage means clearing storage restarts the _tour_ (not completion). Mobile nav
   choreography leans on the "Take me there" fallback for sections absent from the BottomNav.
 - **Follow-ups:** replay-tour button for finished users; per-step PostHog analytics; richer mobile
   choreography.

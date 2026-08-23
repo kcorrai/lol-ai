@@ -14,11 +14,7 @@ interface GenerateResponse {
  * nobody's career needs a public URL sitting there waiting to be found, and the card
  * expires on its own a week later.
  */
-export function CareerCardShare({
-  riotAccountId,
-}: {
-  riotAccountId: string;
-}): React.ReactElement {
+export function CareerCardShare({ riotAccountId }: { riotAccountId: string }): React.ReactElement {
   const [url, setUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);

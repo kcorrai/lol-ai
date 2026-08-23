@@ -43,7 +43,7 @@ export const useSearchStore = create<SearchStore>()(
           // Re-visiting a player moves them to the top rather than duplicating the row.
           recent: [p, ...state.recent.filter((r) => playerKey(r) !== playerKey(p))].slice(
             0,
-            MAX_RECENT,
+            MAX_RECENT
           ),
         })),
 
@@ -64,6 +64,6 @@ export const useSearchStore = create<SearchStore>()(
       // consumers call `useSearchStore.persist.rehydrate()` from a mount effect instead.
       skipHydration: true,
       partialize: (state) => ({ recent: state.recent, favorites: state.favorites }),
-    },
-  ),
+    }
+  )
 );

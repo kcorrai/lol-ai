@@ -34,7 +34,13 @@ export function RiftMap(): React.ReactElement {
         strokeLinecap="round"
       />
 
-      <g stroke="var(--line-3)" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" fill="none">
+      <g
+        stroke="var(--line-3)"
+        strokeWidth="4.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      >
         {/* Top lane: up the left edge, then across the top. */}
         <path d="M 9 78 L 9 15 Q 9 9 15 9 L 78 9" />
         {/* Bot lane: along the bottom, then up the right edge. */}

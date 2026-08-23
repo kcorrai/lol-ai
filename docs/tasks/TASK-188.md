@@ -1,13 +1,16 @@
 # TASK-188: SEO Infra Polish — Freshness, Noindex Params, Footer Hub
 
 ## Status: Done
+
 ## Score: 89/100
 
 ## Goal
+
 Technical-SEO layer from the research: real freshness signals, crawl-budget hygiene,
 site-wide internal links.
 
 ## Scope
+
 - Visible "Data updated Xh ago · Patch 26.13 · N games analyzed" strip on all data pages
   (snapshot fetchedAt/matchCount); JSON-LD `dateModified` = fetchedAt.
 - sitemap.ts: real `lastMod` (snapshot fetchedAt for data pages); add builds/matchups/
@@ -20,4 +23,5 @@ site-wide internal links.
 - `/tools` hub + landing ToolsInAction: add Builds / ARAM / Meta report cards.
 
 ## Commit
+
 `feat(seo): freshness signals, noindex params, footer link hub, sitemap lastmod`

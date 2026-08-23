@@ -95,7 +95,7 @@ enum ReportStatus {
 ```typescript
 // src/hooks/useReportStatus.ts
 // Her 2 saniyede bir status kontrol eder, READY olunca invalidate eder
-export function useReportStatus(reportId: string): ReportStatus
+export function useReportStatus(reportId: string): ReportStatus;
 
 // GET /api/coaching/[reportId]/status
 // → { status: "generating" | "ready" | "failed", failureReason?: string }
@@ -138,13 +138,13 @@ prisma/migrations/YYYYMMDD_report_status/         ← YENİ
 ## Test Plan
 
 ```typescript
-describe('coachingPipeline', () => {
-  it('rapor queued → generating → ready geçişi yapıyor')
-  it('AI API hata verince retry yapıyor, max 2')
-  it('2 retry sonrası failed state + failureReason kaydediliyor')
-  it('cache hit: aynı input için Inngest tetiklenmiyor')
-  it('maliyet kaydı her başarılı AI çağrısından sonra oluşuyor')
-})
+describe("coachingPipeline", () => {
+  it("rapor queued → generating → ready geçişi yapıyor");
+  it("AI API hata verince retry yapıyor, max 2");
+  it("2 retry sonrası failed state + failureReason kaydediliyor");
+  it("cache hit: aynı input için Inngest tetiklenmiyor");
+  it("maliyet kaydı her başarılı AI çağrısından sonra oluşuyor");
+});
 ```
 
 ---

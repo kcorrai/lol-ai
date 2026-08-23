@@ -58,7 +58,9 @@ describe("generateShareToken", () => {
   it("handles race condition: if updateMany matches 0 rows, returns the winning token", async () => {
     mockPrisma.coachingReport.findFirst.mockResolvedValue({ id: "report-1", shareToken: null });
     mockPrisma.coachingReport.updateMany.mockResolvedValue({ count: 0 });
-    mockPrisma.coachingReport.findUnique.mockResolvedValue({ shareToken: "winner-token-set-by-concurrent-request" });
+    mockPrisma.coachingReport.findUnique.mockResolvedValue({
+      shareToken: "winner-token-set-by-concurrent-request",
+    });
 
     const token = await generateShareToken("report-1", "user-1");
 

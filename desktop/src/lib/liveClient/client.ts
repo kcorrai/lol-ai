@@ -67,7 +67,9 @@ function errorMessage(err: unknown): string {
   return String(err);
 }
 
-function firstIssue(error: { issues: ReadonlyArray<{ path: PropertyKey[]; message: string }> }): string {
+function firstIssue(error: {
+  issues: ReadonlyArray<{ path: PropertyKey[]; message: string }>;
+}): string {
   const issue = error.issues[0];
   if (!issue) return "payload did not match the expected shape";
   const where = issue.path.length > 0 ? issue.path.join(".") : "(root)";

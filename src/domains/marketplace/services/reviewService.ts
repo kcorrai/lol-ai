@@ -172,10 +172,7 @@ export async function refreshCoachRating(coachProfileId: string): Promise<void> 
 }
 
 /** The revealed student reviews on a coach's public profile. */
-export async function publicReviews(
-  coachProfileId: string,
-  limit = 20
-): Promise<PublicReview[]> {
+export async function publicReviews(coachProfileId: string, limit = 20): Promise<PublicReview[]> {
   const rows = await prisma.sessionReview.findMany({
     where: { coachProfileId, authorRole: "STUDENT", revealedAt: { not: null } },
     orderBy: { revealedAt: "desc" },

@@ -34,5 +34,5 @@ export const loadProfile = cache(
         reason: code === "RIOT_RATE_LIMITED" ? "rate-limited" : "not-found",
       };
     }
-  },
+  }
 );

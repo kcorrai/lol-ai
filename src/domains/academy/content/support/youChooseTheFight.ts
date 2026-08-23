@@ -64,11 +64,13 @@ export const youChooseTheFight: Lesson = {
     {
       id: "engage-quiz",
       kind: "quiz",
-      prompt: "You land a perfect engage on their ADC and nobody on your team follows. What happened?",
+      prompt:
+        "You land a perfect engage on their ADC and nobody on your team follows. What happened?",
       options: [
         {
           id: "a",
-          label: "You started a fight your team was not in — the engage was a decision, and it was the wrong one",
+          label:
+            "You started a fight your team was not in — the engage was a decision, and it was the wrong one",
           explain:
             "Correct. An engage is a call for the whole team, so its quality is measured by what the team does next. Landing it changes nothing on its own; the follow-up is the fight.",
           correct: true,

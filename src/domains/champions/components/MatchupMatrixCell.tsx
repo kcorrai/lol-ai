@@ -40,8 +40,11 @@ export function MatchupMatrixCell({ cell, onClick }: Props) {
       className={cn(
         "flex h-12 w-16 flex-col items-center justify-center rounded text-xs font-semibold transition-all",
         lowSample
-          ? "cursor-default opacity-50 bg-surface-2 text-text-muted"
-          : cn("cursor-pointer hover:scale-105 hover:shadow-md", cellColor(cell.winRate, cell.gamesPlayed))
+          ? "cursor-default bg-surface-2 text-text-muted opacity-50"
+          : cn(
+              "cursor-pointer hover:scale-105 hover:shadow-md",
+              cellColor(cell.winRate, cell.gamesPlayed)
+            )
       )}
     >
       <span>{lowSample ? "?" : `${cell.winRate}%`}</span>

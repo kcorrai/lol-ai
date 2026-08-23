@@ -13,25 +13,25 @@ here — only what is specific to this section.
 
 Each of these has been verified as stated, or is named as not yet done.
 
-| # | Check | State |
-|---|---|---|
-| 1.1 | Every page renders with the feed unreachable and nothing cached — 200 with an empty state, never a 500 | **Verified.** Covered by `tests/e2e/esports.spec.ts`, which replays a feed that answers 503 for everything it has no fixture for |
-| 1.2 | Sitemap contains only pages with real content; no filtered URL is indexable | **Verified** at TASK-309, retested by the thin-page assertion in the spec |
-| 1.3 | The live island makes zero browser requests to any Riot host | **Verified** at TASK-304 |
-| 1.4 | Nothing in the section sits behind the paywall | **Verified** — every route is under `(esports)` with the public chrome branch |
-| 1.5 | Cache warming runs and the pro sample is warm before a reader arrives | **Verified** at TASK-305 (`377cd6e`); the Inngest cron must be confirmed live in the target environment |
-| 1.6 | A Data Dragon outage cannot take a page down | **Verified.** Fixed at LA-13 / ADR-034: third-party catalogues no longer go through the framework fetch cache, so there is no deferred revalidation left to reject |
-| 1.7 | `NEXT_PUBLIC_APP_URL` matches the deployed host | Check at deploy. Twitch refuses to play in an iframe whose `parent` does not match; a wrong value degrades to the link the reader had before, not a break (ADR-018) |
-| 1.8 | `LOLESPORTS_API_KEY` set in the environment, or the pinned public web key still accepted | Check at deploy. The key is public and not a credential (ADR-016), but it is repointable for the day Riot rotates it |
+| #   | Check                                                                                                  | State                                                                                                                                                               |
+| --- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.1 | Every page renders with the feed unreachable and nothing cached — 200 with an empty state, never a 500 | **Verified.** Covered by `tests/e2e/esports.spec.ts`, which replays a feed that answers 503 for everything it has no fixture for                                    |
+| 1.2 | Sitemap contains only pages with real content; no filtered URL is indexable                            | **Verified** at TASK-309, retested by the thin-page assertion in the spec                                                                                           |
+| 1.3 | The live island makes zero browser requests to any Riot host                                           | **Verified** at TASK-304                                                                                                                                            |
+| 1.4 | Nothing in the section sits behind the paywall                                                         | **Verified** — every route is under `(esports)` with the public chrome branch                                                                                       |
+| 1.5 | Cache warming runs and the pro sample is warm before a reader arrives                                  | **Verified** at TASK-305 (`377cd6e`); the Inngest cron must be confirmed live in the target environment                                                             |
+| 1.6 | A Data Dragon outage cannot take a page down                                                           | **Verified.** Fixed at LA-13 / ADR-034: third-party catalogues no longer go through the framework fetch cache, so there is no deferred revalidation left to reject  |
+| 1.7 | `NEXT_PUBLIC_APP_URL` matches the deployed host                                                        | Check at deploy. Twitch refuses to play in an iframe whose `parent` does not match; a wrong value degrades to the link the reader had before, not a break (ADR-018) |
+| 1.8 | `LOLESPORTS_API_KEY` set in the environment, or the pinned public web key still accepted               | Check at deploy. The key is public and not a credential (ADR-016), but it is repointable for the day Riot rotates it                                                |
 
 ## 2. Cost, as measured
 
-| Read | Cold | Cached | Notes |
-|---|---|---|---|
-| Pro sample (hub rail, `/esports/champions`, `ProPlayStrip`) | ~220 feed requests | 1 h | Was ~150 before each game also yielded its length. Warmed every 45 min |
-| One game's gold curve | 9 requests at 4-min sampling, ceiling 24 | 30 days | Fetched only for the game being looked at |
-| One completed game's stats | 3 requests (window, details, opening frame) | 30 days | Immutable once the game ends |
-| Cold hub build, no cache at all | ~4 minutes in dev | — | Which is what §1.5 exists to prevent a reader ever seeing |
+| Read                                                        | Cold                                        | Cached  | Notes                                                                  |
+| ----------------------------------------------------------- | ------------------------------------------- | ------- | ---------------------------------------------------------------------- |
+| Pro sample (hub rail, `/esports/champions`, `ProPlayStrip`) | ~220 feed requests                          | 1 h     | Was ~150 before each game also yielded its length. Warmed every 45 min |
+| One game's gold curve                                       | 9 requests at 4-min sampling, ceiling 24    | 30 days | Fetched only for the game being looked at                              |
+| One completed game's stats                                  | 3 requests (window, details, opening frame) | 30 days | Immutable once the game ends                                           |
+| Cold hub build, no cache at all                             | ~4 minutes in dev                           | —       | Which is what §1.5 exists to prevent a reader ever seeing              |
 
 ## 3. Known, not blocking, filed
 

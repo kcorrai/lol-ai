@@ -5,7 +5,7 @@ export const targetSelection: Lesson = {
   trackId: "teamfighting",
   title: "Who You Actually Press",
   summary:
-    "\"Kill the carry\" is the most repeated advice in League and it is wrong about half the time. The target is whoever you can kill without leaving the place you are allowed to stand.",
+    '"Kill the carry" is the most repeated advice in League and it is wrong about half the time. The target is whoever you can kill without leaving the place you are allowed to stand.',
   minutes: 6,
   access: "pro",
   objectives: [
@@ -29,10 +29,26 @@ export const targetSelection: Lesson = {
       caption: "Reading the fight in one question",
       head: ["Situation", "Target", "Because"],
       rows: [
-        ["Their front line is between you and everyone", "The front line", "It is the only thing you can hit while staying alive"],
-        ["Their carry steps forward alone", "The carry, immediately", "The position you are allowed to hold now includes them"],
-        ["Their assassin dives your backline", "The assassin", "It is next to you, and it is the fight's biggest threat to you"],
-        ["Everyone is in melee range of everyone", "Whatever dies fastest", "Damage in a blender is measured in kills, not in intentions"],
+        [
+          "Their front line is between you and everyone",
+          "The front line",
+          "It is the only thing you can hit while staying alive",
+        ],
+        [
+          "Their carry steps forward alone",
+          "The carry, immediately",
+          "The position you are allowed to hold now includes them",
+        ],
+        [
+          "Their assassin dives your backline",
+          "The assassin",
+          "It is next to you, and it is the fight's biggest threat to you",
+        ],
+        [
+          "Everyone is in melee range of everyone",
+          "Whatever dies fastest",
+          "Damage in a blender is measured in kills, not in intentions",
+        ],
       ],
     },
     { kind: "gate" },

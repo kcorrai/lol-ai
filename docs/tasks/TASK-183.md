@@ -1,13 +1,16 @@
 # TASK-183: Matchup SEO Pages — /matchups/[a]-vs-[b]
 
 ## Status: Pending
+
 ## Score: 93/100
 
 ## Goal
+
 Competitor research confirmed NO major site publishes dedicated indexed X-vs-Y pages —
 high-intent queries ("yasuo vs zed") are unowned. Fill the gap.
 
 ## Scope
+
 - `matchupPairsService` in meta domain: enumerate pairs from the cached counters of all
   champions (most-played lane), sample ≥ 1,000 games, dedupe symmetric, cap ~2,000 pages.
 - `app/(tools)/matchups/[slug]/page.tsx` — slug `aatrox-vs-ahri`, alphabetical order is
@@ -19,4 +22,5 @@ high-intent queries ("yasuo vs zed") are unowned. Fill the gap.
   matchup pages when one exists. Sitemap additions.
 
 ## Commit
+
 `feat(seo): dedicated champion-vs-champion matchup pages`

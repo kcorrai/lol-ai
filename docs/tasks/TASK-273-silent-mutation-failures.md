@@ -10,7 +10,7 @@
 mutations on the same card. `useDisconnectAccount` and `useSetPrimaryAccount` are both
 `useMutation<_, Error, string>`, so a rejection lands in `.error` and is then thrown away.
 
-The user experience of a failed disconnect is that they press **Confirm** and *nothing happens*.
+The user experience of a failed disconnect is that they press **Confirm** and _nothing happens_.
 No message, no spinner, no change — the row stays exactly as it was. The most likely real rejection
 is the deliberate one: `CANNOT_DISCONNECT_FREE_PLAN` from `authorization.ts:32`. The button is
 already hidden for free plans via `canDisconnect`, but a stale subscription query renders it, and

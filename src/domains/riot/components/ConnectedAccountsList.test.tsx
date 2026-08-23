@@ -19,7 +19,14 @@ import { ConnectedAccountsList } from "./ConnectedAccountsList";
 
 /** A mutation result in whichever state the test needs. */
 function mutation(overrides: Record<string, unknown> = {}) {
-  return { mutate: vi.fn(), isPending: false, isError: false, error: null, variables: undefined, ...overrides };
+  return {
+    mutate: vi.fn(),
+    isPending: false,
+    isError: false,
+    error: null,
+    variables: undefined,
+    ...overrides,
+  };
 }
 
 function failing(message: string) {

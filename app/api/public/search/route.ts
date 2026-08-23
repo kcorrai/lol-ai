@@ -40,7 +40,7 @@ export async function GET(req: NextRequest): Promise<Response> {
   if (!params.success) {
     return NextResponse.json(
       { error: params.error.issues[0]?.message ?? "Invalid search" },
-      { status: 400 },
+      { status: 400 }
     );
   }
 

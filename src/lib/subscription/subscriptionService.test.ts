@@ -79,7 +79,12 @@ describe("getCurrentSubscription", () => {
 
   // The trial must not quietly downgrade someone who is already paying for more.
   it("leaves a paid plan alone during a referral trial", async () => {
-    onSubscription({ plan: "elite", status: "active", currentPeriodEnd: FUTURE, cancelAtPeriodEnd: false });
+    onSubscription({
+      plan: "elite",
+      status: "active",
+      currentPeriodEnd: FUTURE,
+      cancelAtPeriodEnd: false,
+    });
     withTrialEnding(FUTURE);
 
     const info = await getCurrentSubscription(USER_ID);

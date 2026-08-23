@@ -5,13 +5,16 @@ import { authOptions } from "@/lib/auth/config";
 import { assertOwnsRiotAccount } from "@/lib/auth/authorization";
 import { checkRateLimit } from "@/lib/api/rateLimit";
 import { prisma } from "@/lib/db/prisma";
-import { buildCoachChatContext, createCoachChatStream } from "@/domains/coaching/services/coachChatService";
+import {
+  buildCoachChatContext,
+  createCoachChatStream,
+} from "@/domains/coaching/services/coachChatService";
 import type { ChatMessage } from "@/lib/ai/types";
 import type { CoachPersona } from "@/lib/ai/chatSystemPrompt";
 
 const DAILY_LIMIT_FREE = 5;
-const DAILY_LIMIT_PRO  = 50;
-const DAY_MS           = 24 * 60 * 60 * 1000;
+const DAILY_LIMIT_PRO = 50;
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 // The transcript arrives from the browser on every turn, so it is input, not state.
 // It used to be cast to `ChatMessage[]` and forwarded unread, which let a caller send
@@ -63,7 +66,12 @@ export async function POST(req: NextRequest): Promise<Response> {
   const rl = await checkRateLimit(`chat:${userId}`, { limit: dailyLimit, windowMs: DAY_MS });
   if (!rl.allowed) {
     return NextResponse.json(
-      { error: { code: "RATE_LIMITED", message: "Daily message limit reached. Upgrade to Pro for 50 messages/day." } },
+      {
+        error: {
+          code: "RATE_LIMITED",
+          message: "Daily message limit reached. Upgrade to Pro for 50 messages/day.",
+        },
+      },
       { status: 429 }
     );
   }

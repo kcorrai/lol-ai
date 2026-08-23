@@ -27,7 +27,7 @@ export function classifySyncError(error: unknown): SyncErrorKind {
  */
 export function resolveDashboardView(
   accountsLoading: boolean,
-  accountCount: number,
+  accountCount: number
 ): DashboardView {
   if (accountCount > 0) return "ready";
   return accountsLoading ? "loading" : "no-account";

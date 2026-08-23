@@ -24,13 +24,13 @@ export const whichObjectiveHappens: Lesson = {
       caption: "Both objectives are within reach — which one is cheaper from where you are",
       annotations: [
         {
-          at: { x: 0.50, y: 0.50, r: 0.06 },
+          at: { x: 0.5, y: 0.5, r: 0.06 },
           label: "Mid lane",
           tone: "neutral",
           note: "The start of every rotation. From the middle of the lane you are thirty seconds from either end of the map, which is why the team whose mid laner is already moving gets to decide.",
         },
         {
-          at: { x: 0.60, y: 0.65, r: 0.06 },
+          at: { x: 0.6, y: 0.65, r: 0.06 },
           label: "Drake approach",
           tone: "good",
           note: "Closer than it looks if you just shoved. A crashed wave buys you the seconds you need to arrive before the pit is contested.",
@@ -58,7 +58,11 @@ export const whichObjectiveHappens: Lesson = {
         ["Wave crashed, standing mid", "Either — this is the good state", "Nothing"],
         ["Just shoved, top side of mid", "The top-side objective", "A wave and 15 seconds"],
         ["Wave pushing into your turret", "Neither", "A wave, a plate, and you arrive last anyway"],
-        ["Recalling with 1400 gold", "Whichever one is 30+ seconds away", "The item, if you skip the back"],
+        [
+          "Recalling with 1400 gold",
+          "Whichever one is 30+ seconds away",
+          "The item, if you skip the back",
+        ],
       ],
     },
     {

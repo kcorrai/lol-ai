@@ -63,7 +63,11 @@ export function chooseNextLesson(input: RecommendationInput): Recommendation | n
   // 1. Something already open.
   const open = allLessons().find((l) => statuses.get(lessonId(l)) === "in_progress");
   if (open) {
-    return { lesson: open, source: "resume", reason: "You started this one and did not finish it." };
+    return {
+      lesson: open,
+      source: "resume",
+      reason: "You started this one and did not finish it.",
+    };
   }
 
   // 2. A mastery that came undone (ADR-027). It outranks a leak the detector raised because

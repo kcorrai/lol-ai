@@ -1,12 +1,15 @@
 # TASK-187: Tool Depth — Counter/Matchup/Draft Upgrades
 
 ## Status: Done
+
 ## Score: 90/100
 
 ## Goal
+
 Bring the existing tools to best-in-class detail using the new build/curve data.
 
 ## Scope
+
 - `/counters/[champion]`: game-length curve, patch-trend sparkline, 150+ word generated
   "how to play vs X" (real numbers + DDragon enemy tips), rank-tier filter (noindex
   query), link to the build page.
@@ -19,4 +22,5 @@ Bring the existing tools to best-in-class detail using the new build/curve data.
 - Update affected unit tests.
 
 ## Commit
+
 `feat(tools): game-length curves, trends and deeper counter/matchup/draft detail`

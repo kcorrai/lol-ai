@@ -25,37 +25,41 @@ vi.mock("@/domains/riot/services/matchSyncService", () => ({
 import { prisma } from "@/lib/db/prisma";
 import { syncAccount } from "@/domains/riot/services/matchSyncService";
 
-const mockRiotAccount = prisma.riotAccount as ReturnType<typeof vi.mocked<typeof prisma.riotAccount>>;
+const mockRiotAccount = prisma.riotAccount as ReturnType<
+  typeof vi.mocked<typeof prisma.riotAccount>
+>;
 const mockSyncAccount = vi.mocked(syncAccount);
 
 const ACCOUNT_ID = "account-uuid-123";
 const USER_ID = "user-uuid-456";
 
 async function runHandler(riotAccountId: string, userId: string) {
-  const handler = vi.fn(async ({ event }: { event: { data: { riotAccountId: string; userId: string } } }) => {
-    const { riotAccountId: id } = event.data;
+  const handler = vi.fn(
+    async ({ event }: { event: { data: { riotAccountId: string; userId: string } } }) => {
+      const { riotAccountId: id } = event.data;
 
-    await prisma.riotAccount.update({
-      where: { id },
-      data: { syncStatus: "RUNNING", syncStartedAt: new Date(), lastSyncError: null },
-    });
-
-    try {
-      const result = await syncAccount(id, true);
       await prisma.riotAccount.update({
         where: { id },
-        data: { syncStatus: "COMPLETED", syncCompletedAt: new Date() },
+        data: { syncStatus: "RUNNING", syncStartedAt: new Date(), lastSyncError: null },
       });
-      return { status: "completed", ...result };
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : String(err);
-      await prisma.riotAccount.update({
-        where: { id },
-        data: { syncStatus: "FAILED", lastSyncError: errorMsg },
-      });
-      throw err;
+
+      try {
+        const result = await syncAccount(id, true);
+        await prisma.riotAccount.update({
+          where: { id },
+          data: { syncStatus: "COMPLETED", syncCompletedAt: new Date() },
+        });
+        return { status: "completed", ...result };
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        await prisma.riotAccount.update({
+          where: { id },
+          data: { syncStatus: "FAILED", lastSyncError: errorMsg },
+        });
+        throw err;
+      }
     }
-  });
+  );
 
   return handler({ event: { data: { riotAccountId, userId } } });
 }

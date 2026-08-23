@@ -29,10 +29,26 @@ export const theDodgeDecision: Lesson = {
       caption: "Reasons people dodge, priced honestly",
       head: ["Reason", "Verdict", "Why"],
       rows: [
-        ["A teammate is already arguing in champion select", "Dodge", "The game is decided; you are buying back twenty-five minutes"],
-        ["Bad matchup for your champion", "Do not", "A hard lane is a lane. You have a whole track about surviving them"],
-        ["No support / no tank pick", "Usually not", "Compositions are more flexible than the loading screen suggests"],
-        ["You are on a losing streak and nervous", "Do not — take the break instead", "This is a tilt decision wearing a strategy costume"],
+        [
+          "A teammate is already arguing in champion select",
+          "Dodge",
+          "The game is decided; you are buying back twenty-five minutes",
+        ],
+        [
+          "Bad matchup for your champion",
+          "Do not",
+          "A hard lane is a lane. You have a whole track about surviving them",
+        ],
+        [
+          "No support / no tank pick",
+          "Usually not",
+          "Compositions are more flexible than the loading screen suggests",
+        ],
+        [
+          "You are on a losing streak and nervous",
+          "Do not — take the break instead",
+          "This is a tilt decision wearing a strategy costume",
+        ],
       ],
     },
     { kind: "gate" },

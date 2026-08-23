@@ -8,15 +8,15 @@ for why, and for what that rules out.
 
 ## 1. Commands
 
-| Command | Needs a link? | Reads |
-|---|---|---|
-| `/rank [riot-id] [region]` | no | `buildAccountPreview()` |
-| `/profile [riot-id] [region]` | no | `buildAccountPreview()` |
-| `/champions [riot-id] [region]` | no | `buildAccountPreview()` |
-| `/match [riot-id] [region]` | no | `getLastMatchSummary()` — one match-v5 call |
-| `/live [riot-id] [region]` | no | `getLiveDraftForRiotId()` — spectator-v5 |
-| `/coach` | **yes**, and Pro | `getPlayerPerformanceProfile()` + `getActiveHabits()` |
-| `/lolai help \| link \| status \| unlink` | — | — |
+| Command                                   | Needs a link?    | Reads                                                 |
+| ----------------------------------------- | ---------------- | ----------------------------------------------------- |
+| `/rank [riot-id] [region]`                | no               | `buildAccountPreview()`                               |
+| `/profile [riot-id] [region]`             | no               | `buildAccountPreview()`                               |
+| `/champions [riot-id] [region]`           | no               | `buildAccountPreview()`                               |
+| `/match [riot-id] [region]`               | no               | `getLastMatchSummary()` — one match-v5 call           |
+| `/live [riot-id] [region]`                | no               | `getLiveDraftForRiotId()` — spectator-v5              |
+| `/coach`                                  | **yes**, and Pro | `getPlayerPerformanceProfile()` + `getActiveHabits()` |
+| `/lolai help \| link \| status \| unlink` | —                | —                                                     |
 
 `riot-id` is optional everywhere. Left out, it answers for the caller's own linked account.
 It autocompletes from the player index (`searchPlayers()`), which holds every Riot ID seen
@@ -34,7 +34,7 @@ At <https://discord.com/developers/applications> → **New Application**.
 - **Name** — what appears above every reply.
 - **App Icon** — the avatar next to every reply. Use the product mark, not a placeholder.
 - **Description** — shown in the "Add App" dialog and the profile popout. Say what it does
-  in one line: *Rank, match and live-game lookups for League of Legends, with AI coaching.*
+  in one line: _Rank, match and live-game lookups for League of Legends, with AI coaching._
 - Copy the **Application ID** → `DISCORD_APPLICATION_ID`
 - Copy the **Public Key** → `DISCORD_PUBLIC_KEY`
 
@@ -102,13 +102,13 @@ the note in `.env.example`.
 
 ## 6. Environment variables
 
-| Variable | Needed by | Notes |
-|---|---|---|
-| `DISCORD_APPLICATION_ID` | runtime + register script | Same value as `DISCORD_CLIENT_ID` |
-| `DISCORD_PUBLIC_KEY` | runtime | Every request is rejected without it |
-| `DISCORD_BOT_TOKEN` | register script only | Never read at runtime |
-| `AUTH_ENCRYPTION_KEY` | `/lolai link` | Already required by 2FA |
-| `NEXT_PUBLIC_APP_URL` | link buttons | Must be reachable by the person clicking |
+| Variable                 | Needed by                 | Notes                                    |
+| ------------------------ | ------------------------- | ---------------------------------------- |
+| `DISCORD_APPLICATION_ID` | runtime + register script | Same value as `DISCORD_CLIENT_ID`        |
+| `DISCORD_PUBLIC_KEY`     | runtime                   | Every request is rejected without it     |
+| `DISCORD_BOT_TOKEN`      | register script only      | Never read at runtime                    |
+| `AUTH_ENCRYPTION_KEY`    | `/lolai link`             | Already required by 2FA                  |
+| `NEXT_PUBLIC_APP_URL`    | link buttons              | Must be reachable by the person clicking |
 
 ---
 

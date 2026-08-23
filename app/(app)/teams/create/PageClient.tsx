@@ -27,11 +27,11 @@ export default function CreateTeamPage() {
       });
 
       if (!res.ok) {
-        const body = await res.json() as { error?: { message?: string } };
+        const body = (await res.json()) as { error?: { message?: string } };
         throw new Error(body.error?.message ?? "Failed to create team");
       }
 
-      const body = await res.json() as { data: { id: string } };
+      const body = (await res.json()) as { data: { id: string } };
       router.push(`/teams/${body.data.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -46,7 +46,10 @@ export default function CreateTeamPage() {
         subtitle="Create a profile for your esports team or coaching academy"
       />
 
-      <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-border bg-surface p-6">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 rounded-xl border border-border bg-surface p-6"
+      >
         <div>
           <label className="mb-1 block text-sm font-medium text-text">
             Team Name <span className="text-danger">*</span>
@@ -79,12 +82,7 @@ export default function CreateTeamPage() {
         {error && <p className="text-sm text-danger">{error}</p>}
 
         <div className="flex gap-3 pt-2">
-          <Button
-            type="button"
-            variant="outline"
-            className="flex-1"
-            onClick={() => router.back()}
-          >
+          <Button type="button" variant="outline" className="flex-1" onClick={() => router.back()}>
             Cancel
           </Button>
           <Button type="submit" className="flex-1" disabled={loading || !name.trim()}>

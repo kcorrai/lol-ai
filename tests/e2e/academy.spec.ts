@@ -116,7 +116,10 @@ test.describe("Academy", () => {
     await expect(page).toHaveURL(/\/academy\/roles$/, { timeout: 30_000 });
     await expect(page.getByRole("heading", { level: 1 })).toContainText("only your role plays");
 
-    await page.getByRole("link", { name: /Top Path/ }).first().click();
+    await page
+      .getByRole("link", { name: /Top Path/ })
+      .first()
+      .click();
     await expect(page).toHaveURL(/\/academy\/top$/, { timeout: 30_000 });
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Top Path");
     await expect(page.getByRole("listitem")).toHaveCount(5);

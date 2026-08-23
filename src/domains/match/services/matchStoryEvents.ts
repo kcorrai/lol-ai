@@ -1,6 +1,9 @@
 import { z } from "zod";
 import type { TimelineEventKind } from "@prisma/client";
-import type { MatchStoryEvent, MatchStoryParticipant } from "@/domains/match/types/matchStory.types";
+import type {
+  MatchStoryEvent,
+  MatchStoryParticipant,
+} from "@/domains/match/types/matchStory.types";
 
 // One zod schema per exposed event kind, matching exactly the fields
 // `src/domains/riot/timeline/parseEvents.ts` writes into `payload` for that kind. Payload is a Json

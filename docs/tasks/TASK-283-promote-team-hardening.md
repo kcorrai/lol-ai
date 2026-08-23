@@ -4,7 +4,7 @@
 
 `docs/BACKLOG-SCORED-2026-07-20.md` finding #21 (score 20).
 
-## Context — what this is *not*
+## Context — what this is _not_
 
 An automated audit pass originally called this a privilege escalation. It is not, and that was
 already rejected in `docs/AUDIT-2026-07-20.md`: the route requires either an `ADMIN_EMAIL` session

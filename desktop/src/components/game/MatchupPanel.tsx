@@ -93,7 +93,12 @@ function MetaReading({ meta }: { meta: Meta }): React.ReactElement {
   return (
     <div>
       <div className="flex items-baseline justify-between gap-3">
-        <p className={cn("font-display text-2xl font-bold", VERDICT_TONE[meta.verdict] ?? "text-text")}>
+        <p
+          className={cn(
+            "font-display text-2xl font-bold",
+            VERDICT_TONE[meta.verdict] ?? "text-text"
+          )}
+        >
           {VERDICT_LABEL[meta.verdict] ?? meta.verdict}
         </p>
         <p className="font-mono text-sm text-text-body">

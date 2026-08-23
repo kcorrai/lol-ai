@@ -59,12 +59,12 @@ SQL — and it does nothing for the report quota, so the codebase would carry tw
 - The lock releases when the transaction ends, including on rollback (`_xact_` variant), so a
   thrown callback cannot strand it.
 - **Callbacks must stay short.** They hold both an advisory lock and a database connection. In the
-  report flow the expensive `buildCoachingInput` deliberately runs *before* the lock is taken. Doing
+  report flow the expensive `buildCoachingInput` deliberately runs _before_ the lock is taken. Doing
   slow work inside `withUserLock` would serialize that user's requests for its whole duration — and
   on the serverless pooler, connections are the scarce resource.
 - Postgres-specific. It would need replacing if the project ever moved off Postgres, which is not
   planned (ADR-001).
 - A single-threaded unit test cannot demonstrate the race is closed, because locked and unlocked
-  code behave identically without concurrency. The tests therefore assert the *implementation* — that
+  code behave identically without concurrency. The tests therefore assert the _implementation_ — that
   the lock is acquired before the callback, on the same transaction client. Closing the race is
   verified empirically against a real database.

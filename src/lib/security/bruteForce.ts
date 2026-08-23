@@ -34,7 +34,9 @@ async function clearRedisKey(key: string): Promise<void> {
       token: process.env.KV_REST_API_TOKEN,
     });
     await redis.del(key);
-  } catch { /* non-critical */ }
+  } catch {
+    /* non-critical */
+  }
 }
 
 export async function recordFailedAttempt(identifier: string): Promise<void> {
@@ -68,7 +70,9 @@ export async function recordFailedAttempt(identifier: string): Promise<void> {
       action: "auth.login.failed",
       metadata: { identifier, count, reason: "brute_force_threshold" },
       ipAddress: identifier,
-    }).catch(() => { /* non-critical */ });
+    }).catch(() => {
+      /* non-critical */
+    });
 
     throw new Error("TOO_MANY_ATTEMPTS");
   }

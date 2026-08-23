@@ -101,7 +101,13 @@ function Header({
  * gap between them is the interesting part — so this links across rather than
  * pretending the pro answer is the one a reader should copy into solo queue.
  */
-function CrossLinks({ name, championId }: { name: string; championId: string }): React.ReactElement {
+function CrossLinks({
+  name,
+  championId,
+}: {
+  name: string;
+  championId: string;
+}): React.ReactElement {
   return (
     <section className="mt-12">
       <h2 className="mb-3 font-display text-xl font-extrabold uppercase text-text md:text-2xl">

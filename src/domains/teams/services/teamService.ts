@@ -20,18 +20,12 @@ const MAX_TEAMS_PER_USER = 5;
  */
 export const MAX_TEAM_MEMBERS = 5;
 
-export async function assertTeamAccess(
-  teamId: string,
-  userId: string
-): Promise<void> {
+export async function assertTeamAccess(teamId: string, userId: string): Promise<void> {
   const membership = await repo.findMembership(teamId, userId);
   if (!membership) throw Errors.forbidden("You are not a member of this team");
 }
 
-export async function assertCoachAccess(
-  teamId: string,
-  userId: string
-): Promise<void> {
+export async function assertCoachAccess(teamId: string, userId: string): Promise<void> {
   const membership = await repo.findMembership(teamId, userId);
   if (!membership) throw Errors.forbidden("You are not a member of this team");
   if (membership.role !== "OWNER" && membership.role !== "COACH") {
@@ -39,18 +33,12 @@ export async function assertCoachAccess(
   }
 }
 
-export async function assertMemberAccess(
-  teamId: string,
-  userId: string
-): Promise<void> {
+export async function assertMemberAccess(teamId: string, userId: string): Promise<void> {
   const membership = await repo.findMembership(teamId, userId);
   if (!membership) throw Errors.forbidden("You are not a member of this team");
 }
 
-export async function assertOwnerAccess(
-  teamId: string,
-  userId: string
-): Promise<void> {
+export async function assertOwnerAccess(teamId: string, userId: string): Promise<void> {
   const membership = await repo.findMembership(teamId, userId);
   if (!membership || membership.role !== "OWNER") {
     throw Errors.forbidden("Team owner access required");
@@ -117,10 +105,7 @@ export async function getMyTeams(userId: string): Promise<TeamSummary[]> {
   }));
 }
 
-export async function getTeamMembers(
-  teamId: string,
-  userId: string
-): Promise<TeamMemberRow[]> {
+export async function getTeamMembers(teamId: string, userId: string): Promise<TeamMemberRow[]> {
   await assertTeamAccess(teamId, userId);
   const team = await repo.findTeamById(teamId);
   if (!team) throw Errors.notFound("Team");
@@ -168,8 +153,14 @@ export async function removeMember(
   if (!membership) throw Errors.notFound("Team member");
 
   const [actor, target] = await Promise.all([
-    prismaReadonly.user.findUnique({ where: { id: requestingUserId }, select: { name: true, email: true } }),
-    prismaReadonly.user.findUnique({ where: { id: targetUserId }, select: { name: true, email: true } }),
+    prismaReadonly.user.findUnique({
+      where: { id: requestingUserId },
+      select: { name: true, email: true },
+    }),
+    prismaReadonly.user.findUnique({
+      where: { id: targetUserId },
+      select: { name: true, email: true },
+    }),
   ]);
   const actorName = actor?.name ?? actor?.email ?? "Unknown";
   const targetName = target?.name ?? target?.email ?? "Unknown";
@@ -208,7 +199,10 @@ export interface TeamActivityItem {
   createdAt: string;
 }
 
-export async function getTeamActivityFeed(teamId: string, userId: string): Promise<TeamActivityItem[]> {
+export async function getTeamActivityFeed(
+  teamId: string,
+  userId: string
+): Promise<TeamActivityItem[]> {
   await assertTeamAccess(teamId, userId);
   const rows = await repo.getTeamActivities(teamId, 30);
   return rows.map((r) => ({ ...r, createdAt: r.createdAt.toISOString() }));
@@ -229,7 +223,10 @@ export async function acceptLinkInvite(token: string, userId: string): Promise<{
   }
 
   await repo.addMember(invite.teamId, userId, "PLAYER");
-  const newMember = await prismaReadonly.user.findUnique({ where: { id: userId }, select: { name: true, email: true } });
+  const newMember = await prismaReadonly.user.findUnique({
+    where: { id: userId },
+    select: { name: true, email: true },
+  });
   const memberName = newMember?.name ?? newMember?.email ?? "Unknown";
   void repo.createTeamActivity(invite.teamId, memberName, "member_joined", "davet linki ile");
   logger.info("[teamService] link invite accepted", { teamId: invite.teamId, userId });

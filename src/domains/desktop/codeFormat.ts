@@ -24,7 +24,10 @@ const CODE_PATTERN = new RegExp(`^[${PAIRING_CODE_ALPHABET}]{${PAIRING_CODE_LENG
  * of being stripped into a shorter code that fails for a confusing reason.
  */
 export function normalisePairingCode(input: string): string {
-  return input.trim().replace(/[\s-]+/g, "").toUpperCase();
+  return input
+    .trim()
+    .replace(/[\s-]+/g, "")
+    .toUpperCase();
 }
 
 export function isPairingCodeFormat(code: string | null | undefined): code is string {

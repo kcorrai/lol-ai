@@ -25,8 +25,7 @@ export const GET = withAuth(async (req: NextRequest, { userId }) => {
 
   // Hard server-side limit — prevents UI bypass via direct API calls
   const limits = await getPlanLimits(userId);
-  const result =
-    limits.championPoolLimit === -1 ? pool : pool.slice(0, limits.championPoolLimit);
+  const result = limits.championPoolLimit === -1 ? pool : pool.slice(0, limits.championPoolLimit);
 
   return apiSuccess(result);
 });

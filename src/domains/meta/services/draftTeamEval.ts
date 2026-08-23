@@ -26,9 +26,7 @@ function tagScaling(champs: DdragonChampionSummary[]): TeamEval["scalingLean"] {
 async function aggregateTeamCurve(
   members: { championId: number; position: CanonicalPosition }[]
 ): Promise<GameLengthPoint[]> {
-  const builds = await Promise.all(
-    members.map((m) => getChampionBuild(m.championId, m.position))
-  );
+  const builds = await Promise.all(members.map((m) => getChampionBuild(m.championId, m.position)));
   const buckets = new Map<number, { sum: number; n: number }>();
   for (const build of builds) {
     if (!build) continue;
@@ -103,7 +101,9 @@ export async function evaluateTeam(
   const count = champions.length || 1;
 
   const curve = await aggregateTeamCurve(
-    champions.filter((c) => c.championId > 0).map((c) => ({ championId: c.championId, position: c.position }))
+    champions
+      .filter((c) => c.championId > 0)
+      .map((c) => ({ championId: c.championId, position: c.position }))
   );
 
   return {

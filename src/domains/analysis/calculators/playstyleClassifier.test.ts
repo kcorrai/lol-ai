@@ -26,7 +26,7 @@ describe("classifyPlaystyle", () => {
     const metrics: PerformanceMetrics = {
       ...baseMetrics,
       damageShare: 0.38,
-      killParticipation: 0.70,
+      killParticipation: 0.7,
     };
     expect(classifyPlaystyle(metrics, "MIDDLE")).toBe("aggressive");
   });
@@ -35,7 +35,7 @@ describe("classifyPlaystyle", () => {
     const metrics: PerformanceMetrics = {
       ...baseMetrics,
       csPerMinute: 8.0,
-      damageShare: 0.20,
+      damageShare: 0.2,
       killParticipation: 0.45,
     };
     expect(classifyPlaystyle(metrics, "TOP")).toBe("farming");
@@ -60,7 +60,7 @@ describe("classifyPlaystyle", () => {
       ...baseMetrics,
       csPerMinute: 3.0,
       visionScorePerMinute: 0.6,
-      killParticipation: 0.60,
+      killParticipation: 0.6,
     };
     expect(classifyPlaystyle(metrics, "JUNGLE")).toBe("supportive");
   });

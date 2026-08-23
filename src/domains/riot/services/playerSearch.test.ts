@@ -48,8 +48,11 @@ describe("rankSearchHits", () => {
 
   it("puts an exact name above a more-seen prefix match", () => {
     const hits = rankSearchHits(
-      [player({ gameName: "FakerFan", seenCount: 500 }), player({ gameName: "Faker", seenCount: 2 })],
-      query,
+      [
+        player({ gameName: "FakerFan", seenCount: 500 }),
+        player({ gameName: "Faker", seenCount: 2 }),
+      ],
+      query
     );
 
     expect(hits.map((h) => h.gameName)).toEqual(["Faker", "FakerFan"]);
@@ -62,7 +65,7 @@ describe("rankSearchHits", () => {
         player({ gameName: "Faker", tagLine: "EUW", seenCount: 900 }),
         player({ gameName: "Faker", tagLine: "KR1", seenCount: 1 }),
       ],
-      tagged,
+      tagged
     );
 
     expect(hits[0].tagLine).toBe("KR1");
@@ -75,7 +78,7 @@ describe("rankSearchHits", () => {
         player({ gameName: "FakerA", seenCount: 40 }),
         player({ gameName: "FakerB", seenCount: 9 }),
       ],
-      query,
+      query
     );
 
     expect(hits.map((h) => h.gameName)).toEqual(["FakerA", "FakerB", "FakerC"]);
@@ -83,19 +86,16 @@ describe("rankSearchHits", () => {
 
   it("breaks a full tie by name so the list does not reshuffle between keystrokes", () => {
     const same = { seenCount: 5, lastSeenAt: new Date("2026-02-02") };
-    const rows = [
-      player({ gameName: "FakerZ", ...same }),
-      player({ gameName: "FakerA", ...same }),
-    ];
+    const rows = [player({ gameName: "FakerZ", ...same }), player({ gameName: "FakerA", ...same })];
 
     expect(rankSearchHits(rows, query).map((h) => h.gameName)).toEqual(
-      rankSearchHits([...rows].reverse(), query).map((h) => h.gameName),
+      rankSearchHits([...rows].reverse(), query).map((h) => h.gameName)
     );
   });
 
   it("trims to the visible count", () => {
     const rows = Array.from({ length: 30 }, (_, i) =>
-      player({ gameName: `Faker${i}`, seenCount: i }),
+      player({ gameName: `Faker${i}`, seenCount: i })
     );
 
     expect(rankSearchHits(rows, query, 5)).toHaveLength(5);

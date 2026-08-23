@@ -82,7 +82,9 @@ describe("checkAndUpdateChallengeProgress", () => {
     activeChallenge();
     matchesWithDeaths(Array(20).fill(0)); // every match satisfies the target
     const tx = fakeTx();
-    vi.mocked(prisma.$transaction).mockImplementation((fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never);
+    vi.mocked(prisma.$transaction).mockImplementation(
+      (fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never
+    );
 
     await checkAndUpdateChallengeProgress(USER_ID, RIOT_ACCOUNT_ID);
 
@@ -102,7 +104,9 @@ describe("checkAndUpdateChallengeProgress", () => {
     matchesWithDeaths(Array(20).fill(0));
     const tx = fakeTx();
     tx.user.update.mockRejectedValue(new Error("xp write failed"));
-    vi.mocked(prisma.$transaction).mockImplementation((fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never);
+    vi.mocked(prisma.$transaction).mockImplementation(
+      (fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never
+    );
 
     await expect(checkAndUpdateChallengeProgress(USER_ID, RIOT_ACCOUNT_ID)).rejects.toThrow(
       "xp write failed"
@@ -113,7 +117,9 @@ describe("checkAndUpdateChallengeProgress", () => {
     activeChallenge();
     matchesWithDeaths(Array(20).fill(10)); // 10 deaths — never satisfies "3 or fewer"
     const tx = fakeTx();
-    vi.mocked(prisma.$transaction).mockImplementation((fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never);
+    vi.mocked(prisma.$transaction).mockImplementation(
+      (fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never
+    );
 
     await checkAndUpdateChallengeProgress(USER_ID, RIOT_ACCOUNT_ID);
 
@@ -130,7 +136,9 @@ describe("checkAndUpdateChallengeProgress", () => {
     matchesWithDeaths(Array(20).fill(0));
     const tx = fakeTx();
     tx.user.update.mockResolvedValueOnce({ xp: 1000, level: 1 });
-    vi.mocked(prisma.$transaction).mockImplementation((fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never);
+    vi.mocked(prisma.$transaction).mockImplementation(
+      (fn) => (fn as never as (t: unknown) => Promise<unknown>)(tx) as never
+    );
 
     await checkAndUpdateChallengeProgress(USER_ID, RIOT_ACCOUNT_ID);
 

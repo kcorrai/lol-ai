@@ -13,10 +13,7 @@ import { MasteryCard } from "./masteryCardOg";
 import { AcademyCard } from "./academyCardOg";
 import { CareerCard } from "./careerCardOg";
 
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: { token: string } }
-) {
+export async function GET(_req: NextRequest, { params }: { params: { token: string } }) {
   let result: Awaited<ReturnType<typeof getCardByToken>>;
 
   try {

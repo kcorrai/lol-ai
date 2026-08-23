@@ -46,9 +46,9 @@ export default async function AcademyHubPage(): Promise<React.ReactElement> {
           not the patch notes
         </h1>
         <p className="mt-4 text-[15px] leading-relaxed text-text-body">
-          Every other course teaches concepts to nobody in particular. This one reads your
-          ranked games first, teaches the thing that is actually losing you games, and then
-          checks whether you did it.
+          Every other course teaches concepts to nobody in particular. This one reads your ranked
+          games first, teaches the thing that is actually losing you games, and then checks whether
+          you did it.
         </p>
       </header>
 
