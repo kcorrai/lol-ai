@@ -131,6 +131,36 @@ describe("withAdminAuth", () => {
   });
 
   /**
+   * The admin API is the one surface where a stolen password alone used to be
+   * enough. Middleware turns a two-factor-pending session away from the `/admin`
+   * pages, but every mutation is an API call, and this wrapper — unlike
+   * `withAuth` — never looked at `twoFactorPending`. So an attacker holding the
+   * admin's password could not load the dashboard and could still call every
+   * route behind it.
+   */
+  it("rejects an admin who has passed the password but not the second factor", async () => {
+    authenticateAs({ id: "admin-1", email: ADMIN, twoFactorPending: true });
+
+    const res = await guarded(request());
+
+    const { status, error } = await readApiResponse(res);
+    expect(status).toBe(401);
+    expect(error?.code).toBe("TWO_FACTOR_REQUIRED");
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  // The check is on the pending flag itself, not on 2FA being configured: an
+  // admin who has answered the challenge is an ordinary admin again.
+  it("admits an admin whose second factor is already answered", async () => {
+    authenticateAs({ id: "admin-1", email: ADMIN, twoFactorPending: false });
+
+    const res = await guarded(request());
+
+    expect(res.status).toBe(200);
+    expect(handler).toHaveBeenCalledOnce();
+  });
+
+  /**
    * Admin handlers throw `ApiError` the same way authenticated ones do. Without
    * this they surfaced as 500s, so a validation failure on an admin route
    * answered "internal error" instead of saying what was wrong.
