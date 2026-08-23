@@ -37,6 +37,14 @@ itself in somebody's start-up list uninvited is the thing the competitors' revie
 complain about. A second copy of the app hands its request to the first and exits, rather
 than polling `2999` twice.
 
+There is also an overlay now: a second window, frameless and transparent, that draws the
+same two panels over the top of the game. `Ctrl+Alt+L` shows and hides it, and so does the
+tray menu. It never takes focus — a companion that pulls the keyboard out of a running
+game is worse than no companion — and it is toggled rather than pinned, because an overlay
+that cannot be dismissed is the complaint the competitors' reviews open with. Windows will
+not draw anything over a game running in exclusive full screen, so League has to be in
+borderless; the app says so in Settings rather than claiming a detection it cannot perform.
+
 What remains of phase 5 is signed updates with an update channel. Signing needs a
 certificate and a release pipeline that do not exist yet, and Riot registration has to be
 in flight before any of it ships (ADR-038). Everything that needs a backend feature not
@@ -70,7 +78,8 @@ read about once a second and this answer changes when a game starts and not once
 | 4     | Live dashboard — matchup, game plan         | yes        | no                 |
 | 5a    | Post-game handoff                           | yes        | no                 |
 | 5b    | Tray, launch on start-up                    | yes        | no                 |
-| 5c    | Signed updates and an update channel        | yes        | no                 |
+| 5c    | Overlay window                              | yes        | no                 |
+| 5d    | Signed updates and an update channel        | yes        | no                 |
 
 ### The IPC surface
 

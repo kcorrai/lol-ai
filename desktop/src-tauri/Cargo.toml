@@ -30,6 +30,11 @@ tauri-plugin-autostart = "2"
 # game on this machine, so there is one of these.
 tauri-plugin-single-instance = "2"
 
+# One shortcut, registered in Rust and never exposed to the webview: the overlay has to be
+# reachable while the game holds the keyboard, which is the whole definition of a global
+# shortcut. Nothing is sent *to* the game — this listens, it does not type.
+tauri-plugin-global-shortcut = "2"
+
 # Hands a URL to the operating system's default browser. Used from Rust only — the plugin's
 # own commands are not granted to the webview, so the address opened is always one this
 # binary built from its compiled-in base rather than one the renderer chose.

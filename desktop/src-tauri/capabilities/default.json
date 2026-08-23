@@ -2,6 +2,6 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "Core window permissions, plus autostart. This app grants the webview nothing beyond them — no filesystem, no shell, no arbitrary HTTP. Everything privileged goes through the commands in src/commands.rs, which are reachable by default and guard themselves: live_client_get checks the requested path against a fixed allowlist, and the device token is never returned across the boundary at all. Autostart is granted because the Settings toggle is a webview control and the plugin's whole surface is three calls that read or set one boolean about this app alone.",
-  "windows": ["main"],
+  "windows": ["main", "overlay"],
   "permissions": ["core:default", "autostart:default"]
 }
