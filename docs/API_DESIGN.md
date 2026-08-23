@@ -3004,3 +3004,43 @@ The reads are independent and one failing does not lose the others: a snapshot b
 of reach costs the meta panel and leaves the player's own record on screen. The rate limit
 is sized for games rather than polls — the app asks once per matchup, and the matchup
 changes when a game starts.
+
+### `POST /api/desktop/post-game`
+
+**Device-token authenticated**, through `withDeviceAuth`. The app reporting that a game has
+ended (LA-61, ADR-038 phase 5). The seventh desktop endpoint and **the first one that
+writes**.
+
+**No body.** The app is reporting an event, not describing it: what game it was is
+something the website reads from Riot, never something it takes on a client's word.
+
+**200** `{ status, riotAccountId }`, `Cache-Control: no-store`.
+
+| `status` | Means |
+|---|---|
+| `pending` | The account was marked pending and the pull was dispatched |
+| `already_running` | A sync was already under way and had not been running long enough to be stuck |
+| `no_riot_account` | The account behind this device has linked none — `riotAccountId` is null |
+
+| Status | Code | When |
+|---|---|---|
+| `401` | `UNAUTHORIZED` | Missing, malformed, unknown or revoked token |
+| `429` | — | Rate limited: 6 per hour per **device** |
+
+**What a stolen token can do here.** Cause the owner's own matches to be pulled from Riot
+slightly sooner than they would have been. It cannot name the account — that is read from
+the device row, never from the request — and it reads nothing back, because the pull is
+asynchronous and the endpoint answers before any of it has happened. That is the whole of
+the write, and it is why this one is allowed behind a device token at all.
+
+**Why it exists.** `POST /api/riot/[riotAccountId]/sync` already does the same pull for a
+browser, but a browser only asks when somebody opens the dashboard and the data is half an
+hour stale (`useAutoSync`). Nothing on a server knows a match has ended; the process on the
+player's machine knows to the second. This endpoint is that one fact arriving in time to be
+useful, and it is the only thing on this path the website could not have worked out.
+
+Both guards matter and neither is redundant. The rate limit is sized for games — six an
+hour is more matches than anyone finishes — and the service's own in-progress check stops
+an app and a dashboard that both noticed the same game end from pulling the same matches
+twice. It goes out through the same `riot/sync.requested` event the website's sync button
+sends, so the two paths cannot drift.
