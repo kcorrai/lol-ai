@@ -248,18 +248,24 @@ export async function getChampionMastery(
 }
 
 export interface ActiveGameParticipantDTO {
-  puuid: string;
+  /**
+   * Null for a player Riot is anonymising.
+   *
+   * Riot hides some participants in ranked — no puuid, and `riotId` filled with the *champion*
+   * name as a placeholder ("Karthus", "Ahri"). Four of ten in the first real game this was checked
+   * against. Anything keying off a participant has to expect it (LA-70).
+   */
+  puuid: string | null;
   teamId: number;
   championId: number;
   spell1Id: number;
   spell2Id: number;
   /**
-   * "Name#TAG", when Riot sends it.
+   * "Name#TAG" — verified present on a real spectator payload, so the live scout gets its names
+   * for free rather than paying ten account-v1 calls for them.
    *
-   * Optional because this was written for the draft analyzer, which only ever needed champions and
-   * spells, so nothing here has depended on it before. Spectator-v5 is documented to carry it since
-   * the Riot ID migration — when it is present the live scout gets ten names for free instead of
-   * ten account-v1 calls, which is the difference between an 11-call page and a 21-call one.
+   * Not always a name: for an anonymised player (see `puuid`) Riot puts the champion here instead,
+   * with no tag. A value without a "#" is a placeholder, not somebody's Riot ID.
    */
   riotId?: string;
 }

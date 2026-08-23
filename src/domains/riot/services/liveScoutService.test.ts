@@ -238,6 +238,57 @@ describe("buildLiveScout", () => {
     expect(getMatchupData).toHaveBeenCalledWith("Ahri", "Ahri", "MIDDLE");
   });
 
+  /**
+   * Riot hides some players in ranked: no puuid, and the *champion* name where the Riot ID goes.
+   * Four of ten in the first real game this was tested against. Printing "Karthus" as somebody's
+   * name would invent an identity Riot deliberately withheld.
+   */
+  describe("a player Riot is anonymising", () => {
+    const anonymised = () =>
+      participants().map((p, i) =>
+        i === 1 ? { ...p, puuid: null, riotId: "Karthus" } : { ...p, riotId: `P${i}#EUW` }
+      );
+
+    beforeEach(() => {
+      vi.mocked(getActiveGame).mockResolvedValue(game({ participants: anonymised() }) as never);
+    });
+
+    it("is flagged, unnamed, and never carries the champion as a name", async () => {
+      const result = await buildLiveScout("kaanproak0", "TR1", "tr1");
+
+      if (!result.inGame) throw new Error("expected a live game");
+      const hidden = result.players.filter((p) => p.anonymous);
+      expect(hidden).toHaveLength(1);
+      expect(hidden[0]?.riotId).toBeNull();
+      expect(result.players.some((p) => p.riotId === "Karthus")).toBe(false);
+    });
+
+    it("keeps their champion and lane, which Riot does still give us", async () => {
+      const result = await buildLiveScout("kaanproak0", "TR1", "tr1");
+
+      if (!result.inGame) throw new Error("expected a live game");
+      const hidden = result.players.find((p) => p.anonymous);
+      expect(hidden?.championKey).toBe("LeeSin");
+      expect(hidden?.position).toBe("JUNGLE");
+    });
+
+    it("costs no Riot call, because there is nothing to look up", async () => {
+      await buildLiveScout("kaanproak0", "TR1", "tr1");
+
+      // Nine players, not ten — the hidden one is skipped rather than looked up and failed.
+      expect(getRankedEntriesByPuuidDirect).toHaveBeenCalledTimes(9);
+      expect(getAccountByPuuid).not.toHaveBeenCalled();
+    });
+
+    it("is never mistaken for the searched player", async () => {
+      const result = await buildLiveScout("kaanproak0", "TR1", "tr1");
+
+      if (!result.inGame) throw new Error("expected a live game");
+      expect(result.players.filter((p) => p.isSubject)).toHaveLength(1);
+      expect(result.players.find((p) => p.isSubject)?.anonymous).toBe(false);
+    });
+  });
+
   it("propagates a bad Riot ID so the page can render a miss", async () => {
     vi.mocked(getAccountByRiotId).mockRejectedValue(new Error("RIOT_NOT_FOUND"));
 

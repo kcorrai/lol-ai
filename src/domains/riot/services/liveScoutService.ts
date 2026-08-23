@@ -118,10 +118,14 @@ async function enrichPlayers(
   return Promise.all(
     game.participants.map(async (p) => {
       const championKey = championKeys.get(p.championId) ?? "";
-      const [riotId, rank] = await Promise.all([
-        resolveRiotId(p, region),
-        resolveRank(p.puuid, region),
-      ]);
+      // No puuid means Riot is hiding this player. There is nothing to look up and nothing to
+      // link to, so both calls are skipped — in the first real game this was tested against that
+      // was four of ten rank lookups not made.
+      const anonymous = !p.puuid;
+
+      const [riotId, rank] = anonymous
+        ? [null, null]
+        : await Promise.all([resolveRiotId(p, region), resolveRank(p.puuid as string, region)]);
 
       return {
         puuid: p.puuid,
@@ -131,15 +135,23 @@ async function enrichPlayers(
         position: championKey ? positionOf(draft, p, championKey) : null,
         riotId,
         rank,
-        isSubject: p.puuid === subjectPuuid,
+        anonymous,
+        isSubject: !anonymous && p.puuid === subjectPuuid,
       };
     })
   );
 }
 
-/** Riot's own field when it sends one, an account-v1 call when it does not. */
+/**
+ * Riot's own field when it sends a real one, an account-v1 call when it does not.
+ *
+ * The "#" test is the whole point: Riot fills `riotId` with the champion name for a player it is
+ * anonymising, so a value without a tag is a placeholder and must never be shown as somebody's
+ * name or linked to a profile.
+ */
 async function resolveRiotId(p: ActiveGameParticipantDTO, region: string): Promise<string | null> {
-  if (p.riotId) return p.riotId;
+  if (p.riotId?.includes("#")) return p.riotId;
+  if (!p.puuid) return null;
   try {
     const account = await getAccountByPuuid(p.puuid, region, NAME_CACHE_SECONDS);
     return account.gameName ? `${account.gameName}#${account.tagLine}` : null;

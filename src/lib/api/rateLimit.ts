@@ -42,12 +42,21 @@ export async function checkRateLimit(
  * address in the header on every request and never hit a limit at all.
  */
 export function getIp(req: NextRequest): string {
-  if (req.ip) return req.ip;
+  return req.ip ?? ipFromHeaders(req.headers);
+}
 
-  const realIp = req.headers.get("x-real-ip")?.trim();
+/**
+ * The same rule, for a caller that has headers but no request.
+ *
+ * A *page* can rate limit too — the live scout does, because its Riot cost sits on the page rather
+ * than behind a route — and `headers()` from `next/headers` is all a server component gets. Split
+ * out rather than reimplemented so both paths read the same hop (LA-70).
+ */
+export function ipFromHeaders(headers: Headers): string {
+  const realIp = headers.get("x-real-ip")?.trim();
   if (realIp) return realIp;
 
-  const forwarded = req.headers.get("x-forwarded-for");
+  const forwarded = headers.get("x-forwarded-for");
   if (forwarded) {
     const hops = forwarded
       .split(",")

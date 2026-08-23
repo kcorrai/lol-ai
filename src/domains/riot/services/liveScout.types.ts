@@ -4,7 +4,8 @@ import type { LiveDraftTeams } from "@/domains/riot/services/liveDraft";
 
 /** One of the ten players in a game being scouted. */
 export interface LiveScoutPlayer {
-  puuid: string;
+  /** Null when Riot is anonymising this player — see `anonymous`. */
+  puuid: string | null;
   championKey: string; // Data Dragon id, e.g. "Ahri" — "" when the champion is unknown to us
   championId: number;
   teamId: number; // 100 = blue, 200 = red
@@ -14,6 +15,13 @@ export interface LiveScoutPlayer {
   riotId: string | null;
   /** Solo-queue rank, or null when unranked *or* when the lookup was skipped or failed. */
   rank: { tier: string; division: string; lp: number; wins: number; losses: number } | null;
+  /**
+   * Riot is hiding who this is: no puuid, and a champion name where the Riot ID would be.
+   *
+   * Distinct from "we failed to look them up", which also leaves `riotId` null — this one is a
+   * deliberate answer from Riot and the view says so rather than looking broken.
+   */
+  anonymous: boolean;
   /** The player whose Riot ID was searched for. */
   isSubject: boolean;
 }

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { profileIconUrl, rankEmblemUrl, normalizeChampionKey } from "@/lib/ddragon";
 import { tierColorClass, tierLabel } from "@/lib/riot/rankDisplay";
 import { regionLabel } from "@/lib/riot/regions";
@@ -59,6 +60,17 @@ export function ProfileHero({ data, region }: Props): React.ReactElement {
             <span className="text-text-muted/60">#{summoner.tagLine}</span>
           </h1>
           <p className="hud-label mt-1">{regionLabel(region)}</p>
+
+          {/* Always rendered, never probed. This page is cached for a day, so asking Riot whether
+              they are in a game right now would be a badge that lies for up to twenty-four hours —
+              the live page answers the question at the moment it is actually asked. */}
+          <Link
+            href={`/live/${region}/${encodeURIComponent(summoner.gameName)}/${encodeURIComponent(summoner.tagLine)}`}
+            className="mt-2 inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-label text-text-muted transition-colors hover:text-accent"
+          >
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-danger" />
+            Live game
+          </Link>
         </div>
 
         {/* The season record is the headline, not the last ten games: ten games is noise, and one
