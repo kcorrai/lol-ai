@@ -6,6 +6,7 @@ import { getLatestDdragonVersion } from "@/lib/ddragon";
 import { logger } from "@/lib/utils/logger";
 import {
   OPGG_BASE,
+  opggBase,
   FRESH_TTL_DAYS,
   SNAPSHOT_TTL_DAYS,
   MIN_MATCHUP_GAMES,
@@ -132,12 +133,15 @@ function buildSnapshot(
 interface SnapshotOpts {
   mode?: SnapshotMode;
   tier?: SnapshotTier;
+  /** Platform id (euw1, kr, …). Absent means op.gg's global numbers, which is the default. */
+  region?: string | null;
 }
 
 async function fetchAndBuildSnapshot(opts: Required<SnapshotOpts>): Promise<MetaSnapshot> {
   const params = opts.tier ? `?tier=${opts.tier}` : "";
+  const base = opggBase(opts.region);
   const [res, champions, version] = await Promise.all([
-    opggFetch(`${OPGG_BASE}/${opts.mode}${params}`),
+    opggFetch(`${base}/${opts.mode}${params}`),
     fetchAllChampions(),
     getLatestDdragonVersion(),
   ]);
@@ -181,7 +185,11 @@ const MEMO_TTL_MS = 5 * 60 * 1000;
 // snapshot of around 200KB. If tier ever becomes a query parameter the reader controls, per-instance
 // memory becomes something the reader controls too. Eight covers every variant the app asks for
 // with room to spare.
-const MEMO_MAX_ENTRIES = 8;
+// Sized for the realistic set rather than the possible one. The possible one is mode × tier ×
+// region and is far larger, but a reader picks their own platform and leaves the bracket alone, so
+// what an instance actually warms is roughly one entry per platform. Twelve platforms at ~200KB is
+// about 2.4MB per instance if every one of them is touched, which is the price of the feature.
+export const MEMO_MAX_ENTRIES = 16;
 
 type MemoEntry = {
   value: MetaSnapshot | null;
@@ -240,7 +248,7 @@ function rememberSnapshot(variant: string, value: MetaSnapshot | null): void {
 /** The memoised views for the default snapshot, loading it first if needed. */
 async function defaultViews(): Promise<SnapshotViews | null> {
   await getMetaSnapshot();
-  return snapshotMemo.get("ranked:default")?.derived ?? null;
+  return snapshotMemo.get("ranked:default:global")?.derived ?? null;
 }
 
 // The memo above only helps an instance that is already warm, and a revalidation
@@ -266,9 +274,10 @@ const loadSnapshotShared = unstable_cache(
   async (
     mode: SnapshotMode,
     tier: SnapshotTier | undefined,
+    region: string | null,
     variant: string
   ): Promise<MetaSnapshot> => {
-    const snapshot = await loadSnapshot({ mode, tier } as Required<SnapshotOpts>, variant);
+    const snapshot = await loadSnapshot({ mode, tier, region } as Required<SnapshotOpts>, variant);
     if (!snapshot) throw new NoSnapshotAvailable();
     return snapshot;
   },
@@ -277,15 +286,21 @@ const loadSnapshotShared = unstable_cache(
 );
 
 export async function getMetaSnapshot(opts: SnapshotOpts = {}): Promise<MetaSnapshot | null> {
-  const resolved = { mode: opts.mode ?? "ranked", tier: opts.tier } as Required<SnapshotOpts>;
-  const variant = `${resolved.mode}:${resolved.tier ?? "default"}`;
+  const resolved = {
+    mode: opts.mode ?? "ranked",
+    tier: opts.tier,
+    region: opts.region ?? null,
+  } as Required<SnapshotOpts>;
+  // Region is part of the variant, not a decoration on it: without it every platform would share
+  // one entry and whichever loaded first would decide what the others saw.
+  const variant = `${resolved.mode}:${resolved.tier ?? "default"}:${resolved.region ?? "global"}`;
 
   const memoized = snapshotMemo.get(variant);
   if (memoized && memoized.expiresAt > Date.now()) return memoized.value;
 
   let snapshot: MetaSnapshot | null;
   try {
-    snapshot = await loadSnapshotShared(resolved.mode, resolved.tier, variant);
+    snapshot = await loadSnapshotShared(resolved.mode, resolved.tier, resolved.region, variant);
   } catch (err) {
     if (!(err instanceof NoSnapshotAvailable)) throw err;
     snapshot = null;
