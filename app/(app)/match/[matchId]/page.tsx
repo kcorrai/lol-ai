@@ -58,7 +58,7 @@ export default function MatchDetailPage(): React.JSX.Element {
 
       <MatchResultHeader match={match} me={me} />
 
-      <main className="mx-auto max-w-[1240px] px-5 pb-16 pt-5 md:px-8">
+      <div className="mx-auto max-w-[1240px] px-5 pb-16 pt-5 md:px-8">
         <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_306px]">
           <div className="grid min-w-0 gap-4">
             {me && <MatchKpiStrip me={me} participants={match.participants} />}
@@ -84,7 +84,7 @@ export default function MatchDetailPage(): React.JSX.Element {
 
           <MatchDetailRail match={match} me={me} />
         </div>
-      </main>
+      </div>
     </div>
   );
 }

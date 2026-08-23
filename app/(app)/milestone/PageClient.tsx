@@ -94,7 +94,7 @@ export default function MilestonePage(): React.JSX.Element {
 
       {data && <MilestoneHero data={data} isCurrent={isCurrent} />}
 
-      <main className="mx-auto max-w-[1240px] px-5 pb-16 pt-5 md:px-8">
+      <div className="mx-auto max-w-[1240px] px-5 pb-16 pt-5 md:px-8">
         {isLoading ? (
           <LoadingSkeleton />
         ) : !data ? (
@@ -156,7 +156,7 @@ export default function MilestonePage(): React.JSX.Element {
             </div>
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 }

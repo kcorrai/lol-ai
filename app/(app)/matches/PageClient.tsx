@@ -75,7 +75,7 @@ export default function MatchSearchPage(): React.JSX.Element {
         )}
       </header>
 
-      <main className="mx-auto max-w-[1240px] px-5 pb-16 pt-5 md:px-8">
+      <div className="mx-auto max-w-[1240px] px-5 pb-16 pt-5 md:px-8">
         <SavedSearchBar filters={filters} onApply={setFilters} />
 
         <div className="mt-4 grid items-start gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
@@ -108,7 +108,7 @@ export default function MatchSearchPage(): React.JSX.Element {
             />
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

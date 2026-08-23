@@ -102,7 +102,7 @@ export default function QuizPage(): React.JSX.Element {
         nextResetAt={nextResetAt}
       />
 
-      <main className="mx-auto w-full max-w-[1240px] px-5 pb-16 pt-5 md:px-8">
+      <div className="mx-auto w-full max-w-[1240px] px-5 pb-16 pt-5 md:px-8">
         <ModeStrip active={tab} results={results} onSelect={setTab} />
 
         <div className="mt-4 grid gap-4">
@@ -136,7 +136,7 @@ export default function QuizPage(): React.JSX.Element {
             <span>Solving any one mode keeps your streak alive — you do not need all eight</span>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
