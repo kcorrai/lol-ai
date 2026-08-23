@@ -92,6 +92,24 @@ const MATCHERS: { test: RegExp; build: (m: RegExpMatchArray) => RiotFixture }[] 
     build: () => ({ kind: "json", body: [] }),
   },
 
+  /**
+   * No such match, and no such timeline.
+   *
+   * A 404 rather than an invented `MatchDTO`: the suite seeds its matches into the database
+   * directly, so Riot genuinely does not know them, and a hand-written match body would be a
+   * hundred fields of fiction for the mapper to trip over. It also flows through
+   * `normalizeRiotError` into the handling callers already have, which throwing an unmocked-endpoint
+   * error would not.
+   */
+  {
+    test: /\/lol\/match\/v5\/matches\/[^/?]+\/timeline/,
+    build: () => ({ kind: "status", status: 404 }),
+  },
+  {
+    test: /\/lol\/match\/v5\/matches\/[^/?]+$/,
+    build: () => ({ kind: "status", status: 404 }),
+  },
+
   // Unranked, which is a real state and the one that needs no invented numbers.
   {
     test: /\/lol\/league\/v4\/entries\/by-(puuid|summoner)\/[^/?]+/,
