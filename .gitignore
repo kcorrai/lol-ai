@@ -52,3 +52,9 @@ tests/e2e/.auth
 
 .vercel
 .env*
+
+# VS Code Counter output and the prompt drafts Kaan drops in. Both are working
+# notes for one machine — regenerated or hand-written per session, never read by
+# the build — and neither belongs in anyone else's checkout.
+.VSCodeCounter/
+docs/prompts/
