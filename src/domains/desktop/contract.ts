@@ -85,3 +85,85 @@ export const pairingCodeSchema = z.object({
   expiresAt: z.string(),
 });
 export type IssuedPairingCode = z.infer<typeof pairingCodeSchema>;
+
+// ── The live dashboard (ADR-038, phase 4) ────────────────────────────────────
+//
+// The app reads the game on the player's own machine and the website reads the
+// player's account; neither half is worth much alone. This is the request that
+// joins them: the app says what it can see, and the website answers with what it
+// knows about the account playing it.
+//
+// Nothing here is derived from the game the app could not already see on its own
+// screen, which is the line ADR-038 draws around what this product reads.
+
+/** What the app can see of the game it is watching. */
+export const liveContextRequestSchema = z.object({
+  /** The player's champion, as the Live Client Data API spells it — "Lee Sin". */
+  championName: z.string().min(1).max(32),
+  /**
+   * The lane opponent. Null is routine, not an error: the client leaves `position`
+   * empty for every ARAM player and for anyone it has not resolved a lane for, and
+   * a lane nobody can name has no opponent to name either.
+   */
+  opponentChampionName: z.string().min(1).max(32).nullable(),
+  /** As the client publishes it. Empty and unrecognised both arrive here as null. */
+  position: z.string().min(1).max(16).nullable(),
+  gameMode: z.string().min(1).max(32),
+});
+export type LiveContextRequest = z.infer<typeof liveContextRequestSchema>;
+
+/** A champion both sides agree on: resolved against Data Dragon, never as typed. */
+export const liveChampionSchema = z.object({
+  /** The Data Dragon id — "MonkeyKing" — which is what every other service keys on. */
+  key: z.string(),
+  name: z.string(),
+});
+
+/** This account's own record in this matchup. Null when it has never played it. */
+export const livePersonalMatchupSchema = z.object({
+  games: z.number(),
+  wins: z.number(),
+  winRate: z.number(),
+  avgKda: z.number(),
+  trend: z.enum(["improving", "declining", "stable", "insufficient_data"]),
+});
+export type LivePersonalMatchup = z.infer<typeof livePersonalMatchupSchema>;
+
+/** What the patch-current snapshot says about the same matchup, for everyone. */
+export const liveMetaMatchupSchema = z.object({
+  position: z.string(),
+  patch: z.string(),
+  /** The player's champion's win rate into the opponent, 0-100. */
+  winRate: z.number(),
+  games: z.number(),
+  verdict: z.enum(["favored", "even", "unfavored"]),
+  hints: z.array(z.string()),
+});
+export type LiveMetaMatchup = z.infer<typeof liveMetaMatchupSchema>;
+
+/** One recurring weakness, already detected from this account's own matches. */
+export const liveHabitSchema = z.object({
+  habitType: z.string(),
+  displayName: z.string(),
+  severity: z.enum(["high", "medium", "low"]),
+  message: z.string(),
+});
+export type LiveHabit = z.infer<typeof liveHabitSchema>;
+
+/**
+ * What the website knows about the game the app is watching.
+ *
+ * Every field that can be absent is nullable rather than defaulted, because the
+ * app renders "we do not know this" differently from a number — and a plausible
+ * number the player cannot tell is invented is worse than an empty panel.
+ */
+export const liveContextSchema = z.object({
+  champion: liveChampionSchema.nullable(),
+  opponent: liveChampionSchema.nullable(),
+  personal: livePersonalMatchupSchema.nullable(),
+  meta: liveMetaMatchupSchema.nullable(),
+  habits: z.array(liveHabitSchema),
+  /** False means the panels are empty for a reason the player can act on. */
+  riotAccountLinked: z.boolean(),
+});
+export type LiveContext = z.infer<typeof liveContextSchema>;
