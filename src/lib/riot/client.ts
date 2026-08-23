@@ -2,6 +2,7 @@ import { riotCache, type CacheStore } from "@/lib/riot/cache";
 import { riotRateLimiter, type TokenBucket } from "@/lib/riot/rateLimit";
 import { withRetry } from "@/lib/riot/retry";
 import { normalizeRiotError } from "@/lib/riot/errors";
+import { isRiotMocked, riotFixtureFor } from "@/lib/riot/e2eFixtures";
 import { logger } from "@/lib/utils/logger";
 
 type RequestOptions = {
@@ -69,6 +70,15 @@ export class RiotHttpClient {
 
   private async fetch<T>(url: string): Promise<T> {
     logger.debug(`[RiotClient] GET ${url}`);
+
+    // The one gate. Every Riot request in the app leaves from here, so a mocked run cannot reach
+    // the network by way of an endpoint somebody adds later — and an endpoint with no fixture
+    // throws by name rather than going out with a fake key and collecting a 401 (LA-71).
+    if (isRiotMocked()) {
+      const fixture = riotFixtureFor(url);
+      if (fixture.kind === "status") throw normalizeRiotError(fixture.status);
+      return fixture.body as T;
+    }
 
     const response = await fetch(url, {
       headers: {
