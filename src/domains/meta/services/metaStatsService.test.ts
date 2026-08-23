@@ -37,6 +37,7 @@ import {
   findChampionStats,
   __clearSnapshotMemo,
   __snapshotMemoSize,
+  MEMO_MAX_ENTRIES,
 } from "./metaStatsService";
 import { getCached, setCached } from "@/lib/ai/aiCache";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
@@ -394,16 +395,30 @@ describe("derived snapshot views", () => {
 });
 
 describe("snapshot memo bounding", () => {
-  // The comment said "at most a handful of variants", which nothing enforced: mode × tier is a
-  // product and each entry is a ~200KB snapshot.
-  it("keeps at most eight variants", async () => {
+  // The comment said "at most a handful of variants", which nothing enforced: mode × tier × region
+  // is a product and each entry is a ~200KB snapshot. Asserted against the constant rather than a
+  // literal — the property is that the memo is bounded, not that the bound is any one number.
+  it("never grows past the cap however many variants are asked for", async () => {
     mockGetCached.mockResolvedValue(null);
     mockFetchOk(OPGG_SAMPLE);
 
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < MEMO_MAX_ENTRIES * 3; i++) {
       await getMetaSnapshot({ tier: `tier-${i}` as never });
     }
 
-    expect(__snapshotMemoSize()).toBeLessThanOrEqual(8);
+    expect(__snapshotMemoSize()).toBeLessThanOrEqual(MEMO_MAX_ENTRIES);
+  });
+
+  /** Region is part of the variant: without it every platform would share one entry. */
+  it("holds a separate entry per region", async () => {
+    mockGetCached.mockResolvedValue(null);
+    mockFetchOk(OPGG_SAMPLE);
+    __clearSnapshotMemo();
+
+    await getMetaSnapshot();
+    await getMetaSnapshot({ region: "euw1" });
+    await getMetaSnapshot({ region: "kr" });
+
+    expect(__snapshotMemoSize()).toBe(3);
   });
 });

@@ -41,9 +41,11 @@ const MIN_CONFIDENT_GAMES = 200;
 // to that op.gg bracket (e.g. diamond_plus).
 export async function getTierList(
   position: CanonicalPosition,
-  tier?: SnapshotTier
+  tier?: SnapshotTier,
+  /** Platform id (euw1, kr, …). Absent means op.gg's global numbers. */
+  region?: string | null
 ): Promise<RoleTierList | null> {
-  const snapshot = await getMetaSnapshot({ tier });
+  const snapshot = await getMetaSnapshot({ tier, region });
   if (!snapshot) return null;
 
   const entries: TierListEntry[] = [];

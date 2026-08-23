@@ -4,6 +4,56 @@ import type { CanonicalPosition } from "@/domains/meta/types";
 // Shared constants + helpers for the op.gg public feed. Unofficial endpoint, so
 // every consumer caches (12h fresh) and keeps a never-expiring last-good fallback.
 export const OPGG_BASE = "https://lol-api-champion.op.gg/api/global/champions";
+
+/**
+ * Our platform ids → op.gg's region segment.
+ *
+ * The feed keys regions by its own slugs in the path: `/api/euw/champions/...` really does return
+ * different numbers from `/api/global/...` — Ahri mid reads 14,355 games globally against 2,919 on
+ * EUW and 3,320 on KR, ranked 7th, 5th and 12th. It is an allowlist rather than a transform
+ * because the slugs do not follow a rule (`eun1` → `eune`, `la1` → `lan`, `oc1` → `oce`, and `oc`
+ * answers 422), and because a reader-supplied region must never be able to name an arbitrary path
+ * segment (LA-71).
+ */
+const OPGG_REGIONS: Record<string, string> = {
+  tr1: "tr",
+  euw1: "euw",
+  eun1: "eune",
+  na1: "na",
+  kr: "kr",
+  br1: "br",
+  la1: "lan",
+  la2: "las",
+  oc1: "oce",
+  ru: "ru",
+  jp1: "jp",
+};
+
+/** Every platform the region filter offers, in the order the picker shows them. */
+export const SNAPSHOT_REGIONS = Object.keys(OPGG_REGIONS);
+
+/**
+ * Validates a raw `?region=` value, returning the platform id or null if unrecognised.
+ *
+ * Null means "global", which is the default everywhere and the only variant the vast majority of
+ * traffic ever creates.
+ */
+export function parseRegion(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  const lower = raw.toLowerCase();
+  return lower in OPGG_REGIONS ? lower : null;
+}
+
+/**
+ * The feed's base URL for a platform, or the global one when no region is asked for.
+ *
+ * Every variant is a separate cache entry and a separate op.gg fetch, so the default staying
+ * global is what keeps the cost of this feature proportional to the people who use it.
+ */
+export function opggBase(region?: string | null): string {
+  const slug = region ? OPGG_REGIONS[region] : undefined;
+  return slug ? `https://lol-api-champion.op.gg/api/${slug}/champions` : OPGG_BASE;
+}
 export const USER_AGENT = "lol-ai-coach (+https://lolaicoach.gg)";
 export const FRESH_TTL_DAYS = 0.5; // 12h
 export const SNAPSHOT_TTL_DAYS = 365; // effectively permanent fallback

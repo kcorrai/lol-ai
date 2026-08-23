@@ -4,6 +4,7 @@ import {
   getTierList,
   parsePosition,
   parseTier,
+  parseRegion,
   POSITION_LABELS,
   POSITION_SLUG,
   ALL_POSITIONS,
@@ -25,7 +26,7 @@ export function generateStaticParams(): { role: string }[] {
 
 interface PageProps {
   params: { role: string };
-  searchParams: { tier?: string };
+  searchParams: { tier?: string; region?: string };
 }
 
 export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
@@ -36,9 +37,10 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   const rolePath = `/tools/tier-list/${POSITION_SLUG[position]}`;
   const list = await getTierList(position);
   const patch = list ? formatGamePatch(list.patch) : "";
-  // Rank-filtered views are near-duplicates — keep them out of the index and
-  // point canonical at the clean role page.
-  const filtered = Boolean(parseTier(searchParams.tier));
+  // Filtered views are near-duplicates — keep them out of the index and point canonical at the
+  // clean role page. Region counts as a filter for the same reason rank does, and it also stops a
+  // crawler walking twelve platforms × seven brackets and warming a snapshot for each.
+  const filtered = Boolean(parseTier(searchParams.tier) || parseRegion(searchParams.region));
 
   return {
     title: `LoL ${lane} Tier List${patch ? ` — Patch ${patch}` : ""}`,
@@ -54,9 +56,10 @@ export default async function RoleTierListPage({ params, searchParams }: PagePro
 
   const lane = POSITION_LABELS[position];
   const tier = parseTier(searchParams.tier);
+  const region = parseRegion(searchParams.region);
   // Cache-only, so it costs nothing on a cold sample and hides its own column.
   const [list, proPresence] = await Promise.all([
-    getTierList(position, tier ?? undefined),
+    getTierList(position, tier ?? undefined, region),
     getProPresence(),
   ]);
   const patch = list ? formatGamePatch(list.patch) : "";
@@ -97,6 +100,7 @@ export default async function RoleTierListPage({ params, searchParams }: PagePro
         position={position}
         list={list}
         activeTier={tier}
+        activeRegion={region}
         title={`LoL ${lane} tier list${patch ? ` — patch ${patch}` : ""}`}
         proPresence={proPresence}
         subtitle={`The strongest ${lane} champions this patch, ranked by real win rate with patch movement.`}

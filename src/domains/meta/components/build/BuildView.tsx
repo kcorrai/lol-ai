@@ -104,7 +104,7 @@ export function BuildView(d: BuildViewData): React.ReactElement {
         <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_306px]">
           <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-[1.125rem]">
             {/* The answer first, in reading order. */}
-            <ItemBuildPath build={d.build} catalog={d.items} />
+            <ItemBuildPath build={d.build} catalog={d.items} baselineWinRate={d.stats.winRate} />
 
             <div className="grid items-start gap-[1.125rem] lg:grid-cols-[1.55fr_1fr]">
               {d.build.runes ? (
