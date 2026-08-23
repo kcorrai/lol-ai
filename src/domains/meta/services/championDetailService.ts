@@ -43,7 +43,19 @@ const SkillMasterySchema = z.object({
   win: z.number(),
 });
 const GameLengthSchema = z.object({ game_length: z.number(), rate: z.number() });
-const TrendWinSchema = z.object({ version: z.string(), rate: z.number(), rank: z.number() });
+/**
+ * `rank` is null for a patch the champion was not played in that lane — op.gg sends the point with
+ * `rate: 0` and no rank rather than omitting it.
+ *
+ * It was declared as a plain number, which made Zod reject the whole payload: one gap in a
+ * champion's trend history threw away its entire build, runes, items and counters for that lane.
+ * Six of Syndra ADC's ten points are null, so that page had no build at all (LA-71).
+ */
+const TrendWinSchema = z.object({
+  version: z.string(),
+  rate: z.number(),
+  rank: z.number().nullable(),
+});
 
 const DetailSchema = z.object({
   data: z.object({
@@ -102,11 +114,16 @@ function buildFromDetail(
       minutes: g.game_length,
       winRate: pct(g.rate),
     })),
-    trend: (data.trends?.win ?? []).map((t) => ({
-      version: t.version,
-      winRate: pct(t.rate),
-      rank: t.rank,
-    })),
+    // A point with no rank is a patch the champion was not played in this lane, not a patch it
+    // ranked last in. Dropping it keeps the sparkline a record of real patches rather than a line
+    // to the floor and back.
+    trend: (data.trends?.win ?? [])
+      .filter((t): t is typeof t & { rank: number } => t.rank !== null)
+      .map((t) => ({
+        version: t.version,
+        winRate: pct(t.rate),
+        rank: t.rank,
+      })),
   };
 }
 
