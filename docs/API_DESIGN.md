@@ -2953,3 +2953,54 @@ Session-authenticated. Cuts a machine off; the row stays and gains a `revokedAt`
 **404 rather than 403 for someone else's device.** The service scopes the write by `userId`
 in the same query rather than fetching and then checking, so the route cannot tell the two
 apart — and should not be able to.
+
+### `POST /api/desktop/live-context`
+
+**Device-token authenticated**, through `withDeviceAuth`. What the website knows about the
+game the app is watching (LA-60, ADR-038 phase 4). The sixth desktop endpoint and the first
+one that *uses* the pairing rather than establishing it.
+
+**Body:** `{ championName, opponentChampionName, position, gameMode }`, validated against
+`src/domains/desktop/contract.ts`. The last three are nullable and null is routine, not an
+error: the game client publishes no position for an ARAM player or for anyone whose lane it
+has not resolved, and a lane nobody can name has no opponent to name either.
+
+**200** `{ champion, opponent, personal, meta, habits, riotAccountLinked }`,
+`Cache-Control: no-store`.
+
+| Field | What it is | Null when |
+|---|---|---|
+| `champion` / `opponent` | `{ key, name }` resolved against Data Dragon | the name is not on the roster |
+| `personal` | this account's own record in the pair — games, wins, win rate, KDA, trend | it has never played it, or no account is linked |
+| `meta` | the patch-current snapshot for the pair, plus its hints | the snapshot has nothing for the pair |
+| `habits` | up to three recurring weaknesses already detected from this account's matches | — (empty array) |
+| `riotAccountLinked` | whether the paired account has a Riot account at all | — |
+
+| Status | Code | When |
+|---|---|---|
+| `401` | `UNAUTHORIZED` | Missing, malformed, unknown or revoked token, and a deleted account |
+| `422` | `VALIDATION_ERROR` | Body is not a game this version can read |
+| `429` | — | Rate limited: 20 per 10 minutes per **device** |
+
+**POST rather than GET** because the body is the game state the app observed, and because
+the answer is one account's own history and must not be cached anywhere between here and
+the machine that asked.
+
+**Every champion name is resolved against the Data Dragon roster before it can reach a
+query.** The name is free text from a client this code does not control and it goes on to
+steer two other domains' reads; an unrecognised one is answered with nulls rather than
+forwarded.
+
+**Nothing here writes.** `withDeviceAuth` carries the rule that a stolen token must not be
+able to do anything worth stealing it for, and what this returns is what that account
+already sees on its own dashboard, narrowed to the lane it is playing.
+
+**No LLM is on this path.** `generateMatchupGuide` exists on the website and is cached for
+seven days; putting a model round trip at the start of every match would spend the player's
+time and connection in the one minute they cannot spare. The three reads are deterministic
+and each can be checked against the data that produced it.
+
+The reads are independent and one failing does not lose the others: a snapshot briefly out
+of reach costs the meta panel and leaves the player's own record on screen. The rate limit
+is sized for games rather than polls — the app asks once per matchup, and the matchup
+changes when a game starts.
