@@ -198,4 +198,23 @@ describe("no Riot function reaches the network when mocked", () => {
 
     expect(fetchSpy).not.toHaveBeenCalled();
   });
+
+  /**
+   * Proves the test above has teeth.
+   *
+   * Without this, "fetch was never called" would pass just as well if the spy were watching the
+   * wrong thing — which is the failure mode of every assertion that something did *not* happen.
+   * Fetch is stubbed to reject so nothing leaves the machine either way.
+   */
+  it("and the same call does reach fetch with the flag off", async () => {
+    delete process.env.E2E_MOCK;
+    const api = await import("@/domains/riot/services/riotApiClient");
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockRejectedValue(new Error("blocked by the test"));
+
+    await api.getAccountByRiotId("E2ESmoke", "E2E", "euw1").catch(() => {});
+
+    expect(fetchSpy).toHaveBeenCalled();
+  });
 });
