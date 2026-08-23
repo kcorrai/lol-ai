@@ -87,6 +87,17 @@ describe("riotFixtureFor", () => {
   });
 
   /** The whole point: a call with no fixture must be loud, not a silent 401 from the real API. */
+  it("reports no such match, and no such timeline", () => {
+    expect(riotFixtureFor(`${EUROPE}/lol/match/v5/matches/EUW1_1`)).toEqual({
+      kind: "status",
+      status: 404,
+    });
+    expect(riotFixtureFor(`${EUROPE}/lol/match/v5/matches/EUW1_1/timeline`)).toEqual({
+      kind: "status",
+      status: 404,
+    });
+  });
+
   it("throws by name for an endpoint nothing covers", () => {
     expect(() => riotFixtureFor(`${EUW}/lol/some/future/endpoint/v1/thing`)).toThrow(
       UnmockedRiotEndpoint
@@ -97,14 +108,23 @@ describe("riotFixtureFor", () => {
   });
 });
 
-describe("the client gate", () => {
-  const cache: CacheStore = {
+/** A cache that never hits, so a test measures the gate rather than a warm entry. */
+function emptyCache(): CacheStore {
+  return {
     get: async () => null,
     set: async () => {},
     del: async () => {},
     delByPrefix: async () => {},
   };
-  const limiter = { consume: async () => {} } as unknown as TokenBucket;
+}
+
+function noLimiter(): TokenBucket {
+  return { consume: async () => {} } as unknown as TokenBucket;
+}
+
+describe("the client gate", () => {
+  const cache = emptyCache();
+  const limiter = noLimiter();
 
   afterEach(() => {
     delete process.env.E2E_MOCK;
@@ -147,5 +167,69 @@ describe("the client gate", () => {
       client.get(`${EUW}/lol/some/future/endpoint/v1/thing`, { skipRateLimit: true })
     ).rejects.toThrow(UnmockedRiotEndpoint);
     expect(fetchSpy).not.toHaveBeenCalled();
+  });
+});
+
+/**
+ * The card's third ask, as an invariant rather than a one-off observation: an E2E run must make
+ * zero requests to the Riot host.
+ *
+ * Asserted over *every* network function the client module exports, so a function added later
+ * that reaches the network another way fails here rather than in CI six months on. Throwing is a
+ * pass — a mocked run may legitimately refuse an endpoint. Calling `fetch` is not.
+ */
+describe("no Riot function reaches the network when mocked", () => {
+  afterEach(() => {
+    delete process.env.E2E_MOCK;
+    vi.restoreAllMocks();
+  });
+
+  it("holds for all of them", async () => {
+    process.env.E2E_MOCK = "true";
+    const api = await import("@/domains/riot/services/riotApiClient");
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+
+    const calls: [string, Promise<unknown>][] = [
+      ["assertRiotApiReachable", api.assertRiotApiReachable("euw1")],
+      ["getMatchTimeline", api.getMatchTimeline("EUW1_1", "euw1")],
+      ["getAccountByRiotId", api.getAccountByRiotId("E2ESmoke", "E2E", "euw1")],
+      ["getAccountByPuuid", api.getAccountByPuuid("puuid-1", "euw1")],
+      ["getSummonerByPuuid", api.getSummonerByPuuid("puuid-1", "euw1")],
+      ["getMatchIds", api.getMatchIds("puuid-1", "euw1")],
+      ["getMatch", api.getMatch("EUW1_1", "euw1")],
+      ["getRankedEntries", api.getRankedEntries("summoner-1", "euw1")],
+      ["getRankedEntriesByPuuidDirect", api.getRankedEntriesByPuuidDirect("puuid-1", "euw1")],
+      ["getChampionMastery", api.getChampionMastery("puuid-1", "euw1")],
+      ["getActiveGame", api.getActiveGame("puuid-1", "euw1")],
+    ];
+
+    await Promise.allSettled(calls.map(([, promise]) => promise));
+
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  /**
+   * Proves the assertion above has teeth.
+   *
+   * "fetch was never called" passes just as well when nothing would have called it anyway, which
+   * is the failure mode of every assertion that something did *not* happen. The first draft of
+   * this control failed for exactly that reason: it reused the module-level client, whose cache
+   * the test above had already warmed, so the call never reached the network with the flag off
+   * either. A fresh client with an empty cache is the only way the comparison means anything.
+   *
+   * Fetch is stubbed to reject, so nothing leaves the machine in either direction.
+   */
+  it("and the same request does reach fetch with the flag off", async () => {
+    delete process.env.E2E_MOCK;
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockRejectedValue(new Error("blocked by the test"));
+    const client = new RiotHttpClient("fake-key", emptyCache(), noLimiter());
+
+    await client
+      .get(`${EUROPE}/riot/account/v1/accounts/by-riot-id/E2ESmoke/E2E`, { skipRateLimit: true })
+      .catch(() => {});
+
+    expect(fetchSpy).toHaveBeenCalled();
   });
 });
