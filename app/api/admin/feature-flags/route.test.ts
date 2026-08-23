@@ -49,9 +49,9 @@ describe("/api/admin/feature-flags — authorization", () => {
   const calls = {
     GET: () => GET(),
     POST: () => POST(routeRequest(PATH, { method: "POST", body: { key: "new_flag" } })),
-    PATCH: () => PATCH(routeRequest(PATH, { method: "PATCH", body: { id: FLAG_ID, enabled: true } })),
-    DELETE: () =>
-      DELETE(routeRequest(PATH, { method: "DELETE", searchParams: { id: FLAG_ID } })),
+    PATCH: () =>
+      PATCH(routeRequest(PATH, { method: "PATCH", body: { id: FLAG_ID, enabled: true } })),
+    DELETE: () => DELETE(routeRequest(PATH, { method: "DELETE", searchParams: { id: FLAG_ID } })),
   } as const;
 
   const methods = Object.keys(calls) as (keyof typeof calls)[];
@@ -154,7 +154,9 @@ describe("/api/admin/feature-flags — behaviour for the admin", () => {
   it("answers 404 when deleting a flag that is gone", async () => {
     vi.mocked(prisma.featureFlag.deleteMany).mockResolvedValue({ count: 0 } as never);
 
-    const res = await DELETE(routeRequest(PATH, { method: "DELETE", searchParams: { id: FLAG_ID } }));
+    const res = await DELETE(
+      routeRequest(PATH, { method: "DELETE", searchParams: { id: FLAG_ID } })
+    );
 
     expect(res.status).toBe(404);
   });
