@@ -7,6 +7,10 @@ import { z } from "zod";
 async function assertAdmin(): Promise<boolean> {
   const adminEmail = process.env.ADMIN_EMAIL;
   const session = await getServerSession(authOptions);
+  // `twoFactorPending` is the same bar `withAdminAuth` holds every other admin
+  // route to. This one rolls its own session check, so it has to say so itself
+  // — otherwise a password alone still edits feature flags.
+  if (session?.user?.twoFactorPending) return false;
   return !!(adminEmail && session?.user?.email === adminEmail);
 }
 

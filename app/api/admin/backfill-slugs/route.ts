@@ -19,6 +19,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     if (!session?.user?.email || !adminEmail || session.user.email !== adminEmail) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
+    // Same bar as `withAdminAuth`: a session that has passed the password but
+    // not the second factor is not an admin session. The cron path above is
+    // authenticated by the shared secret instead and never reaches this.
+    if (session.user.twoFactorPending) {
+      return NextResponse.json({ error: "Two-factor required" }, { status: 401 });
+    }
   }
 
   const usersWithoutSlug = await prisma.user.findMany({

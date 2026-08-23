@@ -133,7 +133,7 @@ export default async function ChampionDetailPage({ params }: Props): Promise<Rea
         laneLabel={laneLabel}
       />
 
-      <main className="mx-auto max-w-[1240px] px-5 py-6 md:px-8 md:py-7">
+      <div className="mx-auto max-w-[1240px] px-5 py-6 md:px-8 md:py-7">
         <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_306px]">
           <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-[1.125rem]">
             <section className="notch bg-hero-fade border border-border bg-surface px-5 py-5">
@@ -170,7 +170,7 @@ export default async function ChampionDetailPage({ params }: Props): Promise<Rea
             laneLabel={laneLabel}
           />
         </div>
-      </main>
+      </div>
     </>
   );
 }

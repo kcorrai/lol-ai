@@ -85,7 +85,7 @@ export default function ChampionsPage(): React.JSX.Element {
         </Link>
       </header>
 
-      <main className="mx-auto max-w-[1240px] px-5 pb-16 pt-6 md:px-8">
+      <div className="mx-auto max-w-[1240px] px-5 pb-16 pt-6 md:px-8">
         <div className="mb-5 flex gap-1">
           {TABS.map((tab) => (
             <button
@@ -155,7 +155,7 @@ export default function ChampionsPage(): React.JSX.Element {
             onClose={() => setDeepDiveChampion(null)}
           />
         )}
-      </main>
+      </div>
     </div>
   );
 }

@@ -132,7 +132,7 @@ export default function ImprovementPage(): React.JSX.Element {
         </Link>
       </header>
 
-      <main className="mx-auto max-w-[1240px] px-5 pb-16 pt-6 sm:px-8">
+      <div className="mx-auto max-w-[1240px] px-5 pb-16 pt-6 sm:px-8">
         {planLoading ? (
           <div className="notch h-52 animate-pulse border border-border bg-surface" />
         ) : !plan ? (
@@ -186,7 +186,7 @@ export default function ImprovementPage(): React.JSX.Element {
             </div>
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 }

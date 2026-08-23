@@ -37,6 +37,19 @@ export function withAdminAuth(handler: AdminHandler) {
       return apiError("FORBIDDEN", "Admin access required", 403);
     }
 
+    // A password alone is not a session here either. `withAuth` has refused a
+    // two-factor-pending session since TASK-276, but this wrapper never learned
+    // the same check — so the one account with the most to lose was the one
+    // whose API stayed open on the password alone. Middleware only guards the
+    // `/admin` *pages*; every mutation goes through a route wrapped here.
+    if (session.user.twoFactorPending) {
+      return apiError(
+        "TWO_FACTOR_REQUIRED",
+        "Enter your two-factor code to finish signing in",
+        401
+      );
+    }
+
     // Admin handlers throw `ApiError` the same way authenticated ones do, and
     // without this they surfaced as 500s — a validation failure on an admin
     // route answered "internal error" instead of saying what was wrong.
