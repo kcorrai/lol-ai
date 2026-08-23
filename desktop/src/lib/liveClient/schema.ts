@@ -22,6 +22,55 @@ export const scoresSchema = z.looseObject({
   wardScore: z.number(),
 });
 
+/**
+ * One entry of a player's inventory. The client sends the whole set every poll, trinket
+ * and consumables included, so `slot` is what orders it rather than array position.
+ */
+export const itemSchema = z.looseObject({
+  itemID: z.number(),
+  slot: z.number(),
+  count: z.number(),
+  displayName: z.string().optional(),
+  price: z.number().optional(),
+});
+
+/**
+ * One rune or one summoner spell. `id` is numeric for runes and absent entirely for
+ * summoner spells — the client identifies those by name alone — so it is optional here
+ * rather than split into two near-identical shapes.
+ */
+export const namedIdSchema = z.looseObject({
+  displayName: z.string().optional(),
+  id: z.number().optional(),
+});
+
+/**
+ * An ability is *not* a `namedIdSchema`: the client keys abilities by a string id
+ * ("AnnieQ") where it keys runes by a number, and only abilities carry a rank. Riot's
+ * committed sample is what settles this — an earlier draft of this file guessed a
+ * number here and the fixture rejected it.
+ */
+export const abilitySchema = z.looseObject({
+  abilityLevel: z.number().optional(),
+  displayName: z.string().optional(),
+  id: z.string().optional(),
+});
+
+export const summonerSpellsSchema = z.looseObject({
+  summonerSpellOne: namedIdSchema,
+  summonerSpellTwo: namedIdSchema,
+});
+
+/**
+ * What the client publishes about *any* player's runes: the keystone and the two trees.
+ * The minor runes are the active player's alone — see `fullRunesSchema`.
+ */
+export const runesSchema = z.looseObject({
+  keystone: namedIdSchema,
+  primaryRuneTree: namedIdSchema,
+  secondaryRuneTree: namedIdSchema,
+});
+
 export const playerSchema = z.looseObject({
   championName: z.string(),
   team: z.enum(TEAMS),
@@ -30,6 +79,14 @@ export const playerSchema = z.looseObject({
   level: z.number(),
   scores: scoresSchema,
   isBot: z.boolean().optional(),
+  /**
+   * Empty for every player at 0:00 and for anyone who has bought nothing, which is
+   * ordinary rather than an error. Riot's own sample is a game at the gates, so the
+   * committed fixture carries the empty case and nothing else.
+   */
+  items: z.array(itemSchema).optional(),
+  summonerSpells: summonerSpellsSchema.optional(),
+  runes: runesSchema.optional(),
   /**
    * Empty string in Riot's own sample, and empty in practice for every ARAM player and
    * for anyone the client has not resolved a lane for. Callers must treat "no position"
@@ -45,11 +102,50 @@ export const playerSchema = z.looseObject({
   summonerName: z.string().optional(),
 });
 
+/**
+ * The active player's full rune page, which the client publishes for them alone. Kept
+ * loose and every field optional: nothing on this screen depends on it yet, and a
+ * missing tree must not cost the player their scoreboard.
+ */
+export const fullRunesSchema = z.looseObject({
+  keystone: namedIdSchema.optional(),
+  primaryRuneTree: namedIdSchema.optional(),
+  secondaryRuneTree: namedIdSchema.optional(),
+  generalRunes: z.array(namedIdSchema).optional(),
+  statRunes: z.array(namedIdSchema).optional(),
+});
+
+/**
+ * Twenty-nine live combat stats. Only the handful this app reads are named; the rest
+ * ride through untouched, which is what `looseObject` is for.
+ */
+export const championStatsSchema = z.looseObject({
+  currentHealth: z.number().optional(),
+  maxHealth: z.number().optional(),
+  moveSpeed: z.number().optional(),
+  attackDamage: z.number().optional(),
+  abilityPower: z.number().optional(),
+  armor: z.number().optional(),
+  magicResist: z.number().optional(),
+});
+
+/** Ability ranks for the active player. Riot keys them by letter, not by index. */
+export const abilitiesSchema = z.looseObject({
+  Q: abilitySchema.optional(),
+  W: abilitySchema.optional(),
+  E: abilitySchema.optional(),
+  R: abilitySchema.optional(),
+  Passive: abilitySchema.optional(),
+});
+
 export const activePlayerSchema = z.looseObject({
   level: z.number(),
   currentGold: z.number(),
   riotId: z.string().optional(),
   summonerName: z.string().optional(),
+  championStats: championStatsSchema.optional(),
+  abilities: abilitiesSchema.optional(),
+  fullRunes: fullRunesSchema.optional(),
 });
 
 export const gameDataSchema = z.looseObject({
@@ -75,6 +171,11 @@ export const allGameDataSchema = z.looseObject({
 });
 
 export type Scores = z.infer<typeof scoresSchema>;
+export type Item = z.infer<typeof itemSchema>;
+export type NamedId = z.infer<typeof namedIdSchema>;
+export type SummonerSpells = z.infer<typeof summonerSpellsSchema>;
+export type Runes = z.infer<typeof runesSchema>;
+export type ChampionStats = z.infer<typeof championStatsSchema>;
 export type LivePlayer = z.infer<typeof playerSchema>;
 export type ActivePlayer = z.infer<typeof activePlayerSchema>;
 export type GameData = z.infer<typeof gameDataSchema>;
