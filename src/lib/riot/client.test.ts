@@ -16,6 +16,9 @@ function makeCache(): CacheStore & { store: Map<string, unknown> } {
     async del(k: string) {
       store.delete(k);
     },
+    async delByPrefix(prefix: string) {
+      for (const k of store.keys()) if (k.startsWith(prefix)) store.delete(k);
+    },
   };
 }
 

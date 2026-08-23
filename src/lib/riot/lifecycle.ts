@@ -10,7 +10,13 @@ import { logger } from "@/lib/utils/logger";
 
 export const CacheKeys = {
   summoner: (puuid: string) => `riot:summoner:${puuid}`,
-  matchIds: (puuid: string, region: string) => `riot:matchids:${puuid}:${region}`,
+  // The window is part of the key. Without it a request for one id and a request for a hundred
+  // share an entry, so whichever ran first decides what the other one gets — which becomes an
+  // outright bug the moment a caller pages (LA-69).
+  matchIds: (puuid: string, region: string, count: number, start: number) =>
+    `${CacheKeys.matchIdsPrefix(puuid, region)}${start}:${count}`,
+  /** Everything cached for one account's history, whatever window it was asked for. */
+  matchIdsPrefix: (puuid: string, region: string) => `riot:matchids:${puuid}:${region}:`,
   matchDetail: (matchId: string) => `riot:match:${matchId}`,
   matchTimeline: (matchId: string) => `riot:timeline:${matchId}`,
   rankedEntries: (summonerId: string, region: string) =>
@@ -57,7 +63,7 @@ export async function invalidateAccountCache(
 ): Promise<void> {
   await Promise.all([
     riotCache.del(CacheKeys.summoner(puuid)),
-    riotCache.del(CacheKeys.matchIds(puuid, region)),
+    riotCache.delByPrefix(CacheKeys.matchIdsPrefix(puuid, region)),
     riotCache.del(CacheKeys.rankedEntries(summonerId, region)),
     riotCache.del(CacheKeys.championMastery(puuid, region)),
   ]);

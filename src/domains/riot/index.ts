@@ -8,6 +8,10 @@ export { runSyncWithStatus } from "@/domains/riot/services/matchSyncService";
 export { getCurrentRank, getLpHistory, getLastRankedSnapshot } from "@/domains/riot/services/rankedService";
 export { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 export { buildAccountPreview } from "@/domains/riot/services/previewService";
+// The public profile page's superset: the same rows plus each match's ten-player scoreboard and
+// the account's mastery (LA-69).
+export { buildPublicProfile } from "@/domains/riot/services/previewService";
+export { buildPublicMatchPage } from "@/domains/riot/services/preview/previewPage";
 // The marketplace asks whether a student is in a game right now, for a coach
 // who is about to spectate them (LA-19).
 export { getLiveDraft, getLiveDraftForRiotId } from "@/domains/riot/services/liveGameService";

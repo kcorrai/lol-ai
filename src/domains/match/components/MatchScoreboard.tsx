@@ -11,11 +11,20 @@ interface MatchScoreboardProps {
   userPuuid: string | null;
   winningTeam: number;
   objectives: Record<string, TeamObjectives> | null;
+  /**
+   * Set on the public profile, where nine of the ten players have no LaneIQ account and the
+   * `/u/` link below would 404 for each of them. With a region, names link to the public profile
+   * instead — which is also what makes an expanded scoreboard ten crawlable pages (LA-69).
+   */
+  profileRegion?: string;
 }
 
 // Mirrors `toProfileSlug` in the identity domain. Inlined rather than imported
 // because that module pulls Prisma in with it and this is a client component.
-function profileHref(gameName: string, tagLine: string | null): string {
+function profileHref(gameName: string, tagLine: string | null, region?: string): string {
+  if (region) {
+    return `/s/${region}/${encodeURIComponent(gameName)}/${encodeURIComponent(tagLine ?? "")}`;
+  }
   return `/u/${`${gameName}-${tagLine ?? ""}`.replace(/[^a-zA-Z0-9-_]/g, "-")}`;
 }
 
@@ -33,6 +42,7 @@ function TeamBlock({
   objectives,
   maxDealt,
   maxTaken,
+  profileRegion,
 }: {
   rows: ParticipantDetail[];
   won: boolean;
@@ -40,6 +50,7 @@ function TeamBlock({
   objectives: TeamObjectives | null;
   maxDealt: number;
   maxTaken: number;
+  profileRegion?: string;
 }): React.JSX.Element {
   const kills = rows.reduce((s, p) => s + p.kills, 0);
   const gold = rows.reduce((s, p) => s + p.goldEarned, 0);
@@ -124,7 +135,7 @@ function TeamBlock({
                 </span>
                 {p.gameName ? (
                   <Link
-                    href={profileHref(p.gameName, p.tagLine)}
+                    href={profileHref(p.gameName, p.tagLine, profileRegion)}
                     data-tour={you ? "my-profile-link" : undefined}
                     className="block truncate font-mono text-[9.5px] tracking-wide text-fg-4 hover:text-acid-500 hover:underline"
                   >
@@ -197,6 +208,7 @@ export function MatchScoreboard({
   userPuuid,
   winningTeam,
   objectives,
+  profileRegion,
 }: MatchScoreboardProps): React.JSX.Element {
   const maxDealt = Math.max(...participants.map((p) => p.damageDealt), 0);
   const maxTaken = Math.max(...participants.map((p) => p.damageTaken), 0);
@@ -217,6 +229,7 @@ export function MatchScoreboard({
             objectives={objectives?.[String(team)] ?? null}
             maxDealt={maxDealt}
             maxTaken={maxTaken}
+            profileRegion={profileRegion}
           />
         ))}
       </div>

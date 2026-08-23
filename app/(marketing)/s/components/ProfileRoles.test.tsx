@@ -2,15 +2,10 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { ProfileRoles } from "./ProfileRoles";
 import type { PreviewMatch } from "@/types/preview";
+import { previewMatchFixture } from "@/types/preview.fixture";
 
-const match = (position: string, win: boolean): PreviewMatch => ({
-  championName: "Ahri",
-  win,
-  kills: 5,
-  deaths: 2,
-  assists: 7,
-  position,
-});
+const match = (position: string, win: boolean): PreviewMatch =>
+  previewMatchFixture({ position, win });
 
 describe("ProfileRoles", () => {
   it("reads the split off the sample and orders it by games played", () => {

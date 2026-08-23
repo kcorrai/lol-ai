@@ -1560,6 +1560,50 @@ a player before they have an account, which is the point of the whole flow.
 
 ---
 
+## Public Profile Match Paging (LA-69)
+
+### `GET /api/public/profile/matches`
+
+The pages of a public profile's match list past the first one. **No auth** — `/s/[region]/…` is
+a login-free page and its "load more" has to work for the same anonymous visitor.
+
+The profile's opening ten rows are **server-rendered** by `buildPublicProfile`, so the page is
+complete for a crawler with no JavaScript; this endpoint is only ever reached by a click.
+
+| Param | Required | Notes |
+|---|---|---|
+| `gameName` | yes | Riot ID name. |
+| `tagLine` | yes | Riot ID tag. |
+| `region` | yes | Platform id (`euw1`, `tr1`, …). Rejected with `400` unless in `VALID_REGIONS`. |
+| `start` | no | Offset into the account's history, `0`–`200`, default `0`. |
+
+```json
+{
+  "data": {
+    "matches": [{ "matchId": "EUW1_1", "queueType": "RANKED_SOLO_5x5", "cs": 231, "…": "…" }],
+    "scoreboards": { "EUW1_1": { "participants": [], "winningTeam": 100 } },
+    "nextStart": 20
+  }
+}
+```
+
+**Notes:**
+- Rate limit is **60/min per IP**, matching `/api/public/profile/[slug]`. Each page is cached for
+  a day in front of Riot, so a repeat costs nothing and the limit only has to stop someone walking
+  the ladder through this endpoint.
+- `start` is capped at **200** so a bot cannot page through an account's whole two-year history.
+- `nextStart` is computed server-side and is `null` once Riot stops returning a full page. It is
+  deliberately not left to the caller: a client adding up the rows it *kept* would drift backwards
+  over any match that failed to fetch and serve the same games twice.
+- `scoreboards` carries all ten players per match, shaped as `ParticipantDetail` so the signed-in
+  `MatchScoreboard` renders it unchanged. Ranks are always `null` — filling them would cost ten
+  ranked-entry calls per match.
+- A single match Riot refuses is dropped from `matches`, not turned into a `500`; `nextStart` is
+  still advanced, because a bad page is a reason to offer the next one rather than to declare the
+  history over.
+
+---
+
 ## Duo Panel (TASK-312, TASK-313)
 
 Both require a session and ownership of the account. Both answer `null` when the player has not

@@ -91,6 +91,7 @@ export interface ParticipantDTO {
   championName: string;
   teamId: number;
   teamPosition: string; // "TOP" | "JUNGLE" | "MIDDLE" | "BOTTOM" | "UTILITY" | ""
+  champLevel: number;
   kills: number;
   deaths: number;
   assists: number;
