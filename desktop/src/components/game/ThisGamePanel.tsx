@@ -31,21 +31,36 @@ export function ThisGamePanel({
   const context = state.status === "ready" ? state.context : null;
   const me = read.status === "ok" ? activePlayerOf(read.data) : null;
 
+  // Unlike the other panels, this one has something to say with the website switched
+  // off: the four live numbers are read off the player's own scoreboard and need
+  // nothing but the game. So the website being unreachable costs the *comparison* and
+  // not the panel — an earlier draft copied the other panels and let the note win,
+  // which blanked a player's live CS/min the moment their connection dropped.
+  if (!me || read.status !== "ok") {
+    return <HudPanel title="This game">{note ?? <NotPlaying />}</HudPanel>;
+  }
+
   return (
     <HudPanel
       title="This game"
       action={context?.baseline ? <Sample games={context.baseline.games} /> : null}
     >
-      {note ??
-        (read.status !== "ok" || !me ? (
-          <NotPlaying />
-        ) : (
-          <Readings
-            readings={readPerformance(read.data, me, context?.baseline ?? null, context?.challenges ?? [])}
-            linked={context?.riotAccountLinked ?? false}
-            hasBaseline={Boolean(context?.baseline)}
-          />
-        ))}
+      <Readings
+        readings={readPerformance(
+          read.data,
+          me,
+          context?.baseline ?? null,
+          context?.challenges ?? []
+        )}
+        // Only the ready context knows why there is no baseline. Without one, the note
+        // underneath already says what went wrong, and a second line blaming an unlinked
+        // Riot account would be a guess — the account may well be linked and simply
+        // unreachable.
+        known={context !== null}
+        linked={context?.riotAccountLinked ?? false}
+        hasBaseline={Boolean(context?.baseline)}
+      />
+      {note ? <div className="mt-4 border-t border-line-1">{note}</div> : null}
     </HudPanel>
   );
 }
@@ -69,10 +84,12 @@ function NotPlaying(): React.ReactElement {
 
 function Readings({
   readings,
+  known,
   linked,
   hasBaseline,
 }: {
   readings: MetricReading[];
+  known: boolean;
   linked: boolean;
   hasBaseline: boolean;
 }): React.ReactElement {
@@ -83,7 +100,7 @@ function Readings({
           <Metric key={reading.metric} reading={reading} />
         ))}
       </div>
-      {!linked ? (
+      {!known ? null : !linked ? (
         <div className="border-t border-line-1 pt-4">
           <NoRiotAccount />
         </div>
