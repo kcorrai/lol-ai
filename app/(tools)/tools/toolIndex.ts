@@ -9,6 +9,7 @@ import {
   TrendingUp,
   Radio,
   Brain,
+  ScanSearch,
   type LucideIcon,
 } from "lucide-react";
 
@@ -67,6 +68,12 @@ export const TOOL_GROUPS: ToolGroup[] = [
         title: "Draft analyzer",
         description: "Any 5v5 comp's damage, frontline, scaling and lane matchups.",
         Icon: Layers,
+      },
+      {
+        href: "/tools/multi-search",
+        title: "Multi-search",
+        description: "Paste champion select and read every player's rank and pool at once.",
+        Icon: ScanSearch,
       },
     ],
   },
