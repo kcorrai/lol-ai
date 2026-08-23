@@ -1085,9 +1085,10 @@ for an hour and does not retry the 404.
 The whole captured timeline (LA-45, [ADR-033](./adr/ADR-033-match-timeline-capture.md)), turned into
 a single minute-by-minute read: every participant's gold/level/CS per minute, each team's gold total
 and the difference between them, and the timeline's narrative events — kills, objectives, buildings,
-wards. This is the one endpoint the stored timeline feeds; a screen built on it is a separate card
-(Prism). `lane-phase` above stays the source for the two-player lane curve — this endpoint does not
-replace it.
+wards. This is the one endpoint the stored timeline feeds. Its consumer is `MatchStoryPanel`, the
+match story section of `/match/[matchId]` — a scrubbable gold-difference curve with the match's
+events marked on it, on the Rift beside it and in a feed below. `lane-phase` above stays the source
+for the two-player lane curve — this endpoint does not replace it.
 
 **Auth:** Required — same rule as `lane-phase`: the caller must have played in the match, matched by
 puuid across every linked account (TASK-228).
