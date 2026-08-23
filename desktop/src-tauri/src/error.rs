@@ -25,6 +25,9 @@ pub enum AppError {
     #[error("could not reach LoL AI Coach: {0}")]
     Network(String),
 
+    #[error("could not open your browser: {0}")]
+    Browser(String),
+
     /// The website's own message, passed through. Those strings are written for the player
     /// — "that pairing code is not valid", "revoke one in Settings" — and are the only thing
     /// that tells them what to do next. Nothing on that path carries a token.

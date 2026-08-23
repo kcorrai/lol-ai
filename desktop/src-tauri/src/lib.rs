@@ -3,6 +3,7 @@ mod commands;
 mod error;
 mod live_client;
 mod live_context;
+mod post_game;
 mod secrets;
 
 use api::ApiClient;
@@ -17,6 +18,10 @@ pub fn run() {
     let api = ApiClient::new().expect("the HTTP client must build");
 
     tauri::Builder::default()
+        // Registered for the Rust side only: none of the plugin's own commands are granted
+        // to the webview, so the sole address this app can open is the one `open_report`
+        // builds from the compiled-in base.
+        .plugin(tauri_plugin_opener::init())
         .manage(AppState { live, api })
         .invoke_handler(tauri::generate_handler![
             commands::live_client_get,
@@ -25,6 +30,8 @@ pub fn run() {
             commands::pair_device,
             commands::device_account,
             commands::live_context,
+            commands::post_game,
+            commands::open_report,
         ])
         .setup(|app| {
             if cfg!(debug_assertions) {

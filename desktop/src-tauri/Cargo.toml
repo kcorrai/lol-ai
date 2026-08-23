@@ -17,6 +17,11 @@ tauri-build = { version = "2.6", features = [] }
 [dependencies]
 tauri = { version = "2.11", features = [] }
 tauri-plugin-log = "2"
+
+# Hands a URL to the operating system's default browser. Used from Rust only — the plugin's
+# own commands are not granted to the webview, so the address opened is always one this
+# binary built from its compiled-in base rather than one the renderer chose.
+tauri-plugin-opener = "2.5"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 log = "0.4"
@@ -26,6 +31,7 @@ thiserror = "2.0"
 # certificate authority — Riot's — and nothing else. `tls_built_in_root_certs(false)` is
 # what makes that true, and it is far easier to reason about on rustls.
 reqwest = { version = "0.13", default-features = false, features = ["json", "rustls"] }
+
 
 # keyring 3 onwards makes the platform backend an explicit choice rather than a default,
 # so each target names its own.

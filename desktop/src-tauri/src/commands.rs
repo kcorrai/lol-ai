@@ -1,10 +1,11 @@
 use serde::Serialize;
-use tauri::State;
+use tauri::{AppHandle, State};
 
 use crate::api::{ApiClient, Pairing};
 use crate::error::AppResult;
 use crate::live_client::LiveClient;
 use crate::live_context::{LiveContext, LiveContextRequest};
+use crate::post_game::PostGame;
 use crate::secrets;
 
 pub struct AppState {
@@ -78,4 +79,25 @@ pub async fn live_context(
     request: LiveContextRequest,
 ) -> AppResult<Option<LiveContext>> {
     state.api.live_context(&request).await
+}
+
+/// Tell the website a game has ended, or `null` when this machine is no longer paired.
+///
+/// Takes no argument: what game it was is something the website reads from Riot, and the
+/// account it belongs to is read from the device row rather than named here. All the app
+/// contributes is the timing, which is the one thing it knows and the website does not.
+#[tauri::command]
+pub async fn post_game(state: State<'_, AppState>) -> AppResult<Option<PostGame>> {
+    state.api.post_game().await
+}
+
+/// Opens the player's match list in their own browser.
+///
+/// The address is built in `post_game::report_url` from the compiled-in base, so this
+/// command takes no URL — a renderer that could pass one could send the player anywhere.
+/// Not a navigation inside this window either: a companion to a running game must not turn
+/// itself into a browser.
+#[tauri::command]
+pub fn open_report(app: AppHandle) -> AppResult<()> {
+    crate::post_game::open_report(&app)
 }
