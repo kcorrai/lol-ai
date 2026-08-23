@@ -1689,6 +1689,37 @@ a player before they have an account, which is the point of the whole flow.
 
 ---
 
+## Multi-Search (LA-71)
+
+### `GET /tools/multi-search?region=&ids=` — a **page**, not an endpoint
+
+Scouting a champion-select lobby. The live scout can only see a game that has already started —
+the Spectator API does not expose champion select at all — so before the game the input is a paste
+of the lobby chat, which is what op.gg's and u.gg's multi-search take.
+
+`extractRiotIds` reads IDs out of arbitrary text rather than parsing a format, because the chat
+arrives comma-separated on one client, newline-separated on another and wrapped in "X joined the
+lobby" on a third. Two details worth keeping:
+
+- The pattern is written against Unicode letter/number properties, not an ASCII range. An ASCII
+  pattern silently drops exactly the players a Turkish or Korean lobby is full of.
+- A tag running past five characters is rejected, not truncated. "Someone#TOOLONGTAG" is not a
+  Riot ID, and turning it into "Someone#TOOLO" invents one and spends a call failing to find it.
+
+**Rate limited at the page**, 20/min per IP, like the live scout and unlike the rest of the free
+tools — the cost is on the page, not behind a route.
+
+**Riot budget: four calls per player, capped at ten players.** Account, summoner, ranked entries
+and mastery, all cached (300s, 300s, 300s, 24h). Deliberately _thin_: a full profile is thirteen
+calls, and ten of those is not a page, it is an outage. **Recent form is the most useful thing
+missing** and is precisely what cannot be afforded — it needs a match list plus five matches each.
+
+Every player is independent and best-effort: a typo'd ID in a paste of ten is the normal case, and
+it renders as "not on this platform" rather than failing the page. `?ids=` makes a scouted lobby a
+shareable link; the populated page is `noindex` and the empty tool is what gets crawled.
+
+---
+
 ## Live Game Scout (LA-70)
 
 ### `GET /live/[region]/[gameName]/[tagLine]` — a **page**, not an endpoint
