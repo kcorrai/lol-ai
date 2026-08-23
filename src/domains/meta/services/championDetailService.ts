@@ -164,6 +164,47 @@ export async function getChampionDetail(
   }
 }
 
+/**
+ * Fetches one champion+lane and writes both cache entries, whatever is already there.
+ *
+ * The sibling of `refreshSnapshotLastGood`, and for the same reason: `getChampionDetail` returns
+ * early on a fresh copy and never touches the durable row, so a warmer built on it does nothing
+ * for precisely the variants that need it. These are the long tail — `/builds/[champion]/[role]`,
+ * `/counters/[champion]` — where a missing durable row means an empty page rather than a stale
+ * one the day the feed goes away (LA-70 Faz 0).
+ */
+export async function refreshDetailLastGood(
+  championId: number,
+  position: CanonicalPosition,
+  opts: DetailOpts = {}
+): Promise<boolean> {
+  const mode = opts.mode ?? "ranked";
+  const posSegment = mode === "aram" ? "NONE" : CANONICAL_TO_OPGG[position];
+  const tierParam = mode === "ranked" && opts.tier ? `?tier=${opts.tier}` : "";
+  const freshKey = `meta:detail:${mode}:${opts.tier ?? "default"}:${championId}:${posSegment}`;
+
+  try {
+    const res = await opggFetch(`${OPGG_BASE}/${mode}/${championId}/${posSegment}${tierParam}`);
+    if (!res.ok) throw new Error(`op.gg detail responded ${res.status}`);
+
+    const { data } = DetailSchema.parse(await res.json());
+    const detail: ChampionDetail = {
+      counters: countersFromDetail(data),
+      build: buildFromDetail(championId, data),
+    };
+
+    await setCached(freshKey, "meta-detail", detail, FRESH_TTL_DAYS);
+    await setCached(`${freshKey}:last-good`, "meta-detail", detail, SNAPSHOT_TTL_DAYS);
+    return true;
+  } catch (err) {
+    logger.warn(
+      `[championDetailService] could not refresh last-good for ${championId}/${posSegment}`,
+      err
+    );
+    return false;
+  }
+}
+
 // The full per-lane counter list for one champion (used by counter/matchup/draft).
 export async function getChampionCounters(
   championId: number,

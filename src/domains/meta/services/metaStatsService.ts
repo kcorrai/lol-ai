@@ -328,6 +328,30 @@ async function loadSnapshot(
   }
 }
 
+/**
+ * Fetches a variant and writes both cache entries, whatever is already there.
+ *
+ * `loadSnapshot` returns early when a fresh copy is in Redis and never touches the durable
+ * last-good row. That is right for a page view and wrong for the warmer: the variants worth
+ * warming are the ones whose durable copy is missing or old, and the fresh short-circuit is
+ * exactly what hides them. Going straight to the feed is the only way to guarantee the row the
+ * fallback will need when the feed is gone (LA-70 Faz 0).
+ */
+export async function refreshSnapshotLastGood(opts: SnapshotOpts = {}): Promise<boolean> {
+  const resolved = { mode: opts.mode ?? "ranked", tier: opts.tier } as Required<SnapshotOpts>;
+  const variant = `${resolved.mode}:${resolved.tier ?? "default"}`;
+
+  try {
+    const snapshot = await fetchAndBuildSnapshot(resolved);
+    await setCached(`meta:snapshot:${variant}:fresh`, CACHE_TYPE, snapshot, FRESH_TTL_DAYS);
+    await setCached(`meta:snapshot:${variant}:last-good`, CACHE_TYPE, snapshot, SNAPSHOT_TTL_DAYS);
+    return true;
+  } catch (err) {
+    logger.warn(`[metaStatsService] could not refresh last-good (${variant})`, err);
+    return false;
+  }
+}
+
 // Test seam — the memo is process-global, so suites that assert on fetch counts
 // need a way to start clean without reaching into module internals.
 export function __clearSnapshotMemo(): void {
