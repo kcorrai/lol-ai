@@ -1,9 +1,11 @@
 import { GamePlanPanel } from "@/components/game/GamePlanPanel";
 import { MatchupPanel } from "@/components/game/MatchupPanel";
+import { PostGamePanel } from "@/components/game/PostGamePanel";
 import { HudPanel } from "@/components/layout/HudPanel";
 import { displayNameOf, type AllGameData, type LivePlayer } from "@/lib/liveClient/schema";
 import type { LiveRead } from "@/lib/liveClient/client";
 import { useLiveContext } from "@/lib/useLiveContext";
+import { usePostGame } from "@/lib/usePostGame";
 
 /**
  * The two halves of this app, on one screen.
@@ -15,9 +17,18 @@ import { useLiveContext } from "@/lib/useLiveContext";
  */
 export function GameScreen({ read }: { read: LiveRead<AllGameData> }): React.ReactElement {
   const context = useLiveContext(read);
+  const postGame = usePostGame(read);
 
   return (
     <div className="grid gap-4">
+      {/* Above the rest once a game has ended: it is the only thing on this screen with
+          something for the player to do. */}
+      <PostGamePanel
+        state={postGame.state}
+        open={postGame.open}
+        openError={postGame.openError}
+      />
+
       <HudPanel title="Current game">
         {read.status === "ok" ? <GameSummary data={read.data} /> : <NoGame read={read} />}
       </HudPanel>
