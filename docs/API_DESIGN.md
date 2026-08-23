@@ -3343,3 +3343,51 @@ hour is more matches than anyone finishes — and the service's own in-progress 
 an app and a dashboard that both noticed the same game end from pulling the same matches
 twice. It goes out through the same `riot/sync.requested` event the website's sync button
 sends, so the two paths cannot drift.
+
+## Scheduled endpoints (Vercel Cron)
+
+Not part of the public surface and not reachable without the secret: `checkCronAuth` requires
+`Authorization: Bearer $CRON_SECRET` and **fails closed** when `CRON_SECRET` is unset, so a
+misconfigured deploy leaves them shut rather than open. The registry is `vercel.json` — an
+endpoint that is not listed there is never called, whatever it does.
+
+| Path                          | Schedule (UTC) | What it does                                                                   |
+| ----------------------------- | -------------- | ------------------------------------------------------------------------------ |
+| `/api/cron/warm-meta`         | `0 2 * * *`    | Refreshes the op.gg-backed caches (LA-70 Faz 0)                                |
+| `/api/cron/rank-snapshot`     | `0 3 * * *`    | Daily rank sampling, so LP history does not depend on dashboard visits (LA-10) |
+| `/api/cron/cleanup-drafts`    | `0 4 * * *`    | Collects expired draft series                                                  |
+| `/api/cron/weekly-report`     | `0 9 * * 1`    | Weekly digest email                                                            |
+| `/api/cron/monthly-milestone` | `0 9 1 * *`    | Monthly milestone email                                                        |
+
+### `GET /api/cron/warm-meta`
+
+Every op.gg-backed surface keeps a never-expiring last-good copy and serves it when the feed is
+unreachable — but only for variants somebody has already requested. Nothing refreshed them on a
+schedule, so a variant nobody visited had no copy at all, and the day the feed goes away those
+pages render empty rather than stale. That is most of the long tail: `/builds/[champion]/[role]`,
+`/counters/[champion]`, `/aram/[champion]`.
+
+Each run refreshes all nine snapshot variants (ranked at each of the seven brackets, ranked
+default, ARAM) and one seventh of the champion+lane detail variants, strided so consecutive
+champions fall on different days. A full rotation takes a week, which is far inside the 365-day
+last-good lifetime.
+
+**Response:**
+
+```json
+{
+  "ok": true,
+  "snapshots": 9,
+  "details": 36,
+  "failures": 0,
+  "skipped": 0,
+  "slice": 3,
+  "slices": 7
+}
+```
+
+`skipped` is what the run's deadline cut off — reported rather than dropped quietly, so a walk
+that stops growing is visible in the logs. `failures` counts variants that came back with nothing
+at all, which is the case this endpoint exists to prevent.
+
+This buys time; it is not independence. LA-70 is the exit.
