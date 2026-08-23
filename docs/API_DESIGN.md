@@ -1689,6 +1689,50 @@ a player before they have an account, which is the point of the whole flow.
 
 ---
 
+## Live Game Scout (LA-70)
+
+### `GET /live/[region]/[gameName]/[tagLine]` — a **page**, not an endpoint
+
+Scouting a game in progress. Login-free, server-rendered, `robots: noindex, nofollow` — a game
+lasts half an hour and the URL then means something else, so there is nothing here worth indexing
+and letting a crawler walk it would open an unbounded surface.
+
+**Rate limited at the page**, 20/min per IP, via `checkRateLimit` on `ipFromHeaders(headers())`.
+This is the only _page_ in the repo that throttles; every other limiter sits on an API route. It
+does so because the Riot cost sits on the page rather than behind a route — one view reads ten
+players at once — and it renders a "too many live lookups" state rather than a 429.
+
+**Riot budget per uncached scout:**
+
+| Call                              | Count             | Cache          |
+| --------------------------------- | ----------------- | -------------- |
+| `getActiveGame`                   | 1                 | 60s            |
+| `getRankedEntriesByPuuidDirect`   | up to 10          | 300s           |
+| `getAccountByPuuid`               | **0** in practice | 600s when used |
+| `evaluateDraft`, `getMatchupData` | **0**             | meta snapshot  |
+
+`getAccountByPuuid` is listed for completeness only: spectator-v5 was verified against a real
+payload to carry `riotId` per participant, so names come free and the fallback never runs. It is
+kept because the field is optional in the response and a page should not lose every name the day
+Riot stops sending it.
+
+**Two things a real spectator payload does that the docs do not lead you to expect** — both found
+by reading one, and both now handled:
+
+- **`gameLength` can be negative.** It counts _down_ through the loading screen (a real payload
+  read `-22`). That is not noise to clamp away: it means the draft is known and the game has not
+  started, which is the most useful moment to scout. The page says "starting now".
+- **Riot anonymises some players.** `puuid` is `null` and `riotId` carries the _champion_ name as
+  a placeholder — "Karthus", "Ahri" — with no tag. **Four of ten** in the first game this was
+  tested against. Anything reading a participant must expect it: a value with no `#` is not
+  somebody's Riot ID, and rendering it as one invents an identity Riot deliberately withheld. The
+  page shows "Hidden by Riot" with the champion and lane, and skips both lookups for that player.
+
+Lanes are **inferred** — spectator reports none. `assignLanes` uses Smite first, then this patch's
+lane frequencies. The page says so once, at the top.
+
+---
+
 ## Public Profile Match Paging (LA-69)
 
 ### `GET /api/public/profile/matches`

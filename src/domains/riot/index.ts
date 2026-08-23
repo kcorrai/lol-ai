@@ -23,6 +23,14 @@ export { buildPublicMatchPage } from "@/domains/riot/services/preview/previewPag
 // The marketplace asks whether a student is in a game right now, for a coach
 // who is about to spectate them (LA-19).
 export { getLiveDraft, getLiveDraftForRiotId } from "@/domains/riot/services/liveGameService";
+// The public live page's payload: the same lobby, plus who the ten players are, how they rank and
+// what the draft says (LA-70).
+export { buildLiveScout } from "@/domains/riot/services/liveScoutService";
+export type {
+  LiveScout,
+  LiveScoutPlayer,
+  LiveScoutResult,
+} from "@/domains/riot/services/liveScout.types";
 export type { LiveDraft, LiveGameResult } from "@/domains/riot/services/liveGameService";
 export { VALID_REGIONS } from "@/domains/riot/services/riotApiClient";
 export { indexPlayers, searchPlayers } from "@/domains/riot/services/playerIndexService";

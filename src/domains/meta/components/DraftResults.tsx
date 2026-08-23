@@ -1,7 +1,9 @@
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { POSITION_LABELS } from "@/domains/meta/positions";
 import { GameLengthCurve } from "@/domains/meta/components/build/GameLengthCurve";
-import type { DraftEvaluation, LaneEdge, TeamEval } from "@/domains/meta";
+// The leaf module, not the domain barrel: this file now lives *inside* the meta domain, and a
+// component importing its own domain's public API is how an import cycle starts.
+import type { DraftEvaluation, LaneEdge, TeamEval } from "@/domains/meta/services/draftEval.types";
 
 function DamageBar({ ad, ap }: { ad: number; ap: number }) {
   return (

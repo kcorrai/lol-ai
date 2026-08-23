@@ -89,15 +89,25 @@ export async function getAccountByRiotId(
 // Reverse lookup of a Riot ID from a puuid. Used by the GDPR right-to-be-forgotten
 // sweep (TASK-287), which needs the *current* name for an account we already know
 // the puuid of — a forgotten account keeps its puuid but is renamed to rtbf<id>.
-export async function getAccountByPuuid(puuid: string, region: string): Promise<RiotAccountDTO> {
+export async function getAccountByPuuid(
+  puuid: string,
+  region: string,
+  /** Seconds to cache the name for. 0 (the default) keeps the RTBF sweep's uncached read. */
+  cacheTtlSeconds = 0
+): Promise<RiotAccountDTO> {
   if (process.env.E2E_MOCK === "true") {
     return { puuid, gameName: "E2EPlayer", tagLine: "E2E" };
   }
   const routing = getRouting(region);
   const url = `https://${routing}.api.riotgames.com/riot/account/v1/accounts/by-puuid/${encodeURIComponent(puuid)}`;
-  // Deliberately uncached: the sweep exists to observe a rename, and a cache hit
-  // would serve exactly the stale name it is looking for.
-  return riotClient.get<RiotAccountDTO>(url, { cacheTtl: 0 });
+  // Uncached by default: the RTBF sweep exists to observe a rename, and a cache hit would serve
+  // exactly the stale name it is looking for. Callers that only want a display name — the live
+  // scout, which asks for ten at once — pass a TTL, and must not be the reason that sweep goes
+  // blind (LA-70).
+  return riotClient.get<RiotAccountDTO>(url, {
+    cacheTtl: cacheTtlSeconds,
+    ...(cacheTtlSeconds > 0 ? { cacheKey: `riot:account:${puuid}` } : {}),
+  });
 }
 
 export async function getSummonerByPuuid(puuid: string, region: string): Promise<SummonerDTO> {
@@ -238,11 +248,26 @@ export async function getChampionMastery(
 }
 
 export interface ActiveGameParticipantDTO {
-  puuid: string;
+  /**
+   * Null for a player Riot is anonymising.
+   *
+   * Riot hides some participants in ranked — no puuid, and `riotId` filled with the *champion*
+   * name as a placeholder ("Karthus", "Ahri"). Four of ten in the first real game this was checked
+   * against. Anything keying off a participant has to expect it (LA-70).
+   */
+  puuid: string | null;
   teamId: number;
   championId: number;
   spell1Id: number;
   spell2Id: number;
+  /**
+   * "Name#TAG" — verified present on a real spectator payload, so the live scout gets its names
+   * for free rather than paying ten account-v1 calls for them.
+   *
+   * Not always a name: for an anonymised player (see `puuid`) Riot puts the champion here instead,
+   * with no tag. A value without a "#" is a placeholder, not somebody's Riot ID.
+   */
+  riotId?: string;
 }
 
 export interface ActiveGameDTO {

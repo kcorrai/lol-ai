@@ -7,6 +7,7 @@ import type { LiveDraft } from "@/domains/riot";
 import { section, separator, textDisplay, thumbnail } from "@/lib/discord/components";
 import type { ContainerChild, DiscordMessagePayload } from "@/lib/discord/componentTypes";
 import { championIconUrl } from "@/lib/ddragon";
+import { gameModeLabel } from "@/lib/riot/gameModes";
 
 const EMPTY_LANE = "—";
 // Wide enough for the longest lane label ("Support", 7) and the longest champion
@@ -14,25 +15,6 @@ const EMPTY_LANE = "—";
 // board runs words together — "SupportThresh".
 const LANE_WIDTH = 9;
 const CHAMPION_WIDTH = 15;
-
-// The Spectator API reports Riot's internal game-mode enum. These are the modes
-// that are actually reachable today; anything else is title-cased rather than
-// hidden, so a new mode reads acceptably the day it lands.
-const GAME_MODE_LABELS: Record<string, string> = {
-  CLASSIC: "Summoner's Rift",
-  ARAM: "ARAM",
-  URF: "URF",
-  CHERRY: "Arena",
-  NEXUSBLITZ: "Nexus Blitz",
-  ONEFORALL: "One for All",
-  ULTBOOK: "Ultimate Spellbook",
-  STRAWBERRY: "Swarm",
-  TUTORIAL: "Tutorial",
-};
-
-function gameModeLabel(mode: string): string {
-  return GAME_MODE_LABELS[mode] ?? mode.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
-}
 
 /**
  * The draft as a fixed-width board.
