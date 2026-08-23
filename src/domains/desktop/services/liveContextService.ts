@@ -3,25 +3,29 @@ import type { ChallengeWithProgress } from "@/domains/analysis";
 import { getChampionBaseline } from "@/domains/champions";
 import type { ChampionBaseline } from "@/domains/champions";
 import { getPersonalMatchup } from "@/domains/counter";
-import { getMatchupData, parsePosition } from "@/domains/meta";
+import { getChampionBuild, getMatchupData, parsePosition } from "@/domains/meta";
 import type {
   LiveBaseline,
+  LiveBuild,
   LiveChallenge,
   LiveContext,
   LiveContextRequest,
+  LiveItem,
   LiveHabit,
   LiveMetaMatchup,
   LivePersonalMatchup,
 } from "@/domains/desktop/contract";
 import { fetchAllChampions, type DdragonChampionSummary } from "@/lib/ddragon/championsData";
+import { fetchItems, type ItemInfo } from "@/lib/ddragon/itemsData";
 
 // What the website knows about the game the desktop app is watching (ADR-038, phase 4).
 //
-// Five reads, each from another domain's public API and none of them new: this
+// Six reads, each from another domain's public API and none of them new: this
 // account's own record in the lane (`counter`), the patch-current snapshot for the
-// same pair (`meta`), the weaknesses already detected from this account's matches
-// and the goals it was already set (`analysis`), and what this account normally
-// does on the champion it is playing (`champions`). Nothing is computed here that
+// same pair and how the champion is built on it (`meta`), the weaknesses already
+// detected from this account's matches and the goals it was already set
+// (`analysis`), and what this account normally does on the champion it is playing
+// (`champions`). Nothing is computed here that
 // the website does not already compute for its own pages — the value this adds is
 // that it can be asked for during the game, which only a process on the player's
 // machine can do.
@@ -144,6 +148,47 @@ function toBaseline(baseline: ChampionBaseline): LiveBaseline {
   };
 }
 
+/**
+ * How this champion is built on the current patch, with item ids resolved to names.
+ *
+ * Names because the app cannot fetch an icon — its content policy allows images from
+ * itself and `data:` alone, so a Data Dragon URL would render as a broken frame. An id
+ * the catalogue does not carry becomes an empty name rather than dropping the item: a
+ * gap in a build is information, and a silently shorter build is not.
+ *
+ * Null for a mode with no lane. `getChampionBuild` is keyed on a position, and ARAM has
+ * none — inventing one would answer with a build for a lane nobody is in.
+ */
+async function readBuild(
+  champion: DdragonChampionSummary,
+  position: string | null
+): Promise<LiveBuild | null> {
+  const lane = parsePosition(position);
+  if (!lane) return null;
+
+  const id = championId(champion);
+  if (id === null) return null;
+
+  const build = await getChampionBuild(id, lane);
+  if (!build) return null;
+
+  const catalogue = await fetchItems().catch(() => new Map<number, ItemInfo>());
+  const name = (itemId: number): LiveItem => ({
+    id: itemId,
+    name: catalogue.get(itemId)?.name ?? "",
+  });
+
+  return {
+    skillOrder: build.skillOrder,
+    skillMaxOrder: build.skillMaxOrder,
+    starters: (build.starterItems?.ids ?? []).map(name),
+    core: (build.coreItems?.ids ?? []).map(name),
+    boots: (build.boots?.ids ?? []).map(name),
+    games: build.coreItems?.games ?? 0,
+    winRate: build.coreItems?.winRate ?? 0,
+  };
+}
+
 function toChallenge(challenge: ChallengeWithProgress): LiveChallenge {
   return {
     id: challenge.id,
@@ -179,6 +224,7 @@ export async function getLiveContext(
     habits: [],
     baseline: null,
     challenges: [],
+    build: null,
     riotAccountLinked: riotAccountId !== null,
   };
 
@@ -187,10 +233,10 @@ export async function getLiveContext(
   const championKey = championId(champion);
   const opponentKey = opponent ? championId(opponent) : null;
 
-  // The five reads are independent and one failing is not a reason to answer with
+  // The six reads are independent and one failing is not a reason to answer with
   // nothing: a snapshot that is briefly unavailable should cost the meta panel and
   // leave the player's own record on screen.
-  const [personal, meta, habits, baseline, challenges] = await Promise.all([
+  const [personal, meta, habits, baseline, challenges, build] = await Promise.all([
     riotAccountId && championKey && opponentKey
       ? getPersonalMatchup(riotAccountId, championKey, opponentKey).catch(() => null)
       : null,
@@ -200,6 +246,9 @@ export async function getLiveContext(
     // client sent, which is the same name every other table in this product stores.
     riotAccountId ? getChampionBaseline(riotAccountId, champion.name).catch(() => null) : null,
     userId ? getActiveChallenges(userId).catch(() => []) : [],
+    // Not personal, so it is answered whether or not an account is linked: how a
+    // champion is built is the same fact for everybody playing it.
+    readBuild(champion, request.position).catch(() => null),
   ]);
 
   return {
@@ -209,5 +258,6 @@ export async function getLiveContext(
     habits: habits.slice(0, MAX_HABITS).map(toHabit),
     baseline: baseline ? toBaseline(baseline) : null,
     challenges: challenges.filter(isLiveMeasurable).map(toChallenge),
+    build,
   };
 }

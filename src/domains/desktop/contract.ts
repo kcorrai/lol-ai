@@ -182,6 +182,41 @@ export const liveChallengeSchema = z.object({
 });
 export type LiveChallenge = z.infer<typeof liveChallengeSchema>;
 
+/** One item, named on the server because the app cannot fetch an icon. */
+export const liveItemSchema = z.object({
+  id: z.number(),
+  /** Resolved against Data Dragon here; empty when the catalogue did not have it. */
+  name: z.string(),
+});
+export type LiveItem = z.infer<typeof liveItemSchema>;
+
+/**
+ * How this champion is built on the current patch — the same build the website's own
+ * page shows, carried to the machine the game is running on.
+ *
+ * Names rather than icons, deliberately. The desktop app's content policy allows images
+ * from itself and from `data:` only, so a Data Dragon URL would simply not load and the
+ * panel would be a row of broken frames. Resolving to names here costs one cached
+ * catalogue read and gives the app something it can actually render.
+ *
+ * This is static advice about a champion, not a reading of the running game — which is
+ * what keeps it on the right side of Riot's ban on notifications that dictate play from
+ * the game state. It is the same thing the website would tell them before they queued.
+ */
+export const liveBuildSchema = z.object({
+  /** One letter per level, 18 long. Riot's own timeline gives all 18; op.gg gives 15. */
+  skillOrder: z.array(z.string()),
+  /** Max priority, e.g. ["Q", "W", "E"]. */
+  skillMaxOrder: z.array(z.string()),
+  starters: z.array(liveItemSchema),
+  core: z.array(liveItemSchema),
+  boots: z.array(liveItemSchema),
+  /** The sample behind the core build. Never rendered without it. */
+  games: z.number(),
+  winRate: z.number(),
+});
+export type LiveBuild = z.infer<typeof liveBuildSchema>;
+
 /**
  * What the website knows about the game the app is watching.
  *
@@ -198,6 +233,8 @@ export const liveContextSchema = z.object({
   /** Null when this account has not played the champion enough for an average to mean anything. */
   baseline: liveBaselineSchema.nullable(),
   challenges: z.array(liveChallengeSchema),
+  /** Null in a mode with no lane to build for, and when the patch snapshot has no entry. */
+  build: liveBuildSchema.nullable(),
   /** False means the panels are empty for a reason the player can act on. */
   riotAccountLinked: z.boolean(),
 });

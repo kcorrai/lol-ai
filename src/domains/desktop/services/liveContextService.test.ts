@@ -5,14 +5,21 @@ const mockGetMatchupData = vi.fn();
 const mockGetActiveHabits = vi.fn();
 const mockGetActiveChallenges = vi.fn();
 const mockGetChampionBaseline = vi.fn();
+const mockGetChampionBuild = vi.fn();
+const mockFetchItems = vi.fn();
 const mockFetchAllChampions = vi.fn();
 
 vi.mock("@/domains/counter", () => ({
   getPersonalMatchup: (...args: unknown[]) => mockGetPersonalMatchup(...args),
 }));
 
+vi.mock("@/lib/ddragon/itemsData", () => ({
+  fetchItems: () => mockFetchItems(),
+}));
+
 vi.mock("@/domains/meta", () => ({
   getMatchupData: (...args: unknown[]) => mockGetMatchupData(...args),
+  getChampionBuild: (...args: unknown[]) => mockGetChampionBuild(...args),
   parsePosition: (raw: string | null) => (raw === "MIDDLE" ? "MIDDLE" : null),
 }));
 
@@ -112,6 +119,8 @@ beforeEach(() => {
   mockGetActiveHabits.mockResolvedValue([]);
   mockGetActiveChallenges.mockResolvedValue([]);
   mockGetChampionBaseline.mockResolvedValue(null);
+  mockGetChampionBuild.mockResolvedValue(null);
+  mockFetchItems.mockResolvedValue(new Map([[1055, { name: "Doran's Blade" }], [3153, { name: "Blade of the Ruined King" }]]));
 });
 
 describe("getLiveContext champion resolution", () => {
@@ -277,6 +286,8 @@ describe("getLiveContext panels", () => {
 
   it("answers with no baseline rather than a made-up one", async () => {
     mockGetChampionBaseline.mockResolvedValue(null);
+  mockGetChampionBuild.mockResolvedValue(null);
+  mockFetchItems.mockResolvedValue(new Map([[1055, { name: "Doran's Blade" }], [3153, { name: "Blade of the Ruined King" }]]));
 
     expect((await getLiveContext(ACCOUNT, USER, request())).baseline).toBeNull();
   });
@@ -319,6 +330,71 @@ describe("getLiveContext panels", () => {
 
     expect(context.challenges).toEqual([]);
     expect(mockGetActiveChallenges).not.toHaveBeenCalled();
+  });
+
+  it("carries the build with its item ids resolved to names", async () => {
+    mockGetChampionBuild.mockResolvedValue({
+      skillOrder: ["Q", "W", "E"],
+      skillMaxOrder: ["Q", "W", "E"],
+      starterItems: { ids: [1055], games: 10, winRate: 50 },
+      coreItems: { ids: [3153], games: 8_000, winRate: 52.4 },
+      boots: { ids: [], games: 0, winRate: 0 },
+    });
+
+    const context = await getLiveContext(ACCOUNT, USER, request());
+
+    expect(context.build?.starters).toEqual([{ id: 1055, name: "Doran's Blade" }]);
+    expect(context.build?.core).toEqual([{ id: 3153, name: "Blade of the Ruined King" }]);
+    // The sample travels with the build, as every other number here does.
+    expect(context.build?.games).toBe(8_000);
+    expect(context.build?.winRate).toBe(52.4);
+  });
+
+  it("keeps an item the catalogue does not know, with an empty name", async () => {
+    // A build that is quietly one item shorter is worse than a gap the player can see.
+    mockGetChampionBuild.mockResolvedValue({
+      skillOrder: [],
+      skillMaxOrder: [],
+      starterItems: null,
+      coreItems: { ids: [999_999], games: 5, winRate: 50 },
+      boots: null,
+    });
+
+    const context = await getLiveContext(ACCOUNT, USER, request());
+
+    expect(context.build?.core).toEqual([{ id: 999_999, name: "" }]);
+  });
+
+  it("still answers with a build when the item catalogue cannot be read", async () => {
+    mockFetchItems.mockRejectedValue(new Error("ddragon down"));
+    mockGetChampionBuild.mockResolvedValue({
+      skillOrder: ["Q"],
+      skillMaxOrder: ["Q"],
+      starterItems: null,
+      coreItems: { ids: [3153], games: 5, winRate: 50 },
+      boots: null,
+    });
+
+    const context = await getLiveContext(ACCOUNT, USER, request());
+
+    expect(context.build?.core).toEqual([{ id: 3153, name: "" }]);
+  });
+
+  it("asks for no build in a mode with no lane to build for", async () => {
+    const context = await getLiveContext(
+      ACCOUNT,
+      USER,
+      request({ opponentChampionName: null, position: null, gameMode: "ARAM" })
+    );
+
+    expect(context.build).toBeNull();
+    expect(mockGetChampionBuild).not.toHaveBeenCalled();
+  });
+
+  it("answers with no build rather than an empty one when the patch has no entry", async () => {
+    mockGetChampionBuild.mockResolvedValue(null);
+
+    expect((await getLiveContext(ACCOUNT, USER, request())).build).toBeNull();
   });
 
   // The app has one screen, not a report.

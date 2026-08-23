@@ -1,14 +1,15 @@
 import { ThisGamePanel } from "@/components/game/ThisGamePanel";
 import { MatchupPanel } from "@/components/game/MatchupPanel";
+import { BuildPanel } from "@/components/game/BuildPanel";
 import { useLiveContext } from "@/lib/useLiveContext";
 import { useLiveGame } from "@/lib/useLiveGame";
 
 /**
  * The window that sits over the game.
  *
- * Two panels, no navigation and no chrome. The main window is where a player reads; this
+ * Three panels, no navigation and no chrome. The main window is where a player reads; this
  * is where they glance, and everything that would take a second look belongs in the other
- * one.
+ * one. The build is here because "what do I buy next" is exactly a glance question.
  *
  * It never takes focus and it is toggled rather than pinned. Both competitors' overlays
  * draw all the time with no way to hide them, which is the complaint their reviews open
@@ -28,6 +29,7 @@ export function OverlayScreen(): React.ReactElement {
     <div className="grid select-none gap-3 p-3">
       <ThisGamePanel read={read} state={context} />
       <MatchupPanel state={context} />
+      <BuildPanel state={context} />
     </div>
   );
 }

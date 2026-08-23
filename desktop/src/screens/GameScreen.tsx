@@ -1,3 +1,4 @@
+import { BuildPanel } from "@/components/game/BuildPanel";
 import { GamePlanPanel } from "@/components/game/GamePlanPanel";
 import { MatchupPanel } from "@/components/game/MatchupPanel";
 import { PostGamePanel } from "@/components/game/PostGamePanel";
@@ -32,6 +33,7 @@ export function GameScreen({ read }: { read: LiveRead<AllGameData> }): React.Rea
 
       <ThisGamePanel read={read} state={context} />
       <MatchupPanel state={context} />
+      <BuildPanel state={context} />
       <GamePlanPanel state={context} />
     </div>
   );

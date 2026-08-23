@@ -54,6 +54,7 @@ const CONTEXT = {
   habits: [],
   baseline: null,
   challenges: [],
+  build: null,
   riotAccountLinked: true,
 };
 
