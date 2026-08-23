@@ -3,8 +3,10 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { extractRiotIds, toIdsParam, MAX_LOBBY_SIZE } from "@/domains/riot/services/riotIds";
-import { VALID_REGIONS } from "@/domains/riot/services/riotApiClient";
-import { regionLabel } from "@/lib/riot/regions";
+// `REGIONS`, not the Riot client's `VALID_REGIONS`: this is a client component, and reaching into
+// the client drags `async_hooks` through the logger and into the browser bundle. Same eleven
+// platforms, and the same list every other region picker on the site renders.
+import { REGIONS } from "@/lib/riot/regions";
 
 interface Props {
   region: string;
@@ -56,9 +58,9 @@ export function MultiSearchForm({ region, initialText }: Props): React.ReactElem
           aria-label="Platform"
           className="border border-border bg-surface-dark px-3 py-2 font-mono text-[12px] uppercase text-text focus:border-accent focus:outline-none"
         >
-          {VALID_REGIONS.map((r) => (
-            <option key={r} value={r}>
-              {regionLabel(r)}
+          {REGIONS.map((r) => (
+            <option key={r.value} value={r.value}>
+              {r.label}
             </option>
           ))}
         </select>
