@@ -37,7 +37,11 @@ export const POST = withDeviceAuth(async (req: NextRequest, { device }): Promise
   // `/api/desktop/me` gives, so the app lands on the pairing screen either way.
   if (!account) return apiError("UNAUTHORIZED", "This device is not paired", 401);
 
-  const context = await getLiveContext(account.riotAccount?.id ?? null, parsed.data);
+  const context = await getLiveContext(
+    account.riotAccount?.id ?? null,
+    account.userId,
+    parsed.data
+  );
 
   const res = apiSuccess(context);
   res.headers.set("Cache-Control", "no-store");

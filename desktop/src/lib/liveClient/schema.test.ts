@@ -44,6 +44,55 @@ describe("playerSchema", () => {
   });
 });
 
+// Everything below was already arriving on every poll and being discarded. These assert
+// against Riot's own sample so the fields are read as the client actually spells them,
+// not as this code wishes it did.
+describe("the fields the client sends that the HUD had been dropping", () => {
+  const data = allGameDataSchema.parse(sample);
+  const player = data.allPlayers[0];
+
+  it("reads both summoner spells for every player, not just the active one", () => {
+    expect(player?.summonerSpells?.summonerSpellOne.displayName).toBe("Flash");
+    expect(player?.summonerSpells?.summonerSpellTwo.displayName).toBe("Ignite");
+  });
+
+  it("reads the keystone and both trees for every player", () => {
+    expect(player?.runes?.keystone.displayName).toBe("Electrocute");
+    expect(player?.runes?.keystone.id).toBe(8112);
+    expect(player?.runes?.primaryRuneTree.displayName).toBe("Domination");
+    expect(player?.runes?.secondaryRuneTree.displayName).toBe("Sorcery");
+  });
+
+  it("accepts the empty inventory every player has at the gates", () => {
+    expect(player?.items).toEqual([]);
+  });
+
+  it("reads an inventory once there is one", () => {
+    const parsed = playerSchema.parse({
+      ...sample.allPlayers[0],
+      items: [{ itemID: 3153, slot: 0, count: 1, displayName: "Blade of the Ruined King" }],
+    });
+    expect(parsed.items?.[0]?.itemID).toBe(3153);
+    expect(parsed.items?.[0]?.slot).toBe(0);
+  });
+
+  it("reads the active player's champion stats and ability ranks", () => {
+    expect(data.activePlayer.championStats?.maxHealth).toBeTypeOf("number");
+    expect(data.activePlayer.abilities?.Q).toBeDefined();
+    expect(data.activePlayer.abilities?.R).toBeDefined();
+  });
+
+  it("reads the active player's full rune page", () => {
+    expect(data.activePlayer.fullRunes?.keystone?.displayName).toBe("Electrocute");
+    expect(data.activePlayer.fullRunes?.statRunes?.length).toBeGreaterThan(0);
+  });
+
+  it("still parses a player from a client that sends none of them", () => {
+    const { items: _i, runes: _r, summonerSpells: _s, ...bare } = sample.allPlayers[0];
+    expect(playerSchema.safeParse(bare).success).toBe(true);
+  });
+});
+
 describe("displayNameOf", () => {
   it("prefers the Riot ID", () => {
     expect(displayNameOf({ riotId: "Kaan#TR1", summonerName: "Kaan" })).toBe("Kaan#TR1");

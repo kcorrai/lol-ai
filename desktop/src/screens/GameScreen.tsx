@@ -1,6 +1,7 @@
 import { GamePlanPanel } from "@/components/game/GamePlanPanel";
 import { MatchupPanel } from "@/components/game/MatchupPanel";
 import { PostGamePanel } from "@/components/game/PostGamePanel";
+import { ThisGamePanel } from "@/components/game/ThisGamePanel";
 import { HudPanel } from "@/components/layout/HudPanel";
 import { displayNameOf, type AllGameData, type LivePlayer } from "@/lib/liveClient/schema";
 import type { LiveRead } from "@/lib/liveClient/client";
@@ -29,6 +30,7 @@ export function GameScreen({ read }: { read: LiveRead<AllGameData> }): React.Rea
         {read.status === "ok" ? <GameSummary data={read.data} /> : <NoGame read={read} />}
       </HudPanel>
 
+      <ThisGamePanel read={read} state={context} />
       <MatchupPanel state={context} />
       <GamePlanPanel state={context} />
     </div>

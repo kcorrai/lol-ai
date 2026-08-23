@@ -12,6 +12,7 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "LoL AI Coach",
         "width": 1100,
         "height": 720,
@@ -20,6 +21,23 @@
         "resizable": true,
         "center": true,
         "backgroundColor": "#080B0A"
+      },
+      {
+        "label": "overlay",
+        "title": "LoL AI Coach overlay",
+        "url": "index.html",
+        "width": 340,
+        "height": 460,
+        "x": 24,
+        "y": 96,
+        "resizable": false,
+        "decorations": false,
+        "transparent": true,
+        "shadow": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "focus": false,
+        "visible": false
       }
     ],
     "security": {

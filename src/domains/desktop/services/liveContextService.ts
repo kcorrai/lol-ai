@@ -1,7 +1,12 @@
-import { getActiveHabits } from "@/domains/analysis";
+import { getActiveChallenges, getActiveHabits } from "@/domains/analysis";
+import type { ChallengeWithProgress } from "@/domains/analysis";
+import { getChampionBaseline } from "@/domains/champions";
+import type { ChampionBaseline } from "@/domains/champions";
 import { getPersonalMatchup } from "@/domains/counter";
 import { getMatchupData, parsePosition } from "@/domains/meta";
 import type {
+  LiveBaseline,
+  LiveChallenge,
   LiveContext,
   LiveContextRequest,
   LiveHabit,
@@ -12,12 +17,19 @@ import { fetchAllChampions, type DdragonChampionSummary } from "@/lib/ddragon/ch
 
 // What the website knows about the game the desktop app is watching (ADR-038, phase 4).
 //
-// Three reads, each from another domain's public API and none of them new: this
+// Five reads, each from another domain's public API and none of them new: this
 // account's own record in the lane (`counter`), the patch-current snapshot for the
-// same pair (`meta`), and the weaknesses already detected from this account's
-// matches (`analysis`). Nothing is computed here that the website does not already
-// compute for its own pages — the value this adds is that it can be asked for
-// during the game, which only a process on the player's machine can do.
+// same pair (`meta`), the weaknesses already detected from this account's matches
+// and the goals it was already set (`analysis`), and what this account normally
+// does on the champion it is playing (`champions`). Nothing is computed here that
+// the website does not already compute for its own pages — the value this adds is
+// that it can be asked for during the game, which only a process on the player's
+// machine can do.
+//
+// Nothing on this path may call a language model. The app asks at the start of a
+// match, and a round trip to a model would cost the player time in the one minute
+// they cannot spare — which is why the baseline has its own lean service rather
+// than reusing the champion deep dive, whose summary is generated.
 
 /** At most this many habits reach the panel; the app has one screen, not a report. */
 const MAX_HABITS = 3;
@@ -103,12 +115,56 @@ async function readMatchup(
 }
 
 /**
+ * The four metrics the companion can measure off the Live Client Data API while the
+ * game is still running.
+ *
+ * `win_streak` is deliberately absent: it is a fact about a run of games and there is
+ * nothing a scoreboard mid-match can say about it. Sending it would put a goal on
+ * screen with a progress bar that could not move, which reads as broken rather than as
+ * not-applicable — so it is filtered out here and never reaches the app.
+ */
+const LIVE_MEASURABLE_METRICS = ["cs_per_min", "deaths", "vision_score", "kda"] as const;
+
+function isLiveMeasurable(challenge: ChallengeWithProgress): boolean {
+  return (LIVE_MEASURABLE_METRICS as readonly string[]).includes(challenge.metric);
+}
+
+/**
+ * Drops `championName`: the app already knows what it is playing — it is what it asked
+ * about — and a second copy on the wire is one more thing that could disagree with the
+ * first.
+ */
+function toBaseline(baseline: ChampionBaseline): LiveBaseline {
+  return {
+    games: baseline.games,
+    csPerMin: baseline.csPerMin,
+    deaths: baseline.deaths,
+    visionScore: baseline.visionScore,
+    kda: baseline.kda,
+  };
+}
+
+function toChallenge(challenge: ChallengeWithProgress): LiveChallenge {
+  return {
+    id: challenge.id,
+    metric: challenge.metric,
+    targetValue: challenge.targetValue,
+    description: challenge.description,
+  };
+}
+
+/**
  * `riotAccountId` is null when the player has paired a machine but never linked a
  * Riot account. That is a real state with a real fix, so it is reported rather than
  * rendered as an empty dashboard: everything personal goes null and the flag says why.
+ *
+ * `userId` is the account the challenges belong to. Challenges hang off the user
+ * rather than the Riot account, which is why it is a second argument rather than
+ * something this service could look up from the first.
  */
 export async function getLiveContext(
   riotAccountId: string | null,
+  userId: string | null,
   request: LiveContextRequest
 ): Promise<LiveContext> {
   const roster = await fetchAllChampions();
@@ -121,6 +177,8 @@ export async function getLiveContext(
     personal: null,
     meta: null,
     habits: [],
+    baseline: null,
+    challenges: [],
     riotAccountLinked: riotAccountId !== null,
   };
 
@@ -129,15 +187,19 @@ export async function getLiveContext(
   const championKey = championId(champion);
   const opponentKey = opponent ? championId(opponent) : null;
 
-  // The three reads are independent and one failing is not a reason to answer with
+  // The five reads are independent and one failing is not a reason to answer with
   // nothing: a snapshot that is briefly unavailable should cost the meta panel and
   // leave the player's own record on screen.
-  const [personal, meta, habits] = await Promise.all([
+  const [personal, meta, habits, baseline, challenges] = await Promise.all([
     riotAccountId && championKey && opponentKey
       ? getPersonalMatchup(riotAccountId, championKey, opponentKey).catch(() => null)
       : null,
     opponent ? readMatchup(champion, opponent, request.position).catch(() => null) : null,
     riotAccountId ? getActiveHabits(riotAccountId).catch(() => []) : [],
+    // Keyed on the resolved Data Dragon display name rather than the string the game
+    // client sent, which is the same name every other table in this product stores.
+    riotAccountId ? getChampionBaseline(riotAccountId, champion.name).catch(() => null) : null,
+    userId ? getActiveChallenges(userId).catch(() => []) : [],
   ]);
 
   return {
@@ -145,5 +207,7 @@ export async function getLiveContext(
     personal: personal ? toPersonal(personal) : null,
     meta,
     habits: habits.slice(0, MAX_HABITS).map(toHabit),
+    baseline: baseline ? toBaseline(baseline) : null,
+    challenges: challenges.filter(isLiveMeasurable).map(toChallenge),
   };
 }
