@@ -4,6 +4,7 @@ use tauri::State;
 use crate::api::{ApiClient, Pairing};
 use crate::error::AppResult;
 use crate::live_client::LiveClient;
+use crate::live_context::{LiveContext, LiveContextRequest};
 use crate::secrets;
 
 pub struct AppState {
@@ -62,4 +63,19 @@ pub async fn pair_device(state: State<'_, AppState>, code: String) -> AppResult<
 #[tauri::command]
 pub async fn device_account(state: State<'_, AppState>) -> AppResult<Option<Pairing>> {
     state.api.me().await
+}
+
+/// What the website knows about the game on this screen, or `null` when this machine is no
+/// longer paired.
+///
+/// The request goes through the core rather than from the webview for the same reason the
+/// pairing exchange does: it has to carry the device token, and the token is not allowed to
+/// exist in a browser context (ADR-038). The webview supplies what it read off the game and
+/// gets back a reading it could not have obtained itself.
+#[tauri::command]
+pub async fn live_context(
+    state: State<'_, AppState>,
+    request: LiveContextRequest,
+) -> AppResult<Option<LiveContext>> {
+    state.api.live_context(&request).await
 }

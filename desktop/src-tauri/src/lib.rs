@@ -2,6 +2,7 @@ mod api;
 mod commands;
 mod error;
 mod live_client;
+mod live_context;
 mod secrets;
 
 use api::ApiClient;
@@ -23,6 +24,7 @@ pub fn run() {
             commands::clear_device_token,
             commands::pair_device,
             commands::device_account,
+            commands::live_context,
         ])
         .setup(|app| {
             if cfg!(debug_assertions) {

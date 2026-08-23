@@ -103,7 +103,9 @@ struct ErrorBody {
 }
 
 pub struct ApiClient {
-    http: reqwest::Client,
+    // `pub(crate)` so `live_context` can hang its own request off the same client. One
+    // client, one connection pool, one place the timeout and user agent are decided.
+    pub(crate) http: reqwest::Client,
 }
 
 impl ApiClient {
@@ -184,7 +186,9 @@ impl ApiClient {
 /// The server's own message is passed through: those strings are written for the player
 /// ("that pairing code is not valid", "revoke one in Settings") and are the only thing that
 /// tells them what to do next. Nothing in this path carries the token.
-async fn read<T: serde::de::DeserializeOwned>(response: reqwest::Response) -> AppResult<T> {
+pub(crate) async fn read<T: serde::de::DeserializeOwned>(
+    response: reqwest::Response,
+) -> AppResult<T> {
     let status = response.status();
     // AppError::Malformed and AppError::Status both name the League client in their text,
     // which is true where they are raised and would be a lie here.
