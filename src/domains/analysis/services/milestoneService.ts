@@ -71,12 +71,13 @@ export async function getMonthlyMilestone(
   const end = new Date(year, month, 1);
 
   const participants = await prisma.matchParticipant.findMany({
+    // Off the participant row rather than the relation — see ADR-040. `gameDuration` is not
+    // duplicated, so the relation is still selected; it is now joined for the rows that survive
+    // the filter rather than driving the scan.
     where: {
       puuid: puuid ?? "",
-      match: {
-        gameStart: { gte: start, lt: end },
-        queueType: "RANKED_SOLO_5x5",
-      },
+      queueType: "RANKED_SOLO_5x5",
+      gameStart: { gte: start, lt: end },
     },
     select: {
       won: true,
@@ -87,7 +88,7 @@ export async function getMonthlyMilestone(
       championName: true,
       match: { select: { gameDuration: true, gameStart: true } },
     },
-    orderBy: { match: { gameStart: "asc" } },
+    orderBy: { gameStart: "asc" },
   });
 
   if (participants.length === 0) return null;

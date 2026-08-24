@@ -12,12 +12,14 @@ function at(minsAgo: number) {
   return new Date(NOW - minsAgo * 60 * 1000);
 }
 
+// Flat rather than nested under `match`: since ADR-040 the participant row carries its own
+// queue and start, and the service selects them from there.
 function ranked(minsAgo: number, won = true) {
-  return { won, match: { gameStart: at(minsAgo), queueType: "RANKED_SOLO_5x5" } };
+  return { won, gameStart: at(minsAgo), queueType: "RANKED_SOLO_5x5" };
 }
 
 function normal(minsAgo: number) {
-  return { won: true, match: { gameStart: at(minsAgo), queueType: "NORMAL_BLIND" } };
+  return { won: true, gameStart: at(minsAgo), queueType: "NORMAL_BLIND" };
 }
 
 function setupMocks(today: object[], historical: object[], warmupHistory: object[]) {

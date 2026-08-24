@@ -77,11 +77,12 @@ export const autoSessionReview = inngest.createFunction(
     // ── Fetch 5 most recent ranked match IDs ──────────────────────────────────
     const puuid = await getAccountPuuid(riotAccountId);
     const participants = await prisma.matchParticipant.findMany({
+      // Off the participant row rather than the relation — see ADR-040.
       where: {
         puuid: puuid ?? "",
-        match: { queueType: "RANKED_SOLO_5x5" },
+        queueType: "RANKED_SOLO_5x5",
       },
-      orderBy: { match: { gameStart: "desc" } },
+      orderBy: { gameStart: "desc" },
       take: MIN_MATCHES,
       select: { matchId: true },
     });

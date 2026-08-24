@@ -25,11 +25,13 @@ export async function computeRetentionSignals(riotAccountId: string): Promise<Re
 
   // Last 20 ranked games ordered by date
   const recentMatches = await prisma.matchParticipant.findMany({
+    // Queue and recency come off the participant row, not the relation, so this is one index
+    // range scan rather than a walk back through `matches` discarding nine rows in ten (ADR-040).
     where: {
       puuid: puuid ?? "",
-      match: { queueType: "RANKED_SOLO_5x5" },
+      queueType: "RANKED_SOLO_5x5",
     },
-    orderBy: { match: { gameStart: "desc" } },
+    orderBy: { gameStart: "desc" },
     take: 20,
     select: {
       won: true,
@@ -71,7 +73,8 @@ export async function computeRetentionSignals(riotAccountId: string): Promise<Re
   const lastWeekData = await prisma.matchParticipant.findMany({
     where: {
       puuid: puuid ?? "",
-      match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: twoWeeksAgo, lt: weekAgo } },
+      queueType: "RANKED_SOLO_5x5",
+      gameStart: { gte: twoWeeksAgo, lt: weekAgo },
     },
     select: { csPerMinute: true },
   });

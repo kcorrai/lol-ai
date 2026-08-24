@@ -84,11 +84,12 @@ export async function getRankUpProbability(riotAccountId: string): Promise<RankU
 
   // Last 20 ranked solo matches for WR / trend / mental
   const recentRanked = await prisma.matchParticipant.findMany({
+    // Off the participant row rather than the relation — see ADR-040.
     where: {
       puuid: puuid ?? "",
-      match: { queueType: "RANKED_SOLO_5x5" },
+      queueType: "RANKED_SOLO_5x5",
     },
-    orderBy: { match: { gameStart: "desc" } },
+    orderBy: { gameStart: "desc" },
     take: 20,
     select: { won: true },
   });

@@ -73,12 +73,13 @@ export async function getChampionDeepDive(
   const puuid = await getAccountPuuid(riotAccountId);
   // Recent matches for this champion
   const matches = await prisma.matchParticipant.findMany({
+    // Off the participant row rather than the relation — see ADR-040.
     where: {
       puuid: puuid ?? "",
       championName,
-      match: { queueType: "RANKED_SOLO_5x5" },
+      queueType: "RANKED_SOLO_5x5",
     },
-    orderBy: { match: { gameStart: "desc" } },
+    orderBy: { gameStart: "desc" },
     take: 20,
     select: {
       won: true,

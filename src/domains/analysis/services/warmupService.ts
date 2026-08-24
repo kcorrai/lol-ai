@@ -32,19 +32,22 @@ export async function getWarmupStatus(riotAccountId: string): Promise<WarmupData
 
   // All of today's matches ordered oldest first
   const todayMatches = await prisma.matchParticipant.findMany({
+    // Queue and recency are on the participant row now (ADR-040), so this reads one table
+    // instead of joining `matches` to find out which queue each game was.
     where: {
       puuid: puuid ?? "",
-      match: { gameStart: { gte: todayStart } },
+      gameStart: { gte: todayStart },
     },
-    orderBy: { match: { gameStart: "asc" } },
+    orderBy: { gameStart: "asc" },
     select: {
       won: true,
-      match: { select: { gameStart: true, queueType: true } },
+      gameStart: true,
+      queueType: true,
     },
   });
 
   const firstRanked = todayMatches.find((m) =>
-    RANKED_QUEUES.includes(m.match.queueType as (typeof RANKED_QUEUES)[number])
+    RANKED_QUEUES.includes(m.queueType as (typeof RANKED_QUEUES)[number])
   );
 
   if (!firstRanked) {
@@ -58,14 +61,14 @@ export async function getWarmupStatus(riotAccountId: string): Promise<WarmupData
     };
   }
 
-  const firstRankedTime = firstRanked.match.gameStart.getTime();
+  const firstRankedTime = firstRanked.gameStart.getTime();
   const windowStart = firstRankedTime - WARMUP_WINDOW_MS;
 
   // Non-ranked games played within 2h before first ranked
   const warmupGames = todayMatches.filter((m) => {
-    const t = m.match.gameStart.getTime();
+    const t = m.gameStart.getTime();
     return (
-      WARMUP_QUEUES.includes(m.match.queueType as (typeof WARMUP_QUEUES)[number]) &&
+      WARMUP_QUEUES.includes(m.queueType as (typeof WARMUP_QUEUES)[number]) &&
       t >= windowStart &&
       t < firstRankedTime
     );
@@ -81,31 +84,30 @@ export async function getWarmupStatus(riotAccountId: string): Promise<WarmupData
   const historicalRanked = await prisma.matchParticipant.findMany({
     where: {
       puuid: puuid ?? "",
-      match: { queueType: "RANKED_SOLO_5x5", gameStart: { gte: thirtyDaysAgo } },
+      queueType: "RANKED_SOLO_5x5",
+      gameStart: { gte: thirtyDaysAgo },
     },
-    orderBy: { match: { gameStart: "asc" } },
-    select: { won: true, match: { select: { gameStart: true } } },
+    orderBy: { gameStart: "asc" },
+    select: { won: true, gameStart: true },
   });
 
   const historicalWarmup = await prisma.matchParticipant.findMany({
     where: {
       puuid: puuid ?? "",
-      match: {
-        queueType: { in: [...WARMUP_QUEUES] },
-        gameStart: { gte: thirtyDaysAgo },
-      },
+      queueType: { in: [...WARMUP_QUEUES] },
+      gameStart: { gte: thirtyDaysAgo },
     },
-    select: { match: { select: { gameStart: true } } },
+    select: { gameStart: true },
   });
 
   // Group ranked first-game-of-day by whether warmup existed before it
-  const warmupGameTimes = historicalWarmup.map((m) => m.match.gameStart.getTime());
+  const warmupGameTimes = historicalWarmup.map((m) => m.gameStart.getTime());
 
   const dayMap = new Map<string, { firstGame: { time: number; won: boolean } }>();
   for (const m of historicalRanked) {
-    const day = m.match.gameStart.toISOString().slice(0, 10);
+    const day = m.gameStart.toISOString().slice(0, 10);
     if (!dayMap.has(day)) {
-      dayMap.set(day, { firstGame: { time: m.match.gameStart.getTime(), won: m.won } });
+      dayMap.set(day, { firstGame: { time: m.gameStart.getTime(), won: m.won } });
     }
   }
 

@@ -137,6 +137,21 @@ describe("computeRetentionSignals", () => {
     expect(result.primaryNudge).toBe("pool_too_wide");
   });
 
+  // The point of ADR-040 is that queue and recency are read off the participant row. Nothing in
+  // the returned signals would change if this quietly went back through the relation — the query
+  // would just get slow again, silently — so the shape itself is what is asserted.
+  it("filters and orders on the participant row, not through the match relation", async () => {
+    vi.mocked(prisma.matchParticipant.findMany).mockResolvedValue([]);
+    await computeRetentionSignals("acc-1");
+
+    const [recent] = vi.mocked(prisma.matchParticipant.findMany).mock.calls[0] as [
+      Record<string, unknown>,
+    ];
+    expect(recent.where).toMatchObject({ queueType: "RANKED_SOLO_5x5" });
+    expect(recent.where).not.toHaveProperty("match");
+    expect(recent.orderBy).toEqual({ gameStart: "desc" });
+  });
+
   it("NUDGE_MESSAGES has entries for all known nudge types", () => {
     const expected = ["stop_queuing", "pool_too_wide", "loss_streak", "death_spike", "cs_drop"];
     for (const key of expected) {

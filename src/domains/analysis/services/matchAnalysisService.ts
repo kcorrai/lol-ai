@@ -37,7 +37,10 @@ export async function getPlayerPerformanceProfile(
         include: { participants: { select: { teamId: true, damageDealt: true, kills: true } } },
       },
     },
-    orderBy: { match: { gameStart: "desc" } },
+    // Ordered by the participant row's own copy of the match's start (ADR-040). There is no
+    // queue filter here, so this is not the index's fully-ordered case — but it takes the sort
+    // off the joined table, which is what made the plan walk `matches` backwards.
+    orderBy: { gameStart: "desc" },
     take: gameCount,
   });
 

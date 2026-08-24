@@ -57,11 +57,10 @@ export async function computeAndSaveSnapshot(riotAccountId: string): Promise<voi
 
   const rows = await prisma.matchParticipant.findMany({
     where: {
+      // Off the participant row rather than the relation — see ADR-040.
       puuid: puuid ?? "",
-      match: {
-        queueType: "RANKED_SOLO_5x5",
-        gameStart: { gte: periodStart, lte: periodEnd },
-      },
+      queueType: "RANKED_SOLO_5x5",
+      gameStart: { gte: periodStart, lte: periodEnd },
     },
     select: {
       won: true,
