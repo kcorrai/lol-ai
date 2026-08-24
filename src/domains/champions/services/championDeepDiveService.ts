@@ -145,7 +145,7 @@ export async function getChampionDeepDive(
       coachingSummary = stat.coachingSummary;
     } else {
       try {
-        const ai = getAiClient();
+        const ai = getAiClient("champion-deep-dive");
         const { system, user } = buildSummaryPrompt(championName, {
           winRate,
           avgKda,

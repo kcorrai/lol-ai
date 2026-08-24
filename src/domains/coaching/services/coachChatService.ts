@@ -57,7 +57,7 @@ export function createCoachChatStream(
   systemPrompt: string,
   messages: ChatMessage[]
 ): ReadableStream<Uint8Array> {
-  const tokenStream = getAiClient().streamChat(systemPrompt, messages);
+  const tokenStream = getAiClient("coach-chat").streamChat(systemPrompt, messages);
   const encoder = new TextEncoder();
 
   return new ReadableStream<Uint8Array>({

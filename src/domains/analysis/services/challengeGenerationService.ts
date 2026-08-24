@@ -113,7 +113,7 @@ async function buildDescription(
     const cached = await getCached(cacheKey);
     if (cached && typeof cached === "string") return cached;
 
-    const ai = getAiClient("lite");
+    const ai = getAiClient("challenge-description");
     const system =
       "You are a League of Legends coach. Write short, motivating challenge descriptions in English.";
     const userMsg = `${type === "daily" ? "Daily" : "Weekly"} challenge: "${base}". Write a motivating description in English, max 2 sentences.`;

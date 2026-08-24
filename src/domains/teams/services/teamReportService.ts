@@ -84,7 +84,7 @@ export async function generateTeamReport(teamId: string, userId: string): Promis
   }
 
   const prompt = buildPrompt(dashboard);
-  const ai = getAiClient("full");
+  const ai = getAiClient("team-report");
 
   logger.info("[teamReport] generating report", { teamId, memberCount: dashboard.members.length });
 

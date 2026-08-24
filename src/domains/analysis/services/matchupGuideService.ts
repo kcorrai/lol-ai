@@ -70,7 +70,7 @@ export async function generateMatchupGuide(input: MatchupGuideInput): Promise<Ma
   const losses = clampCount(input.losses);
   const avgKda = clampKda(input.avgKda);
 
-  const guide = await getAiClient().complete(
+  const guide = await getAiClient("matchup-guide").complete(
     "You are a LoL coaching assistant. You write short, action-oriented matchup guides.",
     `Write a ${player} vs ${opponent} matchup guide. The player has ${wins}W/${losses}L in this matchup (KDA: ${avgKda}). Exactly 4 points: lane phase strategy, 1 mistake to avoid, gank timing, late game priority. One sentence per point.`,
     { maxTokens: 250, temperature: 0.5 }

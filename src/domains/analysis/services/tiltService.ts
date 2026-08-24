@@ -106,7 +106,7 @@ export async function generateTiltRecoveryMessage(
       : "?";
   const champs = recentMatches.map((m) => m.championName).join(", ");
 
-  const ai = getAiClient("lite");
+  const ai = getAiClient("tilt-message");
   const result = await ai.complete(
     "You are an empathetic but direct League of Legends coach.",
     `The player lost ${streak} matches in a row. Champions: ${champs}. Average deaths: ${avgDeaths}.\n` +

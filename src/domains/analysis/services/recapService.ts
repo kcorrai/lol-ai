@@ -55,7 +55,7 @@ async function aiSummary(data: Omit<RecapData, "aiSummary">): Promise<string> {
   const prompt = `The player played ${data.totalMatches} matches in ${data.seasonLabel}. Win rate is ${data.winRate}%. Best champion is ${data.topChampion.name} (${data.topChampion.winRate}% WR). Climbed from ${data.startRank} to ${data.endRank}. LP change: ${data.lpDelta > 0 ? "+" : ""}${data.lpDelta}. In English, provide 3 sentences with motivating season evaluation. Highlight strengths and growth areas.`;
 
   try {
-    const result = await getAiClient("lite").complete(
+    const result = await getAiClient("season-recap").complete(
       "You are a LoL coach. Write a season evaluation.",
       prompt,
       { maxTokens: 200, temperature: 0.7 }

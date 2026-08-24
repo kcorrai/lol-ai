@@ -42,7 +42,7 @@ export async function getOtpAnalysis(champion: string, role: Position): Promise<
     if (cacheResult.success) return cacheResult.data;
   }
 
-  const aiClient = getAiClient();
+  const aiClient = getAiClient("otp-assistant");
   const response = await aiClient.complete(
     buildOtpSystemPrompt(champion),
     buildOtpUserPrompt(champion, role)

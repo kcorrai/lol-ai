@@ -59,7 +59,7 @@ async function generateSummary(deaths: DeathPoint[]): Promise<string> {
     .join(", ")}. In English, provide 2 sentences with concrete positioning advice.`;
 
   try {
-    const result = await getAiClient("lite").complete(
+    const result = await getAiClient("heatmap-summary").complete(
       "You are a LoL coach. Analyze the player's death heatmap data.",
       prompt,
       { maxTokens: 120 }

@@ -34,7 +34,7 @@ async function callAiAndPersist(
   totalTokens: number;
   latencyMs: number;
 }> {
-  const result = await getAiClient().complete(systemPrompt, userMessage);
+  const result = await getAiClient("coaching-report").complete(systemPrompt, userMessage);
   const {
     content: rawContent,
     model,

@@ -87,7 +87,7 @@ export async function explainBuild(
   const nonZeroIds = participant.itemIds.filter((id) => id > 0);
   const itemNames = await fetchItemNames(nonZeroIds);
 
-  const aiClient = getAiClient();
+  const aiClient = getAiClient("build-explanation");
   const response = await aiClient.complete(
     buildBuildExplanationSystemPrompt(),
     buildBuildExplanationUserPrompt(
