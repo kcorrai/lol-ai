@@ -1,7 +1,11 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
-import type { LiveContext, LiveContextRequest } from "../../../src/domains/desktop/contract";
+import type {
+  LiveBuild,
+  LiveContext,
+  LiveContextRequest,
+} from "../../../src/domains/desktop/contract";
 
-export type { LiveContext, LiveContextRequest };
+export type { LiveBuild, LiveContext, LiveContextRequest };
 
 /**
  * The live dashboard, from the webview's side of the IPC boundary.

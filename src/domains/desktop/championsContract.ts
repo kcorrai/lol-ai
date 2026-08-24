@@ -1,5 +1,7 @@
 import { z } from "zod";
-import { liveBuildSchema, liveChampionSchema } from "@/domains/desktop/contract";
+// Relative, not aliased. The desktop app compiles this file with its own tsconfig, where
+// `@/` points at `desktop/src` — an alias here would resolve on the website and nowhere else.
+import { liveBuildSchema, liveChampionSchema } from "./contract";
 
 // The champion browser's half of the website contract (LA-75, ADR-042).
 //

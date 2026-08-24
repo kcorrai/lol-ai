@@ -1,11 +1,14 @@
 import type { LucideIcon } from "lucide-react";
-import { Gamepad2, Link2, Settings } from "lucide-react";
+import { Gamepad2, Link2, Settings, Swords } from "lucide-react";
 import { cn } from "@/lib/cn";
 
-export type ScreenId = "game" | "pairing" | "settings";
+export type ScreenId = "game" | "champions" | "pairing" | "settings";
 
 const ITEMS: ReadonlyArray<{ id: ScreenId; icon: LucideIcon; label: string }> = [
   { id: "game", icon: Gamepad2, label: "Game" },
+  // Second, under the game: it is the only screen worth opening when there is no match
+  // running, which is most of the time this window is on screen.
+  { id: "champions", icon: Swords, label: "Champions" },
   { id: "pairing", icon: Link2, label: "Pairing" },
   { id: "settings", icon: Settings, label: "Settings" },
 ];
