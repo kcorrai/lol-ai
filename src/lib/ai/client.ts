@@ -8,6 +8,7 @@ import { createOpenAiProvider } from "@/lib/ai/providers/openai";
 import { createAnthropicProvider } from "@/lib/ai/providers/anthropic";
 import { tierFor, type AiTask } from "@/lib/ai/taskTiers";
 import { recordAiUsage } from "@/lib/ai/usage";
+import { assertWithinAiBudget } from "@/lib/ai/budget";
 
 export type AiTier = "lite" | "full";
 
@@ -49,6 +50,7 @@ function withUsageRecording(provider: AiProvider, task: AiTask): AiProvider {
       userMessage: string,
       options?: AiCompletionOptions
     ): Promise<AiCompletionResult> {
+      await assertWithinAiBudget();
       const result = await provider.complete(systemPrompt, userMessage, options);
       await recordAiUsage({
         task,
@@ -68,6 +70,7 @@ function withUsageRecording(provider: AiProvider, task: AiTask): AiProvider {
       // end of the stream — which is where a streamed response's token counts arrive. Chat is the
       // highest-volume surface and runs on the expensive tier; a ledger that could not see it
       // would be describing the small half of the bill.
+      await assertWithinAiBudget();
       const usage = yield* provider.streamChat(systemPrompt, messages, options);
       if (usage) {
         await recordAiUsage({
