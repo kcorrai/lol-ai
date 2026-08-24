@@ -70,10 +70,67 @@ pub struct Habit {
     pub message: String,
 }
 
+/// What this account normally does on the champion it is playing right now.
+///
+/// The companion measures the same four things off the Live Client Data API while the game
+/// runs, so this is the only half it cannot work out for itself.
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LiveBaseline {
+    pub games: i64,
+    pub cs_per_min: f64,
+    pub deaths: f64,
+    pub vision_score: f64,
+    pub kda: f64,
+}
+
+/// One goal this player is already working on, set away from the game.
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LiveChallenge {
+    pub id: String,
+    pub metric: String,
+    pub target_value: f64,
+    pub description: String,
+}
+
+/// One item, named on the server because the app cannot fetch an icon.
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LiveItem {
+    pub id: i64,
+    /// Empty when the catalogue did not carry the id. The panel renders that as the id
+    /// rather than dropping the item, so a gap in a build stays visible.
+    pub name: String,
+}
+
+/// How this champion is built on the current patch.
+///
+/// Shared with the champion browser (`champions.rs`), which shows the same build for a
+/// champion being read about rather than one being played. One shape, one panel.
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LiveBuild {
+    pub skill_order: Vec<String>,
+    pub skill_max_order: Vec<String>,
+    pub starters: Vec<LiveItem>,
+    pub core: Vec<LiveItem>,
+    pub boots: Vec<LiveItem>,
+    /// The sample behind the core build. Never rendered without it.
+    pub games: i64,
+    pub win_rate: f64,
+}
+
 /// What the website knows about the game the app is watching.
 ///
 /// Every field that can be absent is an `Option` rather than a default, because the app
 /// renders "we do not know this" differently from a number.
+///
+/// It has to name every field `contract.ts` sends. Serde drops what this struct does not
+/// declare, and a field missing here is a panel that can never fill however well the
+/// website answers — which is exactly what happened to `baseline`, `challenges` and
+/// `build`, added to the contract by three later commits and never mirrored. The test
+/// below is what would have caught it.
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct LiveContext {
@@ -82,6 +139,12 @@ pub struct LiveContext {
     pub personal: Option<PersonalMatchup>,
     pub meta: Option<MetaMatchup>,
     pub habits: Vec<Habit>,
+    /// Null when this account has not played the champion enough for an average to mean
+    /// anything.
+    pub baseline: Option<LiveBaseline>,
+    pub challenges: Vec<LiveChallenge>,
+    /// Null in a mode with no lane to build for, and when the snapshot has no entry.
+    pub build: Option<LiveBuild>,
     /// False means the panels are empty for a reason the player can act on.
     pub riot_account_linked: bool,
 }
@@ -192,6 +255,28 @@ mod tests {
                 "severity": "high",
                 "message": "You have died before 10:00 in 6 of your last 10 games."
             }],
+            "baseline": {
+                "games": 42,
+                "csPerMin": 7.1,
+                "deaths": 5.2,
+                "visionScore": 21.4,
+                "kda": 2.8
+            },
+            "challenges": [{
+                "id": "challenge-1",
+                "metric": "cs_per_min",
+                "targetValue": 7.5,
+                "description": "Finish five games above 7.5 CS a minute."
+            }],
+            "build": {
+                "skillOrder": ["Q", "W", "E"],
+                "skillMaxOrder": ["Q", "W", "E"],
+                "starters": [{ "id": 1056, "name": "Doran's Ring" }],
+                "core": [{ "id": 3089, "name": "Rabadon's Deathcap" }],
+                "boots": [{ "id": 3020, "name": "Sorcerer's Shoes" }],
+                "games": 41000,
+                "winRate": 52.5
+            },
             "riotAccountLinked": true
         })
     }
@@ -206,7 +291,35 @@ mod tests {
         assert_eq!(meta.win_rate, 47.5);
         assert_eq!(meta.hints.len(), 1);
         assert_eq!(parsed.habits[0].habit_type, "early_deaths");
+        assert_eq!(parsed.baseline.unwrap().cs_per_min, 7.1);
+        assert_eq!(parsed.challenges[0].metric, "cs_per_min");
+        assert_eq!(parsed.build.unwrap().core[0].name, "Rabadon's Deathcap");
         assert!(parsed.riot_account_linked);
+    }
+
+    /// The test that was missing. Serde drops what the struct does not declare, so a field
+    /// added to `contract.ts` and not mirrored here vanishes on its way to the webview and
+    /// the panel that reads it can never fill — silently, with the website answering
+    /// correctly the whole time. `baseline`, `challenges` and `build` were each lost that
+    /// way. Round-tripping is what catches the next one.
+    #[test]
+    fn every_field_the_contract_sends_survives_the_trip_to_the_webview() {
+        let sent = full_response();
+        let parsed: LiveContext = serde_json::from_value(sent.clone()).unwrap();
+        let forwarded = serde_json::to_value(&parsed).unwrap();
+
+        // Keys, not values: `43` arrives back as `43.0` because the field is a rate, and
+        // that is the struct doing its job. A key that is absent, or present as null when
+        // something was sent, is the struct dropping a panel's data on the floor.
+        for (key, value) in sent.as_object().unwrap() {
+            let forwarded = forwarded.get(key);
+            assert!(forwarded.is_some(), "`{key}` is missing from the struct");
+            assert_eq!(
+                forwarded.unwrap().is_null(),
+                value.is_null(),
+                "`{key}` did not survive the trip"
+            );
+        }
     }
 
     /// A whole percentage on the wire is still a rate. Deserialising it as an integer would
@@ -227,6 +340,9 @@ mod tests {
             "personal": null,
             "meta": null,
             "habits": [],
+            "baseline": null,
+            "challenges": [],
+            "build": null,
             "riotAccountLinked": false
         }))
         .unwrap();
@@ -235,6 +351,9 @@ mod tests {
         assert!(parsed.personal.is_none());
         assert!(parsed.meta.is_none());
         assert!(parsed.habits.is_empty());
+        assert!(parsed.baseline.is_none());
+        assert!(parsed.challenges.is_empty());
+        assert!(parsed.build.is_none());
         assert!(!parsed.riot_account_linked);
     }
 

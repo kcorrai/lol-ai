@@ -1,4 +1,5 @@
 mod api;
+mod champions;
 mod commands;
 mod error;
 mod lcu;
@@ -104,6 +105,8 @@ pub fn run() {
             commands::pair_device,
             commands::device_account,
             commands::live_context,
+            commands::champion_list,
+            commands::champion_detail,
             commands::post_game,
             commands::open_report,
             commands::lcu_available,

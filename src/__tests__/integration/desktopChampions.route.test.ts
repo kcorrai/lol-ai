@@ -155,10 +155,11 @@ describe("GET /api/desktop/champions/[key]", () => {
     expect(readChampion).toHaveBeenCalledWith("Ahri", "MIDDLE");
   });
 
-  it("takes a Data Dragon id with punctuation in it", async () => {
-    // "Nunu&Willump" and "Dr. Mundo" are real ids, and a key filter that dropped them
-    // would make two champions unreachable.
-    await detail(encodeURIComponent("Nunu&Willump"), { role: "top" });
+  it("takes a Data Dragon id with an ampersand in it", async () => {
+    // "Nunu&Willump" is a real id, and the core sends it unescaped — an ampersand only
+    // separates parameters once a `?` has started a query, and there is none in the path.
+    // A key filter that dropped it would make a champion unreachable.
+    await detail("Nunu&Willump", { role: "top" });
 
     expect(readChampion).toHaveBeenCalledWith("Nunu&Willump", "TOP");
   });

@@ -2,6 +2,7 @@ use serde::Serialize;
 use tauri::{AppHandle, State};
 
 use crate::api::{ApiClient, Pairing};
+use crate::champions::{ChampionDetail, ChampionList};
 use crate::error::AppResult;
 use crate::lcu::{Endpoint, LcuClient, PerkPage};
 use crate::live_client::LiveClient;
@@ -81,6 +82,34 @@ pub async fn live_context(
     request: LiveContextRequest,
 ) -> AppResult<Option<LiveContext>> {
     state.api.live_context(&request).await
+}
+
+/// One lane's champions, or `null` when this machine is no longer paired.
+///
+/// Through the core for the same reason every other website call is: the endpoint wants the
+/// device token, and the token is not allowed to exist in a browser context (ADR-038). What
+/// this answers is not personal — it is the patch's own numbers — but the credential that
+/// fetches it is.
+#[tauri::command]
+pub async fn champion_list(
+    state: State<'_, AppState>,
+    position: String,
+) -> AppResult<Option<ChampionList>> {
+    state.api.champions(&position).await
+}
+
+/// One champion in one lane, or `null` when this machine is no longer paired.
+///
+/// The build comes back with item *names* rather than ids, resolved on the website: this
+/// window's content policy allows images from itself and `data:` alone, so a Data Dragon
+/// icon URL would render as a broken frame.
+#[tauri::command]
+pub async fn champion_detail(
+    state: State<'_, AppState>,
+    key: String,
+    position: String,
+) -> AppResult<Option<ChampionDetail>> {
+    state.api.champion(key.trim(), &position).await
 }
 
 /// Tell the website a game has ended, or `null` when this machine is no longer paired.
