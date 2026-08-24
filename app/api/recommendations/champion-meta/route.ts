@@ -20,4 +20,4 @@ export const GET = withAuth(async (req: NextRequest, { userId }) => {
 
   const recommendations = await getMetaRecommendations(riotAccountId);
   return apiSuccess(recommendations);
-});
+}, { deviceAccess: true });

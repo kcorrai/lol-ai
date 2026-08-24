@@ -8,6 +8,7 @@ use crate::lcu::{Endpoint, LcuClient, PerkPage};
 use crate::live_client::LiveClient;
 use crate::live_context::{LiveContext, LiveContextRequest};
 use crate::post_game::PostGame;
+use crate::proxy::ProxyResponse;
 use crate::secrets;
 
 pub struct AppState {
@@ -123,6 +124,25 @@ pub async fn champion_detail(
 #[tauri::command]
 pub async fn post_game(state: State<'_, AppState>) -> AppResult<Option<PostGame>> {
     state.api.post_game().await
+}
+
+/// Reads one allowlisted path on the website, with the device token attached.
+///
+/// The one command behind every screen that is the website's own (ADR-043). Same shape as
+/// `live_client_get` above and for the same reason: the webview names the path, the client
+/// checks it against a fixed list in `proxy::ALLOWED_PREFIXES`, and what comes back is
+/// unparsed JSON. That is what lets a page be added without a Rust struct mirroring its
+/// wire contract — and so without the mirror silently dropping a field nobody added twice.
+///
+/// `None` — a JSON `null` on the other side — means this machine holds no token.
+#[tauri::command]
+pub async fn desktop_fetch(
+    state: State<'_, AppState>,
+    path: String,
+    method: String,
+    body: Option<serde_json::Value>,
+) -> AppResult<Option<ProxyResponse>> {
+    state.api.proxy(&path, &method, body).await
 }
 
 /// Opens the player's match list in their own browser.

@@ -20,4 +20,4 @@ export const GET = withAuth(async (req: NextRequest, { userId }) => {
   if (!puuid) throw Errors.notFound("Riot account");
 
   return apiSuccess(await archiveFacetOptions(puuid));
-});
+}, { deviceAccess: true });

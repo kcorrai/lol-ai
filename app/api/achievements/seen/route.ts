@@ -38,4 +38,4 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   });
 
   return apiSuccess({ updated: achievementIds.length });
-});
+}, { deviceAccess: true });

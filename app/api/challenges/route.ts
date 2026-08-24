@@ -17,4 +17,4 @@ export const GET = withAuth(async (_req, { userId }) => {
   ]);
 
   return apiSuccess({ challenges, ...xpLevel, streak });
-});
+}, { deviceAccess: true });

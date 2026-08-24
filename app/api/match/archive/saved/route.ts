@@ -16,7 +16,7 @@ const bodySchema = z.object({
 // GET /api/match/archive/saved — the player's saved filter sets.
 export const GET = withAuth(async (_req: NextRequest, { userId }) => {
   return apiSuccess({ searches: await listSavedSearches(userId) });
-});
+}, { deviceAccess: true });
 
 // POST /api/match/archive/saved — save a filter set under a name, replacing one of the same name.
 export const POST = withAuth(async (req: NextRequest, { userId }) => {
@@ -25,4 +25,4 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
 
   const saved = await saveSearch(userId, parsed.data.name, parsed.data.filters);
   return apiSuccess({ search: saved }, 201);
-});
+}, { deviceAccess: true });

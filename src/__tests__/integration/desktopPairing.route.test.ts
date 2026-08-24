@@ -55,6 +55,7 @@ const ACCOUNT = {
   userId: "user-1",
   email: "k@example.com",
   name: "Kaan",
+  emailVerified: null,
   riotAccount: null,
 };
 

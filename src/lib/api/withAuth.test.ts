@@ -9,8 +9,11 @@ vi.mock("@sentry/nextjs", () => ({
 vi.mock("@/lib/utils/logger", () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));
+vi.mock("@/domains/desktop/services/desktopPairingService", () => ({
+  authenticateDevice: vi.fn(),
+}));
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import {
   authenticateAs,
   authenticateAsNobody,
@@ -18,9 +21,17 @@ import {
   routeRequest,
 } from "@/test/apiRoute";
 import { Errors } from "@/lib/api/errors";
+import { authenticateDevice } from "@/domains/desktop/services/desktopPairingService";
 import { withAuth } from "./withAuth";
 
-const handler = vi.fn(async () => NextResponse.json({ ok: true }));
+// Typed with the context it receives, so the device-token tests below can assert what was
+// handed to it — a bare `vi.fn(async () => …)` records no arguments to read back.
+const handler = vi.fn(
+  async (
+    _req: NextRequest,
+    _ctx: { userId: string; userEmail: string | null; requestId: string }
+  ) => NextResponse.json({ ok: true })
+);
 const request = () => routeRequest("/api/anything");
 
 beforeEach(() => {
@@ -82,5 +93,89 @@ describe("withAuth", () => {
 
     expect(res.status).toBe(422);
     expect((await readApiResponse(res)).error?.code).toBe("VALIDATION_ERROR");
+  });
+});
+
+/**
+ * The desktop companion's half (ADR-043). It has no cookie jar, so it presents the device
+ * token from the OS credential store — but only where the route has said it may.
+ */
+describe("withAuth, device token", () => {
+  const TOKEN = "a".repeat(43); // the shape `readBearerToken` accepts
+  const withToken = (token = TOKEN) =>
+    routeRequest("/api/anything", { headers: { authorization: `Bearer ${token}` } });
+
+  const devicePaired = () =>
+    vi.mocked(authenticateDevice).mockResolvedValue({
+      device: { id: "device-1", userId: "user-1" } as never,
+    });
+
+  it("serves an opted-in route for a paired device", async () => {
+    authenticateAsNobody();
+    devicePaired();
+
+    const res = await withAuth(handler, { deviceAccess: true })(withToken());
+
+    expect(res.status).toBe(200);
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler.mock.calls[0][1]).toMatchObject({ userId: "user-1", userEmail: null });
+  });
+
+  /**
+   * The default, and the reason it is the default. Opting a route in is what makes the
+   * blast radius of a stolen device token something anyone can read off the route file.
+   */
+  it("refuses the same token on a route that did not opt in", async () => {
+    authenticateAsNobody();
+    devicePaired();
+
+    const res = await withAuth(handler)(withToken());
+
+    expect(res.status).toBe(401);
+    expect(handler).not.toHaveBeenCalled();
+    // Not even asked. A route that never opted in should not be doing a database
+    // lookup for every bearer token pointed at it.
+    expect(authenticateDevice).not.toHaveBeenCalled();
+  });
+
+  it("refuses an unknown or revoked token", async () => {
+    authenticateAsNobody();
+    vi.mocked(authenticateDevice).mockResolvedValue(null);
+
+    const res = await withAuth(handler, { deviceAccess: true })(withToken());
+    const body = await readApiResponse(res);
+
+    expect(res.status).toBe(401);
+    // The same answer a route with no token gets, so walking the API with a bearer
+    // token cannot be used to map which routes opted in.
+    expect(body.error?.code).toBe("UNAUTHORIZED");
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it("costs a regex rather than a query for a malformed token", async () => {
+    authenticateAsNobody();
+
+    const res = await withAuth(handler, { deviceAccess: true })(withToken("too-short"));
+
+    expect(res.status).toBe(401);
+    expect(authenticateDevice).not.toHaveBeenCalled();
+  });
+
+  /**
+   * A player signed in on this machine's browser is the stronger claim of the two, and
+   * the one that carries an email and a second-factor state.
+   */
+  it("prefers the session when a request carries both", async () => {
+    authenticateAs({ id: "session-user", email: "a@b.test" });
+    devicePaired();
+
+    const res = await withAuth(handler, { deviceAccess: true })(withToken());
+
+    expect(res.status).toBe(200);
+    expect(handler.mock.calls[0][1]).toMatchObject({
+      userId: "session-user",
+      userEmail: "a@b.test",
+    });
+    expect(authenticateDevice).not.toHaveBeenCalled();
   });
 });

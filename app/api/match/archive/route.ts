@@ -39,4 +39,4 @@ export const GET = withAuth(async (req: NextRequest, { userId }) => {
 
   const page = await searchArchive(puuid, filters, params.get("cursor") ?? undefined, limit);
   return apiSuccess(page);
-});
+}, { deviceAccess: true });

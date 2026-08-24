@@ -39,7 +39,7 @@ export const GET = withAuth(async (req: NextRequest, { userId }) => {
   if (blocked) return blocked;
 
   return apiSuccess(await getActiveDuo(riotAccountId!));
-});
+}, { deviceAccess: true });
 
 export const POST = withAuth(async (req: NextRequest, { userId }) => {
   // `.parse` threw a ZodError, which `withAuth` does not recognise — so every bad body
@@ -59,7 +59,7 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
   }
 
   return apiSuccess(await setDuo(body.riotAccountId, puuid!));
-});
+}, { deviceAccess: true });
 
 export const DELETE = withAuth(async (req: NextRequest, { userId }) => {
   const riotAccountId = req.nextUrl.searchParams.get("riotAccountId");
@@ -68,4 +68,4 @@ export const DELETE = withAuth(async (req: NextRequest, { userId }) => {
 
   await clearDuo(riotAccountId!);
   return apiSuccess({ cleared: true });
-});
+}, { deviceAccess: true });

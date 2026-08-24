@@ -45,13 +45,19 @@ function toSummary(device: DesktopDevice): DesktopDeviceSummary {
 }
 
 function toAccount(
-  user: { id: string; email: string | null; name: string | null },
+  user: {
+    id: string;
+    email: string | null;
+    name: string | null;
+    emailVerified: Date | null;
+  },
   riot: RiotAccount | null
 ): DesktopAccount {
   return {
     userId: user.id,
     email: user.email,
     name: user.name,
+    emailVerified: user.emailVerified?.toISOString() ?? null,
     riotAccount: riot
       ? {
           id: riot.id,
@@ -157,7 +163,7 @@ export async function redeemPairingCode(
 
   const user = await prisma.user.findUnique({
     where: { id: pending.userId },
-    select: { id: true, email: true, name: true },
+    select: { id: true, email: true, name: true, emailVerified: true },
   });
   // The foreign key makes this unreachable short of the account being deleted
   // mid-exchange. `invalid` is the honest answer: there is no account left to
@@ -197,7 +203,7 @@ export async function authenticateDevice(
 export async function getDeviceAccount(device: DesktopDevice): Promise<DesktopAccount | null> {
   const user = await prisma.user.findUnique({
     where: { id: device.userId },
-    select: { id: true, email: true, name: true },
+    select: { id: true, email: true, name: true, emailVerified: true },
   });
   if (!user) return null;
   return toAccount(user, await primaryRiotAccount(user.id));

@@ -29,4 +29,4 @@ export const GET = withAuth(async (_req, { userId }) => {
     earnedCount: earned.length,
     total: ACHIEVEMENT_CATALOG.length,
   });
-});
+}, { deviceAccess: true });

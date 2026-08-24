@@ -92,7 +92,37 @@ read about once a second and this answer changes when a game starts and not once
 | `live_context(request)` | What the website knows about the game on screen — the lane read and the game plan — or `null` when this machine is no longer paired. Goes through the core because the reading is personal, so the request has to carry the device token, and the token is not allowed to exist in a webview.               |
 | `post_game()`           | Tells the website a game has ended so the account is pulled now, or `null` when this machine is no longer paired. Takes no argument: the account is read from the device row and what game it was is read from Riot, so all the app contributes is the timing.                                              |
 | `open_report()`         | Opens the player's match list in their **own** browser. Takes no URL — the address is built in the core from the compiled-in base, so a renderer that went wrong could not choose what gets opened. Not a navigation inside this window: a companion to a running game must not turn itself into a browser. |
+| `desktop_fetch(path, method, body)` | One allowlisted `/api/*` path on the website, with the device token attached, returned unparsed — or `null` when this machine holds no token. The one command behind every screen lifted from the website (ADR-043). Same shape as `live_client_get`: the webview names the path, the core checks it against a fixed list. |
 | `clear_device_token()`  | Forgets it locally.                                                                                                                                                                                                                                                                                         |
+
+### Adding a page
+
+Since [ADR-043](../docs/adr/ADR-043-desktop-pages-reuse-the-website-client.md) a page is the
+website's own client component, rendered here unchanged. Three steps, no Rust:
+
+1. **A line in `src/routes.tsx`** — the website's path, a label, an icon, and a lazy import
+   of its `PageClient`. The nav rail reads the same table, so a screen cannot exist in the
+   router and be missing from the rail.
+2. **The API paths it reads, in `src-tauri/src/proxy.rs`.** Read them off the page rather
+   than guessing — every `/api/` string reachable from its imports. A trailing slash in that
+   list means "and everything under it"; without one the match is exact, which is what stops
+   `/api/subscription` quietly reaching a `/cancel` somebody adds later.
+3. **`deviceAccess: true` on those routes**, in the website's tree. Both ends have to agree:
+   a path missing from step 2 is never sent, and a route missing the flag answers 401.
+
+Then `npm run typecheck`. It compiles the website's tree under this app's config, which is
+where a missing shim or an unresolvable import shows up first.
+
+**This only works for a page the website renders on the client** — one with `"use client"`
+or a `PageClient.tsx`. An `async` server component (most of esports, academy and marketing)
+calls its domain services directly and has no API route behind it, so it needs one written
+first. ADR-043 has the count: 60 pages of the website's 108 are liftable as they stand.
+
+**What is deliberately not shimmed.** `src/compat/` covers `next/link`, `next/image`,
+`next/navigation`, `next/dynamic` and `next-auth/react` — the whole Next surface the
+website's client components touch. Anything else fails the typecheck rather than failing
+quietly at run time, and that is the intended behaviour: the shim list is a statement about
+what this app can render, and it should be edited on purpose.
 
 ### Where it points
 

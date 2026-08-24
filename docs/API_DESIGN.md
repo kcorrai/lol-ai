@@ -3206,6 +3206,36 @@ capability token is the whole of its claim. That is the same pattern as the over
 The token is minted by `POST /api/desktop/pair` and returned by nothing else, ever. The
 Rust core writes it straight to the OS credential store; it never enters the webview.
 
+### `deviceAccess` — the device token outside `/api/desktop/*`
+
+Since [ADR-043](./adr/ADR-043-desktop-pages-reuse-the-website-client.md) the desktop app
+renders the website's own client screens, and those screens call the website's ordinary
+routes. So `withAuth` takes a device token as well as a session cookie — but only where the
+route has said so:
+
+```ts
+export const GET = withAuth(async (req, { userId }) => { … }, { deviceAccess: true });
+```
+
+**Off by default, and the default is the design.** ADR-038's rule applies to every route
+that opts in: it must never do anything a stolen device token should not be able to do. A
+device token sits in a credential store on a machine that may be shared, resold or stolen,
+so nothing that changes a credential is eligible — sessions, the second factor, password
+changes, billing and account deletion are reachable only from a browser the player is
+sitting in front of.
+
+Three properties are worth knowing when opting a route in:
+
+- **A session always wins.** If a request carries both, the cookie is used. It is the
+  stronger claim and the only one that carries an email address and a second-factor state.
+- **`userEmail` is null** for a device-authenticated request, deliberately. The three routes
+  that read it — account deletion, 2FA setup and checkout — are exactly the ones a device
+  token must never reach.
+- **Both ends have to agree.** The desktop's own allowlist lives in
+  `desktop/src-tauri/src/proxy.rs`; a path missing from it is never sent, and a route
+  missing the flag answers 401. The 401 is the same one an unknown token gets, so walking
+  the API with a bearer token cannot be used to map which routes opted in.
+
 ### `POST /api/desktop/pairing-code`
 
 Session-authenticated. Mints the code the player types into the app.

@@ -6,4 +6,4 @@ import { getReferralStats } from "@/domains/identity/services/referralService";
 export const GET = withAuth(async (_req: NextRequest, { userId }) => {
   const stats = await getReferralStats(userId);
   return apiSuccess(stats);
-});
+}, { deviceAccess: true });

@@ -6,6 +6,7 @@ mod lcu;
 mod live_client;
 mod live_context;
 mod post_game;
+mod proxy;
 mod secrets;
 
 use api::ApiClient;
@@ -108,6 +109,7 @@ pub fn run() {
             commands::champion_list,
             commands::champion_detail,
             commands::post_game,
+            commands::desktop_fetch,
             commands::open_report,
             commands::lcu_available,
             commands::lcu_champ_select,

@@ -18,4 +18,4 @@ export const GET = withAuth(async (req: NextRequest, { userId }) => {
   await assertOwnsRiotAccount(userId, riotAccountId);
 
   return apiSuccess(await getDuoCandidates(riotAccountId));
-});
+}, { deviceAccess: true });

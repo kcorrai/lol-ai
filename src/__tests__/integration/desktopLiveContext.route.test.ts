@@ -66,7 +66,7 @@ function post(
 }
 
 function account(riotAccount: DesktopAccount["riotAccount"]): DesktopAccount {
-  return { userId: "user-1", email: "k@example.com", name: "Kaan", riotAccount };
+  return { userId: "user-1", email: "k@example.com", name: "Kaan", emailVerified: null, riotAccount };
 }
 
 const LINKED = account({

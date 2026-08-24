@@ -12,7 +12,32 @@
     "skipLibCheck": true,
     "jsx": "react-jsx",
     "types": ["vite/client"],
-    "paths": { "@/*": ["./src/*"] }
+    "paths": {
+      // One copy of the React types, for the same reason `vite.config.ts` dedupes the
+      // runtime: both `node_modules` carry a copy, and 18.3.29 added `bigint` to
+      // `ReactNode` where 18.3.12 has not. Two structurally different `ReactNode`s make
+      // every `forwardRef` and `Suspense` in the website's tree "not a valid JSX element
+      // type" — 50 errors that say nothing about the code.
+      //
+      // The website's copy wins because the website's tree is the one with 1000 files, and
+      // the runtime `react` is 18.3.1 on both sides regardless.
+      "react": ["../node_modules/@types/react"],
+      "react/*": ["../node_modules/@types/react/*"],
+      "react-dom": ["../node_modules/@types/react-dom"],
+      "react-dom/*": ["../node_modules/@types/react-dom/*"],
+      // The framework shims (ADR-043). Same list as `vite.config.ts`, and it has to stay
+      // the same list: a module aliased in one and not the other type-checks against the
+      // real package and bundles against the shim, or the reverse.
+      "next/navigation": ["./src/compat/next-navigation.ts"],
+      "next/dynamic": ["./src/compat/next-dynamic.tsx"],
+      "next/image": ["./src/compat/next-image.tsx"],
+      "next/link": ["./src/compat/next-link.tsx"],
+      "next-auth/react": ["./src/compat/next-auth-react.ts"],
+      // This app first, the website second. TypeScript tries these in order, which is the
+      // same order `webTreeFallback` in `vite.config.ts` tries them in — and safe only
+      // because no path exists under both roots. `aliasCollisions.test.ts` holds that.
+      "@/*": ["./src/*", "../src/*"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist", "src-tauri"]

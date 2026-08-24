@@ -51,6 +51,16 @@ export const desktopAccountSchema = z.object({
   userId: z.string(),
   email: z.string().nullable(),
   name: z.string().nullable(),
+  /**
+   * ISO 8601, or null for an address the player has not confirmed.
+   *
+   * Here because the desktop app renders the website's own dashboard (ADR-043), and the
+   * banner on it asks the session whether the address is verified. Without this the app
+   * would have to guess, and both guesses are wrong: assume verified and an unverified
+   * player never sees the prompt, assume not and every player sees a banner they cannot
+   * act on from this window.
+   */
+  emailVerified: z.string().nullable(),
   riotAccount: z
     .object({
       id: z.string(),

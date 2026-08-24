@@ -15,4 +15,4 @@ export const GET = withAuth(async (req: NextRequest, { userId }) => {
   await assertOwnsRiotAccount(userId, riotAccountId);
   const impact = await getPatchImpact(riotAccountId);
   return apiSuccess(impact);
-});
+}, { deviceAccess: true });

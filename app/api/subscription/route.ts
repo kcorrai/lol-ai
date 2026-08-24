@@ -6,4 +6,4 @@ import { getCurrentSubscription } from "@/lib/subscription/subscriptionService";
 export const GET = withAuth(async (_req: NextRequest, { userId }) => {
   const subscription = await getCurrentSubscription(userId);
   return apiSuccess(subscription);
-});
+}, { deviceAccess: true });

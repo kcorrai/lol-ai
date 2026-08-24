@@ -63,6 +63,9 @@ pub struct Account {
     pub user_id: String,
     pub email: Option<String>,
     pub name: Option<String>,
+    /// ISO 8601, or null for an address the player has not confirmed. Read by the website's
+    /// own verification banner, which the dashboard renders here too (ADR-043).
+    pub email_verified: Option<String>,
     /// Null when the player has linked no Riot account. A real state the UI has to say out
     /// loud rather than showing an empty dashboard.
     pub riot_account: Option<RiotAccount>,
@@ -309,6 +312,7 @@ mod tests {
                 "userId": "user-1",
                 "email": "k@example.com",
                 "name": "Kaan",
+                "emailVerified": "2026-08-01T00:00:00.000Z",
                 "riotAccount": {
                     "id": "riot-1",
                     "gameName": "kaanproak0",
@@ -324,6 +328,13 @@ mod tests {
 
         assert_eq!(parsed.device.label, "KAAN-PC");
         assert_eq!(parsed.account.user_id, "user-1");
+        // The field this mirror most recently gained. Dropping one on this side is silent:
+        // serde fills it with `None` and the panel that reads it renders as though the
+        // player had never confirmed their address.
+        assert_eq!(
+            parsed.account.email_verified.as_deref(),
+            Some("2026-08-01T00:00:00.000Z")
+        );
         assert_eq!(parsed.account.riot_account.unwrap().game_name, "kaanproak0");
     }
 
@@ -335,11 +346,13 @@ mod tests {
             "userId": "user-1",
             "email": null,
             "name": null,
+            "emailVerified": null,
             "riotAccount": null
         }))
         .unwrap();
 
         assert!(parsed.riot_account.is_none());
+        assert!(parsed.email_verified.is_none());
     }
 
     /// The token is what the app is not allowed to hand upwards. `Pairing` is the shape the
@@ -360,6 +373,7 @@ mod tests {
                 user_id: "user-1".into(),
                 email: None,
                 name: None,
+                email_verified: None,
                 riot_account: None,
             },
         };

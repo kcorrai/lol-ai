@@ -1,15 +1,21 @@
-import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { fileURLToPath, URL } from "node:url";
-
-const repoRoot = fileURLToPath(new URL("..", import.meta.url));
+import { defineConfig } from "vite";
+import { aliases, repoRoot, webTreeFallback } from "./aliases.ts";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [webTreeFallback(), react()],
   resolve: {
-    alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
-    },
+    alias: aliases,
+    // This repository has two `node_modules`: this app's, and the website's at the root.
+    // A website component imported from `../src` resolves its packages from the root one
+    // and a screen here resolves from this one — so without this, the bundle carries two
+    // Reacts and two query clients. Two Reacts is "Invalid hook call" on first render; two
+    // query clients is "No QueryClient set" from every website hook, because a provider
+    // from one copy cannot be seen through the other's context.
+    //
+    // Not solvable by installing the packages here: the root `node_modules` is a junction
+    // shared by every git worktree, and an install at either end has detached one before.
+    dedupe: ["react", "react-dom", "@tanstack/react-query", "zustand", "lucide-react"],
   },
   server: {
     port: 3010,
@@ -17,8 +23,9 @@ export default defineConfig({
     // silent port change means the app loads whatever *else* is on that port — in practice
     // a stale dev server from a previous run, serving a bundle from before your edits.
     strictPort: true,
-    // The stylesheet and the API contract both live in the website's tree, one level up.
-    // Without this the dev server refuses to serve them and the app boots unstyled.
+    // The stylesheet, the API contract and — since ADR-043 — the screens themselves all
+    // live in the website's tree, one level up. Without this the dev server refuses to
+    // serve them and the app boots unstyled.
     fs: { allow: [repoRoot] },
   },
   // Tauri swallows the default esbuild target's newer syntax on some WebView2 builds;

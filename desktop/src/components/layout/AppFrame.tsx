@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { NavRail, type ScreenId } from "./NavRail";
+import { NavRail } from "./NavRail";
 import { StatusChip, type ConnectionState } from "./StatusChip";
 
 /**
@@ -15,8 +15,8 @@ export function AppFrame({
   connection,
   children,
 }: {
-  active: ScreenId;
-  onSelect: (id: ScreenId) => void;
+  active: string;
+  onSelect: (path: string) => void;
   connection: ConnectionState;
   children: ReactNode;
 }): React.ReactElement {
