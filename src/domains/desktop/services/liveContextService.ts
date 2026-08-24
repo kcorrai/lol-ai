@@ -10,13 +10,13 @@ import type {
   LiveChallenge,
   LiveContext,
   LiveContextRequest,
-  LiveItem,
   LiveHabit,
   LiveMetaMatchup,
   LivePersonalMatchup,
 } from "@/domains/desktop/contract";
 import { fetchAllChampions, type DdragonChampionSummary } from "@/lib/ddragon/championsData";
 import { fetchItems, type ItemInfo } from "@/lib/ddragon/itemsData";
+import { toLiveBuild } from "@/domains/desktop/services/liveBuild";
 
 // What the website knows about the game the desktop app is watching (ADR-038, phase 4).
 //
@@ -173,20 +173,7 @@ async function readBuild(
   if (!build) return null;
 
   const catalogue = await fetchItems().catch(() => new Map<number, ItemInfo>());
-  const name = (itemId: number): LiveItem => ({
-    id: itemId,
-    name: catalogue.get(itemId)?.name ?? "",
-  });
-
-  return {
-    skillOrder: build.skillOrder,
-    skillMaxOrder: build.skillMaxOrder,
-    starters: (build.starterItems?.ids ?? []).map(name),
-    core: (build.coreItems?.ids ?? []).map(name),
-    boots: (build.boots?.ids ?? []).map(name),
-    games: build.coreItems?.games ?? 0,
-    winRate: build.coreItems?.winRate ?? 0,
-  };
+  return toLiveBuild(build, catalogue);
 }
 
 function toChallenge(challenge: ChallengeWithProgress): LiveChallenge {

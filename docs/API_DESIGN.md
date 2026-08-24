@@ -3375,6 +3375,81 @@ an app and a dashboard that both noticed the same game end from pulling the same
 twice. It goes out through the same `riot/sync.requested` event the website's sync button
 sends, so the two paths cannot drift.
 
+### `GET /api/desktop/champions`
+
+**Device-token authenticated**, through `withDeviceAuth`. One lane's champions, for the
+companion's champion browser (LA-75, [ADR-042](./adr/ADR-042-desktop-pages-read-through-the-desktop-api.md)).
+The eighth desktop endpoint and the first that answers with nothing personal at all.
+
+**Query:** `role` — any spelling `parsePosition` takes, so `mid` and `MIDDLE` are the same
+lane. Missing or unrecognised is a `422`, not a default: a list for a lane the caller did
+not ask for is worse than no list.
+
+**200** `{ position, patch, entries }`, `Cache-Control: no-store`. Each entry carries
+`championKey`, `name`, `tier`, `rank`, `winRate`, `pickRate`, `banRate`, `games` and
+`lowConfidence`, validated against `src/domains/desktop/championsContract.ts`.
+
+Picks under 0.3% of the lane are absent, because `getTierList` drops them — this is a read
+of the meta, not a roster.
+
+| Status | Code                        | When                                          |
+| ------ | --------------------------- | --------------------------------------------- |
+| `401`  | `UNAUTHORIZED`              | Missing, malformed, unknown or revoked token  |
+| `422`  | `VALIDATION_ERROR`          | Missing or unrecognised `role`                |
+| `503`  | `META_SNAPSHOT_UNAVAILABLE` | The patch snapshot could not be reached       |
+| `429`  | —                           | Rate limited: 120 per 10 minutes per device   |
+
+**Device-authenticated even though the data is public.** It could have been open — nothing
+here belongs to one account. Keeping the token gives every `/api/desktop/*` endpoint one
+authentication story and gives the rate limit a device to key on, which is the only
+identity a caller with no cookie jar has.
+
+**503 rather than an empty list.** An unreachable feed and a lane with no champions are
+different states; one is worth retrying and the other is an answer.
+
+### `GET /api/desktop/champions/[key]`
+
+**Device-token authenticated**, through `withDeviceAuth`. One champion in one lane — its
+record, its build, and what beats it.
+
+**Path:** the Data Dragon id — `Ahri`, `MonkeyKing`, `Nunu&Willump`. Read out of
+`req.nextUrl.pathname` rather than a `params` argument, because `withDeviceAuth` forwards
+only the request and the device; the same thing `/api/teams/[teamId]` does. Checked against
+`/^[A-Za-z&'. ]{1,32}$/` before it reaches a service.
+
+**Query:** `role`, as above.
+
+**200** `{ champion, position, patch, availablePositions, stats, build, counteredBy, goodInto }`,
+`Cache-Control: no-store`.
+
+`position` is the lane the website **resolved**, which is not always the one asked for: a
+champion nobody plays in that lane is answered in the lane it is played in, and
+`availablePositions` is what lets the app say so rather than showing an empty page.
+
+`build` is the same `liveBuild` shape `/api/desktop/live-context` answers with, so the app
+renders one build component and not two. **Item names, never ids or icon URLs** — the
+companion's content policy is `img-src 'self' data:`, so a Data Dragon URL would render as
+a broken frame. Null when the snapshot carries no build for this champion and lane.
+
+`subjectWinRate` means the subject champion's rate in **both** lists — under 50 in
+`counteredBy`, 50 or over in `goodInto` — so one number does not change meaning between two
+columns on the same screen.
+
+| Status | Code                 | When                                                    |
+| ------ | -------------------- | ------------------------------------------------------- |
+| `401`  | `UNAUTHORIZED`       | Missing, malformed, unknown or revoked token            |
+| `422`  | `VALIDATION_ERROR`   | Malformed key, or missing/unrecognised `role`           |
+| `404`  | `RESOURCE_NOT_FOUND` | Unknown champion, **and** one the snapshot has no entry for |
+| `429`  | —                    | Rate limited: 120 per 10 minutes per device             |
+
+Unknown and not-in-the-snapshot answer identically because the app can act on neither, and
+telling them apart would mean guessing which applies.
+
+**Both endpoints read op.gg.** `championBrowserService` is the whole of the desktop app's
+exposure to that feed for these screens — one file, two calls into `@/domains/meta`. LA-70
+is the work of leaving the feed, and when it lands that file is what changes, not the routes
+above it or the screens above those.
+
 ## Scheduled endpoints (Vercel Cron)
 
 Not part of the public surface and not reachable without the secret: `checkCronAuth` requires
