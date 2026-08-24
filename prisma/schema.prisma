@@ -592,6 +592,9 @@ model RankedHistory {
   // mirrored here, which is how schema.prisma and the migration history drifted apart (LA-15).
   // The `map` keeps the hand-written name the database already has.
   @@index([riotAccountId, recordedAt(sort: Desc)], map: "idx_ranked_history_account_recorded")
+  // The leaderboard asks for every snapshot in a window across all accounts. Both indexes above
+  // lead with riotAccountId, so neither can answer that — it was a sequential scan.
+  @@index([queueType, recordedAt])
   @@map("ranked_history")
 }
 

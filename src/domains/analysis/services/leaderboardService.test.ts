@@ -1,329 +1,186 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { getLeaderboard } from "./leaderboardService";
 
 vi.mock("@/lib/db/prismaReadonly", () => ({
-  prismaReadonly: {
-    rankedHistory: { findMany: vi.fn() },
-  },
+  prismaReadonly: { $queryRaw: vi.fn() },
 }));
 
-import { prismaReadonly as prisma } from "@/lib/db/prismaReadonly";
+vi.mock("@/lib/cache/redisCache", () => ({
+  redisCacheGet: vi.fn(),
+  redisCacheSet: vi.fn(),
+}));
 
-function makeEntry(overrides: {
-  riotAccountId: string;
-  tier: string;
-  division: string;
-  lp: number;
-  wins: number;
-  losses: number;
-  recordedAt: Date;
+import { getLeaderboard } from "./leaderboardService";
+import { prismaReadonly } from "@/lib/db/prismaReadonly";
+import { redisCacheGet, redisCacheSet } from "@/lib/cache/redisCache";
+
+const queryRaw = vi.mocked(prismaReadonly.$queryRaw);
+const cacheGet = vi.mocked(redisCacheGet);
+const cacheSet = vi.mocked(redisCacheSet);
+
+/**
+ * One row per account — where it started the window and where it ended it. This is the shape the
+ * database now returns; the service no longer sees the snapshots in between, because they never
+ * leave Postgres.
+ */
+function bounds(overrides: {
+  first: [tier: string, division: string, lp: number, wins: number, losses: number];
+  last: [tier: string, division: string, lp: number, wins: number, losses: number];
   gameName?: string;
-  tagLine?: string;
-  profileIconId?: number;
   profileSlug?: string;
+  profileIconId?: number | null;
 }) {
+  const [firstTier, firstDivision, firstLp, firstWins, firstLosses] = overrides.first;
+  const [lastTier, lastDivision, lastLp, lastWins, lastLosses] = overrides.last;
   return {
-    riotAccountId: overrides.riotAccountId,
-    tier: overrides.tier,
-    division: overrides.division,
-    lp: overrides.lp,
-    wins: overrides.wins,
-    losses: overrides.losses,
-    recordedAt: overrides.recordedAt,
-    riotAccount: {
-      gameName: overrides.gameName ?? "KaaN",
-      tagLine: overrides.tagLine ?? "TR1",
-      profileIconId: overrides.profileIconId ?? 1234,
-      user: { profileSlug: overrides.profileSlug ?? "KaaN-TR1" },
-    },
+    gameName: overrides.gameName ?? "KaaN",
+    tagLine: "TR1",
+    profileIconId: overrides.profileIconId ?? 1234,
+    profileSlug: overrides.profileSlug ?? "KaaN-TR1",
+    firstTier,
+    firstDivision,
+    firstLp,
+    firstWins,
+    firstLosses,
+    lastTier,
+    lastDivision,
+    lastLp,
+    lastWins,
+    lastLosses,
   };
 }
 
 describe("getLeaderboard", () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it("returns empty array when no history entries", async () => {
-    vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([]);
-
-    const result = await getLeaderboard("week");
-
-    expect(result).toEqual([]);
+  beforeEach(() => {
+    vi.clearAllMocks();
+    cacheGet.mockResolvedValue(null);
+    cacheSet.mockResolvedValue(true);
   });
 
-  it("excludes accounts with fewer than 2 history entries", async () => {
-    vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([
-      makeEntry({
-        riotAccountId: "acc-1",
-        tier: "GOLD",
-        division: "II",
-        lp: 50,
-        wins: 10,
-        losses: 5,
-        recordedAt: new Date(),
-      }),
+  it("returns an empty list when nothing qualified", async () => {
+    queryRaw.mockResolvedValue([] as never);
+
+    expect(await getLeaderboard("week")).toEqual([]);
+  });
+
+  it("computes lpGained across divisions", async () => {
+    // GOLD II 50LP = 3*400 + 2*100 + 50 = 1450; GOLD I 75LP = 3*400 + 3*100 + 75 = 1575.
+    queryRaw.mockResolvedValue([
+      bounds({ first: ["GOLD", "II", 50, 10, 5], last: ["GOLD", "I", 75, 14, 7] }),
     ] as never);
 
-    const result = await getLeaderboard("week");
+    const [entry] = await getLeaderboard("week");
 
-    expect(result).toHaveLength(0);
+    expect(entry.lpGained).toBe(125);
+    expect(entry.wins).toBe(4);
+    expect(entry.losses).toBe(2);
+    expect(entry.displayName).toBe("KaaN#TR1");
+    expect(entry.currentTier).toBe("GOLD");
+    expect(entry.currentDivision).toBe("I");
+    expect(entry.currentLp).toBe(75);
   });
 
-  it("excludes accounts with fewer than 3 games played in the period", async () => {
-    const t0 = new Date("2024-01-01");
-    const t1 = new Date("2024-01-07");
-    vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([
-      makeEntry({
-        riotAccountId: "acc-1",
-        tier: "GOLD",
-        division: "II",
-        lp: 50,
-        wins: 10,
-        losses: 5,
-        recordedAt: t0,
-      }),
-      makeEntry({
-        riotAccountId: "acc-1",
-        tier: "GOLD",
-        division: "II",
-        lp: 75,
-        wins: 11,
-        losses: 6,
-        recordedAt: t1,
-      }),
-      // wins diff = 1, losses diff = 1 → 2 games → excluded
+  it("computes winRate from the games played inside the window", async () => {
+    // 10/10 → 16/14 is six wins and four losses, not a 53% lifetime rate.
+    queryRaw.mockResolvedValue([
+      bounds({ first: ["GOLD", "II", 0, 10, 10], last: ["GOLD", "II", 50, 16, 14] }),
     ] as never);
 
-    const result = await getLeaderboard("week");
+    const [entry] = await getLeaderboard("week");
 
-    expect(result).toHaveLength(0);
+    expect(entry.winRate).toBe(60);
   });
 
-  it("correctly computes lpGained across tiers", async () => {
-    const t0 = new Date("2024-01-01");
-    const t1 = new Date("2024-01-07");
-    // GOLD II 50LP → GOLD I 75LP
-    // DIVISION_ORDER: IV=0, III=1, II=2, I=3
-    // Gold II 50LP = 3*400 + 2*100 + 50 = 1450
-    // Gold I  75LP = 3*400 + 3*100 + 75 = 1575
-    // lpGained = 125
-    vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([
-      makeEntry({
-        riotAccountId: "acc-1",
-        tier: "GOLD",
-        division: "II",
-        lp: 50,
-        wins: 10,
-        losses: 5,
-        recordedAt: t0,
+  it("sorts by lpGained and numbers the ranks from one", async () => {
+    queryRaw.mockResolvedValue([
+      bounds({
+        first: ["GOLD", "II", 0, 5, 2],
+        last: ["GOLD", "II", 100, 10, 5],
+        profileSlug: "small",
       }),
-      makeEntry({
-        riotAccountId: "acc-1",
-        tier: "GOLD",
-        division: "I",
-        lp: 75,
-        wins: 14,
-        losses: 7,
-        recordedAt: t1,
-      }),
-    ] as never);
-
-    const result = await getLeaderboard("week");
-
-    expect(result).toHaveLength(1);
-    expect(result[0].lpGained).toBe(125);
-    expect(result[0].wins).toBe(4);
-    expect(result[0].losses).toBe(2);
-  });
-
-  it("sorts entries by lpGained descending", async () => {
-    const t0 = new Date("2024-01-01");
-    const t1 = new Date("2024-01-07");
-    vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([
-      // acc-1: small gain (100 LP)
-      makeEntry({
-        riotAccountId: "acc-1",
-        tier: "GOLD",
-        division: "II",
-        lp: 0,
-        wins: 5,
-        losses: 2,
-        recordedAt: t0,
-        profileSlug: "p1",
-      }),
-      makeEntry({
-        riotAccountId: "acc-1",
-        tier: "GOLD",
-        division: "II",
-        lp: 100,
-        wins: 10,
-        losses: 5,
-        recordedAt: t1,
-        profileSlug: "p1",
-      }),
-      // acc-2: larger gain (500 LP)
-      makeEntry({
-        riotAccountId: "acc-2",
-        tier: "SILVER",
-        division: "I",
-        lp: 0,
-        wins: 5,
-        losses: 2,
-        recordedAt: t0,
+      bounds({
+        first: ["SILVER", "I", 0, 5, 2],
+        last: ["GOLD", "II", 0, 10, 5],
         gameName: "Faker",
-        profileSlug: "p2",
-      }),
-      makeEntry({
-        riotAccountId: "acc-2",
-        tier: "GOLD",
-        division: "II",
-        lp: 0,
-        wins: 10,
-        losses: 5,
-        recordedAt: t1,
-        gameName: "Faker",
-        profileSlug: "p2",
+        profileSlug: "big",
       }),
     ] as never);
 
     const result = await getLeaderboard("week");
 
-    expect(result[0].displayName).toBeTruthy();
-    expect(result[0].lpGained).toBeGreaterThan(result[1].lpGained);
+    expect(result.map((r) => r.profileSlug)).toEqual(["big", "small"]);
+    expect(result.map((r) => r.rank)).toEqual([1, 2]);
   });
 
-  it("assigns sequential rank starting from 1", async () => {
-    const t0 = new Date("2024-01-01");
-    const t1 = new Date("2024-01-07");
-    vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([
-      makeEntry({
-        riotAccountId: "acc-1",
-        tier: "GOLD",
-        division: "II",
-        lp: 0,
-        wins: 5,
-        losses: 2,
-        recordedAt: t0,
-        profileSlug: "p1",
-      }),
-      makeEntry({
-        riotAccountId: "acc-1",
-        tier: "GOLD",
-        division: "II",
-        lp: 100,
-        wins: 10,
-        losses: 5,
-        recordedAt: t1,
-        profileSlug: "p1",
-      }),
-      makeEntry({
-        riotAccountId: "acc-2",
-        tier: "SILVER",
-        division: "I",
-        lp: 50,
-        wins: 5,
-        losses: 2,
-        recordedAt: t0,
-        gameName: "Faker",
-        profileSlug: "p2",
-      }),
-      makeEntry({
-        riotAccountId: "acc-2",
-        tier: "GOLD",
-        division: "I",
-        lp: 0,
-        wins: 10,
-        losses: 5,
-        recordedAt: t1,
-        gameName: "Faker",
-        profileSlug: "p2",
-      }),
-    ] as never);
+  it("caps the board at 50 entries", async () => {
+    queryRaw.mockResolvedValue(
+      Array.from({ length: 60 }, (_, i) =>
+        bounds({
+          first: ["GOLD", "II", 0, 5, 2],
+          last: ["GOLD", "II", i, 15, 5],
+          profileSlug: `slug-${i}`,
+        })
+      ) as never
+    );
 
-    const result = await getLeaderboard("week");
-
-    expect(result.length).toBeGreaterThan(0);
-    result.forEach((entry, i) => {
-      expect(entry.rank).toBe(i + 1);
-    });
+    expect(await getLeaderboard("week")).toHaveLength(50);
   });
 
-  it("caps leaderboard at 50 entries", async () => {
-    const t0 = new Date("2024-01-01");
-    const t1 = new Date("2024-01-07");
-    // Create 60 accounts each with 10 games played
-    const entries = Array.from({ length: 60 }, (_, i) => [
-      makeEntry({
-        riotAccountId: `acc-${i}`,
-        tier: "GOLD",
-        division: "II",
-        lp: 0,
-        wins: 5,
-        losses: 2,
-        recordedAt: t0,
-        profileSlug: `slug-${i}`,
-      }),
-      makeEntry({
-        riotAccountId: `acc-${i}`,
-        tier: "GOLD",
-        division: "II",
-        lp: 50,
-        wins: 15,
-        losses: 5,
-        recordedAt: t1,
-        profileSlug: `slug-${i}`,
-      }),
-    ]).flat();
-
-    vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue(entries as never);
-
-    const result = await getLeaderboard("week");
-
-    expect(result.length).toBeLessThanOrEqual(50);
-  });
-
-  it("computes winRate correctly", async () => {
-    const t0 = new Date("2024-01-01");
-    const t1 = new Date("2024-01-07");
-    // 6 wins, 4 losses → 60% WR
-    vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([
-      makeEntry({
-        riotAccountId: "acc-1",
-        tier: "GOLD",
-        division: "II",
-        lp: 0,
-        wins: 10,
-        losses: 10,
-        recordedAt: t0,
-      }),
-      makeEntry({
-        riotAccountId: "acc-1",
-        tier: "GOLD",
-        division: "II",
-        lp: 50,
-        wins: 16,
-        losses: 14,
-        recordedAt: t1,
-      }),
-    ] as never);
-
-    const result = await getLeaderboard("week");
-
-    expect(result[0].winRate).toBe(60);
-    expect(result[0].wins).toBe(6);
-    expect(result[0].losses).toBe(4);
-  });
-
-  it("uses 30-day window for monthly period", async () => {
-    vi.mocked(prisma.rankedHistory.findMany).mockResolvedValue([]);
+  // The thresholds moved into SQL precisely so a non-qualifying account is never transferred.
+  // Asserting them in TypeScript would assert the opposite of what the change is for, so what is
+  // pinned here is that the query carries them and the window it names.
+  it("asks the database for the window and both thresholds", async () => {
+    queryRaw.mockResolvedValue([] as never);
 
     await getLeaderboard("month");
 
-    const callArg = vi.mocked(prisma.rankedHistory.findMany).mock.calls[0][0] as {
-      where: { recordedAt: { gte: Date } };
-    };
-    const since = callArg.where.recordedAt.gte;
+    const values = queryRaw.mock.calls[0]!.slice(1) as unknown[];
+    const since = values.find((v): v is Date => v instanceof Date)!;
     const diffDays = (Date.now() - since.getTime()) / (1000 * 60 * 60 * 24);
+
     expect(diffDays).toBeGreaterThanOrEqual(29);
     expect(diffDays).toBeLessThanOrEqual(31);
+    expect(values).toContain(2); // minimum snapshots
+    expect(values).toContain(3); // minimum games played
+  });
+
+  it("uses a 7-day window for the weekly period", async () => {
+    queryRaw.mockResolvedValue([] as never);
+
+    await getLeaderboard("week");
+
+    const since = (queryRaw.mock.calls[0]!.slice(1) as unknown[]).find(
+      (v): v is Date => v instanceof Date
+    )!;
+    const diffDays = (Date.now() - since.getTime()) / (1000 * 60 * 60 * 24);
+
+    expect(diffDays).toBeGreaterThanOrEqual(6);
+    expect(diffDays).toBeLessThanOrEqual(8);
+  });
+
+  // The route reads searchParams, so `revalidate` does nothing and every request would otherwise
+  // reach Postgres. This cache is the only layer that can stop it.
+  it("serves a cached board without touching the database", async () => {
+    cacheGet.mockResolvedValue([{ rank: 1, profileSlug: "cached" }]);
+
+    const result = await getLeaderboard("week");
+
+    expect(result).toEqual([{ rank: 1, profileSlug: "cached" }]);
+    expect(queryRaw).not.toHaveBeenCalled();
+  });
+
+  it("caches per period, so the weekly board cannot be served for the monthly one", async () => {
+    queryRaw.mockResolvedValue([] as never);
+
+    await getLeaderboard("week");
+    await getLeaderboard("month");
+
+    expect(cacheGet.mock.calls.map((c) => c[0])).toEqual([
+      "leaderboard:v1:week",
+      "leaderboard:v1:month",
+    ]);
+    expect(cacheSet.mock.calls.map((c) => c[0])).toEqual([
+      "leaderboard:v1:week",
+      "leaderboard:v1:month",
+    ]);
   });
 });
