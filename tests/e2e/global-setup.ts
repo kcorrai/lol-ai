@@ -162,6 +162,8 @@ async function seedTestData(prisma: Awaited<ReturnType<typeof createTestPrisma>>
         matchId: match.id,
         riotAccountId: riotAccount.id,
         puuid: E2E_RIOT_PRE.mockPuuid,
+        queueType: "RANKED_SOLO_5x5",
+        gameStart,
         // A real synced participant carries the Riot ID, and the scoreboard
         // prints it as the link to that player's profile — which the guided
         // journey spotlights. Without it the row falls back to the position and

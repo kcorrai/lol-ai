@@ -455,6 +455,12 @@ model MatchParticipant {
   matchId             String        @db.Uuid
   riotAccountId       String?       @db.Uuid
   puuid               String
+  // Copied from the parent match rather than joined for it (ADR-040). A matches row is written
+  // once by the ingest transaction and never updated, so the copy cannot drift; what it buys is
+  // an index that can serve "this account's recent ranked games" without reaching into matches
+  // for the sort key.
+  queueType           QueueType
+  gameStart           DateTime
   teamId              Int
   championId          Int
   championName        String
@@ -500,6 +506,10 @@ model MatchParticipant {
   // riotAccountId is null for the nine participants that are not a connected
   // account, so opponent- and pre-link lookups must go through puuid instead.
   @@index([puuid])
+  // The account-history access path (ADR-040). Filter by puuid and queue, ordered by recency —
+  // which is what almost every analysis service asks for, and what no index could serve while
+  // gameStart lived only on matches.
+  @@index([puuid, queueType, gameStart(sort: Desc)])
   @@map("match_participants")
 }
 

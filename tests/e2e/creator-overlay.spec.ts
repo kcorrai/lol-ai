@@ -159,6 +159,8 @@ test.describe("Streamer Kit overlay", () => {
           matchId: match.id,
           riotAccountId: creatorState.riotAccountId,
           puuid: E2E_RIOT_PRE.mockPuuid,
+          queueType: "RANKED_SOLO_5x5",
+          gameStart: minutesAgo(26),
           teamId: 100,
           championId: 222,
           championName: "Jinx",

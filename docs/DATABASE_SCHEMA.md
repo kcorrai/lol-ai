@@ -198,6 +198,8 @@ Per-player stats for each match. Links a player (riot_account) to a match.
 | `match_id`              | `uuid`         | FK → matches.id, NOT NULL       |                                                |
 | `riot_account_id`       | `uuid`         | FK → riot_accounts.id, NULLABLE | Null for non-tracked players                   |
 | `puuid`                 | `varchar(78)`  | NOT NULL                        | For non-tracked players too                    |
+| `queue_type`            | `QueueType`    | NOT NULL                        | Copied from the parent match — see ADR-040     |
+| `game_start`            | `timestamp(3)` | NOT NULL                        | Copied from the parent match — see ADR-040     |
 | `team_id`               | `int`          | NOT NULL                        | 100 or 200                                     |
 | `champion_id`           | `int`          | NOT NULL                        | Riot champion ID                               |
 | `champion_name`         | `varchar(50)`  | NOT NULL                        |                                                |
@@ -234,6 +236,12 @@ Per-player stats for each match. Links a player (riot_account) to a match.
 - `INDEX (match_id)`
 - `INDEX (riot_account_id, match_id)` — user's own games
 - `INDEX (riot_account_id, champion_id)` — per-champion history
+- `INDEX (puuid)` — opponents and pre-link lookups, where `riot_account_id` is null
+- `INDEX (puuid, queue_type, game_start DESC)` — the account-history access path. `queue_type`
+  and `game_start` are duplicated from `matches` precisely so this index can exist: the sort key
+  used to live on the other table, which meant no index could serve it and Postgres walked
+  `matches` backwards discarding nine rows in ten. 532 buffers → 23 on 200k rows. The copy cannot
+  drift because a `matches` row is never updated after ingest. See ADR-040.
 
 ---
 

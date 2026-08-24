@@ -28,11 +28,21 @@ function mapPosition(teamPosition: string): Position {
   return valid[teamPosition] ?? "UTILITY";
 }
 
+/**
+ * `queueType` and `gameStart` are the parent match's own values, written onto the child row.
+ *
+ * They are duplicated, deliberately (ADR-040): a matches row is created once by the ingest
+ * transaction and never updated, so the copy has nothing to drift from, and having them here is
+ * what lets an index answer "this account's recent ranked games" without reaching into matches
+ * for the sort key.
+ */
 function mapParticipant(
   p: ParticipantDTO,
   matchDbId: string,
   gameDurationSeconds: number,
-  riotAccountId: string | null
+  riotAccountId: string | null,
+  queueType: QueueType,
+  gameStart: Date
 ): Prisma.MatchParticipantCreateManyInput {
   const cs = p.totalMinionsKilled + p.neutralMinionsKilled;
   const minutes = gameDurationSeconds / 60;
@@ -44,6 +54,8 @@ function mapParticipant(
     matchId: matchDbId,
     riotAccountId,
     puuid: p.puuid,
+    queueType,
+    gameStart,
     teamId: p.teamId,
     championId: p.championId,
     championName: p.championName,
@@ -145,7 +157,14 @@ export function mapMatch(
   };
 
   const participants = dto.info.participants.map((p) =>
-    mapParticipant(p, matchDbId, durationSeconds, p.puuid === trackedPuuid ? riotAccountId : null)
+    mapParticipant(
+      p,
+      matchDbId,
+      durationSeconds,
+      p.puuid === trackedPuuid ? riotAccountId : null,
+      queueType,
+      gameStart
+    )
   );
 
   return { queueType, match, participants };
