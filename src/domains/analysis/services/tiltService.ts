@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
 import { getAiClient } from "@/lib/ai/client";
+import { getCached, setCached, buildCacheKey } from "@/lib/ai/aiCache";
 import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 
 export type TiltLevel = "focused" | "caution" | "tilting";
@@ -106,6 +107,22 @@ export async function generateTiltRecoveryMessage(
       : "?";
   const champs = recentMatches.map((m) => m.championName).join(", ");
 
+  // The only AI call site in the codebase that had no cache at all. Its siblings — recapService,
+  // heatmapService, challengeGenerationService — all key on exactly the values that go into the
+  // prompt, so a hit can never answer a different question than the one asked, and this follows
+  // them rather than inventing a third shape.
+  //
+  // Worth being honest about the ceiling: `champs` is a per-player list, so the hit rate is
+  // bounded by how often two players tilt on the same champions with the same streak. Dropping the
+  // champion list from the prompt would make this genuinely cacheable — the message is generic
+  // break advice and barely uses it — but that changes what the model is asked, which is a product
+  // decision and not part of adding a cache.
+  const cacheKey = buildCacheKey("tilt-message", { streak: String(streak), champs, avgDeaths });
+  const cached = await getCached(cacheKey);
+  if (cached && typeof (cached as { message?: unknown }).message === "string") {
+    return (cached as { message: string }).message;
+  }
+
   const ai = getAiClient("tilt-message");
   const result = await ai.complete(
     "You are an empathetic but direct League of Legends coach.",
@@ -116,5 +133,7 @@ export async function generateTiltRecoveryMessage(
     { maxTokens: 120 }
   );
 
-  return result.content.trim().replace(/^"|"$/g, "");
+  const message = result.content.trim().replace(/^"|"$/g, "");
+  await setCached(cacheKey, "tilt-message", { message }, 7);
+  return message;
 }
