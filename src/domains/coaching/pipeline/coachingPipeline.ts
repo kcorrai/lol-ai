@@ -3,6 +3,7 @@ import * as Sentry from "@sentry/nextjs";
 import { prisma } from "@/lib/db/prisma";
 import { logger } from "@/lib/utils/logger";
 import { getAiClient } from "@/lib/ai/client";
+import { estimateCostUsd } from "@/lib/ai/pricing";
 import { parseCoachingResponse } from "@/lib/ai/responseParser";
 import { buildCoachingInput } from "@/domains/coaching/pipeline/dataPreparator";
 import { buildPrompt } from "@/domains/coaching/pipeline/promptBuilder";
@@ -56,6 +57,9 @@ async function callAiAndPersist(
       promptTokens,
       completionTokens,
       totalTokens,
+      // The column has existed since the first migration and nothing has ever written it. Null
+      // when AI_MODEL_PRICES does not price this model — absent, not free (see pricing.ts).
+      costUsd: estimateCostUsd(model, promptTokens, completionTokens),
       responseRaw: rawContent,
       latencyMs,
       cacheHit: false,

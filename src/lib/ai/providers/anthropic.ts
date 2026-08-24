@@ -3,6 +3,7 @@ import type {
   AiProvider,
   AiCompletionOptions,
   AiCompletionResult,
+  AiStreamUsage,
   ChatMessage,
 } from "@/lib/ai/types";
 import type { AiTier } from "@/lib/ai/client";
@@ -55,7 +56,7 @@ export function createAnthropicProvider(tier: AiTier = "full"): AiProvider {
       systemPrompt: string,
       messages: ChatMessage[],
       options: Pick<AiCompletionOptions, "maxTokens" | "temperature"> = {}
-    ): AsyncGenerator<string, void, unknown> {
+    ): AsyncGenerator<string, AiStreamUsage | undefined, unknown> {
       const stream = await client.messages.create({
         model,
         max_tokens: options.maxTokens ?? 600,
@@ -65,11 +66,31 @@ export function createAnthropicProvider(tier: AiTier = "full"): AiProvider {
         stream: true,
       });
 
+      // Anthropic reports the two halves of a streamed response's usage at opposite ends: input
+      // tokens arrive with `message_start`, output tokens with the closing `message_delta`. Both
+      // are needed before the ledger can be told anything, so they are accumulated here and
+      // returned once the stream is done.
+      let streamModel = model;
+      let promptTokens = 0;
+      let completionTokens = 0;
+      let sawUsage = false;
+
       for await (const chunk of stream) {
+        if (chunk.type === "message_start") {
+          streamModel = chunk.message.model;
+          promptTokens = chunk.message.usage.input_tokens;
+          sawUsage = true;
+        }
+        if (chunk.type === "message_delta") {
+          completionTokens = chunk.usage.output_tokens;
+          sawUsage = true;
+        }
         if (chunk.type === "content_block_delta" && chunk.delta.type === "text_delta") {
           yield chunk.delta.text;
         }
       }
+
+      return sawUsage ? { model: streamModel, promptTokens, completionTokens } : undefined;
     },
   };
 }

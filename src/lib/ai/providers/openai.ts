@@ -3,6 +3,7 @@ import type {
   AiProvider,
   AiCompletionOptions,
   AiCompletionResult,
+  AiStreamUsage,
   ChatMessage,
 } from "@/lib/ai/types";
 import type { AiTier } from "@/lib/ai/client";
@@ -57,19 +58,34 @@ export function createOpenAiProvider(tier: AiTier = "full"): AiProvider {
       systemPrompt: string,
       messages: ChatMessage[],
       options: Pick<AiCompletionOptions, "maxTokens" | "temperature"> = {}
-    ): AsyncGenerator<string, void, unknown> {
+    ): AsyncGenerator<string, AiStreamUsage | undefined, unknown> {
       const stream = await client.chat.completions.create({
         model,
         messages: [{ role: "system", content: systemPrompt }, ...messages],
         max_tokens: options.maxTokens ?? 600,
         temperature: options.temperature ?? 0.7,
         stream: true,
+        // Without this a streamed response reports no token counts at all, and chat — the highest
+        // volume surface on the expensive tier — would be invisible to the usage ledger. The final
+        // chunk carries the totals and has no choices, which the loop below already tolerates.
+        stream_options: { include_usage: true },
       });
 
+      let usage: AiStreamUsage | undefined;
+
       for await (const chunk of stream) {
+        if (chunk.usage) {
+          usage = {
+            model: chunk.model,
+            promptTokens: chunk.usage.prompt_tokens,
+            completionTokens: chunk.usage.completion_tokens,
+          };
+        }
         const token = chunk.choices[0]?.delta?.content;
         if (token) yield token;
       }
+
+      return usage;
     },
   };
 }

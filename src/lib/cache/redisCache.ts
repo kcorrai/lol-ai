@@ -14,6 +14,9 @@ type RedisClient = {
   get: (key: string) => Promise<unknown>;
   set: (key: string, value: unknown, opts: { ex: number }) => Promise<unknown>;
   del: (...keys: string[]) => Promise<unknown>;
+  hincrby: (key: string, field: string, increment: number) => Promise<number>;
+  hgetall: (key: string) => Promise<Record<string, unknown> | null>;
+  expire: (key: string, seconds: number) => Promise<unknown>;
 };
 
 let client: RedisClient | null = null;
@@ -110,6 +113,58 @@ export async function redisCacheDeleteMany(keys: string[]): Promise<void> {
     await redis.del(...keys);
   } catch (err) {
     logger.warn(`[cache] Redis delete failed for ${keys.length} key(s)`, err);
+  }
+}
+
+/**
+ * Adds to counters in a hash, and keeps the whole hash alive for `ttlSeconds`.
+ *
+ * A counter is not a cache entry: `redisCacheSet` would overwrite the running total rather than
+ * add to it, and read-modify-write from the application would lose increments under any
+ * concurrency at all. `HINCRBY` is the operation this actually needs.
+ *
+ * The expiry is refreshed on every write rather than set once, so a key stays alive as long as
+ * something is still counting into it and then falls out on its own. Failure-tolerant like the
+ * rest of this module: losing a counter should never fail the work being counted.
+ */
+export async function redisCacheHashIncrBy(
+  key: string,
+  fields: Record<string, number>,
+  ttlSeconds: number
+): Promise<boolean> {
+  const redis = await getClient();
+  if (!redis) return false;
+
+  try {
+    for (const [field, by] of Object.entries(fields)) {
+      if (by === 0) continue;
+      await redis.hincrby(key, field, by);
+    }
+    await redis.expire(key, Math.max(1, Math.ceil(ttlSeconds)));
+    return true;
+  } catch (err) {
+    logger.warn(`[cache] Redis counter write failed for ${key}`, err);
+    return false;
+  }
+}
+
+/** Every counter in a hash, as numbers. An unreachable Redis and an absent key both read as {}. */
+export async function redisCacheHashGetAll(key: string): Promise<Record<string, number>> {
+  const redis = await getClient();
+  if (!redis) return {};
+
+  try {
+    const raw = await redis.hgetall(key);
+    if (!raw) return {};
+    const out: Record<string, number> = {};
+    for (const [field, value] of Object.entries(raw)) {
+      const n = Number(value);
+      if (Number.isFinite(n)) out[field] = n;
+    }
+    return out;
+  } catch (err) {
+    logger.warn(`[cache] Redis counter read failed for ${key}`, err);
+    return {};
   }
 }
 
