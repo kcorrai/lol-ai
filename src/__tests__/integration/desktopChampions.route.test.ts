@@ -155,21 +155,25 @@ describe("GET /api/desktop/champions/[key]", () => {
     expect(readChampion).toHaveBeenCalledWith("Ahri", "MIDDLE");
   });
 
-  it("takes a Data Dragon id with an ampersand in it", async () => {
-    // "Nunu&Willump" is a real id, and the core sends it unescaped — an ampersand only
-    // separates parameters once a `?` has started a query, and there is none in the path.
-    // A key filter that dropped it would make a champion unreachable.
-    await detail("Nunu&Willump", { role: "top" });
-
-    expect(readChampion).toHaveBeenCalledWith("Nunu&Willump", "TOP");
+  it("takes the ids that look like they carry punctuation but do not", async () => {
+    // The punctuation lives in the display name, never in the id: "Nunu & Willump" is
+    // `Nunu`, "Dr. Mundo" is `DrMundo`, "Wukong" is `MonkeyKing`. A filter written for the
+    // names rather than the ids would make these champions unreachable.
+    for (const key of ["Nunu", "DrMundo", "MonkeyKing", "KSante"]) {
+      await detail(key, { role: "top" });
+      expect(readChampion).toHaveBeenCalledWith(key, "TOP");
+    }
   });
 
-  it("refuses a key that could not be a champion, without asking the service", async () => {
-    await expect(
-      readApiResponse(await detail(encodeURIComponent("../../secrets"), { role: "mid" }))
-    ).resolves.toMatchObject({ status: 422 });
-    expect(readChampion).not.toHaveBeenCalled();
-  });
+  it.each(["../../secrets", "Ahri; drop", "a b", "Ahri!", ""])(
+    "refuses %j, which could not be a champion id, without asking the service",
+    async (key) => {
+      await expect(
+        readApiResponse(await detail(encodeURIComponent(key), { role: "mid" }))
+      ).resolves.toMatchObject({ status: 422 });
+      expect(readChampion).not.toHaveBeenCalled();
+    }
+  );
 
   it("answers 404 for a champion the patch has no reading for", async () => {
     // One answer for an unknown id and for a known champion the snapshot omits: the app

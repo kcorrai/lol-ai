@@ -93,10 +93,10 @@ pub struct ChampionDetail {
 /// The address for either champion read: the list when `key` is `None`, one champion when
 /// it is not.
 ///
-/// Built through `Url` rather than by formatting a string, because both halves need
-/// escaping the compiled-in base cannot do for them. A Data Dragon id can carry an
-/// ampersand — "Nunu&Willump" — and pasted into a path it reads as the start of a query,
-/// asking for a champion called "Nunu".
+/// Built through `Url` rather than by formatting a string. The key comes from the webview,
+/// and formatted into a path that already carries `?role=` it could add path segments or
+/// parameters of its own. `path_segments_mut` escapes it into exactly one segment, so the
+/// address this sends is always the one this function describes.
 fn champions_url(key: Option<&str>, position: &str) -> AppResult<reqwest::Url> {
     let mut url = reqwest::Url::parse(base_url()).map_err(|e| AppError::Network(e.to_string()))?;
 
@@ -289,29 +289,26 @@ mod tests {
         assert_eq!(url.query(), Some("role=MIDDLE"));
     }
 
-    /// A Data Dragon id with an ampersand in it — "Nunu&Willump".
-    ///
-    /// `Url` leaves the ampersand as it is, which is correct: it only separates parameters
-    /// once a `?` has started a query, and there is none in this path. What matters is that
-    /// it stays inside the path and the lane stays the only parameter — formatting the key
-    /// into a string that already had `?role=` would have split it.
+    /// The ordinary case. Data Dragon ids are letters only — the punctuation people expect
+    /// lives in the display name, so "Nunu & Willump" is `Nunu` and "Dr. Mundo" is
+    /// `DrMundo`.
     #[test]
-    fn a_champion_key_with_an_ampersand_stays_one_path_segment() {
-        let url = champions_url(Some("Nunu&Willump"), "TOP").unwrap();
+    fn a_champion_address_carries_the_id_and_the_lane() {
+        let url = champions_url(Some("MonkeyKing"), "TOP").unwrap();
 
-        assert_eq!(url.path(), "/api/desktop/champions/Nunu&Willump");
-        assert_eq!(url.path_segments().unwrap().count(), 4);
+        assert_eq!(url.path(), "/api/desktop/champions/MonkeyKing");
         assert_eq!(url.query(), Some("role=TOP"));
     }
 
-    /// A key with a character that genuinely has to be escaped. `path_segments_mut` is what
-    /// does it; building the address by hand would not.
+    /// The key arrives from the webview, so it is treated as something that might try to be
+    /// more than a name. `path_segments_mut` escapes it into one segment; formatting it into
+    /// the address by hand would let it add segments and parameters of its own.
     #[test]
-    fn a_champion_key_with_a_slash_in_it_cannot_become_two_segments() {
-        let url = champions_url(Some("a/b"), "TOP").unwrap();
+    fn a_champion_key_cannot_add_segments_or_parameters_of_its_own() {
+        let url = champions_url(Some("a/b?role=BOTTOM"), "TOP").unwrap();
 
         assert_eq!(url.path_segments().unwrap().count(), 4);
-        assert_eq!(url.path(), "/api/desktop/champions/a%2Fb");
+        assert_eq!(url.query(), Some("role=TOP"));
     }
 
     /// What crosses the IPC boundary on the way back. The token authenticated the request

@@ -11,13 +11,17 @@ export const dynamic = "force-dynamic";
  * The Data Dragon id out of the path.
  *
  * Read from the URL rather than from a `params` argument because `withDeviceAuth` hands
- * the handler the device and nothing else — the same reason `app/api/teams/[teamId]`
- * reads its own id this way. Bounded and character-checked here so a key that could not
- * be a champion never reaches a service: ids are `Ahri`, `MonkeyKing`, `Nunu&Willump`.
+ * the handler the device and nothing else — the same reason `app/api/teams/[teamId]` reads
+ * its own id this way.
+ *
+ * Letters only, which is what a Data Dragon id is: the punctuation lives in the display
+ * name and never in the id — `Nunu & Willump` is `Nunu`, `Kai'Sa` is `Kaisa`, `Dr. Mundo`
+ * is `DrMundo`. Checked against the whole live roster, whose longest id is twelve
+ * characters. Anything else is refused here rather than sent on to key a cache.
  */
 function championKey(req: NextRequest): string | null {
   const raw = decodeURIComponent(req.nextUrl.pathname.split("/").at(-1) ?? "");
-  return /^[A-Za-z&'. ]{1,32}$/.test(raw) ? raw : null;
+  return /^[A-Za-z]{1,32}$/.test(raw) ? raw : null;
 }
 
 // GET /api/desktop/champions/[key]?role= — one champion in one lane (LA-75, ADR-042).

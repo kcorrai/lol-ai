@@ -103,6 +103,9 @@ pub async fn champion_list(
 /// The build comes back with item *names* rather than ids, resolved on the website: this
 /// window's content policy allows images from itself and `data:` alone, so a Data Dragon
 /// icon URL would render as a broken frame.
+///
+/// `key` is a Data Dragon id — `Ahri`, `MonkeyKing` — and reaches the address through
+/// `Url`, which escapes it into a single path segment.
 #[tauri::command]
 pub async fn champion_detail(
     state: State<'_, AppState>,

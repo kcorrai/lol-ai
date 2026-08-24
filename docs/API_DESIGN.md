@@ -3392,12 +3392,12 @@ not ask for is worse than no list.
 Picks under 0.3% of the lane are absent, because `getTierList` drops them — this is a read
 of the meta, not a roster.
 
-| Status | Code                        | When                                          |
-| ------ | --------------------------- | --------------------------------------------- |
-| `401`  | `UNAUTHORIZED`              | Missing, malformed, unknown or revoked token  |
-| `422`  | `VALIDATION_ERROR`          | Missing or unrecognised `role`                |
-| `503`  | `META_SNAPSHOT_UNAVAILABLE` | The patch snapshot could not be reached       |
-| `429`  | —                           | Rate limited: 120 per 10 minutes per device   |
+| Status | Code                        | When                                         |
+| ------ | --------------------------- | -------------------------------------------- |
+| `401`  | `UNAUTHORIZED`              | Missing, malformed, unknown or revoked token |
+| `422`  | `VALIDATION_ERROR`          | Missing or unrecognised `role`               |
+| `503`  | `META_SNAPSHOT_UNAVAILABLE` | The patch snapshot could not be reached      |
+| `429`  | —                           | Rate limited: 120 per 10 minutes per device  |
 
 **Device-authenticated even though the data is public.** It could have been open — nothing
 here belongs to one account. Keeping the token gives every `/api/desktop/*` endpoint one
@@ -3412,10 +3412,14 @@ different states; one is worth retrying and the other is an answer.
 **Device-token authenticated**, through `withDeviceAuth`. One champion in one lane — its
 record, its build, and what beats it.
 
-**Path:** the Data Dragon id — `Ahri`, `MonkeyKing`, `Nunu&Willump`. Read out of
+**Path:** the Data Dragon id — `Ahri`, `MonkeyKing`, `DrMundo`. Read out of
 `req.nextUrl.pathname` rather than a `params` argument, because `withDeviceAuth` forwards
-only the request and the device; the same thing `/api/teams/[teamId]` does. Checked against
-`/^[A-Za-z&'. ]{1,32}$/` before it reaches a service.
+only the request and the device; the same thing `/api/teams/[teamId]` does.
+
+Checked against `/^[A-Za-z]{1,32}$/`, which is what an id is: the punctuation lives in the
+display **name** and never in the id — "Nunu & Willump" is `Nunu`, "Kai'Sa" is `Kaisa`,
+"Dr. Mundo" is `DrMundo`. Verified against the live roster, whose longest id is twelve
+characters.
 
 **Query:** `role`, as above.
 
@@ -3435,12 +3439,12 @@ a broken frame. Null when the snapshot carries no build for this champion and la
 `counteredBy`, 50 or over in `goodInto` — so one number does not change meaning between two
 columns on the same screen.
 
-| Status | Code                 | When                                                    |
-| ------ | -------------------- | ------------------------------------------------------- |
-| `401`  | `UNAUTHORIZED`       | Missing, malformed, unknown or revoked token            |
-| `422`  | `VALIDATION_ERROR`   | Malformed key, or missing/unrecognised `role`           |
+| Status | Code                 | When                                                        |
+| ------ | -------------------- | ----------------------------------------------------------- |
+| `401`  | `UNAUTHORIZED`       | Missing, malformed, unknown or revoked token                |
+| `422`  | `VALIDATION_ERROR`   | Malformed key, or missing/unrecognised `role`               |
 | `404`  | `RESOURCE_NOT_FOUND` | Unknown champion, **and** one the snapshot has no entry for |
-| `429`  | —                    | Rate limited: 120 per 10 minutes per device             |
+| `429`  | —                    | Rate limited: 120 per 10 minutes per device                 |
 
 Unknown and not-in-the-snapshot answer identically because the app can act on neither, and
 telling them apart would mean guessing which applies.
