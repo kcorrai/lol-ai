@@ -421,21 +421,51 @@ With 70% cache hit rate and 4 reports/user/month:
 - At 500 paying users: ~$5.50/month AI costs
 - At 10,000 paying users: ~$110/month AI costs
 
+> The estimates in 8.1 are what this document has always said. They have never been checked
+> against a real bill, because until ADR-041 nothing recorded what calls actually cost. Treat them
+> as the original sizing exercise, not as measurements.
+
 ### 8.2 Cost Controls
 
-- **Hard cap:** Free tier users limited to 1 AI report per week.
-- **Depth tiering:** Free tier gets "lite" reports (fewer matches, shorter output).
-- **Async processing:** Reports queue in off-peak hours when rate limits allow cheaper models.
-- **Model routing:** Use cheaper models (GPT-4o-mini, Haiku) for lightweight tasks, expensive models for full reports.
+**Implemented (ADR-041):**
 
-### 8.3 Monthly Cost Monitoring
+- **Model routing.** `src/lib/ai/taskTiers.ts` names every AI task and the tier it runs on. This is
+  the whole picture in one file; a test asserts it lists exactly the tasks actually called.
+- **Spend ceiling.** `assertWithinAiBudget()` runs before every model call and refuses once
+  `AI_DAILY_BUDGET_USD` or `AI_MONTHLY_BUDGET_USD` is reached. Off unless configured; not enforced
+  when spend cannot be priced; fails open when the ledger is unreachable.
+- **Prompt caching.** The system prompt is the stable prefix of every request and is marked
+  cacheable on Anthropic (OpenAI does it automatically). `chatSystemPrompt.test.ts` keeps that
+  prefix free of timestamps and other silent invalidators.
+- **Response caching.** Every `complete()` call site now caches its result; `tiltService` was the
+  last one that did not.
 
-A cron job runs daily and stores AI cost aggregate in a monitoring table. Admin dashboard shows:
+**Still only described here:**
 
-- Cost per day (last 30 days)
-- Cost per user (to detect abuse)
-- Cache hit rate trend
-- Token usage by report type
+- **Hard cap:** free tier users limited to 1 AI report per week.
+- **Depth tiering:** free tier gets "lite" reports (fewer matches, shorter output).
+- **Async processing:** reports queued into off-peak hours.
+
+### 8.3 Cost Monitoring
+
+**Implemented as a Redis ledger, not a cron and a table (ADR-041).**
+
+`src/lib/ai/usage.ts` counts every model call — calls, prompt tokens, completion tokens and cost —
+per task, per day and per month. Recording happens in a wrapper inside `getAiClient`, so no call
+site can skip it, and streamed responses are counted along with completions.
+
+The counters are in Redis rather than Postgres for ADR-014's reason: regenerable telemetry, one
+write per model call, on a database billed by network transfer. `ai_analyses` keeps the per-call
+record for the coaching pipeline and now has its long-unused `costUsd` column filled in.
+
+Read it with `getAiUsage("day" | "month")`, which returns totals plus a per-task breakdown.
+
+**Cost is only reported when `AI_MODEL_PRICES` is configured.** There is deliberately no built-in
+price table — prices change and differ per provider and plan, and a stale constant would put
+confident wrong numbers on the one view whose job is to be trusted. Unpriced spend reports as
+`null`, never as zero. Token counts are recorded either way.
+
+Not yet built: an admin screen over `getAiUsage`, and cost per user.
 
 ---
 
