@@ -43,6 +43,13 @@ const ALLOWED_METHODS: &[&str] = &["GET", "POST", "PATCH", "PUT", "DELETE"];
 /// credential store on a machine that may be shared or resold. The test below is what
 /// caught exactly that while this list was being written.
 ///
+/// **A `*` stands for exactly one segment** — `/api/riot/*/performance` is the account id in
+/// the middle and nothing else. It exists because neither of the other two forms can express
+/// a route with an id in it: an exact match cannot, and `/api/riot/` as a prefix would hand
+/// over all twenty-one routes under it, `/sync` and `/chat` included — one of which spends
+/// Riot quota and the other of which spends money on a model. A wildcard is the narrow way
+/// to say what a prefix would say far too loudly.
+///
 /// This list is the desktop half of a pair. The other half is `deviceAccess: true` on the
 /// route itself, and a path here that the route has not opted into answers 401. Both have
 /// to say yes, and adding to either is a deliberate act.
@@ -130,14 +137,46 @@ pub fn is_allowed(path: &str) -> bool {
         return false;
     }
 
-    ALLOWED_PATHS.iter().any(|allowed| match allowed.strip_suffix('/') {
-        // A trailing slash: this path and everything under it.
-        Some(prefix) => route == prefix || route.starts_with(allowed),
-        // No trailing slash: this path and nothing else. Not `starts_with`, which would
-        // make every entry here a prefix and quietly hand over whatever gets added
-        // underneath it later.
-        None => route == *allowed,
-    })
+    ALLOWED_PATHS.iter().any(|allowed| matches(allowed, route))
+}
+
+/// Whether one allowlist entry covers this route.
+///
+/// Three forms, in the order they are checked: a trailing slash is a prefix, a `*` is
+/// exactly one segment, and anything else is an exact match. The last is the default on
+/// purpose — an entry that did nothing special would otherwise become a prefix and quietly
+/// hand over whatever gets added underneath it later.
+fn matches(allowed: &str, route: &str) -> bool {
+    if let Some(prefix) = allowed.strip_suffix('/') {
+        return route == prefix || route.starts_with(allowed);
+    }
+
+    if !allowed.contains('*') {
+        return route == allowed;
+    }
+
+    // Segment by segment, so a `*` can never swallow a `/` and reach a route one level
+    // deeper than the entry describes. Both sides run out together or this is not a match.
+    let mut pattern = allowed.split('/');
+    let mut actual = route.split('/');
+    loop {
+        match (pattern.next(), actual.next()) {
+            (None, None) => return true,
+            (Some(p), Some(a)) => {
+                if p == "*" {
+                    // One *real* segment. `/api/riot//performance` is not an account id, and
+                    // an empty segment is how a path with a piece missing gets through a
+                    // check that only counted separators.
+                    if a.is_empty() {
+                        return false;
+                    }
+                } else if p != a {
+                    return false;
+                }
+            }
+            _ => return false,
+        }
+    }
 }
 
 impl ApiClient {
@@ -338,5 +377,48 @@ mod tests {
         for verb in ["TRACE", "CONNECT", "OPTIONS", "HEAD"] {
             assert!(!ALLOWED_METHODS.contains(&verb), "{verb} must not be allowed");
         }
+    }
+
+    // ── The wildcard segment ──────────────────────────────────────────────
+    //
+    // It exists so a route with an id in it can be named without naming its
+    // siblings. Everything below is a way of asking for a sibling.
+
+    #[test]
+    fn a_wildcard_stands_for_one_segment() {
+        assert!(matches("/api/riot/*/performance", "/api/riot/abc123/performance"));
+        assert!(matches("/api/riot/*/plan/history", "/api/riot/abc123/plan/history"));
+    }
+
+    #[test]
+    fn a_wildcard_does_not_reach_a_sibling_route() {
+        // The whole reason this is not `/api/riot/`: these two spend Riot quota and money.
+        assert!(!matches("/api/riot/*/performance", "/api/riot/abc123/sync"));
+        assert!(!matches("/api/riot/*/performance", "/api/riot/abc123/chat"));
+    }
+
+    #[test]
+    fn a_wildcard_does_not_cross_a_separator() {
+        assert!(!matches("/api/riot/*/performance", "/api/riot/a/b/performance"));
+        assert!(!matches("/api/riot/*", "/api/riot/abc123/sync"));
+    }
+
+    #[test]
+    fn a_wildcard_needs_a_real_segment() {
+        assert!(!matches("/api/riot/*/performance", "/api/riot//performance"));
+    }
+
+    #[test]
+    fn a_wildcard_still_has_to_reach_the_end() {
+        assert!(!matches("/api/riot/*/performance", "/api/riot/abc123"));
+        assert!(!matches("/api/riot/*/performance", "/api/riot/abc123/performance/raw"));
+    }
+
+    /// The other two forms are unchanged by the wildcard's arrival.
+    #[test]
+    fn the_existing_forms_still_mean_what_they_meant() {
+        assert!(matches("/api/subscription", "/api/subscription"));
+        assert!(!matches("/api/subscription", "/api/subscription/cancel"));
+        assert!(matches("/api/desktop/", "/api/desktop/anything/at/all"));
     }
 }
