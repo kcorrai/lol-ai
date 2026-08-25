@@ -34,6 +34,26 @@ export const LANE_LABELS: Record<Lane, string> = {
   UTILITY: "Sup",
 };
 
+/**
+ * A lane's list narrowed to what the player typed, in the lane's own order.
+ *
+ * Substring rather than prefix, and case-folded, because the names players type are not the
+ * names Riot writes: "sett" finds Sett, "kog" finds Kog'Maw, and "wu" finds Wukong without
+ * anybody having to know it is filed as `MonkeyKing`. Matched on `name` alone for the same
+ * reason — the key is Data Dragon's word for the champion, not the player's.
+ *
+ * An empty or blank query is not a filter, so it hands the list straight back.
+ */
+export function filterChampions(
+  entries: readonly DesktopChampionEntry[],
+  query: string
+): readonly DesktopChampionEntry[] {
+  const needle = query.trim().toLowerCase();
+  if (!needle) return entries;
+
+  return entries.filter((entry) => entry.name.toLowerCase().includes(needle));
+}
+
 /** Thrown with the message the core produced, which is already written for the player. */
 export class ChampionsError extends Error {}
 

@@ -4,9 +4,12 @@ import { LANE_LABELS, LANES, type Lane } from "@/lib/champions";
 /**
  * The five lanes, as a row of tabs.
  *
- * Words rather than the position icons the website uses, for the reason the whole app
- * renders words: the content policy allows images from itself and `data:` alone, and five
- * inline SVGs would cost more of a narrow window than five short labels do.
+ * Words rather than the position icons the website uses: five tabs share the width of a
+ * window that sits beside a game, and a five-across row of glyphs reads as decoration
+ * there where five short words read as a choice.
+ *
+ * Not a content-policy limit, which is what this comment used to say. Data Dragon is in
+ * `img-src`, and the list below now draws a portrait per row from it.
  */
 export function LaneTabs({
   active,

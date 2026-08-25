@@ -9,11 +9,13 @@ vi.mock("@tauri-apps/api/core", () => ({
 
 import {
   ChampionsError,
+  filterChampions,
   LANE_LABELS,
   LANES,
   readChampion,
   readChampionList,
   type DesktopChampion,
+  type DesktopChampionEntry,
   type DesktopChampionList,
 } from "./champions";
 
@@ -116,5 +118,46 @@ describe("readChampion", () => {
     invoke.mockRejectedValue({ unexpected: true });
 
     await expect(readChampion("Ahri", "MIDDLE")).rejects.toThrow("Could not reach LoL AI Coach.");
+  });
+});
+
+describe("filterChampions", () => {
+  const entry = (name: string, championKey = name): DesktopChampionEntry => ({
+    ...LIST.entries[0],
+    championKey,
+    name,
+  });
+  const entries = [
+    entry("Ahri"),
+    entry("Sett"),
+    entry("Kog'Maw", "KogMaw"),
+    entry("Wukong", "MonkeyKing"),
+  ];
+
+  it("hands the lane back untouched when nothing is typed", () => {
+    expect(filterChampions(entries, "")).toBe(entries);
+    expect(filterChampions(entries, "   ")).toBe(entries);
+  });
+
+  it("matches anywhere in the name, in any case", () => {
+    expect(filterChampions(entries, "SET").map((e) => e.name)).toEqual(["Sett"]);
+    expect(filterChampions(entries, "ko").map((e) => e.name)).toEqual(["Kog'Maw", "Wukong"]);
+  });
+
+  // The player types the name on the loading screen, not the id behind it. `MonkeyKing` is
+  // the id Wukong is filed under, and matching on it would answer a search nobody made
+  // while missing the one they did.
+  it("reads the name rather than the Data Dragon id", () => {
+    expect(filterChampions(entries, "wukong").map((e) => e.name)).toEqual(["Wukong"]);
+    expect(filterChampions(entries, "monkeyking")).toEqual([]);
+  });
+
+  it("keeps the lane's order", () => {
+    expect(filterChampions(entries, "").map((e) => e.name)).toEqual([
+      "Ahri",
+      "Sett",
+      "Kog'Maw",
+      "Wukong",
+    ]);
   });
 });
