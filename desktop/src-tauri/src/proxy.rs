@@ -91,6 +91,10 @@ const ALLOWED_PATHS: &[&str] = &[
     "/api/analysis/heatmap",
     "/api/career-timeline",
     "/api/champions",
+    // The champion picker's own index — public and IP rate-limited, and not covered by the
+    // entry above it: an exact entry stays exact so that adding a route underneath one does
+    // not quietly hand it over.
+    "/api/champions/all",
     // POST, and the only entry here that spends money. It is bounded on four counts before
     // it reaches a model: ownership of the account, a plan cap of one a day on free, an
     // hourly rate limit, and ADR-041's budget, which stops calling the model once the
@@ -102,6 +106,11 @@ const ALLOWED_PATHS: &[&str] = &[
     "/api/coaching/reports",
     "/api/coaching/reports/*/pdf",
     "/api/coaching/reports/*/tts",
+    // The OTP assistant, which ADR-044 covers and which had to wait for its route to move
+    // onto `withAuth` before a device token could reach it at all. Read-only both of them:
+    // the analysis is public champion data, the recommendations are owner-scoped.
+    "/api/otp",
+    "/api/otp/recommendations",
     "/api/riot/*/champion-matches",
     "/api/riot/*/performance",
     "/api/riot/*/plan",
@@ -131,12 +140,6 @@ const ALLOWED_PATHS: &[&str] = &[
 ///   game ends, through its own namespace, which is the one moment a sync is worth spending.
 /// - `/api/riot/{id}/chat` — calls a model per message, and belongs to a screen that is not
 ///   here.
-/// - `/api/otp`, `/api/otp/recommendations` — the OTP assistant is on ADR-044's covered list
-///   but cannot be reached yet. `/api/otp` does not go through `withAuth` at all; it calls
-///   `getServerSession` itself, so `deviceAccess` has nothing to opt in and the route answers
-///   only to a browser cookie this app deliberately does not hold. Moving it onto `withAuth`
-///   is a change to a route's authentication and belongs in its own commit, so the screen
-///   waits for that rather than arriving half-wired.
 #[cfg(test)]
 const DELIBERATELY_EXCLUDED: &[&str] = &[
     "/api/auth/resend-verification",
@@ -150,8 +153,6 @@ const DELIBERATELY_EXCLUDED: &[&str] = &[
     "/api/coaching/voice/transcribe",
     "/api/riot/7f3d9c1e-0000-4000-8000-000000000000/sync",
     "/api/riot/7f3d9c1e-0000-4000-8000-000000000000/chat",
-    "/api/otp",
-    "/api/otp/recommendations",
 ];
 
 /// Whether the app may aim a request at this path.
@@ -334,6 +335,21 @@ mod tests {
         // Not a route under `/api/achievements` — a different route whose name starts with
         // the same letters. Segment boundaries, not string prefixes.
         assert!(!is_allowed("/api/achievements-export"));
+    }
+
+    /// The OTP assistant, whose three reads had to be listed one by one.
+    ///
+    /// `/api/champions/all` is the case the rule above is for: `/api/champions` has been in
+    /// the list since ADR-044 and covers itself alone, so the picker's index was refused
+    /// until it was named. Neither entry widens into the other.
+    #[test]
+    fn the_otp_assistants_reads_are_allowed() {
+        assert!(is_allowed("/api/otp?champion=Ahri&role=MIDDLE"));
+        assert!(is_allowed("/api/otp/recommendations?riotAccountId=acc-1"));
+        assert!(is_allowed("/api/champions/all"));
+
+        assert!(!is_allowed("/api/otp/history"));
+        assert!(!is_allowed("/api/champions/all/refresh"));
     }
 
     /// `/api/match/` would have swept in every match route; the archive is the only part

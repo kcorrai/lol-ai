@@ -947,7 +947,8 @@ Analyze a lane matchup between two champions.
 
 Generate an OTP (One-Trick Pony) analysis for a champion in a role.
 
-**Auth:** Optional (Pro users receive full `hiddenMechanics`; free users receive first 2)  
+**Auth:** Required — session cookie or a paired device token (`deviceAccess`). Pro accounts
+receive full `hiddenMechanics`; free accounts receive the first 2 and a daily cap.  
 **Rate limit:** 10 req/min per IP
 
 **Query params:**

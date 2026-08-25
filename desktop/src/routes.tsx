@@ -16,6 +16,7 @@ import {
   Search,
   Settings,
   Shield,
+  Star,
   TrendingUp,
   Trophy,
 } from "lucide-react";
@@ -142,6 +143,14 @@ export const ROUTES: readonly DesktopRoute[] = [
     inRail: true,
     group: "coaching",
     Component: lifted(() => import("../../app/(app)/improvement/PageClient")),
+  },
+  {
+    path: "/otp",
+    label: "OTP Assistant",
+    icon: Star,
+    inRail: true,
+    group: "coaching",
+    Component: lifted(() => import("../../app/(app)/otp/PageClient")),
   },
   // The website's order within My Performance, item for item.
   {
