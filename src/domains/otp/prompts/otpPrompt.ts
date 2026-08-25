@@ -19,14 +19,26 @@ const ROLE_LABELS: Record<Position, string> = {
 export function buildOtpUserPrompt(champion: string, role: Position): string {
   const roleLabel = ROLE_LABELS[role];
 
+  // Every list in the skeleton below shows the shape of one of its elements, and the three
+  // matchup buckets have to as well. They used to carry a prose placeholder — "[at least 5
+  // easy matchups — …]" — with the card's fields described twenty lines further down, and
+  // the model read the skeleton literally: all fifteen matchups came back as strings and
+  // `otpAiOutputSchema.parse` threw on every request, so the assistant answered 500 every
+  // time it was asked.
   return `Create a comprehensive OTP guide for ${champion} in ${roleLabel}.
 
 Return your response in this exact JSON format:
 {
   "matchupTierList": {
-    "easy": [at least 5 easy matchups — low skill requirement, you have the advantage],
-    "medium": [at least 5 even matchups — requires attention],
-    "hard": [at least 5 hard matchups — you can lose lane]
+    "easy": [
+      { "opponent": "champion name", "difficulty": "easy", "summary": "brief summary", "keyTip": "most critical tip" }
+    ],
+    "medium": [
+      { "opponent": "champion name", "difficulty": "medium", "summary": "brief summary", "keyTip": "most critical tip" }
+    ],
+    "hard": [
+      { "opponent": "champion name", "difficulty": "hard", "summary": "brief summary", "keyTip": "most critical tip" }
+    ]
   },
   "banPriority": [
     { "champion": "name", "priority": 1, "reason": "why ban priority" },
@@ -51,8 +63,7 @@ Return your response in this exact JSON format:
   }
 }
 
-For each matchup card, fill these fields:
-{ "opponent": "champion name", "difficulty": "easy"/"medium"/"hard", "summary": "brief summary", "keyTip": "most critical tip" }
+Give at least 5 matchups in each tier: easy ones where you hold the advantage, medium ones that need attention, and hard ones where you can lose lane.
 
 Return only valid JSON, no additional explanation.`;
 }
