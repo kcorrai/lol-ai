@@ -1,8 +1,10 @@
+import { useRef } from "react";
 import { ThisGamePanel } from "@/components/game/ThisGamePanel";
 import { MatchupPanel } from "@/components/game/MatchupPanel";
 import { BuildPanel } from "@/components/game/BuildPanel";
 import { useLiveContext } from "@/lib/useLiveContext";
 import { useLiveGame } from "@/lib/useLiveGame";
+import { useOverlayFit } from "@/lib/useOverlayFit";
 
 /**
  * The window that sits over the game.
@@ -21,12 +23,17 @@ import { useLiveGame } from "@/lib/useLiveGame";
 export function OverlayScreen(): React.ReactElement {
   const read = useLiveGame();
   const context = useLiveContext(read);
+  // The window takes its height from this element. Three full panels came to 1010 px in a
+  // 620 px window, and the third of the build panel that fell outside it could not be
+  // scrolled to either — the overlay never takes focus.
+  const content = useRef<HTMLDivElement>(null);
+  useOverlayFit(content);
 
   return (
     // Transparent to the game underneath rather than painted: the window itself carries no
     // ground, so only the panels are opaque and the rest of the rectangle is the match.
     // `select-none` because a stray drag across an overlay should not highlight text.
-    <div className="grid select-none gap-3 p-3">
+    <div ref={content} className="grid select-none gap-3 p-3">
       <ThisGamePanel read={read} state={context} />
       <MatchupPanel state={context} />
       <BuildPanel state={context} />

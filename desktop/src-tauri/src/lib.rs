@@ -24,7 +24,10 @@ use tauri_plugin_global_shortcut::GlobalShortcutExt;
 const MAIN_WINDOW: &str = "main";
 
 /// The frameless, transparent one that sits over the game.
-const OVERLAY_WINDOW: &str = "overlay";
+///
+/// `pub(crate)` because `commands::resize_overlay` names it rather than taking a window
+/// from the renderer: the webview chooses a height and never which window gets it.
+pub(crate) const OVERLAY_WINDOW: &str = "overlay";
 
 /// Toggles the overlay.
 ///
@@ -117,6 +120,7 @@ pub fn run() {
             commands::lcu_available,
             commands::lcu_champ_select,
             commands::lcu_apply_runes,
+            commands::resize_overlay,
         ])
         // Closing the window puts the app in the tray rather than ending it. The whole
         // point of this process is to be running when a game starts, and a player who

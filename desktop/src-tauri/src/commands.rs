@@ -1,5 +1,5 @@
 use serde::Serialize;
-use tauri::{AppHandle, State};
+use tauri::{AppHandle, Manager, State};
 
 use crate::api::{ApiClient, Pairing};
 use crate::champions::{ChampionDetail, ChampionList};
@@ -182,6 +182,75 @@ pub fn open_report(app: AppHandle) -> AppResult<()> {
     crate::post_game::open_report(&app)
 }
 
+/// Never shorter than this, whatever the webview reports.
+///
+/// A measurement taken while React is still mounting is a small number, and a window that
+/// briefly collapses to a sliver over a running game is worse than one that is briefly too
+/// tall. This is roughly one panel's header.
+const OVERLAY_MIN_HEIGHT: f64 = 96.0;
+
+/// How tall the overlay may be, given what it wants to draw and where it sits.
+///
+/// Three inputs, all logical pixels: what the content measured, where the window's top edge
+/// is, and where the screen's usable area ends. Content that fits is honoured exactly;
+/// content that does not is cut to the screen rather than drawn past the bottom of it —
+/// which is still a cut, but one the monitor is making rather than the layout.
+///
+/// Apart from the command because the command needs a window and a monitor, and this needs
+/// three numbers.
+fn overlay_height(content: f64, top: f64, work_area_bottom: f64) -> f64 {
+    let available = work_area_bottom - top;
+    // A window positioned off the bottom of its own monitor would otherwise ask for a
+    // negative height. The floor answers that as well as an early measurement.
+    content.min(available).max(OVERLAY_MIN_HEIGHT)
+}
+
+/// Grows or shrinks the overlay to fit what it is drawing.
+///
+/// The overlay is 340x620 in `tauri.conf.json` and its three panels came to 1010 px against
+/// a real match, so the last third of the build was off-screen — and the window never takes
+/// focus, so nobody could scroll to it either. It takes its height from its content now.
+///
+/// The webview passes a height and never a window: this names the overlay itself, so the
+/// widest thing a renderer can do with it is resize the window it is already drawing, to
+/// something the monitor allows. That is also why this is a command rather than a
+/// `core:window:allow-set-size` grant in `capabilities/default.json` — that permission
+/// would hand the renderer the main window too.
+///
+/// Failures are swallowed rather than raised. A window that would not resize is a window
+/// still showing what it showed a moment ago, which is not something to interrupt a match
+/// with.
+#[tauri::command]
+pub fn resize_overlay(app: AppHandle, height: f64) {
+    let Some(window) = app.get_webview_window(crate::OVERLAY_WINDOW) else {
+        return;
+    };
+
+    // Deliberately not skipped while the window is hidden, which is its usual state — it is
+    // toggled onto the screen for a glance. The webview measures on mount and when its
+    // content changes, and both of those happen behind a hidden window; skipping them would
+    // mean the first press of Ctrl+Alt+L in a match showed the window at whatever height it
+    // was last left at.
+    let (Ok(scale), Ok(position), Ok(Some(monitor))) =
+        (window.scale_factor(), window.outer_position(), window.current_monitor())
+    else {
+        return;
+    };
+
+    // `work_area` is what is left of the monitor once the taskbar has taken its share, in
+    // physical pixels like the window's own position. Both are divided by the scale factor
+    // rather than the measurement being multiplied by it, so the arithmetic happens in the
+    // units the webview measured in.
+    let work_area = monitor.work_area();
+    let bottom = f64::from(work_area.position.y + i32::try_from(work_area.size.height).unwrap_or(0));
+
+    let fitted = overlay_height(height, f64::from(position.y) / scale, bottom / scale);
+    let _ = window.set_size(tauri::LogicalSize::new(OVERLAY_WIDTH, fitted));
+}
+
+/// Unchanged from `tauri.conf.json`: this resizes the overlay's height and nothing else.
+const OVERLAY_WIDTH: f64 = 340.0;
+
 /// Opens one page of the website in the player's own browser (ADR-044).
 ///
 /// Unlike `open_report` this does take a path, because the pages it reaches are not known
@@ -274,6 +343,37 @@ mod tests {
             panic!("expected Unknown");
         };
         assert!(reason.contains("the vault is locked"));
+    }
+
+    /// The measurement that started this: three panels came to 1010 px in a 620 px window.
+    /// On a 1080p screen with the overlay at y=96 there is room for 984 of it, so the fit
+    /// takes what the screen has rather than what the content asked for.
+    #[test]
+    fn content_taller_than_the_screen_is_cut_by_the_screen() {
+        assert_eq!(overlay_height(1010.0, 96.0, 1080.0), 984.0);
+    }
+
+    /// The case the window was always in and never used: content that fits is honoured
+    /// exactly, rather than being held at the height the config happened to name.
+    #[test]
+    fn content_that_fits_is_honoured() {
+        assert_eq!(overlay_height(430.0, 96.0, 1080.0), 430.0);
+        assert_eq!(overlay_height(984.0, 96.0, 1080.0), 984.0);
+    }
+
+    /// A taskbar takes its share of the screen, and `work_area` is what is left. The window
+    /// must stop where the usable area does, not where the monitor does.
+    #[test]
+    fn the_taskbars_share_is_not_available() {
+        assert_eq!(overlay_height(1010.0, 96.0, 1032.0), 936.0);
+    }
+
+    /// React mounting, or a window dragged off the bottom of its own monitor. Neither is a
+    /// reason to leave a sliver over a running game.
+    #[test]
+    fn nothing_collapses_the_window_to_a_sliver() {
+        assert_eq!(overlay_height(0.0, 96.0, 1080.0), OVERLAY_MIN_HEIGHT);
+        assert_eq!(overlay_height(1010.0, 1200.0, 1080.0), OVERLAY_MIN_HEIGHT);
     }
 
     /// The webview matches on this string. A rename here is a rename there.
