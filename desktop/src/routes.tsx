@@ -1,14 +1,17 @@
 import { lazy } from "react";
 import type { ComponentType, LazyExoticComponent } from "react";
 import type { LucideIcon } from "lucide-react";
+// The website's own icons for the shared items, taken from `navConfig.ts` along with their
+// names: an item that is a clipboard in the sidebar and a page in the window is the same
+// drift as one that is called two things.
 import {
-  FileText,
+  ClipboardList,
   Gamepad2,
   History,
   LayoutDashboard,
   Link2,
   Map,
-  ScrollText,
+  Search,
   Settings,
   Shield,
   Swords,
@@ -35,22 +38,29 @@ import {
  */
 
 /**
- * What a rail item sits under.
+ * What a sidebar item sits under.
  *
- * The rail is icon-only and cannot show these as headings — a companion window is narrow
- * and the whole reason it stays 56px wide is that every pixel is one the player is not
- * spending on the game. So a group is drawn as a rule between runs of icons, and named only
- * to a screen reader. Its real job is ordering: the array below is read top to bottom, and
- * an item's group is what decides where it belongs in it.
+ * **These are the website's own section names** (`src/components/layout/navConfig.ts`),
+ * plus the two this window has and a browser tab does not. Two products navigating the
+ * same information must not disagree about what it is called, and `routes.test.ts` is
+ * where that stops being a good intention: it reads the website's table and fails if a
+ * shared path is labelled or filed differently here.
+ *
+ * Collapsed, the sidebar draws a group as a rule between runs and says its name only to a
+ * screen reader; expanded, it draws it as a heading, the way the website does. Either way
+ * the group's other job is ordering: the array below is read top to bottom.
  */
-export type RouteGroup = "game" | "overview" | "coaching" | "performance" | "app";
+export type RouteGroup = "game" | "overview" | "coaching" | "performance" | "compete" | "app";
 
-/** Said aloud where the rail can only draw a line. */
+/** Verbatim from the website's `NAV_SECTIONS`, except the two it has no reason to have. */
 export const GROUP_LABELS: Record<RouteGroup, string> = {
+  /** This window's own: a browser tab cannot read the game on port 2999. */
   game: "This game",
   overview: "Overview",
   coaching: "Coaching",
-  performance: "My performance",
+  performance: "My Performance",
+  compete: "Compete",
+  /** This window's own: a browser tab has no credential store to pair against. */
   app: "This app",
 };
 
@@ -75,7 +85,12 @@ export const ROUTES: readonly DesktopRoute[] = [
   { path: "/game", label: "Game", icon: Gamepad2, inRail: true, group: "game" },
   // Second, under the game: it is the only native screen worth opening when there is no
   // match running, which is most of the time this window is on screen.
-  { path: "/champions", label: "Champions", icon: Swords, inRail: true, group: "game" },
+  //
+  // Not "Champions": that is the website's name for `/champion-pool`, and two items in one
+  // sidebar cannot carry it. The address is the website's `/champions` — its champion index
+  // — and this is the reading of it that fits beside a game: by lane rather than by class,
+  // and carrying the build and the counters the window would otherwise have to go and get.
+  { path: "/champions", label: "Champion Meta", icon: Swords, inRail: true, group: "game" },
   {
     path: "/dashboard",
     label: "Dashboard",
@@ -87,7 +102,7 @@ export const ROUTES: readonly DesktopRoute[] = [
   {
     path: "/coaching",
     label: "Reports",
-    icon: FileText,
+    icon: ClipboardList,
     inRail: true,
     group: "coaching",
     Component: lifted(() => import("../../app/(app)/coaching/PageClient")),
@@ -100,33 +115,34 @@ export const ROUTES: readonly DesktopRoute[] = [
     group: "coaching",
     Component: lifted(() => import("../../app/(app)/improvement/PageClient")),
   },
-  {
-    path: "/matches",
-    label: "Matches",
-    icon: ScrollText,
-    inRail: true,
-    group: "performance",
-    Component: lifted(() => import("../../app/(app)/matches/PageClient")),
-  },
-  {
-    path: "/analysis",
-    label: "Heat map",
-    icon: Map,
-    inRail: true,
-    group: "performance",
-    Component: lifted(() => import("../../app/(app)/analysis/PageClient")),
-  },
+  // The website's order within My Performance, item for item.
   {
     path: "/champion-pool",
-    label: "Champion pool",
+    label: "Champions",
     icon: Shield,
     inRail: true,
     group: "performance",
     Component: lifted(() => import("../../app/(app)/champion-pool/PageClient")),
   },
   {
+    path: "/matches",
+    label: "Match Search",
+    icon: Search,
+    inRail: true,
+    group: "performance",
+    Component: lifted(() => import("../../app/(app)/matches/PageClient")),
+  },
+  {
+    path: "/analysis",
+    label: "Heat Map",
+    icon: Map,
+    inRail: true,
+    group: "performance",
+    Component: lifted(() => import("../../app/(app)/analysis/PageClient")),
+  },
+  {
     path: "/timeline",
-    label: "Career timeline",
+    label: "Career Timeline",
     icon: History,
     inRail: true,
     group: "performance",
@@ -134,10 +150,10 @@ export const ROUTES: readonly DesktopRoute[] = [
   },
   {
     path: "/achievements",
-    label: "Achievements",
+    label: "Badges",
     icon: Trophy,
     inRail: true,
-    group: "performance",
+    group: "compete",
     Component: lifted(() => import("../../app/(app)/achievements/PageClient")),
   },
   { path: "/pairing", label: "Pairing", icon: Link2, inRail: true, group: "app" },

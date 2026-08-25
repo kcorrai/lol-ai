@@ -7,6 +7,7 @@ import {
   type DesktopRoute,
   type RouteGroup,
 } from "./routes";
+import { NAV_SECTIONS, NAV_SETTINGS } from "@/components/layout/navConfig";
 
 /**
  * The rail draws a rule between runs and names each one only to a screen reader (ADR-044).
@@ -102,5 +103,71 @@ describe("rendersHere", () => {
     expect(rendersHere("/pricing")).toBe(false);
     expect(rendersHere("/coaches")).toBe(false);
     expect(rendersHere("/")).toBe(false);
+  });
+});
+
+/**
+ * The two nav tables, held together.
+ *
+ * `src/components/layout/navConfig.ts` on the website and `routes.tsx` here were written
+ * independently and drifted: `/champion-pool` was "Champions" there and "Champion pool"
+ * here, `/matches` was "Match Search" and "Matches", `/achievements` was "Badges" filed
+ * under Compete and "Achievements" filed under My performance. Nothing caught it, because
+ * nothing was looking.
+ *
+ * This is what looks. It reads the website's own table — the alias layer resolves
+ * `@/components/layout/navConfig` to it, which is exactly what that layer is for — and
+ * fails if a screen both products navigate to is called, filed or drawn differently in one
+ * of them. A deliberate change is then a change to the website's table, which is where the
+ * two products agree what things are named.
+ */
+describe("the website's nav and this one", () => {
+  const website = new Map<string, { label: string; section: string; icon: unknown }>();
+  for (const section of NAV_SECTIONS) {
+    for (const item of section.items) {
+      website.set(item.href, { label: item.label, section: section.label, icon: item.icon });
+    }
+  }
+  for (const item of NAV_SETTINGS) {
+    website.set(item.href, { label: item.label, section: "Settings", icon: item.icon });
+  }
+
+  const shared = ROUTES.filter((route) => website.has(route.path));
+
+  // Without this the three below pass by matching nothing at all, which is how a lock
+  // quietly stops being one.
+  it("has screens in common at all", () => {
+    expect(shared.length).toBeGreaterThanOrEqual(8);
+  });
+
+  it("calls them what the website calls them", () => {
+    for (const route of shared) {
+      expect([route.path, route.label]).toEqual([route.path, website.get(route.path)?.label]);
+    }
+  });
+
+  it("files them under the section the website files them under", () => {
+    for (const route of shared) {
+      expect([route.path, GROUP_LABELS[route.group]]).toEqual([
+        route.path,
+        website.get(route.path)?.section,
+      ]);
+    }
+  });
+
+  it("draws them with the website's icon", () => {
+    for (const route of shared) {
+      expect([route.path, route.icon]).toEqual([route.path, website.get(route.path)?.icon]);
+    }
+  });
+
+  // The two groups a browser tab has no reason to have. Everything else has to be a name
+  // the website's sidebar already uses, or the vocabulary has grown a third dialect.
+  it("invents no section the website does not have", () => {
+    const websiteSections = new Set([...NAV_SECTIONS.map((s) => s.label), "Settings"]);
+    for (const [group, label] of Object.entries(GROUP_LABELS)) {
+      if (group === "game" || group === "app") continue;
+      expect([group, websiteSections.has(label)]).toEqual([group, true]);
+    }
   });
 });
