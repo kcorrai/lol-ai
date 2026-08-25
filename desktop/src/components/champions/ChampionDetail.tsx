@@ -2,6 +2,7 @@ import { BuildReading, BuildSample } from "@/components/build/BuildReading";
 import { PanelNote } from "@/components/game/PanelNote";
 import { HudPanel } from "@/components/layout/HudPanel";
 import { LANE_LABELS, type DesktopChampion, type DesktopCounter, type Lane } from "@/lib/champions";
+import { formatCount } from "@/lib/uiLocale";
 import type { ChampionState } from "@/lib/useChampions";
 
 /**
@@ -67,7 +68,7 @@ function Stats({ champion }: { champion: DesktopChampion }): React.ReactElement 
       <Stat label="Win" value={`${champion.stats.winRate.toFixed(1)}%`} />
       <Stat label="Pick" value={`${champion.stats.pickRate.toFixed(1)}%`} />
       <Stat label="Ban" value={`${champion.stats.banRate.toFixed(1)}%`} />
-      <Stat label="Games" value={champion.stats.games.toLocaleString()} />
+      <Stat label="Games" value={formatCount(champion.stats.games)} />
     </dl>
   );
 }
@@ -104,7 +105,7 @@ function Matchups({
               <span className="shrink-0 font-mono text-xs text-text-muted">
                 {/* The subject's rate in both columns, so the number means one thing. */}
                 {matchup.subjectWinRate.toFixed(1)}%
-                <span className="ml-2 text-text-faint">{matchup.games.toLocaleString()}</span>
+                <span className="ml-2 text-text-faint">{formatCount(matchup.games)}</span>
               </span>
             </li>
           ))}

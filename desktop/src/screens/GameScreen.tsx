@@ -6,6 +6,7 @@ import { ThisGamePanel } from "@/components/game/ThisGamePanel";
 import { HudPanel } from "@/components/layout/HudPanel";
 import { displayNameOf, type AllGameData, type LivePlayer } from "@/lib/liveClient/schema";
 import type { LiveRead } from "@/lib/liveClient/client";
+import { formatCount } from "@/lib/uiLocale";
 import { useLiveContext } from "@/lib/useLiveContext";
 import { usePostGame } from "@/lib/usePostGame";
 
@@ -83,7 +84,7 @@ function GameSummary({ data }: { data: AllGameData }): React.ReactElement {
       <dl className="grid grid-cols-3 gap-px bg-line-1">
         <Stat label="Mode" value={data.gameData.gameMode} />
         <Stat label="Clock" value={formatClock(data.gameData.gameTime)} />
-        <Stat label="Gold" value={Math.round(data.activePlayer.currentGold).toLocaleString()} />
+        <Stat label="Gold" value={formatCount(Math.round(data.activePlayer.currentGold))} />
       </dl>
       <div className="grid gap-4 md:grid-cols-2">
         <Side label="Order" players={order} />

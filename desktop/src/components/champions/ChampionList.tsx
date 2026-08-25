@@ -3,6 +3,7 @@ import { tierLetter } from "@/domains/meta/tierLetter";
 import { PanelNote } from "@/components/game/PanelNote";
 import { cn } from "@/lib/cn";
 import { filterChampions, type DesktopChampionEntry } from "@/lib/champions";
+import { formatCount } from "@/lib/uiLocale";
 import type { ChampionListState } from "@/lib/useChampions";
 
 /**
@@ -140,8 +141,8 @@ function Row({
             <span
               title={
                 entry.lowConfidence
-                  ? `Only ${entry.games.toLocaleString()} games — too few for the tier to mean much`
-                  : `${entry.games.toLocaleString()} games`
+                  ? `Only ${formatCount(entry.games)} games — too few for the tier to mean much`
+                  : `${formatCount(entry.games)} games`
               }
               className={cn("ml-auto tabular-nums", entry.lowConfidence && "text-warning")}
             >

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/cn";
+import { formatCount } from "@/lib/uiLocale";
 import type { LiveBuild } from "@/lib/liveContext";
 import { isComplete, skillGrid, type SkillRow } from "@/lib/skillGrid";
 
@@ -35,7 +36,7 @@ export function BuildSample({ build }: { build: LiveBuild }): React.ReactElement
   return (
     <p className="truncate font-mono text-xs text-text-muted">
       {build.winRate.toFixed(1)}
-      <span className="text-text-faint">% over {build.games.toLocaleString()} games</span>
+      <span className="text-text-faint">% over {formatCount(build.games)} games</span>
     </p>
   );
 }

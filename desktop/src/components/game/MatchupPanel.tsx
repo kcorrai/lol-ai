@@ -1,6 +1,7 @@
 import { HudPanel } from "@/components/layout/HudPanel";
 import { NoRiotAccount, noteFor, PanelNote } from "@/components/game/PanelNote";
 import { cn } from "@/lib/cn";
+import { formatCount } from "@/lib/uiLocale";
 import type { LiveContext } from "@/lib/liveContext";
 import type { LiveContextState } from "@/lib/useLiveContext";
 
@@ -107,7 +108,7 @@ function MetaReading({ meta }: { meta: Meta }): React.ReactElement {
         </p>
       </div>
       <p className="mt-1 text-xs text-text-muted">
-        Patch {meta.patch} · {meta.games.toLocaleString()} games across everyone
+        Patch {meta.patch} · {formatCount(meta.games)} games across everyone
       </p>
     </div>
   );
