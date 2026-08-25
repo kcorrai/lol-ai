@@ -1,3 +1,4 @@
+import { formatDate } from "@/lib/uiLocale";
 import { HudPanel } from "@/domains/marketplace/components/hud/HudPanel";
 import { MeterRow } from "@/domains/marketplace/components/hud/MeterRow";
 import { formatMoney } from "@/domains/marketplace/money";
@@ -97,5 +98,5 @@ export function EarningsPanel({ workload, stats }: Props): React.ReactElement {
 }
 
 function weekLabel(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short" });
+  return formatDate(iso, { day: "numeric", month: "short" });
 }

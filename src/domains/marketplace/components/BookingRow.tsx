@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { formatDate, formatDateTime } from "@/lib/uiLocale";
 import { StatusChip, type ChipTone } from "@/domains/marketplace/components/hud/StatusChip";
 import { formatMoney } from "@/domains/marketplace/money";
 import type { BookingSummary } from "@/domains/marketplace/types";
@@ -124,12 +125,12 @@ function actionHint(
 }
 
 function shortDay(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, { weekday: "short", hour: "2-digit" });
+  return formatDate(iso, { weekday: "short", hour: "2-digit" });
 }
 
 /** Local to whoever is reading. The instant is fixed; the clock is theirs. */
 export function whenLabel(iso: string): string {
-  return new Date(iso).toLocaleString(undefined, {
+  return formatDateTime(iso, {
     weekday: "short",
     day: "numeric",
     month: "short",

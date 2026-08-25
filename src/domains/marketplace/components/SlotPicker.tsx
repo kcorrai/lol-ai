@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
+import { formatDate, formatTime } from "@/lib/uiLocale";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Slot } from "@/domains/marketplace/types";
 
@@ -76,7 +77,7 @@ function groupByDay(slots: Slot[]): [string, Slot[]][] {
   const groups = new Map<string, Slot[]>();
 
   for (const slot of slots) {
-    const day = new Date(slot.start).toLocaleDateString(undefined, {
+    const day = formatDate(slot.start, {
       weekday: "short",
       day: "numeric",
       month: "short",
@@ -90,5 +91,5 @@ function groupByDay(slots: Slot[]): [string, Slot[]][] {
 }
 
 function timeLabel(iso: string): string {
-  return new Date(iso).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+  return formatTime(iso, { hour: "2-digit", minute: "2-digit" });
 }

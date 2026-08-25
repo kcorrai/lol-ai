@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { formatDateTime } from "@/lib/uiLocale";
 import { holdsFunds } from "@/domains/marketplace/transitions";
 import { formatMoney } from "@/domains/marketplace/money";
 import { COACH_RESPONSE_HOURS, DISPUTE_WINDOW_HOURS } from "@/domains/marketplace/policy";
@@ -60,7 +61,7 @@ export function SessionsRail({ bookings, side }: Props): React.ReactElement {
       {next && (
         <HudPanel label="Next up" className="bg-hero-fade">
           <p className="font-mono text-[22px] font-bold leading-none text-text">
-            {new Date(next.startTime as string).toLocaleString(undefined, {
+            {formatDateTime(next.startTime as string, {
               weekday: "short",
               hour: "2-digit",
               minute: "2-digit",

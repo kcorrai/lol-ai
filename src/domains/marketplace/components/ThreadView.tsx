@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Send, ShieldAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatDateTime } from "@/lib/uiLocale";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useThread, useSendMessage } from "@/hooks/useThreads";
@@ -177,7 +178,7 @@ export function ThreadView({ conversationId }: Props): React.ReactElement {
 }
 
 function stamp(iso: string): string {
-  return new Date(iso).toLocaleString(undefined, {
+  return formatDateTime(iso, {
     day: "numeric",
     month: "short",
     hour: "2-digit",

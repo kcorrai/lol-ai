@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ShieldAlert, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatDate } from "@/lib/uiLocale";
 import { regionLabel } from "@/lib/riot/regions";
 import { tierColorClass } from "@/lib/riot/rankDisplay";
 import { formatRank } from "@/domains/marketplace/rank";
@@ -192,5 +193,5 @@ function Tag({ children, accent }: { children: React.ReactNode; accent?: boolean
 }
 
 function day(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short" });
+  return formatDate(iso, { day: "numeric", month: "short" });
 }

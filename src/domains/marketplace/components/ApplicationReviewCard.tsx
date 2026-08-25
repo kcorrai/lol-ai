@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Check, ShieldAlert, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatDate } from "@/lib/uiLocale";
 import { Button } from "@/components/ui/button";
 import { regionLabel } from "@/lib/riot/regions";
 import { tierColorClass } from "@/lib/riot/rankDisplay";
@@ -105,7 +106,7 @@ export function ApplicationReviewCard({
         <div className="shrink-0 text-right font-mono text-[10px] uppercase tracking-[0.12em] text-text-faint">
           <p>{application.email ?? "no email"}</p>
           {application.submittedAt && (
-            <p className="mt-1.5">{new Date(application.submittedAt).toLocaleDateString()}</p>
+            <p className="mt-1.5">{formatDate(application.submittedAt)}</p>
           )}
         </div>
       </div>
@@ -139,8 +140,7 @@ export function ApplicationReviewCard({
               {checked.tier} {checked.division}
             </span>
             <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-text-faint">
-              {checked.queueType} &middot; checked{" "}
-              {new Date(checked.checkedAt).toLocaleDateString()}
+              {checked.queueType} &middot; checked {formatDate(checked.checkedAt)}
             </span>
           </>
         ) : (

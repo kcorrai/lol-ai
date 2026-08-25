@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { formatDate } from "@/lib/uiLocale";
 import { HudPanel } from "@/domains/marketplace/components/hud/HudPanel";
 import { MeterRow } from "@/domains/marketplace/components/hud/MeterRow";
 import { MarketStat } from "@/domains/marketplace/components/hud/MarketStat";
@@ -118,7 +119,7 @@ export function ConsoleRail({
 }
 
 function day(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short" });
+  return formatDate(iso, { day: "numeric", month: "short" });
 }
 
 function round(hours: number): string {

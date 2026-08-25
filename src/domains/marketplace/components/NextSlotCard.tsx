@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
+import { formatTime, formatDate } from "@/lib/uiLocale";
 import { Button } from "@/components/ui/button";
 import { useCoachSlots } from "@/hooks/useBookings";
 
@@ -76,7 +77,7 @@ export function NextSlotCard({
 /** "Today 20:00" when it is today, otherwise "Fri 21:00". */
 function slotLabel(iso: string): string {
   const date = new Date(iso);
-  const time = date.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+  const time = formatTime(date, { hour: "2-digit", minute: "2-digit" });
   const today = new Date();
   const sameDay =
     date.getFullYear() === today.getFullYear() &&
@@ -84,5 +85,5 @@ function slotLabel(iso: string): string {
     date.getDate() === today.getDate();
 
   if (sameDay) return `Today ${time}`;
-  return `${date.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" })} ${time}`;
+  return `${formatDate(date, { weekday: "short", day: "numeric", month: "short" })} ${time}`;
 }

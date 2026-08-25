@@ -2,6 +2,7 @@
 
 import { ShieldCheck, ShieldAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatDate } from "@/lib/uiLocale";
 import { tierColorClass } from "@/lib/riot/rankDisplay";
 import { formatRank } from "@/domains/marketplace/rank";
 import type { RankBadge } from "@/domains/marketplace/types";
@@ -66,5 +67,5 @@ export function RankBadgeChip({ badge, detailed, className }: Props): React.Reac
 }
 
 function formatDay(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short" });
+  return formatDate(iso, { day: "numeric", month: "short" });
 }

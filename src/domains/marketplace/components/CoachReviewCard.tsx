@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { formatDate } from "@/lib/uiLocale";
 import type { PublicReview } from "@/domains/marketplace/types";
 
 interface Props {
@@ -55,7 +56,7 @@ export function CoachReviewCard({ review, coachName }: Props): React.ReactElemen
 }
 
 function day(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
+  return formatDate(iso, {
     day: "numeric",
     month: "short",
     year: "numeric",

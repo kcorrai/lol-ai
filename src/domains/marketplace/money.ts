@@ -1,3 +1,5 @@
+import { UI_LOCALE } from "@/lib/uiLocale";
+
 /**
  * How money is written across the coaching section.
  *
@@ -5,7 +7,7 @@
  * trailing zeroes on a HUD read as precision the number does not have.
  */
 export function formatMoney(cents: number, currency: string, showCents = false): string {
-  return new Intl.NumberFormat(undefined, {
+  return new Intl.NumberFormat(UI_LOCALE, {
     style: "currency",
     currency,
     minimumFractionDigits: showCents ? 2 : 0,

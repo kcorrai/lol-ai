@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
+import { formatDate } from "@/lib/uiLocale";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { regionLabel } from "@/lib/riot/regions";
@@ -153,5 +154,5 @@ export function RankProofPanel(): React.ReactElement {
 }
 
 function day(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short" });
+  return formatDate(iso, { day: "numeric", month: "short" });
 }
