@@ -123,7 +123,14 @@ function Row({
             </span>
           </span>
 
-          <span className="mt-0.5 flex items-center gap-2 font-mono text-[9.5px] uppercase tracking-label text-text-faint">
+          {/* A shade up on the selected row. `text-faint` is legible on `bg-surface` and
+              not on the accent wash the selection paints under it. */}
+          <span
+            className={cn(
+              "mt-0.5 flex items-center gap-2 font-mono text-[9.5px] uppercase tracking-label",
+              active ? "text-text-muted" : "text-text-faint"
+            )}
+          >
             <span className="tabular-nums">{entry.rank ? `#${entry.rank}` : "—"}</span>
             <span className="tabular-nums">P {entry.pickRate.toFixed(1)}%</span>
             <span className="tabular-nums">B {entry.banRate.toFixed(1)}%</span>
