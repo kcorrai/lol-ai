@@ -11,27 +11,30 @@ import { logger } from "@/lib/utils/logger";
 export const dynamic = "force-dynamic";
 
 // GET /api/analysis/heatmap?riotAccountId=<uuid>&champion=<opt>&timeRange=<opt>&matchCount=<opt>
-export const GET = withAuth(async (req: NextRequest, { userId }) => {
-  const riotAccountId = req.nextUrl.searchParams.get("riotAccountId");
-  if (!riotAccountId) throw Errors.validation("riotAccountId is required");
+export const GET = withAuth(
+  async (req: NextRequest, { userId }) => {
+    const riotAccountId = req.nextUrl.searchParams.get("riotAccountId");
+    if (!riotAccountId) throw Errors.validation("riotAccountId is required");
 
-  await assertOwnsRiotAccount(userId, riotAccountId);
+    await assertOwnsRiotAccount(userId, riotAccountId);
 
-  const { matchHistoryDepth } = await getPlanLimits(userId);
-  const isPro = matchHistoryDepth > 20;
+    const { matchHistoryDepth } = await getPlanLimits(userId);
+    const isPro = matchHistoryDepth > 20;
 
-  const champion = req.nextUrl.searchParams.get("champion") ?? undefined;
-  const timeRange = req.nextUrl.searchParams.get("timeRange") ?? undefined;
-  const matchCount = parseInt(req.nextUrl.searchParams.get("matchCount") ?? "20", 10);
+    const champion = req.nextUrl.searchParams.get("champion") ?? undefined;
+    const timeRange = req.nextUrl.searchParams.get("timeRange") ?? undefined;
+    const matchCount = parseInt(req.nextUrl.searchParams.get("matchCount") ?? "20", 10);
 
-  const data = await getHeatmapData(riotAccountId, { champion, timeRange, matchCount, isPro });
+    const data = await getHeatmapData(riotAccountId, { champion, timeRange, matchCount, isPro });
 
-  // If no data yet, fire background fetcher (non-blocking, once)
-  if (!data.hasData) {
-    inngest
-      .send({ name: "timeline/fetch-for-account", data: { riotAccountId } })
-      .catch((err) => logger.warn("[heatmap] Failed to fire timeline fetch event", err));
-  }
+    // If no data yet, fire background fetcher (non-blocking, once)
+    if (!data.hasData) {
+      inngest
+        .send({ name: "timeline/fetch-for-account", data: { riotAccountId } })
+        .catch((err) => logger.warn("[heatmap] Failed to fire timeline fetch event", err));
+    }
 
-  return apiSuccess(data);
-});
+    return apiSuccess(data);
+  },
+  { deviceAccess: true }
+);

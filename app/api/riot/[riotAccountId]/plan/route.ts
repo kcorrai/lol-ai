@@ -12,17 +12,23 @@ function extractId(req: NextRequest): string {
 }
 
 // GET /api/riot/[riotAccountId]/plan
-export const GET = withAuth(async (req: NextRequest, { userId }) => {
-  const riotAccountId = extractId(req);
-  await assertOwnsRiotAccount(userId, riotAccountId);
-  const plan = await getActivePlan(riotAccountId);
-  return apiSuccess(plan);
-});
+export const GET = withAuth(
+  async (req: NextRequest, { userId }) => {
+    const riotAccountId = extractId(req);
+    await assertOwnsRiotAccount(userId, riotAccountId);
+    const plan = await getActivePlan(riotAccountId);
+    return apiSuccess(plan);
+  },
+  { deviceAccess: true }
+);
 
 // POST /api/riot/[riotAccountId]/plan
-export const POST = withAuth(async (req: NextRequest, { userId }) => {
-  const riotAccountId = extractId(req);
-  await assertOwnsRiotAccount(userId, riotAccountId);
-  const plan = await generatePlan(riotAccountId);
-  return apiSuccess(plan);
-});
+export const POST = withAuth(
+  async (req: NextRequest, { userId }) => {
+    const riotAccountId = extractId(req);
+    await assertOwnsRiotAccount(userId, riotAccountId);
+    const plan = await generatePlan(riotAccountId);
+    return apiSuccess(plan);
+  },
+  { deviceAccess: true }
+);

@@ -27,66 +27,69 @@ const generateSchema = z.object({
 const FREE_GENERATE_LIMIT = { limit: 5, windowMs: 3_600_000 };
 const PRO_GENERATE_LIMIT = { limit: 30, windowMs: 3_600_000 };
 
-export const POST = withAuth(async (req: NextRequest, { userId }) => {
-  // Email verification is NOT required to generate a report — only email-*delivery* features gate on
-  // it (weekly report emails, activation). Abuse stays bounded by the rate limits + plan caps below
-  // (TASK-224).
-  const { reportsPerDay } = await getPlanLimits(userId);
-  const rateConfig = reportsPerDay === -1 ? PRO_GENERATE_LIMIT : FREE_GENERATE_LIMIT;
-  const rateCheck = await checkRateLimit(`generate:${userId}`, rateConfig);
-  if (!rateCheck.allowed) return rateLimitResponse(rateCheck.retryAfterMs, rateCheck.limit);
+export const POST = withAuth(
+  async (req: NextRequest, { userId }) => {
+    // Email verification is NOT required to generate a report — only email-*delivery* features gate on
+    // it (weekly report emails, activation). Abuse stays bounded by the rate limits + plan caps below
+    // (TASK-224).
+    const { reportsPerDay } = await getPlanLimits(userId);
+    const rateConfig = reportsPerDay === -1 ? PRO_GENERATE_LIMIT : FREE_GENERATE_LIMIT;
+    const rateCheck = await checkRateLimit(`generate:${userId}`, rateConfig);
+    if (!rateCheck.allowed) return rateLimitResponse(rateCheck.retryAfterMs, rateCheck.limit);
 
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    throw Errors.validation("Invalid JSON body");
-  }
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      throw Errors.validation("Invalid JSON body");
+    }
 
-  const parsed = generateSchema.safeParse(body);
-  if (!parsed.success) throw Errors.validation(parsed.error.issues[0].message);
+    const parsed = generateSchema.safeParse(body);
+    if (!parsed.success) throw Errors.validation(parsed.error.issues[0].message);
 
-  const { riotAccountId, reportType, matchIds, focusArea } = parsed.data;
+    const { riotAccountId, reportType, matchIds, focusArea } = parsed.data;
 
-  await assertOwnsRiotAccount(userId, riotAccountId);
+    await assertOwnsRiotAccount(userId, riotAccountId);
 
-  // Cheap advisory check — rejects an over-quota user before the expensive preparation below.
-  // Not authoritative: the binding check runs under the lock next to the insert.
-  await assertCanGenerateReport(userId);
+    // Cheap advisory check — rejects an over-quota user before the expensive preparation below.
+    // Not authoritative: the binding check runs under the lock next to the insert.
+    await assertCanGenerateReport(userId);
 
-  // Validate data is ready before creating the DB record. Deliberately outside the lock — it is the
-  // slow part, and holding the advisory lock across it would serialize a user's requests for its
-  // whole duration.
-  await buildCoachingInput(riotAccountId, matchIds, focusArea);
+    // Validate data is ready before creating the DB record. Deliberately outside the lock — it is the
+    // slow part, and holding the advisory lock across it would serialize a user's requests for its
+    // whole duration.
+    await buildCoachingInput(riotAccountId, matchIds, focusArea);
 
-  // Re-checks the quota and inserts atomically — see createPendingReportWithinQuota (TASK-267).
-  const reportId = await createPendingReportWithinQuota(
-    userId,
-    riotAccountId,
-    matchIds,
-    reportType,
-    focusArea
-  );
+    // Re-checks the quota and inserts atomically — see createPendingReportWithinQuota (TASK-267).
+    const reportId = await createPendingReportWithinQuota(
+      userId,
+      riotAccountId,
+      matchIds,
+      reportType,
+      focusArea
+    );
 
-  // Durable via Inngest in production; runs the pipeline in-process if Inngest is unavailable (TASK-223).
-  await dispatchOrRunInProcess(
-    {
-      name: "coaching/report.requested",
-      data: { reportId, riotAccountId, matchIds, reportType, focusArea },
-    },
-    () => runCoachingPipeline(reportId, riotAccountId, matchIds, reportType, focusArea)
-  );
+    // Durable via Inngest in production; runs the pipeline in-process if Inngest is unavailable (TASK-223).
+    await dispatchOrRunInProcess(
+      {
+        name: "coaching/report.requested",
+        data: { reportId, riotAccountId, matchIds, reportType, focusArea },
+      },
+      () => runCoachingPipeline(reportId, riotAccountId, matchIds, reportType, focusArea)
+    );
 
-  await audit({
-    userId,
-    action: "report.generated",
-    resourceId: reportId,
-    metadata: { reportType, riotAccountId },
-    ipAddress: req.headers.get("x-forwarded-for") ?? undefined,
-  }).catch(() => {
-    /* non-critical */
-  });
+    await audit({
+      userId,
+      action: "report.generated",
+      resourceId: reportId,
+      metadata: { reportType, riotAccountId },
+      ipAddress: req.headers.get("x-forwarded-for") ?? undefined,
+    }).catch(() => {
+      /* non-critical */
+    });
 
-  const response = apiSuccess({ reportId, status: "pending" }, 202);
-  return addRateLimitHeaders(response, rateCheck, rateConfig.windowMs);
-});
+    const response = apiSuccess({ reportId, status: "pending" }, 202);
+    return addRateLimitHeaders(response, rateCheck, rateConfig.windowMs);
+  },
+  { deviceAccess: true }
+);

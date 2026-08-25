@@ -8,11 +8,14 @@ import { getCareerTimeline } from "@/domains/analysis/services/careerTimelineSer
 export const dynamic = "force-dynamic";
 
 // GET /api/career-timeline?riotAccountId=… — the whole career as bands of events
-export const GET = withAuth(async (req: NextRequest, { userId }) => {
-  const riotAccountId = req.nextUrl.searchParams.get("riotAccountId");
-  if (!riotAccountId) throw Errors.validation("riotAccountId is required");
+export const GET = withAuth(
+  async (req: NextRequest, { userId }) => {
+    const riotAccountId = req.nextUrl.searchParams.get("riotAccountId");
+    if (!riotAccountId) throw Errors.validation("riotAccountId is required");
 
-  await assertOwnsRiotAccount(userId, riotAccountId);
+    await assertOwnsRiotAccount(userId, riotAccountId);
 
-  return apiSuccess(await getCareerTimeline(userId, riotAccountId));
-});
+    return apiSuccess(await getCareerTimeline(userId, riotAccountId));
+  },
+  { deviceAccess: true }
+);
