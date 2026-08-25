@@ -84,6 +84,29 @@ const ALLOWED_PATHS: &[&str] = &[
     "/api/referral/stats",
     "/api/riot/accounts",
     "/api/subscription",
+    // The five screens ADR-044's covered list adds: analysis, coaching, improvement, the
+    // champion pool and the career timeline. Read off those pages the same way as the three
+    // above — every `/api/` string reachable from their imports, their hooks and the domain
+    // components they render, and no further.
+    "/api/analysis/heatmap",
+    "/api/career-timeline",
+    "/api/champions",
+    // POST, and the only entry here that spends money. It is bounded on four counts before
+    // it reaches a model: ownership of the account, a plan cap of one a day on free, an
+    // hourly rate limit, and ADR-041's budget, which stops calling the model once the
+    // month's is gone. A stolen device token can spend the quota its own account already
+    // had, and nothing beyond it.
+    "/api/coaching/generate",
+    // Polled every three seconds while a report is being written — this is how the page
+    // learns it finished, so it carries the status too.
+    "/api/coaching/reports",
+    "/api/coaching/reports/*/pdf",
+    "/api/coaching/reports/*/tts",
+    "/api/riot/*/champion-matches",
+    "/api/riot/*/performance",
+    "/api/riot/*/plan",
+    "/api/riot/*/plan/history",
+    "/api/riot/*/ranked",
 ];
 
 /// Reachable from those same pages and deliberately left out.
@@ -96,12 +119,39 @@ const ALLOWED_PATHS: &[&str] = &[
 /// - `/api/riot/connect` — starts an OAuth redirect, which has nowhere to land here.
 /// - `/api/onboarding/reset` — a development affordance, not a feature.
 /// - `/api/inngest` — the job runner's own endpoint. Nothing on a page calls it.
+///
+/// Sitting beside the six ADR-044 added, and left out for reasons of their own:
+///
+/// - `/api/coaching/reports/{id}/share` — publishes a report at a public address. A device
+///   token is a capability left on a machine, and publishing is not something a stolen one
+///   should be able to do on the player's behalf.
+/// - `/api/coaching/voice/synthesize`, `/transcribe` — coach chat's voice. Coach chat is not
+///   on the covered list, so nothing on these six screens reaches them.
+/// - `/api/riot/{id}/sync` — spends Riot quota. This app already tells the website when a
+///   game ends, through its own namespace, which is the one moment a sync is worth spending.
+/// - `/api/riot/{id}/chat` — calls a model per message, and belongs to a screen that is not
+///   here.
+/// - `/api/otp`, `/api/otp/recommendations` — the OTP assistant is on ADR-044's covered list
+///   but cannot be reached yet. `/api/otp` does not go through `withAuth` at all; it calls
+///   `getServerSession` itself, so `deviceAccess` has nothing to opt in and the route answers
+///   only to a browser cookie this app deliberately does not hold. Moving it onto `withAuth`
+///   is a change to a route's authentication and belongs in its own commit, so the screen
+///   waits for that rather than arriving half-wired.
 #[cfg(test)]
 const DELIBERATELY_EXCLUDED: &[&str] = &[
     "/api/auth/resend-verification",
     "/api/riot/connect",
     "/api/onboarding/reset",
     "/api/inngest",
+    // Written out with an id in place, because the check these are fed to takes a real path
+    // rather than a pattern.
+    "/api/coaching/reports/7f3d9c1e-0000-4000-8000-000000000000/share",
+    "/api/coaching/voice/synthesize",
+    "/api/coaching/voice/transcribe",
+    "/api/riot/7f3d9c1e-0000-4000-8000-000000000000/sync",
+    "/api/riot/7f3d9c1e-0000-4000-8000-000000000000/chat",
+    "/api/otp",
+    "/api/otp/recommendations",
 ];
 
 /// Whether the app may aim a request at this path.

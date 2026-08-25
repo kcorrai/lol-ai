@@ -2,12 +2,17 @@ import { lazy } from "react";
 import type { ComponentType, LazyExoticComponent } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
+  FileText,
   Gamepad2,
-  Link2,
+  History,
   LayoutDashboard,
+  Link2,
+  Map,
   ScrollText,
   Settings,
+  Shield,
   Swords,
+  TrendingUp,
   Trophy,
 } from "lucide-react";
 
@@ -80,12 +85,52 @@ export const ROUTES: readonly DesktopRoute[] = [
     Component: lifted(() => import("../../app/(app)/dashboard/PageClient")),
   },
   {
+    path: "/coaching",
+    label: "Reports",
+    icon: FileText,
+    inRail: true,
+    group: "coaching",
+    Component: lifted(() => import("../../app/(app)/coaching/PageClient")),
+  },
+  {
+    path: "/improvement",
+    label: "Improvement",
+    icon: TrendingUp,
+    inRail: true,
+    group: "coaching",
+    Component: lifted(() => import("../../app/(app)/improvement/PageClient")),
+  },
+  {
     path: "/matches",
     label: "Matches",
     icon: ScrollText,
     inRail: true,
     group: "performance",
     Component: lifted(() => import("../../app/(app)/matches/PageClient")),
+  },
+  {
+    path: "/analysis",
+    label: "Heat map",
+    icon: Map,
+    inRail: true,
+    group: "performance",
+    Component: lifted(() => import("../../app/(app)/analysis/PageClient")),
+  },
+  {
+    path: "/champion-pool",
+    label: "Champion pool",
+    icon: Shield,
+    inRail: true,
+    group: "performance",
+    Component: lifted(() => import("../../app/(app)/champion-pool/PageClient")),
+  },
+  {
+    path: "/timeline",
+    label: "Career timeline",
+    icon: History,
+    inRail: true,
+    group: "performance",
+    Component: lifted(() => import("../../app/(app)/timeline/PageClient")),
   },
   {
     path: "/achievements",
