@@ -34,9 +34,36 @@ export function OverlayScreen(): React.ReactElement {
     // ground, so only the panels are opaque and the rest of the rectangle is the match.
     // `select-none` because a stray drag across an overlay should not highlight text.
     <div ref={content} className="grid select-none gap-3 p-3">
-      <ThisGamePanel read={read} state={context} />
-      <MatchupPanel state={context} />
-      <BuildPanel state={context} />
+      {read.status === "ok" ? (
+        <>
+          <ThisGamePanel read={read} state={context} />
+          <MatchupPanel state={context} />
+          <BuildPanel state={context} />
+        </>
+      ) : (
+        <NoGame />
+      )}
+    </div>
+  );
+}
+
+/**
+ * What sits over nothing.
+ *
+ * The main window stopped drawing these panels with no game for one reason — four boxes
+ * repeating one sentence read as an app broken in four places — and this window has the
+ * same three and had not been given the same treatment. It showed them saying "this window
+ * cannot find you among the players in this game" with no game to be found in.
+ *
+ * One line, and the window shrinks to it. An overlay is a thing a player toggles on over a
+ * match; toggled on over nothing it should take as little of the screen as it has to say.
+ */
+function NoGame(): React.ReactElement {
+  return (
+    <div className="notch border border-line-1 bg-surface px-4 py-3 text-center">
+      <p className="font-mono text-[10px] uppercase tracking-label text-text-faint">
+        LoL AI Coach · waiting for a game
+      </p>
     </div>
   );
 }
