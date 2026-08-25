@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Zap } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink, Zap } from "lucide-react";
 import { GROUP_LABELS, railGroups, type DesktopRoute } from "@/routes";
 import { cn } from "@/lib/cn";
 
@@ -145,16 +145,20 @@ function Item({
   active: boolean;
   onSelect: (path: string) => void;
 }): React.ReactElement {
-  const { path, label, icon: Icon } = route;
+  const { path, label, icon: Icon, onWebsite } = route;
+  // Said before the click rather than after it. Most of this sidebar is the website's own
+  // sections (ADR-044), and a player who cannot tell which rows leave the window learns it
+  // by having one leave.
+  const hint = onWebsite ? `${label} — opens on the website` : label;
 
   return (
     <button
       type="button"
       onClick={() => onSelect(path)}
       aria-current={active ? "page" : undefined}
-      // Only when there is nothing else to read it from. Expanded, the label is on screen,
-      // and a tooltip that repeats it is one more thing to move the mouse out of the way of.
-      title={collapsed ? label : undefined}
+      // Collapsed there is nothing else to read the name from. Expanded, the label is on
+      // screen, so a tooltip is worth showing only when it says something the label cannot.
+      title={collapsed || onWebsite ? hint : undefined}
       className={cn(
         "relative flex w-full items-center rounded-lg py-2 text-sm transition-all duration-150",
         collapsed ? "justify-center px-2" : "gap-3 px-3",
@@ -171,10 +175,23 @@ function Item({
       ) : null}
       <Icon className={cn("h-4 w-4 shrink-0", active && "text-accent")} aria-hidden />
       {collapsed ? (
-        <span className="sr-only">{label}</span>
+        <span className="sr-only">{hint}</span>
       ) : (
-        <span className="truncate">{label}</span>
+        <>
+          <span className="truncate">{label}</span>
+          {onWebsite ? (
+            <ExternalLink className="ml-auto h-3 w-3 shrink-0 text-text-muted/40" aria-hidden />
+          ) : null}
+        </>
       )}
+      {/* Collapsed there is no room beside the icon, so the mark goes in the corner. Faint
+          on purpose: it is a property of the row, not a call to press it. */}
+      {collapsed && onWebsite ? (
+        <span
+          aria-hidden
+          className="absolute right-1 top-1 h-1 w-1 rounded-full bg-text-muted/50"
+        />
+      ) : null}
     </button>
   );
 }

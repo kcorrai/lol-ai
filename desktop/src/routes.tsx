@@ -1,10 +1,12 @@
 import { lazy } from "react";
+import { ON_WEBSITE } from "./routesOnWebsite";
 import type { ComponentType, LazyExoticComponent } from "react";
 import type { LucideIcon } from "lucide-react";
 // The website's own icons for the shared items, taken from `navConfig.ts` along with their
 // names: an item that is a clipboard in the sidebar and a page in the window is the same
 // drift as one that is called two things.
 import {
+  BarChart3,
   ClipboardList,
   Gamepad2,
   History,
@@ -14,7 +16,6 @@ import {
   Search,
   Settings,
   Shield,
-  Swords,
   TrendingUp,
   Trophy,
 } from "lucide-react";
@@ -50,7 +51,19 @@ import {
  * screen reader; expanded, it draws it as a heading, the way the website does. Either way
  * the group's other job is ordering: the array below is read top to bottom.
  */
-export type RouteGroup = "game" | "overview" | "coaching" | "performance" | "compete" | "app";
+export type RouteGroup =
+  | "game"
+  | "overview"
+  | "coaching"
+  | "performance"
+  | "compete"
+  | "tools"
+  | "esports"
+  | "learn"
+  | "create"
+  | "market"
+  | "settings"
+  | "app";
 
 /** Verbatim from the website's `NAV_SECTIONS`, except the two it has no reason to have. */
 export const GROUP_LABELS: Record<RouteGroup, string> = {
@@ -60,6 +73,12 @@ export const GROUP_LABELS: Record<RouteGroup, string> = {
   coaching: "Coaching",
   performance: "My Performance",
   compete: "Compete",
+  tools: "Free Tools",
+  esports: "Esports",
+  learn: "Learn",
+  create: "Create",
+  market: "Coaching marketplace",
+  settings: "Settings",
   /** This window's own: a browser tab has no credential store to pair against. */
   app: "This app",
 };
@@ -71,9 +90,18 @@ export interface DesktopRoute {
   icon: LucideIcon;
   /** Native screens render from `App`; lifted ones render from here. */
   Component?: LazyExoticComponent<ComponentType>;
-  /** Shown in the rail. Not every route is worth a permanent button. */
+  /** Shown in the sidebar. Not every route is worth a permanent button. */
   inRail: boolean;
   group: RouteGroup;
+  /**
+   * This row is a place on the website, not a screen here (ADR-044).
+   *
+   * It has no `Component` and no native screen, and unlike every other row it is in the
+   * table *because* it is not covered — so `rendersHere` has to be told, or the exact path
+   * would match a route with nothing behind it and the window would go blank, which is the
+   * failure `b3f244d6` fixed for `/settings/accounts`.
+   */
+  onWebsite?: true;
 }
 
 // `lazy` per screen rather than one bundle: the dashboard alone pulls in Recharts, and a
@@ -90,7 +118,7 @@ export const ROUTES: readonly DesktopRoute[] = [
   // sidebar cannot carry it. The address is the website's `/champions` — its champion index
   // — and this is the reading of it that fits beside a game: by lane rather than by class,
   // and carrying the build and the counters the window would otherwise have to go and get.
-  { path: "/champions", label: "Champion Meta", icon: Swords, inRail: true, group: "game" },
+  { path: "/champions", label: "Champion Meta", icon: BarChart3, inRail: true, group: "game" },
   {
     path: "/dashboard",
     label: "Dashboard",
@@ -156,6 +184,7 @@ export const ROUTES: readonly DesktopRoute[] = [
     group: "compete",
     Component: lifted(() => import("../../app/(app)/achievements/PageClient")),
   },
+  ...ON_WEBSITE,
   { path: "/pairing", label: "Pairing", icon: Link2, inRail: true, group: "app" },
   { path: "/settings", label: "Settings", icon: Settings, inRail: true, group: "app" },
 ];
@@ -227,5 +256,6 @@ export function rendersHere(path: string): boolean {
   const route = matchRoute(path);
   if (!route) return false;
 
+  if (route.onWebsite) return false;
   return route.Component ? true : route.path === path;
 }

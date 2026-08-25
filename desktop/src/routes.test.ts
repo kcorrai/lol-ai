@@ -99,6 +99,16 @@ describe("rendersHere", () => {
     expect(rendersHere("/coaching/some-report-id")).toBe(true);
   });
 
+  // A row that is in the table *because* it is not covered. Without `onWebsite` the exact
+  // path matches a route with no component and no native screen, and the window goes blank
+  // — the same failure b3f244d6 fixed for a path under a native screen.
+  it("hands back a row that is only in the table to be listed", () => {
+    expect(rendersHere("/builds")).toBe(false);
+    expect(rendersHere("/tools/tier-list")).toBe(false);
+    expect(rendersHere("/esports")).toBe(false);
+    expect(rendersHere("/settings/billing")).toBe(false);
+  });
+
   it("hands back what the table does not mention at all", () => {
     expect(rendersHere("/pricing")).toBe(false);
     expect(rendersHere("/coaches")).toBe(false);
@@ -137,7 +147,10 @@ describe("the website's nav and this one", () => {
   // Without this the three below pass by matching nothing at all, which is how a lock
   // quietly stops being one.
   it("has screens in common at all", () => {
-    expect(shared.length).toBeGreaterThanOrEqual(8);
+    // The sidebar carries the website's own sections now, so most of its table is shared.
+    // The floor is here so the three below cannot pass by matching nothing at all, which
+    // is how a lock quietly stops being one.
+    expect(shared.length).toBeGreaterThanOrEqual(24);
   });
 
   it("calls them what the website calls them", () => {
