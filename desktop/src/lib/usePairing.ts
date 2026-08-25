@@ -13,13 +13,21 @@ export type PairingState =
   | { status: "pairing" }
   | { status: "paired"; pairing: Pairing };
 
-export function usePairing(): {
+/**
+ * Named because two places read it now — the Pairing screen and the account chip in the
+ * top bar — and they have to be the same one. Called once, in `App`, and handed down: two
+ * copies of this hook would make two `device_account` calls on the way in and, worse,
+ * leave the chip naming an account the player had just forgotten.
+ */
+export interface PairingHandle {
   state: PairingState;
   pair: (code: string) => Promise<void>;
   forget: () => Promise<void>;
   /** Ask again — the button an offline app offers instead of a pairing form. */
   retry: () => Promise<void>;
-} {
+}
+
+export function usePairing(): PairingHandle {
   const [state, setState] = useState<PairingState>({ status: "loading" });
 
   const refresh = useCallback(async () => {

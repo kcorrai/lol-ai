@@ -9,6 +9,7 @@ import { PairingScreen } from "@/screens/PairingScreen";
 import { SettingsScreen } from "@/screens/SettingsScreen";
 import { installApiBridge } from "@/lib/apiBridge";
 import { navigate, useRoute } from "@/lib/router";
+import { usePairing } from "@/lib/usePairing";
 import { matchRoute, rendersHere } from "@/routes";
 import { useLiveGame } from "@/lib/useLiveGame";
 
@@ -46,6 +47,9 @@ function ScreenLoading(): React.ReactElement {
 export function App(): React.ReactElement {
   const { path } = useRoute();
   const read = useLiveGame();
+  // One handle, two readers: the chip in the top bar and the Pairing screen. Held here so
+  // forgetting a device on that screen is the same event the chip sees.
+  const pairing = usePairing();
   const route = matchRoute(path);
   const Lifted = route?.Component;
 
@@ -55,12 +59,13 @@ export function App(): React.ReactElement {
         active={route?.path ?? "/game"}
         onSelect={navigate}
         connection={CONNECTION[read.status] ?? "idle"}
+        pairing={pairing.state}
       >
         {/* The native screens: the ones that exist because only a local process can read
             the game or hold the keychain. Everything else is the website's own. */}
         {path === "/game" ? <GameScreen read={read} /> : null}
         {path === "/champions" ? <ChampionsScreen /> : null}
-        {path === "/pairing" ? <PairingScreen /> : null}
+        {path === "/pairing" ? <PairingScreen pairing={pairing} /> : null}
         {path === "/settings" ? <SettingsScreen /> : null}
 
         {Lifted ? (

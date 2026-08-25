@@ -1,10 +1,11 @@
 import { HudPanel } from "@/components/layout/HudPanel";
 import { CodeEntry } from "@/components/pairing/CodeEntry";
 import { PairedDevice } from "@/components/pairing/PairedDevice";
-import { usePairing } from "@/lib/usePairing";
+import type { PairingHandle } from "@/lib/usePairing";
 
-export function PairingScreen(): React.ReactElement {
-  const { state, pair, forget, retry } = usePairing();
+/** The handle comes from `App` rather than from a second `usePairing` here — see its doc. */
+export function PairingScreen({ pairing }: { pairing: PairingHandle }): React.ReactElement {
+  const { state, pair, forget, retry } = pairing;
 
   // The form is offered only when pairing is the thing to do. An app that already holds a
   // token and merely cannot reach the website is not asked to pair again.
