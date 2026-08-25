@@ -4,6 +4,7 @@ import { gameModeLabel } from "@/lib/riot/gameModes";
 import { POSITION_LABELS } from "@/lib/riot/rankDisplay";
 import type { LiveScout } from "@/domains/riot";
 import { LiveTeamColumn } from "./LiveTeamColumn";
+import { formatCount } from "@/lib/uiLocale";
 
 interface Props {
   scout: LiveScout;
@@ -80,7 +81,7 @@ export function LiveScoutView({ scout, riotId, region }: Props): React.ReactElem
           </p>
           <p className="mt-1 font-mono text-[12px] text-text-muted">
             {matchup.games > 0
-              ? `${matchup.aWinRateVsB}% win rate over ${matchup.games.toLocaleString()} games on patch ${matchup.patch}`
+              ? `${matchup.aWinRateVsB}% win rate over ${formatCount(matchup.games)} games on patch ${matchup.patch}`
               : "Not enough games on this patch to call the matchup."}
           </p>
           {matchup.hints.length > 0 && (

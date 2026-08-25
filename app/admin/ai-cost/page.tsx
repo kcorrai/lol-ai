@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getAiCostSummary } from "@/domains/admin/services/aiCostService";
+import { formatCount, formatDate } from "@/lib/uiLocale";
 
 function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
@@ -27,7 +28,7 @@ export default async function AiCostPage() {
         <StatCard
           label="Today"
           value={`$${data.todayCostUsd.toFixed(4)}`}
-          sub={`${data.todayTokens.toLocaleString()} tokens`}
+          sub={`${formatCount(data.todayTokens)} tokens`}
         />
         <StatCard label="This Month" value={`$${data.monthCostUsd.toFixed(4)}`} />
         <StatCard label="Cache Hit Rate" value={`${data.todayCacheHitRate}%`} sub="Today" />
@@ -65,7 +66,7 @@ export default async function AiCostPage() {
                     <td className="px-4 py-2.5 font-mono text-xs text-text">{row.model}</td>
                     <td className="px-4 py-2.5 text-right text-xs text-text">{row.calls}</td>
                     <td className="px-4 py-2.5 text-right text-xs text-text">
-                      {row.tokens.toLocaleString()}
+                      {formatCount(row.tokens)}
                     </td>
                     <td className="px-4 py-2.5 text-right text-xs text-text">
                       ${row.costUsd.toFixed(4)}
@@ -108,7 +109,7 @@ export default async function AiCostPage() {
                       ${row.costUsd.toFixed(5)}
                     </td>
                     <td className="px-4 py-2.5 text-right text-xs text-text-muted">
-                      {new Date(row.createdAt).toLocaleDateString()}
+                      {formatDate(row.createdAt)}
                     </td>
                   </tr>
                 ))
@@ -189,9 +190,7 @@ export default async function AiCostPage() {
                   <span className="text-xs text-destructive">
                     ★ {r.rating} — {r.reportType}
                   </span>
-                  <span className="text-xs text-text-muted">
-                    {new Date(r.createdAt).toLocaleDateString()}
-                  </span>
+                  <span className="text-xs text-text-muted">{formatDate(r.createdAt)}</span>
                 </div>
                 {r.feedback && (
                   <p className="mt-1 text-xs italic text-text-muted">&quot;{r.feedback}&quot;</p>

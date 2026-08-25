@@ -8,6 +8,7 @@ import { ChampionMovers, type ChampionMover } from "@/components/champions/Champ
 import { PublicOnly } from "@/components/tools/PublicOnly";
 import { RelatedTools } from "../RelatedTools";
 import { championLane, championMovers, hoursAgo } from "@/components/champions/championIndex";
+import { formatCount } from "@/lib/uiLocale";
 
 export const revalidate = 43200;
 
@@ -81,7 +82,7 @@ export default async function BuildsHubPage(): Promise<React.ReactElement> {
             <StatBlock label="Champions" value={String(champions.length)} />
             <StatBlock
               label="Games parsed"
-              value={snapshot.matchCount ? snapshot.matchCount.toLocaleString() : "—"}
+              value={snapshot.matchCount ? formatCount(snapshot.matchCount) : "—"}
             />
             <StatBlock label="Updated" value={`${hoursAgo(snapshot.fetchedAt)}h`} unit="ago" />
           </div>

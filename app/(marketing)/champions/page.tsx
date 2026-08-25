@@ -6,6 +6,7 @@ import { StatBlock } from "@/components/dashboard/laneiq/HudPanel";
 import { ChampionConsole, type ChampionRow } from "@/components/champions/ChampionConsole";
 import { ChampionMovers, type ChampionMover } from "@/components/champions/ChampionMovers";
 import { championLane, championMovers, hoursAgo } from "@/components/champions/championIndex";
+import { formatCount } from "@/lib/uiLocale";
 
 export const revalidate = 86400;
 
@@ -82,7 +83,7 @@ export default async function ChampionsPage({
             <>
               <StatBlock
                 label="Games parsed"
-                value={snapshot.matchCount ? snapshot.matchCount.toLocaleString() : "—"}
+                value={snapshot.matchCount ? formatCount(snapshot.matchCount) : "—"}
               />
               <StatBlock label="Updated" value={`${hoursAgo(snapshot.fetchedAt)}h`} unit="ago" />
             </>

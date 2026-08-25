@@ -12,6 +12,7 @@ import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { TIER_COLORS, TIER_LABEL } from "@/types/achievement";
 import type { AchievementCatalogEntry } from "@/types/achievement";
 import { cn } from "@/lib/utils";
+import { formatDate } from "@/lib/uiLocale";
 
 function AchievementCard({
   achievement,
@@ -72,11 +73,7 @@ function AchievementCard({
         <p className="mt-0.5 text-xs text-text-muted">{achievement.description}</p>
       </div>
 
-      {earned && earnedAt && (
-        <p className="text-[10px] text-text-muted">
-          {new Date(earnedAt).toLocaleDateString("tr-TR")}
-        </p>
-      )}
+      {earned && earnedAt && <p className="text-[10px] text-text-muted">{formatDate(earnedAt)}</p>}
 
       {earned && gameName && (
         <Link

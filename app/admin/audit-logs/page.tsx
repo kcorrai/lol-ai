@@ -1,4 +1,5 @@
 import { getAuditLogs } from "@/lib/audit/auditService";
+import { formatDateTime } from "@/lib/uiLocale";
 
 interface SearchParams {
   userId?: string;
@@ -9,7 +10,7 @@ interface SearchParams {
 }
 
 function formatDate(d: Date): string {
-  return d.toLocaleString("tr-TR", { dateStyle: "short", timeStyle: "medium" });
+  return formatDateTime(d, { dateStyle: "short", timeStyle: "medium" });
 }
 
 export default async function AuditLogsPage({

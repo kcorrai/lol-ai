@@ -1,10 +1,11 @@
 import type { MetaMover, MetaReport } from "@/domains/meta";
+import { formatCount } from "@/lib/uiLocale";
 
 // A ~200-word, data-driven patch summary. Every figure comes from the live
 // snapshot so the copy is unique per patch (Google's scaled-content guard).
 export function metaSummary(r: MetaReport, gamePatch: string): string {
   const games = r.matchCount
-    ? `${r.matchCount.toLocaleString()} ranked games`
+    ? `${formatCount(r.matchCount)} ranked games`
     : "millions of ranked games";
   const parts: string[] = [
     `Patch ${gamePatch} has reshaped the League of Legends meta. Across ${games} analyzed this patch, champion power rankings shifted as buffs, nerfs and item changes landed.`,

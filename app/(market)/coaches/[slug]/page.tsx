@@ -17,6 +17,7 @@ import { BookingSteps } from "@/domains/marketplace/components/BookingSteps";
 import { NextSlotCard } from "@/domains/marketplace/components/NextSlotCard";
 import { CoachReviewCard } from "@/domains/marketplace/components/CoachReviewCard";
 import { jsonLdProps } from "@/lib/security/jsonLd";
+import { formatDate } from "@/lib/uiLocale";
 
 export const revalidate = 300;
 
@@ -310,5 +311,5 @@ function Glance({ label, value, className }: { label: string; value: string; cla
 }
 
 function day(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short" });
+  return formatDate(iso, { day: "numeric", month: "short" });
 }

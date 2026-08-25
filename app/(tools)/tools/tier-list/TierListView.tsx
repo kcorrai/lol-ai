@@ -13,6 +13,7 @@ import { regionLabel } from "@/lib/riot/regions";
 import { StatBlock } from "@/components/dashboard/laneiq/HudPanel";
 import { TierListConsole, type TierListTab } from "./TierListConsole";
 import type { TierRow } from "./sortEntries";
+import { formatCount } from "@/lib/uiLocale";
 
 interface TierListViewProps {
   mode: "ranked" | "aram";
@@ -133,7 +134,7 @@ export function TierListView({
           <div className="flex flex-wrap gap-7 pb-1">
             <StatBlock
               label={aram ? "ARAM games" : "Games analyzed"}
-              value={list.matchCount ? list.matchCount.toLocaleString() : "—"}
+              value={list.matchCount ? formatCount(list.matchCount) : "—"}
             />
             <StatBlock label="Updated" value={`${hoursAgo(list.fetchedAt)}h`} unit="ago" />
             <StatBlock label="Patch" value={formatGamePatch(list.patch)} />

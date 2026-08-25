@@ -1,4 +1,5 @@
 import type { RoleTierList, TierListEntry } from "@/domains/meta";
+import { formatCount } from "@/lib/uiLocale";
 
 // A ~100-word, data-driven paragraph for a role tier list page. Every number is
 // pulled from the live snapshot so the text is unique per lane and per patch.
@@ -13,7 +14,7 @@ export function tierBlurb(laneLabel: string, list: RoleTierList, patch: string):
   const biggestFaller = biggestMover(entries, "down");
 
   const parts: string[] = [
-    `This is the League of Legends ${laneLabel} tier list for patch ${patch}, ranked by real ranked win rate across ${entries.length.toLocaleString()} tracked ${laneLabel} champions.`,
+    `This is the League of Legends ${laneLabel} tier list for patch ${patch}, ranked by real ranked win rate across ${formatCount(entries.length)} tracked ${laneLabel} champions.`,
     `${top.name} leads the lane with a ${top.winRate.toFixed(1)}% win rate at a ${top.pickRate.toFixed(1)}% pick rate.`,
   ];
   if (sNames.length > 0) {

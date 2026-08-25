@@ -1,5 +1,6 @@
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { formatGamePatch, type MatchupReport } from "@/domains/meta";
+import { formatCount } from "@/lib/uiLocale";
 
 const VERDICT_COPY: Record<MatchupReport["verdict"], { label: string; className: string }> = {
   favored: { label: "Favoured", className: "text-success" },
@@ -63,7 +64,7 @@ export function MatchupReportCard({ report }: { report: MatchupReport }) {
 
       <p className="mt-4 text-center text-xs text-text-muted">
         {hasData
-          ? `Based on ${report.games.toLocaleString()} ranked games this patch (${formatGamePatch(report.patch)}).`
+          ? `Based on ${formatCount(report.games)} ranked games this patch (${formatGamePatch(report.patch)}).`
           : `op.gg has no significant sample for this exact pairing yet, so no head-to-head win rate is shown. The lane tips below are based on champion stats.`}
       </p>
 

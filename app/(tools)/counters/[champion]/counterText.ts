@@ -1,4 +1,5 @@
 import type { CounterResult } from "@/domains/meta";
+import { formatCount } from "@/lib/uiLocale";
 
 const TIER_WORD: Record<number, string> = {
   1: "an S-tier",
@@ -20,7 +21,7 @@ export function counterHowToPlay(
   const parts: string[] = [];
   const tier = TIER_WORD[data.overallTier] ?? "a viable";
   parts.push(
-    `To beat ${data.name} in ${laneLabel} on patch ${gamePatch}, start by knowing what you are up against: ${data.name} is ${tier} pick this patch with a ${data.stats.winRate.toFixed(1)}% win rate across ${data.stats.games.toLocaleString()} ranked games at a ${data.stats.pickRate.toFixed(1)}% pick rate.`
+    `To beat ${data.name} in ${laneLabel} on patch ${gamePatch}, start by knowing what you are up against: ${data.name} is ${tier} pick this patch with a ${data.stats.winRate.toFixed(1)}% win rate across ${formatCount(data.stats.games)} ranked games at a ${data.stats.pickRate.toFixed(1)}% pick rate.`
   );
 
   const hard = data.strongAgainstSubject.slice(0, 3);

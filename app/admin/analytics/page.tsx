@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getAdminMetrics } from "@/domains/admin/services/adminMetricsService";
+import { formatCount } from "@/lib/uiLocale";
 
 const RANGES = [
   { label: "7 days", value: 7 },
@@ -91,7 +92,7 @@ export default async function AnalyticsPage({
                   />
                 </div>
                 <p className="w-16 text-right text-sm font-semibold text-text">
-                  {step.count.toLocaleString()}
+                  {formatCount(step.count)}
                 </p>
                 <p className="w-10 text-right text-xs text-text-muted">{pct}%</p>
               </div>
@@ -117,7 +118,7 @@ export default async function AnalyticsPage({
                   <div className="h-full rounded-full bg-accent/60" style={{ width: `${pct}%` }} />
                 </div>
                 <p className="w-16 text-right text-sm font-semibold text-text">
-                  {f.count.toLocaleString()}
+                  {formatCount(f.count)}
                 </p>
               </div>
             );
