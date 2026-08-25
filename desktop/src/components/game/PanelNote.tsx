@@ -19,8 +19,12 @@ export function PanelNote({ children }: { children: React.ReactNode }): React.Re
  */
 export function noteFor(state: LiveContextState): React.ReactElement | null {
   switch (state.status) {
+    // Not "start a match" any more. `GameScreen` stopped rendering these panels when
+    // there is no game — the wait is said once, for the whole screen — so the only way
+    // to be idle *and* on screen is a game this window cannot find the player in:
+    // spectating, or a mode where the active player is not one of the ten.
     case "idle":
-      return <PanelNote>Start a match and this fills in on its own.</PanelNote>;
+      return <PanelNote>This window cannot find you among the players in this game.</PanelNote>;
     case "unavailable":
       return (
         <PanelNote>

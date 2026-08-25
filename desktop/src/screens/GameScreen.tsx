@@ -27,14 +27,29 @@ export function GameScreen({ read }: { read: LiveRead<AllGameData> }): React.Rea
           something for the player to do. */}
       <PostGamePanel state={postGame.state} open={postGame.open} openError={postGame.openError} />
 
-      <HudPanel title="Current game">
-        {read.status === "ok" ? <GameSummary data={read.data} /> : <NoGame read={read} />}
-      </HudPanel>
+      {/* One empty state for the screen, not one per panel.
 
-      <ThisGamePanel read={read} state={context} />
-      <MatchupPanel state={context} />
-      <BuildPanel state={context} />
-      <GamePlanPanel state={context} />
+          Every panel below is a reading of a game, so with no game they were five boxes
+          in a column, four of them printing the same sentence — which reads as an app
+          that has broken in four places rather than one that is waiting. They are not
+          rendered at all now, and the wait is said once, with what it is waiting to
+          fill. */}
+      {read.status === "ok" ? (
+        <>
+          <HudPanel title="Current game">
+            <GameSummary data={read.data} />
+          </HudPanel>
+
+          <ThisGamePanel read={read} state={context} />
+          <MatchupPanel state={context} />
+          <BuildPanel state={context} />
+          <GamePlanPanel state={context} />
+        </>
+      ) : (
+        <HudPanel title="Current game">
+          <NoGame read={read} />
+        </HudPanel>
+      )}
     </div>
   );
 }
@@ -52,7 +67,7 @@ function NoGame({
       </p>
       <p className="mx-auto mt-2 max-w-sm text-sm text-text-body">
         {read.status === "no-game"
-          ? "Start a match and this panel fills in on its own."
+          ? "Start a match and this screen fills in on its own — the scoreboard, your numbers against your own average, the lane, the build and the plan."
           : read.reason}
       </p>
     </div>
