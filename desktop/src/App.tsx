@@ -9,7 +9,7 @@ import { PairingScreen } from "@/screens/PairingScreen";
 import { SettingsScreen } from "@/screens/SettingsScreen";
 import { installApiBridge } from "@/lib/apiBridge";
 import { navigate, useRoute } from "@/lib/router";
-import { matchRoute } from "@/routes";
+import { matchRoute, rendersHere } from "@/routes";
 import { useLiveGame } from "@/lib/useLiveGame";
 
 const CONNECTION: Record<string, ConnectionState> = {
@@ -69,10 +69,12 @@ export function App(): React.ReactElement {
           </Suspense>
         ) : null}
 
-        {/* A fragment nothing answers — reached by a lifted component linking to the rest of
-            the site, which is most of it and stays that way under ADR-044. Not a gap: the
-            handoff is the answer, so this is where the page gets opened in the browser. */}
-        {!route ? <OnTheWebsite path={path} /> : null}
+        {/* Everything this window does not draw itself — most of the site, and it stays
+            that way under ADR-044. Asked of `rendersHere` rather than of `route`, because a
+            native screen answers for one address while its section covers a whole subtree:
+            `/settings/accounts` belongs to Settings and is not Settings, and asking the
+            weaker question left it blank. */}
+        {!rendersHere(path) ? <OnTheWebsite path={path} /> : null}
       </AppFrame>
     </QueryClientProvider>
   );

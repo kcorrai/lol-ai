@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { GROUP_LABELS, railGroups, ROUTES, type DesktopRoute, type RouteGroup } from "./routes";
+import {
+  GROUP_LABELS,
+  railGroups,
+  rendersHere,
+  ROUTES,
+  type DesktopRoute,
+  type RouteGroup,
+} from "./routes";
 
 /**
  * The rail draws a rule between runs and names each one only to a screen reader (ADR-044).
@@ -65,5 +72,35 @@ describe("the real table", () => {
     const groups = railGroups().map((run) => run.group);
 
     expect(new Set(groups).size).toBe(groups.length);
+  });
+});
+
+describe("rendersHere", () => {
+  it("draws a native screen at its own address", () => {
+    expect(rendersHere("/settings")).toBe(true);
+    expect(rendersHere("/game")).toBe(true);
+  });
+
+  // The case that went blank. `/settings/accounts` prefix-matches this app's native
+  // `/settings`, and the website's dashboard links there from the empty state an unpaired
+  // player lands on first.
+  it("hands back a path under a native screen", () => {
+    expect(rendersHere("/settings/accounts")).toBe(false);
+    expect(rendersHere("/settings/billing")).toBe(false);
+    expect(rendersHere("/pairing/anything")).toBe(false);
+  });
+
+  // A lifted screen is the website's own component and reads its own parameters, so the
+  // subtree is its business and handing it back would take a working screen away.
+  it("keeps a path under a lifted screen", () => {
+    expect(rendersHere("/matches")).toBe(true);
+    expect(rendersHere("/matches/TR1_1234567890")).toBe(true);
+    expect(rendersHere("/coaching/some-report-id")).toBe(true);
+  });
+
+  it("hands back what the table does not mention at all", () => {
+    expect(rendersHere("/pricing")).toBe(false);
+    expect(rendersHere("/coaches")).toBe(false);
+    expect(rendersHere("/")).toBe(false);
   });
 });

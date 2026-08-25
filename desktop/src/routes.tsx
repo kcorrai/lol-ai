@@ -190,3 +190,26 @@ export function matchRoute(path: string): DesktopRoute | undefined {
     (a, b) => b.path.length - a.path.length
   )[0];
 }
+
+/**
+ * Whether this window draws this path itself, or hands it back to the website (ADR-044).
+ *
+ * Not the same question as `matchRoute`, which answers "what section is this under" and is
+ * what the rail wants. The two forms of screen answer for different amounts of the tree:
+ *
+ * - A **lifted** screen is the website's own component and reads its own parameters, so it
+ *   answers for everything under its path — `/matches/TR1_1` is the match list's business.
+ * - A **native** screen is hand-built for exactly one address and draws nothing at any other.
+ *
+ * Asking `matchRoute` alone conflated them, and the case it got wrong was not a corner:
+ * `/settings/accounts` prefix-matched this app's native `/settings`, so the handoff did not
+ * fire and the native screen did not render either. The window went blank — and the website
+ * links there from the dashboard's own "connect an account" empty state, which is the first
+ * thing an unpaired player sees.
+ */
+export function rendersHere(path: string): boolean {
+  const route = matchRoute(path);
+  if (!route) return false;
+
+  return route.Component ? true : route.path === path;
+}
