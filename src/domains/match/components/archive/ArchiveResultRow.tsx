@@ -5,6 +5,7 @@ import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { positionLabel, queueLabel } from "@/domains/match/archive/archiveLabels";
 import { cn } from "@/lib/utils";
 import type { ArchiveRow } from "@/domains/match/services/matchArchiveService";
+import { formatDate } from "@/lib/uiLocale";
 
 /**
  * One match in the results.
@@ -79,5 +80,5 @@ function formatDuration(seconds: number): string {
 function formatWhen(iso: string): string {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return "—";
-  return date.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "2-digit" });
+  return formatDate(date, { day: "numeric", month: "short", year: "2-digit" });
 }

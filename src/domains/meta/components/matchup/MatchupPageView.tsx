@@ -5,6 +5,7 @@ import { MatchupCurveCompare } from "@/domains/meta/components/MatchupCurveCompa
 import { DataFreshness } from "@/domains/meta/components/DataFreshness";
 import type { MatchupPageData } from "./loadMatchupData";
 import { jsonLdProps } from "@/lib/security/jsonLd";
+import { formatCount } from "@/lib/uiLocale";
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
 
@@ -16,7 +17,7 @@ function analysis(d: MatchupPageData): string {
   ];
   if (d.games > 0) {
     parts.push(
-      `Across ${d.games.toLocaleString()} ranked games, ${d.a.name} wins ${d.aWinRate.toFixed(1)}% of the time.`
+      `Across ${formatCount(d.games)} ranked games, ${d.a.name} wins ${d.aWinRate.toFixed(1)}% of the time.`
     );
   } else {
     parts.push(

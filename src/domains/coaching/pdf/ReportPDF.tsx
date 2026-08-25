@@ -1,4 +1,5 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { formatDate, formatDateTime } from "@/lib/uiLocale";
 
 // ── Palette ───────────────────────────────────────────────────────────────────
 const C = {
@@ -167,7 +168,7 @@ export function ReportPDF({ data }: { data: ReportPDFData }) {
             <Text style={styles.headerValue}>{data.riotId}</Text>
             {data.rank && <Text style={[styles.muted, { marginTop: 2 }]}>{data.rank}</Text>}
             <Text style={[styles.muted, { marginTop: 2 }]}>
-              {new Date(data.createdAt).toLocaleDateString()} · {data.matchCount} matches
+              {formatDate(data.createdAt)} · {data.matchCount} matches
             </Text>
           </View>
         </View>
@@ -312,9 +313,7 @@ export function ReportPDF({ data }: { data: ReportPDFData }) {
         {/* Footer */}
         <View style={styles.footer} fixed>
           <Text style={styles.footerText}>LoL AI Coach — lolaicoach.gg</Text>
-          <Text style={styles.footerText}>
-            Generated {new Date(data.createdAt).toLocaleString()}
-          </Text>
+          <Text style={styles.footerText}>Generated {formatDateTime(data.createdAt)}</Text>
         </View>
       </Page>
     </Document>

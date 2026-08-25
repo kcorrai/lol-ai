@@ -1,6 +1,7 @@
 import type { ChampionBuild, PositionStats } from "@/domains/meta";
 import type { ItemInfo } from "@/lib/ddragon/itemsData";
 import type { RuneInfo } from "@/lib/ddragon/runesData";
+import { formatCount } from "@/lib/uiLocale";
 
 interface BuildTextInput {
   name: string;
@@ -53,7 +54,7 @@ export function buildIntro(i: BuildTextInput): string {
       : `${i.stats.pickRate.toFixed(1)}% pick rate`;
   return (
     `${i.name} is currently a ${tier} ${i.laneLabel} pick on patch ${i.gamePatch}, holding a ` +
-    `${i.stats.winRate.toFixed(1)}% win rate across ${i.stats.games.toLocaleString()} games ` +
+    `${i.stats.winRate.toFixed(1)}% win rate across ${formatCount(i.stats.games)} games ` +
     `(${rates}).` +
     `${scalingSentence(i.build, i.name)}. The setup below is the highest-win-rate build from real games this patch, not theorycraft.`
   );

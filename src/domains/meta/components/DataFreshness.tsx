@@ -1,4 +1,5 @@
 import { formatGamePatch } from "@/domains/meta";
+import { formatCount } from "@/lib/uiLocale";
 
 // Hours since an ISO timestamp (server-rendered; 0 when the time is in the future).
 function hoursAgo(iso: string): number {
@@ -33,7 +34,7 @@ export function DataFreshness({
         <>
           <span aria-hidden>·</span>
           <span>
-            {matchCount.toLocaleString()} {gamesLabel}
+            {formatCount(matchCount)} {gamesLabel}
           </span>
         </>
       ) : null}

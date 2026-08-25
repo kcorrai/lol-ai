@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { formatCount } from "@/lib/uiLocale";
 
 interface BuildRailProps {
   name: string;
@@ -55,7 +56,7 @@ export function BuildRail({
           <div className="flex justify-between gap-3">
             <dt className="text-text-body">Games analyzed</dt>
             <dd className="font-mono text-text">
-              {matchCount ? matchCount.toLocaleString() : "—"}
+              {matchCount ? formatCount(matchCount) : "—"}
             </dd>
           </div>
           <div className="flex justify-between gap-3">

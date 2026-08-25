@@ -2,6 +2,7 @@
 
 import { Flame } from "lucide-react";
 import { useChallenges } from "@/hooks/useChallenges";
+import { formatCount } from "@/lib/uiLocale";
 
 const XP_PER_LEVEL = 500;
 
@@ -36,7 +37,7 @@ export function XpLevelWidget() {
         />
       </div>
       <p className="text-[11px] text-text-muted">
-        {xpToNext} XP → Level {level + 1} · {xp.toLocaleString()} total XP
+        {xpToNext} XP → Level {level + 1} · {formatCount(xp)} total XP
       </p>
     </div>
   );

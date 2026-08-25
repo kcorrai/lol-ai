@@ -2,6 +2,7 @@
 
 import { Flame, Star } from "lucide-react";
 import { useChallenges } from "@/hooks/useChallenges";
+import { formatCount } from "@/lib/uiLocale";
 
 const XP_PER_LEVEL = 500;
 
@@ -46,7 +47,7 @@ export function ProgressionStrip({
         </div>
         <div>
           <p className="text-sm font-bold text-text">Level {level}</p>
-          <p className="text-[11px] text-text-muted">{xp.toLocaleString()} total XP</p>
+          <p className="text-[11px] text-text-muted">{formatCount(xp)} total XP</p>
         </div>
       </div>
 

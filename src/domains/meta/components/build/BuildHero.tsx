@@ -5,6 +5,7 @@ import { championSplashUrl } from "@/lib/ddragon";
 import { POSITION_LABELS, POSITION_SLUG } from "@/domains/meta";
 import { StatBlock } from "@/components/dashboard/laneiq/HudPanel";
 import type { CanonicalPosition, PositionStats } from "@/domains/meta";
+import { formatCount } from "@/lib/uiLocale";
 
 interface BuildHeroProps {
   championKey: string;
@@ -90,7 +91,7 @@ export function BuildHero({
           />
           <StatBlock label="Pick" value={`${stats.pickRate.toFixed(1)}%`} />
           {!isAram && <StatBlock label="Ban" value={`${stats.banRate.toFixed(1)}%`} />}
-          <StatBlock label="Games" value={stats.games.toLocaleString()} />
+          <StatBlock label="Games" value={formatCount(stats.games)} />
         </div>
       </div>
     </section>

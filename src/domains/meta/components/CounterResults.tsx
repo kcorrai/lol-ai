@@ -3,6 +3,7 @@ import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { matchupSlug } from "@/domains/meta";
 import { barWidth, matchupEdge } from "@/domains/meta/counterBar";
 import type { CounterMatchup } from "@/domains/meta";
+import { formatCount } from "@/lib/uiLocale";
 
 type Tone = "good" | "bad";
 
@@ -48,7 +49,7 @@ function MatchupRow({
           {matchup.opponentWinRate.toFixed(1)}%
         </span>
         <span className="block text-[10px] text-text-muted">
-          {matchup.games.toLocaleString()} games
+          {formatCount(matchup.games)} games
         </span>
       </span>
     </Link>

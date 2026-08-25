@@ -1,5 +1,6 @@
 import type { Position } from "@prisma/client";
 import type { ArchiveFilters } from "@/domains/match/services/matchArchiveFilters";
+import { formatDate } from "@/lib/uiLocale";
 
 /**
  * Display names for the archive facets, kept apart from the query helpers because these are the
@@ -113,5 +114,5 @@ function shortDate(iso: string): string {
   const date = new Date(iso);
   return Number.isNaN(date.getTime())
     ? iso
-    : date.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "2-digit" });
+    : formatDate(date, { day: "numeric", month: "short", year: "2-digit" });
 }

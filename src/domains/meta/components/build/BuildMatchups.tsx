@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
+import { formatCount } from "@/lib/uiLocale";
 
 export interface BuildMatchup {
   key: string;
@@ -54,7 +55,7 @@ export function BuildMatchups({
               {matchup.winRate.toFixed(1)}%
             </span>
             <span className="hidden text-right font-mono text-[10.5px] tracking-[0.1em] text-text-faint sm:block">
-              {matchup.games.toLocaleString()}
+              {formatCount(matchup.games)}
             </span>
           </Link>
         );

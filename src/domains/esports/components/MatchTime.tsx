@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { formatDate, formatTime } from "@/lib/uiLocale";
 
 interface MatchTimeProps {
   /** ISO 8601 kickoff, as published (UTC). */
@@ -22,7 +23,7 @@ function formatUtc(iso: string, withDate: boolean): Parts {
   const minutes = String(date.getUTCMinutes()).padStart(2, "0");
   return {
     day: withDate
-      ? date.toLocaleDateString("en-GB", {
+      ? formatDate(date, {
           weekday: "short",
           day: "numeric",
           month: "short",
@@ -37,10 +38,8 @@ function formatLocal(iso: string, withDate: boolean): Parts {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return { day: null, time: "" };
   return {
-    day: withDate
-      ? date.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" })
-      : null,
-    time: date.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }),
+    day: withDate ? formatDate(date, { weekday: "short", day: "numeric", month: "short" }) : null,
+    time: formatTime(date, { hour: "2-digit", minute: "2-digit" }),
   };
 }
 

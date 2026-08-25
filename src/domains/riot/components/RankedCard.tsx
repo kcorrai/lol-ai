@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useRankedData, type RankedQueue } from "@/hooks/useRankedData";
 import { rankEmblemUrl } from "@/lib/ddragon";
 import type { LpSnapshot } from "@/domains/riot";
+import { formatDate } from "@/lib/uiLocale";
 
 const TIER_COLOR: Record<string, string> = {
   IRON: "text-rank-iron",
@@ -78,7 +79,7 @@ function LpChart({ history }: { history: LpSnapshot[] }) {
       <div className="flex h-14 items-end gap-0.5">
         {history.map((snap, i) => {
           const pct = Math.max(4, (snap.lp / max) * 100);
-          const date = new Date(snap.recordedAt).toLocaleDateString();
+          const date = formatDate(snap.recordedAt);
           return (
             <div
               key={i}
