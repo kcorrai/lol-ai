@@ -26,20 +26,23 @@ export function PairingScreen({ pairing }: { pairing: PairingHandle }): React.Re
         ) : state.status === "paired" ? (
           <PairedDevice pairing={state.pairing} onForget={forget} />
         ) : state.status === "offline" ? (
-          <div className="grid gap-3">
-            <p className="text-sm text-text-body">
-              This machine holds a token, but LoL AI Coach could not be reached to confirm it.
-              Nothing is wrong with the pairing — the website is out of reach.
-            </p>
-            <p className="text-xs text-text-muted">{state.error}</p>
-            <button
-              type="button"
-              onClick={() => void retry()}
-              className="tag-cut w-fit border border-line-2 bg-surface-dark px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-label text-text-muted transition-colors hover:border-accent/60 hover:text-accent"
-            >
-              Try again
-            </button>
-          </div>
+          <Retryable
+            onRetry={retry}
+            reason={state.error}
+            what="This machine holds a token, but LoL AI Coach could not be reached to confirm it.
+              Nothing is wrong with the pairing — the website is out of reach."
+          />
+        ) : state.status === "unknown" ? (
+          // The fourth non-answer, and the one that used to fall through to the sentence
+          // below it. An app whose credential store will not open does not know whether it
+          // holds a token, and telling the player nothing is stored for it was a guess.
+          <Retryable
+            onRetry={retry}
+            reason={state.error}
+            what="Your credential store could not be opened, so whether this machine is paired is
+              not something this app can tell you right now. The token, if there is one, has not
+              been touched."
+          />
         ) : (
           <p className="text-sm text-text-body">
             Not paired. Nothing is stored in your keychain for this app.
@@ -77,6 +80,39 @@ export function PairingScreen({ pairing }: { pairing: PairingHandle }): React.Re
           enough to cut it off.
         </p>
       </HudPanel>
+    </div>
+  );
+}
+
+/**
+ * The two states that are neither paired nor unpaired: the website is out of reach, or the
+ * credential store is. Each says what happened, then what the app could not learn from it,
+ * and offers the only thing there is to do about either — ask again.
+ *
+ * One component because the shape is the same and the difference is a sentence. Neither
+ * offers the pairing form: an app that already holds a token, or that cannot tell whether
+ * it does, must not be told to pair again.
+ */
+function Retryable({
+  what,
+  reason,
+  onRetry,
+}: {
+  what: string;
+  reason: string;
+  onRetry: () => Promise<void>;
+}): React.ReactElement {
+  return (
+    <div className="grid gap-3">
+      <p className="text-sm text-text-body">{what}</p>
+      <p className="text-xs text-text-muted">{reason}</p>
+      <button
+        type="button"
+        onClick={() => void onRetry()}
+        className="tag-cut w-fit border border-line-2 bg-surface-dark px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-label text-text-muted transition-colors hover:border-accent/60 hover:text-accent"
+      >
+        Try again
+      </button>
     </div>
   );
 }

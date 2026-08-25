@@ -17,9 +17,21 @@ pub struct AppState {
     pub lcu: LcuClient,
 }
 
-#[derive(Serialize)]
-pub struct DeviceStatus {
-    pub paired: bool,
+/// What the credential store said when it was asked whether this machine holds a token.
+///
+/// Three answers, not two. `secrets::read` can say "here it is", "there is no entry" and
+/// "I could not be asked", and the third is a different thing from the second: one is the
+/// store answering no, the other is the store not answering. Folding them made the app
+/// tell a player with a perfectly good token that nothing was stored for it.
+#[derive(Debug, PartialEq, Eq, Serialize)]
+#[serde(tag = "status", rename_all = "kebab-case")]
+pub enum DeviceStatus {
+    Paired,
+    NotPaired,
+    /// Carries the store's own words, because the only thing the player can act on is why.
+    Unknown {
+        reason: String,
+    },
 }
 
 /// Reads one Live Client Data API path.
@@ -35,10 +47,24 @@ pub async fn live_client_get(
     state.live.get(&path).await
 }
 
+/// The mapping, apart from the command, so it can be tested against a store error — which
+/// is the case that was wrong and the one a real credential store will not produce on
+/// demand.
+fn status_of(read: AppResult<Option<String>>) -> DeviceStatus {
+    match read {
+        Ok(Some(_)) => DeviceStatus::Paired,
+        Ok(None) => DeviceStatus::NotPaired,
+        Err(err) => DeviceStatus::Unknown { reason: err.to_string() },
+    }
+}
+
 /// Whether this device holds a token. Never the token itself.
+///
+/// Returns rather than fails on a store error: "I could not tell" is an answer the UI
+/// draws, and the one thing it must not do is round down to "no".
 #[tauri::command]
 pub fn device_status() -> DeviceStatus {
-    DeviceStatus { paired: secrets::is_paired() }
+    status_of(secrets::read())
 }
 
 /// Forgets this device locally. Revoking it for real is a server-side act and belongs to
@@ -210,4 +236,56 @@ pub async fn lcu_champ_select(
 #[tauri::command]
 pub async fn lcu_apply_runes(state: State<'_, AppState>, page: PerkPage) -> AppResult<bool> {
     state.lcu.put_perk_page(&page).await
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::error::AppError;
+
+    /// The defect this replaced. `is_paired()` was `matches!(read(), Ok(Some(_)))`, so a
+    /// store that could not be asked came out as `false` and the app told a player holding
+    /// a perfectly good token that nothing was stored for it.
+    #[test]
+    fn a_store_that_could_not_be_asked_is_not_a_no() {
+        let status = status_of(Err(AppError::Keychain("the vault is locked".into())));
+
+        assert!(matches!(status, DeviceStatus::Unknown { .. }));
+        assert_ne!(status, DeviceStatus::NotPaired);
+    }
+
+    /// "No entry" is the store answering, and answering no.
+    #[test]
+    fn an_empty_store_is_a_no() {
+        assert_eq!(status_of(Ok(None)), DeviceStatus::NotPaired);
+    }
+
+    #[test]
+    fn a_token_is_a_yes() {
+        assert_eq!(status_of(Ok(Some("token".into()))), DeviceStatus::Paired);
+    }
+
+    /// The reason is what the player acts on, so it has to survive the mapping.
+    #[test]
+    fn the_unknown_answer_carries_the_stores_own_words() {
+        let status = status_of(Err(AppError::Keychain("the vault is locked".into())));
+
+        let DeviceStatus::Unknown { reason } = status else {
+            panic!("expected Unknown");
+        };
+        assert!(reason.contains("the vault is locked"));
+    }
+
+    /// The webview matches on this string. A rename here is a rename there.
+    #[test]
+    fn the_three_answers_serialise_as_the_webview_reads_them() {
+        let json = |s: &DeviceStatus| serde_json::to_string(s).unwrap();
+
+        assert_eq!(json(&DeviceStatus::Paired), r#"{"status":"paired"}"#);
+        assert_eq!(json(&DeviceStatus::NotPaired), r#"{"status":"not-paired"}"#);
+        assert_eq!(
+            json(&DeviceStatus::Unknown { reason: "locked".into() }),
+            r#"{"status":"unknown","reason":"locked"}"#
+        );
+    }
 }

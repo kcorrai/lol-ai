@@ -7,8 +7,9 @@ use crate::error::{AppError, AppResult};
 /// and this token is the one thing standing between a stolen profile folder and someone
 /// else's account.
 ///
-/// Nothing in this module returns the token to the webview. `status` answers whether one
-/// exists; the value itself only ever moves from here into an Authorization header.
+/// Nothing in this module returns the token to the webview. `read` is the only way in, and
+/// `device_status` turns its three answers into the three the UI can say; the value itself
+/// only ever moves from here into an Authorization header.
 const SERVICE: &str = "gg.lolaicoach.desktop";
 const ACCOUNT: &str = "device-token";
 
@@ -41,9 +42,6 @@ pub fn clear() -> AppResult<()> {
     }
 }
 
-pub fn is_paired() -> bool {
-    matches!(read(), Ok(Some(_)))
-}
 
 #[cfg(test)]
 mod tests {
@@ -60,11 +58,9 @@ mod tests {
         }
         let _ = clear();
         assert_eq!(read().unwrap(), None);
-        assert!(!is_paired());
 
         store("token-under-test").unwrap();
         assert_eq!(read().unwrap().as_deref(), Some("token-under-test"));
-        assert!(is_paired());
 
         clear().unwrap();
         assert_eq!(read().unwrap(), None);

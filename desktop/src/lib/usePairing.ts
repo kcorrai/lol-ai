@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { readDeviceStatus } from "./device";
+import { readDeviceStatus, type DeviceStatus } from "./device";
 import { clearPairing, hasCore, pairDevice, readPairing, type Pairing } from "./pairing";
 
 export type PairingState =
@@ -10,8 +10,44 @@ export type PairingState =
   | { status: "unpaired"; error: string | null }
   /** A token is in the keychain, but the website could not be reached to confirm it. */
   | { status: "offline"; error: string }
+  /**
+   * The credential store could not be asked, so whether there is a token is not known.
+   *
+   * The second state on this list that exists to avoid answering a question nobody could
+   * answer — `unavailable` is the other, for the browser preview. Different cause, same
+   * rule: an app that does not know must not say no.
+   */
+  | { status: "unknown"; error: string }
   | { status: "pairing" }
   | { status: "paired"; pairing: Pairing };
+
+/**
+ * What the app is, given that the website could not be reached and what the credential
+ * store said about it.
+ *
+ * A function rather than a branch inside the effect because this suite runs in node with
+ * no DOM, so the hook cannot be rendered — the same reason `parseCollapsed` is a function.
+ * It is also the decision that was wrong, which makes it the one worth pinning.
+ *
+ * `null` means the core itself could not be asked, which is not an answer either.
+ */
+export function pairingStateFor(local: DeviceStatus | null, message: string): PairingState {
+  switch (local?.status) {
+    // A token is here and the website is out of reach. A companion opened on a train is
+    // not a companion that has been cut off.
+    case "paired":
+      return { status: "offline", error: message };
+    // The store answered, and answered no.
+    case "not-paired":
+      return { status: "unpaired", error: message };
+    // The store refused, or there was no core to put the question to. Two ways of not
+    // knowing, and neither of them is "no".
+    case "unknown":
+      return { status: "unknown", error: local.reason };
+    default:
+      return { status: "unknown", error: message };
+  }
+}
 
 /**
  * Named because two places read it now — the Pairing screen and the account chip in the
@@ -49,11 +85,7 @@ export function usePairing(): PairingHandle {
       // credential store can still say which. A companion opened on a train should not be
       // told to pair again; it should be told the website is out of reach.
       const local = await readDeviceStatus().catch(() => null);
-      setState(
-        local?.paired
-          ? { status: "offline", error: message }
-          : { status: "unpaired", error: message }
-      );
+      setState(pairingStateFor(local, message));
     }
   }, []);
 

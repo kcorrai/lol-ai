@@ -40,6 +40,18 @@ export function AccountChip({
     );
   }
 
+  // The credential store could not be asked, so there is no answer to give. Said as the
+  // absence it is rather than rounded down to "not paired", which is what this used to do
+  // and what left a paired machine being told to pair again.
+  if (state.status === "unknown") {
+    return (
+      <Chip onClick={onOpenPairing} title={state.error}>
+        <Link2 className="h-4 w-4 shrink-0 text-warning" aria-hidden />
+        <Line top="Pairing unknown" bottom="Keychain unreadable" />
+      </Chip>
+    );
+  }
+
   // A token is in the keychain and the website could not be reached to say whose it is.
   // Distinct from unpaired on purpose — an app opened on a train is not an app cut off.
   if (state.status === "offline") {
