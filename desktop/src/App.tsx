@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppFrame } from "@/components/layout/AppFrame";
+import { OnTheWebsite } from "@/components/layout/OnTheWebsite";
 import type { ConnectionState } from "@/components/layout/StatusChip";
 import { ChampionsScreen } from "@/screens/ChampionsScreen";
 import { GameScreen } from "@/screens/GameScreen";
@@ -68,14 +69,10 @@ export function App(): React.ReactElement {
           </Suspense>
         ) : null}
 
-        {/* A fragment nothing answers. Reachable by hand-editing the address, and by a
-            lifted component linking somewhere this app has not covered yet — which will be
-            most of the website until the rest of ADR-043's phases land. */}
-        {!route ? (
-          <p className="text-sm text-text-muted">
-            That screen is not in the desktop app yet. Open it on the website.
-          </p>
-        ) : null}
+        {/* A fragment nothing answers — reached by a lifted component linking to the rest of
+            the site, which is most of it and stays that way under ADR-044. Not a gap: the
+            handoff is the answer, so this is where the page gets opened in the browser. */}
+        {!route ? <OnTheWebsite path={path} /> : null}
       </AppFrame>
     </QueryClientProvider>
   );

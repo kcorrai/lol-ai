@@ -8,6 +8,7 @@ mod live_context;
 mod post_game;
 mod proxy;
 mod secrets;
+mod website;
 
 use api::ApiClient;
 use commands::AppState;
@@ -95,8 +96,9 @@ pub fn run() {
             None,
         ))
         // Registered for the Rust side only: none of the plugin's own commands are granted
-        // to the webview, so the sole address this app can open is the one `open_report`
-        // builds from the compiled-in base.
+        // to the webview. Every address this app can open is built in Rust on the
+        // compiled-in base — `open_report` from a constant, `open_on_website` from a path
+        // the renderer supplies and `website::is_page` refuses if it could name a host.
         .plugin(tauri_plugin_opener::init())
         .manage(AppState { live, api, lcu })
         .invoke_handler(tauri::generate_handler![
@@ -111,6 +113,7 @@ pub fn run() {
             commands::post_game,
             commands::desktop_fetch,
             commands::open_report,
+            commands::open_on_website,
             commands::lcu_available,
             commands::lcu_champ_select,
             commands::lcu_apply_runes,
