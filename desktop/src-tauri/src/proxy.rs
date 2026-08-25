@@ -111,6 +111,16 @@ const ALLOWED_PATHS: &[&str] = &[
     // the analysis is public champion data, the recommendations are owner-scoped.
     "/api/otp",
     "/api/otp/recommendations",
+    // The three read-only screens the website's sidebar had and this window did not: the
+    // ladder, the season recap and the monthly milestone. The ladder is public and IP
+    // rate-limited; the other two are owner-scoped.
+    "/api/leaderboard",
+    "/api/milestone",
+    // POST, and the second entry here that reaches a model — for the recap's three-sentence
+    // summary. Bounded the same four ways `/api/coaching/generate` is: ownership, one stored
+    // recap per season that every later call reads back, a seven-day cache on the summary,
+    // and ADR-041's budget.
+    "/api/recap/generate",
     "/api/riot/*/champion-matches",
     "/api/riot/*/performance",
     "/api/riot/*/plan",
@@ -350,6 +360,21 @@ mod tests {
 
         assert!(!is_allowed("/api/otp/history"));
         assert!(!is_allowed("/api/champions/all/refresh"));
+    }
+
+    /// The ladder, the season recap and the monthly milestone.
+    ///
+    /// `/api/recap/generate` is named rather than `/api/recap`, which is the share endpoint's
+    /// prefix and reads someone else's recap by token — the screen never asks for it, so it
+    /// is not here.
+    #[test]
+    fn the_three_read_only_screens_are_allowed() {
+        assert!(is_allowed("/api/leaderboard?period=weekly"));
+        assert!(is_allowed("/api/milestone?year=2026&month=8"));
+        assert!(is_allowed("/api/recap/generate"));
+
+        assert!(!is_allowed("/api/recap"));
+        assert!(!is_allowed("/api/recap/share-token-abc"));
     }
 
     /// `/api/match/` would have swept in every match route; the archive is the only part

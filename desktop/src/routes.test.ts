@@ -144,8 +144,19 @@ describe("the website's nav and this one", () => {
 
   const shared = ROUTES.filter((route) => website.has(route.path));
 
-  // Without this the three below pass by matching nothing at all, which is how a lock
-  // quietly stops being one.
+  // The one that makes the floor above redundant, and it is kept anyway: this says *which*
+  // rows are missing, and it is the reason the sidebar carries the whole website rather
+  // than a subset of it (ADR-044). A row here does not have to render in the window — most
+  // of them hand back — but it has to be listed, or the player is looking at a product with
+  // sections quietly missing from it and no way to tell which.
+  it("carries every row of the website's sidebar", () => {
+    const missing = [...website.keys()].filter(
+      (href) => !ROUTES.some((route) => route.path === href)
+    );
+
+    expect(missing).toEqual([]);
+  });
+
   it("has screens in common at all", () => {
     // The sidebar carries the website's own sections now, so most of its table is shared.
     // The floor is here so the three below cannot pass by matching nothing at all, which

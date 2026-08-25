@@ -7,18 +7,23 @@ import type { LucideIcon } from "lucide-react";
 // drift as one that is called two things.
 import {
   BarChart3,
+  CalendarDays,
   ClipboardList,
+  Film,
   Gamepad2,
   History,
   LayoutDashboard,
   Link2,
   Map,
+  Medal,
+  MessageCircle,
   Search,
   Settings,
   Shield,
   Star,
   TrendingUp,
   Trophy,
+  Users,
 } from "lucide-react";
 
 /**
@@ -136,6 +141,23 @@ export const ROUTES: readonly DesktopRoute[] = [
     group: "coaching",
     Component: lifted(() => import("../../app/(app)/coaching/PageClient")),
   },
+  // Liftable on paper and a handback in fact, which is why it is written out here rather
+  // than sitting with the rest of the site in `routesOnWebsite.ts`: it belongs inside
+  // Coaching, in the website's own order, not in a block at the end.
+  //
+  // The reason is the transport. `/api/riot/{id}/chat` answers with a `text/plain` stream
+  // and the bridge between this window and the core carries a JSON body — a reply would
+  // arrive all at once or not at all, and the screen is a stream of tokens. The route is
+  // also not on `withAuth`, so there is no `deviceAccess` to turn on. Both are fixable and
+  // neither is fixable here.
+  {
+    path: "/coaching/chat",
+    label: "Coach Chat",
+    icon: MessageCircle,
+    inRail: true,
+    group: "coaching",
+    onWebsite: true,
+  },
   {
     path: "/improvement",
     label: "Improvement",
@@ -186,12 +208,52 @@ export const ROUTES: readonly DesktopRoute[] = [
     Component: lifted(() => import("../../app/(app)/timeline/PageClient")),
   },
   {
+    path: "/recap",
+    label: "Season Recap",
+    icon: Film,
+    inRail: true,
+    group: "performance",
+    Component: lifted(() => import("../../app/(app)/recap/PageClient")),
+  },
+  {
+    path: "/milestone",
+    label: "Milestone",
+    icon: CalendarDays,
+    inRail: true,
+    group: "performance",
+    Component: lifted(() => import("../../app/(app)/milestone/PageClient")),
+  },
+  {
+    path: "/leaderboard",
+    label: "Leaderboard",
+    icon: Medal,
+    inRail: true,
+    group: "compete",
+    Component: lifted(() => import("../../app/(app)/leaderboard/PageClient")),
+  },
+  {
     path: "/achievements",
     label: "Badges",
     icon: Trophy,
     inRail: true,
     group: "compete",
     Component: lifted(() => import("../../app/(app)/achievements/PageClient")),
+  },
+  // The other handback that is written out here rather than with the rest of the site: it
+  // belongs inside Compete, between Badges and what follows.
+  //
+  // A team has its own shell on the website — `TeamShell` and `TeamSidebar` — and
+  // `/teams/[id]` is a different component from `/teams`. A lifted screen answers for
+  // everything under its path, so lifting the list would draw the *list* at `/teams/abc`.
+  // Covering it means lifting the shell too, which is a screen of its own and not a line in
+  // this table.
+  {
+    path: "/teams",
+    label: "Teams",
+    icon: Users,
+    inRail: true,
+    group: "compete",
+    onWebsite: true,
   },
   ...ON_WEBSITE,
   { path: "/pairing", label: "Pairing", icon: Link2, inRail: true, group: "app" },
