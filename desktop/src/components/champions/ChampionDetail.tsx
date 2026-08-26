@@ -130,7 +130,7 @@ function DetailNote({ state }: { state: Exclude<ChampionState, { status: "ready"
     case "loading":
       return <PanelNote>Reading this champion…</PanelNote>;
     case "unpaired":
-      return <PanelNote>Pair this machine with your account in Settings.</PanelNote>;
+      return <PanelNote>Pair this machine on the Pairing screen.</PanelNote>;
     case "error":
       return <PanelNote>{state.message}</PanelNote>;
   }

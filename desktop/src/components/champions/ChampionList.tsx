@@ -1,3 +1,4 @@
+import { memo, useMemo } from "react";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { tierLetter } from "@/domains/meta/tierLetter";
 import { PanelNote } from "@/components/game/PanelNote";
@@ -37,7 +38,10 @@ export function ChampionList({
     return <PanelNote>No champions are played in this lane on this patch.</PanelNote>;
   }
 
-  const shown = filterChampions(state.list.entries, query);
+  const shown = useMemo(
+    () => filterChampions(state.list.entries, query),
+    [state.list.entries, query]
+  );
 
   if (shown.length === 0) {
     return <PanelNote>No champion in this lane is called “{query.trim()}”.</PanelNote>;
@@ -76,7 +80,15 @@ function games(count: number): string {
   return count >= 1000 ? `${Math.round(count / 1000)}k` : String(count);
 }
 
-function Row({
+/**
+ * One champion.
+ *
+ * Memoised because a lane is a hundred and seventy of these and the two things that change
+ * around them — a keystroke in the search box, a click on another row — change nothing about
+ * any row but one. `onSelect` is a `useState` setter handed straight out of
+ * `useChampions`, so its identity never changes and the memo really does hold.
+ */
+const Row = memo(function Row({
   entry,
   active,
   onSelect,
@@ -154,7 +166,7 @@ function Row({
       </button>
     </li>
   );
-}
+});
 
 /** The list's four ways of having nothing to show, each with what the player can do. */
 function ListNote({ state }: { state: Exclude<ChampionListState, { status: "ready" }> }) {
@@ -169,7 +181,7 @@ function ListNote({ state }: { state: Exclude<ChampionListState, { status: "read
     case "loading":
       return <PanelNote>Reading this patch…</PanelNote>;
     case "unpaired":
-      return <PanelNote>Pair this machine with your account in Settings.</PanelNote>;
+      return <PanelNote>Pair this machine on the Pairing screen.</PanelNote>;
     case "error":
       return <PanelNote>{state.message}</PanelNote>;
   }

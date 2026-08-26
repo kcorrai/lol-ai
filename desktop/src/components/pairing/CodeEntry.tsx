@@ -59,7 +59,7 @@ export function CodeEntry({
         className={cn(
           "notch border bg-surface-dark px-3 py-2.5 text-center font-mono text-xl",
           "font-bold uppercase tracking-[0.2em] text-text placeholder:text-text-faint",
-          "focus:outline-none disabled:opacity-50",
+          "disabled:opacity-50",
           malformed ? "border-danger" : "border-line-2 focus:border-accent"
         )}
       />

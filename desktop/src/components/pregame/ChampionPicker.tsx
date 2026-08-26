@@ -111,7 +111,7 @@ function Roster({
     case "unavailable":
       return <PanelNote>This preview has no champion list. Run the desktop app.</PanelNote>;
     case "unpaired":
-      return <PanelNote>Pair this machine with your account to read champions.</PanelNote>;
+      return <PanelNote>Pair this machine on the Pairing screen to read champions.</PanelNote>;
     case "error":
       return <PanelNote>{roster.message}</PanelNote>;
     case "ok":
