@@ -3,6 +3,7 @@ import { GamePlanPanel } from "@/components/game/GamePlanPanel";
 import { MatchupPanel } from "@/components/game/MatchupPanel";
 import { PostGamePanel } from "@/components/game/PostGamePanel";
 import { ThisGamePanel } from "@/components/game/ThisGamePanel";
+import { TimelinePanel } from "@/components/game/TimelinePanel";
 import { HudPanel } from "@/components/layout/HudPanel";
 import { displayNameOf, type AllGameData, type LivePlayer } from "@/lib/liveClient/schema";
 import type { LiveRead } from "@/lib/liveClient/client";
@@ -45,6 +46,7 @@ export function GameScreen({ read }: { read: LiveRead<AllGameData> }): React.Rea
           <MatchupPanel state={context} />
           <BuildPanel state={context} />
           <GamePlanPanel state={context} />
+          <TimelinePanel data={read.data} />
         </>
       ) : (
         <HudPanel title="Current game">

@@ -15,7 +15,7 @@
  */
 
 /** The panels the overlay can draw, in the order it draws them. */
-export const OVERLAY_PANELS = ["performance", "matchup", "build"] as const;
+export const OVERLAY_PANELS = ["performance", "matchup", "build", "timeline"] as const;
 export type OverlayPanel = (typeof OVERLAY_PANELS)[number];
 
 export interface OverlayDrawing {
@@ -24,7 +24,13 @@ export interface OverlayDrawing {
   opacity: number;
 }
 
-/** What the overlay draws for a player who has never changed it: the three it has always had. */
+/**
+ * What the overlay draws for a player who has never changed it.
+ *
+ * The three it has always had. The timeline is off by default: the overlay is a glance and a
+ * list of what already happened is a second look, which belongs in the window that can be
+ * scrolled. It is one switch away for the players who want it there.
+ */
 export const DEFAULT_DRAWING: OverlayDrawing = {
   panels: ["performance", "matchup", "build"],
   opacity: 1,

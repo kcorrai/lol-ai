@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { ThisGamePanel } from "@/components/game/ThisGamePanel";
 import { MatchupPanel } from "@/components/game/MatchupPanel";
 import { BuildPanel } from "@/components/game/BuildPanel";
+import { TimelinePanel } from "@/components/game/TimelinePanel";
 import type { LiveRead } from "@/lib/liveClient/client";
 import type { AllGameData } from "@/lib/liveClient/schema";
 import type { OverlayPanel } from "@/lib/overlaySettings";
@@ -83,6 +84,10 @@ function Panel({
       return <MatchupPanel state={context} />;
     case "build":
       return <BuildPanel state={context} />;
+    case "timeline":
+      // Fewer rows than the window draws: this one is read at a glance and the window it sits
+      // over is a match, not a page.
+      return read.status === "ok" ? <TimelinePanel data={read.data} limit={6} /> : <></>;
   }
 }
 

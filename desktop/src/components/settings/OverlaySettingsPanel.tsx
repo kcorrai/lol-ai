@@ -140,12 +140,14 @@ const PANEL_LABELS: Record<OverlayPanel, string> = {
   performance: "This game",
   matchup: "This lane",
   build: "Build",
+  timeline: "So far",
 };
 
 const PANEL_NOTES: Record<OverlayPanel, string> = {
   performance: "Your four numbers against your own average.",
   matchup: "How the lane goes, on this patch and for you.",
   build: "Skill order and what to buy next.",
+  timeline: "Kills, turrets and objectives that have already happened.",
 };
 
 function Unavailable(): React.ReactElement {
