@@ -14,3 +14,53 @@
  * carrying a game, or missing entirely. So the faces are served from disk.
  */
 @import "./fonts.css";
+
+/*
+ * Two rules this window needs and the website does not, which is why they are here and not
+ * in the shared file (ADR-039). Adding either there would change every page of the site.
+ */
+
+/*
+ * A keyboard has to be able to see where it is.
+ *
+ * Stated once rather than per component. This window is a column of buttons — a nav rail, a
+ * row of lane tabs, a champion list a hundred and seventy long — and a focus ring added by
+ * hand in fifteen places is a focus ring forgotten in the sixteenth.
+ *
+ * `:focus-visible` and not `:focus`, so a mouse click does not leave a ring behind on
+ * something the player has already finished with. The offset is negative for list rows,
+ * whose neighbours are a pixel away and would otherwise have the ring drawn over them.
+ */
+@layer base {
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    /* The shared file publishes the accent as bare HSL channels for Tailwind to wrap, so
+       the wrapping happens here. The fallback is the same colour written out, for a build
+       where the import order ever changes. */
+    outline: 2px solid hsl(var(--accent, 78 100% 62%));
+    outline-offset: 2px;
+  }
+
+  :where(li, tr) > :where(a, button):focus-visible {
+    outline-offset: -2px;
+  }
+}
+
+/*
+ * Movement is a preference, and this app runs next to a game.
+ *
+ * A player who has asked their operating system for less of it has asked this window too.
+ * Nothing here conveys meaning by moving — the sidebar's width, a colour settling, the
+ * accent pulse beside the current row — so all of it can stop without costing anything.
+ * Not `display: none` on animations: an element that vanished would take its layout with
+ * it, which is a larger change than the one being asked for.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

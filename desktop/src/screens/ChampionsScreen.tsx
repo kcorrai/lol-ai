@@ -47,7 +47,7 @@ export function ChampionsScreen(): React.ReactElement {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search a champion"
-            className="notch-sm h-8 w-full border border-border bg-surface-dark pl-8 pr-3 text-sm text-text placeholder:text-text-muted focus:border-accent/50 focus:outline-none"
+            className="notch-sm h-8 w-full border border-border bg-surface-dark pl-8 pr-3 text-sm text-text placeholder:text-text-muted focus-visible:border-accent/50"
           />
         </label>
 

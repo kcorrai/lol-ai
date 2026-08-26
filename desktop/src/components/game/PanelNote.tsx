@@ -35,7 +35,7 @@ export function noteFor(state: LiveContextState): React.ReactElement | null {
     case "loading":
       return <PanelNote>Reading your account…</PanelNote>;
     case "unpaired":
-      return <PanelNote>Pair this machine with your account in Settings.</PanelNote>;
+      return <PanelNote>Pair this machine on the Pairing screen.</PanelNote>;
     case "error":
       return <PanelNote>{state.message}</PanelNote>;
     case "ready":
