@@ -27,9 +27,18 @@ interface Props {
   params: { name: string };
 }
 
-export async function generateStaticParams() {
-  const champions = await fetchAllChampions();
-  return champions.map((c) => ({ name: c.id }));
+// The ~50 most-picked champions, prerendered; the rest render on demand and are then held by
+// the same 12h ISR window, exactly as /builds and /aram already do it. `dynamicParams`
+// defaults to true, so every champion still has a page and the sitemap is unchanged — the
+// difference is that the long tail is built once, by the reader who asked for it, instead of
+// by every deploy. `championKey` is the Data Dragon id, which is what this route matches on.
+export async function generateStaticParams(): Promise<{ name: string }[]> {
+  const snapshot = await getMetaSnapshot();
+  if (!snapshot) return [];
+  return [...snapshot.champions]
+    .sort((a, b) => b.overallPickRate - a.overallPickRate)
+    .slice(0, 50)
+    .map((c) => ({ name: c.championKey }));
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
