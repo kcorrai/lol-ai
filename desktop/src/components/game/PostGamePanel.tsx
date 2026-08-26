@@ -1,7 +1,11 @@
 import { ExternalLink } from "lucide-react";
+import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { HudPanel } from "@/components/layout/HudPanel";
 import { PanelNote } from "@/components/game/PanelNote";
-import type { PostGameState } from "@/lib/usePostGame";
+import { cn } from "@/lib/cn";
+import { matchLength, scoreline, type ArchiveRow } from "@/lib/lastMatch";
+import { formatCount } from "@/lib/uiLocale";
+import type { LastMatchState, PostGameState } from "@/lib/usePostGame";
 
 /**
  * What the app says once a game is over.
@@ -16,10 +20,12 @@ import type { PostGameState } from "@/lib/usePostGame";
  */
 export function PostGamePanel({
   state,
+  lastMatch,
   open,
   openError,
 }: {
   state: PostGameState;
+  lastMatch: LastMatchState;
   open: () => Promise<void>;
   openError: string | null;
 }): React.ReactElement | null {
@@ -30,9 +36,61 @@ export function PostGamePanel({
       title="Game over"
       action={state.status === "reported" ? <OpenButton open={open} /> : null}
     >
-      <Body state={state} />
+      {/* The match itself once it has landed, and the sentence about it being on its way
+          until then. The panel never claims the first while it only has the second. */}
+      {lastMatch.status === "ready" ? <Match row={lastMatch.row} /> : <Body state={state} />}
       {openError ? <p className="mt-3 text-sm text-danger">{openError}</p> : null}
     </HudPanel>
+  );
+}
+
+/**
+ * The game that just finished.
+ *
+ * The competitors all put this on screen the moment a match ends; what took this app so long
+ * is that it would not say a game was ready before it was. The pull is asynchronous and the
+ * window is never told it finished, so the archive is watched until the match is actually in
+ * it — and this is drawn only then.
+ *
+ * The player's own line, and nothing about anybody else: this is a record of what they did,
+ * and the rest of the scoreboard is a click away in the report.
+ */
+function Match({ row }: { row: ArchiveRow }): React.ReactElement {
+  return (
+    <div className="grid gap-3">
+      <div className="flex items-center gap-3">
+        <ChampionIcon name={row.championName} size={40} className="shrink-0" />
+        <div className="min-w-0">
+          <p
+            className={cn(
+              "font-display text-sm font-bold uppercase tracking-[0.08em]",
+              row.won ? "text-accent" : "text-danger"
+            )}
+          >
+            {row.won ? "Win" : "Loss"}
+          </p>
+          <p className="mt-0.5 truncate text-xs text-text-muted">
+            {row.championName} · {row.position || "—"} · {matchLength(row.gameDurationSeconds)}
+          </p>
+        </div>
+      </div>
+
+      <dl className="grid grid-cols-4 gap-px bg-line-1">
+        <Figure label="KDA" value={scoreline(row)} />
+        <Figure label="CS" value={`${formatCount(row.cs)}`} />
+        <Figure label="CS/min" value={row.csPerMinute.toFixed(1)} />
+        <Figure label="Vision" value={formatCount(row.visionScore)} />
+      </dl>
+    </div>
+  );
+}
+
+function Figure({ label, value }: { label: string; value: string }): React.ReactElement {
+  return (
+    <div className="bg-surface px-3 py-2">
+      <dt className="hud-label">{label}</dt>
+      <dd className="mt-1 font-mono text-sm font-bold tabular-nums text-text">{value}</dd>
+    </div>
   );
 }
 

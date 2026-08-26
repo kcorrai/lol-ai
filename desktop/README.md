@@ -27,8 +27,16 @@ finds out on its next call and forgets the token locally.
 When a game ends, the app tells the website — and that is the one thing it can say that
 the website could not have worked out. A server pulls an account when somebody opens the
 dashboard and the data is half an hour stale, because nothing on it knows a match is over.
-This window does, to the second. A "Game over" panel then offers the match list, opened in
-the player's own browser rather than inside this one.
+This window does, to the second.
+
+The "Game over" panel then draws the game itself — the result, the champion, the scoreline,
+the creeps and the vision — and still offers the full report, opened in the player's own
+browser rather than inside this one. It waits to be sure first: the pull is asynchronous and
+nothing tells this window it finished, so the archive is read until the match is actually in
+it, for a bounded minute, and the panel keeps its "on its way" sentence until then. Telling a
+player their game is ready and handing them a list that does not have it yet is worse than
+telling them it is coming. The competitors all put a breakdown on screen the moment a match
+ends; what took this one longer is that it would not claim a game was there before it was.
 
 The tray is built. Closing the window no longer ends the process — it hides it, and the
 app keeps watching for a game; the tray icon brings it back and its menu is the only way
