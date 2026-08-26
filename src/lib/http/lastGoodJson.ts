@@ -58,7 +58,15 @@ export async function fetchJsonLastGood<T>(
       const res = await fetch(url, {
         headers: options.headers,
         // Not `next: { revalidate }` — see above. This is the entire fix.
-        cache: "no-store",
+        //
+        // And `no-cache` rather than `no-store`, which reads like the same instruction
+        // and is, to the framework's cache: patch-fetch maps both to `revalidate: 0`,
+        // so a response is stored under neither. Only `no-store` also throws a
+        // DynamicServerError inside a prerender — and this helper reads the Data Dragon
+        // catalogues that a dozen ISR tool pages are built from, so under `no-store`
+        // every one of those reads failed during `next build` and the caller fell back
+        // to a Postgres row. ADR-045.
+        cache: "no-cache",
         signal: AbortSignal.timeout(options.timeoutMs ?? DEFAULT_TIMEOUT_MS),
       });
       if (!res.ok) return serveStale<T>(url);

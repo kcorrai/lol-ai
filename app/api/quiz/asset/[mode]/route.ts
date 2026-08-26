@@ -60,7 +60,9 @@ export async function GET(request: NextRequest, { params }: { params: { mode: st
       // moving to the next candidate (LA-13). The Cache-Control below is what actually
       // caches the image, at the edge.
       const res = await fetch(url, {
-        cache: "no-store",
+        // `no-cache` keeps this out of the framework cache exactly as `no-store` did,
+        // without the prerender throw that made `no-store` a trap elsewhere (ADR-045).
+        cache: "no-cache",
         signal: AbortSignal.timeout(8000),
       });
       if (!res.ok) {

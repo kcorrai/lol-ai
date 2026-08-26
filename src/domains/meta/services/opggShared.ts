@@ -123,11 +123,16 @@ export const CounterSchema = z.object({
  * piped — an unreachable op.gg 500'd the page instead of falling through to the cache
  * (LA-13). Nothing is lost: both callers already sit on the Redis/Postgres fresh +
  * last-good pair above this, which is where the caching that matters happens.
+ *
+ * `no-cache` rather than `no-store` says the same thing to the framework — patch-fetch
+ * gives both `revalidate: 0`, so neither is ever stored — while not throwing a
+ * DynamicServerError inside a prerender, which is what turned every meta read during
+ * `next build` into a Postgres read. ADR-045.
  */
 export function opggFetch(url: string): Promise<Response> {
   return fetch(url, {
     headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
-    cache: "no-store",
+    cache: "no-cache",
     signal: AbortSignal.timeout(OPGG_TIMEOUT_MS),
   });
 }

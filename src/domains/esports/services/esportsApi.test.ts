@@ -18,7 +18,9 @@ describe("esportsFetch", () => {
     // An undefined param is omitted rather than serialised as "undefined".
     expect(url).not.toContain("pageToken");
     expect((init.headers as Record<string, string>)["x-api-key"]).toBeTruthy();
-    expect(init.cache).toBe("no-store");
+    // Not `no-store`, which throws a DynamicServerError inside a prerender and put every
+    // ISR esports page back on a Postgres read for the whole of a build (ADR-045).
+    expect(init.cache).toBe("no-cache");
   });
 });
 
