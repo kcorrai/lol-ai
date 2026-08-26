@@ -204,10 +204,11 @@ export type LiveItem = z.infer<typeof liveItemSchema>;
  * How this champion is built on the current patch — the same build the website's own
  * page shows, carried to the machine the game is running on.
  *
- * Names rather than icons, deliberately. The desktop app's content policy allows images
- * from itself and from `data:` only, so a Data Dragon URL would simply not load and the
- * panel would be a row of broken frames. Resolving to names here costs one cached
- * catalogue read and gives the app something it can actually render.
+ * Names rather than icons, deliberately — but not because the app is forbidden the
+ * picture: its content policy admits Data Dragon, and its champion list draws portraits
+ * from there. The reason is where the catalogue is. This server already holds it cached,
+ * so one read turns the ids into words; the app holds nothing and would have to fetch a
+ * catalogue of its own to get back what was thrown away here.
  *
  * This is static advice about a champion, not a reading of the running game — which is
  * what keeps it on the right side of Riot's ban on notifications that dictate play from

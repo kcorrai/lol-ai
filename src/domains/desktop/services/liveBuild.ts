@@ -5,10 +5,10 @@ import type { ItemInfo } from "@/lib/ddragon/itemsData";
 /**
  * A patch build, in the shape the desktop app can render.
  *
- * The one thing this does that a cast could not is resolve item ids to names. The app's
- * content policy allows images from itself and `data:` alone, so a Data Dragon icon URL
- * would render as a broken frame — the ids are turned into words here, on the server that
- * already has the catalogue cached.
+ * The one thing this does that a cast could not is resolve item ids to names. Not for
+ * want of permission at the other end — the app's content policy admits Data Dragon — but
+ * because the catalogue is here: the ids are turned into words on the server that already
+ * has it cached, rather than shipped to a client that would have to fetch one.
  *
  * Shared by the live game panel and the champion browser, which show the same build from
  * two directions: one for the champion being played right now, one for a champion being

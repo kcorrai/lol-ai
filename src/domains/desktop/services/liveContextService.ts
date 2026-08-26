@@ -151,10 +151,10 @@ function toBaseline(baseline: ChampionBaseline): LiveBaseline {
 /**
  * How this champion is built on the current patch, with item ids resolved to names.
  *
- * Names because the app cannot fetch an icon — its content policy allows images from
- * itself and `data:` alone, so a Data Dragon URL would render as a broken frame. An id
- * the catalogue does not carry becomes an empty name rather than dropping the item: a
- * gap in a build is information, and a silently shorter build is not.
+ * Names because the catalogue lives here, not because the app is forbidden the picture —
+ * its content policy admits Data Dragon. An id the catalogue does not carry becomes an
+ * empty name rather than dropping the item: a gap in a build is information, and a
+ * silently shorter build is not.
  *
  * Null for a mode with no lane. `getChampionBuild` is keyed on a position, and ARAM has
  * none — inventing one would answer with a build for a lane nobody is in.

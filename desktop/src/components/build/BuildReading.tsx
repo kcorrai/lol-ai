@@ -12,9 +12,10 @@ type Item = LiveBuild["core"][number];
  * panel, for the champion being played right now, and the champion browser, for one being
  * read about. It is the same reading either way; only the reason for looking differs.
  *
- * Names, not icons. The app's content policy allows images from itself and `data:` alone,
- * so a Data Dragon URL would render as a broken frame — the website resolves the ids and
- * sends words.
+ * Names, not icons — and not for want of permission: `img-src` admits Data Dragon, and the
+ * champion list draws a portrait from it on every row. The reason is what arrives. The
+ * website resolves the item ids and sends words, so words are what this has to print; an
+ * icon here would mean the desktop re-deriving ids the website already spent.
  */
 export function BuildReading({ build }: { build: LiveBuild }): React.ReactElement {
   return (

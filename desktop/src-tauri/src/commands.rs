@@ -127,9 +127,9 @@ pub async fn champion_list(
 
 /// One champion in one lane, or `null` when this machine is no longer paired.
 ///
-/// The build comes back with item *names* rather than ids, resolved on the website: this
-/// window's content policy allows images from itself and `data:` alone, so a Data Dragon
-/// icon URL would render as a broken frame.
+/// The build comes back with item *names* rather than ids, resolved on the website. Not a
+/// content-policy limit — `img-src` admits Data Dragon and the champion list draws from it
+/// — but the shape of the answer: the ids are spent server-side and only words cross.
 ///
 /// `key` is a Data Dragon id — `Ahri`, `MonkeyKing` — and reaches the address through
 /// `Url`, which escapes it into a single path segment.

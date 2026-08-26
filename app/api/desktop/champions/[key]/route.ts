@@ -26,10 +26,10 @@ function championKey(req: NextRequest): string | null {
 
 // GET /api/desktop/champions/[key]?role= — one champion in one lane (LA-75, ADR-042).
 //
-// The build carries item names rather than ids because the app's content policy allows
-// images from itself and `data:` alone; a Data Dragon icon URL would render as a broken
-// frame. It is the same `LiveBuild` shape the live game panel gets, so the app has one
-// build component and not two.
+// The build carries item names rather than ids because the item catalogue is cached here
+// and nowhere in the app — not because the app is refused the icons; its content policy
+// admits Data Dragon. It is the same `LiveBuild` shape the live game panel gets, so the
+// app has one build component and not two.
 export const GET = withDeviceAuth(async (req: NextRequest, { device }): Promise<NextResponse> => {
   const rl = await checkRateLimit(`desktop-champions:${device.id}`, {
     limit: 120,
