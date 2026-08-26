@@ -22,9 +22,14 @@ export const dynamic = "force-dynamic";
 export const POST = withDeviceAuth(async (req: NextRequest, { device }): Promise<NextResponse> => {
   // Keyed on the device, which is the only identity this endpoint has. Sized for a
   // real game rather than a real poll: the app asks once per matchup, and the
-  // matchup changes when a game starts. Twenty in ten minutes is more games than
-  // anyone plays and far fewer than a loop would make.
-  const rl = await checkRateLimit(`desktop-live:${device.id}`, { limit: 20, windowMs: 600_000 });
+  // matchup changes when a game starts.
+  //
+  // Raised from twenty when the companion grew a screen that reads a matchup before
+  // there is a game — the player names two champions and presses a button, so the
+  // asking is deliberate but no longer once per forty minutes. Forty in ten minutes is
+  // still far fewer than a loop would make, and the app caches each answer by matchup
+  // so going back to one already looked at costs nothing here.
+  const rl = await checkRateLimit(`desktop-live:${device.id}`, { limit: 40, windowMs: 600_000 });
   if (!rl.allowed) return rateLimitResponse(rl.retryAfterMs, rl.limit);
 
   const parsed = liveContextRequestSchema.safeParse(await req.json().catch(() => null));

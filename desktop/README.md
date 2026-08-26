@@ -64,6 +64,26 @@ certificate and a release pipeline that do not exist yet, and Riot registration 
 in flight before any of it ships (ADR-038). Everything that needs a backend feature not
 yet built still says so rather than pretending.
 
+### Before the game
+
+Champion select is where every competitor's advice lands, and it is the one moment this app
+cannot see: it is only reachable through the League Client API, which ships compiled out
+(ADR-038). `/pregame` is the part of it that does not need that interface. The player names
+the two champions and the lane, presses a button, and gets the same lane reading, build and
+game plan the live dashboard would have shown them a minute later — `live_context` takes its
+request from the webview and has never required a running game.
+
+They type where a competitor would read, and in exchange the app never touches an interface
+it is not allowed to touch. That trade is said on the screen itself rather than left for
+somebody to wonder about.
+
+Nothing is fetched as the pickers move. `/api/desktop/live-context` is rate limited per
+device because it was written for a game — which asks once and then not again for forty
+minutes — and two pickers that fetched as they moved would spend a match's worth of that
+allowance in half a minute of clicking. One button spends one request, each answer is kept
+for the life of the window under the same matchup key the live dashboard uses, and the limit
+was raised from twenty to forty when this screen arrived.
+
 ### What the live dashboard shows
 
 **This lane** — how the matchup goes for everyone on this patch, and how it has gone for
