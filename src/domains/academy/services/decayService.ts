@@ -73,6 +73,17 @@ export async function checkMasteryDecay(now: Date = new Date()): Promise<DecayRe
       // improved, and a mastery with no assignment behind it has nothing to re-measure.
       const assignment = await prisma.academyAssignment.findFirst({
         where: { userId, lessonId: row.lessonId, status: "passed" },
+        // Six fields, and this runs once per mastery in a nightly batch of up to 200 —
+        // unprojected it dragged `evidence` back with every one of them, which is the
+        // largest column on the row and the one nothing here reads.
+        select: {
+          metric: true,
+          position: true,
+          championId: true,
+          gamesRequired: true,
+          direction: true,
+          target: true,
+        },
         orderBy: { resolvedAt: "desc" },
       });
       if (!assignment) continue;

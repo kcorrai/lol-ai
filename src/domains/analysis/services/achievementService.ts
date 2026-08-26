@@ -122,8 +122,11 @@ async function checkComebackKing(riotAccountId: string): Promise<boolean> {
 }
 
 async function checkFirstReport(riotAccountId: string): Promise<boolean> {
+  // Existence, not content. Unprojected this pulled the whole report — summary,
+  // coachPersonaResponse, and the four Json columns — to answer a boolean.
   const report = await prisma.coachingReport.findFirst({
     where: { riotAccountId, status: "complete" },
+    select: { id: true },
   });
   return report !== null;
 }

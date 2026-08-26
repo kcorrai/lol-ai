@@ -7,7 +7,7 @@ import {
   getSummonerByPuuid,
 } from "@/domains/riot/services/riotApiClient";
 import { getLastRankedSnapshot } from "@/domains/riot/services/rankedService";
-import type { RankTier, RankDivision, RiotAccount } from "@prisma/client";
+import type { RankTier, RankDivision } from "@prisma/client";
 import { mapWithConcurrency } from "@/lib/utils/concurrency";
 import type { RankedEntryDTO } from "@/domains/riot/types/riot.types";
 
@@ -150,9 +150,32 @@ export async function backfillMatchNicknames(
   }
 }
 
-export async function syncRankedSnapshot(
-  account: RiotAccount
-): Promise<{ rankedSnapshotted: boolean; errors: string[]; updatedAccount: RiotAccount }> {
+/**
+ * The columns a ranked snapshot actually reads, out of the seventeen on `riot_accounts`.
+ *
+ * Named so a caller can project its query down to these instead of selecting the row whole.
+ * The nightly sweep walks up to a thousand accounts and needs none of the sync bookkeeping
+ * (`syncStatus`, the three timestamps, `lastSyncError`) or the fields Riot gave us for other
+ * purposes — but the whole-row `findMany` was fetching them anyway, once per account, every
+ * night.
+ */
+export interface RankedSyncAccount {
+  id: string;
+  puuid: string;
+  region: string;
+  summonerId: string | null;
+  gameName: string;
+  tagLine: string;
+}
+
+/**
+ * Generic over the account rather than fixed to `RiotAccount`, so a caller that already holds
+ * the full row keeps it — `matchSyncService` reassigns `account = updatedAccount` and goes on
+ * using the rest of it — while one that only needs the six fields above can pass just those.
+ */
+export async function syncRankedSnapshot<T extends RankedSyncAccount>(
+  account: T
+): Promise<{ rankedSnapshotted: boolean; errors: string[]; updatedAccount: T }> {
   let currentAccount = account;
   const errors: string[] = [];
 
