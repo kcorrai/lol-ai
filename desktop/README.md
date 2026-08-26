@@ -98,6 +98,17 @@ calls a model**: a round trip at the start of every match would cost the player 
 one minute they cannot spare, and a deterministic reading is one that can be checked
 against the data behind it.
 
+**So far** — what has already happened: the objectives that were taken and when, the turrets
+that fell, the kills, and which of them were the player's own. The event stream had been
+arriving all along — `allgamedata` carries it and the poll pulls it once a second — and
+nothing read it.
+
+It counts nothing down. Every respawn interval is a game constant that moves between patches,
+this repository has no verified table of them, and a confidently wrong countdown over a
+running game is worse than no panel (LA-74). The event names and their fields are taken from
+Riot's own published sample rather than from memory, and an event name this build has not
+heard of costs a row rather than the parse.
+
 The lane is derived from what is already on the player's own screen — the active player
 matched against the scoreboard, the enemy in the same position. Every case that cannot be
 resolved answers with nothing and says so, because a confident wrong reading is worse than

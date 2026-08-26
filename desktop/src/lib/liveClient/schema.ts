@@ -157,10 +157,36 @@ export const gameDataSchema = z.looseObject({
   mapTerrain: z.string(),
 });
 
+/**
+ * One thing that has already happened in this game.
+ *
+ * The three required fields are on every event. The optional ones are the payloads Riot's
+ * own published sample carries — `liveclientdata_events.json`, which is what the docs point
+ * at for the list — and each is declared exactly where that file shows it: `KillerName` on
+ * everything with an actor, `VictimName` on a champion kill, `DragonType` and `Stolen` on
+ * the objectives that have them, `KillStreak` on a multikill, `Acer` and `AcingTeam` on an
+ * ace.
+ *
+ * `EventName` stays a plain string rather than an enum. Riot adds objectives between
+ * patches, and an event name this build has not heard of must cost the reader a row rather
+ * than failing the parse and blanking every panel that reads this payload mid-game.
+ */
 export const gameEventSchema = z.looseObject({
   EventID: z.number(),
   EventName: z.string(),
   EventTime: z.number(),
+  KillerName: z.string().optional(),
+  VictimName: z.string().optional(),
+  Assisters: z.array(z.string()).optional(),
+  /** Riot's own word for it, passed through — this app does not keep a list of dragons. */
+  DragonType: z.string().optional(),
+  Stolen: z.union([z.boolean(), z.string()]).optional(),
+  /** An internal id like `Turret_T1_C_05_A`. Never decoded: see `timeline.ts`. */
+  TurretKilled: z.string().optional(),
+  InhibKilled: z.string().optional(),
+  KillStreak: z.number().optional(),
+  Acer: z.string().optional(),
+  AcingTeam: z.string().optional(),
 });
 
 export const allGameDataSchema = z.looseObject({
