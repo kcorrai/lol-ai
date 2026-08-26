@@ -4,6 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
   getCounterData,
+  getMetaSnapshot,
   getPopularChampions,
   parsePosition,
   parseTier,
@@ -18,7 +19,7 @@ import { RelatedChampions } from "@/domains/meta/components/RelatedChampions";
 import { DataFreshness } from "@/domains/meta/components/DataFreshness";
 import { CounterInsights } from "./CounterInsights";
 import { ProPlayStrip } from "@/domains/esports/components/ProPlayStrip";
-import { fetchAllChampions, fetchChampionDetail } from "@/lib/ddragon/championsData";
+import { fetchChampionDetail } from "@/lib/ddragon/championsData";
 import { championSplashUrl } from "@/lib/ddragon";
 import { jsonLdProps } from "@/lib/security/jsonLd";
 
@@ -27,9 +28,19 @@ export const dynamicParams = true;
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";
 
+// Prerender the ~50 most-picked champions; the rest render on demand (ISR), which is the
+// discipline /builds and /aram already follow. This route used to build every champion in
+// the game, and `dynamicParams` above has always been true, so nothing becomes unreachable
+// and no URL leaves the sitemap — the tail is simply built by the first reader who wants it
+// rather than by every deploy. An unavailable snapshot builds none of them rather than
+// costing the build a round of cold renders.
 export async function generateStaticParams(): Promise<{ champion: string }[]> {
-  const champions = await fetchAllChampions();
-  return champions.map((c) => ({ champion: c.id }));
+  const snapshot = await getMetaSnapshot();
+  if (!snapshot) return [];
+  return [...snapshot.champions]
+    .sort((a, b) => b.overallPickRate - a.overallPickRate)
+    .slice(0, 50)
+    .map((c) => ({ champion: c.championKey }));
 }
 
 interface PageProps {

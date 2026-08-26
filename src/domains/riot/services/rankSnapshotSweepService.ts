@@ -69,6 +69,18 @@ export async function sweepRankSnapshots(): Promise<RankSnapshotSweepResult> {
   // Oldest-updated first, so that if the cap ever bites, the accounts it drops are the ones most
   // recently sampled rather than an arbitrary slice.
   const accounts = await prisma.riotAccount.findMany({
+    // Projected to `RankedSyncAccount` — the six fields syncRankedSnapshot reads, out of
+    // seventeen. At the thousand-account cap below, selecting the row whole moved the sync
+    // bookkeeping and the spare Riot ids of every account across the wire once a night for
+    // nothing.
+    select: {
+      id: true,
+      puuid: true,
+      region: true,
+      summonerId: true,
+      gameName: true,
+      tagLine: true,
+    },
     orderBy: { updatedAt: "asc" },
     take: MAX_ACCOUNTS_PER_RUN,
   });

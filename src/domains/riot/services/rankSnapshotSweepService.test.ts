@@ -116,4 +116,30 @@ describe("sweepRankSnapshots", () => {
     expect(syncRankedSnapshot).not.toHaveBeenCalled();
     expect(result).toEqual({ attempted: 0, succeeded: 0, failed: 0, skippedOverCap: 0 });
   });
+
+  /**
+   * Asserted as an exact set, in both directions.
+   *
+   * Dropping a field breaks the sync silently — `summonerId` missing means the auto-repair
+   * branch fires for every account on every run — and adding one back is how a whole-row
+   * read creeps in again at the one call site that walks a thousand rows a night. Neither
+   * shows up in any other assertion here, because the sweep mocks what it calls.
+   */
+  it("asks the database for the six fields the ranked sync reads, and no others", async () => {
+    haveAccounts([account("a")]);
+
+    await sweepRankSnapshots();
+
+    const [args] = vi.mocked(prisma.riotAccount.findMany).mock.calls[0] as [
+      { select: Record<string, boolean> },
+    ];
+    expect(Object.keys(args.select).sort()).toEqual([
+      "gameName",
+      "id",
+      "puuid",
+      "region",
+      "summonerId",
+      "tagLine",
+    ]);
+  });
 });

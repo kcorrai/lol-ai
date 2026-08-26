@@ -33,8 +33,21 @@ export async function getPlayerPerformanceProfile(
   const playerMatches = await prisma.matchParticipant.findMany({
     where: { puuid: account.puuid },
     include: {
+      // Projected, not `include: { match: true }`. The participant rows below are already
+      // narrowed to the three fields the damage share needs; the match they hang off was
+      // pulling every column of `matches` — gameVersion, rawDataHash, the lot — twenty
+      // times per call, for the six fields this function reads. `teamObjectives` is one of
+      // the six and stays; the rest are what the caller never looked at.
       match: {
-        include: { participants: { select: { teamId: true, damageDealt: true, kills: true } } },
+        select: {
+          id: true,
+          matchId: true,
+          queueType: true,
+          gameDuration: true,
+          gameStart: true,
+          teamObjectives: true,
+          participants: { select: { teamId: true, damageDealt: true, kills: true } },
+        },
       },
     },
     // Ordered by the participant row's own copy of the match's start (ADR-040). There is no

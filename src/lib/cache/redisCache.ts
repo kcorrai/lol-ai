@@ -52,6 +52,19 @@ async function getClient(): Promise<RedisClient | null> {
     client = new Redis({
       url: process.env.KV_REST_API_URL!,
       token: process.env.KV_REST_API_TOKEN!,
+      // The whole reason this cache exists, in one option. The client defaults to
+      // `no-store` on its fetch, and Next throws a DynamicServerError on
+      // exactly that during static generation — so throughout `next build` every
+      // read here failed, `redisCacheGet` reported it as a miss, and `getCached`
+      // fell through to Postgres. A cache that misses on every page of every build
+      // is the pre-ADR-014 behaviour, and it is what emptied the Neon transfer
+      // allowance two or three deploys at a time.
+      //
+      // `no-cache` is the same instruction to the framework — patch-fetch maps both
+      // it and `no-store` to `revalidate: 0`, so neither is ever stored in the Data
+      // Cache — and only `no-store` reaches the throw. Nothing about what crosses
+      // the network changes. See ADR-045.
+      cache: "no-cache",
     }) as unknown as RedisClient;
     return client;
   } catch (err) {

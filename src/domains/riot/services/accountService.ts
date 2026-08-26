@@ -170,6 +170,18 @@ export async function setPrimaryAccount(userId: string, riotAccountId: string): 
 export async function listAccounts(userId: string): Promise<ConnectedAccount[]> {
   const accounts = await prisma.riotAccount.findMany({
     where: { userId },
+    // The eight fields the mapping below names, out of seventeen on the row. The other nine
+    // are sync bookkeeping and the raw Riot ids, none of which reach the client.
+    select: {
+      id: true,
+      gameName: true,
+      tagLine: true,
+      region: true,
+      summonerLevel: true,
+      profileIconId: true,
+      isPrimary: true,
+      lastSyncedAt: true,
+    },
     orderBy: [{ isPrimary: "desc" }, { createdAt: "asc" }],
   });
   return accounts.map((a) => ({

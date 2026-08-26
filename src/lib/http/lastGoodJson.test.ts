@@ -32,7 +32,9 @@ describe("fetchJsonLastGood", () => {
 
     const init = fetchMock.mock.calls[0][1] as RequestInit & { next?: unknown };
     expect(init.next).toBeUndefined();
-    expect(init.cache).toBe("no-store");
+    // `no-cache`, not `no-store`: the same "do not store this" to the framework, minus
+    // the DynamicServerError that `no-store` throws inside a prerender (ADR-045).
+    expect(init.cache).toBe("no-cache");
     expect(init.signal).toBeDefined();
   });
 

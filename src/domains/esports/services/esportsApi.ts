@@ -59,7 +59,14 @@ export function esportsFetch(path: string, options: FetchOptions = {}): Promise<
     // esportsCache owns freshness for this domain. Letting the Next.js fetch
     // cache hold a second, differently-timed copy would mean two answers to
     // "how old is this", and the TTL table would stop being the truth.
-    cache: "no-store",
+    //
+    // `no-cache`, not `no-store`, and the difference is not cosmetic: both tell
+    // patch-fetch `revalidate: 0`, so neither is ever stored — but `no-store`
+    // additionally throws a DynamicServerError inside a prerender. This feed is
+    // read from a dozen ISR esports pages, so under `no-store` every one of them
+    // failed during `next build` and fell back to `:last-good`, which lives in
+    // Postgres. See ADR-045.
+    cache: "no-cache",
   });
 }
 
@@ -72,6 +79,7 @@ export function livestatsFetch(path: string, options: FetchOptions = {}): Promis
   return fetch(url, {
     headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
     signal: options.signal,
-    cache: "no-store",
+    // Same reasoning as esportsFetch above — ADR-045.
+    cache: "no-cache",
   });
 }

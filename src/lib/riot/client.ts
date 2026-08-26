@@ -86,8 +86,10 @@ export class RiotHttpClient {
         "Accept-Language": "en-US,en;q=0.9",
         "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
       },
-      // Disable Next.js fetch cache — we manage caching ourselves
-      cache: "no-store",
+      // Disable Next.js fetch cache — we manage caching ourselves. `no-cache` says that
+      // as completely as `no-store` does and does not throw inside a prerender (ADR-045);
+      // nothing here is reached from one today, but the rule is easier to keep whole.
+      cache: "no-cache",
       // Riot's p99 is well under two seconds. Without a bound, a stalled connection pins the
       // invocation — and its memory reservation and its database connection — until the platform's
       // 300s ceiling, three times over because withRetry will try again. The AI providers have
