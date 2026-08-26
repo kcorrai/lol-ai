@@ -9,6 +9,7 @@ import {
   BarChart3,
   CalendarDays,
   ClipboardList,
+  Crosshair,
   Film,
   Gamepad2,
   History,
@@ -117,6 +118,12 @@ const lifted = (load: () => Promise<{ default: ComponentType }>) => lazy(load);
 
 export const ROUTES: readonly DesktopRoute[] = [
   { path: "/game", label: "Game", icon: Gamepad2, inRail: true, group: "game" },
+  // This window's own, like `/game`: there is no `/pregame` on the website, because the
+  // website has no reason for one. A browser tab is not open during champion select.
+  //
+  // Above the champion browser and below the game, which is the order the two are wanted in:
+  // the pick happens before the match and after everything else.
+  { path: "/pregame", label: "Before the game", icon: Crosshair, inRail: true, group: "game" },
   // Second, under the game: it is the only native screen worth opening when there is no
   // match running, which is most of the time this window is on screen.
   //

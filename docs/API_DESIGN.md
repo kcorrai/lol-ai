@@ -3329,6 +3329,14 @@ has not resolved, and a lane nobody can name has no opponent to name either.
 **200** `{ champion, opponent, personal, meta, habits, riotAccountLinked }`,
 `Cache-Control: no-store`.
 
+Nothing in the body has to have been observed, which is what lets the companion's
+`/pregame` screen use it: a player names two champions before a match and gets the same
+answer. That is why the limit is forty rather than the twenty it shipped with — it was
+sized for a game, which asks once per matchup and then not again for forty minutes, and it
+now also feeds a screen where the asking is deliberate but more frequent. The app caches
+each answer by matchup for the life of its window, so returning to one already read costs
+nothing here.
+
 | Field                   | What it is                                                                    | Null when                                       |
 | ----------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------- |
 | `champion` / `opponent` | `{ key, name }` resolved against Data Dragon                                  | the name is not on the roster                   |
@@ -3341,7 +3349,7 @@ has not resolved, and a lane nobody can name has no opponent to name either.
 | ------ | ------------------ | ------------------------------------------------------------------- |
 | `401`  | `UNAUTHORIZED`     | Missing, malformed, unknown or revoked token, and a deleted account |
 | `422`  | `VALIDATION_ERROR` | Body is not a game this version can read                            |
-| `429`  | —                  | Rate limited: 20 per 10 minutes per **device**                      |
+| `429`  | —                  | Rate limited: 40 per 10 minutes per **device**                      |
 
 **POST rather than GET** because the body is the game state the app observed, and because
 the answer is one account's own history and must not be cached anywhere between here and

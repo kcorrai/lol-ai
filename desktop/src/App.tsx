@@ -6,6 +6,7 @@ import type { ConnectionState } from "@/components/layout/StatusChip";
 import { ChampionsScreen } from "@/screens/ChampionsScreen";
 import { GameScreen } from "@/screens/GameScreen";
 import { PairingScreen } from "@/screens/PairingScreen";
+import { PregameScreen } from "@/screens/PregameScreen";
 import { SettingsScreen } from "@/screens/SettingsScreen";
 import { installApiBridge } from "@/lib/apiBridge";
 import { navigate, useRoute } from "@/lib/router";
@@ -64,6 +65,7 @@ export function App(): React.ReactElement {
         {/* The native screens: the ones that exist because only a local process can read
             the game or hold the keychain. Everything else is the website's own. */}
         {path === "/game" ? <GameScreen read={read} /> : null}
+        {path === "/pregame" ? <PregameScreen /> : null}
         {path === "/champions" ? <ChampionsScreen /> : null}
         {path === "/pairing" ? <PairingScreen pairing={pairing} /> : null}
         {path === "/settings" ? <SettingsScreen /> : null}
