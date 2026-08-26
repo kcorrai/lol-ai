@@ -3,6 +3,7 @@ import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
 import { Errors } from "@/lib/api/errors";
 import { prisma } from "@/lib/db/prisma";
+import { rememberSessionVersion } from "@/lib/auth/sessionVersion";
 import { z } from "zod";
 
 // GET /api/sessions — list active sessions for the current user
@@ -73,10 +74,14 @@ export const DELETE = withAuth(async (req: NextRequest, { userId }) => {
   }
 
   // Sign out all devices: delete all sessions and bump sessionVersion
-  const [deleted] = await prisma.$transaction([
+  const [deleted, revoked] = await prisma.$transaction([
     prisma.userSession.deleteMany({ where: { userId } }),
     prisma.user.update({ where: { id: userId }, data: { sessionVersion: { increment: 1 } } }),
   ]);
+
+  // After the transaction commits, never inside it: publishing a version the transaction then
+  // rolled back would sign the user out of devices they still hold.
+  await rememberSessionVersion(userId, revoked.sessionVersion);
 
   return apiSuccess({ revoked: deleted.count });
 });

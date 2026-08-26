@@ -5,6 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db/prisma";
 import { recordFailedAttempt, clearFailedAttempts } from "@/lib/security/bruteForce";
+import { getSessionVersion } from "@/lib/auth/sessionVersion";
 import { normalizeEmail } from "@/lib/security/email";
 import "@/types/auth.types";
 
@@ -132,14 +133,17 @@ export const authOptions: NextAuthOptions = {
         token.emailVerified = dbUser?.emailVerified ?? null;
         token.sessionVersion = dbUser?.sessionVersion ?? 0;
       }
-      // Validate sessionVersion to support "sign out all devices"
+      // Validate sessionVersion to support "sign out all devices".
+      //
+      // Read through Redis rather than straight from Postgres: this ran on every one of the
+      // 131 routes behind withAuth and on every render of the (app) layout, which made it the
+      // one database call an authenticated request could not avoid. Both revocation paths
+      // write the new version through, so a revocation still lands on the next request —
+      // `sessionVersion.ts` sets out the window and why it is where it is.
       if (token.id && token.sessionVersion !== undefined) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
-          select: { sessionVersion: true },
-        });
-        // If the DB version is ahead of the token's version, this session was revoked
-        if (dbUser && dbUser.sessionVersion > (token.sessionVersion as number)) {
+        const current = await getSessionVersion(token.id as string);
+        // If the stored version is ahead of the token's version, this session was revoked
+        if (current !== null && current > (token.sessionVersion as number)) {
           return null as never;
         }
       }

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db/prisma";
+import { rememberSessionVersion } from "@/lib/auth/sessionVersion";
 import { normalizeEmail } from "@/lib/security/email";
 import { checkRateLimit, getIp, rateLimitResponse } from "@/lib/api/rateLimit";
 import { logger } from "@/lib/utils/logger";
@@ -83,10 +84,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   // somebody does *because* their account is not theirs any more; leaving the
   // intruder's 30-day JWT valid meant the reset changed nothing for them. The JWT
   // callback refuses any token whose `sessionVersion` is behind the row's.
-  await prisma.user.update({
+  const revoked = await prisma.user.update({
     where: { id: user.id },
     data: { sessionVersion: { increment: 1 } },
   });
+  // Published straight away, so the cut lands on the intruder's next request rather than
+  // waiting out the cached copy's TTL.
+  await rememberSessionVersion(user.id, revoked.sessionVersion);
 
   // Invalidate the used token
   await prisma.verificationToken.deleteMany({ where: { identifier: email } });
