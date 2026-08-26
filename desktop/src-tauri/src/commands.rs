@@ -1,3 +1,5 @@
+use std::sync::Mutex;
+
 use serde::Serialize;
 use tauri::{AppHandle, Manager, State};
 
@@ -15,6 +17,38 @@ pub struct AppState {
     pub live: LiveClient,
     pub api: ApiClient,
     pub lcu: LcuClient,
+    /// Where the overlay sits and what opens it, read from disk once on the way up.
+    ///
+    /// Held in memory because the settings are read on every resize — which happens whenever
+    /// a panel gains a line during a match — and reading a file at that rate to answer a
+    /// question that changes when somebody visits Settings would be work for nothing.
+    pub overlay: Mutex<crate::settings::OverlaySettings>,
+}
+
+impl AppState {
+    /// A copy, never the guard. Nothing in this app should be holding a lock while it talks
+    /// to a window, and a settings struct is five small fields.
+    ///
+    /// A poisoned lock hands back what was in it anyway: the only writer is a player in
+    /// Settings, and a panicking one leaves a perfectly readable struct behind. Refusing to
+    /// place the overlay for the rest of the session would be the larger failure.
+    pub fn overlay(&self) -> crate::settings::OverlaySettings {
+        self.overlay.lock().unwrap_or_else(|err| err.into_inner()).clone()
+    }
+
+    /// Remembers the new settings, in memory first and then on disk.
+    ///
+    /// In that order because the in-memory copy is what every later resize reads: a machine
+    /// that cannot write the file still honours the choice for as long as the app is open,
+    /// and says so rather than appearing to ignore it.
+    pub fn set_overlay(
+        &self,
+        app: AppHandle,
+        settings: crate::settings::OverlaySettings,
+    ) -> AppResult<()> {
+        *self.overlay.lock().unwrap_or_else(|err| err.into_inner()) = settings.clone();
+        crate::settings::save(&app, &settings).map_err(crate::error::AppError::Settings)
+    }
 }
 
 /// What the credential store said when it was asked whether this machine holds a token.
@@ -189,23 +223,84 @@ pub fn open_report(app: AppHandle) -> AppResult<()> {
 /// tall. This is roughly one panel's header.
 const OVERLAY_MIN_HEIGHT: f64 = 96.0;
 
-/// How tall the overlay may be, given what it wants to draw and where it sits.
+/// How tall the overlay may be, given what it wants to draw and the room it has.
 ///
-/// Three inputs, all logical pixels: what the content measured, where the window's top edge
-/// is, and where the screen's usable area ends. Content that fits is honoured exactly;
-/// content that does not is cut to the screen rather than drawn past the bottom of it —
-/// which is still a cut, but one the monitor is making rather than the layout.
+/// Content that fits is honoured exactly; content that does not is cut to the screen rather
+/// than drawn past the edge of it — which is still a cut, but one the monitor is making
+/// rather than the layout.
 ///
 /// Apart from the command because the command needs a window and a monitor, and this needs
-/// three numbers.
-fn overlay_height(content: f64, top: f64, work_area_bottom: f64) -> f64 {
-    let available = work_area_bottom - top;
-    // A window positioned off the bottom of its own monitor would otherwise ask for a
-    // negative height. The floor answers that as well as an early measurement.
+/// two numbers.
+fn overlay_height(content: f64, available: f64) -> f64 {
+    // A margin that leaves no room would otherwise ask for a negative height. The floor
+    // answers that as well as an early measurement.
     content.min(available).max(OVERLAY_MIN_HEIGHT)
 }
 
-/// Grows or shrinks the overlay to fit what it is drawing.
+/// The screen the overlay belongs on, and what is left of it once the taskbar has its share.
+///
+/// The player names a screen and the name is looked up every time rather than resolved once:
+/// a monitor can be unplugged between one toggle and the next, and the answer to that is the
+/// screen the window is already on, not no screen at all.
+fn overlay_screen(window: &tauri::WebviewWindow, wanted: Option<&str>) -> Option<tauri::window::Monitor> {
+    if let Some(name) = wanted {
+        if let Ok(monitors) = window.available_monitors() {
+            if let Some(found) = monitors
+                .into_iter()
+                .find(|m| m.name().is_some_and(|n| n == name))
+            {
+                return Some(found);
+            }
+        }
+    }
+    window.current_monitor().ok().flatten()
+}
+
+/// Puts the overlay where the settings say, at the height its content asked for.
+///
+/// Everything here is in physical pixels, deliberately. A machine with one monitor at 150%
+/// and another at 100% has two different meanings for a logical pixel, and the window's own
+/// scale factor is the one it has *now* rather than the one it is moving to — so a logical
+/// position computed for the far screen would land somewhere else. The webview measures in
+/// its own units, which is the one number scaled on the way in.
+pub(crate) fn place_overlay(
+    window: &tauri::WebviewWindow,
+    settings: &crate::settings::OverlaySettings,
+    content: f64,
+) {
+    let Some(monitor) = overlay_screen(window, settings.monitor.as_deref()) else {
+        return;
+    };
+
+    let scale = monitor.scale_factor();
+    let area = monitor.work_area();
+    let work = crate::settings::Rect {
+        x: f64::from(area.position.x),
+        y: f64::from(area.position.y),
+        width: f64::from(i32::try_from(area.size.width).unwrap_or(0)),
+        height: f64::from(i32::try_from(area.size.height).unwrap_or(0)),
+    };
+
+    let width = OVERLAY_WIDTH * scale;
+    let available = crate::settings::available_height(work.height, settings.dy * scale);
+    let height = overlay_height(content * scale, available).max(OVERLAY_MIN_HEIGHT * scale);
+
+    let (x, y) = crate::settings::position_for(
+        work,
+        settings.corner,
+        settings.dx * scale,
+        settings.dy * scale,
+        (width, height),
+    );
+
+    // Size before position: a window that grows after it has been moved would grow past the
+    // corner it was measured from, and the bottom corners are measured from an edge that
+    // depends on the height.
+    let _ = window.set_size(tauri::PhysicalSize::new(width, height));
+    let _ = window.set_position(tauri::PhysicalPosition::new(x, y));
+}
+
+/// Grows or shrinks the overlay to fit what it is drawing, and keeps it in its corner.
 ///
 /// The overlay is 340x620 in `tauri.conf.json` and its three panels came to 1010 px against
 /// a real match, so the last third of the build was off-screen — and the window never takes
@@ -217,11 +312,14 @@ fn overlay_height(content: f64, top: f64, work_area_bottom: f64) -> f64 {
 /// `core:window:allow-set-size` grant in `capabilities/default.json` — that permission
 /// would hand the renderer the main window too.
 ///
+/// It repositions as well as resizes, because a window anchored to the bottom of a screen
+/// has a top edge that moves every time its content changes height.
+///
 /// Failures are swallowed rather than raised. A window that would not resize is a window
 /// still showing what it showed a moment ago, which is not something to interrupt a match
 /// with.
 #[tauri::command]
-pub fn resize_overlay(app: AppHandle, height: f64) {
+pub fn resize_overlay(app: AppHandle, state: State<'_, AppState>, height: f64) {
     let Some(window) = app.get_webview_window(crate::OVERLAY_WINDOW) else {
         return;
     };
@@ -229,23 +327,119 @@ pub fn resize_overlay(app: AppHandle, height: f64) {
     // Deliberately not skipped while the window is hidden, which is its usual state — it is
     // toggled onto the screen for a glance. The webview measures on mount and when its
     // content changes, and both of those happen behind a hidden window; skipping them would
-    // mean the first press of Ctrl+Alt+L in a match showed the window at whatever height it
-    // was last left at.
-    let (Ok(scale), Ok(position), Ok(Some(monitor))) =
-        (window.scale_factor(), window.outer_position(), window.current_monitor())
-    else {
-        return;
+    // mean the first press of the shortcut in a match showed the window at whatever height
+    // it was last left at.
+    let settings = state.overlay();
+    place_overlay(&window, &settings, height);
+}
+
+/// One attached screen, as the Settings list draws it.
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MonitorInfo {
+    /// `None` for a screen the operating system does not name. It cannot be chosen — there
+    /// would be nothing to save — so the list draws it and disables it.
+    pub name: Option<String>,
+    pub width: u32,
+    pub height: u32,
+    pub primary: bool,
+}
+
+/// Every screen this machine has, for the picker in Settings.
+///
+/// Read from the overlay window rather than the main one so a machine where the two ended up
+/// on different screens still enumerates the same set — `available_monitors` is the whole
+/// set either way, and asking the window that is being placed keeps the two calls honest.
+#[tauri::command]
+pub fn list_monitors(app: AppHandle) -> Vec<MonitorInfo> {
+    let Some(window) = app.get_webview_window(crate::OVERLAY_WINDOW) else {
+        return Vec::new();
+    };
+    let primary = window
+        .primary_monitor()
+        .ok()
+        .flatten()
+        .and_then(|m| m.name().cloned());
+
+    window
+        .available_monitors()
+        .unwrap_or_default()
+        .into_iter()
+        .map(|m| MonitorInfo {
+            primary: m.name().is_some() && m.name().cloned() == primary,
+            name: m.name().cloned(),
+            width: m.size().width,
+            height: m.size().height,
+        })
+        .collect()
+}
+
+/// What opens the overlay and where it sits.
+#[tauri::command]
+pub fn overlay_settings(state: State<'_, AppState>) -> crate::settings::OverlaySettings {
+    state.overlay()
+}
+
+/// Changes the key combination that shows and hides the overlay.
+///
+/// The old one is given up only once the new one has been taken. A player whose choice
+/// collides with something else already running keeps the shortcut they had rather than
+/// ending up with none — an overlay reachable by neither key nor tray is one they would have
+/// to restart the app to get back.
+#[tauri::command]
+pub fn set_overlay_shortcut(
+    app: AppHandle,
+    state: State<'_, AppState>,
+    accelerator: String,
+) -> AppResult<()> {
+    use tauri_plugin_global_shortcut::GlobalShortcutExt;
+
+    let current = state.overlay().shortcut;
+    if accelerator == current {
+        return Ok(());
+    }
+
+    app.global_shortcut()
+        .register(accelerator.as_str())
+        .map_err(|err| crate::error::AppError::Shortcut(err.to_string()))?;
+    // Only now: unregistering first would leave a window with no way back if the new
+    // combination turned out to be unavailable.
+    let _ = app.global_shortcut().unregister(current.as_str());
+
+    let settings = crate::settings::OverlaySettings { shortcut: accelerator, ..state.overlay() };
+    state.set_overlay(app, settings)
+}
+
+/// Moves the overlay to a screen and a corner of it, and remembers both.
+#[tauri::command]
+pub fn set_overlay_position(
+    app: AppHandle,
+    state: State<'_, AppState>,
+    monitor: Option<String>,
+    corner: crate::settings::Corner,
+    dx: f64,
+    dy: f64,
+) -> AppResult<()> {
+    let settings = crate::settings::OverlaySettings {
+        monitor,
+        corner,
+        dx,
+        dy,
+        ..state.overlay()
     };
 
-    // `work_area` is what is left of the monitor once the taskbar has taken its share, in
-    // physical pixels like the window's own position. Both are divided by the scale factor
-    // rather than the measurement being multiplied by it, so the arithmetic happens in the
-    // units the webview measured in.
-    let work_area = monitor.work_area();
-    let bottom = f64::from(work_area.position.y + i32::try_from(work_area.size.height).unwrap_or(0));
+    // Applied before it is saved. A player adjusting an offset is looking at the window, and
+    // a failure to write the file should not stop it moving where they asked.
+    if let Some(window) = app.get_webview_window(crate::OVERLAY_WINDOW) {
+        let content = window
+            .inner_size()
+            .ok()
+            .map(|size| f64::from(size.height) / window.scale_factor().unwrap_or(1.0))
+            .unwrap_or(OVERLAY_MIN_HEIGHT);
+        place_overlay(&window, &settings, content);
+    }
 
-    let fitted = overlay_height(height, f64::from(position.y) / scale, bottom / scale);
-    let _ = window.set_size(tauri::LogicalSize::new(OVERLAY_WIDTH, fitted));
+    state.set_overlay(app, settings)
 }
 
 /// Unchanged from `tauri.conf.json`: this resizes the overlay's height and nothing else.
@@ -346,34 +540,30 @@ mod tests {
     }
 
     /// The measurement that started this: three panels came to 1010 px in a 620 px window.
-    /// On a 1080p screen with the overlay at y=96 there is room for 984 of it, so the fit
-    /// takes what the screen has rather than what the content asked for.
+    /// On a 1080p screen with the overlay 96 px from the edge there is room for 984 of it, so
+    /// the fit takes what the screen has rather than what the content asked for.
+    ///
+    /// Where that 984 comes from is `settings::available_height`, which has its own tests —
+    /// including the taskbar's share, since `work_area` is what is left of the monitor.
     #[test]
     fn content_taller_than_the_screen_is_cut_by_the_screen() {
-        assert_eq!(overlay_height(1010.0, 96.0, 1080.0), 984.0);
+        assert_eq!(overlay_height(1010.0, 984.0), 984.0);
     }
 
     /// The case the window was always in and never used: content that fits is honoured
     /// exactly, rather than being held at the height the config happened to name.
     #[test]
     fn content_that_fits_is_honoured() {
-        assert_eq!(overlay_height(430.0, 96.0, 1080.0), 430.0);
-        assert_eq!(overlay_height(984.0, 96.0, 1080.0), 984.0);
+        assert_eq!(overlay_height(430.0, 984.0), 430.0);
+        assert_eq!(overlay_height(984.0, 984.0), 984.0);
     }
 
-    /// A taskbar takes its share of the screen, and `work_area` is what is left. The window
-    /// must stop where the usable area does, not where the monitor does.
-    #[test]
-    fn the_taskbars_share_is_not_available() {
-        assert_eq!(overlay_height(1010.0, 96.0, 1032.0), 936.0);
-    }
-
-    /// React mounting, or a window dragged off the bottom of its own monitor. Neither is a
-    /// reason to leave a sliver over a running game.
+    /// React mounting, or a margin that leaves the window no room at all. Neither is a reason
+    /// to leave a sliver over a running game.
     #[test]
     fn nothing_collapses_the_window_to_a_sliver() {
-        assert_eq!(overlay_height(0.0, 96.0, 1080.0), OVERLAY_MIN_HEIGHT);
-        assert_eq!(overlay_height(1010.0, 1200.0, 1080.0), OVERLAY_MIN_HEIGHT);
+        assert_eq!(overlay_height(0.0, 984.0), OVERLAY_MIN_HEIGHT);
+        assert_eq!(overlay_height(1010.0, 0.0), OVERLAY_MIN_HEIGHT);
     }
 
     /// The webview matches on this string. A rename here is a rename there.

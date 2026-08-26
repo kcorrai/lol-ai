@@ -8,6 +8,7 @@ mod live_context;
 mod post_game;
 mod proxy;
 mod secrets;
+mod settings;
 mod website;
 
 use api::ApiClient;
@@ -29,13 +30,15 @@ const MAIN_WINDOW: &str = "main";
 /// from the renderer: the webview chooses a height and never which window gets it.
 pub(crate) const OVERLAY_WINDOW: &str = "overlay";
 
-/// Toggles the overlay.
+/// The label under the tray's overlay item, which now has to name a shortcut nobody can
+/// predict at compile time.
 ///
-/// Held deliberately away from anything the game binds. A companion that stole a key the
-/// player needs mid-fight would be uninstalled the first time it happened, and Ctrl+Alt
-/// combinations are not what a game reaches for. Not yet configurable, which is a real
-/// gap rather than a decision.
-const OVERLAY_SHORTCUT: &str = "CmdOrCtrl+Alt+L";
+/// Tauri writes accelerators as `CmdOrCtrl+Alt+L`; a menu is read by a person. Splitting on
+/// the separator and rejoining keeps whatever the player chose without this needing to know
+/// the vocabulary — a combination this function has never heard of still reads correctly.
+fn overlay_menu_label(accelerator: &str) -> String {
+    format!("Toggle overlay ({})", accelerator.replace("CmdOrCtrl", "Ctrl"))
+}
 
 /// Brings the window back and focuses it, creating nothing: the window always exists, it
 /// is only ever hidden. Silently does nothing if it has genuinely gone, because failing to
@@ -103,7 +106,15 @@ pub fn run() {
         // compiled-in base — `open_report` from a constant, `open_on_website` from a path
         // the renderer supplies and `website::is_page` refuses if it could name a host.
         .plugin(tauri_plugin_opener::init())
-        .manage(AppState { live, api, lcu })
+        // `setup` replaces this with what is on disk — the first place with an `AppHandle` to
+        // find the file with. Defaults until then, so a settings file that cannot be read is
+        // a machine that has never been asked rather than a machine with no settings at all.
+        .manage(AppState {
+            live,
+            api,
+            lcu,
+            overlay: std::sync::Mutex::new(settings::OverlaySettings::default()),
+        })
         .invoke_handler(tauri::generate_handler![
             commands::live_client_get,
             commands::device_status,
@@ -121,6 +132,10 @@ pub fn run() {
             commands::lcu_champ_select,
             commands::lcu_apply_runes,
             commands::resize_overlay,
+            commands::overlay_settings,
+            commands::set_overlay_shortcut,
+            commands::set_overlay_position,
+            commands::list_monitors,
         ])
         // Closing the window puts the app in the tray rather than ending it. The whole
         // point of this process is to be running when a game starts, and a player who
@@ -135,6 +150,26 @@ pub fn run() {
             }
         })
         .setup(|app| {
+            // Read before anything that depends on it: the shortcut this registers and the
+            // corner the overlay is placed in both come out of this file, and both happen
+            // once, here.
+            let saved = settings::load(app.handle());
+            {
+                let state = app.state::<AppState>();
+                *state.overlay.lock().unwrap_or_else(|err| err.into_inner()) = saved.clone();
+            }
+
+            // The window is where `tauri.conf.json` put it until this moves it. That position
+            // is also the default, so a machine that has never opened Settings sees no jump.
+            if let Some(window) = app.get_webview_window(OVERLAY_WINDOW) {
+                let height = window
+                    .inner_size()
+                    .ok()
+                    .map(|size| f64::from(size.height) / window.scale_factor().unwrap_or(1.0))
+                    .unwrap_or(0.0);
+                commands::place_overlay(&window, &saved, height);
+            }
+
             if cfg!(debug_assertions) {
                 app.handle().plugin(
                     tauri_plugin_log::Builder::default()
@@ -164,9 +199,10 @@ pub fn run() {
                         .build(),
                 )?;
 
-                if let Err(err) = app.global_shortcut().register(OVERLAY_SHORTCUT) {
+                let shortcut = saved.shortcut.clone();
+                if let Err(err) = app.global_shortcut().register(shortcut.as_str()) {
                     log::warn!(
-                        "could not register {OVERLAY_SHORTCUT} for the overlay; \
+                        "could not register {shortcut} for the overlay; \
                          the tray menu still reaches it: {err}"
                     );
                 }
@@ -176,7 +212,7 @@ pub fn run() {
             let overlay = MenuItem::with_id(
                 app,
                 "overlay",
-                "Toggle overlay (Ctrl+Alt+L)",
+                overlay_menu_label(&saved.shortcut),
                 true,
                 None::<&str>,
             )?;
@@ -216,4 +252,29 @@ pub fn run() {
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// What the tray said before it could say anything else, so the default still reads the
+    /// way it always did.
+    #[test]
+    fn the_default_reads_as_it_always_has() {
+        assert_eq!(
+            overlay_menu_label(settings::DEFAULT_SHORTCUT),
+            "Toggle overlay (Ctrl+Alt+L)"
+        );
+    }
+
+    /// A combination this function has never heard of still reaches the menu intact. The
+    /// alternative — a table of names — would be one more place to forget a key.
+    #[test]
+    fn a_shortcut_it_does_not_know_survives_the_trip() {
+        assert_eq!(
+            overlay_menu_label("Alt+Shift+F9"),
+            "Toggle overlay (Alt+Shift+F9)"
+        );
+    }
 }

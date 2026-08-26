@@ -36,6 +36,17 @@ pub enum AppError {
     #[error("could not open your browser: {0}")]
     Browser(String),
 
+    /// The operating system would not give this app the key combination. Usually because
+    /// something else already holds it — which is exactly the situation the player is trying
+    /// to get out of by changing it, so the message has to reach them rather than a log.
+    #[error("this machine would not give that shortcut to the app: {0}")]
+    Shortcut(String),
+
+    /// The overlay moved and the app could not write down where. Worth saying out loud,
+    /// because the window is where it was asked to be and will not be there tomorrow.
+    #[error("could not remember that: {0}")]
+    Settings(String),
+
     /// The website's own message, passed through. Those strings are written for the player
     /// — "that pairing code is not valid", "revoke one in Settings" — and are the only thing
     /// that tells them what to do next. Nothing on that path carries a token.
