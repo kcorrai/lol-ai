@@ -38,12 +38,26 @@ complain about. A second copy of the app hands its request to the first and exit
 than polling `2999` twice.
 
 There is also an overlay now: a second window, frameless and transparent, that draws the
-same two panels over the top of the game. `Ctrl+Alt+L` shows and hides it, and so does the
+same panels over the top of the game. `Ctrl+Alt+L` shows and hides it, and so does the
 tray menu. It never takes focus — a companion that pulls the keyboard out of a running
 game is worse than no companion — and it is toggled rather than pinned, because an overlay
 that cannot be dismissed is the complaint the competitors' reviews open with. Windows will
 not draw anything over a game running in exclusive full screen, so League has to be in
 borderless; the app says so in Settings rather than claiming a detection it cannot perform.
+
+**And it is the player's now.** Settings changes the shortcut, the screen it sits on, the
+corner of that screen and the margin from it, which panels it draws, and how solid they are.
+Every competitor has offered this and this app offered none of it; the shortcut in particular
+was a real gap rather than a decision, since a player whose own bindings collide with
+Ctrl+Alt+L had no way out of it.
+
+What is deliberately absent is dragging the window. That is how all of them move an overlay,
+and it costs them a window that takes focus — clicking a window activates it, and the click
+is on top of a running game. A corner and a margin reach the same place without asking the
+player to take their hands off the match. The shortcut and the placement live in the core,
+in `settings.rs`, and are written to one small JSON file in the app's config directory; the
+panel list and the opacity are drawing decisions and stay in the webview's own storage. The
+webview gains no permission from any of it — `capabilities/default.json` is unchanged.
 
 What remains of phase 5 is signed updates with an update channel. Signing needs a
 certificate and a release pipeline that do not exist yet, and Riot registration has to be
@@ -95,6 +109,10 @@ read about once a second and this answer changes when a game starts and not once
 | `desktop_fetch(path, method, body)` | One allowlisted `/api/*` path on the website, with the device token attached, returned unparsed — or `null` when this machine holds no token. The one command behind every screen lifted from the website (ADR-043). Same shape as `live_client_get`: the webview names the path, the core checks it against a fixed list.                             |
 | `open_on_website(path)`             | Opens one **page** of the website in the player's own browser (ADR-044) — how a screen the companion does not cover gets reached. Takes a path where `open_report` takes nothing, because these pages are not known at build time; it does not take a host, and `website::is_page` refuses a path that could name one, or that names an `/api/` route. |
 | `clear_device_token()`              | Forgets it locally.                                                                                                                                                                                                                                                                                                                                    |
+| `overlay_settings()`                | The shortcut, screen, corner and margins the overlay is drawn with. Read from `settings.rs` at start-up and held in memory, because every resize asks for it.                                                                                                                                                                                          |
+| `set_overlay_shortcut(accelerator)` | Registers a new combination and gives up the old one — in that order, so a combination something else already holds leaves the player with the shortcut they had rather than none.                                                                                                                                                                     |
+| `set_overlay_position(…)`           | Moves the overlay to a screen and a corner of it, and remembers both. Applied before it is saved: a file that would not write should not stop the window moving where it was asked.                                                                                                                                                                    |
+| `list_monitors()`                   | Every attached screen, for the picker in Settings. A screen the OS does not name cannot be chosen, because the setting is stored as a name.                                                                                                                                                                                                            |
 
 ### Which pages are here at all
 
