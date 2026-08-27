@@ -215,6 +215,30 @@ The browser preview is useful for laying out screens, but it cannot reach the ga
 webview has no path to a certificate the public root stores do not carry. It says so on
 screen instead of reporting "no game".
 
+### Opening it without a terminal
+
+`tauri dev` is a developer's way in, and it was the only way in — which meant the app could
+not be opened by the person it is for. There is a shortcut now:
+
+```
+npm --prefix desktop run build
+cd desktop && LOLAI_API_BASE=http://localhost:3001 npm run tauri build -- --no-bundle
+powershell -ExecutionPolicy Bypass -File desktop/scripts/install-shortcuts.ps1
+```
+
+The first two produce a standalone `src-tauri/target/release/lol-ai-desktop.exe` — its
+frontend is bundled, so it needs no Vite. `LOLAI_API_BASE` is there because a release build
+otherwise compiles in `https://lolaicoach.gg`, which does not resolve yet; a build for a real
+release drops it.
+
+The third puts "LoL AI Coach" on the desktop and in the Start menu, pointing at
+`scripts/launch.ps1` rather than at the exe. The launcher is what makes the shortcut worth
+having: the coaching half of every screen goes to the website, so it starts the Postgres
+cluster at `C:\pgdata\lolai` and the site's own `npm run dev` when they are not already up,
+opens the app, and shuts down only what it started once the app is quit from the tray. It
+refuses to start when something other than this site holds port 3001 — `desktop_fetch` sends
+the device token there, and that is not a thing to send to whatever answers.
+
 Prerequisites are Rust and the MSVC C++ build tools; WebView2 ships with Windows 10 1803
 and later.
 
