@@ -1,15 +1,13 @@
 use serde::{Deserialize, Serialize};
-use tauri::AppHandle;
-use tauri_plugin_opener::OpenerExt;
 
 use crate::api::{base_url, read, ApiClient};
 use crate::error::{AppError, AppResult};
 
 /// The post-game handoff (ADR-038, phase 5).
 ///
-/// Two things, and they are separate on purpose. Telling the website a game has ended is a
-/// network call that must happen whether or not anyone is looking at the app; sending the
-/// player to their report is something they ask for by clicking.
+/// Telling the website a game has ended: a network call that must happen whether or not
+/// anyone is looking at the app. Reading the game afterwards is not here — `/matches` is a
+/// screen in this window, so the panel's button is a navigation and needs no core at all.
 ///
 /// Mirrors `src/domains/desktop/contract.ts` by hand, like the rest of ADR-038 K6.
 
@@ -23,27 +21,6 @@ pub struct PostGame {
     pub status: String,
     /// Null only when the account behind this device has no Riot account linked.
     pub riot_account_id: Option<String>,
-}
-
-/// Where the player is sent to read the game they just played.
-///
-/// Built here from the compiled-in base rather than accepted from the webview or from the
-/// website's answer. Opening a URL is the one capability in this app that reaches outside
-/// it, and the set of addresses it can reach should be decided at build time by the same
-/// constant that decides where the device token is sent.
-pub fn report_url() -> String {
-    format!("{}/matches", base_url())
-}
-
-/// Hands the report to the operating system's default browser.
-///
-/// Deliberately not a webview navigation: this window is a companion to a running game and
-/// must not become a browser. The plugin's own commands are not granted to the renderer,
-/// so `report_url` is the only address this app can open.
-pub fn open_report(app: &AppHandle) -> AppResult<()> {
-    app.opener()
-        .open_url(report_url(), None::<&str>)
-        .map_err(|e| AppError::Browser(e.to_string()))
 }
 
 impl ApiClient {
@@ -116,14 +93,5 @@ mod tests {
     #[test]
     fn a_status_this_build_has_never_heard_of_still_parses() {
         assert_eq!(parse("queued", serde_json::Value::Null).status, "queued");
-    }
-
-    /// The address is built here, so a compromised renderer cannot choose what the app
-    /// opens in the player's browser.
-    #[test]
-    fn the_report_url_is_on_the_compiled_in_host() {
-        let url = report_url();
-        assert!(url.starts_with(base_url()));
-        assert!(url.ends_with("/matches"));
     }
 }

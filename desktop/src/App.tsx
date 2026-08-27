@@ -1,7 +1,6 @@
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppFrame } from "@/components/layout/AppFrame";
-import { OnTheWebsite } from "@/components/layout/OnTheWebsite";
 import type { ConnectionState } from "@/components/layout/StatusChip";
 import { ChampionsScreen } from "@/screens/ChampionsScreen";
 import { GameScreen } from "@/screens/GameScreen";
@@ -54,6 +53,13 @@ export function App(): React.ReactElement {
   const route = matchRoute(path);
   const Lifted = route?.Component;
 
+  // A window reopened on an address this build no longer draws. Nothing can navigate to one
+  // any more — `goTo` hands those to the browser — but the fragment outlives the build that
+  // wrote it, and a player who last closed the app on `/builds` would come up to nothing.
+  useEffect(() => {
+    if (!rendersHere(path)) navigate("/game", { replace: true });
+  }, [path]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AppFrame
@@ -75,13 +81,6 @@ export function App(): React.ReactElement {
             <Lifted />
           </Suspense>
         ) : null}
-
-        {/* Everything this window does not draw itself — most of the site, and it stays
-            that way under ADR-044. Asked of `rendersHere` rather than of `route`, because a
-            native screen answers for one address while its section covers a whole subtree:
-            `/settings/accounts` belongs to Settings and is not Settings, and asking the
-            weaker question left it blank. */}
-        {!rendersHere(path) ? <OnTheWebsite path={path} /> : null}
       </AppFrame>
     </QueryClientProvider>
   );

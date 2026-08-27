@@ -205,17 +205,6 @@ pub async fn desktop_fetch(
     state.api.proxy(&path, &method, body).await
 }
 
-/// Opens the player's match list in their own browser.
-///
-/// The address is built in `post_game::report_url` from the compiled-in base, so this
-/// command takes no URL — a renderer that could pass one could send the player anywhere.
-/// Not a navigation inside this window either: a companion to a running game must not turn
-/// itself into a browser.
-#[tauri::command]
-pub fn open_report(app: AppHandle) -> AppResult<()> {
-    crate::post_game::open_report(&app)
-}
-
 /// Never shorter than this, whatever the webview reports.
 ///
 /// A measurement taken while React is still mounting is a small number, and a window that
@@ -445,9 +434,9 @@ pub fn set_overlay_position(
 /// Unchanged from `tauri.conf.json`: this resizes the overlay's height and nothing else.
 const OVERLAY_WIDTH: f64 = 340.0;
 
-/// Opens one page of the website in the player's own browser (ADR-044).
+/// Opens one page of the website in the player's own browser (ADR-047).
 ///
-/// Unlike `open_report` this does take a path, because the pages it reaches are not known
+/// This takes a path, because the pages it reaches are not known
 /// at build time — they are whatever the companion does not cover, which is most of the
 /// site and is meant to stay that way. What it does not take is a host: `website::open`
 /// builds the address on the compiled-in base, so the widest thing a renderer can ask for

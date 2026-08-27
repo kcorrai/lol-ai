@@ -31,7 +31,6 @@ export function GameScreen({ read }: { read: LiveRead<AllGameData> }): React.Rea
         state={postGame.state}
         lastMatch={postGame.lastMatch}
         open={postGame.open}
-        openError={postGame.openError}
       />
 
       {/* One empty state for the screen, not one per panel.

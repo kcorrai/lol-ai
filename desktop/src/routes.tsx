@@ -1,5 +1,4 @@
 import { lazy } from "react";
-import { ON_WEBSITE } from "./routesOnWebsite";
 import type { ComponentType, LazyExoticComponent } from "react";
 import type { LucideIcon } from "lucide-react";
 // The website's own icons for the shared items, taken from `navConfig.ts` along with their
@@ -17,14 +16,12 @@ import {
   Link2,
   Map,
   Medal,
-  MessageCircle,
   Search,
   Settings,
   Shield,
   Star,
   TrendingUp,
   Trophy,
-  Users,
 } from "lucide-react";
 
 /**
@@ -100,15 +97,6 @@ export interface DesktopRoute {
   /** Shown in the sidebar. Not every route is worth a permanent button. */
   inRail: boolean;
   group: RouteGroup;
-  /**
-   * This row is a place on the website, not a screen here (ADR-044).
-   *
-   * It has no `Component` and no native screen, and unlike every other row it is in the
-   * table *because* it is not covered — so `rendersHere` has to be told, or the exact path
-   * would match a route with nothing behind it and the window would go blank, which is the
-   * failure `b3f244d6` fixed for `/settings/accounts`.
-   */
-  onWebsite?: true;
 }
 
 // `lazy` per screen rather than one bundle: the dashboard alone pulls in Recharts, and a
@@ -147,23 +135,6 @@ export const ROUTES: readonly DesktopRoute[] = [
     inRail: true,
     group: "coaching",
     Component: lifted(() => import("../../app/(app)/coaching/PageClient")),
-  },
-  // Liftable on paper and a handback in fact, which is why it is written out here rather
-  // than sitting with the rest of the site in `routesOnWebsite.ts`: it belongs inside
-  // Coaching, in the website's own order, not in a block at the end.
-  //
-  // The reason is the transport. `/api/riot/{id}/chat` answers with a `text/plain` stream
-  // and the bridge between this window and the core carries a JSON body — a reply would
-  // arrive all at once or not at all, and the screen is a stream of tokens. The route is
-  // also not on `withAuth`, so there is no `deviceAccess` to turn on. Both are fixable and
-  // neither is fixable here.
-  {
-    path: "/coaching/chat",
-    label: "Coach Chat",
-    icon: MessageCircle,
-    inRail: true,
-    group: "coaching",
-    onWebsite: true,
   },
   {
     path: "/improvement",
@@ -246,23 +217,6 @@ export const ROUTES: readonly DesktopRoute[] = [
     group: "compete",
     Component: lifted(() => import("../../app/(app)/achievements/PageClient")),
   },
-  // The other handback that is written out here rather than with the rest of the site: it
-  // belongs inside Compete, between Badges and what follows.
-  //
-  // A team has its own shell on the website — `TeamShell` and `TeamSidebar` — and
-  // `/teams/[id]` is a different component from `/teams`. A lifted screen answers for
-  // everything under its path, so lifting the list would draw the *list* at `/teams/abc`.
-  // Covering it means lifting the shell too, which is a screen of its own and not a line in
-  // this table.
-  {
-    path: "/teams",
-    label: "Teams",
-    icon: Users,
-    inRail: true,
-    group: "compete",
-    onWebsite: true,
-  },
-  ...ON_WEBSITE,
   { path: "/pairing", label: "Pairing", icon: Link2, inRail: true, group: "app" },
   { path: "/settings", label: "Settings", icon: Settings, inRail: true, group: "app" },
 ];
@@ -315,7 +269,7 @@ export function matchRoute(path: string): DesktopRoute | undefined {
 }
 
 /**
- * Whether this window draws this path itself, or hands it back to the website (ADR-044).
+ * Whether this window draws this path itself (ADR-047).
  *
  * Not the same question as `matchRoute`, which answers "what section is this under" and is
  * what the rail wants. The two forms of screen answer for different amounts of the tree:
@@ -333,7 +287,5 @@ export function matchRoute(path: string): DesktopRoute | undefined {
 export function rendersHere(path: string): boolean {
   const route = matchRoute(path);
   if (!route) return false;
-
-  if (route.onWebsite) return false;
   return route.Component ? true : route.path === path;
 }

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { back, currentRoute, navigate, useRoute } from "@/lib/router";
+import { back, currentRoute, goTo, navigate, useRoute } from "@/lib/router";
 
 /**
  * `next/navigation`, for the 73 website components this window renders (ADR-043).
@@ -31,8 +31,8 @@ export interface AppRouter {
 export function useRouter(): AppRouter {
   return useMemo(
     () => ({
-      push: (href: string) => navigate(href),
-      replace: (href: string) => navigate(href, { replace: true }),
+      push: (href: string) => goTo(href),
+      replace: (href: string) => goTo(href, { replace: true }),
       back,
       forward: () => window.history.forward(),
       // On the website this re-runs the server render. There is no server here, and the
@@ -91,7 +91,7 @@ export function notFound(): never {
 }
 
 export function redirect(href: string): never {
-  navigate(href, { replace: true });
+  goTo(href, { replace: true });
   throw new Error("NEXT_REDIRECT");
 }
 

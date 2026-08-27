@@ -1,5 +1,5 @@
 import type { AnchorHTMLAttributes, MouseEvent, ReactNode } from "react";
-import { navigate } from "@/lib/router";
+import { goTo } from "@/lib/router";
 
 /**
  * `next/link`, for the 192 website components this window renders (ADR-043).
@@ -45,7 +45,7 @@ export default function Link({
     // Leaving it to the anchor would blank the window, so it is simply not a gesture this
     // app has.
     event.preventDefault();
-    navigate(path, { replace });
+    goTo(path, { replace });
   }
 
   return (

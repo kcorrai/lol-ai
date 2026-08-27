@@ -1,4 +1,4 @@
-import { ExternalLink } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { HudPanel } from "@/components/layout/HudPanel";
 import { PanelNote } from "@/components/game/PanelNote";
@@ -22,12 +22,10 @@ export function PostGamePanel({
   state,
   lastMatch,
   open,
-  openError,
 }: {
   state: PostGameState;
   lastMatch: LastMatchState;
-  open: () => Promise<void>;
-  openError: string | null;
+  open: () => void;
 }): React.ReactElement | null {
   if (state.status === "idle") return null;
 
@@ -39,7 +37,6 @@ export function PostGamePanel({
       {/* The match itself once it has landed, and the sentence about it being on its way
           until then. The panel never claims the first while it only has the second. */}
       {lastMatch.status === "ready" ? <Match row={lastMatch.row} /> : <Body state={state} />}
-      {openError ? <p className="mt-3 text-sm text-danger">{openError}</p> : null}
     </HudPanel>
   );
 }
@@ -94,15 +91,15 @@ function Figure({ label, value }: { label: string; value: string }): React.React
   );
 }
 
-function OpenButton({ open }: { open: () => Promise<void> }): React.ReactElement {
+function OpenButton({ open }: { open: () => void }): React.ReactElement {
   return (
     <button
       type="button"
-      onClick={() => void open()}
+      onClick={open}
       className="notch flex items-center gap-2 border border-accent bg-transparent px-3 py-1.5 font-display text-xs font-bold uppercase tracking-[0.08em] text-accent transition-colors hover:bg-surface-2"
     >
       Open your report
-      <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+      <ArrowRight className="h-3.5 w-3.5" aria-hidden />
     </button>
   );
 }

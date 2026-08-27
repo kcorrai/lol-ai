@@ -1,12 +1,13 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
 
 /**
- * Sending a page back to the website (ADR-044).
+ * Following a link out of this window (ADR-047).
  *
- * The companion covers the screens worth having next to a running game. Everything else —
- * the marketing pages, the coach marketplace, the admin surfaces — stays on the site, and
- * this is how the app reaches it: the operating system's browser, where the player is
- * already signed in, rather than a navigation that would replace this window.
+ * The companion covers the screens worth having next to a running game and lists only
+ * those. It does not advertise the rest of the site — but the website's own components,
+ * rendered here, link across all of it, and this is where such a link goes: the operating
+ * system's browser, where the player is already signed in, rather than a navigation that
+ * would replace this window. `goTo` is the only caller.
  */
 
 export class WebsiteError extends Error {}

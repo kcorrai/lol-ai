@@ -99,20 +99,21 @@ describe("rendersHere", () => {
     expect(rendersHere("/coaching/some-report-id")).toBe(true);
   });
 
-  // A row that is in the table *because* it is not covered. Without `onWebsite` the exact
-  // path matches a route with no component and no native screen, and the window goes blank
-  // — the same failure b3f244d6 fixed for a path under a native screen.
-  it("hands back a row that is only in the table to be listed", () => {
-    expect(rendersHere("/builds")).toBe(false);
-    expect(rendersHere("/tools/tier-list")).toBe(false);
-    expect(rendersHere("/esports")).toBe(false);
-    expect(rendersHere("/settings/billing")).toBe(false);
-  });
-
-  it("hands back what the table does not mention at all", () => {
+  it("hands back what the table does not mention", () => {
     expect(rendersHere("/pricing")).toBe(false);
     expect(rendersHere("/coaches")).toBe(false);
+    expect(rendersHere("/builds")).toBe(false);
+    expect(rendersHere("/settings/billing")).toBe(false);
     expect(rendersHere("/")).toBe(false);
+  });
+
+  // The table used to carry nineteen rows it could not draw, each one a sidebar item whose
+  // whole behaviour was to say so and offer a browser. They are gone, and this is what
+  // stops one coming back: a row in the table is a screen, or it is not a row.
+  it("draws every row it lists", () => {
+    for (const route of ROUTES) {
+      expect([route.path, rendersHere(route.path)]).toEqual([route.path, true]);
+    }
   });
 });
 
@@ -130,6 +131,10 @@ describe("rendersHere", () => {
  * fails if a screen both products navigate to is called, filed or drawn differently in one
  * of them. A deliberate change is then a change to the website's table, which is where the
  * two products agree what things are named.
+ *
+ * Only the screens the two have in common. This window no longer lists the website's other
+ * sections at all, so what the website has and this does not is not drift and is not
+ * checked here.
  */
 describe("the website's nav and this one", () => {
   const website = new Map<string, { label: string; section: string; icon: unknown }>();
@@ -144,24 +149,12 @@ describe("the website's nav and this one", () => {
 
   const shared = ROUTES.filter((route) => website.has(route.path));
 
-  // The one that makes the floor above redundant, and it is kept anyway: this says *which*
-  // rows are missing, and it is the reason the sidebar carries the whole website rather
-  // than a subset of it (ADR-044). A row here does not have to render in the window — most
-  // of them hand back — but it has to be listed, or the player is looking at a product with
-  // sections quietly missing from it and no way to tell which.
-  it("carries every row of the website's sidebar", () => {
-    const missing = [...website.keys()].filter(
-      (href) => !ROUTES.some((route) => route.path === href)
-    );
-
-    expect(missing).toEqual([]);
-  });
-
   it("has screens in common at all", () => {
-    // The sidebar carries the website's own sections now, so most of its table is shared.
-    // The floor is here so the three below cannot pass by matching nothing at all, which
-    // is how a lock quietly stops being one.
-    expect(shared.length).toBeGreaterThanOrEqual(24);
+    // This window draws a subset of the website's sidebar and lists only that subset, so a
+    // row the website has and this does not is a decision rather than a gap — there is no
+    // test for the difference any more. The floor is here so the three below cannot pass by
+    // matching nothing at all, which is how a lock quietly stops being one.
+    expect(shared.length).toBeGreaterThanOrEqual(12);
   });
 
   it("calls them what the website calls them", () => {

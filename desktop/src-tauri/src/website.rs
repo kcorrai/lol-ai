@@ -4,16 +4,15 @@ use tauri_plugin_opener::OpenerExt;
 use crate::api::base_url;
 use crate::error::{AppError, AppResult};
 
-/// Handing a page of the website back to the website (ADR-044).
+/// Following a link out of this window (ADR-047).
 ///
-/// The companion covers the screens that belong in a companion. The rest of the site — the
-/// marketing pages, the coach marketplace, the admin surfaces — is not lifted and is not
-/// embedded; it opens where it already works, in the player's own browser.
+/// The companion covers the screens that belong in a companion and lists no others. The
+/// rest of the site is not lifted and is not embedded; a link a lifted screen draws to it
+/// opens where that page already works, in the player's own browser.
 ///
-/// `post_game::open_report` does this for one address. This is the same act generalised,
-/// and the generalisation is deliberately of the *path* only: the host still comes from
-/// `base_url()` and is still decided at build time, so a webview that asked for the wrong
-/// thing can reach a different page of this site and nothing else.
+/// The path is the only thing the webview chooses: the host comes from `base_url()` and is
+/// still decided at build time, so a webview that asked for the wrong thing can reach a
+/// different page of this site and nothing else.
 
 /// Whether this is a page of the website that the app may hand to the browser.
 ///
@@ -61,8 +60,8 @@ fn page_url(path: &str) -> String {
 
 /// Hands one page of the website to the operating system's default browser.
 ///
-/// Deliberately not a webview navigation, for the reason `post_game::open_report` gives:
-/// this window is a companion to a running game and must not become a browser.
+/// Deliberately not a webview navigation: this window is a companion to a running game and
+/// must not become a browser.
 pub fn open(app: &AppHandle, path: &str) -> AppResult<()> {
     if !is_page(path) {
         return Err(AppError::ForbiddenPath);

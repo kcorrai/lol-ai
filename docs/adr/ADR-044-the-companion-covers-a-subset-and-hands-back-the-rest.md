@@ -1,9 +1,10 @@
 # ADR-044: The companion covers a subset of the site and hands back the rest
 
-## Status: Accepted
+## Status: Accepted, amended by ADR-047
 
 Amends ADR-043's premise. Its mechanism stands unchanged, and ADR-038 and ADR-042 are
-untouched.
+untouched. ADR-047 keeps the subset and drops the sidebar listing and the handoff screen
+this ADR introduced: the companion lists only what it draws.
 
 ## Context
 

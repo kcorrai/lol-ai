@@ -103,8 +103,8 @@ pub fn run() {
         ))
         // Registered for the Rust side only: none of the plugin's own commands are granted
         // to the webview. Every address this app can open is built in Rust on the
-        // compiled-in base — `open_report` from a constant, `open_on_website` from a path
-        // the renderer supplies and `website::is_page` refuses if it could name a host.
+        // compiled-in base: `open_on_website` takes a path from the renderer and
+        // `website::is_page` refuses it if it could name a host.
         .plugin(tauri_plugin_opener::init())
         // `setup` replaces this with what is on disk — the first place with an `AppHandle` to
         // find the file with. Defaults until then, so a settings file that cannot be read is
@@ -126,7 +126,6 @@ pub fn run() {
             commands::champion_detail,
             commands::post_game,
             commands::desktop_fetch,
-            commands::open_report,
             commands::open_on_website,
             commands::lcu_available,
             commands::lcu_champ_select,

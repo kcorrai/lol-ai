@@ -3,7 +3,8 @@ import { isNewMatch, readLatestMatch, type ArchiveRow } from "./lastMatch";
 import type { LiveRead } from "./liveClient/client";
 import type { AllGameData } from "./liveClient/schema";
 import { hasCore, readPairing } from "./pairing";
-import { gameJustEnded, openReport, reportGameEnded, type PostGame } from "./postGame";
+import { navigate } from "./router";
+import { gameJustEnded, reportGameEnded, type PostGame } from "./postGame";
 
 export type PostGameState =
   /** No game has ended while this window has been open. */
@@ -59,13 +60,11 @@ export function usePostGame(read: LiveRead<AllGameData>): {
   state: PostGameState;
   /** The game that just ended, once the website has it. */
   lastMatch: LastMatchState;
-  /** Opens the match list in the player's own browser. */
-  open: () => Promise<void>;
-  openError: string | null;
+  /** Sends the window to the match list. */
+  open: () => void;
 } {
   const [state, setState] = useState<PostGameState>({ status: "idle" });
   const [lastMatch, setLastMatch] = useState<LastMatchState>({ status: "idle" });
-  const [openError, setOpenError] = useState<string | null>(null);
   const previous = useRef<LiveRead<AllGameData> | null>(null);
 
   useEffect(() => {
@@ -165,14 +164,12 @@ export function usePostGame(read: LiveRead<AllGameData>): {
     };
   }, [lastMatch.status]);
 
-  const open = useCallback(async () => {
-    setOpenError(null);
-    try {
-      await openReport();
-    } catch (err) {
-      setOpenError(err instanceof Error ? err.message : "Could not open your browser.");
-    }
+  // The match list is a screen in this window (`/matches`), so reading the game just played
+  // is a navigation rather than a trip out to a browser. It used to open one, which meant
+  // the app handed the player to another program to look at a page it draws itself.
+  const open = useCallback(() => {
+    navigate("/matches");
   }, []);
 
-  return { state, lastMatch, open, openError };
+  return { state, lastMatch, open };
 }

@@ -30,8 +30,8 @@ dashboard and the data is half an hour stale, because nothing on it knows a matc
 This window does, to the second.
 
 The "Game over" panel then draws the game itself — the result, the champion, the scoreline,
-the creeps and the vision — and still offers the full report, opened in the player's own
-browser rather than inside this one. It waits to be sure first: the pull is asynchronous and
+the creeps and the vision — and still offers the full report, which is the `/matches` screen
+in this window: it used to open a browser on a page this app draws itself (ADR-047). It waits to be sure first: the pull is asynchronous and
 nothing tells this window it finished, so the archive is read until the match is actually in
 it, for a bounded minute, and the panel keeps its "on its way" sentence until then. Telling a
 player their game is ready and handing them a list that does not have it yet is worse than
@@ -144,9 +144,8 @@ read about once a second and this answer changes when a game starts and not once
 | `device_status()`                   | Whether this machine holds a token, asked of the credential store alone. Never the token, and no network — which is what lets an app opened offline know it is still paired.                                                                                                                                                                           |
 | `live_context(request)`             | What the website knows about the game on screen — the lane read and the game plan — or `null` when this machine is no longer paired. Goes through the core because the reading is personal, so the request has to carry the device token, and the token is not allowed to exist in a webview.                                                          |
 | `post_game()`                       | Tells the website a game has ended so the account is pulled now, or `null` when this machine is no longer paired. Takes no argument: the account is read from the device row and what game it was is read from Riot, so all the app contributes is the timing.                                                                                         |
-| `open_report()`                     | Opens the player's match list in their **own** browser. Takes no URL — the address is built in the core from the compiled-in base, so a renderer that went wrong could not choose what gets opened. Not a navigation inside this window: a companion to a running game must not turn itself into a browser.                                            |
 | `desktop_fetch(path, method, body)` | One allowlisted `/api/*` path on the website, with the device token attached, returned unparsed — or `null` when this machine holds no token. The one command behind every screen lifted from the website (ADR-043). Same shape as `live_client_get`: the webview names the path, the core checks it against a fixed list.                             |
-| `open_on_website(path)`             | Opens one **page** of the website in the player's own browser (ADR-044) — how a screen the companion does not cover gets reached. Takes a path where `open_report` takes nothing, because these pages are not known at build time; it does not take a host, and `website::is_page` refuses a path that could name one, or that names an `/api/` route. |
+| `open_on_website(path)`             | Opens one **page** of the website in the player's own browser — where a link out of a lifted screen goes (ADR-047). It takes a path because these pages are not known at build time; it does not take a host, and `website::is_page` refuses a path that could name one, or that names an `/api/` route.                                               |
 | `clear_device_token()`              | Forgets it locally.                                                                                                                                                                                                                                                                                                                                    |
 | `overlay_settings()`                | The shortcut, screen, corner and margins the overlay is drawn with. Read from `settings.rs` at start-up and held in memory, because every resize asks for it.                                                                                                                                                                                          |
 | `set_overlay_shortcut(accelerator)` | Registers a new combination and gives up the old one — in that order, so a combination something else already holds leaves the player with the shortcut they had rather than none.                                                                                                                                                                     |
@@ -157,9 +156,14 @@ read about once a second and this answer changes when a game starts and not once
 
 [ADR-044](../docs/adr/ADR-044-the-companion-covers-a-subset-and-hands-back-the-rest.md): the
 companion covers the screens worth having beside a running game, and the rest of the site
-stays on the site. A path with no route here renders `OnTheWebsite`, which opens it in the
-browser — so "not covered" is a destination rather than a dead end, and leaving a page alone
-is a decision rather than a backlog item.
+stays on the site. Leaving a page alone is a decision rather than a backlog item.
+
+[ADR-047](../docs/adr/ADR-047-the-companion-lists-only-what-it-draws.md) is what the sidebar
+does about that: nothing. Every row in `routes.tsx` is a screen this window draws, and the
+half of the table that used to list the rest of the site — nineteen rows whose only behaviour
+was a panel saying "this page lives on the website" — is gone. A link out of a lifted screen
+still works: `goTo` follows a path this window cannot draw into the player's browser and
+leaves the window where it was.
 
 Read the section below as _how_ to add one, not as a queue to work through.
 

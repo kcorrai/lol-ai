@@ -44,16 +44,3 @@ export async function reportGameEnded(): Promise<PostGame | null> {
     );
   }
 }
-
-/** Opens the player's match list in their own browser. Takes no address, by design. */
-export async function openReport(): Promise<void> {
-  if (!isTauri()) {
-    throw new PostGameError("This preview cannot open your report. Run the desktop app.");
-  }
-
-  try {
-    await invoke("open_report");
-  } catch (err) {
-    throw new PostGameError(typeof err === "string" ? err : "Could not open your browser.");
-  }
-}
