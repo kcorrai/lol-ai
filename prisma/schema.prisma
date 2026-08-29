@@ -1772,6 +1772,12 @@ model Booking {
 
   @@index([coachProfileId, status, startTime])
   @@index([studentId, createdAt(sort: Desc)])
+  // The thread list's DISTINCT ON over (coach, student) ordered by createdAt
+  // DESC. Declared here rather than only in the migration that created it: an
+  // index Prisma cannot see in this file is drift to it, and the next
+  // `migrate dev` for any unrelated change writes a DROP for it — which is
+  // exactly how it was lost once. `map` keeps the name the migration gave it.
+  @@index([coachProfileId, studentId, createdAt(sort: Desc)], map: "idx_bookings_pair_recency")
   // The two sweeps: expire unanswered requests, and complete unchallenged
   // deliveries. Both scan by status and a timestamp, so they index together.
   @@index([status, respondByAt])
