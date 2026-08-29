@@ -196,7 +196,7 @@ Claude Code'da su komut bir kez calistirilmali:
 # calisan baslatici hala bekliyor ve kapatmayi o yapacak.
 if (Get-Process -Name $AppName -ErrorAction SilentlyContinue) {
     Say 'Uygulama zaten acik, one getiriliyor.'
-    Start-Process -FilePath $Exe | Out-Null
+    Start-Process -FilePath $Exe -WindowStyle Normal | Out-Null
     exit 0
 }
 
@@ -294,7 +294,11 @@ if ($siteState -eq 'ours') {
 }
 
 Say 'Uygulama aciliyor.'
-$app = Start-Process -FilePath $Exe -PassThru
+# `-WindowStyle Normal` acikca veriliyor cunku bu betik gizli calisiyor ve baslattigi surec
+# o gosterim durumunu miras aliyor. Tek basina yetmiyor -- uygulamayi ayaga kaldiran sey
+# `lib.rs`teki `RunEvent::Ready` -- ama bu tarafi da acik birakmak, uygulamanin duzeltmesinin
+# neyi telafi ettigini gizlemek olurdu.
+$app = Start-Process -FilePath $Exe -PassThru -WindowStyle Normal
 
 # Acilis penceresi, uygulamanin penceresi cizilene kadar durur. Start-Process doner donmez
 # kapatmak ekranda birkac saniyelik bir bosluk birakiyor, ve o bosluk tiklamanin ise

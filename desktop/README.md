@@ -284,11 +284,20 @@ and closing it took the site server with it, which is not a thing a window shoul
 without saying so. A second click while the first launch is still working is dropped by a
 named mutex rather than starting a second `npm run dev`.
 
-One Windows detail is load-bearing and worth knowing before editing the splash: a process
-started hidden passes that show state to its **first** top-level window, so a plain
-`Form.Show()` there creates a window that reports `Visible = true` and draws nothing.
-`Show-Splash` sets `WindowState` to `Minimized` and back to `Normal` around the `Show()`
-call to break that inheritance. Remove those two lines and the launcher goes silent again.
+One Windows detail is load-bearing here and it bites twice: a process started hidden passes
+that show state to its **first** top-level window, and it passes it on to the processes it
+starts as well.
+
+- The splash. A plain `Form.Show()` in a hidden process creates a window that reports
+  `Visible = true` and draws nothing. `Show-Splash` sets `WindowState` to `Minimized` and
+  back to `Normal` around the `Show()` call to break the inheritance. Remove those two lines
+  and the launcher goes silent again.
+- The app itself, which opened **minimised** — to somebody who has just clicked a shortcut,
+  not different from it failing to open. Fixed in the app rather than the launcher, because
+  nothing about how the process was started should decide whether its window is on screen:
+  `lib.rs` calls `show_main` on `RunEvent::Ready`. `Ready` and not `setup`, and that is the
+  whole fix — `setup` runs before the window has been shown, so the state the OS applies
+  afterwards wins and the call does nothing at all.
 
 Prerequisites are Rust and the MSVC C++ build tools; WebView2 ships with Windows 10 1803
 and later.

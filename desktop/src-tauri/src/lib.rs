@@ -253,8 +253,26 @@ pub fn run() {
 
             Ok(())
         })
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .build(tauri::generate_context!())
+        .expect("error while building tauri application")
+        // The window asserts itself once, on the way up.
+        //
+        // Windows hands a process's *first* top-level window the show state its parent was
+        // started with, and the launcher behind the desktop shortcut runs hidden so that no
+        // console appears (`scripts/launch.vbs`). Inherited, that opened this window
+        // minimised — which, to somebody who has just clicked a shortcut, is not different
+        // from the app failing to open. Nothing about how this process was started should
+        // decide whether its window is on screen.
+        //
+        // `Ready` rather than `setup`, and the difference is the whole fix: `setup` runs
+        // before the window has been shown, so the state the OS applies afterwards wins and
+        // the call does nothing at all. A start-up launch is the same launch as any other,
+        // so there is no condition on this.
+        .run(|app, event| {
+            if matches!(event, tauri::RunEvent::Ready) {
+                show_main(app);
+            }
+        });
 }
 
 #[cfg(test)]
