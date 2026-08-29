@@ -165,6 +165,20 @@ was a panel saying "this page lives on the website" — is gone. A link out of a
 still works: `goTo` follows a path this window cannot draw into the player's browser and
 leaves the window where it was.
 
+**And none of them before there is an account.** An unpaired window could fill three of
+those rows and no coaching at all — every lifted screen reads the website through a device
+token this machine does not hold yet, so each one drew the same sentence pointing at a
+fourth screen, and the rail offered fourteen ways to go and read it again. A list of the
+things that do not work is not a menu. Until the pairing exists the window is one screen
+(`SetupFrame`), with no rail and no router; the navigation arrives with the account, and
+the first screen after it is `/game`.
+
+Only `unpaired` and `pairing` go there, which is the half of that rule worth stating: setup
+has no exit except pairing, so a state that *cannot* pair would be stranded on it. The
+browser preview has no credential store, and an `offline` machine already holds the token
+it would be sent to fetch. `needsSetup` is where that lives, and its test is mostly about
+what must not trigger it.
+
 Read the section below as _how_ to add one, not as a queue to work through.
 
 ### Adding a page

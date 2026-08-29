@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { pairingStateFor } from "./usePairing";
+import { needsSetup, pairingStateFor } from "./usePairing";
 
 /**
  * The hook itself needs a DOM and this suite runs in node, which is why the decision it
@@ -48,5 +48,45 @@ describe("pairingStateFor", () => {
   // Two ways of not knowing, and neither of them is a no either.
   it("does not say unpaired when there was nothing to ask", () => {
     expect(pairingStateFor(null, message)).toEqual({ status: "unknown", error: message });
+  });
+});
+
+/**
+ * Which states hide the rest of the window.
+ *
+ * The interesting half is what must *not* trigger it. Setup is a screen with no way out
+ * except pairing, so putting a state there that cannot pair strands the window: the browser
+ * preview has no credential store to pair against, and a machine that is merely offline
+ * already holds the token it would be asked to go and get.
+ */
+describe("needsSetup", () => {
+  it("takes over when the machine holds no token", () => {
+    expect(needsSetup("unpaired")).toBe(true);
+  });
+
+  it("stays while a code is being exchanged", () => {
+    expect(needsSetup("pairing")).toBe(true);
+  });
+
+  it("leaves a paired machine alone", () => {
+    expect(needsSetup("paired")).toBe(false);
+  });
+
+  it("does not strand the browser preview, which cannot pair at all", () => {
+    expect(needsSetup("unavailable")).toBe(false);
+  });
+
+  it("does not ask an offline machine to pair again — it already has a token", () => {
+    expect(needsSetup("offline")).toBe(false);
+  });
+
+  it("does not guess when the credential store could not be opened", () => {
+    expect(needsSetup("unknown")).toBe(false);
+  });
+
+  // Not setup either: it is the state of not having asked yet, and `App` draws a quiet
+  // screen for it rather than either answer.
+  it("does not treat the first round trip as an answer", () => {
+    expect(needsSetup("loading")).toBe(false);
   });
 });

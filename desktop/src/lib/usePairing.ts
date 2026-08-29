@@ -63,6 +63,20 @@ export interface PairingHandle {
   retry: () => Promise<void>;
 }
 
+/**
+ * Whether the window should draw setup instead of itself.
+ *
+ * Only the two states that mean "this machine holds no token and could get one". The other
+ * non-paired states are deliberately not here: `unavailable` is the browser preview, which
+ * has no credential store to pair against and would be trapped on a screen it cannot
+ * finish; `offline` and `unknown` belong to a machine that has a token, or cannot be asked
+ * whether it does, and sending either of those to a pairing form asks the player to fix
+ * something that is not broken.
+ */
+export function needsSetup(status: PairingState["status"]): boolean {
+  return status === "unpaired" || status === "pairing";
+}
+
 export function usePairing(): PairingHandle {
   const [state, setState] = useState<PairingState>({ status: "loading" });
 

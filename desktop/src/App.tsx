@@ -1,6 +1,7 @@
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppFrame } from "@/components/layout/AppFrame";
+import { SetupFrame } from "@/components/layout/SetupFrame";
 import type { ConnectionState } from "@/components/layout/StatusChip";
 import { ChampionsScreen } from "@/screens/ChampionsScreen";
 import { GameScreen } from "@/screens/GameScreen";
@@ -9,7 +10,7 @@ import { PregameScreen } from "@/screens/PregameScreen";
 import { SettingsScreen } from "@/screens/SettingsScreen";
 import { installApiBridge } from "@/lib/apiBridge";
 import { navigate, useRoute } from "@/lib/router";
-import { usePairing } from "@/lib/usePairing";
+import { needsSetup, usePairing } from "@/lib/usePairing";
 import { matchRoute, rendersHere } from "@/routes";
 import { useLiveGame } from "@/lib/useLiveGame";
 
@@ -59,6 +60,38 @@ export function App(): React.ReactElement {
   useEffect(() => {
     if (!rendersHere(path)) navigate("/game", { replace: true });
   }, [path]);
+
+  const setup = needsSetup(pairing.state.status);
+
+  // Pairing succeeded: the rail has just appeared, and what it opens on should be this
+  // window's own home rather than whichever address the fragment was carrying from the last
+  // session. The first screen after setup is the game — that is what the app is for.
+  const wasSetup = useRef(setup);
+  useEffect(() => {
+    if (wasSetup.current && !setup) navigate("/game", { replace: true });
+    wasSetup.current = setup;
+  }, [setup]);
+
+  // Neither frame yet. `usePairing` resolves over a round trip to the website, and drawing
+  // either answer before it lands means drawing the wrong one for a moment: a paired
+  // machine flashing a pairing form, or an unpaired one flashing fourteen rows it cannot
+  // open. One quiet screen costs less than either.
+  if (pairing.state.status === "loading") {
+    return <SetupFrame title="LoL AI Coach" lede="Checking whether this machine is paired…" />;
+  }
+
+  if (setup) {
+    return (
+      <SetupFrame
+        title="Set up this machine"
+        lede="This window reads the game on this computer. Everything it says about your
+          account — the lane read, the game plan, your own history — comes from your LoL AI
+          Coach account, so it needs to know which one is yours."
+      >
+        <PairingScreen pairing={pairing} />
+      </SetupFrame>
+    );
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
