@@ -236,12 +236,27 @@ otherwise compiles in `https://lolaicoach.gg`, which does not resolve yet; a bui
 release drops it.
 
 The third puts "LoL AI Coach" on the desktop and in the Start menu, pointing at
-`scripts/launch.ps1` rather than at the exe. The launcher is what makes the shortcut worth
+`scripts/launch.vbs` rather than at the exe. The launcher is what makes the shortcut worth
 having: the coaching half of every screen goes to the website, so it starts the Postgres
 cluster at `C:\pgdata\lolai` and the site's own `npm run dev` when they are not already up,
 opens the app, and shuts down only what it started once the app is quit from the tray. It
 refuses to start when something other than this site holds port 3001 — `desktop_fetch` sends
 the device token there, and that is not a thing to send to whatever answers.
+
+**No console window at any point.** The shortcut targets `wscript.exe` on a three-line
+`launch.vbs`, which starts `launch.ps1` hidden; what the player sees instead is a small
+window in the app's own colours, carrying one line about what is happening and closing once
+the app's window is actually on screen rather than the moment the process starts. Aiming the
+shortcut at `powershell.exe` left a black console in the taskbar for the whole session —
+and closing it took the site server with it, which is not a thing a window should do
+without saying so. A second click while the first launch is still working is dropped by a
+named mutex rather than starting a second `npm run dev`.
+
+One Windows detail is load-bearing and worth knowing before editing the splash: a process
+started hidden passes that show state to its **first** top-level window, so a plain
+`Form.Show()` there creates a window that reports `Visible = true` and draws nothing.
+`Show-Splash` sets `WindowState` to `Minimized` and back to `Normal` around the `Show()`
+call to break that inheritance. Remove those two lines and the launcher goes silent again.
 
 Prerequisites are Rust and the MSVC C++ build tools; WebView2 ships with Windows 10 1803
 and later.

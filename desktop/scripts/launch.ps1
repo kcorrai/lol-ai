@@ -11,6 +11,11 @@
 
     Kendi baslatmadigi hicbir seyi kapatmaz. Zaten calisan bir dev sunucusu oldugu gibi
     birakilir -- muhtemelen biri uzerinde calisiyordur.
+
+    Hicbir konsol penceresi acmaz. Kisayol bunu `launch.vbs` uzerinden gizli calistirir,
+    ve ilerleme siyah bir kabuk yerine kucuk bir pencerede yazar: uygulamayi acan kisi
+    gelistirici degil, ve bir kayit penceresi ona bir uygulamanin acilmadigini soyluyor.
+    Bir terminalden elle calistirildiginda `Write-Host` satirlari da yerinde duruyor.
 #>
 
 $ErrorActionPreference = 'Stop'
@@ -25,17 +30,109 @@ $PgLog    = Join-Path $LogDir 'postgres.log'
 $SitePort = 3001
 $PgPort   = 5432
 $AppName  = 'lol-ai-desktop'
+$Icon     = Join-Path $Repo 'desktop\src-tauri\icons\icon.ico'
 
 New-Item -ItemType Directory -Force -Path $LogDir | Out-Null
 
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
+
+# Uygulamanin kendi renkleri (`tailwind.config.ts`). Acilis penceresi uygulamaya ait
+# gorunmeli: bir kisayolun actigi ilk sey, tikladigi seyin acildigina dair tek isaret.
+$Ink    = [System.Drawing.Color]::FromArgb(0x08, 0x0B, 0x0A)
+$Accent = [System.Drawing.Color]::FromArgb(0xC6, 0xFF, 0x3D)
+$Muted  = [System.Drawing.Color]::FromArgb(0x6C, 0x81, 0x7B)
+
+$script:Ui = $null
+
+<#
+    Ne olup bittigini soyleyen kucuk pencere.
+
+    Modal degil: `Show` doner ve is akisi devam eder, mesajlar da `DoEvents` ile islenir.
+    Pencerenin kendisi bir sey yapmaz -- yalnizca bir satir yazi tutar, ve uygulama acilinca
+    kapanir. Kullanici kapatirsa baslatma yine surer; `Say` kapanmis pencereyi es geciyor.
+#>
+function Show-Splash {
+    $form = New-Object System.Windows.Forms.Form
+    $form.Text            = 'LoL AI Coach'
+    $form.ClientSize      = New-Object System.Drawing.Size(420, 132)
+    $form.FormBorderStyle = 'FixedSingle'
+    $form.StartPosition   = 'CenterScreen'
+    $form.MaximizeBox     = $false
+    $form.MinimizeBox     = $false
+    $form.BackColor       = $Ink
+    # Bir dakikayi bulabilen ilk derleme boyunca ustte kalir. Kaybolan tek geri bildirim,
+    # hic geri bildirim olmamasiyla ayni sey.
+    $form.TopMost         = $true
+    if (Test-Path $Icon) { $form.Icon = New-Object System.Drawing.Icon($Icon) }
+
+    $title = New-Object System.Windows.Forms.Label
+    $title.Text      = 'LoL AI Coach'
+    $title.Font      = New-Object System.Drawing.Font('Segoe UI', 15, [System.Drawing.FontStyle]::Bold)
+    $title.ForeColor = $Accent
+    $title.AutoSize  = $true
+    $title.Location  = New-Object System.Drawing.Point(24, 22)
+    $form.Controls.Add($title)
+
+    # Bos baslamaz. Pencerenin acildigi an ile ilk adimin arasi kisa ama sifir degil, ve
+    # o araliktaki bos satir "takildi" gibi okunuyor.
+    $status = New-Object System.Windows.Forms.Label
+    $status.Text      = 'Hazirlaniyor...'
+    $status.Font      = New-Object System.Drawing.Font('Consolas', 9.5)
+    $status.ForeColor = $Muted
+    $status.AutoSize  = $false
+    $status.Size      = New-Object System.Drawing.Size(372, 20)
+    $status.Location  = New-Object System.Drawing.Point(24, 62)
+    $form.Controls.Add($status)
+
+    # Ilerleme cubugu degil, duz bir cizgi. Win32 ilerleme cubugu gorsel stillerini
+    # isletim sisteminden aliyor ve rengi ayarlanamiyor: koyu zeminde parlak beyaz bir
+    # dikdortgen olarak duruyordu. Hareket zaten durum satirinda -- orasi saniyeyi sayiyor.
+    $rule = New-Object System.Windows.Forms.Label
+    $rule.AutoSize  = $false
+    $rule.BackColor = $Accent
+    $rule.Size      = New-Object System.Drawing.Size(372, 2)
+    $rule.Location  = New-Object System.Drawing.Point(24, 96)
+    $form.Controls.Add($rule)
+
+    # `Minimized` -> `Show` -> `Normal` sirasi bos bir tuhaflik degil. Kisayol bu betigi
+    # wscript uzerinden gizli baslatiyor, ve bir surecin ilk ust duzey penceresi o baslangic
+    # durumunu miras aliyor: duz bir `Show()` pencereyi olusturuyor, `Visible` true diyor, ve
+    # ekranda hicbir sey cizilmiyordu. Durumu bir kez degistirmek ShowWindow'u acik bir
+    # durumla cagirtir ve mirasi kirar.
+    $form.WindowState = 'Minimized'
+    $form.Show()
+    $form.WindowState = 'Normal'
+    $form.Activate()
+
+    $script:Ui = @{ Form = $form; Status = $status }
+    Pump
+}
+
+function Pump {
+    [System.Windows.Forms.Application]::DoEvents()
+}
+
+function Close-Splash {
+    if ($script:Ui -and -not $script:Ui.Form.IsDisposed) { $script:Ui.Form.Close() }
+    $script:Ui = $null
+    Pump
+}
+
 function Say([string]$Message) {
     Write-Host ("  " + $Message)
+    if ($script:Ui -and -not $script:Ui.Form.IsDisposed) {
+        $script:Ui.Status.Text = $Message
+        Pump
+    }
 }
 
 function Die([string]$Message) {
     Write-Host ''
     Write-Host $Message -ForegroundColor Red
-    Add-Type -AssemblyName System.Windows.Forms
+    # Once acilis penceresi gider: hatanin ustunde duran bir "aciliyor" satiri, hata
+    # kutusunun soyledigi seyle celisir.
+    Close-Splash
     [System.Windows.Forms.MessageBox]::Show(
         $Message, 'LoL AI Coach acilamadi', 'OK', 'Error') | Out-Null
     exit 1
@@ -103,6 +200,24 @@ if (Get-Process -Name $AppName -ErrorAction SilentlyContinue) {
     exit 0
 }
 
+# Kisayola iki kez tiklamak iki baslatici demek, ve ikisi de uygulamayi henuz acilmamis
+# gorup ayni `npm run dev`i baslatmaya kalkar -- ikincisi 3001'i tutulmus bulur ve
+# birincisinin sitesini yabanci sanabilir. Ilk giren isi bitirir, ikincisi sessizce cikar.
+$launcherLock = New-Object System.Threading.Mutex($false, 'Local\lol-ai-coach-launcher')
+$haveLock = $false
+try {
+    $haveLock = $launcherLock.WaitOne(0)
+} catch [System.Threading.AbandonedMutexException] {
+    # Onceki baslatici kilidi birakmadan oldu. Kilit yine bizim.
+    $haveLock = $true
+}
+if (-not $haveLock) {
+    Say 'Zaten baslatiliyor.'
+    exit 0
+}
+
+Show-Splash
+
 if (Test-Listening $PgPort) {
     Say 'Postgres calisiyor.'
 } else {
@@ -159,14 +274,18 @@ if ($siteState -eq 'ours') {
         -ArgumentList @('/c', "npm run dev > `"$SiteLog`" 2>&1") `
         -WorkingDirectory $Repo -WindowStyle Hidden -PassThru
 
-    $deadline = (Get-Date).AddMinutes(3)
+    $waitingSince = Get-Date
+    $deadline = $waitingSince.AddMinutes(3)
     while ((Get-Date) -lt $deadline) {
         if ($startedSite.HasExited) {
             Die "Site dev sunucusu kapandi. Kaydi: $SiteLog"
         }
         $siteState = Get-SiteState
         if ($siteState -eq 'ours') { break }
-        Start-Sleep -Seconds 2
+        # Gecen saniye, bekleyisin tek hareketli parcasi. Bir dakika boyunca degismeyen
+        # bir satir, calismayi birakmis bir pencereden ayirt edilemiyor.
+        Say ("Site baslatiliyor... {0} sn" -f [int]((Get-Date) - $waitingSince).TotalSeconds)
+        Start-Sleep -Seconds 1
     }
     if ($siteState -ne 'ours') {
         Die "Site 3 dakikada acilmadi. Kaydi: $SiteLog"
@@ -177,16 +296,28 @@ if ($siteState -eq 'ours') {
 Say 'Uygulama aciliyor.'
 $app = Start-Process -FilePath $Exe -PassThru
 
+# Acilis penceresi, uygulamanin penceresi cizilene kadar durur. Start-Process doner donmez
+# kapatmak ekranda birkac saniyelik bir bosluk birakiyor, ve o bosluk tiklamanin ise
+# yaramadigi gibi okunuyor -- gosterilecek bir sey kalmadigi icin degil, henuz gelmedigi icin.
+$appeared = (Get-Date).AddSeconds(20)
+while ((Get-Date) -lt $appeared) {
+    $app.Refresh()
+    if ($app.HasExited -or $app.MainWindowHandle -ne [IntPtr]::Zero) { break }
+    Pump
+    Start-Sleep -Milliseconds 150
+}
+Close-Splash
+
 if (-not $startedSite) {
     exit 0
 }
 
 # Pencereyi kapatmak uygulamayi kapatmiyor -- tepsiye iniyor ve oyunu izlemeye devam
 # ediyor. Yani bu bekleyis tepsiden "cik" denene kadar surer, ki dev sunucusunu kapatmak
-# icin dogru an tam olarak o.
+# icin dogru an tam olarak o. Bu noktadan sonra ekranda bu betige ait hicbir sey yok:
+# gorunmez bir islem olarak yalnizca o ani bekler.
 Write-Host ''
-Say 'Site arka planda calisiyor. Uygulamadan cikilinca kapatilacak.'
-Say 'Bu pencereyi kapatmak da site sunucusunu kapatir.'
+Write-Host '  Site arka planda calisiyor. Uygulamadan cikilinca kapatilacak.'
 $app.WaitForExit()
 
 if (Get-Process -Name $AppName -ErrorAction SilentlyContinue) {
