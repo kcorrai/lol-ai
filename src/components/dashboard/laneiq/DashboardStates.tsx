@@ -49,21 +49,18 @@ export function SyncingState({ gameName }: { gameName?: string }): React.ReactEl
         Riot rate-limits history pulls, so the full backfill takes a few minutes. You do not have to
         wait for it — twenty games is already enough for a first report.
       </p>
-      <div className="flex flex-wrap gap-3">
-        <Link
-          href="/coaching"
-          className="tag-cut flex h-10 items-center gap-2 bg-accent px-5 font-display text-xs font-bold uppercase tracking-[0.1em] text-background transition-colors hover:bg-acid-400 active:bg-acid-600"
-        >
-          Get my first report
-          <ArrowRight className="h-4 w-4" strokeWidth={1.75} />
-        </Link>
-        <Link
-          href="/settings/accounts"
-          className="flex h-10 items-center px-4 font-display text-xs font-bold uppercase tracking-[0.1em] text-text-muted transition-colors hover:bg-surface-2 hover:text-text"
-        >
-          Manual sync
-        </Link>
-      </div>
+      {/* One way on, and it is not a sync. The second button here offered a manual sync
+          while the backfill it is describing was already running -- and in the desktop
+          window it was worse than redundant: `/settings/accounts` is a page that app does
+          not draw, so pressing it threw the player out into a browser (ADR-047), to press
+          a button their app is deliberately not allowed to press at all (`proxy.rs`). */}
+      <Link
+        href="/coaching"
+        className="tag-cut flex h-10 w-fit items-center gap-2 bg-accent px-5 font-display text-xs font-bold uppercase tracking-[0.1em] text-background transition-colors hover:bg-acid-400 active:bg-acid-600"
+      >
+        Get my first report
+        <ArrowRight className="h-4 w-4" strokeWidth={1.75} />
+      </Link>
     </div>
   );
 }
@@ -80,6 +77,14 @@ export function SyncErrorState({
 }: {
   kind?: SyncErrorKind;
 }): React.ReactElement {
+  // Only one of these two has anything for the player to press.
+  //
+  // A Riot outage is waited out -- the copy says so itself, and the pull resumes on its
+  // own. The button that used to sit here went to `/settings/accounts` to be pressed
+  // again by hand, which is a page the desktop window does not draw: there it ejected
+  // the player into a browser to reach a manual sync their app is deliberately not
+  // allowed to run (`desktop/src-tauri/src/proxy.rs`). An unlinked account is different:
+  // nothing resumes on its own, and reconnecting genuinely happens on that page.
   const copy =
     kind === "account"
       ? {
@@ -92,7 +97,7 @@ export function SyncErrorState({
           rule: "// Sync failed",
           heading: "Riot's match API stopped responding",
           body: "Your history is safe. The most recent games could not be pulled, so everything below is from your previous sync. Reviews resume automatically when Riot is back.",
-          cta: "Re-sync",
+          cta: null,
         };
 
   return (
@@ -105,13 +110,15 @@ export function SyncErrorState({
         </h2>
         <p className="max-w-[62ch] text-sm text-text-body">{copy.body}</p>
       </div>
-      <Link
-        href="/settings/accounts"
-        className="tag-cut flex h-10 items-center gap-2 bg-accent px-4 font-display text-xs font-bold uppercase tracking-[0.1em] text-background transition-colors hover:bg-acid-400"
-      >
-        <RefreshCw className="h-4 w-4" strokeWidth={1.75} />
-        {copy.cta}
-      </Link>
+      {copy.cta && (
+        <Link
+          href="/settings/accounts"
+          className="tag-cut flex h-10 items-center gap-2 bg-accent px-4 font-display text-xs font-bold uppercase tracking-[0.1em] text-background transition-colors hover:bg-acid-400"
+        >
+          <RefreshCw className="h-4 w-4" strokeWidth={1.75} />
+          {copy.cta}
+        </Link>
+      )}
     </div>
   );
 }

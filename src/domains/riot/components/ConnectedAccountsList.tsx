@@ -93,7 +93,7 @@ function AccountCard({
       ) : syncStatus?.status === "COMPLETED" ? (
         <p className="text-xs text-success">Synced</p>
       ) : syncStatus?.status === "FAILED" ? (
-        <p className="text-xs text-danger">Sync failed — try again with &quot;Sync Now&quot;.</p>
+        <p className="text-xs text-danger">Sync failed — try again with &quot;Refresh now&quot;.</p>
       ) : null}
       {/*
         A rejected mutation used to render nothing at all: the user pressed Confirm and the row
@@ -123,7 +123,7 @@ function AccountCard({
           onClick={() => sync.mutate(id)}
           disabled={isSyncing || disconnect.isPending}
         >
-          {isSyncing ? "Syncing…" : "Sync Now"}
+          {isSyncing ? "Refreshing…" : "Refresh now"}
         </Button>
 
         {!isPrimary && (

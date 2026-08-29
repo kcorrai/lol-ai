@@ -163,7 +163,7 @@ export function RiotAccountSelector() {
                 className={cn("h-3.5 w-3.5", isSyncing && "animate-spin")}
                 strokeWidth={1.75}
               />
-              {isSyncing ? "Refreshing…" : "Refresh data"}
+              {isSyncing ? "Refreshing…" : "Refresh now"}
               {syncMsg && (
                 <span className="ml-auto normal-case tracking-normal text-accent">{syncMsg}</span>
               )}

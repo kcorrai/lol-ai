@@ -5,7 +5,7 @@ import { useSyncAccount } from "./useSyncAccount";
 import { useSyncStatus, isSyncActive, type SyncStatus } from "./useSyncStatus";
 
 // Re-pull matches automatically when the last sync is older than this. Keeps dashboard data current
-// without the user pressing "Sync Now" (TASK-221).
+// without the user pressing "Refresh now" (TASK-221).
 export const AUTO_SYNC_STALE_MS = 30 * 60 * 1000;
 
 // Pure decision — extracted so the staleness logic is unit-testable without React/timers.
@@ -20,7 +20,8 @@ export function shouldAutoSync(
 }
 
 // Silently refreshes a stale primary account when the user lands on the dashboard. The manual
-// "Sync Now" button stays; this just means most users never need it. Fires at most once per
+// "Refresh now" button stays — every tracker in this market has one, and op.gg does not refresh
+// automatically at all — but this is what means most players never reach for it. Fires at most once per
 // account per mount. `useSyncStatus` (also mounted here) invalidates data queries when the sync
 // completes, so the dashboard updates with the new matches on its own.
 export function useAutoSync(

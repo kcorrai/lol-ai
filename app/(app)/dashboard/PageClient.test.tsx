@@ -229,7 +229,12 @@ describe("DashboardPage", () => {
     render(<DashboardPage />);
 
     expect(screen.getByText(/Riot's match API stopped responding/)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Re-sync/ })).toBeInTheDocument();
+    // Nothing to press. The pull resumes on its own, which the banner says itself, and the
+    // button that used to sit here went to a settings page to run a manual sync by hand —
+    // which in the desktop window meant being thrown into a browser to reach something that
+    // app is deliberately not allowed to run at all.
+    expect(screen.queryByRole("link", { name: /Re-sync/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /settings/i })).not.toBeInTheDocument();
   });
 
   it("does not blame Riot for a 403 from our own ownership check", () => {
