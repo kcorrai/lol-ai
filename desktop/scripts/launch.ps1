@@ -110,9 +110,24 @@ if (Test-Listening $PgPort) {
         Die "Postgres 16 bulunamadi: $PgCtl"
     }
     Say 'Postgres baslatiliyor...'
-    Start-Process -FilePath $PgCtl `
+
+    # Neden `-Wait` degil: Start-Process -Wait islemi degil, islem agacini bekler --
+    # torunlari da cikana kadar donmez. `pg_ctl -l` ise postmaster'i gunlugu dosyaya
+    # yonlendiren bir cmd.exe'nin altinda baslatir, ve o cmd.exe Postgres ayakta oldugu
+    # surece yasar. Yani -Wait ile baslatici, veritabani hazir olduktan sonra bile bu
+    # satirda sonsuza kadar bekliyordu. Process nesnesinin WaitForExit'i yalnizca
+    # pg_ctl'nin kendisini bekler, ki beklenmesi gereken tam olarak o.
+    $pgctl = Start-Process -FilePath $PgCtl `
         -ArgumentList @('-D', $PgData, '-l', $PgLog, '-w', 'start') `
-        -WindowStyle Hidden -Wait
+        -WindowStyle Hidden -PassThru
+
+    # `pg_ctl -w` sunucu cevap verene kadar kendisi bekler; varsayilan siniri 60 saniye.
+    # Buradaki sinir onun uzerinde, boylece asilan tek durum pg_ctl'nin gercekten
+    # takilmasi olur.
+    if (-not $pgctl.WaitForExit(90000)) {
+        Die "Postgres 90 saniyede cevap vermedi. Kaydi: $PgLog"
+    }
+
     if (-not (Test-Listening $PgPort)) {
         Die "Postgres baslamadi. Kaydi: $PgLog"
     }
