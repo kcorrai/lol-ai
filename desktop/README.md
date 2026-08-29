@@ -18,11 +18,26 @@ reads the game on this machine and asks the website what it knows about the acco
 playing it, and the game screen shows both: the scoreboard it can see for itself, the lane
 read and the game plan it cannot work out alone.
 
-Pairing (phase 3) is what makes that possible. The player generates a code at Settings →
-Desktop app on the website and types it here; this machine then holds its own long-lived
-token — exchanged by the Rust core, written to the OS credential store, and never passed to
-the webview. Revoking the device on the website cuts it off, mid-game included: the app
-finds out on its next call and forgets the token locally.
+Pairing (phase 3) is what makes that possible. This machine holds its own long-lived token
+— exchanged by the Rust core, written to the OS credential store, and never passed to the
+webview. Revoking the device on the website cuts it off, mid-game included: the app finds
+out on its next call and forgets the token locally.
+
+**Nothing is typed to get it** ([ADR-048](../docs/adr/ADR-048-the-app-asks-to-be-paired-and-the-browser-approves.md)).
+The app asks the website to open a pairing request, opens the player's browser on the page
+that approves it, and claims the token when they press the button — about two seconds later,
+without them coming back to this window. It used to be five steps ending in eight characters
+read off one screen and typed into another, which is transcription work the software was
+asking a person to do on its behalf, in the minute they have least patience for it.
+
+The secret is what claims the token, and the request id is not. The id is in a URL — address
+bar, history, referrer — so it is deliberately not enough on its own; the app generates
+thirty-two random bytes, sends only their SHA-256, and presents the bytes at the claim. That
+secret never enters this webview, under the same rule the device token lives under.
+
+The code still works, behind a disclosure on the setup screen. It is the answer when the
+browser this app can open is not the one the player is signed in on — a work machine, a
+second profile, an account they are only signed in to on a phone.
 
 When a game ends, the app tells the website — and that is the one thing it can say that
 the website could not have worked out. A server pulls an account when somebody opens the
@@ -140,6 +155,9 @@ read about once a second and this answer changes when a game starts and not once
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `live_client_get(path)`             | One Live Client Data API path, or `null` when no game is running. The path is checked against a fixed allowlist, so the webview cannot aim the privileged client somewhere it should not go.                                                                                                                                                           |
 | `pair_device(code)`                 | Exchanges a pairing code for this machine's token. The token goes to the credential store here; what comes back is the account it belongs to.                                                                                                                                                                                                          |
+| `start_pairing()`                   | Asks the website to open a pairing request and sends the player's browser to approve it (ADR-048). Grants nothing: what comes back is a request id and how long it lasts. The browser is opened from the core, so the address the player decides at is never one the renderer chose.                                                                   |
+| `poll_pairing()`                    | Whether that request has been approved yet — `idle`, `waiting`, or the pairing. Called on a two-second timer by the setup screen and by nothing else. Deliberately not a command that waits for the answer: a ten-minute await holds a thread and cannot be told the player has gone somewhere else. The secret it presents stays in the core.         |
+| `cancel_pairing()`                  | Stops waiting. The request is left to expire — nothing was granted, so there is nothing to revoke.                                                                                                                                                                                                                                                     |
 | `device_account()`                  | Who this machine is acting as, asked of the website, or `null`. A 401 means the device was revoked — the token is forgotten locally and this answers `null`.                                                                                                                                                                                           |
 | `device_status()`                   | Whether this machine holds a token, asked of the credential store alone. Never the token, and no network — which is what lets an app opened offline know it is still paired.                                                                                                                                                                           |
 | `live_context(request)`             | What the website knows about the game on screen — the lane read and the game plan — or `null` when this machine is no longer paired. Goes through the core because the reading is personal, so the request has to carry the device token, and the token is not allowed to exist in a webview.                                                          |

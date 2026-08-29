@@ -1,15 +1,17 @@
+import { ExternalLink, Loader2 } from "lucide-react";
 import { HudPanel } from "@/components/layout/HudPanel";
-import { CodeEntry } from "@/components/pairing/CodeEntry";
+import { CodeFallback } from "@/components/pairing/CodeFallback";
 import { PairedDevice } from "@/components/pairing/PairedDevice";
 import type { PairingHandle } from "@/lib/usePairing";
 
 /** The handle comes from `App` rather than from a second `usePairing` here — see its doc. */
 export function PairingScreen({ pairing }: { pairing: PairingHandle }): React.ReactElement {
-  const { state, pair, forget, retry } = pairing;
+  const { state, begin, cancel, pair, forget, retry } = pairing;
 
-  // The form is offered only when pairing is the thing to do. An app that already holds a
-  // token and merely cannot reach the website is not asked to pair again.
-  const canPair = state.status === "unpaired" || state.status === "pairing";
+  // Offered only when pairing is the thing to do. An app that already holds a token and
+  // merely cannot reach the website is not asked to pair again.
+  const canPair =
+    state.status === "unpaired" || state.status === "pairing" || state.status === "opening";
 
   return (
     <div className="grid gap-4">
@@ -50,23 +52,49 @@ export function PairingScreen({ pairing }: { pairing: PairingHandle }): React.Re
         )}
       </HudPanel>
 
+      {state.status === "approving" && <Approving onCancel={cancel} />}
+
       {canPair && (
         <HudPanel title="Pair this device">
-          <CodeEntry
-            onSubmit={pair}
-            busy={state.status === "pairing"}
-            disabled={false}
-            error={state.status === "unpaired" ? state.error : null}
-          />
+          <div className="grid gap-4">
+            <p className="text-sm text-text-body">
+              This opens LoL AI Coach in your browser and asks you to approve this machine. Nothing
+              to type.
+            </p>
+
+            {state.status === "unpaired" && state.error && (
+              <p className="text-sm text-danger">{state.error}</p>
+            )}
+
+            <button
+              type="button"
+              onClick={() => void begin()}
+              disabled={state.status !== "unpaired"}
+              className="tag-cut flex h-11 w-full items-center justify-center gap-2 bg-accent font-display text-xs font-bold uppercase tracking-[0.1em] text-background transition-colors hover:bg-acid-400 disabled:opacity-60"
+            >
+              {state.status === "opening" ? (
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+              ) : (
+                <ExternalLink className="h-4 w-4" aria-hidden />
+              )}
+              {state.status === "opening" ? "Opening your browser…" : "Pair this machine"}
+            </button>
+
+            <CodeFallback
+              onSubmit={pair}
+              busy={state.status === "pairing"}
+              error={state.status === "unpaired" ? state.error : null}
+            />
+          </div>
         </HudPanel>
       )}
 
       <HudPanel title="How it works">
         <ol className="grid gap-2 text-sm text-text-body">
           {[
-            "Sign in on the website and open Settings → Desktop app.",
-            "Generate a pairing code. It is good once, and for ten minutes.",
-            "Type it here. This device swaps it for its own token.",
+            "This app asks LoL AI Coach to pair, and opens the page where you say yes.",
+            "You sign in there if you are not already, and press Approve.",
+            "This window notices within a couple of seconds and finishes on its own.",
             "The token goes to your operating system's keychain, not to a file.",
           ].map((step, i) => (
             <li key={step} className="flex gap-3">
@@ -81,6 +109,39 @@ export function PairingScreen({ pairing }: { pairing: PairingHandle }): React.Re
         </p>
       </HudPanel>
     </div>
+  );
+}
+
+/**
+ * The wait between opening the browser and the player pressing Approve.
+ *
+ * It offers a way out rather than only a spinner. The browser may have opened behind the
+ * game, or on a profile that is not signed in, and a window that can only be watched is
+ * one the player has to kill the app to leave.
+ */
+function Approving({ onCancel }: { onCancel: () => Promise<void> }): React.ReactElement {
+  return (
+    <HudPanel title="Waiting for you">
+      <div className="grid gap-3">
+        <div className="flex items-center gap-3">
+          <Loader2 className="h-4 w-4 shrink-0 animate-spin text-accent" aria-hidden />
+          <p className="text-sm text-text-body">
+            Your browser should be showing “Approve this machine?”. Press Approve there and this
+            window will finish on its own.
+          </p>
+        </div>
+        <p className="text-xs text-text-muted">
+          No browser? It may have opened behind the game, or on a profile you are not signed in on.
+        </p>
+        <button
+          type="button"
+          onClick={() => void onCancel()}
+          className="tag-cut w-fit border border-line-2 bg-surface-dark px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-label text-text-muted transition-colors hover:border-accent/60 hover:text-accent"
+        >
+          Start over
+        </button>
+      </div>
+    </HudPanel>
   );
 }
 

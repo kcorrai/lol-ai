@@ -26,7 +26,18 @@ export function AccountChip({
 }): React.ReactElement | null {
   // Nothing to say yet, and nothing worth reserving space for: this resolves in one round
   // trip and a chip that flickers in is worse than one that arrives.
-  if (state.status === "loading" || state.status === "pairing") return null;
+  //
+  // The three mid-exchange states go here too. In practice none of them reaches this chip
+  // — a window in any of them is drawing setup, which has no top bar — but they are states
+  // with no account to name, and that is the same reason `pairing` was already listed.
+  if (
+    state.status === "loading" ||
+    state.status === "pairing" ||
+    state.status === "opening" ||
+    state.status === "approving"
+  ) {
+    return null;
+  }
   // The browser preview has no core to ask. It cannot be paired, so it has no account to
   // name, and saying "not paired" there would be a guess dressed as a fact.
   if (state.status === "unavailable") return null;

@@ -47,6 +47,15 @@ pub enum AppError {
     #[error("could not remember that: {0}")]
     Settings(String),
 
+    /// The operating system would not produce random bytes.
+    ///
+    /// Its own variant rather than folded into another, because it is the one failure on
+    /// the pairing path where retrying is the wrong advice: a machine whose CSPRNG will not
+    /// answer is not going to answer on the second press, and the app must not invent a
+    /// secret from anywhere else to get past it.
+    #[error("this machine would not produce a secure random value: {0}")]
+    Random(String),
+
     /// The website's own message, passed through. Those strings are written for the player
     /// — "that pairing code is not valid", "revoke one in Settings" — and are the only thing
     /// that tells them what to do next. Nothing on that path carries a token.

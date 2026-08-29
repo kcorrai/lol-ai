@@ -1,6 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { readDeviceStatus, type DeviceStatus } from "./device";
-import { clearPairing, hasCore, pairDevice, readPairing, type Pairing } from "./pairing";
+import {
+  cancelPairing,
+  clearPairing,
+  hasCore,
+  pairDevice,
+  pollPairing,
+  readPairing,
+  startPairing,
+  type Pairing,
+} from "./pairing";
 
 export type PairingState =
   /** Asking the core, on the way in. */
@@ -18,7 +27,12 @@ export type PairingState =
    * rule: an app that does not know must not say no.
    */
   | { status: "unknown"; error: string }
+  /** A code is being exchanged. The fallback path (ADR-048), kept for when it is wanted. */
   | { status: "pairing" }
+  /** Asking the website to open a request, before there is anywhere to send the player. */
+  | { status: "opening" }
+  /** The browser is open on the approval page and this window is asking whether yes yet. */
+  | { status: "approving"; expiresAt: string }
   | { status: "paired"; pairing: Pairing };
 
 /**
@@ -55,8 +69,22 @@ export function pairingStateFor(local: DeviceStatus | null, message: string): Pa
  * copies of this hook would make two `device_account` calls on the way in and, worse,
  * leave the chip naming an account the player had just forgotten.
  */
+/**
+ * How often this window asks whether the request has been approved.
+ *
+ * Two seconds is chosen against the person, not the server: it is the longest gap that
+ * still feels immediate when they come back from the browser having pressed Approve. The
+ * claim endpoint is rate limited well above the three hundred attempts ten minutes of this
+ * would make.
+ */
+export const POLL_INTERVAL_MS = 2000;
+
 export interface PairingHandle {
   state: PairingState;
+  /** Open a request and send the browser to approve it. The path with no typing. */
+  begin: () => Promise<void>;
+  /** Stop waiting on a request. Nothing was granted, so nothing is revoked. */
+  cancel: () => Promise<void>;
   pair: (code: string) => Promise<void>;
   forget: () => Promise<void>;
   /** Ask again — the button an offline app offers instead of a pairing form. */
@@ -74,7 +102,12 @@ export interface PairingHandle {
  * something that is not broken.
  */
 export function needsSetup(status: PairingState["status"]): boolean {
-  return status === "unpaired" || status === "pairing";
+  return (
+    status === "unpaired" ||
+    status === "pairing" ||
+    status === "opening" ||
+    status === "approving"
+  );
 }
 
 export function usePairing(): PairingHandle {
@@ -107,6 +140,63 @@ export function usePairing(): PairingHandle {
     void refresh();
   }, [refresh]);
 
+  const begin = useCallback(async () => {
+    setState({ status: "opening" });
+    try {
+      const opened = await startPairing();
+      setState({ status: "approving", expiresAt: opened.expiresAt });
+    } catch (err) {
+      setState({
+        status: "unpaired",
+        error: err instanceof Error ? err.message : "Could not start pairing. Try again.",
+      });
+    }
+  }, []);
+
+  const cancel = useCallback(async () => {
+    await cancelPairing().catch(() => undefined);
+    setState({ status: "unpaired", error: null });
+  }, []);
+
+  /**
+   * Ask, while there is something to ask about.
+   *
+   * Driven from here rather than from a command that waits for the answer: a ten-minute
+   * await in the core holds a thread and cannot be told the player closed the window. The
+   * effect keys on the status alone, so it starts once when the wait begins and is torn
+   * down the moment the state moves on — including the move this very effect causes.
+   */
+  useEffect(() => {
+    if (state.status !== "approving") return;
+
+    let stopped = false;
+    const ask = async (): Promise<void> => {
+      try {
+        const progress = await pollPairing();
+        if (stopped) return;
+        if (progress.status === "paired") {
+          setState({ status: "paired", pairing: progress.pairing });
+        } else if (progress.status === "idle") {
+          // The core is not waiting on anything — this window was reloaded and the
+          // request went with it. Saying so beats asking for ever.
+          setState({ status: "unpaired", error: null });
+        }
+      } catch (err) {
+        if (stopped) return;
+        setState({
+          status: "unpaired",
+          error: err instanceof Error ? err.message : "Pairing could not be completed.",
+        });
+      }
+    };
+
+    const id = setInterval(() => void ask(), POLL_INTERVAL_MS);
+    return () => {
+      stopped = true;
+      clearInterval(id);
+    };
+  }, [state.status]);
+
   const pair = useCallback(async (code: string) => {
     setState({ status: "pairing" });
     try {
@@ -124,5 +214,5 @@ export function usePairing(): PairingHandle {
     setState({ status: "unpaired", error: null });
   }, []);
 
-  return { state, pair, forget, retry: refresh };
+  return { state, begin, cancel, pair, forget, retry: refresh };
 }

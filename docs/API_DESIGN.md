@@ -3279,6 +3279,92 @@ let a guesser lock out the code they are guessing.
 The exchange consumes the code with a conditional update inside a transaction, so two apps
 racing the same code both pass the read and only one wins; the loser gets the same `422`.
 
+### Pairing without a code — see [ADR-048](./adr/ADR-048-the-app-asks-to-be-paired-and-the-browser-approves.md)
+
+Four endpoints that reach the same decision as the code exchange from the other direction:
+the app asks, the player's browser approves, the app claims. The code flow above stays as
+the fallback for when the browser this app can open is not the one the player is signed in
+on.
+
+**The secret is the claim; the request id is not.** The id travels in a URL — address bar,
+history, referrer — so it is deliberately not enough to take a token on its own. The app
+generates 32 random bytes, sends only their SHA-256, and presents the bytes at the claim.
+
+#### `POST /api/desktop/pairing-request`
+
+**No session, and it grants nothing.** Writes a row saying a machine calling itself this
+asked at this time.
+
+**Body:** `{ secretHash, label, platform, appVersion? }`. `secretHash` is 64 lowercase hex
+characters; `label` and `platform` are the machine's own account of itself and are shown to
+the player, never trusted.
+
+**201** `{ requestId, approvePath, expiresAt }`, `Cache-Control: no-store`. `approvePath` is
+a **path**, never a URL — the app opens it against its own compiled-in base, so a pairing
+flow cannot be pointed at another origin.
+
+| Status | Code               | When                                          |
+| ------ | ------------------ | --------------------------------------------- |
+| `422`  | `VALIDATION_ERROR` | Malformed body                                 |
+| `429`  | —                  | Rate limited: 20 per 10 minutes per caller IP |
+
+#### `GET /api/desktop/pairing-request/[requestId]`
+
+Session-authenticated. What the approval page draws: `{ requestId, label, platform,
+appVersion, requestedAt, expiresAt, status }` where `status` is `pending` \| `approved` \|
+`expired`.
+
+Readable by any signed-in player holding the id, which is the right scope — the id reaches
+a browser only because that machine's app put it there, and the page shows nothing that is
+not already on the screen of the computer that asked. **404** for an unknown or malformed
+id.
+
+#### `POST /api/desktop/pairing-request/[requestId]/approve`
+
+Session-authenticated. Where authority crosses from a signed-in browser to a process that
+has no session and never will. **A POST, never a side effect of the GET** — a link that
+pairs a machine by being visited is a link that can be sent to somebody.
+
+**201** `{ device }`. The device is minted here, in the same shape and under the same
+ten-device limit as redeeming a code, by a conditional update — two tabs pressing Approve
+produce one device.
+
+| Status | Code                      | When                                     |
+| ------ | ------------------------- | ---------------------------------------- |
+| `401`  | `UNAUTHORIZED`            | No session                               |
+| `404`  | `NOT_FOUND`               | Unknown or malformed id                  |
+| `409`  | `REQUEST_EXPIRED`         | Older than ten minutes                   |
+| `409`  | `REQUEST_ALREADY_DECIDED` | Already approved                         |
+| `409`  | `DEVICE_LIMIT_REACHED`    | The account already has 10 live devices  |
+| `429`  | —                         | Rate limited: 20 per 10 minutes per account |
+
+Expired and already-decided are told apart here, unlike on the claim path below: the reader
+is the account holder, and "it ran out, press the button in the app again" is the sentence
+that gets them out of it.
+
+#### `POST /api/desktop/pairing-request/[requestId]/claim`
+
+**No session.** The second and last endpoint in the product that returns a device token.
+
+**Body:** `{ secret }`. Compared in constant time against the stored hash.
+
+**200** `{ status: "pending", pairing: null }` while nobody has approved it — a wait is not
+a failure, and the app is expected to ask again about every two seconds.
+**201** `{ status: "approved", pairing: { token, device, account } }`, `Cache-Control:
+no-store`, exactly once.
+
+| Status | Code               | When                                                              |
+| ------ | ------------------ | ----------------------------------------------------------------- |
+| `422`  | `VALIDATION_ERROR` | Unknown id, wrong secret, expired, already claimed, device revoked |
+| `429`  | —                  | Rate limited: 400 per 10 minutes per **request id**                |
+
+**All five failures answer identically**, so a caller holding an id learns nothing about it
+it did not already know. `pending` is the one state told apart, and only to a caller that
+has already proved it holds the secret. The limit is keyed on the request id rather than the
+caller — the caller is the machine being paired and its address is not interesting; what
+needs bounding is how often one request can be guessed at, and ten minutes of honest polling
+is about three hundred attempts.
+
 ### `GET /api/desktop/me`
 
 **Device-token authenticated** — `Authorization: Bearer <token>`, through `withDeviceAuth`.

@@ -98,6 +98,45 @@ struct PairResponse {
     account: Account,
 }
 
+/// The app's half of pairing without a code (ADR-048).
+///
+/// Only the hash goes out. The secret stays in this process until it is presented at
+/// the claim, which is what stops the request id -- which travels in a URL, and so
+/// through an address bar, a history and a referrer -- from being enough to take the
+/// token on its own.
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct PairingRequestBody<'a> {
+    secret_hash: &'a str,
+    label: &'a str,
+    platform: &'a str,
+    app_version: Option<&'a str>,
+}
+
+/// Where to send the browser, and how long the player has to get there.
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct OpenedPairing {
+    pub request_id: String,
+    /// A path, never a URL. It goes to `website::open`, which builds the address from
+    /// the compiled-in base and refuses anything that could name a host of its own.
+    pub approve_path: String,
+    pub expires_at: String,
+}
+
+#[derive(Serialize)]
+struct ClaimBody<'a> {
+    secret: &'a str,
+}
+
+#[derive(Deserialize)]
+struct ClaimResponse {
+    /// `pending` while nobody has approved it. Not an error: the app is expected to
+    /// ask again, and treating a normal wait as a failure would mean showing one.
+    status: String,
+    pairing: Option<PairResponse>,
+}
+
 #[derive(Deserialize)]
 struct Envelope<T> {
     data: Option<T>,
@@ -157,6 +196,77 @@ impl ApiClient {
             device: paired.device,
             account: paired.account,
         })
+    }
+
+    /// Ask to be paired, and get back where to send the player's browser (ADR-048).
+    ///
+    /// Grants nothing on its own. What comes back is a request id and a path; the token
+    /// arrives later, from `claim_pairing`, and only if somebody signed in says yes.
+    pub async fn open_pairing_request(
+        &self,
+        secret_hash: &str,
+        label: &str,
+        platform: &str,
+    ) -> AppResult<OpenedPairing> {
+        let body = PairingRequestBody {
+            secret_hash,
+            label,
+            platform,
+            app_version: Some(env!("CARGO_PKG_VERSION")),
+        };
+
+        let response = self
+            .http
+            .post(format!("{}/api/desktop/pairing-request", base_url()))
+            .json(&body)
+            .send()
+            .await
+            .map_err(|e| AppError::Network(e.to_string()))?;
+
+        read(response).await
+    }
+
+    /// Take the token, if the request has been approved yet.
+    ///
+    /// `Ok(None)` means nobody has approved it and the app should ask again. Anything
+    /// genuinely wrong -- expired, already claimed, the wrong secret -- comes back as an
+    /// error, because those are all states the player has to be told about rather than
+    /// waited through. The website answers all of them the same way on purpose; what
+    /// this end does about it is stop polling.
+    pub async fn claim_pairing(&self, request_id: &str, secret: &str) -> AppResult<Option<Pairing>> {
+        let response = self
+            .http
+            .post(format!(
+                "{}/api/desktop/pairing-request/{}/claim",
+                base_url(),
+                request_id
+            ))
+            .json(&ClaimBody { secret })
+            .send()
+            .await
+            .map_err(|e| AppError::Network(e.to_string()))?;
+
+        let claimed: ClaimResponse = read(response).await?;
+
+        let Some(paired) = claimed.pairing else {
+            // `status` is carried rather than assumed: a body with no pairing and a
+            // status this build does not recognise is not a wait, and treating it as
+            // one would poll for ten minutes against an answer that will not change.
+            if claimed.status == "pending" {
+                return Ok(None);
+            }
+            return Err(AppError::Api(
+                "LoL AI Coach answered this pairing request in a way this version could not read"
+                    .into(),
+            ));
+        };
+
+        crate::secrets::store(&paired.token)?;
+
+        Ok(Some(Pairing {
+            device: paired.device,
+            account: paired.account,
+        }))
     }
 
     /// Who this machine is acting as, using the token already in the credential store.

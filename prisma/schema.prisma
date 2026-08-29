@@ -184,8 +184,9 @@ model User {
   savedSearches SavedSearch[]
 
   // Desktop companion (ADR-038)
-  desktopDevices      DesktopDevice[]
-  desktopPairingCodes DesktopPairingCode[]
+  desktopDevices         DesktopDevice[]
+  desktopPairingCodes    DesktopPairingCode[]
+  desktopPairingRequests DesktopPairingRequest[]
 
   @@map("users")
 }
@@ -2273,4 +2274,52 @@ model DesktopPairingCode {
   // without bound.
   @@index([expiresAt])
   @@map("desktop_pairing_codes")
+}
+
+// A machine asking to be paired, before anyone has said yes (ADR-048).
+//
+// The mirror image of DesktopPairingCode. That one is minted by a signed-in
+// player and carries an owner from the first instant; this one is created by an
+// app with no session at all, so `userId` is null until somebody approves it.
+// The two cannot share a table without making that column optional for both,
+// which would give away a guarantee the code flow currently has.
+//
+// It holds no token. Approval creates a DesktopDevice exactly as redeeming a
+// code does, and the claim reads the token off that row — so there is still one
+// place in the product where a device token is minted.
+model DesktopPairingRequest {
+  id String @id @default(uuid()) @db.Uuid
+
+  // SHA-256 of the secret the app generated. The secret itself never reaches
+  // this database: the id travels in a URL — address bar, history, referrer —
+  // and if the id were enough to claim the token, reading it over somebody's
+  // shoulder would pair the reader's machine instead.
+  secretHash String @unique
+
+  // What the approval page shows the player about the machine asking. Reported
+  // by the app and therefore not trusted for anything but display.
+  label      String
+  platform   String // windows | macos | linux
+  appVersion String?
+
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  // Null until approved. The user who approved and the device that approval
+  // created; the claim reads the token through the device.
+  approvedAt DateTime?
+  userId     String?   @db.Uuid
+  deviceId   String?   @db.Uuid
+
+  // Set when the app has taken the token. A second claim finds this non-null and
+  // gets nothing, which is what makes the exchange single-use.
+  claimedAt DateTime?
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  // Swept by the expiry job, and the index that keeps an endpoint anyone can
+  // call from growing the table without bound.
+  @@index([expiresAt])
+  @@map("desktop_pairing_requests")
 }

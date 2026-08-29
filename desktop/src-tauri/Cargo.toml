@@ -59,6 +59,15 @@ thiserror = "2.0"
 # what makes that true, and it is far easier to reason about on rustls.
 reqwest = { version = "0.13", default-features = false, features = ["json", "rustls"] }
 
+# Pairing without a code (ADR-048). The app generates a secret, sends only its hash,
+# and later presents the secret to claim its token -- so it needs a source of random
+# bytes and one hash function. All three are already in the tree underneath reqwest
+# and rustls; naming them here makes the dependency the app's own rather than one it
+# borrows from a crate that could drop it. See docs/DEPENDENCIES.md.
+getrandom = "0.2"
+sha2 = "0.10"
+hex = "0.4"
+
 
 # keyring 3 onwards makes the platform backend an explicit choice rather than a default,
 # so each target names its own.

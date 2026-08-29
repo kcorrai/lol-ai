@@ -52,6 +52,63 @@ export async function pairDevice(code: string): Promise<Pairing> {
   }
 }
 
+/**
+ * Pairing without a code (ADR-048).
+ *
+ * The app asks, the browser approves, the app claims. All three legs are the core's --
+ * the secret that turns the request into a token never enters this webview, which is the
+ * same rule the device token itself lives under.
+ */
+
+/** Where the browser was sent, and how long the player has. The core opens it. */
+export interface OpenedPairing {
+  requestId: string;
+  approvePath: string;
+  expiresAt: string;
+}
+
+/** How far the wait has got. `idle` is a window reloaded mid-wait: the core forgot. */
+export type PairingProgress =
+  | { status: "idle" }
+  | { status: "waiting" }
+  | { status: "paired"; pairing: Pairing };
+
+function coreError(err: unknown, fallback: string): PairingError {
+  // Tauri rejects with whatever the command serialised, and AppError serialises to its own
+  // message -- including the website's, which is the half that says what to do next.
+  return new PairingError(typeof err === "string" ? err : fallback);
+}
+
+export async function startPairing(): Promise<OpenedPairing> {
+  if (!isTauri()) {
+    throw new PairingError(
+      "This preview cannot pair. Run the desktop app, which has the credential store."
+    );
+  }
+
+  try {
+    return await invoke<OpenedPairing>("start_pairing");
+  } catch (err) {
+    throw coreError(err, "Could not reach LoL AI Coach to start pairing. Try again.");
+  }
+}
+
+export async function pollPairing(): Promise<PairingProgress> {
+  if (!isTauri()) return { status: "idle" };
+
+  try {
+    return await invoke<PairingProgress>("poll_pairing");
+  } catch (err) {
+    throw coreError(err, "Pairing could not be completed. Try again.");
+  }
+}
+
+/** Stop waiting. Nothing was granted, so there is nothing to revoke. */
+export async function cancelPairing(): Promise<void> {
+  if (!isTauri()) return;
+  await invoke("cancel_pairing");
+}
+
 /** Forgets the token on this machine. Revoking it for real is done on the website. */
 export async function clearPairing(): Promise<void> {
   await clearDeviceToken();

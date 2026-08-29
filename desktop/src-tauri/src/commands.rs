@@ -3,9 +3,9 @@ use std::sync::Mutex;
 use serde::Serialize;
 use tauri::{AppHandle, Manager, State};
 
-use crate::api::{ApiClient, Pairing};
+use crate::api::{ApiClient, OpenedPairing, Pairing};
 use crate::champions::{ChampionDetail, ChampionList};
-use crate::error::AppResult;
+use crate::error::{AppError, AppResult};
 use crate::lcu::{Endpoint, LcuClient, PerkPage};
 use crate::live_client::LiveClient;
 use crate::live_context::{LiveContext, LiveContextRequest};
@@ -23,9 +23,35 @@ pub struct AppState {
     /// a panel gains a line during a match — and reading a file at that rate to answer a
     /// question that changes when somebody visits Settings would be work for nothing.
     pub overlay: Mutex<crate::settings::OverlaySettings>,
+    /// The pairing request this process opened, if there is one (ADR-048).
+    ///
+    /// In memory and nowhere else. It is worth ten minutes, only the process that
+    /// created it has any use for it, and writing it down would turn something whose
+    /// whole life is one screen into a file that can be read off a disk.
+    pub pending_pairing: Mutex<Option<PendingPairing>>,
+}
+
+/// A pairing this window has asked for and is waiting on.
+pub struct PendingPairing {
+    pub request_id: String,
+    /// Never leaves this process except as the claim itself. Not serialised, not logged,
+    /// and never handed to the webview — the webview's job is to draw a wait, not to hold
+    /// the thing that ends it.
+    pub secret: String,
 }
 
 impl AppState {
+    /// Forget whatever pairing this process was waiting on.
+    ///
+    /// A poisoned lock is still cleared: the guard hands back what was in it, and leaving a
+    /// stale secret in memory because a different thread panicked is the worse of the two.
+    pub fn clear_pending_pairing(&self) {
+        *self
+            .pending_pairing
+            .lock()
+            .unwrap_or_else(|err| err.into_inner()) = None;
+    }
+
     /// A copy, never the guard. Nothing in this app should be holding a lock while it talks
     /// to a window, and a settings struct is five small fields.
     ///
@@ -119,6 +145,110 @@ pub async fn pair_device(state: State<'_, AppState>, code: String) -> AppResult<
     let platform = crate::api::platform()?;
     let label = crate::api::machine_label();
     state.api.pair(code.trim(), &label, platform).await
+}
+
+/// How far the codeless pairing has got (ADR-048).
+///
+/// Three answers rather than an optional pairing, because "nothing was ever started" and
+/// "started and still waiting" want different screens: one offers the button, the other
+/// says to go and press Approve.
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase", tag = "status")]
+pub enum PairingProgress {
+    /// No request open in this process. A window reloaded mid-wait lands here.
+    Idle,
+    Waiting,
+    Paired { pairing: Pairing },
+}
+
+/// Thirty-two bytes from the operating system, as hex.
+fn new_secret() -> AppResult<String> {
+    let mut bytes = [0u8; 32];
+    getrandom::getrandom(&mut bytes).map_err(|e| AppError::Random(e.to_string()))?;
+    Ok(hex::encode(bytes))
+}
+
+fn sha256_hex(value: &str) -> String {
+    use sha2::{Digest, Sha256};
+    hex::encode(Sha256::digest(value.as_bytes()))
+}
+
+/// Ask to be paired, and send the player's browser somewhere to say yes (ADR-048).
+///
+/// The browser is opened from here rather than from the webview. `website::open` would
+/// have refused a bad path anyway, but the address the player is sent to decide at is not
+/// a thing the renderer should be choosing at all — and this way the path opened is
+/// provably the one the website just answered with.
+#[tauri::command]
+pub async fn start_pairing(app: AppHandle, state: State<'_, AppState>) -> AppResult<OpenedPairing> {
+    let secret = new_secret()?;
+    let platform = crate::api::platform()?;
+    let label = crate::api::machine_label();
+
+    let opened = state
+        .api
+        .open_pairing_request(&sha256_hex(&secret), &label, platform)
+        .await?;
+
+    // Held before the browser opens. The player can approve faster than this window can
+    // write down what it is waiting for, and a claim with no secret to present would be a
+    // pairing that succeeded on the website and failed here.
+    {
+        let mut pending = state
+            .pending_pairing
+            .lock()
+            .unwrap_or_else(|err| err.into_inner());
+        *pending = Some(PendingPairing {
+            request_id: opened.request_id.clone(),
+            secret,
+        });
+    }
+
+    crate::website::open(&app, &opened.approve_path)?;
+
+    Ok(opened)
+}
+
+/// Ask whether the request this process opened has been approved yet.
+///
+/// Called on a timer by the setup screen while it is on screen, and by nothing else. The
+/// wait is deliberately driven from the webview rather than by a command that blocks until
+/// it is over: a ten-minute await holds a thread and cannot be told the player has gone
+/// somewhere else.
+#[tauri::command]
+pub async fn poll_pairing(state: State<'_, AppState>) -> AppResult<PairingProgress> {
+    let waiting = {
+        let pending = state
+            .pending_pairing
+            .lock()
+            .unwrap_or_else(|err| err.into_inner());
+        match pending.as_ref() {
+            Some(p) => (p.request_id.clone(), p.secret.clone()),
+            None => return Ok(PairingProgress::Idle),
+        }
+    };
+
+    match state.api.claim_pairing(&waiting.0, &waiting.1).await {
+        Ok(Some(pairing)) => {
+            state.clear_pending_pairing();
+            Ok(PairingProgress::Paired { pairing })
+        }
+        Ok(None) => Ok(PairingProgress::Waiting),
+        Err(err) => {
+            // Anything other than a wait ends this attempt. Leaving the request in place
+            // would poll a dead id until the screen closed, and the player would be
+            // watching a spinner for an answer that had already arrived.
+            state.clear_pending_pairing();
+            Err(err)
+        }
+    }
+}
+
+/// Stop waiting. The request is left to expire on its own -- there is nothing to revoke,
+/// because nothing has been granted.
+#[tauri::command]
+pub fn cancel_pairing(state: State<'_, AppState>) {
+    state.clear_pending_pairing();
 }
 
 /// Who this machine is acting as, or `null` when it is not paired.

@@ -114,12 +114,16 @@ pub fn run() {
             api,
             lcu,
             overlay: std::sync::Mutex::new(settings::OverlaySettings::default()),
+            pending_pairing: std::sync::Mutex::new(None),
         })
         .invoke_handler(tauri::generate_handler![
             commands::live_client_get,
             commands::device_status,
             commands::clear_device_token,
             commands::pair_device,
+            commands::start_pairing,
+            commands::poll_pairing,
+            commands::cancel_pairing,
             commands::device_account,
             commands::live_context,
             commands::champion_list,

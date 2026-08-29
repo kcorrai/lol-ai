@@ -1232,6 +1232,45 @@ player mints it by reading a short one-time code off the website and typing it i
 
 **Notes:**
 
+### `desktop_pairing_requests`
+
+Added by `20260829084513_desktop_pairing_requests` for
+[ADR-048](./adr/ADR-048-the-app-asks-to-be-paired-and-the-browser-approves.md). The mirror
+image of `desktop_pairing_codes`: that one is minted **by** a signed-in player, this one is
+created by an app with no session at all, so its owner arrives later.
+
+| Column       | Type          | Constraints                      | Notes                                                                                                                                        |
+| ------------ | ------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`         | `uuid`        | PK                               | Travels in the approval URL, and is deliberately **not** sufficient to claim the token.                                                      |
+| `secretHash` | `text`        | NOT NULL, UNIQUE                 | SHA-256 of the 32 random bytes the app generated. The secret itself never reaches this database.                                              |
+| `label`      | `text`        | NOT NULL                         | The machine's account of itself. Shown on the approval page; never trusted for anything but display.                                          |
+| `platform`   | `text`        | NOT NULL                         | `windows` \| `macos` \| `linux`                                                                                                              |
+| `appVersion` | `text`        | NULLABLE                         |                                                                                                                                              |
+| `createdAt`  | `timestamptz` | NOT NULL                         |                                                                                                                                              |
+| `expiresAt`  | `timestamptz` | NOT NULL                         | 10 minutes after the request, the same window a code gets.                                                                                    |
+| `approvedAt` | `timestamptz` | NULLABLE                         | Set by the conditional update that mints the device, so two tabs pressing Approve produce one.                                               |
+| `userId`     | `uuid`        | FK → users.id, ON DELETE CASCADE, NULLABLE | **Null until approved.** This is the column that could not be shared with `desktop_pairing_codes`: making it optional there would give away a guarantee that table currently has. |
+| `deviceId`   | `uuid`        | NULLABLE                         | The device approval created. Not a foreign key, for the same reason the code table's is not: the record should outlive a revoked device row. |
+| `claimedAt`  | `timestamptz` | NULLABLE                         | Set when the app has taken the token. A second claim finds this non-null and gets nothing.                                                   |
+
+**Indexes:**
+
+- `UNIQUE (secretHash)`
+- `(userId, createdAt DESC)`
+- `(expiresAt)` — what keeps a table anyone can write to bounded
+
+**Notes:**
+
+- **It holds no token.** Approval creates a `desktop_devices` row exactly as redeeming a
+  code does, and the claim reads the token off that row — so there is still one place in
+  the product where a device token is minted.
+- **An unapproved row is an unauthenticated write**, rate limited per caller IP. It asserts
+  nothing and is worth nothing until somebody signed in says yes to it.
+- **Neither this table nor `desktop_pairing_codes` has a sweep job yet.** Both are indexed
+  on `expiresAt` for one, and this adds a second table that wants it.
+
+**Notes on `desktop_pairing_codes`:**
+
 - **A row, not a signed token**, for the one property a stateless token cannot give: single
   use. `discord.linkToken` went the stateless way because a Discord interaction is already
   proof of identity and replaying it changes nothing; a pairing code mints a long-lived

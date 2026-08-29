@@ -68,6 +68,16 @@ describe("needsSetup", () => {
     expect(needsSetup("pairing")).toBe(true);
   });
 
+  // The codeless path (ADR-048). Both of its states are still setup: the window has no
+  // token yet, and the one thing there is to do is on the screen it would be leaving.
+  it("stays while a request is being opened", () => {
+    expect(needsSetup("opening")).toBe(true);
+  });
+
+  it("stays while waiting for the browser to approve", () => {
+    expect(needsSetup("approving")).toBe(true);
+  });
+
   it("leaves a paired machine alone", () => {
     expect(needsSetup("paired")).toBe(false);
   });

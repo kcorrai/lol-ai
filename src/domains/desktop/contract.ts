@@ -96,6 +96,66 @@ export const pairingCodeSchema = z.object({
 });
 export type IssuedPairingCode = z.infer<typeof pairingCodeSchema>;
 
+// ── Pairing without a code (ADR-048) ─────────────────────────────────────────
+//
+// The app asks first and the browser approves, instead of the player carrying an
+// eight-character code between the two. Three shapes: what the app asks with,
+// what it gets back to open a browser at, and what the approval page is allowed
+// to show about the machine asking.
+
+/** What the app sends to ask for a pairing. Note what is absent: any claim at all. */
+export const pairingRequestSchema = z.object({
+  /**
+   * SHA-256 of the secret the app generated, lowercase hex. The secret itself is
+   * never sent — the app proves it holds it by presenting it at the claim, and
+   * this is the only half the website has any use for.
+   */
+  secretHash: z.string().regex(/^[0-9a-f]{64}$/),
+  /** The machine's hostname. Shown on the approval page and in the device list. */
+  label: z.string().min(1).max(64),
+  platform: z.enum(DESKTOP_PLATFORMS),
+  appVersion: z.string().min(1).max(32).nullable().optional(),
+});
+export type PairingRequestInput = z.infer<typeof pairingRequestSchema>;
+
+/** What the app gets back: where to send the browser, and how long it has. */
+export const openedPairingRequestSchema = z.object({
+  requestId: z.string(),
+  /**
+   * A path on the website, never a URL. The app opens it through `open_on_website`,
+   * which refuses anything that could name a host — a pairing flow that could be
+   * pointed at another origin is a pairing flow that can be phished.
+   */
+  approvePath: z.string(),
+  expiresAt: z.string(),
+});
+export type OpenedPairingRequest = z.infer<typeof openedPairingRequestSchema>;
+
+/**
+ * What the approval page shows.
+ *
+ * `label` and `platform` are reported by the machine asking and are therefore
+ * display only — the page says so, because a hostname is not an identity and the
+ * player is the one being asked to decide.
+ */
+export const pendingPairingRequestSchema = z.object({
+  requestId: z.string(),
+  label: z.string(),
+  platform: z.enum(DESKTOP_PLATFORMS),
+  appVersion: z.string().nullable(),
+  requestedAt: z.string(),
+  expiresAt: z.string(),
+  /** Already dealt with — the page says so rather than offering a second Approve. */
+  status: z.enum(["pending", "approved", "expired"]),
+});
+export type PendingPairingRequest = z.infer<typeof pendingPairingRequestSchema>;
+
+/** What the app polls with. The secret, not the id, is the claim. */
+export const claimPairingSchema = z.object({
+  secret: z.string().min(32).max(128),
+});
+export type ClaimPairingInput = z.infer<typeof claimPairingSchema>;
+
 // ── The live dashboard (ADR-038, phase 4) ────────────────────────────────────
 //
 // The app reads the game on the player's own machine and the website reads the
