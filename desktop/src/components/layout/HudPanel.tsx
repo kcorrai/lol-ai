@@ -40,8 +40,8 @@ export function HudPanel({
       )}
     >
       {title ? (
-        <header className="flex items-center justify-between gap-3 border-b border-line-1 px-4 py-2.5">
-          <h2 className="font-display text-sm font-bold uppercase tracking-[0.08em] text-text">
+        <header className="flex min-w-0 items-center justify-between gap-3 border-b border-line-1 px-4 py-2.5">
+          <h2 className="shrink-0 font-display text-sm font-bold uppercase tracking-[0.08em] text-text">
             {title}
           </h2>
           {action}
@@ -61,7 +61,7 @@ export function HudPanel({
  */
 export function PanelMeta({ children }: { children: ReactNode }): React.ReactElement {
   return (
-    <p className="truncate font-mono text-[10px] uppercase tracking-[0.16em] text-text-faint">
+    <p className="min-w-0 truncate font-mono text-[10px] uppercase tracking-[0.16em] text-text-faint">
       {children}
     </p>
   );

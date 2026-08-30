@@ -33,8 +33,7 @@ export function OverlaySettingsPanel(): React.ReactElement {
   // Two different failures, and the player can only act on one of them. "Unreadable" is a
   // core that would not answer; "error" is a core that answered no to something they asked
   // for, and it carries the words the system used.
-  const error =
-    state.status === "error" || state.status === "unreadable" ? state.message : null;
+  const error = state.status === "error" || state.status === "unreadable" ? state.message : null;
 
   return (
     <HudPanel title="Overlay">
@@ -75,8 +74,8 @@ export function OverlaySettingsPanel(): React.ReactElement {
             <div>
               <p className="text-sm text-text">Corner</p>
               <p className="mt-1 text-xs text-text-muted">
-                Measured from the corner rather than saved as a coordinate, so it stays put when
-                you change resolution.
+                Measured from the corner rather than saved as a coordinate, so it stays put when you
+                change resolution.
               </p>
               <CornerPicker
                 chosen={placement.corner}
@@ -125,8 +124,8 @@ export function OverlaySettingsPanel(): React.ReactElement {
             {/* Not detected — claimed detection this app cannot actually perform would be
                 worse than a plain instruction the player can follow. */}
             Set League to <span className="text-text">Borderless</span> in its video settings.
-            Windows does not draw anything over a game in exclusive full screen, and no
-            application can change that.
+            Windows does not draw anything over a game in exclusive full screen, and no application
+            can change that.
           </li>
           <li>It never takes focus, so your keyboard and mouse stay with the game.</li>
           <li>It shows the same reading as the main window, and nothing the game has hidden.</li>
@@ -214,7 +213,11 @@ function ShortcutField({
     <button
       type="button"
       onClick={() => setListening((on) => !on)}
-      aria-label={listening ? "Press a combination, or Escape to cancel" : `Change the shortcut, currently ${readableShortcut(current)}`}
+      aria-label={
+        listening
+          ? "Press a combination, or Escape to cancel"
+          : `Change the shortcut, currently ${readableShortcut(current)}`
+      }
       className={cn(
         "notch-sm cursor-pointer border px-3 py-1.5 font-mono text-xs transition-colors duration-150",
         "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
@@ -285,7 +288,11 @@ function CornerPicker({
   onChange: (corner: Corner) => void;
 }): React.ReactElement {
   return (
-    <div role="radiogroup" aria-label="Which corner the overlay sits in" className="mt-3 grid grid-cols-2 gap-px bg-line-1">
+    <div
+      role="radiogroup"
+      aria-label="Which corner the overlay sits in"
+      className="mt-3 grid grid-cols-2 gap-px bg-line-1"
+    >
       {CORNERS.map((corner) => {
         const active = corner.value === chosen;
         return (

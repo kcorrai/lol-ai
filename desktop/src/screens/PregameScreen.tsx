@@ -39,15 +39,15 @@ export function PregameScreen(): React.ReactElement {
         <div className="grid gap-4">
           <div>
             <p className="text-sm text-text-body">
-              Pick what you are playing and who into, and this reads the same lane, build and
-              plan the game screen would.
+              Pick what you are playing and who into, and this reads the same lane, build and plan
+              the game screen would.
             </p>
             <p className="mt-1 text-xs text-text-muted">
               {/* The reason a player is typing rather than being read, said where they are
                   doing the typing. Riot does not support the client API for third-party apps
                   and gates it behind per-release approval, so this app does not use it. */}
-              It asks you rather than reading your champion select: that interface is not one
-              Riot supports for apps like this, so this one leaves it alone.
+              It asks you rather than reading your champion select: that interface is not one Riot
+              supports for apps like this, so this one leaves it alone.
             </p>
           </div>
 

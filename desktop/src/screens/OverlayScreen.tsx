@@ -46,11 +46,7 @@ export function OverlayScreen(): React.ReactElement {
     // Opacity is set on this element and not on the window. A window-level opacity would fade
     // the transparent ground along with the panels, which does nothing visible, and on the
     // panels it does exactly what the player asked for: lets the fight show through them.
-    <div
-      ref={content}
-      className="grid select-none gap-3 p-3"
-      style={{ opacity: drawing.opacity }}
-    >
+    <div ref={content} className="grid select-none gap-3 p-3" style={{ opacity: drawing.opacity }}>
       {read.status === "ok" ? (
         drawing.panels.map((panel) => (
           <Panel key={panel} panel={panel} read={read} context={context} />

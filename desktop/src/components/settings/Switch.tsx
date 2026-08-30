@@ -64,7 +64,9 @@ export function Switch({
       className={cn(
         "notch-sm mt-0.5 h-6 w-11 shrink-0 border transition-colors duration-150",
         "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-        disabled ? "cursor-not-allowed border-line-1 bg-surface opacity-50" : "cursor-pointer border-line-2",
+        disabled
+          ? "cursor-not-allowed border-line-1 bg-surface opacity-50"
+          : "cursor-pointer border-line-2",
         checked ? "bg-accent" : "bg-surface"
       )}
     >

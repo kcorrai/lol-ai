@@ -9,8 +9,8 @@ export function SettingsScreen(): React.ReactElement {
       <HudPanel title="Preferences">
         <Autostart />
         <p className="mt-4 border-t border-line-1 pt-3 text-xs text-text-muted">
-          Closing the window leaves this running in the tray, so it is still watching when a
-          game starts. Quit from the tray icon to stop it.
+          Closing the window leaves this running in the tray, so it is still watching when a game
+          starts. Quit from the tray icon to stop it.
         </p>
       </HudPanel>
 
@@ -33,8 +33,8 @@ export function SettingsScreen(): React.ReactElement {
           <li>
             {/* The line every live panel is built on, said to the player in the same words the
                 policy uses. Riot's own example of the banned form is "go gank top lane". */}
-            It tells you what you are doing, never what to do next. Riot prohibits apps that
-            dictate your play from the state of a running game, and so does this one.
+            It tells you what you are doing, never what to do next. Riot prohibits apps that dictate
+            your play from the state of a running game, and so does this one.
           </li>
         </ul>
         <p className="mt-4 border-t border-line-1 pt-3 text-xs text-text-muted">

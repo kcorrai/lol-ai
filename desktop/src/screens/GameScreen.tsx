@@ -27,11 +27,7 @@ export function GameScreen({ read }: { read: LiveRead<AllGameData> }): React.Rea
     <div className="grid gap-4">
       {/* Above the rest once a game has ended: it is the only thing on this screen with
           something for the player to do. */}
-      <PostGamePanel
-        state={postGame.state}
-        lastMatch={postGame.lastMatch}
-        open={postGame.open}
-      />
+      <PostGamePanel state={postGame.state} lastMatch={postGame.lastMatch} open={postGame.open} />
 
       {/* One empty state for the screen, not one per panel.
 

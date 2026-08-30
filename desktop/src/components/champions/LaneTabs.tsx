@@ -1,27 +1,47 @@
+import { Crosshair, Shield, Swords, Target, Trees, type LucideIcon } from "lucide-react";
+import { LANES, LANE_LABELS, type Lane } from "@/lib/champions";
 import { cn } from "@/lib/cn";
-import { LANE_LABELS, LANES, type Lane } from "@/lib/champions";
 
 /**
- * The five lanes, as a row of tabs.
+ * The five lanes, as one row of tabs.
  *
- * Words rather than the position icons the website uses: five tabs share the width of a
- * window that sits beside a game, and a five-across row of glyphs reads as decoration
- * there where five short words read as a choice.
+ * The icons are new and the words are not: five glyphs alone read as decoration at this
+ * width, which is why this row used to be words only. Both together is what the redesign
+ * asks for and what the extra row of height buys — the icon is what the eye finds and the
+ * word is what settles which lane it is.
  *
- * Not a content-policy limit, which is what this comment used to say. Data Dragon is in
- * `img-src`, and the list below now draws a portrait per row from it.
+ * `stacked` puts the icon over the word for the champion browser's 380px column, where five
+ * icon-beside-word tabs would not fit; `inline` keeps them side by side everywhere else.
  */
+const LANE_ICONS: Record<Lane, LucideIcon> = {
+  TOP: Swords,
+  JUNGLE: Trees,
+  MIDDLE: Crosshair,
+  BOTTOM: Target,
+  UTILITY: Shield,
+};
+
 export function LaneTabs({
   active,
   onSelect,
+  layout = "inline",
+  className,
 }: {
   active: Lane;
   onSelect: (lane: Lane) => void;
+  layout?: "inline" | "stacked";
+  className?: string;
 }): React.ReactElement {
   return (
-    <div role="tablist" aria-label="Lanes" className="flex gap-px bg-line-1">
+    <div
+      role="tablist"
+      aria-label="Lanes"
+      className={cn("grid grid-cols-5 gap-px bg-line-1", className)}
+    >
       {LANES.map((lane) => {
+        const Icon = LANE_ICONS[lane];
         const isActive = lane === active;
+
         return (
           <button
             key={lane}
@@ -45,13 +65,32 @@ export function LaneTabs({
               if (moving instanceof HTMLElement) moving.focus();
             }}
             className={cn(
-              "flex-1 cursor-pointer px-2 py-2 font-display text-[11px] font-bold uppercase tracking-[0.08em] transition-colors duration-150",
+              "cursor-pointer border-b-2 transition-colors duration-150 ease-out",
+              layout === "stacked" ? "px-1.5 py-3" : "px-2.5 py-3",
               isActive
-                ? "bg-accent/15 text-accent"
-                : "bg-surface-dark text-text-muted hover:bg-white/5 hover:text-text"
+                ? "border-accent bg-accent/10 text-accent"
+                : "border-transparent bg-surface text-text-muted hover:bg-white/5 hover:text-text"
             )}
           >
-            {LANE_LABELS[lane]}
+            <span
+              className={cn(
+                "flex items-center justify-center",
+                layout === "stacked" ? "flex-col gap-1.5" : "gap-2"
+              )}
+            >
+              <Icon
+                aria-hidden
+                className={layout === "stacked" ? "h-[15px] w-[15px]" : "h-4 w-4"}
+              />
+              <span
+                className={cn(
+                  "font-display font-bold uppercase tracking-[0.14em]",
+                  layout === "stacked" ? "text-[10.5px]" : "text-[13px]"
+                )}
+              >
+                {LANE_LABELS[lane]}
+              </span>
+            </span>
           </button>
         );
       })}

@@ -74,7 +74,9 @@ function Row({ entry }: { entry: TimelineEntry }): React.ReactElement {
       <span className="shrink-0 font-mono text-[11px] tabular-nums text-text-muted">
         {eventClock(entry.at)}
       </span>
-      <span className={cn("min-w-0 flex-1 truncate text-sm", entry.mine ? "text-accent" : "text-text")}>
+      <span
+        className={cn("min-w-0 flex-1 truncate text-sm", entry.mine ? "text-accent" : "text-text")}
+      >
         {entry.headline}
       </span>
       {entry.stolen ? (

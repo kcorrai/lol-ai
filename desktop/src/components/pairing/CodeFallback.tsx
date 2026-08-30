@@ -44,8 +44,8 @@ export function CodeFallback({
       {open && (
         <div className="mt-3 grid gap-3">
           <p className="text-xs text-text-muted">
-            Use this if the browser on this computer is not the one you are signed in on.
-            Open Settings → Desktop app there, generate a code, and type it here.
+            Use this if the browser on this computer is not the one you are signed in on. Open
+            Settings → Desktop app there, generate a code, and type it here.
           </p>
           <CodeEntry onSubmit={onSubmit} busy={busy} disabled={false} error={error} />
         </div>

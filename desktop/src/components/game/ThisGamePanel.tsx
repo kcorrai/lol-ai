@@ -145,9 +145,7 @@ function Against({ reading }: { reading: MetricReading }): React.ReactElement | 
   if (reading.target !== null) {
     return (
       <p className="mt-0.5 truncate text-xs text-text-muted">
-        <span className={TONE[reading.vsTarget]}>
-          {reading.vsTarget === "below" ? "✕" : "✓"}
-        </span>{" "}
+        <span className={TONE[reading.vsTarget]}>{reading.vsTarget === "below" ? "✕" : "✓"}</span>{" "}
         goal {reading.target.toFixed(reading.places)}
       </p>
     );

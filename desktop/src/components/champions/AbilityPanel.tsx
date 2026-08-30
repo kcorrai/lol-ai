@@ -45,7 +45,7 @@ export function AbilityPanel({
 
   return (
     <HudPanel title={title} action={meta ? <PanelMeta>{meta}</PanelMeta> : null} bare>
-      <div className="grid md:grid-cols-[minmax(0,340px)_minmax(0,1fr)]">
+      <div className="grid min-w-0 md:grid-cols-[minmax(0,288px)_minmax(0,1fr)]">
         <AbilityClip
           videoUrl={open.videoUrl}
           champion={champion}
@@ -134,16 +134,7 @@ function SlotButton({
         active ? "glow-accent-soft border-accent" : "border-line-2 hover:border-line-3"
       )}
     >
-      <img
-        src={ability.iconUrl}
-        alt=""
-        width={42}
-        height={42}
-        className={cn(
-          "block h-[42px] w-[42px] bg-surface-dark",
-          active ? "opacity-100" : "opacity-70"
-        )}
-      />
+      <AbilityIcon ability={ability} active={active} />
       <span
         aria-hidden
         className={cn(
@@ -155,5 +146,49 @@ function SlotButton({
         {ability.slot}
       </span>
     </button>
+  );
+}
+
+/**
+ * The ability's icon, or the slot letter when it does not arrive.
+ *
+ * A broken-image glyph in a row of five is worse than a plain letter: the letter is already
+ * the label under every one of them, so the fallback reads as a deliberately plain button
+ * rather than as five things that failed to load.
+ */
+function AbilityIcon({
+  ability,
+  active,
+}: {
+  ability: DesktopAbility;
+  active: boolean;
+}): React.ReactElement {
+  const [failed, setFailed] = useState(false);
+
+  if (failed) {
+    return (
+      <span
+        className={cn(
+          "grid h-[42px] w-[42px] place-items-center bg-surface-dark font-display text-base font-bold",
+          active ? "text-accent" : "text-text-faint"
+        )}
+      >
+        {ability.slot}
+      </span>
+    );
+  }
+
+  return (
+    <img
+      src={ability.iconUrl}
+      alt=""
+      width={42}
+      height={42}
+      onError={() => setFailed(true)}
+      className={cn(
+        "block h-[42px] w-[42px] bg-surface-dark",
+        active ? "opacity-100" : "opacity-70"
+      )}
+    />
   );
 }
