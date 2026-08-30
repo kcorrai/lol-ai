@@ -1,4 +1,5 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
+import type { DesktopAbility } from "../../../src/domains/desktop/abilitiesContract";
 import type {
   DesktopChampion,
   DesktopChampionEntry,
@@ -6,7 +7,13 @@ import type {
   DesktopCounter,
 } from "../../../src/domains/desktop/championsContract";
 
-export type { DesktopChampion, DesktopChampionEntry, DesktopChampionList, DesktopCounter };
+export type {
+  DesktopAbility,
+  DesktopChampion,
+  DesktopChampionEntry,
+  DesktopChampionList,
+  DesktopCounter,
+};
 
 /**
  * The champion browser, from the webview's side of the IPC boundary.

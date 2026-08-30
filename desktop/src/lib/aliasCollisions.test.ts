@@ -48,6 +48,26 @@ describe("the @/ alias", () => {
   });
 
   /**
+   * The same invariant, case-folded — which is the one the resolver actually enforces.
+   *
+   * `webTreeFallback` decides with `statSync`, and on Windows and macOS that answers yes to
+   * a name that differs only in case. A `components/ui/Button.tsx` added here therefore
+   * captures every website import of `@/components/ui/button`, and the exact-match check
+   * above sees two different strings and passes. It happened: nine files landed in
+   * `components/ui/` and every lifted screen stopped compiling at once, with the error
+   * pointing at the website's files rather than at the new ones.
+   *
+   * A developer on Linux would not reproduce it and CI might not either, so the assertion
+   * is what carries it rather than the filesystem.
+   */
+  it("holds when the filesystem ignores case, which is where this app is built", () => {
+    const desktop = new Set(modulePaths(desktopSrc).map((path) => path.toLowerCase()));
+    const collisions = modulePaths(webSrc).filter((path) => desktop.has(path.toLowerCase()));
+
+    expect(collisions).toEqual([]);
+  });
+
+  /**
    * A guard that quietly stopped looking at either tree would pass for ever. This is the
    * check on the check.
    */
