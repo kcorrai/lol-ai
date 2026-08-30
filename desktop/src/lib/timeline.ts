@@ -1,4 +1,10 @@
-import { displayNameOf, type AllGameData, type GameEvent, type LivePlayer, type Team } from "./liveClient/schema";
+import {
+  displayNameOf,
+  type AllGameData,
+  type GameEvent,
+  type LivePlayer,
+  type Team,
+} from "./liveClient/schema";
 
 /**
  * What has already happened in this game.
@@ -23,7 +29,15 @@ import { displayNameOf, type AllGameData, type GameEvent, type LivePlayer, type 
  */
 
 /** The kinds this build knows how to say out loud. */
-export type TimelineKind = "dragon" | "baron" | "herald" | "turret" | "inhibitor" | "kill" | "ace" | "multikill";
+export type TimelineKind =
+  | "dragon"
+  | "baron"
+  | "herald"
+  | "turret"
+  | "inhibitor"
+  | "kill"
+  | "ace"
+  | "multikill";
 
 export interface TimelineEntry {
   /** Riot's own `EventID`, which is unique within a game and is the row's key. */
@@ -41,6 +55,14 @@ export interface TimelineEntry {
   stolen: boolean;
   /** True when this row is about the player at this keyboard. */
   mine: boolean;
+  /**
+   * The one word that makes this row worth picking out of the list — "stolen", "first
+   * blood", "first", "ace" — or null, which is most rows.
+   *
+   * Never more than one. A row carrying two labels is a row where the eye has to read both
+   * to find out neither mattered, and the panel is scanned rather than read.
+   */
+  tag: string | null;
 }
 
 /**
@@ -88,7 +110,10 @@ export function isStolen(value: boolean | string | undefined): boolean {
  * has no killer when minions took it, and Riot fills the field with the name of a structure
  * or leaves it out.
  */
-export function championFor(players: readonly LivePlayer[], name: string | undefined): LivePlayer | null {
+export function championFor(
+  players: readonly LivePlayer[],
+  name: string | undefined
+): LivePlayer | null {
   if (!name) return null;
   return players.find((p) => displayNameOf(p) === name || p.summonerName === name) ?? null;
 }
@@ -128,7 +153,24 @@ export function readEvent(
     team: actor?.team ?? teamNamed(event.AcingTeam),
     stolen,
     mine,
+    tag: tagFor(kind, event, stolen),
   };
+}
+
+/**
+ * The label a row carries, in priority order.
+ *
+ * Stolen wins over everything: it is the only one of these that changes what the row means
+ * rather than adding to it. First blood is added later, in `readTimeline`, because it is the
+ * one label that cannot be decided from a single event — Riot publishes it as an event of its
+ * own beside the kill it describes.
+ */
+function tagFor(kind: TimelineKind, event: GameEvent, stolen: boolean): string | null {
+  if (stolen) return "stolen";
+  if (event.EventName === "FirstBrick") return "first";
+  if (kind === "ace") return "ace";
+  if (kind === "multikill") return `×${event.KillStreak ?? 0}`;
+  return null;
 }
 
 /** `AcingTeam` is the one place a side is named rather than derived. */
@@ -192,9 +234,32 @@ function headlineFor(
  * two things in the same second keep the order the client published them in.
  */
 export function readTimeline(data: AllGameData, me: LivePlayer | null): TimelineEntry[] {
-  return data.events.Events.map((event) => readEvent(event, data.allPlayers, me))
+  const entries = data.events.Events.map((event) => readEvent(event, data.allPlayers, me))
     .filter((entry): entry is TimelineEntry => entry !== null)
     .sort((a, b) => b.at - a.at || b.id - a.id);
+
+  return markFirstBlood(entries, data.events.Events);
+}
+
+/**
+ * Marks the kill Riot called first blood.
+ *
+ * `FirstBlood` is an event in its own right and carries no killer, so it draws no row of its
+ * own — it is a label on the `ChampionKill` published beside it, at the same `EventTime`.
+ * Decided here rather than in `readEvent` because it is the one label that needs the rest of
+ * the stream to decide.
+ *
+ * An untagged row is left alone: a stolen or otherwise labelled kill keeps the label it has,
+ * because that one is about how the kill happened and this one is only about when.
+ */
+function markFirstBlood(entries: TimelineEntry[], events: readonly GameEvent[]): TimelineEntry[] {
+  const first = events.find((event) => event.EventName === "FirstBlood");
+  if (!first) return entries;
+
+  const at = entries.find((entry) => entry.kind === "kill" && entry.at === first.EventTime);
+  if (!at || at.tag) return entries;
+
+  return entries.map((entry) => (entry === at ? { ...entry, tag: "first blood" } : entry));
 }
 
 /** `EventTime` is seconds as a float; the clock the player is used to reads mm:ss. */

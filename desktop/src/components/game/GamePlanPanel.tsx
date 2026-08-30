@@ -44,8 +44,8 @@ function Plan({ context }: { context: LiveContext }): React.ReactElement {
   }
 
   return (
-    <div className="grid xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
-      <section className="border-b border-line-1 p-5 xl:border-b-0 xl:border-r">
+    <div className="grid lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+      <section className="border-b border-line-1 p-5 lg:border-b-0 lg:border-r">
         <p className="hud-label text-[10px] tracking-[0.18em]">Playing the matchup</p>
         {hints.length > 0 ? (
           <ul className="mt-3.5 grid gap-3.5">

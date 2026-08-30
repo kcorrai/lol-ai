@@ -58,8 +58,7 @@ function selfOrigin(): string {
  * and a bridge that routed around it would make that statement false.
  */
 export function bridgedPath(input: RequestInfo | URL, origin = selfOrigin()): string | null {
-  const raw =
-    typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
+  const raw = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
 
   let url: URL;
   let base: URL;
@@ -103,9 +102,7 @@ async function readBody(input: RequestInfo | URL, init?: RequestInit): Promise<u
 }
 
 function methodOf(input: RequestInfo | URL, init?: RequestInit): string {
-  const method = (
-    init?.method ?? (input instanceof Request ? input.method : "GET")
-  ).toUpperCase();
+  const method = (init?.method ?? (input instanceof Request ? input.method : "GET")).toUpperCase();
   return METHODS.includes(method) ? method : "GET";
 }
 

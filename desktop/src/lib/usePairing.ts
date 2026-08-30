@@ -103,10 +103,7 @@ export interface PairingHandle {
  */
 export function needsSetup(status: PairingState["status"]): boolean {
   return (
-    status === "unpaired" ||
-    status === "pairing" ||
-    status === "opening" ||
-    status === "approving"
+    status === "unpaired" || status === "pairing" || status === "opening" || status === "approving"
   );
 }
 

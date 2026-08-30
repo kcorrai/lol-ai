@@ -45,7 +45,9 @@ export default function Image({
       // `fill` means "cover the positioned ancestor", which is a stylesheet instruction
       // rather than an attribute. Callers already position that ancestor, so reproducing
       // the rule is all that is missing.
-      style={fill ? { position: "absolute", inset: 0, width: "100%", height: "100%", ...style } : style}
+      style={
+        fill ? { position: "absolute", inset: 0, width: "100%", height: "100%", ...style } : style
+      }
       {...rest}
     />
   );

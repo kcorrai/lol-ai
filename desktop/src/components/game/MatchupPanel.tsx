@@ -76,8 +76,8 @@ function Reading({ context }: { context: LiveContext }): React.ReactElement {
   }
 
   return (
-    <div className="grid xl:grid-cols-2">
-      <div className="border-b border-line-1 p-5 xl:border-b-0 xl:border-r">
+    <div className="grid lg:grid-cols-2">
+      <div className="border-b border-line-1 p-5 lg:border-b-0 lg:border-r">
         {context.meta ? <MetaReading meta={context.meta} /> : <NoMeta />}
       </div>
       <div className="p-5">

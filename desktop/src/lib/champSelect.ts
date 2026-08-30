@@ -114,7 +114,5 @@ export function localChampionId(session: ChampSelect): number | null {
  * and the cleanest way to honour that is for the name never to leave this module.
  */
 export function enemyChampionIds(session: ChampSelect): number[] {
-  return (session.theirTeam ?? [])
-    .map((p) => p.championId)
-    .filter((id) => id > 0);
+  return (session.theirTeam ?? []).map((p) => p.championId).filter((id) => id > 0);
 }

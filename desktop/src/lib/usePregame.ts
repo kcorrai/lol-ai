@@ -57,7 +57,11 @@ const DEFAULT_LANE: Lane = "MIDDLE";
  * and not yet who into still gets the build, the skill order and their own record on the
  * champion. Half an answer now is worth more than a whole one after the timer.
  */
-export function pregameRequest(mine: string | null, theirs: string | null, lane: Lane): LiveContextRequest | null {
+export function pregameRequest(
+  mine: string | null,
+  theirs: string | null,
+  lane: Lane
+): LiveContextRequest | null {
   if (!mine) return null;
   return {
     championName: mine,

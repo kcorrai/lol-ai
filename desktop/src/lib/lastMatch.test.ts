@@ -2,7 +2,14 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@tauri-apps/api/core", () => ({ invoke: vi.fn(), isTauri: () => false }));
 
-import { archiveUrl, firstRow, isNewMatch, matchLength, scoreline, type ArchiveRow } from "./lastMatch";
+import {
+  archiveUrl,
+  firstRow,
+  isNewMatch,
+  matchLength,
+  scoreline,
+  type ArchiveRow,
+} from "./lastMatch";
 
 const row = (over: Partial<ArchiveRow> = {}): ArchiveRow =>
   ({
@@ -54,7 +61,16 @@ describe("firstRow", () => {
    * is not what was expected has to be an empty panel rather than a throw inside a timer.
    */
   it("is nothing rather than a throw for anything unexpected", () => {
-    for (const body of [null, undefined, 42, "rows", {}, { data: null }, { data: {} }, { data: { rows: "no" } }]) {
+    for (const body of [
+      null,
+      undefined,
+      42,
+      "rows",
+      {},
+      { data: null },
+      { data: {} },
+      { data: { rows: "no" } },
+    ]) {
       expect(firstRow(body)).toBeNull();
     }
   });

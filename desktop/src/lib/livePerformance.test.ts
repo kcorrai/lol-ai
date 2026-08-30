@@ -63,9 +63,7 @@ describe("readPerformance", () => {
 
   it("still reports the counted metrics in the first minute", () => {
     const data = game(30, { deaths: 1 });
-    const deaths = readPerformance(data, me(data), BASELINE, []).find(
-      (r) => r.metric === "deaths"
-    );
+    const deaths = readPerformance(data, me(data), BASELINE, []).find((r) => r.metric === "deaths");
     expect(deaths?.value).toBe(1);
   });
 
@@ -93,17 +91,13 @@ describe("comparison against the player's own average", () => {
 
   it("calls fewer deaths than usual an improvement, not a decline", () => {
     const data = game(600, { deaths: 1 });
-    const deaths = readPerformance(data, me(data), BASELINE, []).find(
-      (r) => r.metric === "deaths"
-    );
+    const deaths = readPerformance(data, me(data), BASELINE, []).find((r) => r.metric === "deaths");
     expect(deaths?.vsBaseline).toBe("above");
   });
 
   it("calls more deaths than usual a decline", () => {
     const data = game(600, { deaths: 9 });
-    const deaths = readPerformance(data, me(data), BASELINE, []).find(
-      (r) => r.metric === "deaths"
-    );
+    const deaths = readPerformance(data, me(data), BASELINE, []).find((r) => r.metric === "deaths");
     expect(deaths?.vsBaseline).toBe("below");
   });
 

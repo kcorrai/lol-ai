@@ -7,7 +7,24 @@ function marked(levels: boolean[]): number[] {
 }
 
 const FULL = [
-  "Q", "W", "E", "Q", "Q", "R", "Q", "W", "Q", "W", "R", "W", "W", "E", "E", "R", "E", "E",
+  "Q",
+  "W",
+  "E",
+  "Q",
+  "Q",
+  "R",
+  "Q",
+  "W",
+  "Q",
+  "W",
+  "R",
+  "W",
+  "W",
+  "E",
+  "E",
+  "R",
+  "E",
+  "E",
 ];
 
 describe("skillGrid", () => {

@@ -48,6 +48,8 @@ export function skillGrid(order: readonly string[]): SkillRow[] {
  * stops levelling at fifteen unless the panel says otherwise.
  */
 export function isComplete(order: readonly string[]): boolean {
-  return order.filter((l) => (ABILITIES as readonly string[]).includes(l.trim().toUpperCase()))
-    .length >= MAX_LEVEL;
+  return (
+    order.filter((l) => (ABILITIES as readonly string[]).includes(l.trim().toUpperCase())).length >=
+    MAX_LEVEL
+  );
 }

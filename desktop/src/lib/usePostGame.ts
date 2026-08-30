@@ -123,7 +123,11 @@ export function usePostGame(read: LiveRead<AllGameData>): {
     let timer: ReturnType<typeof setTimeout> | undefined;
 
     /** One pass. `before` is what was on top when the game ended. */
-    const look = async (riotAccountId: string, before: string | null, attempt: number): Promise<void> => {
+    const look = async (
+      riotAccountId: string,
+      before: string | null,
+      attempt: number
+    ): Promise<void> => {
       const row = await readLatestMatch(riotAccountId);
       if (cancelled) return;
 

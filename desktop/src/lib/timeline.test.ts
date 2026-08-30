@@ -10,8 +10,18 @@ import { championFor, eventClock, isStolen, readEvent, readTimeline } from "./ti
  * than remembered, because a field this app spells differently is a row that never fills.
  */
 
-const ORDER = { riotId: "Riot Tuxedo", summonerName: "Riot Tuxedo", championName: "Annie", team: "ORDER" } as unknown as LivePlayer;
-const CHAOS = { riotId: "Riot Sanchez", summonerName: "Riot Sanchez", championName: "Zed", team: "CHAOS" } as unknown as LivePlayer;
+const ORDER = {
+  riotId: "Riot Tuxedo",
+  summonerName: "Riot Tuxedo",
+  championName: "Annie",
+  team: "ORDER",
+} as unknown as LivePlayer;
+const CHAOS = {
+  riotId: "Riot Sanchez",
+  summonerName: "Riot Sanchez",
+  championName: "Zed",
+  team: "CHAOS",
+} as unknown as LivePlayer;
 const PLAYERS = [ORDER, CHAOS];
 
 const event = (over: Partial<GameEvent> & Pick<GameEvent, "EventName">): GameEvent =>
@@ -52,7 +62,12 @@ describe("championFor", () => {
 describe("readEvent", () => {
   it("says which dragon in Riot's own word", () => {
     const entry = readEvent(
-      event({ EventName: "DragonKill", DragonType: "Infernal", KillerName: "Riot Sanchez", Stolen: "False" }),
+      event({
+        EventName: "DragonKill",
+        DragonType: "Infernal",
+        KillerName: "Riot Sanchez",
+        Stolen: "False",
+      }),
       PLAYERS,
       ORDER
     );
@@ -64,7 +79,11 @@ describe("readEvent", () => {
 
   /** A dragon type this build has never heard of arrives correct rather than as "Dragon". */
   it("passes through a dragon type it does not know", () => {
-    const entry = readEvent(event({ EventName: "DragonKill", DragonType: "Chemtech" }), PLAYERS, ORDER);
+    const entry = readEvent(
+      event({ EventName: "DragonKill", DragonType: "Chemtech" }),
+      PLAYERS,
+      ORDER
+    );
     expect(entry?.headline).toBe("Chemtech dragon");
   });
 
@@ -85,7 +104,11 @@ describe("readEvent", () => {
    */
   it("does not pretend to know which turret", () => {
     const entry = readEvent(
-      event({ EventName: "TurretKilled", TurretKilled: "Turret_T1_C_05_A", KillerName: "Riot Sanchez" }),
+      event({
+        EventName: "TurretKilled",
+        TurretKilled: "Turret_T1_C_05_A",
+        KillerName: "Riot Sanchez",
+      }),
       PLAYERS,
       ORDER
     );
@@ -94,7 +117,11 @@ describe("readEvent", () => {
   });
 
   it("tells the first turret apart from the rest", () => {
-    const entry = readEvent(event({ EventName: "FirstBrick", KillerName: "Riot Tuxedo" }), PLAYERS, ORDER);
+    const entry = readEvent(
+      event({ EventName: "FirstBrick", KillerName: "Riot Tuxedo" }),
+      PLAYERS,
+      ORDER
+    );
     expect(entry?.headline).toBe("First turret — Annie");
   });
 
@@ -215,5 +242,125 @@ describe("eventClock", () => {
 
   it("never draws a negative clock", () => {
     expect(eventClock(-5)).toBe("0:00");
+  });
+});
+
+describe("row tags", () => {
+  it("marks an objective Riot called stolen", () => {
+    const entry = readEvent(
+      event({ EventName: "DragonKill", KillerName: "Riot Sanchez", Stolen: "True" }),
+      PLAYERS,
+      ORDER
+    );
+
+    expect(entry?.tag).toBe("stolen");
+  });
+
+  it("marks the first turret of the game", () => {
+    const entry = readEvent(
+      event({ EventName: "FirstBrick", KillerName: "Riot Tuxedo" }),
+      PLAYERS,
+      ORDER
+    );
+
+    expect(entry?.tag).toBe("first");
+  });
+
+  it("marks an ace, and carries the size of a multikill", () => {
+    const ace = readEvent(
+      event({ EventName: "Ace", Acer: "Riot Tuxedo", AcingTeam: "ORDER" }),
+      PLAYERS,
+      ORDER
+    );
+    const multi = readEvent(
+      event({ EventName: "Multikill", KillerName: "Riot Tuxedo", KillStreak: 3 }),
+      PLAYERS,
+      ORDER
+    );
+
+    expect(ace?.tag).toBe("ace");
+    expect(multi?.tag).toBe("×3");
+  });
+
+  it("leaves an ordinary row unlabelled", () => {
+    const entry = readEvent(
+      event({ EventName: "ChampionKill", KillerName: "Riot Tuxedo", VictimName: "Riot Sanchez" }),
+      PLAYERS,
+      ORDER
+    );
+
+    expect(entry?.tag).toBeNull();
+  });
+
+  /**
+   * `FirstBlood` carries no killer and draws no row of its own. It is a label on the
+   * `ChampionKill` Riot publishes beside it, at the same second.
+   */
+  it("marks the kill Riot published a first blood event beside", () => {
+    const data = {
+      ...allGameDataSchema.parse(sample),
+      allPlayers: PLAYERS,
+      events: {
+        Events: [
+          event({ EventID: 1, EventName: "FirstBlood", EventTime: 214.3 }),
+          event({
+            EventID: 2,
+            EventName: "ChampionKill",
+            EventTime: 214.3,
+            KillerName: "Riot Tuxedo",
+            VictimName: "Riot Sanchez",
+          }),
+          event({
+            EventID: 3,
+            EventName: "ChampionKill",
+            EventTime: 900,
+            KillerName: "Riot Sanchez",
+            VictimName: "Riot Tuxedo",
+          }),
+        ],
+      },
+    };
+
+    const [later, first] = readTimeline(data, ORDER);
+
+    expect(first.tag).toBe("first blood");
+    expect(later.tag).toBeNull();
+  });
+
+  /** A stolen kill keeps the label about *how* it happened over the one about when. */
+  it("does not overwrite a label the kill already carries", () => {
+    const data = {
+      ...allGameDataSchema.parse(sample),
+      allPlayers: PLAYERS,
+      events: {
+        Events: [
+          event({ EventID: 1, EventName: "FirstBlood", EventTime: 300 }),
+          event({
+            EventID: 2,
+            EventName: "ChampionKill",
+            EventTime: 300,
+            KillerName: "Riot Tuxedo",
+            VictimName: "Riot Sanchez",
+            Stolen: true,
+          }),
+        ],
+      },
+    };
+
+    expect(readTimeline(data, ORDER)[0].tag).toBe("stolen");
+  });
+
+  it("leaves the timeline alone in a game with no first blood yet", () => {
+    const data = {
+      ...allGameDataSchema.parse(sample),
+      allPlayers: PLAYERS,
+      events: {
+        Events: [
+          event({ EventID: 1, EventName: "DragonKill", EventTime: 400, KillerName: "Riot Tuxedo" }),
+        ],
+      },
+    };
+
+    expect(readTimeline(data, ORDER)[0].tag).toBeNull();
   });
 });
