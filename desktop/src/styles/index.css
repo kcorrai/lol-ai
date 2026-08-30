@@ -46,6 +46,125 @@
 }
 
 /*
+ * The window's own motion.
+ *
+ * Keyframes and nothing else, which is why they are here rather than in the shared Tailwind
+ * theme: `animation` entries there are emitted for every page of the website, and none of
+ * these are wanted on one. They are also the one part of this design a utility cannot
+ * express — Tailwind has no syntax for a keyframe.
+ *
+ * Every one of them is decoration over a reading that is already complete and correct
+ * without it. The rule below turns all of it off for a player who has asked their operating
+ * system for less movement, and nothing on any screen becomes unreadable when it does.
+ */
+@layer utilities {
+  /* A bright band crawling down a splash header, so a still image reads as a live one. */
+  .hud-scan {
+    animation: hud-scan 8s linear infinite;
+  }
+  /* A list row arriving from the left. Staggered by the caller, which knows its index. */
+  .hud-row-in {
+    animation: hud-row-in 300ms cubic-bezier(0.16, 0.84, 0.44, 1) both;
+  }
+  /* A grid tile, which rises and settles rather than sliding. */
+  .hud-tile-in {
+    animation: hud-tile-in 320ms cubic-bezier(0.16, 0.84, 0.44, 1) both;
+  }
+  /* A meter filling from nothing, so its length is read as a quantity. */
+  .hud-bar {
+    animation: hud-bar 700ms cubic-bezier(0.16, 0.84, 0.44, 1) both;
+  }
+  .hud-spin {
+    animation: hud-spin 900ms linear infinite;
+  }
+  /* The dot beside "in game". The one piece of motion that carries meaning — so the
+     reduced-motion rule leaves the dot itself, only its blinking. */
+  .hud-pulse {
+    animation: hud-pulse 2.2s ease-in-out infinite;
+  }
+  /* A highlight crossing the game-over banner, once a match has ended. */
+  .hud-sweep {
+    animation: hud-sweep 4.6s linear infinite;
+  }
+  /* A placeholder that is waiting rather than broken. */
+  .hud-shimmer {
+    animation: hud-shimmer 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes hud-scan {
+  0% {
+    transform: translateY(-120%);
+  }
+  100% {
+    transform: translateY(640%);
+  }
+}
+
+@keyframes hud-row-in {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hud-tile-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hud-bar {
+  from {
+    width: 0;
+  }
+}
+
+@keyframes hud-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes hud-pulse {
+  0%,
+  100% {
+    opacity: 0.28;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes hud-sweep {
+  0% {
+    transform: translateX(-140%);
+  }
+  100% {
+    transform: translateX(460%);
+  }
+}
+
+@keyframes hud-shimmer {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.62;
+  }
+}
+
+/*
  * Movement is a preference, and this app runs next to a game.
  *
  * A player who has asked their operating system for less of it has asked this window too.
