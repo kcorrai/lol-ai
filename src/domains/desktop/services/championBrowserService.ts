@@ -5,6 +5,7 @@ import type {
   DesktopChampionList,
   DesktopCounter,
 } from "@/domains/desktop/championsContract";
+import { readChampionIdentity } from "@/domains/desktop/services/championAbilities";
 import { toLiveBuild } from "@/domains/desktop/services/liveBuild";
 import { fetchItems, type ItemInfo } from "@/lib/ddragon/itemsData";
 
@@ -74,6 +75,15 @@ export async function readChampion(
   const data = await getCounterData(championKey, position);
   if (!data) return null;
 
+  // The build and the kit come from two different feeds — the patch snapshot and the
+  // Data Dragon catalogue — so they are read together rather than in sequence. Keyed on
+  // the champion the snapshot resolved, not the one that was asked for: those differ
+  // whenever the app sends a display name and the snapshot answers with an id.
+  const [build, identity] = await Promise.all([
+    readBuild(data.build),
+    readChampionIdentity(data.championKey),
+  ]);
+
   return {
     champion: { key: data.championKey, name: data.name },
     position: data.position,
@@ -86,7 +96,10 @@ export async function readChampion(
       banRate: data.stats.banRate,
       tier: data.stats.tier,
     },
-    build: await readBuild(data.build),
+    build,
+    title: identity.title,
+    tags: identity.tags,
+    abilities: identity.abilities,
     counteredBy: data.strongAgainstSubject.map(toCounter),
     goodInto: data.weakAgainstSubject.map(toCounter),
   };

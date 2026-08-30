@@ -44,6 +44,9 @@ const CHAMPION: DesktopChampion = {
   availablePositions: ["MIDDLE"],
   stats: { games: 91_204, winRate: 51.2, pickRate: 8.4, banRate: 3.1, tier: 1 },
   build: null,
+  title: "the Nine-Tailed Fox",
+  tags: ["Mage", "Assassin"],
+  abilities: [],
   counteredBy: [{ championKey: "Zed", name: "Zed", games: 4210, subjectWinRate: 47.5 }],
   goodInto: [],
 };

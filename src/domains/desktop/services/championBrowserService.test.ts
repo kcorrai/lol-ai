@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const mockGetTierList = vi.fn();
 const mockGetCounterData = vi.fn();
 const mockFetchItems = vi.fn();
+const mockReadChampionIdentity = vi.fn();
 
 vi.mock("@/domains/meta", () => ({
   getTierList: (...args: unknown[]) => mockGetTierList(...args),
@@ -11,6 +12,10 @@ vi.mock("@/domains/meta", () => ({
 
 vi.mock("@/lib/ddragon/itemsData", () => ({
   fetchItems: () => mockFetchItems(),
+}));
+
+vi.mock("@/domains/desktop/services/championAbilities", () => ({
+  readChampionIdentity: (...args: unknown[]) => mockReadChampionIdentity(...args),
 }));
 
 import { listChampions, readChampion } from "@/domains/desktop/services/championBrowserService";
@@ -132,6 +137,7 @@ const FULL_CATALOGUE = catalogue([
 beforeEach(() => {
   vi.clearAllMocks();
   mockFetchItems.mockResolvedValue(FULL_CATALOGUE);
+  mockReadChampionIdentity.mockResolvedValue({ title: null, tags: [], abilities: [] });
 });
 
 describe("listChampions", () => {
@@ -206,6 +212,9 @@ describe("readChampion", () => {
         games: 4000,
         winRate: 52.5,
       },
+      title: null,
+      tags: [],
+      abilities: [],
       counteredBy: [
         {
           championKey: "Zed",
@@ -296,5 +305,46 @@ describe("readChampion", () => {
     await readChampion("Zed", "TOP");
 
     expect(mockGetCounterData).toHaveBeenCalledWith("Zed", "TOP");
+  });
+});
+
+describe("readChampion kit", () => {
+  const CHARM = {
+    slot: "E" as const,
+    name: "Charm",
+    description: "Ahri blows a kiss.",
+    iconUrl: "https://ddragon.leagueoflegends.com/x/AhriSeduce.png",
+    videoUrl: "https://d28xe8vt774jo5.cloudfront.net/champion-abilities/0103/ability_0103_E1.webm",
+    cooldown: "14/13/12/11/10",
+    cost: "50",
+    range: "975",
+  };
+
+  it("carries the champion's epithet, its classes and its kit", async () => {
+    mockGetCounterData.mockResolvedValue(counterResult());
+    mockReadChampionIdentity.mockResolvedValue({
+      title: "the Nine-Tailed Fox",
+      tags: ["Mage", "Assassin"],
+      abilities: [CHARM],
+    });
+
+    const result = await readChampion("Ahri", "MIDDLE");
+
+    expect(result?.title).toBe("the Nine-Tailed Fox");
+    expect(result?.tags).toEqual(["Mage", "Assassin"]);
+    expect(result?.abilities).toEqual([CHARM]);
+  });
+
+  /**
+   * The snapshot resolves the champion, and the catalogue is asked about what it
+   * resolved. Asking with the string the app sent would read the wrong champion's kit
+   * every time the app sends a display name and the snapshot answers with an id.
+   */
+  it("asks the catalogue about the champion the snapshot resolved", async () => {
+    mockGetCounterData.mockResolvedValue(counterResult({ championKey: "MonkeyKing" }));
+
+    await readChampion("Wukong", "TOP");
+
+    expect(mockReadChampionIdentity).toHaveBeenCalledWith("MonkeyKing");
   });
 });

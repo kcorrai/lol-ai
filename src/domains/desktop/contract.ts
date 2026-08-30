@@ -1,4 +1,7 @@
 import { z } from "zod";
+// Relative, not aliased, for the reason `championsContract.ts` gives: the desktop app
+// compiles this file with its own tsconfig, where `@/` points somewhere else entirely.
+import { desktopAbilitySchema } from "./abilitiesContract";
 
 // The wire contract between the website and the desktop companion (ADR-038, K6).
 //
@@ -306,6 +309,17 @@ export const liveContextSchema = z.object({
   challenges: z.array(liveChallengeSchema),
   /** Null in a mode with no lane to build for, and when the patch snapshot has no entry. */
   build: liveBuildSchema.nullable(),
+  /**
+   * The lane opponent's kit — what the player has to play around for the next forty
+   * minutes, in Riot's own words and Riot's own preview clips.
+   *
+   * The *opponent's* and not the player's, deliberately. A player knows their own
+   * champion; what they cannot see from inside a game is the cooldown on the thing that
+   * just killed them. Empty when there is no lane opponent, and empty when the catalogue
+   * could not be read — the panel is absent either way, which is the honest rendering of
+   * "we do not know this" for a screen that must not invent one.
+   */
+  opponentAbilities: z.array(desktopAbilitySchema),
   /** False means the panels are empty for a reason the player can act on. */
   riotAccountLinked: z.boolean(),
 });

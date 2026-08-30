@@ -1,6 +1,7 @@
 import { z } from "zod";
 // Relative, not aliased. The desktop app compiles this file with its own tsconfig, where
 // `@/` points at `desktop/src` — an alias here would resolve on the website and nowhere else.
+import { desktopAbilitySchema } from "./abilitiesContract";
 import { liveBuildSchema, liveChampionSchema } from "./contract";
 
 // The champion browser's half of the website contract (LA-75, ADR-042).
@@ -83,6 +84,16 @@ export const desktopChampionSchema = z.object({
   availablePositions: z.array(z.string()),
   stats: desktopChampionStatsSchema,
   build: liveBuildSchema.nullable(),
+  /**
+   * The champion's epithet — "The Nine-Tailed Fox". Null when the Data Dragon catalogue
+   * could not be read, which is a missing line rather than a missing champion: every
+   * number on the screen comes from the patch snapshot and arrives regardless.
+   */
+  title: z.string().nullable(),
+  /** Riot's own classes: ["Mage", "Assassin"]. Empty when the catalogue was unreachable. */
+  tags: z.array(z.string()),
+  /** Passive first, then Q/W/E/R. Empty when the catalogue was unreachable. */
+  abilities: z.array(desktopAbilitySchema),
   /** Opponents that beat this champion — its counters, hardest first. */
   counteredBy: z.array(desktopCounterSchema),
   /** Opponents this champion beats, most favourable first. */

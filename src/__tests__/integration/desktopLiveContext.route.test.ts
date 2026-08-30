@@ -55,6 +55,7 @@ const CONTEXT = {
   baseline: null,
   challenges: [],
   build: null,
+  opponentAbilities: [],
   riotAccountLinked: true,
 };
 

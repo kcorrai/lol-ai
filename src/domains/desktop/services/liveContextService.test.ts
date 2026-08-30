@@ -8,6 +8,7 @@ const mockGetChampionBaseline = vi.fn();
 const mockGetChampionBuild = vi.fn();
 const mockFetchItems = vi.fn();
 const mockFetchAllChampions = vi.fn();
+const mockReadChampionIdentity = vi.fn();
 
 vi.mock("@/domains/counter", () => ({
   getPersonalMatchup: (...args: unknown[]) => mockGetPersonalMatchup(...args),
@@ -34,6 +35,10 @@ vi.mock("@/domains/champions", () => ({
 
 vi.mock("@/lib/ddragon/championsData", () => ({
   fetchAllChampions: () => mockFetchAllChampions(),
+}));
+
+vi.mock("@/domains/desktop/services/championAbilities", () => ({
+  readChampionIdentity: (...args: unknown[]) => mockReadChampionIdentity(...args),
 }));
 
 import { getLiveContext } from "@/domains/desktop/services/liveContextService";
@@ -120,7 +125,13 @@ beforeEach(() => {
   mockGetActiveChallenges.mockResolvedValue([]);
   mockGetChampionBaseline.mockResolvedValue(null);
   mockGetChampionBuild.mockResolvedValue(null);
-  mockFetchItems.mockResolvedValue(new Map([[1055, { name: "Doran's Blade" }], [3153, { name: "Blade of the Ruined King" }]]));
+  mockFetchItems.mockResolvedValue(
+    new Map([
+      [1055, { name: "Doran's Blade" }],
+      [3153, { name: "Blade of the Ruined King" }],
+    ])
+  );
+  mockReadChampionIdentity.mockResolvedValue({ title: null, tags: [], abilities: [] });
 });
 
 describe("getLiveContext champion resolution", () => {
@@ -147,7 +158,11 @@ describe("getLiveContext champion resolution", () => {
   // The name is free text from a client this code does not control, and it goes on to
   // steer two other domains' queries. An unrecognised one is refused here.
   it("reaches no domain service when the champion is not on the roster", async () => {
-    const context = await getLiveContext(ACCOUNT, USER, request({ championName: "Definitely Not" }));
+    const context = await getLiveContext(
+      ACCOUNT,
+      USER,
+      request({ championName: "Definitely Not" })
+    );
 
     expect(context.champion).toBeNull();
     expect(context.personal).toBeNull();
@@ -159,7 +174,11 @@ describe("getLiveContext champion resolution", () => {
   });
 
   it("refuses an unrecognised opponent without losing the player's own champion", async () => {
-    const context = await getLiveContext(ACCOUNT, USER, request({ opponentChampionName: "Nobody" }));
+    const context = await getLiveContext(
+      ACCOUNT,
+      USER,
+      request({ opponentChampionName: "Nobody" })
+    );
 
     expect(context.champion).toEqual({ key: "Ahri", name: "Ahri" });
     expect(context.opponent).toBeNull();
@@ -286,8 +305,13 @@ describe("getLiveContext panels", () => {
 
   it("answers with no baseline rather than a made-up one", async () => {
     mockGetChampionBaseline.mockResolvedValue(null);
-  mockGetChampionBuild.mockResolvedValue(null);
-  mockFetchItems.mockResolvedValue(new Map([[1055, { name: "Doran's Blade" }], [3153, { name: "Blade of the Ruined King" }]]));
+    mockGetChampionBuild.mockResolvedValue(null);
+    mockFetchItems.mockResolvedValue(
+      new Map([
+        [1055, { name: "Doran's Blade" }],
+        [3153, { name: "Blade of the Ruined King" }],
+      ])
+    );
 
     expect((await getLiveContext(ACCOUNT, USER, request())).baseline).toBeNull();
   });
@@ -457,6 +481,55 @@ describe("getLiveContext when a read fails", () => {
 
     expect(context.personal).toBeNull();
     expect(context.habits).toEqual([]);
+    expect(context.meta).not.toBeNull();
+  });
+});
+
+describe("getLiveContext opponent kit", () => {
+  const CHARM = {
+    slot: "E" as const,
+    name: "Charm",
+    description: "Ahri blows a kiss.",
+    iconUrl: "https://ddragon.leagueoflegends.com/x/AhriSeduce.png",
+    videoUrl: "https://d28xe8vt774jo5.cloudfront.net/champion-abilities/0103/ability_0103_E1.webm",
+    cooldown: "14/13/12/11/10",
+    cost: "50",
+    range: "975",
+  };
+
+  /** The *opponent's* kit, not the player's: a player knows their own champion. */
+  it("reads the kit of the lane opponent", async () => {
+    mockReadChampionIdentity.mockResolvedValue({ title: null, tags: [], abilities: [CHARM] });
+
+    const context = await getLiveContext(ACCOUNT, USER, request());
+
+    // The Data Dragon id the roster resolved, never the name the game client sent.
+    expect(mockReadChampionIdentity).toHaveBeenCalledWith("Zed");
+    expect(context.opponentAbilities).toEqual([CHARM]);
+  });
+
+  it("asks for no kit when the game has no lane opponent", async () => {
+    const context = await getLiveContext(
+      ACCOUNT,
+      USER,
+      request({ opponentChampionName: null, position: null })
+    );
+
+    expect(mockReadChampionIdentity).not.toHaveBeenCalled();
+    expect(context.opponentAbilities).toEqual([]);
+  });
+
+  /**
+   * The catalogue is a different feed from every other read here, so it is a different
+   * thing that can be down. It has to cost one panel and leave the rest of the screen up.
+   */
+  it("keeps the rest of the context when the catalogue read throws", async () => {
+    mockReadChampionIdentity.mockRejectedValue(new Error("ddragon down"));
+    mockGetMatchupData.mockResolvedValue(matchupReport());
+
+    const context = await getLiveContext(ACCOUNT, USER, request());
+
+    expect(context.opponentAbilities).toEqual([]);
     expect(context.meta).not.toBeNull();
   });
 });
