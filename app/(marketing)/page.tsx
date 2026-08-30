@@ -5,7 +5,9 @@ import { HowItWorksStrip } from "./components/laneiq/HowItWorksStrip";
 import { SampleReport } from "./components/laneiq/SampleReport";
 import { ArsenalTabs } from "./components/laneiq/ArsenalTabs";
 import { ProductShowcase } from "./components/laneiq/ProductShowcase";
+import { DesktopBand } from "./components/laneiq/DesktopBand";
 import { ChampionPoolAudit } from "./components/laneiq/ChampionPoolAudit";
+import { AccountBand } from "./components/laneiq/AccountBand";
 import { AcademyBand } from "./components/laneiq/AcademyBand";
 import { FreeToolsGrid } from "./components/laneiq/FreeToolsGrid";
 import { DailyQuizStrip } from "./components/laneiq/DailyQuizStrip";
@@ -52,7 +54,17 @@ export default function LandingPage(): React.ReactElement {
           after them so the claim and the evidence sit together. */}
       <ProductShowcase />
 
+      {/* The companion had never appeared on this page at all, and it is the one claim a
+          competitor's website cannot answer. It follows the screenshots because those say
+          "here are the real screens" and this is the screen a browser cannot draw. */}
+      <DesktopBand />
+
       <ChampionPoolAudit />
+
+      {/* Ten shipped screens the page had no way of mentioning — the reason a visitor read
+          the product as one report and a few free tools. */}
+      <AccountBand />
+
       <AcademyBand />
       <FreeToolsGrid />
       <DailyQuizStrip />

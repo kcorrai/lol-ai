@@ -60,6 +60,16 @@ export async function MarketingFooter(): Promise<React.ReactElement> {
     label: c.name,
   }));
 
+  // The parts of the product that are neither a tier list nor a legal page. The desktop app
+  // in particular had no entry point anywhere on the marketing site before this.
+  const product: FooterLink[] = [
+    { href: "/download", label: "Desktop app" },
+    { href: "/draft", label: "Draft room" },
+    { href: "/academy", label: "Academy" },
+    { href: "/tools/multi-search", label: "Multi-search" },
+    { href: "/coaches", label: "Find a coach" },
+  ];
+
   const company: FooterLink[] = [
     { href: "/pricing", label: "Pricing" },
     { href: "/privacy", label: "Privacy" },
@@ -71,10 +81,11 @@ export async function MarketingFooter(): Promise<React.ReactElement> {
   return (
     <footer className="border-t border-border bg-surface-dark px-5 pb-8 pt-11 md:px-8">
       <div className="mx-auto max-w-[1240px]">
-        <div className="grid grid-cols-2 gap-7 md:grid-cols-[1.2fr_repeat(4,1fr)]">
-          <div className="col-span-2 md:col-span-1">
+        <div className="grid grid-cols-2 gap-7 md:grid-cols-3 lg:grid-cols-[1.2fr_repeat(5,1fr)]">
+          <div className="col-span-2 md:col-span-3 lg:col-span-1">
             <Wordmark size={16} />
           </div>
+          <LinkColumn title="Product" links={product} />
           <LinkColumn title="Tier lists" links={tierLists} />
           <LinkColumn title="Tools" links={tools} />
           {popularBuilds.length > 0 && <LinkColumn title="Popular" links={popularBuilds} />}
