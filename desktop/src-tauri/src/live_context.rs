@@ -145,6 +145,15 @@ pub struct LiveContext {
     pub challenges: Vec<LiveChallenge>,
     /// Null in a mode with no lane to build for, and when the snapshot has no entry.
     pub build: Option<LiveBuild>,
+    /// The lane opponent's kit. Empty with no opponent, and empty when the website could
+    /// not read the catalogue.
+    ///
+    /// `default` because this app ships separately from the website it talks to: an app
+    /// updated before the site would otherwise fail to parse the *whole* context over one
+    /// absent array, blanking every panel on the screen mid-game. An empty kit costs one
+    /// panel, which is the proportionate failure.
+    #[serde(default)]
+    pub opponent_abilities: Vec<crate::abilities::Ability>,
     /// False means the panels are empty for a reason the player can act on.
     pub riot_account_linked: bool,
 }
@@ -277,6 +286,16 @@ mod tests {
                 "games": 41000,
                 "winRate": 52.5
             },
+            "opponentAbilities": [{
+                "slot": "W",
+                "name": "Living Shadow",
+                "description": "Zed's shadow dashes forward and mimics his abilities.",
+                "iconUrl": "https://ddragon.leagueoflegends.com/cdn/15.14.1/img/spell/ZedW.png",
+                "videoUrl": "https://d28xe8vt774jo5.cloudfront.net/champion-abilities/0238/ability_0238_W1.webm",
+                "cooldown": "22/20/18/16/14",
+                "cost": "40",
+                "range": "700"
+            }],
             "riotAccountLinked": true
         })
     }
@@ -294,7 +313,22 @@ mod tests {
         assert_eq!(parsed.baseline.unwrap().cs_per_min, 7.1);
         assert_eq!(parsed.challenges[0].metric, "cs_per_min");
         assert_eq!(parsed.build.unwrap().core[0].name, "Rabadon's Deathcap");
+        assert_eq!(parsed.opponent_abilities[0].name, "Living Shadow");
         assert!(parsed.riot_account_linked);
+    }
+
+    /// A website older than this build sends no kit. That has to cost the abilities panel
+    /// and nothing else — without the default it would fail the whole context and blank
+    /// every panel on a screen the player is looking at during a game.
+    #[test]
+    fn a_context_from_a_website_with_no_kit_still_parses() {
+        let mut json = full_response();
+        json.as_object_mut().unwrap().remove("opponentAbilities");
+
+        let parsed: LiveContext = serde_json::from_value(json).unwrap();
+
+        assert!(parsed.opponent_abilities.is_empty());
+        assert_eq!(parsed.meta.unwrap().win_rate, 47.5);
     }
 
     /// The test that was missing. Serde drops what the struct does not declare, so a field

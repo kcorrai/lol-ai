@@ -84,6 +84,18 @@ pub struct ChampionDetail {
     pub available_positions: Vec<String>,
     pub stats: ChampionStats,
     pub build: Option<crate::live_context::LiveBuild>,
+    /// The champion's epithet — "The Nine-Tailed Fox". Null when the website could not read
+    /// the Data Dragon catalogue, which costs a line and not the champion.
+    #[serde(default)]
+    pub title: Option<String>,
+    /// Riot's own classes: ["Mage", "Assassin"].
+    #[serde(default)]
+    pub tags: Vec<String>,
+    /// Passive first, then Q/W/E/R. `default` for the reason `opponent_abilities` gives:
+    /// this app ships separately from the website, and an absent array must cost one panel
+    /// rather than the whole champion.
+    #[serde(default)]
+    pub abilities: Vec<crate::abilities::Ability>,
     /// Opponents that beat this champion, hardest first.
     pub countered_by: Vec<ChampionCounter>,
     /// Opponents this champion beats, most favourable first.
@@ -201,6 +213,18 @@ mod tests {
                 "games": 41000,
                 "winRate": 52.5
             },
+            "title": "the Nine-Tailed Fox",
+            "tags": ["Mage", "Assassin"],
+            "abilities": [{
+                "slot": "P",
+                "name": "Essence Theft",
+                "description": "Ahri gains a stack for each enemy hit.",
+                "iconUrl": "https://ddragon.leagueoflegends.com/cdn/15.14.1/img/passive/Ahri_SoulEaten.png",
+                "videoUrl": "https://d28xe8vt774jo5.cloudfront.net/champion-abilities/0103/ability_0103_P1.webm",
+                "cooldown": null,
+                "cost": null,
+                "range": null
+            }],
             "counteredBy": [{
                 "championKey": "Zed",
                 "name": "Zed",
@@ -257,6 +281,37 @@ mod tests {
         let build = parsed.build.unwrap();
         assert_eq!(build.core[0].name, "Rabadon's Deathcap");
         assert_eq!(build.skill_max_order, vec!["Q", "W", "E"]);
+    }
+
+    /// The kit, which arrives from the Data Dragon catalogue rather than the patch snapshot.
+    /// It is a separate feed, so it is a separate thing that can be missing.
+    #[test]
+    fn a_champions_kit_parses() {
+        let parsed: ChampionDetail = serde_json::from_value(detail_response()).unwrap();
+
+        assert_eq!(parsed.title.as_deref(), Some("the Nine-Tailed Fox"));
+        assert_eq!(parsed.tags, vec!["Mage", "Assassin"]);
+        assert_eq!(parsed.abilities[0].slot, "P");
+        assert!(parsed.abilities[0].cooldown.is_none());
+    }
+
+    /// A website older than this build sends no kit at all. That has to cost the abilities
+    /// panel, not the champion — without the defaults it would fail the whole payload and
+    /// the screen would show nothing at all for a champion it has every number for.
+    #[test]
+    fn a_champion_from_a_website_with_no_kit_still_parses() {
+        let mut json = detail_response();
+        let object = json.as_object_mut().unwrap();
+        object.remove("title");
+        object.remove("tags");
+        object.remove("abilities");
+
+        let parsed: ChampionDetail = serde_json::from_value(json).unwrap();
+
+        assert!(parsed.title.is_none());
+        assert!(parsed.tags.is_empty());
+        assert!(parsed.abilities.is_empty());
+        assert_eq!(parsed.stats.win_rate, 51.2);
     }
 
     /// A champion the patch snapshot carries no build for. Null is a state the panel renders

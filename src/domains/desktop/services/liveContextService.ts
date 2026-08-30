@@ -16,6 +16,7 @@ import type {
 } from "@/domains/desktop/contract";
 import { fetchAllChampions, type DdragonChampionSummary } from "@/lib/ddragon/championsData";
 import { fetchItems, type ItemInfo } from "@/lib/ddragon/itemsData";
+import { readChampionIdentity } from "@/domains/desktop/services/championAbilities";
 import { toLiveBuild } from "@/domains/desktop/services/liveBuild";
 
 // What the website knows about the game the desktop app is watching (ADR-038, phase 4).
@@ -212,6 +213,7 @@ export async function getLiveContext(
     baseline: null,
     challenges: [],
     build: null,
+    opponentAbilities: [],
     riotAccountLinked: riotAccountId !== null,
   };
 
@@ -223,7 +225,7 @@ export async function getLiveContext(
   // The six reads are independent and one failing is not a reason to answer with
   // nothing: a snapshot that is briefly unavailable should cost the meta panel and
   // leave the player's own record on screen.
-  const [personal, meta, habits, baseline, challenges, build] = await Promise.all([
+  const [personal, meta, habits, baseline, challenges, build, opponentKit] = await Promise.all([
     riotAccountId && championKey && opponentKey
       ? getPersonalMatchup(riotAccountId, championKey, opponentKey).catch(() => null)
       : null,
@@ -236,6 +238,9 @@ export async function getLiveContext(
     // Not personal, so it is answered whether or not an account is linked: how a
     // champion is built is the same fact for everybody playing it.
     readBuild(champion, request.position).catch(() => null),
+    // The opponent's kit, for the same reason and from the same catalogue this service
+    // already resolved both names against. Nothing about it is personal either.
+    opponent ? readChampionIdentity(opponent.id).catch(() => null) : null,
   ]);
 
   return {
@@ -246,5 +251,6 @@ export async function getLiveContext(
     baseline: baseline ? toBaseline(baseline) : null,
     challenges: challenges.filter(isLiveMeasurable).map(toChallenge),
     build,
+    opponentAbilities: opponentKit?.abilities ?? [],
   };
 }

@@ -3305,7 +3305,7 @@ flow cannot be pointed at another origin.
 
 | Status | Code               | When                                          |
 | ------ | ------------------ | --------------------------------------------- |
-| `422`  | `VALIDATION_ERROR` | Malformed body                                 |
+| `422`  | `VALIDATION_ERROR` | Malformed body                                |
 | `429`  | —                  | Rate limited: 20 per 10 minutes per caller IP |
 
 #### `GET /api/desktop/pairing-request/[requestId]`
@@ -3329,13 +3329,13 @@ pairs a machine by being visited is a link that can be sent to somebody.
 ten-device limit as redeeming a code, by a conditional update — two tabs pressing Approve
 produce one device.
 
-| Status | Code                      | When                                     |
-| ------ | ------------------------- | ---------------------------------------- |
-| `401`  | `UNAUTHORIZED`            | No session                               |
-| `404`  | `NOT_FOUND`               | Unknown or malformed id                  |
-| `409`  | `REQUEST_EXPIRED`         | Older than ten minutes                   |
-| `409`  | `REQUEST_ALREADY_DECIDED` | Already approved                         |
-| `409`  | `DEVICE_LIMIT_REACHED`    | The account already has 10 live devices  |
+| Status | Code                      | When                                        |
+| ------ | ------------------------- | ------------------------------------------- |
+| `401`  | `UNAUTHORIZED`            | No session                                  |
+| `404`  | `NOT_FOUND`               | Unknown or malformed id                     |
+| `409`  | `REQUEST_EXPIRED`         | Older than ten minutes                      |
+| `409`  | `REQUEST_ALREADY_DECIDED` | Already approved                            |
+| `409`  | `DEVICE_LIMIT_REACHED`    | The account already has 10 live devices     |
 | `429`  | —                         | Rate limited: 20 per 10 minutes per account |
 
 Expired and already-decided are told apart here, unlike on the claim path below: the reader
@@ -3353,8 +3353,8 @@ a failure, and the app is expected to ask again about every two seconds.
 **201** `{ status: "approved", pairing: { token, device, account } }`, `Cache-Control:
 no-store`, exactly once.
 
-| Status | Code               | When                                                              |
-| ------ | ------------------ | ----------------------------------------------------------------- |
+| Status | Code               | When                                                               |
+| ------ | ------------------ | ------------------------------------------------------------------ |
 | `422`  | `VALIDATION_ERROR` | Unknown id, wrong secret, expired, already claimed, device revoked |
 | `429`  | —                  | Rate limited: 400 per 10 minutes per **request id**                |
 
@@ -3429,6 +3429,7 @@ nothing here.
 | `personal`              | this account's own record in the pair — games, wins, win rate, KDA, trend     | it has never played it, or no account is linked |
 | `meta`                  | the patch-current snapshot for the pair, plus its hints                       | the snapshot has nothing for the pair           |
 | `habits`                | up to three recurring weaknesses already detected from this account's matches | — (empty array)                                 |
+| `opponentAbilities`     | the lane opponent's kit — passive then Q/W/E/R, with Riot's own preview clips | — (empty array)                                 |
 | `riotAccountLinked`     | whether the paired account has a Riot account at all                          | —                                               |
 
 | Status | Code               | When                                                                |
@@ -3459,6 +3460,15 @@ The reads are independent and one failing does not lose the others: a snapshot b
 of reach costs the meta panel and leaves the player's own record on screen. The rate limit
 is sized for games rather than polls — the app asks once per matchup, and the matchup
 changes when a game starts.
+
+`opponentAbilities` is the **opponent's** kit and not the player's, deliberately: a player
+knows their own champion, and what they cannot see from inside a game is the cooldown on
+the thing that just killed them. It is Data Dragon's own text and Riot's own published
+preview clip, resolved here because the catalogue is a JSON feed the app's content policy
+does not admit — the app is allowed the images and the video, not the feed. It is empty
+when there is no lane opponent and empty when the catalogue could not be read; the panel is
+absent either way, which is the honest rendering of "we do not know this" on a screen that
+must not invent one.
 
 ### `POST /api/desktop/post-game`
 
@@ -3548,7 +3558,7 @@ characters.
 
 **Query:** `role`, as above.
 
-**200** `{ champion, position, patch, availablePositions, stats, build, counteredBy, goodInto }`,
+**200** `{ champion, position, patch, availablePositions, stats, build, title, tags, abilities, counteredBy, goodInto }`,
 `Cache-Control: no-store`.
 
 `position` is the lane the website **resolved**, which is not always the one asked for: a
@@ -3556,9 +3566,18 @@ champion nobody plays in that lane is answered in the lane it is played in, and
 `availablePositions` is what lets the app say so rather than showing an empty page.
 
 `build` is the same `liveBuild` shape `/api/desktop/live-context` answers with, so the app
-renders one build component and not two. **Item names, never ids or icon URLs** — the
-companion's content policy is `img-src 'self' data:`, so a Data Dragon URL would render as
-a broken frame. Null when the snapshot carries no build for this champion and lane.
+renders one build component and not two. It carries item **ids and names**: the id is what
+the app addresses the icon with, and the name is what it prints beside it. Null when the
+snapshot carries no build for this champion and lane.
+
+`title`, `tags` and `abilities` come from the Data Dragon catalogue rather than the patch
+snapshot, and are therefore a separate thing that can be missing: the epithet is null and
+the two lists are empty when the catalogue could not be read, which costs those rows and
+leaves every number on the page in place. `abilities` is the passive followed by Q/W/E/R,
+each with Riot's own prose, its icon, its per-rank burn strings and the address of Riot's
+own published preview clip. The clip is addressed by the **numeric** champion id, which is
+the one identifier this contract does not otherwise carry — so the finished URL crosses the
+wire rather than a second id the app would only use to rebuild it.
 
 `subjectWinRate` means the subject champion's rate in **both** lists — under 50 in
 `counteredBy`, 50 or over in `goodInto` — so one number does not change meaning between two

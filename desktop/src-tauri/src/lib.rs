@@ -1,3 +1,4 @@
+mod abilities;
 mod api;
 mod champions;
 mod commands;
