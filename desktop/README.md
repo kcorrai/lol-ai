@@ -121,10 +121,31 @@ calls a model**: a round trip at the start of every match would cost the player 
 one minute they cannot spare, and a deterministic reading is one that can be checked
 against the data behind it.
 
+**Scoreboard** — all ten players as the client publishes them, with a CS bar behind each
+name so ten numbers nobody compares become ten shapes that do. The one panel on the screen
+that needs nothing from the website.
+
+**Objectives** — how many dragons, heralds, barons, turrets and inhibitors each side has
+taken, counted off the same event stream the timeline draws.
+
+This is where the redesign asked for a map, and there cannot be one. The Live Client Data
+API publishes no coordinates for anybody — not the player, not the enemy — so every marker
+on it would be a position this app invented, on the one screen where a player might act on
+it. The objectives are the knowable half of the same question, and they count nothing down
+either.
+
+**What to play around** — the lane opponent's kit: Riot's own preview clip for the selected
+ability, Riot's own prose, and its per-rank cooldown, cost and range, resolved on the
+website from the Data Dragon catalogue. The _opponent's_ rather than the player's on
+purpose: a player knows their own champion, and what they cannot get from a table is what
+the thing about to kill them looks like two seconds before it does.
+
 **So far** — what has already happened: the objectives that were taken and when, the turrets
 that fell, the kills, and which of them were the player's own. The event stream had been
 arriving all along — `allgamedata` carries it and the poll pulls it once a second — and
-nothing read it.
+nothing read it. Each row carries at most one label — first blood, first turret, ace,
+stolen, the size of a multikill — and first blood is the one that needs the whole stream:
+Riot publishes it as an event of its own, carrying no killer, beside the kill it describes.
 
 It counts nothing down. Every respawn interval is a game constant that moves between patches,
 this repository has no verified table of them, and a confidently wrong countdown over a
@@ -151,24 +172,24 @@ read about once a second and this answer changes when a game starts and not once
 
 ### The IPC surface
 
-| Command                             | Answers                                                                                                                                                                                                                                                                                                                                                |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `live_client_get(path)`             | One Live Client Data API path, or `null` when no game is running. The path is checked against a fixed allowlist, so the webview cannot aim the privileged client somewhere it should not go.                                                                                                                                                           |
-| `pair_device(code)`                 | Exchanges a pairing code for this machine's token. The token goes to the credential store here; what comes back is the account it belongs to.                                                                                                                                                                                                          |
-| `start_pairing()`                   | Asks the website to open a pairing request and sends the player's browser to approve it (ADR-048). Grants nothing: what comes back is a request id and how long it lasts. The browser is opened from the core, so the address the player decides at is never one the renderer chose.                                                                   |
-| `poll_pairing()`                    | Whether that request has been approved yet — `idle`, `waiting`, or the pairing. Called on a two-second timer by the setup screen and by nothing else. Deliberately not a command that waits for the answer: a ten-minute await holds a thread and cannot be told the player has gone somewhere else. The secret it presents stays in the core.         |
-| `cancel_pairing()`                  | Stops waiting. The request is left to expire — nothing was granted, so there is nothing to revoke.                                                                                                                                                                                                                                                     |
-| `device_account()`                  | Who this machine is acting as, asked of the website, or `null`. A 401 means the device was revoked — the token is forgotten locally and this answers `null`.                                                                                                                                                                                           |
-| `device_status()`                   | Whether this machine holds a token, asked of the credential store alone. Never the token, and no network — which is what lets an app opened offline know it is still paired.                                                                                                                                                                           |
-| `live_context(request)`             | What the website knows about the game on screen — the lane read and the game plan — or `null` when this machine is no longer paired. Goes through the core because the reading is personal, so the request has to carry the device token, and the token is not allowed to exist in a webview.                                                          |
-| `post_game()`                       | Tells the website a game has ended so the account is pulled now, or `null` when this machine is no longer paired. Takes no argument: the account is read from the device row and what game it was is read from Riot, so all the app contributes is the timing.                                                                                         |
-| `desktop_fetch(path, method, body)` | One allowlisted `/api/*` path on the website, with the device token attached, returned unparsed — or `null` when this machine holds no token. The one command behind every screen lifted from the website (ADR-043). Same shape as `live_client_get`: the webview names the path, the core checks it against a fixed list.                             |
-| `open_on_website(path)`             | Opens one **page** of the website in the player's own browser — where a link out of a lifted screen goes (ADR-047). It takes a path because these pages are not known at build time; it does not take a host, and `website::is_page` refuses a path that could name one, or that names an `/api/` route.                                               |
-| `clear_device_token()`              | Forgets it locally.                                                                                                                                                                                                                                                                                                                                    |
-| `overlay_settings()`                | The shortcut, screen, corner and margins the overlay is drawn with. Read from `settings.rs` at start-up and held in memory, because every resize asks for it.                                                                                                                                                                                          |
-| `set_overlay_shortcut(accelerator)` | Registers a new combination and gives up the old one — in that order, so a combination something else already holds leaves the player with the shortcut they had rather than none.                                                                                                                                                                     |
-| `set_overlay_position(…)`           | Moves the overlay to a screen and a corner of it, and remembers both. Applied before it is saved: a file that would not write should not stop the window moving where it was asked.                                                                                                                                                                    |
-| `list_monitors()`                   | Every attached screen, for the picker in Settings. A screen the OS does not name cannot be chosen, because the setting is stored as a name.                                                                                                                                                                                                            |
+| Command                             | Answers                                                                                                                                                                                                                                                                                                                                        |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `live_client_get(path)`             | One Live Client Data API path, or `null` when no game is running. The path is checked against a fixed allowlist, so the webview cannot aim the privileged client somewhere it should not go.                                                                                                                                                   |
+| `pair_device(code)`                 | Exchanges a pairing code for this machine's token. The token goes to the credential store here; what comes back is the account it belongs to.                                                                                                                                                                                                  |
+| `start_pairing()`                   | Asks the website to open a pairing request and sends the player's browser to approve it (ADR-048). Grants nothing: what comes back is a request id and how long it lasts. The browser is opened from the core, so the address the player decides at is never one the renderer chose.                                                           |
+| `poll_pairing()`                    | Whether that request has been approved yet — `idle`, `waiting`, or the pairing. Called on a two-second timer by the setup screen and by nothing else. Deliberately not a command that waits for the answer: a ten-minute await holds a thread and cannot be told the player has gone somewhere else. The secret it presents stays in the core. |
+| `cancel_pairing()`                  | Stops waiting. The request is left to expire — nothing was granted, so there is nothing to revoke.                                                                                                                                                                                                                                             |
+| `device_account()`                  | Who this machine is acting as, asked of the website, or `null`. A 401 means the device was revoked — the token is forgotten locally and this answers `null`.                                                                                                                                                                                   |
+| `device_status()`                   | Whether this machine holds a token, asked of the credential store alone. Never the token, and no network — which is what lets an app opened offline know it is still paired.                                                                                                                                                                   |
+| `live_context(request)`             | What the website knows about the game on screen — the lane read and the game plan — or `null` when this machine is no longer paired. Goes through the core because the reading is personal, so the request has to carry the device token, and the token is not allowed to exist in a webview.                                                  |
+| `post_game()`                       | Tells the website a game has ended so the account is pulled now, or `null` when this machine is no longer paired. Takes no argument: the account is read from the device row and what game it was is read from Riot, so all the app contributes is the timing.                                                                                 |
+| `desktop_fetch(path, method, body)` | One allowlisted `/api/*` path on the website, with the device token attached, returned unparsed — or `null` when this machine holds no token. The one command behind every screen lifted from the website (ADR-043). Same shape as `live_client_get`: the webview names the path, the core checks it against a fixed list.                     |
+| `open_on_website(path)`             | Opens one **page** of the website in the player's own browser — where a link out of a lifted screen goes (ADR-047). It takes a path because these pages are not known at build time; it does not take a host, and `website::is_page` refuses a path that could name one, or that names an `/api/` route.                                       |
+| `clear_device_token()`              | Forgets it locally.                                                                                                                                                                                                                                                                                                                            |
+| `overlay_settings()`                | The shortcut, screen, corner and margins the overlay is drawn with. Read from `settings.rs` at start-up and held in memory, because every resize asks for it.                                                                                                                                                                                  |
+| `set_overlay_shortcut(accelerator)` | Registers a new combination and gives up the old one — in that order, so a combination something else already holds leaves the player with the shortcut they had rather than none.                                                                                                                                                             |
+| `set_overlay_position(…)`           | Moves the overlay to a screen and a corner of it, and remembers both. Applied before it is saved: a file that would not write should not stop the window moving where it was asked.                                                                                                                                                            |
+| `list_monitors()`                   | Every attached screen, for the picker in Settings. A screen the OS does not name cannot be chosen, because the setting is stored as a name.                                                                                                                                                                                                    |
 
 ### Which pages are here at all
 
@@ -192,7 +213,7 @@ things that do not work is not a menu. Until the pairing exists the window is on
 the first screen after it is `/game`.
 
 Only `unpaired` and `pairing` go there, which is the half of that rule worth stating: setup
-has no exit except pairing, so a state that *cannot* pair would be stranded on it. The
+has no exit except pairing, so a state that _cannot_ pair would be stranded on it. The
 browser preview has no credential store, and an `offline` machine already holds the token
 it would be sent to fetch. `needsSetup` is where that lives, and its test is mostly about
 what must not trigger it.

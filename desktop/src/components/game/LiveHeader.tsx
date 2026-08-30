@@ -1,7 +1,9 @@
 import { ChampionTile } from "@/components/hud/ChampionTile";
+import { StatBlock } from "@/components/hud/StatBlock";
 import { ChampionSplash, ScanBand } from "@/components/hud/Splash";
 import { itemIconUrl } from "@/lib/ddragon";
 import { cn } from "@/lib/cn";
+import { formatCount } from "@/lib/uiLocale";
 import type { AllGameData, LivePlayer } from "@/lib/liveClient/schema";
 import { activePlayerOf, laneOpponentOf } from "@/lib/liveMatchup";
 import type { LiveContext } from "@/lib/liveContext";
@@ -83,19 +85,29 @@ export function LiveHeader({
           >
             {verdict ?? data.gameData.gameMode}
           </span>
+          {/* The clock and the gold. Nowhere else on this screen carries either, and both
+              are read straight off the client — dropping them in the redesign would have
+              cost the player two numbers the old header always had. */}
+          <span className="mt-3 block font-mono text-[11px] tabular-nums text-text-muted">
+            {clock(data.gameData.gameTime)}
+            <span className="mx-2 text-text-faint">·</span>
+            {formatCount(Math.round(data.activePlayer.currentGold))} g
+          </span>
         </span>
         {opponent ? (
           <Side player={opponent} align="end" />
         ) : (
-          // No lane to name, so the space says what the mode does have: how the two sides
-          // stand on kills. Never an empty column.
-          <span className="flex items-center justify-end gap-8 font-mono text-text-muted">
-            <span className="text-right">
-              <span className="hud-label block text-[9.5px]">Team kills</span>
-              <span className="mt-1.5 block text-xl font-bold tabular-nums text-text">
-                {myKills}–{theirKills}
-              </span>
-            </span>
+          // No lane to name, so the space carries what a mode without one still has: the
+          // player's own line. Never an empty column, and never the team kills the bar
+          // below already draws.
+          <span className="flex flex-wrap items-center justify-end gap-8">
+            <StatBlock
+              label="Your KDA"
+              value={`${me.scores.kills}/${me.scores.deaths}/${me.scores.assists}`}
+              size="sm"
+            />
+            <StatBlock label="CS" value={String(me.scores.creepScore)} size="sm" />
+            <StatBlock label="Level" value={String(me.level)} size="sm" />
           </span>
         )}
       </div>
@@ -213,4 +225,10 @@ function Items({
       })}
     </span>
   );
+}
+
+/** `gameTime` is seconds as a float; the scoreboard the player is used to reads mm:ss. */
+function clock(seconds: number): string {
+  const total = Math.max(0, Math.floor(seconds));
+  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
 }
