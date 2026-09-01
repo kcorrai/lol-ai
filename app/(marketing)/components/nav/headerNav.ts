@@ -73,13 +73,18 @@ export const HEADER_NAV: readonly HeaderEntry[] = [
     key: "coaching",
     label: "Coaching",
     items: [
+      // Both of these used to point into the application, which guards them: the visitor
+      // reading this panel to decide whether to sign up was answered with a login form.
+      // `/coaching` now renders a public page when there is no session (`middleware.ts`),
+      // and Teams goes where its argument actually is, the same place `CoachingBand` sends it.
       { href: "/coaching", label: "AI coach", hint: "Your games read, one habit named" },
       { href: "/coaches", label: "Find a coach", hint: "Ranks we checked ourselves" },
-      { href: "/teams", label: "Teams", hint: "One dashboard for the roster" },
+      { href: "/pricing#teams", label: "Teams", hint: "One dashboard for the roster" },
     ],
   },
-  // Flat, and deliberately: this is the thing the site had no way of mentioning, and burying
-  // it one click inside a panel would repeat the problem the panels were added to solve.
-  { href: "/download", label: "Desktop" },
+  // The desktop app is deliberately *not* here. It used to be a flat link on the bar, which
+  // was better than the panel it came from and still left it reading as the sixth of six
+  // words in a row of grey type. It is now a bordered control next to the calls to action
+  // (`DownloadCta.tsx`) — the same reasoning that took it out of a panel, applied once more.
   { href: "/pricing", label: "Pricing" },
 ];

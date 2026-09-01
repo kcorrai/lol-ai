@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { PlayerSearchBar } from "@/components/search/PlayerSearchBar";
 import { HEADER_NAV, isMenu } from "./headerNav";
+import { DownloadCta } from "./DownloadCta";
 
 /**
  * The same navigation, opened out.
@@ -23,7 +24,14 @@ export function MobileNav({
     <nav className="max-h-[calc(100vh-62px)] overflow-y-auto border-t border-border bg-background px-5 py-4 xl:hidden">
       <PlayerSearchBar placeholder="Search a player" />
 
-      <div className="mt-4 grid gap-5">
+      {/* At the top rather than in the list: the desktop app left `HEADER_NAV` when it became
+          a control, and a drawer that opened onto eight tier-list links before mentioning it
+          would put it back where it was — findable only by somebody already looking. */}
+      <div className="mt-4">
+        <DownloadCta block onNavigate={onNavigate} />
+      </div>
+
+      <div className="mt-5 grid gap-5">
         {HEADER_NAV.map((entry) =>
           isMenu(entry) ? (
             <div key={entry.key}>

@@ -1,10 +1,15 @@
 import { describe, it, expect } from "vitest";
-import { readdirSync } from "fs";
+import { readdirSync, readFileSync } from "fs";
 import { resolve } from "path";
 import { HEADER_NAV, isMenu, type HeaderLink } from "./headerNav";
 
 function allLinks(): HeaderLink[] {
   return HEADER_NAV.flatMap((entry) => (isMenu(entry) ? [...entry.items] : [entry]));
+}
+
+/** "/pricing#teams" → "/pricing". An anchor names a place on a page, not another page. */
+function pagePart(href: string): string {
+  return href.split("#")[0]!;
 }
 
 /**
@@ -40,7 +45,7 @@ describe("HEADER_NAV", () => {
     const routes = new Set(staticRoutes(resolve(process.cwd(), "app")));
 
     for (const link of allLinks()) {
-      expect(routes.has(link.href), `${link.href} has no page.tsx under app/`).toBe(true);
+      expect(routes.has(pagePart(link.href)), `${link.href} has no page.tsx under app/`).toBe(true);
     }
   });
 
@@ -77,10 +82,40 @@ describe("HEADER_NAV", () => {
     }
   });
 
-  it("announces the desktop app on the bar itself", () => {
-    // It is the one thing a website cannot do, and it had no entry point anywhere on the
-    // marketing site. Inside a panel it would be as undiscoverable as it was before.
+  it("leaves the desktop app to the control that carries it", () => {
+    // It used to be a flat entry here. It is now a bordered button beside the calls to
+    // action, so listing it as well would put the same destination on the bar twice —
+    // `DownloadCta.test.tsx` is what holds the bar to still announcing it at all.
     const flat = HEADER_NAV.filter((e) => !isMenu(e)) as HeaderLink[];
-    expect(flat.map((l) => l.href)).toContain("/download");
+    expect(flat.map((l) => l.href)).not.toContain("/download");
+  });
+
+  it("never sends a visitor from the bar into a login form", () => {
+    // The defect this file's Coaching panel had: "AI coach" and "Teams" pointed into the
+    // application, which the middleware guards, so the one person the panel is written for
+    // — somebody deciding whether to sign up — was answered with a sign-in page. The bar is
+    // the marketing site's own index; nothing on it may be behind the wall.
+    //
+    // Read out of the middleware rather than listed again, so a path guarded tomorrow fails
+    // here rather than quietly becoming a dead end.
+    const source = readFileSync(resolve(process.cwd(), "middleware.ts"), "utf8");
+    const list = source.match(/const PROTECTED_PATHS = \[([\s\S]*?)\]/);
+    if (!list) throw new Error("PROTECTED_PATHS is no longer a literal — update this test");
+
+    const guarded = [...list[1]!.matchAll(/^\s*"([^"]+)"/gm)].map((m) => m[1]!);
+    expect(guarded.length).toBeGreaterThan(10);
+
+    // `/coaching` is on that list and is the exception the middleware makes: its index
+    // renders a public page when there is no session, so the bar may point at it.
+    const publicByRewrite = new Set(["/coaching"]);
+
+    for (const link of allLinks()) {
+      const page = pagePart(link.href);
+      if (publicByRewrite.has(page)) continue;
+      const wall = guarded.find((p) => page === p || page.startsWith(`${p}/`));
+      expect(wall, `${link.href} is guarded by ${wall} — the bar cannot point at it`).toBe(
+        undefined
+      );
+    }
   });
 });

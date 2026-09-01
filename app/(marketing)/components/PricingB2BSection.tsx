@@ -26,7 +26,9 @@ const B2B_FEATURES = [
 // of the client PricingContent so that stays focused on the plan toggle.
 export function PricingB2BSection() {
   return (
-    <div className="mx-auto mt-24 max-w-4xl">
+    // The top bar's "Teams" lands here. It used to point at `/teams`, which is guarded, so
+    // the visitor reading about the team plan was shown a login form instead.
+    <div id="teams" className="mx-auto mt-24 max-w-4xl scroll-mt-[78px]">
       <div className="mb-10 text-center">
         <span className="rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
           B2B / Esports
