@@ -1,9 +1,10 @@
 import type { AcademyCardData } from "@/domains/coaching/services/cardService";
 import { W, H, C } from "./cardOgTokens";
+import { formatDate } from "@/lib/uiLocale";
 
 /** The certificate image for a finished Academy track. */
 export function AcademyCard({ d }: { d: AcademyCardData }) {
-  const finished = new Date(d.finishedAt).toLocaleDateString("en-GB", {
+  const finished = formatDate(d.finishedAt, {
     day: "numeric",
     month: "long",
     year: "numeric",

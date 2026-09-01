@@ -11,6 +11,7 @@ import { Mail } from "lucide-react";
 import { AuthPanel, AuthTabs, AuthError, AuthNotice } from "./AuthPanel";
 import { AuthField, AuthInput, PasswordField, AuthSubmit } from "./AuthControls";
 import { OAuthButton } from "./OAuthButton";
+import { safeCallbackUrl } from "../safeCallbackUrl";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -26,6 +27,13 @@ export function LoginForm(): React.ReactElement {
 
   const justRegistered = searchParams.get("registered") === "1";
   const justReset = searchParams.get("reset") === "success";
+
+  // Where this sign-in was going before the login wall interrupted it. Middleware puts the
+  // path here when it bounces a signed-out visitor off a guarded page, and the register form
+  // puts a claim here so a new account connects the Riot ID it was opened from. Ignoring it —
+  // which is what this form used to do — dropped a desktop pairing approval, a team invite and
+  // that claim on the floor and landed everyone on the dashboard instead.
+  const callbackUrl = safeCallbackUrl(searchParams.get("callbackUrl"));
 
   const {
     register,
@@ -60,7 +68,7 @@ export function LoginForm(): React.ReactElement {
       return;
     }
 
-    router.push("/dashboard");
+    router.push(callbackUrl);
     router.refresh();
   }
 

@@ -12,6 +12,7 @@ import { VoiceCoachPanel } from "@/domains/coaching/components/VoiceCoachPanel";
 import { ReportRail } from "@/domains/coaching/components/report/ReportRail";
 import { useCoachingReport } from "@/hooks/useCoachingReport";
 import { useSubscription } from "@/hooks/useSubscription";
+import { formatDateTime } from "@/lib/uiLocale";
 
 const REPORT_TYPE_LABEL: Record<string, string> = {
   session_review: "Session Review",
@@ -72,7 +73,7 @@ export default function ReportDetailPage(): React.ReactElement {
           {REPORT_TYPE_LABEL[report.reportType] ?? report.reportType}
         </span>
         <span className="hud-label text-[10.5px]">
-          {new Date(report.createdAt).toLocaleString("en-GB")} · {report.matchesAnalyzed.length}{" "}
+          {formatDateTime(report.createdAt)} · {report.matchesAnalyzed.length}{" "}
           matches
         </span>
         <span className="ml-auto">

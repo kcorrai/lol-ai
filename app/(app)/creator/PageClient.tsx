@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Radio, RotateCcw, KeyRound } from "lucide-react";
+import { MonitorPlay, SlidersHorizontal, Terminal, type LucideIcon } from "lucide-react";
 import {
   useCreatorKit,
   useEnableCreatorKit,
@@ -11,11 +11,32 @@ import {
   useSaveCreatorSettings,
 } from "@/hooks/useCreatorKit";
 import { ChatCommandGuide } from "@/domains/creator/components/ChatCommandGuide";
+import { CreatorIntro } from "@/domains/creator/components/CreatorIntro";
+import { CreatorSessionBar } from "@/domains/creator/components/CreatorSessionBar";
 import { CreatorSettingsForm } from "@/domains/creator/components/CreatorSettingsForm";
 import { OverlayCatalog } from "@/domains/creator/components/OverlayCatalog";
+import { CHAT_COMMANDS, OVERLAY_WIDGETS } from "@/domains/creator/types";
 import type { CreatorSettings } from "@/domains/creator/types";
 
 type Tab = "overlays" | "commands" | "settings";
+
+const TABS: [id: Tab, label: string, icon: LucideIcon, count: string, note: string][] = [
+  [
+    "overlays",
+    "Overlays",
+    MonitorPlay,
+    String(OVERLAY_WIDGETS.length),
+    "Nothing reads your live game",
+  ],
+  [
+    "commands",
+    "Chat commands",
+    Terminal,
+    String(CHAT_COMMANDS.length),
+    "Works with Nightbot, StreamElements, Fossabot, Botrix",
+  ],
+  ["settings", "Settings", SlidersHorizontal, "", "Applies to every overlay and chat reply"],
+];
 
 export default function PageClient(): JSX.Element {
   const { data, isLoading } = useCreatorKit();
@@ -35,40 +56,11 @@ export default function PageClient(): JSX.Element {
   const origin = typeof window === "undefined" ? "" : window.location.origin;
 
   if (isLoading) {
-    return <p className="p-6 text-text-muted">Loading your Streamer Kit…</p>;
+    return <p className="hud-label p-6">Loading your Streamer Kit…</p>;
   }
 
   if (!kit) {
-    return (
-      <div className="mx-auto max-w-2xl p-6">
-        <h1 className="font-display text-2xl text-text">Streamer Kit</h1>
-        <p className="mt-2 text-text-body">
-          Overlays for OBS and chat commands for Twitch, Kick and YouTube, built from your ranked
-          history. Free on every plan.
-        </p>
-        <ul className="mt-4 flex list-disc flex-col gap-1 pl-5 text-sm text-text-body">
-          <li>Five browser-source overlays — paste a URL into OBS, nothing to install.</li>
-          <li>
-            <span className="font-mono text-accent">!rank</span>,{" "}
-            <span className="font-mono text-accent">!session</span> and three more, working with the
-            chat bot you already run.
-          </li>
-          <li>
-            Stream-safe mode and a broadcast delay, so the overlay cannot give away that a game just
-            ended.
-          </li>
-        </ul>
-        <button
-          type="button"
-          onClick={() => enable.mutate()}
-          disabled={enable.isPending}
-          className="mt-6 flex items-center gap-2 rounded-lg bg-accent px-4 py-2 font-medium text-ink-1000 disabled:opacity-50"
-        >
-          <Radio className="h-4 w-4" />
-          {enable.isPending ? "Setting up…" : "Turn on creator mode"}
-        </button>
-      </div>
-    );
+    return <CreatorIntro onEnable={() => enable.mutate()} enabling={enable.isPending} />;
   }
 
   function handleSave(settings: CreatorSettings): void {
@@ -78,75 +70,62 @@ export default function PageClient(): JSX.Element {
     });
   }
 
+  function handleRollKey(): void {
+    if (
+      window.confirm(
+        "Roll the key? Every overlay URL and every chat command you have already set up will stop working until you paste the new ones."
+      )
+    ) {
+      rotate.mutate();
+    }
+  }
+
+  const note = TABS.find(([id]) => id === tab)?.[4] ?? "";
+
   return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-6 p-6">
-      <header>
-        <h1 className="font-display text-2xl text-text">Streamer Kit</h1>
-        <p className="mt-1 text-text-body">
-          Everything here reads your ranked history. Nothing reads your live game, so none of it can
-          break Riot&apos;s rules on in-game overlays.
-        </p>
+    <div className="mx-auto flex max-w-[1240px] flex-col gap-5 px-6 py-6 lg:px-10">
+      <header className="flex flex-wrap items-center gap-3.5">
+        <h1 className="font-display text-sm font-extrabold uppercase tracking-wider text-text">
+          Streamer kit
+        </h1>
+        <span className="tag-cut flex items-center gap-2 border border-accent bg-accent/10 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-micro text-accent">
+          <span className="h-[5px] w-[5px] animate-glow-pulse bg-accent" />
+          Creator mode on
+        </span>
       </header>
 
-      <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={() => resetSession.mutate("start")}
-          disabled={resetSession.isPending}
-          className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm text-text-body hover:border-accent hover:text-accent disabled:opacity-50"
-        >
-          <RotateCcw className="h-4 w-4" />
-          Start a new session
-        </button>
-        <button
-          type="button"
-          onClick={() => resetSession.mutate("clear")}
-          disabled={resetSession.isPending}
-          className="rounded-lg border border-border px-3 py-2 text-sm text-text-body hover:border-accent hover:text-accent disabled:opacity-50"
-        >
-          Count from midnight instead
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            if (
-              window.confirm(
-                "Roll the key? Every overlay URL and every chat command you have already set up will stop working until you paste the new ones."
-              )
-            ) {
-              rotate.mutate();
-            }
-          }}
-          disabled={rotate.isPending}
-          className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm text-danger hover:border-danger disabled:opacity-50"
-        >
-          <KeyRound className="h-4 w-4" />
-          Roll key
-        </button>
-      </div>
+      <CreatorSessionBar
+        kit={kit}
+        preview={preview ?? null}
+        busy={resetSession.isPending || rotate.isPending}
+        onStartSession={() => resetSession.mutate("start")}
+        onCountFromMidnight={() => resetSession.mutate("clear")}
+        onRollKey={handleRollKey}
+      />
 
-      <nav className="flex gap-1 border-b border-border" aria-label="Streamer Kit sections">
-        {(
-          [
-            ["overlays", "Overlays"],
-            ["commands", "Chat commands"],
-            ["settings", "Settings"],
-          ] as const
-        ).map(([value, label]) => (
+      <nav className="flex items-center border-b border-line-1" aria-label="Streamer Kit sections">
+        {TABS.map(([id, label, Icon, count]) => (
           <button
-            key={value}
+            key={id}
             type="button"
-            onClick={() => setTab(value)}
-            aria-current={tab === value ? "page" : undefined}
-            className={`px-4 py-2 text-sm transition-colors ${
-              tab === value
-                ? "border-b-2 border-accent text-accent"
-                : "text-text-muted hover:text-text"
+            onClick={() => setTab(id)}
+            aria-current={tab === id ? "page" : undefined}
+            className={`-mb-px flex items-center gap-2.5 border-b-2 px-5 py-3.5 transition-colors ${
+              tab === id
+                ? "border-accent text-accent"
+                : "border-transparent text-text-muted hover:text-text"
             }`}
           >
-            {label}
+            <Icon className="h-[15px] w-[15px]" />
+            <span className="font-display text-[13px] font-bold uppercase tracking-wider">
+              {label}
+            </span>
+            {count && <span className="font-mono text-[9.5px] tracking-wider">{count}</span>}
           </button>
         ))}
+        <span className="ml-auto hidden font-mono text-[10px] uppercase tracking-label text-text-faint lg:block">
+          {note}
+        </span>
       </nav>
 
       {error && <p className="text-sm text-danger">{error}</p>}
@@ -154,9 +133,16 @@ export default function PageClient(): JSX.Element {
       {tab === "overlays" && (
         <OverlayCatalog origin={origin} overlayKey={kit.overlayKey} preview={preview ?? null} />
       )}
-      {tab === "commands" && <ChatCommandGuide origin={origin} overlayKey={kit.overlayKey} />}
+      {tab === "commands" && (
+        <ChatCommandGuide origin={origin} overlayKey={kit.overlayKey} preview={preview ?? null} />
+      )}
       {tab === "settings" && (
-        <CreatorSettingsForm kit={kit} saving={save.isPending} onSave={handleSave} />
+        <CreatorSettingsForm
+          kit={kit}
+          preview={preview ?? null}
+          saving={save.isPending}
+          onSave={handleSave}
+        />
       )}
     </div>
   );

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { SeriesRow } from "@/domains/esports/components/SeriesRow";
 import { groupByDay } from "@/domains/esports/dayGroups";
 import type { EsportsEvent } from "@/domains/esports/types";
+import { formatDate } from "@/lib/uiLocale";
 
 interface ScheduleDaysProps {
   events: EsportsEvent[];
@@ -23,12 +24,12 @@ interface ScheduleDaysProps {
 function calendarDate(key: string): string {
   const date = new Date(`${key}T00:00:00Z`);
   if (Number.isNaN(date.getTime())) return "";
-  const day = date.toLocaleDateString("en-GB", {
+  const day = formatDate(date, {
     day: "numeric",
     month: "short",
     timeZone: "UTC",
   });
-  const weekday = date.toLocaleDateString("en-GB", { weekday: "short", timeZone: "UTC" });
+  const weekday = formatDate(date, { weekday: "short", timeZone: "UTC" });
   return `${day} · ${weekday}`;
 }
 

@@ -8,6 +8,7 @@ import { QuizBoard } from "@/domains/quiz/components/QuizBoard";
 import { QuizHero } from "@/domains/quiz/components/QuizHero";
 import { QuizLeaderboard } from "@/domains/quiz/components/QuizLeaderboard";
 import { useQuizProgress } from "@/hooks/useQuizProgress";
+import { formatDate } from "@/lib/uiLocale";
 
 const RESULTS_KEY = "laneiq-quiz-day";
 
@@ -50,7 +51,7 @@ export default function QuizPage(): React.JSX.Element {
     setDateKey(today);
     setResults(readDay(today));
     setDateLabel(
-      now.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+      formatDate(now, { day: "numeric", month: "short", year: "numeric" })
     );
     // Derived here rather than taken from /api/quiz/progress, which anonymous
     // visitors never get — the countdown is the reason to come back tomorrow and

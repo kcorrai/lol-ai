@@ -6,6 +6,7 @@ import { getTranscript, type TranscriptLesson } from "@/domains/academy";
 import { CertificateShare } from "@/domains/academy/components/CertificateShare";
 import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { getSession } from "@/lib/auth/session";
+import { formatDate } from "@/lib/uiLocale";
 
 export const metadata: Metadata = {
   title: "Your transcript",
@@ -29,7 +30,7 @@ function marker(status: TranscriptLesson["status"]): React.ReactElement {
 function when(lesson: TranscriptLesson): string {
   const stamp = lesson.masteredAt ?? lesson.completedAt;
   if (!stamp) return "";
-  return new Date(stamp).toLocaleDateString("en-GB", {
+  return formatDate(stamp, {
     day: "numeric",
     month: "short",
     year: "numeric",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check, Copy } from "lucide-react";
 
 // A read-only value with a copy button.
@@ -11,34 +11,42 @@ import { Check, Copy } from "lucide-react";
 
 export function CopyField({ label, value }: { label: string; value: string }): JSX.Element {
   const [copied, setCopied] = useState(false);
+  const timer = useRef<number | null>(null);
+
+  useEffect(() => () => window.clearTimeout(timer.current ?? undefined), []);
 
   async function copy(): Promise<void> {
     try {
       await navigator.clipboard.writeText(value);
       setCopied(true);
-      window.setTimeout(() => setCopied(false), 1500);
+      window.clearTimeout(timer.current ?? undefined);
+      timer.current = window.setTimeout(() => setCopied(false), 1600);
     } catch {
       // Clipboard access can be refused; the input is selectable either way.
     }
   }
 
   return (
-    <label className="flex flex-col gap-1">
-      <span className="text-xs font-medium uppercase tracking-wider text-text-muted">{label}</span>
-      <span className="flex items-stretch gap-2">
+    <label className="block">
+      <span className="hud-label">{label}</span>
+      <span className="mt-2 grid grid-cols-[minmax(0,1fr)_max-content] gap-2">
         <input
           readOnly
           value={value}
           onFocus={(e) => e.currentTarget.select()}
-          className="min-w-0 flex-1 rounded-lg border border-border bg-surface-2 px-3 py-2 font-mono text-xs text-text"
+          className="well min-w-0 border border-line-2 bg-ink-900 px-3.5 py-2.5 font-mono text-xs text-text-body"
         />
         <button
           type="button"
           onClick={() => void copy()}
           aria-label={`Copy ${label}`}
-          className="flex items-center gap-1 rounded-lg border border-border bg-surface px-3 py-2 text-xs text-text-body transition-colors hover:border-accent hover:text-accent"
+          className={`tag-cut flex items-center gap-2 border px-3.5 py-2.5 font-mono text-[11px] uppercase tracking-label transition-colors ${
+            copied
+              ? "border-accent bg-accent text-ink-1000"
+              : "border-line-2 bg-ink-1000 text-text-body hover:border-accent hover:text-accent"
+          }`}
         >
-          {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+          {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
           {copied ? "Copied" : "Copy"}
         </button>
       </span>
