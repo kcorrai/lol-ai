@@ -6,6 +6,7 @@ import { getDesktopRelease, pickDownload } from "@/lib/desktop/release";
 import { useEffect, useState } from "react";
 import { SectionHead } from "./SectionHead";
 import { EdgeSweep, HudStagger, HudStaggerItem } from "./motion";
+import { OverlayVisual } from "./desktop/OverlayVisual";
 
 /**
  * The desktop companion, which this page had never once mentioned.
@@ -66,7 +67,10 @@ export function DesktopBand(): React.ReactElement {
         <div className="notch-lg relative overflow-hidden border border-border bg-surface p-6 md:p-8">
           <EdgeSweep />
 
-          <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:items-start">
+          {/* The argument and the picture side by side; the four claims underneath, full
+              width. They used to be the right-hand column, which left this section — about a
+              window — as two columns of type and nothing to look at. */}
+          <div className="grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-center">
             <div>
               <span className="font-mono text-[11px] uppercase tracking-label text-accent">
                 {"// The companion"}
@@ -76,8 +80,8 @@ export function DesktopBand(): React.ReactElement {
               </h3>
               <p className="mt-3.5 max-w-[48ch] text-[15px] leading-relaxed text-text-body">
                 Riot publishes your live game to one address — <code>127.0.0.1:2999</code> — and
-                nothing running on a server can reach it. So we wrote something that runs where
-                you do, and put the reading over the top of the match.
+                nothing running on a server can reach it. So we wrote something that runs where you
+                do, and put the reading over the top of the match.
               </p>
 
               <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
@@ -112,21 +116,21 @@ export function DesktopBand(): React.ReactElement {
               </p>
             </div>
 
-            <HudStagger className="grid gap-3.5 sm:grid-cols-2">
-              {POINTS.map((p) => (
-                <HudStaggerItem key={p.title}>
-                  <div className="notch h-full border border-border bg-background p-4">
-                    <p className="font-display text-[13.5px] font-bold uppercase tracking-[0.05em] text-text">
-                      {p.title}
-                    </p>
-                    <p className="mt-1.5 text-[13px] leading-relaxed text-text-muted">
-                      {p.detail}
-                    </p>
-                  </div>
-                </HudStaggerItem>
-              ))}
-            </HudStagger>
+            <OverlayVisual compact />
           </div>
+
+          <HudStagger className="mt-8 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+            {POINTS.map((p) => (
+              <HudStaggerItem key={p.title}>
+                <div className="notch h-full border border-border bg-background p-4">
+                  <p className="font-display text-[13.5px] font-bold uppercase tracking-[0.05em] text-text">
+                    {p.title}
+                  </p>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-text-muted">{p.detail}</p>
+                </div>
+              </HudStaggerItem>
+            ))}
+          </HudStagger>
         </div>
       </div>
     </section>

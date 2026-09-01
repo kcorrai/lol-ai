@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { SectionHead } from "../components/laneiq/SectionHead";
 import { HudStagger, HudStaggerItem } from "../components/laneiq/motion";
+import { WindowVisual } from "../components/laneiq/desktop/WindowVisual";
+import { PairingVisual } from "../components/laneiq/desktop/PairingVisual";
 
 /**
  * What the companion does and what it costs you to set up.
@@ -52,20 +54,9 @@ const DOES: readonly Item[] = [
   },
 ];
 
-const PAIRING: readonly Item[] = [
-  {
-    title: "Press one button",
-    body: "The app asks the website to open a pairing request and sends your browser to the page that approves it.",
-  },
-  {
-    title: "Approve the machine",
-    body: "The page names the computer asking. Approve it only if it is the one you just pressed the button on.",
-  },
-  {
-    title: "That is the whole of it",
-    body: "The window fills in about two seconds later. Your password never enters the application — the machine holds a token for itself, in your operating system's credential store.",
-  },
-];
+// The three pairing steps used to be numbered text cards here. They are now the captions of
+// `PairingVisual`, which draws the screen each one is describing — the same words, next to the
+// thing they are about, rather than the same words twice.
 
 function Numbered({ items }: { items: readonly Item[] }): React.ReactElement {
   return (
@@ -94,13 +85,19 @@ export function DesktopStory(): React.ReactElement {
         <div className="mx-auto max-w-[1240px]">
           <SectionHead title="What it does" aside="All of it, today" />
           <Numbered items={DOES} />
+
+          {/* The last of those eight cards is "the screens worth having beside a game", which
+              is a sentence about a window nobody reading this page had seen. */}
+          <div className="mt-9">
+            <WindowVisual />
+          </div>
         </div>
       </section>
 
       <section id="pairing" className="px-5 pt-16 md:px-8 md:pt-[72px]">
         <div className="mx-auto max-w-[1240px]">
           <SectionHead title="Setting it up" aside="Nothing to type" />
-          <Numbered items={PAIRING} />
+          <PairingVisual />
 
           <div className="notch mt-3.5 border border-border bg-surface-2 p-5">
             <span className="hud-label">{"// Worth knowing first"}</span>
