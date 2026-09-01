@@ -1,5 +1,6 @@
 import type { RecapData } from "../../services/recapService";
 import { kdaRatio } from "@/lib/kda";
+import { formatDate } from "@/lib/uiLocale";
 
 export type RecapTone = "good" | "bad" | "neutral";
 
@@ -145,7 +146,7 @@ export function buildRecapChapters(data: RecapData, gameName: string): RecapChap
 
   // Only worth a chapter when there was actually a bad day to talk about.
   if (data.worstDay) {
-    const day = new Date(data.worstDay.date).toLocaleDateString("en-GB", {
+    const day = formatDate(data.worstDay.date, {
       day: "numeric",
       month: "long",
     });

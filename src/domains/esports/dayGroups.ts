@@ -1,4 +1,5 @@
 import type { EsportsEvent } from "@/domains/esports/types";
+import { formatDate } from "@/lib/uiLocale";
 
 export type DayZone = "utc" | "local";
 
@@ -28,7 +29,10 @@ function dayLabel(date: Date, zone: DayZone, now: Date): string {
   if (key === dayKey(new Date(now.getTime() + oneDay), zone)) return "Tomorrow";
   if (key === dayKey(new Date(now.getTime() - oneDay), zone)) return "Yesterday";
 
-  return date.toLocaleDateString(zone === "utc" ? "en-GB" : undefined, {
+  // One locale for both branches. The UTC one used to say "en-GB" and the local one nothing
+  // at all — so the server's first paint and the client's re-group after mount formatted the
+  // same day two different ways, and which one you saw depended on the reader's machine.
+  return formatDate(date, {
     weekday: "short",
     day: "numeric",
     month: "short",

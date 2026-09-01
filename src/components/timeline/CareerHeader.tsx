@@ -1,10 +1,11 @@
 import { StatBlock } from "@/components/dashboard/laneiq/HudPanel";
 import type { CareerSummary, LpPoint } from "@/domains/analysis/services/careerTimeline.types";
 import { LpSparkline } from "./LpSparkline";
+import { formatCount, formatDate } from "@/lib/uiLocale";
 
 function shortDate(iso: string | null): string {
   if (!iso) return "—";
-  return new Date(iso).toLocaleDateString("en-GB", {
+  return formatDate(iso, {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -73,7 +74,7 @@ export function CareerHeader({
                 <span className="text-[13px] text-text">{m.championName}</span>
                 <span className="font-mono text-[11px] text-accent">M{m.level}</span>
                 <span className="font-mono text-[11px] text-text-muted">
-                  {m.points.toLocaleString("en-GB")}
+                  {formatCount(m.points)}
                 </span>
               </li>
             ))}

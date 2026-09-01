@@ -1,9 +1,10 @@
 import type { CareerCardData } from "@/domains/coaching/services/cardService";
 import { W, H, C } from "./cardOgTokens";
+import { formatDate } from "@/lib/uiLocale";
 
 function since(iso: string): string {
   if (!iso) return "—";
-  return new Date(iso).toLocaleDateString("en-GB", { month: "short", year: "numeric" });
+  return formatDate(iso, { month: "short", year: "numeric" });
 }
 
 function Figure({ label, value }: { label: string; value: string }) {

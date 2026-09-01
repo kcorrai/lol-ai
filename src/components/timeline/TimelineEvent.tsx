@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { CareerEvent } from "@/domains/analysis/services/careerTimeline.types";
+import { formatDate } from "@/lib/uiLocale";
 
 const TONE_TEXT: Record<CareerEvent["tone"], string> = {
   good: "text-accent",
@@ -17,7 +18,7 @@ const TONE_NODE: Record<CareerEvent["tone"], string> = {
 const MAJOR_WEIGHT = 85;
 
 function dayLabel(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
+  return formatDate(iso, { day: "2-digit", month: "short" });
 }
 
 export function TimelineEvent({ event }: { event: CareerEvent }): React.ReactElement {

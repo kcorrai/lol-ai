@@ -45,7 +45,11 @@ describe("groupByDay", () => {
       { zone: "utc", now: NOW }
     );
 
-    expect(groups.map((g) => g.label)).toEqual(["Yesterday", "Today", "Tomorrow", "Tue 18 Aug"]);
+    // "Tue, Aug 18" rather than "Tue 18 Aug": the label now goes through `UI_LOCALE` like every
+    // other date in the interface. It used to be formatted en-GB on the server and in the
+    // reader's own locale after the client re-groups, so this line was only ever asserting what
+    // the machine running the test happened to prefer.
+    expect(groups.map((g) => g.label)).toEqual(["Yesterday", "Today", "Tomorrow", "Tue, Aug 18"]);
   });
 
   it("reverses both days and matches when descending", () => {
