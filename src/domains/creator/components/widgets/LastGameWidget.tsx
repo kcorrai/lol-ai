@@ -1,5 +1,6 @@
 "use client";
 
+import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import type { OverlayPayload } from "@/domains/creator/types";
 import {
   OverlayBadge,
@@ -22,7 +23,7 @@ export function LastGameWidget({ payload }: { payload: OverlayPayload }): JSX.El
     return (
       <OverlayShell accentColor={payload.accentColor} theme={payload.theme}>
         <OverlayLabel>Last game</OverlayLabel>
-        <span className="font-display text-xl">Nothing yet</span>
+        <span className="font-display text-2xl font-extrabold">Nothing yet</span>
         <OverlayBadge />
       </OverlayShell>
     );
@@ -31,15 +32,19 @@ export function LastGameWidget({ payload }: { payload: OverlayPayload }): JSX.El
   return (
     <OverlayShell accentColor={payload.accentColor} theme={payload.theme}>
       <OverlayLabel>Last game · {game.queueLabel}</OverlayLabel>
-      <div className="flex items-baseline gap-2">
-        <span className="font-display text-2xl leading-none">{game.championName}</span>
+      <div className="mt-1.5 flex items-center gap-3">
+        {/* The portrait is read from across a room; the name is not. */}
+        <ChampionIcon name={game.championName} size={34} />
+        <span className="font-display text-[26px] font-extrabold leading-none">
+          {game.championName}
+        </span>
         <span
-          className={`font-display text-lg leading-none ${game.win ? "text-success" : "text-danger"}`}
+          className={`font-display text-xl font-extrabold leading-none tracking-wider ${game.win ? "text-success" : "text-danger"}`}
         >
           {game.win ? "WIN" : "LOSS"}
         </span>
       </div>
-      <span className="font-mono text-sm text-fg-2">
+      <span className="mt-1.5 font-mono text-sm text-fg-2">
         {game.kills}/{game.deaths}/{game.assists} · {game.csPerMinute.toFixed(1)} CS/min ·{" "}
         {formatDuration(game.durationSeconds)}
       </span>

@@ -1,9 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Check, Save } from "lucide-react";
 import type { RankDivision, RankTier } from "@prisma/client";
+import { LookFields } from "@/domains/creator/components/LookFields";
+import { PrivacyFields } from "@/domains/creator/components/PrivacyFields";
+import { ChoiceChip, SettingsPanel } from "@/domains/creator/components/SettingsPanel";
+import { SettingsPreview } from "@/domains/creator/components/SettingsPreview";
 import { MAX_DELAY_SECONDS } from "@/domains/creator/session";
-import type { CreatorKit, CreatorSettings } from "@/domains/creator/types";
+import type { CreatorKit, CreatorSettings, OverlayPayload } from "@/domains/creator/types";
 
 const TIERS: RankTier[] = [
   "IRON",
@@ -19,37 +24,20 @@ const TIERS: RankTier[] = [
 ];
 const DIVISIONS: RankDivision[] = ["IV", "III", "II", "I"];
 
-function Toggle({
-  checked,
-  onChange,
-  label,
-}: {
-  checked: boolean;
-  onChange: (v: boolean) => void;
-  label: string;
-}): JSX.Element {
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      aria-label={label}
-      onClick={() => onChange(!checked)}
-      className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${checked ? "bg-accent" : "bg-surface-2"}`}
-    >
-      <span
-        className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? "translate-x-5" : "translate-x-0"}`}
-      />
-    </button>
-  );
-}
+/** The delays a real broadcast actually runs, so the common case is one click. */
+const DELAYS: number[] = [0, 10, 20, 30, 60];
+
+const CONTROL_CLASS =
+  "border border-line-2 bg-ink-1000 px-3 py-2.5 font-mono text-sm text-text focus:border-accent";
 
 export function CreatorSettingsForm({
   kit,
+  preview,
   saving,
   onSave,
 }: {
   kit: CreatorKit;
+  preview: OverlayPayload | null;
   saving: boolean;
   onSave: (settings: CreatorSettings) => void;
 }): JSX.Element {
@@ -78,127 +66,108 @@ export function CreatorSettingsForm({
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
+  const delayed = form.delaySeconds > 0;
+
   return (
-    <form
-      className="flex flex-col gap-5"
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSave(form);
-      }}
-    >
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-sm font-medium text-text">Stream-safe mode</p>
-          <p className="text-sm text-text-muted">
-            Hides your Riot ID from every overlay and chat reply. Riot&apos;s own Streamer Mode does
-            not hide it from the other players in your game — this hides it from your viewers.
+    <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_400px]">
+      <form
+        className="grid gap-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSave(form);
+        }}
+      >
+        <PrivacyFields form={form} set={set} inputClass={CONTROL_CLASS} />
+
+        <SettingsPanel title="Broadcast delay">
+          <p className="max-w-[66ch] text-[13.5px] leading-relaxed text-text-muted">
+            Set this to the delay you run in OBS. Every overlay then reports the game as of that
+            many seconds ago, so it cannot show a result your stream has not reached.
           </p>
-        </div>
-        <Toggle
-          checked={form.streamSafe}
-          onChange={(v) => set("streamSafe", v)}
-          label="Stream-safe mode"
-        />
-      </div>
-
-      <label className="flex flex-col gap-1">
-        <span className="text-sm font-medium text-text">Broadcast delay (seconds)</span>
-        <span className="text-sm text-text-muted">
-          Set this to the delay you run in OBS. Every overlay then reports the game as of that many
-          seconds ago, so it cannot show a result your stream has not reached.
-        </span>
-        <input
-          type="number"
-          min={0}
-          max={MAX_DELAY_SECONDS}
-          value={form.delaySeconds}
-          onChange={(e) => set("delaySeconds", Number(e.target.value))}
-          className="mt-1 w-32 rounded-lg border border-border bg-surface-2 px-3 py-2 text-text"
-        />
-      </label>
-
-      <label className="flex flex-col gap-1">
-        <span className="text-sm font-medium text-text">Display name</span>
-        <span className="text-sm text-text-muted">
-          Shown instead of your Riot ID. Leave empty to show your Riot ID, or nothing at all when
-          stream-safe mode is on.
-        </span>
-        <input
-          type="text"
-          maxLength={32}
-          value={form.displayName ?? ""}
-          onChange={(e) => set("displayName", e.target.value.trim() === "" ? null : e.target.value)}
-          className="mt-1 w-64 rounded-lg border border-border bg-surface-2 px-3 py-2 text-text"
-        />
-      </label>
-
-      <div className="flex flex-wrap gap-4">
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium text-text">Theme</span>
-          <select
-            value={form.theme}
-            onChange={(e) => set("theme", e.target.value)}
-            className="rounded-lg border border-border bg-surface-2 px-3 py-2 text-text"
-          >
-            <option value="dark">Dark</option>
-            <option value="light">Light</option>
-            <option value="transparent">No card</option>
-          </select>
-        </label>
-
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium text-text">Accent</span>
-          <input
-            type="color"
-            value={form.accentColor}
-            onChange={(e) => set("accentColor", e.target.value.toUpperCase())}
-            className="h-[42px] w-20 rounded-lg border border-border bg-surface-2 px-1"
-          />
-        </label>
-      </div>
-
-      <fieldset className="flex flex-col gap-1">
-        <legend className="text-sm font-medium text-text">Climb goal</legend>
-        <span className="text-sm text-text-muted">The rank the goal overlay counts toward.</span>
-        <div className="mt-1 flex gap-2">
-          <select
-            aria-label="Goal tier"
-            value={form.goalTier ?? ""}
-            onChange={(e) => set("goalTier", (e.target.value || null) as RankTier | null)}
-            className="rounded-lg border border-border bg-surface-2 px-3 py-2 text-text"
-          >
-            <option value="">No goal</option>
-            {TIERS.map((tier) => (
-              <option key={tier} value={tier}>
-                {tier.charAt(0) + tier.slice(1).toLowerCase()}
-              </option>
+          <div className="mt-4 flex flex-wrap items-center gap-2.5">
+            {DELAYS.map((seconds) => (
+              <ChoiceChip
+                key={seconds}
+                active={form.delaySeconds === seconds}
+                onClick={() => set("delaySeconds", seconds)}
+              >
+                {seconds === 0 ? "None" : `${seconds}s`}
+              </ChoiceChip>
             ))}
-          </select>
-          <select
-            aria-label="Goal division"
-            value={form.goalDivision ?? ""}
-            onChange={(e) => set("goalDivision", (e.target.value || null) as RankDivision | null)}
-            className="rounded-lg border border-border bg-surface-2 px-3 py-2 text-text"
+            <span aria-hidden className="mx-1 h-6 w-px bg-line-1" />
+            <input
+              type="number"
+              min={0}
+              max={MAX_DELAY_SECONDS}
+              aria-label="Broadcast delay in seconds"
+              value={form.delaySeconds}
+              onChange={(e) => set("delaySeconds", Number(e.target.value))}
+              className={`w-28 ${CONTROL_CLASS}`}
+            />
+            <span className="font-mono text-[11px] uppercase tracking-label text-text-faint">
+              seconds
+            </span>
+          </div>
+          <p
+            className={`mt-3.5 flex items-center gap-2.5 font-mono text-[10.5px] uppercase tracking-wider ${delayed ? "text-accent" : "text-warning"}`}
           >
-            <option value="">—</option>
-            {DIVISIONS.map((division) => (
-              <option key={division} value={division}>
-                {division}
-              </option>
-            ))}
-          </select>
-        </div>
-      </fieldset>
+            <span className={`h-[5px] w-[5px] ${delayed ? "bg-accent" : "bg-warning"}`} />
+            {delayed
+              ? `Overlays report the game as of ${form.delaySeconds} seconds ago`
+              : "No delay — the overlay updates the moment a game ends"}
+          </p>
+        </SettingsPanel>
 
-      <div>
-        <button
-          type="submit"
-          disabled={saving}
-          className="rounded-lg bg-accent px-4 py-2 font-medium text-ink-1000 transition-opacity disabled:opacity-50"
-        >
-          {saving ? "Saving…" : "Save settings"}
-        </button>
-      </div>
-    </form>
+        <LookFields form={form} set={set} />
+
+        <SettingsPanel title="Climb goal">
+          <p className="text-[13.5px] text-text-muted">The rank the goal overlay counts toward.</p>
+          <div className="mt-3.5 flex flex-wrap gap-2.5">
+            <select
+              aria-label="Goal tier"
+              value={form.goalTier ?? ""}
+              onChange={(e) => set("goalTier", (e.target.value || null) as RankTier | null)}
+              className={`w-48 ${CONTROL_CLASS}`}
+            >
+              <option value="">No goal</option>
+              {TIERS.map((tier) => (
+                <option key={tier} value={tier}>
+                  {tier.charAt(0) + tier.slice(1).toLowerCase()}
+                </option>
+              ))}
+            </select>
+            <select
+              aria-label="Goal division"
+              value={form.goalDivision ?? ""}
+              onChange={(e) => set("goalDivision", (e.target.value || null) as RankDivision | null)}
+              className={`w-28 ${CONTROL_CLASS}`}
+            >
+              <option value="">—</option>
+              {DIVISIONS.map((division) => (
+                <option key={division} value={division}>
+                  {division}
+                </option>
+              ))}
+            </select>
+          </div>
+        </SettingsPanel>
+
+        <div className="flex flex-wrap items-center gap-3.5">
+          <button
+            type="submit"
+            disabled={saving}
+            className="tag-cut btn-glow flex items-center gap-2.5 bg-accent px-5 py-2.5 font-display text-[13px] font-bold uppercase tracking-wider text-ink-1000 transition-all disabled:opacity-50"
+          >
+            {saving ? <Check className="h-4 w-4" /> : <Save className="h-4 w-4" />}
+            {saving ? "Saving…" : "Save settings"}
+          </button>
+          <span className="font-mono text-[10.5px] uppercase tracking-label text-text-faint">
+            Overlays reload on their own
+          </span>
+        </div>
+      </form>
+
+      <SettingsPreview form={form} preview={preview} />
+    </div>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import type { OverlayPayload } from "@/domains/creator/types";
 import {
   OverlayBadge,
@@ -16,7 +17,7 @@ export function ChampionsWidget({ payload }: { payload: OverlayPayload }): JSX.E
     return (
       <OverlayShell accentColor={payload.accentColor} theme={payload.theme}>
         <OverlayLabel>Champion pool</OverlayLabel>
-        <span className="font-display text-xl">No games yet</span>
+        <span className="font-display text-2xl font-extrabold">No games yet</span>
         <OverlayBadge />
       </OverlayShell>
     );
@@ -25,13 +26,17 @@ export function ChampionsWidget({ payload }: { payload: OverlayPayload }): JSX.E
   return (
     <OverlayShell accentColor={payload.accentColor} theme={payload.theme}>
       <OverlayLabel>Most played</OverlayLabel>
-      <ul className="flex flex-col gap-0.5">
+      <ul className="mt-2 flex flex-col gap-1.5">
         {champions.map((champion) => (
-          <li key={champion.championId} className="flex items-baseline gap-3">
-            <span className="min-w-[7rem] font-display text-base leading-tight">
+          <li
+            key={champion.championId}
+            className="grid grid-cols-[26px_1fr_max-content] items-center gap-3"
+          >
+            <ChampionIcon name={champion.championName} size={26} />
+            <span className="font-display text-base font-bold leading-tight">
               {champion.championName}
             </span>
-            <span className="font-mono text-sm text-fg-2">
+            <span className="font-mono text-[13px] text-fg-2">
               {champion.games}g · {champion.winRate}% · {champion.kda.toFixed(2)} KDA
             </span>
           </li>
