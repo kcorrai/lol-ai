@@ -35,6 +35,12 @@ const PROTECTED_PATHS = [
 
 const AUTH_PATHS = ["/login", "/register", "/forgot-password", "/reset-password"];
 
+// Paths that sit under a guarded prefix but are public on purpose. A share link is
+// handed to someone who does not have an account — putting the login wall in front of
+// it defeats the only thing it is for. The page itself still refuses a recap whose
+// owner has not made it public, so the check that matters is not the one removed here.
+const PUBLIC_EXCEPTIONS = ["/recap/share"];
+
 // Where a session that has passed the password but not the second factor is sent.
 // Deliberately not under `/login`: `AUTH_PATHS` bounces an authenticated visitor
 // away from anything there, and a half-authenticated one counts as authenticated.
@@ -57,16 +63,24 @@ export async function middleware(req: NextRequest) {
     );
   }
 
+  // Checked first, and on the same path boundary: an exception names a public page that
+  // happens to live under a guarded prefix, so it has to win over the guard above it.
+  const isPublicException = PUBLIC_EXCEPTIONS.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`)
+  );
+
   // Protected routes require authentication.
   //
   // Matched on a path boundary rather than a bare prefix: `/coaches` — the
   // public storefront, and the acquisition surface for the whole marketplace —
   // starts with `/coach`, so a plain `startsWith` would put a login wall in
   // front of it the moment the matcher below grew to cover it.
-  const isProtected = PROTECTED_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+  const isProtected =
+    !isPublicException &&
+    PROTECTED_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
   if (isProtected && !isAuthenticated) {
     const loginUrl = new URL("/login", req.url);
-    loginUrl.searchParams.set("callbackUrl", pathname);
+    loginUrl.searchParams.set("callbackUrl", pathname + req.nextUrl.search);
     return NextResponse.redirect(loginUrl);
   }
 
@@ -74,7 +88,7 @@ export async function middleware(req: NextRequest) {
   // else behind the login wall stays shut until the second factor is answered.
   if (isProtected && twoFactorPending) {
     const challengeUrl = new URL(TWO_FACTOR_PATH, req.url);
-    challengeUrl.searchParams.set("callbackUrl", pathname);
+    challengeUrl.searchParams.set("callbackUrl", pathname + req.nextUrl.search);
     return NextResponse.redirect(challengeUrl);
   }
 

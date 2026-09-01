@@ -18,10 +18,12 @@ interface PageProps {
 export function generateMetadata({ searchParams }: PageProps): Metadata {
   const a = searchParams.a?.trim();
   const b = searchParams.b?.trim();
+  // The root layout template appends " | LoL AI Coach"; repeating it here put the name in
+  // the tab twice.
   const title =
     a && b
-      ? `${a} vs ${b} Matchup — Win Rate & Lane Tips | LoL AI Coach`
-      : "LoL Matchup Analyzer — Champion vs Champion Win Rates | LoL AI Coach";
+      ? `${a} vs ${b} Matchup — Win Rate & Lane Tips`
+      : "LoL Matchup Analyzer — Champion vs Champion Win Rates";
   const description =
     a && b
       ? `Who wins ${a} vs ${b}? See the real ranked win rate and lane tips for the matchup, updated every patch. Free, no login.`

@@ -23,7 +23,9 @@ interface PageProps {
 export function generateMetadata({ searchParams }: PageProps): Metadata {
   const hasLobby = Boolean(searchParams.ids);
   return {
-    title: "LoL Multi-Search — Scout a Whole Lobby | LoL AI Coach",
+    // The root layout template appends " | LoL AI Coach"; repeating it here put the name in
+    // the tab twice.
+    title: "LoL Multi-Search — Scout a Whole Lobby",
     description:
       "Paste the champion select chat and see every player's rank and most-played champions at once. Free, no login, no app to install.",
     alternates: { canonical: "/tools/multi-search" },

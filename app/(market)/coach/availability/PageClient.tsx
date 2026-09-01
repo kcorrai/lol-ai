@@ -17,6 +17,7 @@ import { DateExceptionEditor } from "@/domains/marketplace/components/DateExcept
 import { MarketStat } from "@/domains/marketplace/components/hud/MarketStat";
 import { HudPanel } from "@/domains/marketplace/components/hud/HudPanel";
 import { ConsoleBreadcrumb } from "@/domains/marketplace/components/console/ConsoleBreadcrumb";
+import { UI_LOCALE } from "@/lib/uiLocale";
 
 const RULES = [
   "A slot disappears for everyone the moment one student takes it.",
@@ -166,7 +167,7 @@ export default function CoachAvailabilityPage(): React.ReactElement {
 /** "UTC+3" for the header readout — the full IANA name is shown next to it. */
 function shortZone(timeZone: string): string {
   try {
-    const parts = new Intl.DateTimeFormat("en-GB", {
+    const parts = new Intl.DateTimeFormat(UI_LOCALE, {
       timeZone,
       timeZoneName: "shortOffset",
     }).formatToParts(new Date());

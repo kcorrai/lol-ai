@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Award } from "lucide-react";
 import { getCardByToken, type AcademyCardData } from "@/domains/coaching/services/cardService";
+import { formatDate } from "@/lib/uiLocale";
 
 interface Props {
   params: { token: string };
@@ -49,7 +50,7 @@ export default async function CertificatePage({ params }: Props): Promise<React.
   const certificate = await loadCertificate(params.token);
   if (!certificate) notFound();
 
-  const finished = new Date(certificate.finishedAt).toLocaleDateString("en-GB", {
+  const finished = formatDate(certificate.finishedAt, {
     day: "numeric",
     month: "long",
     year: "numeric",
