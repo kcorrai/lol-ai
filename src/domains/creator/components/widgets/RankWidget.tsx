@@ -18,7 +18,7 @@ export function RankWidget({ payload }: { payload: OverlayPayload }): JSX.Elemen
     return (
       <OverlayShell accentColor={payload.accentColor} theme={payload.theme}>
         <OverlayLabel>Rank</OverlayLabel>
-        <span className="font-display text-xl">Unranked</span>
+        <span className="font-display text-2xl font-extrabold">Unranked</span>
         <OverlayBadge />
       </OverlayShell>
     );
@@ -29,19 +29,26 @@ export function RankWidget({ payload }: { payload: OverlayPayload }): JSX.Elemen
   return (
     <OverlayShell accentColor={payload.accentColor} theme={payload.theme}>
       <OverlayLabel>{identity.name ?? "Rank"}</OverlayLabel>
-      <div className="flex items-baseline gap-2">
-        <span className="font-display text-2xl leading-none">{rank.label}</span>
+      <div className="mt-1 flex items-baseline gap-2.5">
+        <span className="font-display text-[30px] font-extrabold leading-none">{rank.label}</span>
         <OverlayAccent>
-          <span className="font-mono text-lg leading-none">{rank.lp} LP</span>
+          <span className="font-mono text-[22px] font-bold leading-none">{rank.lp} LP</span>
         </OverlayAccent>
       </div>
-      {delta !== null && (
-        <span
-          className={`font-mono text-sm ${delta > 0 ? "text-success" : delta < 0 ? "text-danger" : "text-fg-3"}`}
-        >
-          {formatLpDelta(delta)} LP this session
-        </span>
-      )}
+      {delta !== null &&
+        // A loss stays red rather than taking the creator's accent: the accent
+        // is a brand colour, and colouring a drop with it reads as a gain.
+        (delta < 0 ? (
+          <span className="mt-1 font-mono text-[15px] text-danger">
+            {formatLpDelta(delta)} LP this session
+          </span>
+        ) : (
+          <OverlayAccent>
+            <span className="mt-1 block font-mono text-[15px]">
+              {formatLpDelta(delta)} LP this session
+            </span>
+          </OverlayAccent>
+        ))}
       <OverlayBadge />
     </OverlayShell>
   );

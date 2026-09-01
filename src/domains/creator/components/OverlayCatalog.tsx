@@ -1,7 +1,10 @@
 "use client";
 
 import { CopyField } from "@/domains/creator/components/CopyField";
+import { ObsSteps } from "@/domains/creator/components/ObsSteps";
+import { OverlayStage } from "@/domains/creator/components/OverlayStage";
 import { OverlayWidget } from "@/domains/creator/components/widgets/OverlayWidget";
+import { OVERLAY_META } from "@/domains/creator/overlayMeta";
 import { OVERLAY_WIDGETS, type OverlayPayload } from "@/domains/creator/types";
 
 // The five overlays, each with its URL and a live preview.
@@ -11,22 +14,6 @@ import { OVERLAY_WIDGETS, type OverlayPayload } from "@/domains/creator/types";
 // same-origin framing as well as cross-origin (ADR-026). Rendering the component
 // is better anyway — the preview and OBS draw from one component and one
 // payload, so they cannot drift.
-
-const LABELS: Record<(typeof OVERLAY_WIDGETS)[number], string> = {
-  rank: "Rank & session LP",
-  session: "Session record",
-  lastgame: "Last game",
-  champions: "Champion pool",
-  goal: "Climb goal",
-};
-
-const DESCRIPTIONS: Record<(typeof OVERLAY_WIDGETS)[number], string> = {
-  rank: "Tier, LP, and what this session has done to it.",
-  session: "Wins, losses and KDA since the session started.",
-  lastgame: "Champion, result and line from the last finished game.",
-  champions: "Your five most played champions this season.",
-  goal: "A progress bar toward the rank you are chasing.",
-};
 
 export function OverlayCatalog({
   origin,
@@ -38,45 +25,52 @@ export function OverlayCatalog({
   preview: OverlayPayload | null;
 }): JSX.Element {
   return (
-    <div className="flex flex-col gap-4">
-      {OVERLAY_WIDGETS.map((widget) => (
-        <section
-          key={widget}
-          className="rounded-lg border border-border bg-surface p-4"
-          aria-labelledby={`overlay-${widget}`}
-        >
-          <h3 id={`overlay-${widget}`} className="font-display text-base text-text">
-            {LABELS[widget]}
-          </h3>
-          <p className="mb-3 text-sm text-text-muted">{DESCRIPTIONS[widget]}</p>
+    <div className="grid gap-4 xl:grid-cols-2">
+      {OVERLAY_WIDGETS.map((widget) => {
+        const meta = OVERLAY_META[widget];
+        const Icon = meta.icon;
 
-          <div className="grid gap-4 lg:grid-cols-2">
-            <CopyField
-              label="Browser source URL"
-              value={`${origin}/overlay/${overlayKey}/${widget}`}
-            />
+        return (
+          <section
+            key={widget}
+            className="notch overflow-hidden border border-line-1 bg-surface transition-colors hover:border-line-2"
+            aria-labelledby={`overlay-${widget}`}
+          >
+            <header className="flex items-start justify-between gap-3.5 border-b border-line-1 px-[18px] pb-3.5 pt-4">
+              <div className="min-w-0">
+                <h3
+                  id={`overlay-${widget}`}
+                  className="flex items-center gap-2.5 font-display text-[15px] font-extrabold uppercase tracking-wider text-text"
+                >
+                  <Icon className="h-4 w-4 shrink-0 text-accent" />
+                  {meta.label}
+                </h3>
+                <p className="mt-1.5 text-[13px] text-text-muted">{meta.description}</p>
+              </div>
+              <span className="tag-cut shrink-0 whitespace-nowrap border border-line-2 bg-ink-1000 px-2 py-1 font-mono text-[9.5px] tracking-label text-text-faint">
+                {meta.size}
+              </span>
+            </header>
 
-            <div
-              className="flex items-center justify-center rounded-lg border border-dashed border-border bg-ink-1000 p-4"
-              // The checkerboard reads as "transparent" the way an image editor
-              // does, so the creator can see that the widget will composite onto
-              // their scene rather than sit on a black card.
-              style={{
-                backgroundImage:
-                  "linear-gradient(45deg, #111817 25%, transparent 25%), linear-gradient(-45deg, #111817 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #111817 75%), linear-gradient(-45deg, transparent 75%, #111817 75%)",
-                backgroundSize: "16px 16px",
-                backgroundPosition: "0 0, 0 8px, 8px -8px, -8px 0px",
-              }}
-            >
+            <OverlayStage theme={preview?.theme ?? "dark"} live={preview !== null}>
               {preview ? (
                 <OverlayWidget widget={widget} payload={preview} />
               ) : (
-                <span className="text-xs text-text-muted">Preview loading…</span>
+                <span className="font-mono text-xs text-text-muted">Preview loading…</span>
               )}
+            </OverlayStage>
+
+            <div className="border-t border-line-1 px-[18px] pb-4 pt-3.5">
+              <CopyField
+                label="Browser source URL"
+                value={`${origin}/overlay/${overlayKey}/${widget}`}
+              />
             </div>
-          </div>
-        </section>
-      ))}
+          </section>
+        );
+      })}
+
+      <ObsSteps />
     </div>
   );
 }

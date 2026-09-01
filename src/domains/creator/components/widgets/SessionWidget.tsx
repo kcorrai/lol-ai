@@ -18,20 +18,24 @@ export function SessionWidget({ payload }: { payload: OverlayPayload }): JSX.Ele
       <OverlayLabel>Session</OverlayLabel>
 
       {session.games === 0 ? (
-        <span className="font-display text-xl">No games yet</span>
+        <span className="font-display text-2xl font-extrabold">No games yet</span>
       ) : (
         <>
-          <div className="flex items-baseline gap-2">
-            <span className="font-display text-2xl leading-none">
-              <span className="text-success">{session.wins}W</span>
-              <span className="mx-1 text-fg-4">·</span>
-              <span className="text-danger">{session.losses}L</span>
+          <div className="mt-1 flex items-baseline gap-3">
+            <OverlayAccent>
+              <span className="font-display text-[32px] font-extrabold leading-none">
+                {session.wins}W
+              </span>
+            </OverlayAccent>
+            <span className="font-mono text-base leading-none text-fg-4">·</span>
+            <span className="font-display text-[32px] font-extrabold leading-none text-danger">
+              {session.losses}L
             </span>
             <OverlayAccent>
-              <span className="font-mono text-lg leading-none">{session.winRate}%</span>
+              <span className="font-mono text-xl font-bold leading-none">{session.winRate}%</span>
             </OverlayAccent>
           </div>
-          <span className="font-mono text-sm text-fg-2">
+          <span className="mt-1 font-mono text-sm text-fg-2">
             {session.kills}/{session.deaths}/{session.assists} · {session.kda?.toFixed(2)} KDA
           </span>
         </>

@@ -18,7 +18,7 @@ export function GoalWidget({ payload }: { payload: OverlayPayload }): JSX.Elemen
     return (
       <OverlayShell accentColor={payload.accentColor} theme={payload.theme}>
         <OverlayLabel>Goal</OverlayLabel>
-        <span className="font-display text-xl">No goal set</span>
+        <span className="font-display text-2xl font-extrabold">No goal set</span>
         <OverlayBadge />
       </OverlayShell>
     );
@@ -29,14 +29,14 @@ export function GoalWidget({ payload }: { payload: OverlayPayload }): JSX.Elemen
   return (
     <OverlayShell accentColor={payload.accentColor} theme={payload.theme}>
       <OverlayLabel>Road to {goal.label}</OverlayLabel>
-      <div className="flex items-baseline gap-2">
-        <span className="font-display text-xl leading-none">{rank.label}</span>
-        <span className="text-fg-4">→</span>
-        <span className="font-display text-xl leading-none">{goal.label}</span>
+      <div className="mt-1.5 flex items-baseline gap-3">
+        <span className="font-display text-[26px] font-extrabold leading-none">{rank.label}</span>
+        <span className="font-mono text-lg leading-none text-fg-4">→</span>
+        <span className="font-display text-[26px] font-extrabold leading-none">{goal.label}</span>
       </div>
 
       <div
-        className="mt-1 h-2 w-56 overflow-hidden rounded-full bg-ink-600"
+        className="mt-3.5 h-[9px] w-56 max-w-full overflow-hidden bg-[rgba(233,245,238,.10)]"
         role="progressbar"
         aria-valuemin={0}
         aria-valuemax={100}
@@ -44,7 +44,7 @@ export function GoalWidget({ payload }: { payload: OverlayPayload }): JSX.Elemen
         aria-label={`Progress to ${goal.label}`}
       >
         <div
-          className="h-full rounded-full transition-[width] duration-500"
+          className="h-full transition-[width] duration-500"
           style={{
             width: `${Math.round(goal.progress * 100)}%`,
             backgroundColor: "var(--overlay-accent)",
@@ -52,7 +52,7 @@ export function GoalWidget({ payload }: { payload: OverlayPayload }): JSX.Elemen
         />
       </div>
 
-      <span className="font-mono text-sm text-fg-2">
+      <span className="mt-2.5 font-mono text-sm text-fg-2">
         {reached ? <OverlayAccent>Goal reached</OverlayAccent> : `${goal.lpRemaining} LP to go`}
       </span>
       <OverlayBadge />
