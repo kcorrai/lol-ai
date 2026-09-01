@@ -63,6 +63,9 @@ export async function MarketingFooter(): Promise<React.ReactElement> {
   // The parts of the product that are neither a tier list nor a legal page. The desktop app
   // in particular had no entry point anywhere on the marketing site before this.
   const product: FooterLink[] = [
+    // First, because it is the product. It had no link anywhere on the marketing site —
+    // not here, and on the bar only a menu entry that redirected to a login form.
+    { href: "/coaching", label: "AI coach" },
     { href: "/download", label: "Desktop app" },
     { href: "/draft", label: "Draft room" },
     { href: "/academy", label: "Academy" },

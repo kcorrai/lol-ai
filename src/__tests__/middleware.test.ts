@@ -1,7 +1,12 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { readFileSync } from "fs";
 import { join } from "path";
+import { NextRequest, NextResponse } from "next/server";
 import { config } from "../../middleware";
+
+// Hoisted because `vi.mock` is: the factory below runs before this module's own body does.
+const getToken = vi.hoisted(() => vi.fn());
+vi.mock("next-auth/jwt", () => ({ getToken }));
 
 // The path lists are internal to the middleware and there is no reason for anything else to import
 // them. Read from source instead, which is also the only way to notice somebody adding an entry to
@@ -77,4 +82,60 @@ describe("middleware auth coverage", () => {
     expect(roots).toContain("/coach");
     expect(roots).not.toContain("/coaches");
   });
+});
+
+/**
+ * The rules above read the middleware as text. These run it.
+ *
+ * `getToken` is the only thing between the request and a decision, so mocking it is enough to
+ * put the function in either state — and the assertions are about what a visitor receives,
+ * which is the part a source-string test cannot reach.
+ */
+describe("the AI coach's front door", () => {
+  async function visit(pathname: string, signedIn: boolean): Promise<NextResponse> {
+    getToken.mockResolvedValue(signedIn ? { sub: "user-1" } : null);
+    const { middleware } = await import("../../middleware");
+    return middleware(new NextRequest(new URL(pathname, "https://lolaicoach.test")));
+  }
+
+  beforeEach(() => {
+    getToken.mockReset();
+  });
+
+  it("draws the public page at /coaching instead of sending a visitor to log in", async () => {
+    // The defect this whole change exists for: the product's only entry on the top bar
+    // answered the person deciding whether to sign up with a form asking them to sign in.
+    const res = await visit("/coaching", false);
+
+    expect(res.headers.get("location")).toBeNull();
+    expect(res.headers.get("x-middleware-rewrite")).toContain("/ai-coach");
+  });
+
+  it("leaves the address alone while doing it", async () => {
+    // A redirect would move the visitor to /ai-coach and leave the product with two URLs.
+    // A rewrite keeps the one they were given, which is the one on the top bar.
+    const res = await visit("/coaching", false);
+
+    expect(res.status).toBe(200);
+  });
+
+  it("gives a signed-in player their own reports, not the pitch", async () => {
+    const res = await visit("/coaching", true);
+
+    expect(res.headers.get("x-middleware-rewrite")).toBeNull();
+    expect(res.headers.get("location")).toBeNull();
+  });
+
+  it.each(["/coaching/chat", "/coaching/report-123"])(
+    "keeps %s behind the login wall",
+    async (path) => {
+      // Everything under the index is one player's own games. Opening the index is not the
+      // same decision as opening those, and the exact match is what keeps them apart.
+      const res = await visit(path, false);
+      const location = res.headers.get("location");
+
+      expect(location).toContain("/login");
+      expect(location).toContain(`callbackUrl=${encodeURIComponent(path)}`);
+    }
+  );
 });
