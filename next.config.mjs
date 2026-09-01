@@ -100,6 +100,11 @@ const nextConfig = {
       { source: "/matchup", destination: "/tools/matchup", permanent: true },
     ];
   },
+  // Next sends `X-Powered-By: Next.js` on every response by default. It tells a visitor
+  // nothing and tells someone scanning for a framework-specific advisory exactly what to
+  // reach for, so it is a free header to stop sending.
+  poweredByHeader: false,
+
   async headers() {
     return [
       {

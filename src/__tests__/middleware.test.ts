@@ -69,6 +69,35 @@ describe("middleware auth coverage", () => {
     expect(config.matcher.length).toBeGreaterThan(10);
   });
 
+  // A path listed as a public exception sits under a guarded prefix on purpose, so the
+  // matcher has to wake the middleware for it — otherwise the exception is describing a rule
+  // that never runs, and would go on passing if the guard above it were removed.
+  it("routes every public exception through the matcher too", () => {
+    const roots = new Set(config.matcher.map(matcherRoot));
+    const exceptions = constPaths("PUBLIC_EXCEPTIONS");
+
+    expect(exceptions.length).toBeGreaterThan(0);
+    for (const path of exceptions) {
+      const guardingRoot = [...roots].find((r) => path === r || path.startsWith(`${r}/`));
+      expect(guardingRoot, `${path} is not under any matcher root`).toBeDefined();
+    }
+  });
+
+  // Every exception must be *inside* a guarded prefix. One that is not is dead weight that
+  // reads as a deliberate hole in the wall, and the next person to widen PROTECTED_PATHS has
+  // no way to tell the two apart.
+  it("only excepts paths that a protected prefix would otherwise swallow", () => {
+    const protectedPaths = constPaths("PROTECTED_PATHS");
+    const stray = constPaths("PUBLIC_EXCEPTIONS").filter(
+      (path) => !protectedPaths.some((p) => path === p || path.startsWith(`${p}/`))
+    );
+
+    expect(
+      stray,
+      `excepted from a login wall that was never in front of them: ${stray.join(", ")}`
+    ).toEqual([]);
+  });
+
   // /coaches is the public storefront and the acquisition surface for the whole marketplace. It
   // starts with /coach, which is guarded, so a bare prefix match would put a login wall in front
   // of it — the comment in the middleware says so, and this is that comment as a test.

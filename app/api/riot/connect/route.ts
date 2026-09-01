@@ -8,6 +8,14 @@ import { VALID_REGIONS } from "@/domains/riot/services/riotApiClient";
 import { completeReferral } from "@/domains/identity/services/referralService";
 import { inngest } from "@/inngest/client";
 import { audit } from "@/lib/audit/auditService";
+import { checkRateLimit, rateLimitResponse } from "@/lib/api/rateLimit";
+
+// This is the one authenticated route that sends a caller-chosen Riot ID to Riot. Left open it
+// answers "does this name exist in this region?" as fast as it can be asked, and every one of
+// those questions is spent from the application key's quota — the quota every other Riot-backed
+// feature shares. `/api/esports/you-vs-pros` caps the signed-out version of the same lookup for
+// the same reason; connecting an account is a handful-of-times-ever action, so this can be tight.
+const CONNECT_LIMIT = { limit: 10, windowMs: 600_000 };
 
 const connectSchema = z.object({
   gameName: z.string().min(1).max(16),
@@ -25,6 +33,9 @@ export const POST = withAuth(async (req: NextRequest, { userId }) => {
 
   const parsed = connectSchema.safeParse(body);
   if (!parsed.success) throw Errors.validation(parsed.error.issues[0].message);
+
+  const rate = await checkRateLimit(`riot-connect:${userId}`, CONNECT_LIMIT);
+  if (!rate.allowed) return rateLimitResponse(rate.retryAfterMs, rate.limit);
 
   let account;
   try {

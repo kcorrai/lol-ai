@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { KeyRound, ShieldCheck } from "lucide-react";
 import { AuthPanel, AuthError, AuthNotice } from "./AuthPanel";
 import { AuthField, AuthInput, AuthSubmit } from "./AuthControls";
+import { safeCallbackUrl } from "../safeCallbackUrl";
 
 // The password has already been accepted at this point; the session exists but is
 // marked pending, and every other route refuses it until this passes. `update()` is
@@ -20,12 +21,9 @@ export function TwoFactorForm(): React.ReactElement {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
-  // Only a same-site path is followed. A `callbackUrl` is attacker-supplied — it
-  // arrives in the query string — so an absolute one would turn the login flow into
-  // an open redirect straight off the site's own domain.
-  const rawCallback = searchParams.get("callbackUrl") ?? "/dashboard";
-  const callbackUrl =
-    rawCallback.startsWith("/") && !rawCallback.startsWith("//") ? rawCallback : "/dashboard";
+  // Only a same-site path is followed — see `safeCallbackUrl`, which the password step
+  // shares so the two halves of sign-in cannot drift apart on it.
+  const callbackUrl = safeCallbackUrl(searchParams.get("callbackUrl"));
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();

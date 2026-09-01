@@ -8,7 +8,10 @@ import { TrackCard } from "@/domains/academy/components/TrackCard";
 import { getSession } from "@/lib/auth/session";
 
 export const metadata: Metadata = {
-  title: "LoL Academy — Learn League of Legends Properly",
+  // Absolute because the section template is "%s | LoL Academy", which on the Academy's own
+  // landing page read "LoL Academy — … | LoL Academy" — the section named twice and the
+  // product not at all. The lessons underneath still take the section suffix.
+  title: { absolute: "LoL Academy — Learn League of Legends Properly | LoL AI Coach" },
   description:
     "A structured League of Legends course: wave management, trading, vision, objectives and tempo. Free lessons, interactive drills, and a curriculum that reads your own ranked games to pick what to teach you next.",
   alternates: { canonical: "/academy" },

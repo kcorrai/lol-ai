@@ -23,9 +23,11 @@ interface PageProps {
 
 export function generateMetadata({ searchParams }: PageProps): Metadata {
   const champion = searchParams.champion?.trim();
+  // The root layout template appends " | LoL AI Coach"; repeating it here put the name in
+  // the tab twice.
   const title = champion
-    ? `${champion} Counters — Best & Worst Matchups | LoL AI Coach`
-    : "LoL Counter Picker — Champion Counters by Win Rate | LoL AI Coach";
+    ? `${champion} Counters — Best & Worst Matchups`
+    : "LoL Counter Picker — Champion Counters by Win Rate";
   const description = champion
     ? `See the best champions to counter ${champion} and the matchups ${champion} beats, ranked by real ranked win rate. Free, updated every patch.`
     : "Find the best counter picks for any League of Legends champion, ranked by real ranked win rate. Free, no login, updated every patch.";
