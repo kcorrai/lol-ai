@@ -22,6 +22,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: BASE_URL, changeFrequency: "weekly", priority: 1 },
     { url: `${BASE_URL}/pricing`, changeFrequency: "monthly", priority: 0.8 },
+    // The AI coach. `/coaching` and not `/ai-coach`: the middleware serves the public page
+    // there to anyone without a session, and that route sets this as its canonical, so this
+    // is the one address of the two that should be indexed.
+    { url: `${BASE_URL}/coaching`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/download`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/champions`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${BASE_URL}/tools`, changeFrequency: "weekly", priority: 0.9 },

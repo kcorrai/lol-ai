@@ -46,6 +46,15 @@ const PUBLIC_EXCEPTIONS = ["/recap/share"];
 // away from anything there, and a half-authenticated one counts as authenticated.
 const TWO_FACTOR_PATH = "/two-factor";
 
+// The AI coach's address, and the public page shown at it to a visitor without a session.
+//
+// `PUBLIC_COACHING_PATH` stays in PROTECTED_PATHS on purpose — everything under it is a
+// player's own report. Only the index answers to somebody who has not signed in, and it
+// answers with `COACHING_INTRO_PATH`, which lives in the `(marketing)` group so it arrives
+// with the site's header and footer instead of the signed-in application shell.
+const PUBLIC_COACHING_PATH = "/coaching";
+const COACHING_INTRO_PATH = "/ai-coach";
+
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
@@ -61,6 +70,21 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(
       new URL(twoFactorPending ? TWO_FACTOR_PATH : "/dashboard", req.url)
     );
+  }
+
+  // The AI coach is the product, and the top bar's only entry for it was a login form.
+  //
+  // `/coaching` is in PROTECTED_PATHS, so the visitor deciding whether this is worth an
+  // account — the one person the page exists for — was answered with
+  // `/login?callbackUrl=/coaching`. The path stays guarded for everybody who has a session
+  // to lose; without one it now renders instead of redirecting.
+  //
+  // A rewrite and not a redirect, so the address a visitor was given is the address they
+  // keep and the product has one URL rather than two. Exact match only: `/coaching/chat`
+  // and `/coaching/<report id>` are somebody's own games and stay behind the wall, which
+  // is why this sits above the check rather than inside PROTECTED_PATHS.
+  if (pathname === PUBLIC_COACHING_PATH && !isAuthenticated) {
+    return NextResponse.rewrite(new URL(COACHING_INTRO_PATH, req.url));
   }
 
   // Checked first, and on the same path boundary: an exception names a public page that

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { DownloadPanel } from "./DownloadPanel";
 import { DesktopStory } from "./DesktopStory";
+import { OverlayVisual } from "../components/laneiq/desktop/OverlayVisual";
 
 export const metadata: Metadata = {
   title: { absolute: "Desktop App — LoL AI Coach Companion for Windows, macOS and Linux" },
@@ -28,27 +29,34 @@ export default function DownloadPage(): React.ReactElement {
   return (
     <>
       <section className="border-b border-border px-5 pt-14 md:px-8 md:pt-[72px]">
-        <div className="mx-auto max-w-[1240px] pb-14 md:pb-[72px]">
-          <span className="hud-label">{"// The desktop companion"}</span>
-          <h1 className="mt-3 max-w-[18ch] font-display text-[34px] font-black uppercase leading-[1.06] text-text md:text-[46px]">
-            The part a website cannot do
-          </h1>
-          <p className="mt-4 max-w-[58ch] text-[15.5px] leading-relaxed text-text-body md:text-[16.5px]">
-            Your live game is readable from exactly one place: the machine it is running on. The
-            companion sits there and reads it — the lane you are in, the plan for it, and what
-            has already happened — then puts that over the game in an overlay you can dismiss.
-          </p>
+        {/* Two columns, because the page was eleven screens of prose about a picture it never
+            showed. The argument stays on the left where a reader starts; the right is what
+            the argument is about. It stacks below `lg`, drawing first. */}
+        <div className="mx-auto grid max-w-[1240px] gap-10 pb-14 md:pb-[72px] lg:grid-cols-[1fr_1.05fr] lg:items-start lg:gap-12">
+          <div>
+            <span className="hud-label">{"// The desktop companion"}</span>
+            <h1 className="mt-3 max-w-[18ch] font-display text-[34px] font-black uppercase leading-[1.06] text-text md:text-[46px]">
+              The part a website cannot do
+            </h1>
+            <p className="mt-4 max-w-[58ch] text-[15.5px] leading-relaxed text-text-body md:text-[16.5px]">
+              Your live game is readable from exactly one place: the machine it is running on. The
+              companion sits there and reads it — the lane you are in, the plan for it, and what has
+              already happened — then puts that over the game in an overlay you can dismiss.
+            </p>
 
-          <div className="mt-8 max-w-[640px]">
-            <DownloadPanel />
+            <div className="mt-8">
+              <DownloadPanel />
+            </div>
+
+            <p className="mt-5 text-[13px] text-text-muted">
+              Windows, macOS and Linux ·{" "}
+              <Link href="/pricing" className="text-accent hover:underline">
+                works on the free plan
+              </Link>
+            </p>
           </div>
 
-          <p className="mt-5 text-[13px] text-text-muted">
-            Windows, macOS and Linux ·{" "}
-            <Link href="/pricing" className="text-accent hover:underline">
-              works on the free plan
-            </Link>
-          </p>
+          <OverlayVisual />
         </div>
       </section>
 
@@ -61,8 +69,8 @@ export default function DownloadPage(): React.ReactElement {
               You do not need it to start
             </h2>
             <p className="mt-3 max-w-[58ch] text-[14.5px] leading-relaxed text-text-body">
-              The coaching, the Academy, the draft room and every free tool run in this browser.
-              The companion adds the one thing they cannot: the game while it is still happening.
+              The coaching, the Academy, the draft room and every free tool run in this browser. The
+              companion adds the one thing they cannot: the game while it is still happening.
             </p>
             <Link
               href="/register"

@@ -9,6 +9,7 @@ import { Wordmark } from "./laneiq/Wordmark";
 import { HEADER_NAV, isMenu } from "./nav/headerNav";
 import { NavMenu } from "./nav/NavMenu";
 import { MobileNav } from "./nav/MobileNav";
+import { DownloadCta } from "./nav/DownloadCta";
 
 const NAV_LINK =
   "font-mono text-[11px] uppercase tracking-label text-text-muted transition-colors hover:text-text";
@@ -38,7 +39,11 @@ export function MarketingHeader(): React.ReactElement {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-[var(--surface-glass)] backdrop-blur-[14px]">
-      <div className="mx-auto flex h-[62px] max-w-[1440px] items-center gap-7 px-5 md:px-8">
+      {/* The gap sits between the wordmark and the nav, and the nav is not here below `xl` —
+          what it separates on a phone is the wordmark from the buttons, which `ml-auto`
+          already pushes apart. Keeping 28px of it cost the row 6px more than a 390px screen
+          has, once the desktop button joined it. */}
+      <div className="mx-auto flex h-[62px] max-w-[1440px] items-center gap-3 px-5 md:px-8 xl:gap-7">
         <Link href="/" onClick={() => setOpen(false)}>
           <Wordmark />
         </Link>
@@ -62,6 +67,10 @@ export function MarketingHeader(): React.ReactElement {
         </div>
 
         <div className="ml-auto hidden items-center gap-4 xl:ml-0 xl:flex">
+          {/* Ahead of "Log in", because the desktop app is a thing to want and logging in is
+              a thing to do once you already do. It is the same destination the bar used to
+              carry as a word in the nav; what changed is that it now looks like an offer. */}
+          <DownloadCta />
           {isAuthenticated ? (
             <Link href="/dashboard" className={HEADER_CTA}>
               <LayoutDashboard className="h-3.5 w-3.5" strokeWidth={1.75} />
@@ -80,6 +89,10 @@ export function MarketingHeader(): React.ReactElement {
         </div>
 
         <div className="ml-auto flex items-center gap-2 xl:hidden">
+          {/* Icon only: on a 390px bar the label would push the sign-up button off the edge,
+              which is the failure this header was rebuilt to stop. The drawer under it
+              carries the same control with its words on. */}
+          <DownloadCta compact />
           <Link
             href={isAuthenticated ? "/dashboard" : "/register"}
             className="tag-cut flex h-8 items-center whitespace-nowrap bg-accent px-3 font-display text-[10px] font-bold uppercase tracking-[0.1em] text-background"
@@ -101,9 +114,7 @@ export function MarketingHeader(): React.ReactElement {
         </div>
       </div>
 
-      {open && (
-        <MobileNav isAuthenticated={isAuthenticated} onNavigate={() => setOpen(false)} />
-      )}
+      {open && <MobileNav isAuthenticated={isAuthenticated} onNavigate={() => setOpen(false)} />}
     </header>
   );
 }
