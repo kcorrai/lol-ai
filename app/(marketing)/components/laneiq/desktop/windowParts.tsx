@@ -1,4 +1,5 @@
 import { BarChart3, Crosshair, Gamepad2, LayoutDashboard, Star, TrendingUp } from "lucide-react";
+import { ChampionIcon } from "@/components/ui/ChampionIcon";
 
 /**
  * The contents of `WindowVisual`, kept next to it rather than inside it.
@@ -70,7 +71,12 @@ export const EVENTS: readonly { at: string; what: string; mine: boolean }[] = [
   { at: "11:38", what: "Top turret — Red", mine: false },
 ];
 
-/** One team's half of the scoreboard, on `desktop/src/components/game/Scoreboard.tsx`'s grid. */
+/**
+ * One team's half of the scoreboard, on `desktop/src/components/game/Scoreboard.tsx`'s grid.
+ *
+ * With portraits, because that file draws `ChampionTile size={32}` against every row and a
+ * scoreboard of ten names in a column is the one thing nobody reads that way in a game.
+ */
 export function Side({
   team,
   kills,
@@ -101,10 +107,13 @@ export function Side({
             key={row.name}
             className="grid grid-cols-[1fr_auto_auto] items-center gap-3 bg-surface px-3.5 py-2"
           >
-            <span
-              className={`min-w-0 truncate text-[11.5px] ${row.you ? "text-accent" : "text-text"}`}
-            >
-              {row.name}
+            <span className="flex min-w-0 items-center gap-2">
+              <ChampionIcon name={row.name} size={18} className="shrink-0" />
+              <span
+                className={`min-w-0 truncate text-[11.5px] ${row.you ? "text-accent" : "text-text"}`}
+              >
+                {row.name}
+              </span>
             </span>
             <span className="font-mono text-[11px] tabular-nums text-text-body">{row.kda}</span>
             <span className="w-8 text-right font-mono text-[10.5px] tabular-nums text-text-faint">

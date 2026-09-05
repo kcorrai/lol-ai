@@ -1,6 +1,7 @@
 "use client";
 
-import { AcademyVisual, CoachVisual, CoachMarketVisual, CreatorVisual } from "./ArsenalVisuals";
+import { CoachMarketVisual, CreatorVisual } from "./ArsenalVisuals";
+import { AcademyVisual, CoachVisual } from "./ArsenalMedia";
 import { DraftVisual, EsportsVisual } from "./ArsenalBoards";
 
 export type ArsenalKey = "coach" | "coaches" | "academy" | "draft" | "esports" | "creator";
