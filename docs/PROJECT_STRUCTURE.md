@@ -36,7 +36,7 @@ lol-ai/
 ```
 app/
 ├── (marketing)/                → Public marketing pages
-│   ├── page.tsx                → Landing page (3D hero, live meta, real screenshots)
+│   ├── page.tsx                → Landing page (3D hero, live meta, drawn product screens)
 │   ├── pricing/page.tsx        → Pricing page
 │   └── layout.tsx              → Marketing layout
 │

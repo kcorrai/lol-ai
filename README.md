@@ -285,42 +285,29 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Scripts
 
-| Command                       | Description                                                                       |
-| ----------------------------- | --------------------------------------------------------------------------------- |
-| `npm run dev`                 | Start development server                                                          |
-| `npm run build`               | Build for production                                                              |
-| `npm run typecheck`           | TypeScript type check                                                             |
-| `npm run lint`                | ESLint check                                                                      |
-| `npm run lint:fix`            | Auto-fix ESLint issues                                                            |
-| `npm run format`              | Format all files with Prettier                                                    |
-| `npm run format:check`        | Check formatting without writing                                                  |
-| `npm run capture:screenshots` | Re-shoot the landing page's product imagery from a running dev server (see below) |
-| `npx prisma studio`           | Open Prisma database browser                                                      |
-| `npx prisma migrate dev`      | Run pending migrations                                                            |
-| `npx inngest-cli dev`         | Start local Inngest dev server                                                    |
+| Command                  | Description                      |
+| ------------------------ | -------------------------------- |
+| `npm run dev`            | Start development server         |
+| `npm run build`          | Build for production             |
+| `npm run typecheck`      | TypeScript type check            |
+| `npm run lint`           | ESLint check                     |
+| `npm run lint:fix`       | Auto-fix ESLint issues           |
+| `npm run format`         | Format all files with Prettier   |
+| `npm run format:check`   | Check formatting without writing |
+| `npx prisma studio`      | Open Prisma database browser     |
+| `npx prisma migrate dev` | Run pending migrations           |
+| `npx inngest-cli dev`    | Start local Inngest dev server   |
 
-### Landing page screenshots
+### Landing page product imagery
 
-The landing page shows real screens of the app, not mock-ups. They live in
-`public/screenshots/` and are produced by `scripts/captureScreenshots.ts`, which
-drives a headless browser over a running dev server.
+The landing page draws its product imagery rather than photographing it — see
+ADR-050. The screens under `app/(marketing)/components/laneiq/screens/` are DOM,
+not images, so they stay sharp at any size, follow the theme, and never carry a
+patch number that goes stale.
 
-They go stale — the patch number is burnt into the tier list and any redesign
-invalidates all of them — so re-run the script rather than editing an image:
-
-```bash
-npm run dev                  # terminal 1, port 3001
-npx prisma db seed           # only if the dev DB has no match data
-npm run capture:screenshots  # terminal 2
-```
-
-The dashboard shot needs a signed-in session. The script signs in once as the
-seeded dev user and caches it under `tests/e2e/.auth/` (gitignored). It will not
-retry a failed sign-in: five failures lock the account for fifteen minutes and
-the lockout answers `200`, so a retry loop hides the problem instead of showing
-it. If sign-in fails, seed the database and run it again.
-
-Output is JPEG because `.gitignore` excludes `*.png`.
+They do not update themselves when the real screens change. Each drawing names
+the file it was read off in a comment; when you change one of those screens,
+check whether its drawing still tells the truth.
 
 ---
 

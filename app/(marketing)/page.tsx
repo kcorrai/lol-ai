@@ -50,13 +50,13 @@ export default function LandingPage(): React.ReactElement {
           of them appeared anywhere on this page before. */}
       <ArsenalTabs />
 
-      {/* The Arsenal panels draw the product; this shows it. Placed straight
-          after them so the claim and the evidence sit together. */}
+      {/* The Arsenal panels say what each part of the product is for; this draws the screens
+          themselves. Placed straight after them so the claim and the picture sit together. */}
       <ProductShowcase />
 
       {/* The companion had never appeared on this page at all, and it is the one claim a
-          competitor's website cannot answer. It follows the screenshots because those say
-          "here are the real screens" and this is the screen a browser cannot draw. */}
+          competitor's website cannot answer. It follows the web screens because the reader has
+          just been shown what a browser can draw, and this is the part that needs more. */}
       <DesktopBand />
 
       <ChampionPoolAudit />

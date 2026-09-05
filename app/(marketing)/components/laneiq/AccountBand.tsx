@@ -15,8 +15,9 @@ import { HudStagger, HudStaggerItem } from "./motion";
  * and this labels it for somebody deciding whether to. Neither list should move because the
  * other one did.
  *
- * No screenshots. `scripts/captureScreenshots.ts` needs a running app and a seeded database,
- * and ten stale JPEGs would sell an interface nobody gets.
+ * No pictures either, which is not the same decision the rest of the page made. `ProductShowcase`
+ * draws four screens because four is a number a reader looks at; ten drawings would be a
+ * contact sheet, and nobody reads a contact sheet. This band names them instead.
  */
 
 interface Feature {
