@@ -212,7 +212,13 @@ export function TierBadge({ tier }: { tier: string }): React.ReactElement {
  * misses; the empty tile below is what is left for the rows that stand for a champion without
  * naming one.
  */
-export function Portrait({ size = 18, name }: { size?: number; name?: string }): React.ReactElement {
+export function Portrait({
+  size = 18,
+  name,
+}: {
+  size?: number;
+  name?: string;
+}): React.ReactElement {
   if (name) return <ChampionIcon name={name} size={size} className="shrink-0" />;
   return (
     <span
