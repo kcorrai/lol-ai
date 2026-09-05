@@ -127,7 +127,7 @@ export function ImprovementMark(): React.ReactElement {
 
       <div className="flex items-baseline justify-between gap-2 border-t border-line-1 pt-2">
         <span className="text-[10.5px] text-text-muted">Baseline 5.4 &rarr; now 6.9</span>
-        <span className="font-mono text-[10px] tabular-nums text-accent">4 of 12 over goal</span>
+        <span className="font-mono text-[10px] tabular-nums text-accent">6 of 12 over goal</span>
       </div>
     </div>
   );
@@ -136,6 +136,12 @@ export function ImprovementMark(): React.ReactElement {
 // ── OTP assistant ─────────────────────────────────────────────────────────
 // `src/domains/otp/components/MatchupTierList.tsx` sorts every matchup into three columns under
 // exactly these labels, each in its own colour; `MetaRating.tsx` is the bar above them.
+//
+// The champion is Ahri and the three columns are the uncontroversial reading of her lane:
+// immobile artillery she can walk at is the easy half, the mobile mages trading her blow for
+// blow are even, and the assassins who out-scale or out-burst her are the hard half. A drawing
+// that put a genuine counter in the "easy" column would be wrong in a way a mid laner spots
+// immediately, which is the one kind of wrong this section cannot afford.
 const MATCHUPS: readonly {
   label: string;
   edge: string;
@@ -146,7 +152,7 @@ const MATCHUPS: readonly {
     label: "Easy",
     edge: "border-accent/40",
     text: "text-accent",
-    champions: ["Malzahar", "Lissandra"],
+    champions: ["Lux", "Karthus"],
   },
   {
     label: "Even",

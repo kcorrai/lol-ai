@@ -50,11 +50,22 @@ export interface FeatureCardProps {
   name: string;
   detail: string;
   href: string;
-  /** The screen this cell stands for, drawn. */
-  Mark: () => React.ReactElement;
+  /**
+   * The screen this cell stands for, drawn — passed as an element, not as the component that
+   * makes one. `AccountBand` is a server component and this is a client one, and a function
+   * cannot cross that boundary: React refuses to serialise it. An element can, which also
+   * means the ten drawings stay server-rendered and are already in the payload before the
+   * first hover, so no panel opens onto a blank frame.
+   */
+  children: React.ReactNode;
 }
 
-export function FeatureCard({ name, detail, href, Mark }: FeatureCardProps): React.ReactElement {
+export function FeatureCard({
+  name,
+  detail,
+  href,
+  children,
+}: FeatureCardProps): React.ReactElement {
   const canHover = useHoverPointer();
   const reduced = useReducedMotion();
   const [open, setOpen] = useState(false);
@@ -118,7 +129,7 @@ export function FeatureCard({ name, detail, href, Mark }: FeatureCardProps): Rea
                   the free-tools tiles give theirs — without it the drawn panel edges and the
                   card edge are one colour a pixel apart. */}
               <div className="p-3" style={{ background: "var(--bg-grid)" }}>
-                <Mark />
+                {children}
               </div>
               {/* ADR-050: a picture of a product is read as a photograph of it unless
                   something says otherwise. One caption here rather than one inside each of the

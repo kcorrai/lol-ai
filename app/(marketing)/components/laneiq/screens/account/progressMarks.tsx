@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { rankEmblemUrl } from "@/lib/ddragon";
+import { TIER_COLORS, TIER_LABEL } from "@/types/achievement";
 import { Portrait, Track } from "../screenChrome";
 import { MarkNote } from "../markParts";
 import { Stat, StatStrip } from "./accountParts";
@@ -187,14 +188,15 @@ export function LeaderboardMark(): React.ReactElement {
 
 // ── Badges ────────────────────────────────────────────────────────────────
 // `app/(app)/achievements/PageClient.tsx` splits the catalogue into "Earned (n)" and
-// "Locked (n)" and colours each tile by its tier. The four tiers and their hex values are
-// `TIER_COLORS`/`TIER_LABEL` in `src/types/achievement.ts` — bronze, silver, gold, platinum.
-const TIERS: readonly { label: string; color: string }[] = [
-  { label: "Bronze", color: "#CD7F32" },
-  { label: "Silver", color: "#C0C0C0" },
-  { label: "Gold", color: "#FFD700" },
-  { label: "Platinum", color: "#E5E4E2" },
-];
+// "Locked (n)" and colours each tile by its tier.
+//
+// The tiers and their colours are read from `src/types/achievement.ts` rather than retyped.
+// Four hex literals copied into a marketing drawing are four literals that go quietly wrong
+// the day a tier is added or recoloured — the exact accumulation ADR-015 was written to stop —
+// and `src/types/` is shared across domains for this reason (CLAUDE.md 4).
+const TIERS: readonly { label: string; color: string }[] = (
+  Object.keys(TIER_LABEL) as (keyof typeof TIER_LABEL)[]
+).map((tier) => ({ label: TIER_LABEL[tier], color: TIER_COLORS[tier] }));
 
 export function BadgesMark(): React.ReactElement {
   return (

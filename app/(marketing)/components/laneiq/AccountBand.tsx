@@ -39,8 +39,12 @@ interface Feature {
   name: string;
   detail: string;
   href: string;
-  /** The screen, drawn — shown in the preview panel. Read off the real one, and it cites it. */
-  Mark: () => React.ReactElement;
+  /**
+   * The screen, drawn — shown in the preview panel, never at rest. An element rather than the
+   * component that makes one, because `FeatureCard` is a client component and a function
+   * cannot be handed across that boundary.
+   */
+  mark: React.ReactElement;
 }
 
 const FEATURES: readonly Feature[] = [
@@ -48,61 +52,61 @@ const FEATURES: readonly Feature[] = [
     name: "Heat map",
     detail: "Where you die, drawn on the map. The shape of it is usually the habit.",
     href: "/analysis",
-    Mark: HeatMapMark,
+    mark: <HeatMapMark />,
   },
   {
     name: "Match search",
     detail: "Your whole history, filtered by champion, role, queue, patch or who you queued with.",
     href: "/matches",
-    Mark: MatchSearchMark,
+    mark: <MatchSearchMark />,
   },
   {
     name: "Career timeline",
     detail: "Every rank you have held and what changed around each move, on one line.",
     href: "/timeline",
-    Mark: TimelineMark,
+    mark: <TimelineMark />,
   },
   {
     name: "Season recap",
     detail: "The year read back to you — and a link you can share without an account.",
     href: "/recap",
-    Mark: RecapMark,
+    mark: <RecapMark />,
   },
   {
     name: "Milestone",
     detail: "What this month was worth, measured against the last one rather than a global mean.",
     href: "/milestone",
-    Mark: MilestoneMark,
+    mark: <MilestoneMark />,
   },
   {
     name: "Rank roadmap",
     detail: "Name the rank you want; get the fourteen-day plan and the check-ins that grade it.",
     href: "/roadmap",
-    Mark: RoadmapMark,
+    mark: <RoadmapMark />,
   },
   {
     name: "Improvement",
     detail: "Whether the thing you were told to fix is actually moving, game over game.",
     href: "/improvement",
-    Mark: ImprovementMark,
+    mark: <ImprovementMark />,
   },
   {
     name: "OTP assistant",
     detail: "For the one-trick: every matchup your champion has, ranked by what it costs you.",
     href: "/otp",
-    Mark: OtpMark,
+    mark: <OtpMark />,
   },
   {
     name: "Leaderboard",
     detail: "Where you sit against everyone else here, not against the whole server.",
     href: "/leaderboard",
-    Mark: LeaderboardMark,
+    mark: <LeaderboardMark />,
   },
   {
     name: "Badges",
     detail: "What you have actually done — earned from your match history, not from logging in.",
     href: "/achievements",
-    Mark: BadgesMark,
+    mark: <BadgesMark />,
   },
 ];
 
@@ -122,7 +126,9 @@ export function AccountBand(): React.ReactElement {
         <HudStagger className="grid grid-cols-1 gap-px border border-border bg-line-1 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f) => (
             <HudStaggerItem key={f.href} className="h-full">
-              <FeatureCard name={f.name} detail={f.detail} href={f.href} Mark={f.Mark} />
+              <FeatureCard name={f.name} detail={f.detail} href={f.href}>
+                {f.mark}
+              </FeatureCard>
             </HudStaggerItem>
           ))}
 
