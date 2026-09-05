@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { championSplashUrl } from "@/lib/ddragon";
 import { AnalyzeForm } from "./AnalyzeForm";
 import { HeroIntro, HeroSweep } from "./HeroMotion";
@@ -59,6 +60,18 @@ export function LandingHero(): React.ReactElement {
         </HeroIntro>
         <HeroIntro step={2}>
           <AnalyzeForm />
+        </HeroIntro>
+        {/* Text, not a second button: the hero rations its one filled control to the form.
+            It is here at all because the other half of what this site sells is a person,
+            and a visitor who wants that should not have to scroll to learn it exists. */}
+        <HeroIntro step={3}>
+          <p className="mt-3.5 text-[13px] text-text-muted">
+            Or{" "}
+            <Link href="/coaches" className="text-accent underline-offset-4 hover:underline">
+              book a human coach
+            </Link>{" "}
+            whose rank we read from their own Riot account.
+          </p>
         </HeroIntro>
       </div>
     </section>

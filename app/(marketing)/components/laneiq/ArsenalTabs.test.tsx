@@ -54,6 +54,16 @@ describe("ArsenalTabs", () => {
     expect(screen.getByRole("tabpanel")).toHaveTextContent(ARSENAL[0].headline);
   });
 
+  it("puts the human marketplace immediately after the AI coach", () => {
+    // The adjacency is the point: coaching here is two products, and the rail is the only
+    // place on the page that says so in one glance. Dropping the marketplace out of this
+    // list, or pushing it below the Academy and the draft room, would put it back where it
+    // was — a footnote to the report.
+    expect(ARSENAL[0].key).toBe("coach");
+    expect(ARSENAL[1].key).toBe("coaches");
+    expect(ARSENAL[1].href).toBe("/coaches");
+  });
+
   it("swaps the panel when a tab is clicked", () => {
     render(<ArsenalTabs />);
 

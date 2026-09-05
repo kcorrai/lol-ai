@@ -90,14 +90,25 @@ describe("HEADER_NAV", () => {
     expect(flat.map((l) => l.href)).not.toContain("/download");
   });
 
+  it("announces the coach marketplace on the bar, not inside a panel", () => {
+    // The point of the entry. `/coaches` is the one surface the rest of the site mentions
+    // once — a landing band and a footer link — and burying it in a panel is what made it
+    // read as a footnote to the AI coach rather than the other half of the product. A menu
+    // item here would pass every other test in this file and still lose the thing.
+    const flat = HEADER_NAV.filter((e) => !isMenu(e)) as HeaderLink[];
+    expect(flat.map((l) => l.href)).toContain("/coaches");
+  });
+
   it("never sends a visitor from the bar into a login form", () => {
     // The defect this file's Coaching panel had: "AI coach" and "Teams" pointed into the
-    // application, which the middleware guards, so the one person the panel is written for
+    // application, which the middleware guards, so the one person the panel was written for
     // — somebody deciding whether to sign up — was answered with a sign-in page. The bar is
     // the marketing site's own index; nothing on it may be behind the wall.
     //
-    // Read out of the middleware rather than listed again, so a path guarded tomorrow fails
-    // here rather than quietly becoming a dead end.
+    // That panel is gone and nothing here needs an exception any more: `/coaches` is the
+    // public storefront, and `/coach` — the console the middleware does guard — is a
+    // different path that no entry points at. Read out of the middleware rather than listed
+    // again, so a path guarded tomorrow fails here rather than quietly becoming a dead end.
     const source = readFileSync(resolve(process.cwd(), "middleware.ts"), "utf8");
     const list = source.match(/const PROTECTED_PATHS = \[([\s\S]*?)\]/);
     if (!list) throw new Error("PROTECTED_PATHS is no longer a literal — update this test");
@@ -105,13 +116,8 @@ describe("HEADER_NAV", () => {
     const guarded = [...list[1]!.matchAll(/^\s*"([^"]+)"/gm)].map((m) => m[1]!);
     expect(guarded.length).toBeGreaterThan(10);
 
-    // `/coaching` is on that list and is the exception the middleware makes: its index
-    // renders a public page when there is no session, so the bar may point at it.
-    const publicByRewrite = new Set(["/coaching"]);
-
     for (const link of allLinks()) {
       const page = pagePart(link.href);
-      if (publicByRewrite.has(page)) continue;
       const wall = guarded.find((p) => page === p || page.startsWith(`${p}/`));
       expect(wall, `${link.href} is guarded by ${wall} — the bar cannot point at it`).toBe(
         undefined

@@ -1,7 +1,7 @@
 import { Frame, Row } from "./ArsenalFrame";
 
 /**
- * The three text-only Arsenal illustrations. The two that draw a board — the
+ * The four text-only Arsenal illustrations. The two that draw a board — the
  * draft and the scoreboard — live in `ArsenalBoards` because they need champion
  * art and client-side motion; these are static and stay server-rendered.
  *
@@ -34,6 +34,56 @@ export function CoachVisual(): React.ReactElement {
       ))}
       <p className="mt-3 font-mono text-[10.5px] uppercase tracking-label text-text-faint">
         Free: 3 a month · Pro: unlimited
+      </p>
+    </Frame>
+  );
+}
+
+// ── Coaches ───────────────────────────────────────────────────────────────
+// A storefront card as it is actually built: the badge is the one thing no
+// competitor has, so it is what the card leads on. The three rows are the three
+// session kinds a coach can sell, under the names a student sees them by
+// (KIND_OPTIONS, src/domains/marketplace/components/options.ts:39). The prices are
+// illustrative — coaches set their own, inside the range the footer states
+// (MIN/MAX_PRICE_CENTS, src/domains/marketplace/policy.ts:69).
+const SELLS: ReadonlyArray<{ kind: string; shape: string; price: string }> = [
+  { kind: "Replay review", shape: "Async · your match ids", price: "$25" },
+  { kind: "Live 1:1 session", shape: "Scheduled · 60 min", price: "$40" },
+  { kind: "Live game coaching", shape: "They watch you queue", price: "$45" },
+];
+
+export function CoachMarketVisual(): React.ReactElement {
+  return (
+    <Frame label="// Coach card">
+      <div className="notch-sm border border-accent/40 bg-background p-3">
+        <div className="flex items-baseline justify-between gap-3">
+          <span className="font-display text-[13px] font-bold uppercase tracking-[0.05em] text-text">
+            Diamond I · Mid
+          </span>
+          <span className="shrink-0 font-mono text-[11px] text-accent">4.9 ★</span>
+        </div>
+        <p className="mt-1.5 font-mono text-[11px] uppercase tracking-label text-accent">
+          Rank checked by LaneIQ &middot; 6h ago
+        </p>
+        <p className="mt-0.5 text-[12.5px] text-text-muted">
+          Read from their own linked Riot account
+        </p>
+      </div>
+
+      <p className="hud-label mt-4">{"// What they sell"}</p>
+      <div className="mt-2 grid gap-2">
+        {SELLS.map((s) => (
+          <Row key={s.kind}>
+            <div className="flex items-baseline justify-between gap-3">
+              <span className="text-[13px] font-semibold text-text">{s.kind}</span>
+              <span className="shrink-0 font-mono text-[11px] text-accent">{s.price}</span>
+            </div>
+            <p className="mt-0.5 text-[12.5px] text-text-muted">{s.shape}</p>
+          </Row>
+        ))}
+      </div>
+      <p className="mt-3 font-mono text-[10.5px] uppercase tracking-label text-text-faint">
+        Coaches set their own price &middot; $5 to $1,000
       </p>
     </Frame>
   );

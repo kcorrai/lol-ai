@@ -5,9 +5,13 @@
  * wordmark, a search box and two calls to action runs out of room — so the eighth thing
  * this product shipped had nowhere to go, and the desktop companion never got announced.
  *
- * Four of the six entries are menus, so a new tool or a new lesson path lands inside a
+ * Three of the five entries are menus, so a new tool or a new lesson path lands inside a
  * panel that has room for it rather than on the bar that does not. Adding one here is a
  * one-line change with no layout consequence, which is the whole point of the shape.
+ *
+ * The two flat entries are the exception that proves it: a destination goes on the bar
+ * itself only when the bar is the thing announcing it, rather than one more place it can
+ * be found. That is true of pricing, and it is true of the coach marketplace.
  *
  * Marketing's own names, not `navConfig.ts`'s: the sidebar labels a screen for somebody who
  * already pays for it, and this labels it for somebody deciding whether to. The two drift
@@ -69,19 +73,19 @@ export const HEADER_NAV: readonly HeaderEntry[] = [
       { href: "/tools/multi-search", label: "Multi-search", hint: "Scout all ten, no login" },
     ],
   },
-  {
-    key: "coaching",
-    label: "Coaching",
-    items: [
-      // Both of these used to point into the application, which guards them: the visitor
-      // reading this panel to decide whether to sign up was answered with a login form.
-      // `/coaching` now renders a public page when there is no session (`middleware.ts`),
-      // and Teams goes where its argument actually is, the same place `CoachingBand` sends it.
-      { href: "/coaching", label: "AI coach", hint: "Your games read, one habit named" },
-      { href: "/coaches", label: "Find a coach", hint: "Ranks we checked ourselves" },
-      { href: "/pricing#teams", label: "Teams", hint: "One dashboard for the roster" },
-    ],
-  },
+  // The coach marketplace, on the bar rather than inside a panel.
+  //
+  // This was a three-item "Coaching" menu: the AI coach, the marketplace, and Teams. The
+  // other two are argued at length elsewhere — the AI coach is what four of the landing
+  // page's first five sections are about and is in the footer's Product column, and Teams
+  // is a pricing tier with its own section at `/pricing#teams`. Neither needed a bar entry;
+  // the human marketplace, which the site otherwise mentions once, did.
+  //
+  // A flat link and not a one-item panel, which `headerNav.test.ts` forbids for good
+  // reason: the click would buy nothing. "Coaches" rather than "Find a coach" because the
+  // bar's other words are one each, and it is the narrower of the two on a row that has
+  // already had its calls to action clipped once.
+  { href: "/coaches", label: "Coaches" },
   // The desktop app is deliberately *not* here. It used to be a flat link on the bar, which
   // was better than the panel it came from and still left it reading as the sixth of six
   // words in a row of grey type. It is now a bordered control next to the calls to action
