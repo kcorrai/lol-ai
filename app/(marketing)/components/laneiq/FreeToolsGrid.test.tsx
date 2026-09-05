@@ -13,12 +13,14 @@ describe("the free tools grid", () => {
   });
 
   // The tiles changed what they show. Where they go is the part that must not move.
-  it("keeps all six tools and their destinations", () => {
+  it("keeps every tool and its destination", () => {
     const { container } = render(<FreeToolsGrid />);
 
     const hrefs = [
       "/tools/counter-picker",
       "/tools/tier-list",
+      // The tools hub calls this its flagship, and the landing page used to omit it.
+      "/draft",
       "/tools/draft-analyzer",
       "/builds",
       "/aram/tier-list",
@@ -38,6 +40,16 @@ describe("the free tools grid", () => {
   it("leaves the drawings out of the accessibility tree", () => {
     const { container } = render(<FreeToolsGrid />);
 
-    expect(container.querySelectorAll("[aria-hidden='true']").length).toBeGreaterThanOrEqual(6);
+    expect(container.querySelectorAll("[aria-hidden='true']").length).toBeGreaterThanOrEqual(7);
+  });
+
+  // Six identical tiles made the ARAM tier list weigh exactly as much as the counter picker.
+  // The split is the whole point of the section's layout, so it is guarded rather than left
+  // to a class string nobody would notice losing.
+  it("gives the three lead tools a wider column than the four lookups", () => {
+    const { container } = render(<FreeToolsGrid />);
+
+    expect(container.querySelectorAll("a.lg\\:col-span-4")).toHaveLength(3);
+    expect(container.querySelectorAll("a.lg\\:col-span-3")).toHaveLength(4);
   });
 });
