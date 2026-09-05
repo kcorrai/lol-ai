@@ -13,28 +13,31 @@ const querySchema = z.object({
   puuid: z.string().min(1),
 });
 
-export const GET = withAuth(async (req: NextRequest, { userId }) => {
-  const rateCheck = await checkRateLimit(`build-explanation:${userId}`, BUILD_LIMIT);
-  if (!rateCheck.allowed) {
-    return rateLimitResponse(rateCheck.retryAfterMs, rateCheck.limit);
-  }
+export const GET = withAuth(
+  async (req: NextRequest, { userId }) => {
+    const rateCheck = await checkRateLimit(`build-explanation:${userId}`, BUILD_LIMIT);
+    if (!rateCheck.allowed) {
+      return rateLimitResponse(rateCheck.retryAfterMs, rateCheck.limit);
+    }
 
-  const segments = req.nextUrl.pathname.split("/");
-  const matchId = segments[3];
-  if (!matchId) throw Errors.validation("Missing matchId");
+    const segments = req.nextUrl.pathname.split("/");
+    const matchId = segments[3];
+    if (!matchId) throw Errors.validation("Missing matchId");
 
-  const raw = { puuid: req.nextUrl.searchParams.get("puuid") ?? "" };
-  const parsed = querySchema.safeParse(raw);
-  if (!parsed.success) throw Errors.validation(parsed.error.issues[0].message);
+    const raw = { puuid: req.nextUrl.searchParams.get("puuid") ?? "" };
+    const parsed = querySchema.safeParse(raw);
+    if (!parsed.success) throw Errors.validation(parsed.error.issues[0].message);
 
-  const { puuid } = parsed.data;
+    const { puuid } = parsed.data;
 
-  const participant = await prisma.matchParticipant.findFirst({
-    where: { matchId, puuid, riotAccount: { userId } },
-    select: { puuid: true },
-  });
-  if (!participant) throw Errors.forbidden("Not your match participant");
+    const participant = await prisma.matchParticipant.findFirst({
+      where: { matchId, puuid, riotAccount: { userId } },
+      select: { puuid: true },
+    });
+    if (!participant) throw Errors.forbidden("Not your match participant");
 
-  const result = await explainBuild(matchId, puuid);
-  return apiSuccess(result);
-});
+    const result = await explainBuild(matchId, puuid);
+    return apiSuccess(result);
+  },
+  { deviceAccess: true }
+);

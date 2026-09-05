@@ -126,6 +126,21 @@ const ALLOWED_PATHS: &[&str] = &[
     "/api/riot/*/plan",
     "/api/riot/*/plan/history",
     "/api/riot/*/ranked",
+    // The match detail screen (ADR-051). Every match row on the covered screens links to it,
+    // and until it was drawn here that click left the app. All four are owner-scoped reads of
+    // one already-recorded match; `build-explanation` is the only one that can reach a model,
+    // and only for a Pro account, from a cache, on a match the caller played.
+    //
+    // The wildcard is the match's own id, so it cannot be written down. It is also the first
+    // entry here whose `*` is the *last* segment, which is the form that has to be read
+    // carefully: it covers every single-segment route under `/api/match/`, not just an id. The
+    // two that exist today are this one and `/api/match/archive`, which is allowed above — but
+    // a future sibling would be swept in by writing it, rather than by a decision here. That
+    // is the cost of an id at the end of a path, and the reason the entry is not `/api/match/`.
+    "/api/match/*",
+    "/api/match/*/build-explanation",
+    "/api/match/*/lane-phase",
+    "/api/match/*/story",
 ];
 
 /// Reachable from those same pages and deliberately left out.
@@ -377,17 +392,39 @@ mod tests {
         assert!(!is_allowed("/api/recap/share-token-abc"));
     }
 
-    /// `/api/match/` would have swept in every match route; the archive is the only part
-    /// these screens read. A trailing slash is a promise about everything under it.
+    /// `/api/match/` would have swept in every match route and everything under it; the
+    /// archive and the detail are the parts these screens read. A trailing slash is a promise
+    /// about everything under it, and neither of those two is written as one.
     #[test]
     fn the_open_ended_entries_are_the_two_that_have_to_be() {
         // A saved search is deleted by id, so the id cannot be written down in the list.
         assert!(is_allowed("/api/match/archive/saved/abc-123"));
         assert!(is_allowed("/api/desktop/champions/Ahri"));
 
-        assert!(!is_allowed("/api/match/sync"));
+        // `/api/match/*` is one segment, so it stops where the detail's own readings are
+        // named. Anything deeper than those has to be added on purpose.
+        assert!(!is_allowed("/api/match/7f3d9c1e-0000-4000-8000-000000000000/sync"));
+        assert!(!is_allowed("/api/match/archive/options/raw"));
         assert!(!is_allowed("/api/riot/live-game"));
         assert!(!is_allowed("/api/riot/accounts/acc-1/disconnect"));
+    }
+
+    /// The match detail screen: the page itself and the three panels that read alongside it.
+    ///
+    /// The id is a wildcard, so this is also where the shape of that wildcard is checked — one
+    /// real segment, and no deeper reading than the three the screen asks for.
+    #[test]
+    fn the_match_detail_screen_is_allowed() {
+        let id = "7f3d9c1e-0000-4000-8000-000000000000";
+
+        assert!(is_allowed(&format!("/api/match/{id}")));
+        assert!(is_allowed(&format!("/api/match/{id}/lane-phase")));
+        assert!(is_allowed(&format!("/api/match/{id}/story")));
+        assert!(is_allowed(&format!("/api/match/{id}/build-explanation?puuid=abc")));
+
+        // An empty segment is not an id, and a second one is not a match.
+        assert!(!is_allowed("/api/match//story"));
+        assert!(!is_allowed(&format!("/api/match/{id}/story/raw")));
     }
 
     /// The half of the allowlist that matters. A device token is left on a machine; these

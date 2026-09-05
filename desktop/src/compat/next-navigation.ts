@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { back, currentRoute, goTo, navigate, useRoute } from "@/lib/router";
+import { routeParams } from "@/routes";
 
 /**
  * `next/navigation`, for the 73 website components this window renders (ADR-043).
@@ -59,24 +60,16 @@ export function useSearchParams(): URLSearchParams {
  *
  * Next reads these from the file-system route it matched. There is no such thing here, so
  * the route table records the segment names it captured and this reads them back — see
- * `matchRoute` in `@/routes`.
+ * `routeParams` in `@/routes`.
+ *
+ * It used to be a module variable that the route table was supposed to write on each match
+ * and nothing ever did, so this returned `{}` at every address. Nothing noticed, because
+ * until the match detail screen was lifted no screen here read a parameter. Deriving it from
+ * the address is what stops that being possible again: there is no write to forget.
  */
 export function useParams<T extends Record<string, string> = Record<string, string>>(): T {
   const { path } = useRoute();
-  return useMemo(() => readParams(path) as T, [path]);
-}
-
-let params: Record<string, string> = {};
-let paramsFor = "";
-
-/** Written by the route table when it matches, read back by `useParams`. */
-export function setParams(path: string, next: Record<string, string>): void {
-  paramsFor = path;
-  params = next;
-}
-
-function readParams(path: string): Record<string, string> {
-  return paramsFor === path ? params : {};
+  return useMemo(() => routeParams(path) as T, [path]);
 }
 
 /**

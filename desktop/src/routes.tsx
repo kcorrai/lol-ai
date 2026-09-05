@@ -20,6 +20,7 @@ import {
   Settings,
   Shield,
   Star,
+  Swords,
   TrendingUp,
   Trophy,
 } from "lucide-react";
@@ -97,6 +98,15 @@ export interface DesktopRoute {
   /** Shown in the sidebar. Not every route is worth a permanent button. */
   inRail: boolean;
   group: RouteGroup;
+  /**
+   * The dynamic segments under `path`, named in order.
+   *
+   * Next reads these from the file-system route it matched — `[matchId]` is a directory
+   * there. There are no directories here, so the name is written down once, and `routeParams`
+   * reads the segments back off the address for the `useParams` shim. A route without this
+   * has none, which is every route but one.
+   */
+  params?: readonly string[];
 }
 
 // `lazy` per screen rather than one bundle: the dashboard alone pulls in Recharts, and a
@@ -168,6 +178,25 @@ export const ROUTES: readonly DesktopRoute[] = [
     inRail: true,
     group: "performance",
     Component: lifted(() => import("../../app/(app)/matches/PageClient")),
+  },
+  // One match, opened from a row on another screen. Not in the rail: it is a destination
+  // rather than a section, and there is nothing to show at `/match` with no id.
+  //
+  // It is here because five covered screens link to it — the dashboard's last game, the
+  // archive's rows, the report rail, the heat map's recent list and the career timeline —
+  // and until it was drawn here, clicking any of them handed the player to their browser
+  // for a page this window can draw (ADR-051).
+  {
+    path: "/match",
+    label: "Match detail",
+    icon: Swords,
+    inRail: false,
+    group: "performance",
+    params: ["matchId"],
+    // The website's page component itself rather than a `PageClient` beside it: this page
+    // is already a client component top to bottom, so there was never a server half to
+    // split off.
+    Component: lifted(() => import("../../app/(app)/match/[matchId]/page")),
   },
   {
     path: "/analysis",
@@ -266,6 +295,46 @@ export function matchRoute(path: string): DesktopRoute | undefined {
   return ROUTES.filter((route) => path.startsWith(`${route.path}/`)).sort(
     (a, b) => b.path.length - a.path.length
   )[0];
+}
+
+/**
+ * The dynamic segments of an address, by the names its route gave them.
+ *
+ * What `useParams` returns, and the reason the route table has to be asked rather than the
+ * address parsed on its own: `/match/abc` has a segment that is an id and `/matches/abc` has
+ * one that is not, and only the table knows which is which.
+ *
+ * A segment that is missing is left out rather than filled with an empty string — the screen
+ * then sees the same `undefined` Next would give it for an address that has no such segment,
+ * and its own "not found" answers. A segment the address has and the table did not name is
+ * dropped, for the same reason `rendersHere` is not `matchRoute`: a lifted screen answers for
+ * its whole subtree, and the rest of that subtree is its business, not this function's.
+ */
+export function routeParams(path: string): Record<string, string> {
+  const route = matchRoute(path);
+  if (!route?.params?.length) return {};
+
+  const rest = path.slice(route.path.length).split("/").filter(Boolean);
+
+  const params: Record<string, string> = {};
+  route.params.forEach((name, index) => {
+    const segment = rest[index];
+    if (segment !== undefined) params[name] = decodeSegment(segment);
+  });
+  return params;
+}
+
+/**
+ * Next hands a decoded segment to `useParams`, so this does too. A half-written escape is
+ * not worth throwing over — the id is passed on as it arrived and the screen says it cannot
+ * find the match, which is true.
+ */
+function decodeSegment(segment: string): string {
+  try {
+    return decodeURIComponent(segment);
+  } catch {
+    return segment;
+  }
 }
 
 /**

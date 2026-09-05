@@ -1045,7 +1045,8 @@ Analyze a full 10-champion draft for both teams.
 
 AI analysis of a specific participant's build in a match.
 
-**Auth:** Required — user must own the participant (linked RiotAccount)  
+**Auth:** Required — session cookie or a paired device token (`deviceAccess`). The caller must own
+the participant (linked RiotAccount).  
 **Rate limit:** 10 req/hour per user
 
 **Query params:**
@@ -1087,8 +1088,9 @@ AI analysis of a specific participant's build in a match.
 The lane, minute by minute, as a difference against the player opposite — built from the captured
 match timeline (LA-45, [ADR-033](./adr/ADR-033-match-timeline-capture.md)).
 
-**Auth:** Required — the caller must have played in the match, matched by puuid across every linked
-account, so a shared linked account still resolves (TASK-228).
+**Auth:** Required — session cookie or a paired device token (`deviceAccess`). The caller must have
+played in the match, matched by puuid across every linked account, so a shared linked account still
+resolves (TASK-228).
 
 **Path params:** `matchId` — the internal match uuid, not the Riot match id.
 
@@ -1142,8 +1144,9 @@ match story section of `/match/[matchId]` — a scrubbable gold-difference curve
 events marked on it, on the Rift beside it and in a feed below. `lane-phase` above stays the source
 for the two-player lane curve — this endpoint does not replace it.
 
-**Auth:** Required — same rule as `lane-phase`: the caller must have played in the match, matched by
-puuid across every linked account (TASK-228).
+**Auth:** Required — same rule as `lane-phase`: session cookie or a paired device token
+(`deviceAccess`), and the caller must have played in the match, matched by puuid across every linked
+account (TASK-228).
 
 **Path params:** `matchId` — the internal match uuid, not the Riot match id.
 

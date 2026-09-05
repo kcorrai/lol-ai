@@ -3,6 +3,7 @@ import {
   GROUP_LABELS,
   railGroups,
   rendersHere,
+  routeParams,
   ROUTES,
   type DesktopRoute,
   type RouteGroup,
@@ -99,6 +100,13 @@ describe("rendersHere", () => {
     expect(rendersHere("/coaching/some-report-id")).toBe(true);
   });
 
+  // The click that used to leave the app: every match row on the covered screens links to
+  // `/match/<id>`, and a path the table did not carry was handed to the browser (ADR-051).
+  it("draws a match at its own address", () => {
+    expect(rendersHere("/match/7f3d9c1e-0000-4000-8000-000000000000")).toBe(true);
+    expect(rendersHere("/match")).toBe(true);
+  });
+
   it("hands back what the table does not mention", () => {
     expect(rendersHere("/pricing")).toBe(false);
     expect(rendersHere("/coaches")).toBe(false);
@@ -114,6 +122,45 @@ describe("rendersHere", () => {
     for (const route of ROUTES) {
       expect([route.path, rendersHere(route.path)]).toEqual([route.path, true]);
     }
+  });
+});
+
+/**
+ * What `useParams` hands a lifted screen.
+ *
+ * The match detail page reads `matchId` and shows "match not found" without one, so this is
+ * the difference between the screen working and the screen apologising.
+ */
+describe("routeParams", () => {
+  it("names the segment the table said it would", () => {
+    expect(routeParams("/match/TR1_7412345678")).toEqual({ matchId: "TR1_7412345678" });
+  });
+
+  it("decodes it, the way Next does", () => {
+    expect(routeParams("/match/TR1_2026-06-20T12%3A00%3A00Z_Yasuo")).toEqual({
+      matchId: "TR1_2026-06-20T12:00:00Z_Yasuo",
+    });
+  });
+
+  // A half-written escape is a bad id, not a crash. The screen says it cannot find the match.
+  it("passes on a segment it cannot decode", () => {
+    expect(routeParams("/match/100%")).toEqual({ matchId: "100%" });
+  });
+
+  it("leaves out a segment the address does not have", () => {
+    expect(routeParams("/match")).toEqual({});
+  });
+
+  // `/matches/abc` is the archive answering for its own subtree, and `abc` is not an id it
+  // told anyone about. Only a route that named its segments has any.
+  it("finds none where the table named none", () => {
+    expect(routeParams("/matches/TR1_7412345678")).toEqual({});
+    expect(routeParams("/dashboard")).toEqual({});
+    expect(routeParams("/nowhere/at/all")).toEqual({});
+  });
+
+  it("ignores what the route did not name", () => {
+    expect(routeParams("/match/abc/story/extra")).toEqual({ matchId: "abc" });
   });
 });
 
