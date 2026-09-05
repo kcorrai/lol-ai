@@ -1,45 +1,55 @@
-import Image from "next/image";
 import Link from "next/link";
 import { DDRAGON_VERSION } from "@/lib/ddragon";
 import { SectionHead } from "./SectionHead";
+import {
+  AramMark,
+  BuildMark,
+  CounterMark,
+  DraftMark,
+  MetaMark,
+  TierMark,
+} from "./screens/toolMarks";
 
 interface ToolTile {
   name: string;
   href: string;
   stat: string;
-  /** File in /public/screenshots, without extension. */
-  shot: string;
+  Mark: () => React.ReactElement;
 }
 
 /**
- * The tiles show the tools themselves now, not champion art.
+ * The tiles draw what each tool answers.
  *
- * Splash art made six identical decorative rectangles — pretty, and completely
- * silent about what any of these do. `scripts/captureScreenshots.ts` shoots the
- * real pages, deep-linked so each one is full of data rather than sitting on an
- * empty "select a champion" form. Re-run it when the design or the patch moves.
+ * They have been three things. Champion splash art, which made six identical decorative
+ * rectangles that said nothing about what any of these do. Then real captures of the tool
+ * pages, which said the right thing at the wrong size: a 1440px page inside a 400px tile is a
+ * 3.5x reduction, and all six came out as grey rectangles with a green smudge. Now a drawing
+ * small enough to be read at the size it is actually shown — ADR-050.
+ *
+ * The label moved out from on top of the art and onto a strip of its own underneath. Over a
+ * photograph a gradient was enough to keep it legible; over a diagram it covered the diagram.
  */
 const TOOLS: readonly ToolTile[] = [
   {
     name: "Counter picker",
     href: "/tools/counter-picker",
     stat: "Every lane matchup",
-    shot: "counters",
+    Mark: CounterMark,
   },
-  { name: "Tier list", href: "/tools/tier-list", stat: "All roles, all tiers", shot: "tier-list" },
+  { name: "Tier list", href: "/tools/tier-list", stat: "All roles, all tiers", Mark: TierMark },
   {
     name: "Draft analyzer",
     href: "/tools/draft-analyzer",
     stat: "Both sides graded",
-    shot: "draft-analyzer",
+    Mark: DraftMark,
   },
-  { name: "Champion builds", href: "/builds", stat: "Runes, items, skills", shot: "builds" },
-  { name: "ARAM tier list", href: "/aram/tier-list", stat: "Howling Abyss only", shot: "aram" },
+  { name: "Champion builds", href: "/builds", stat: "Runes, items, skills", Mark: BuildMark },
+  { name: "ARAM tier list", href: "/aram/tier-list", stat: "Howling Abyss only", Mark: AramMark },
   {
     name: "Patch meta report",
     href: "/meta",
     stat: `Data Dragon ${DDRAGON_VERSION}`,
-    shot: "meta",
+    Mark: MetaMark,
   },
 ];
 
@@ -60,37 +70,31 @@ export function FreeToolsGrid(): React.ReactElement {
             <Link
               key={t.href}
               href={t.href}
-              // No box-shadow glow here: `notch` sets a clip-path, and clip-path
-              // clips the shadow away. Emission comes from the art and the top edge.
-              className="notch group relative block h-[180px] overflow-hidden border border-border transition-colors duration-[160ms] ease-out hover:border-accent motion-reduce:transition-none"
+              // No box-shadow glow here: `notch` sets a clip-path, and clip-path clips the
+              // shadow away. Emission comes from the top edge.
+              className="notch group relative flex h-[180px] flex-col overflow-hidden border border-border bg-surface transition-colors duration-[160ms] ease-out hover:border-accent motion-reduce:transition-none"
             >
-              {/* The art carries the hover: it brightens and de-dims while the
-                  protective gradient pulls back. Nothing scales — the system
-                  forbids growth on hover (ADR-015). */}
-              {/* Framed on the middle of each page, not the top of it. Anchored
-                  at the top, all six tiles showed the same site header and the
-                  grid read as six copies of one screenshot; at 42% each lands on
-                  its own data — the counter bars, the tier rows, the rune page.
-                  Dimmed at rest so the label stays the loudest thing on it. */}
-              <Image
-                src={`/screenshots/${t.shot}.jpg`}
-                alt=""
-                aria-hidden
-                fill
-                sizes="(max-width: 1024px) 50vw, 400px"
-                className="object-cover object-[50%_42%] opacity-[0.6] brightness-[0.85] saturate-[0.95] transition-[opacity,filter] duration-[260ms] ease-out group-hover:opacity-100 group-hover:brightness-110 group-hover:saturate-100 motion-reduce:transition-none"
-              />
-              <div className="absolute inset-0 bg-[linear-gradient(0deg,var(--ink-1000)_12%,rgba(6,10,9,.28)_70%)] transition-opacity duration-[260ms] ease-out group-hover:opacity-70 motion-reduce:transition-none" />
+              {/* The drawing sits on the instrument grid, dimmed at rest so the label below
+                  stays the loudest thing on the tile, and coming up under the cursor. Nothing
+                  scales — the system forbids growth on hover (ADR-015). */}
+              <div
+                className="flex flex-1 items-center px-4 opacity-80 transition-opacity duration-[260ms] ease-out group-hover:opacity-100 motion-reduce:transition-none"
+                style={{ background: "var(--bg-grid)" }}
+              >
+                <div className="w-full">
+                  <t.Mark />
+                </div>
+              </div>
 
-              {/* 1px accent top edge — the system's signature for an interactive
-                  card under the cursor. Fades rather than wipes so it reads as
-                  emission, not a loading bar. */}
+              {/* 1px accent top edge — the system's signature for an interactive card under
+                  the cursor. Fades rather than wipes so it reads as emission, not a loading
+                  bar. */}
               <span
                 aria-hidden
                 className="absolute inset-x-0 top-0 h-px bg-accent opacity-0 transition-opacity duration-[160ms] ease-out group-hover:opacity-100 motion-reduce:transition-none"
               />
 
-              <div className="absolute inset-x-0 bottom-0 p-4">
+              <div className="border-t border-border bg-surface p-4">
                 <p className="font-display text-base font-extrabold uppercase tracking-[0.05em] text-text">
                   {t.name}
                 </p>

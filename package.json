@@ -16,7 +16,6 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "capture:screenshots": "tsx scripts/captureScreenshots.ts",
     "sync:champions": "tsx scripts/syncChampions.ts",
     "discord:register": "tsx scripts/registerDiscordCommands.ts",
     "sync:quiz-data": "tsx scripts/syncQuizChampionData.ts",
