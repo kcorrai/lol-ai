@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { normalizeChampionKey, championIconUrl, DDRAGON_VERSION } from "@/lib/ddragon";
+import { normalizeChampionKey, championIconUrl, roleIconUrl, DDRAGON_VERSION } from "@/lib/ddragon";
 import { DDRAGON_CHAMPION_IDS } from "@/lib/ddragonChampionIds.fixture";
 
 describe("normalizeChampionKey", () => {
@@ -74,6 +74,23 @@ describe("championIconUrl", () => {
   it("builds a Data Dragon icon URL for a previously broken champion", () => {
     expect(championIconUrl("Kai'Sa")).toBe(
       `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/img/champion/Kaisa.png`
+    );
+  });
+});
+
+describe("roleIconUrl", () => {
+  // Riot names these files after the same positions the DB stores, so the lane
+  // shorthands the UI shows ("Mid", "ADC") must not leak into the URL: `mid` and
+  // `bot` are 404s, and a 404 here is a broken icon on every match row.
+  it.each([
+    ["TOP", "top"],
+    ["JUNGLE", "jungle"],
+    ["MIDDLE", "middle"],
+    ["BOTTOM", "bottom"],
+    ["UTILITY", "utility"],
+  ])("names the %s icon after the stored position", (position, file) => {
+    expect(roleIconUrl(position)).toBe(
+      `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-parties/global/default/icon-position-${file}.png`
     );
   });
 });

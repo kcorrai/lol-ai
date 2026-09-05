@@ -82,10 +82,13 @@ export function rankEmblemUrl(tier: string): string {
   return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-mini-crests/${tier.toLowerCase()}.png`;
 }
 
-// Position/role icons — DB stores: TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY
+// Position/role icons — DB stores: TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY, which is
+// also how Riot names these files. The `position-selector` folder these used to come
+// from is gone from CommunityDragon's `latest` and 404'd for every role, which left
+// every role icon in the app rendering its broken-image fallback.
 export function roleIconUrl(position: string): string {
   const p = position.toLowerCase();
-  return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/position-selector/positions/icon-position-${p}.png`;
+  return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-parties/global/default/icon-position-${p}.png`;
 }
 
 export function profileIconUrl(iconId: number): string {

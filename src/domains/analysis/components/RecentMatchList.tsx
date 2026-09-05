@@ -46,25 +46,30 @@ function RoleFilterBtn({
 }) {
   const [errored, setErrored] = useState(false);
   return (
+    // Same chip as every other filter in this row. It was an icon-only 44px square, which
+    // read as an empty box beside the text chips — and worse when the icon failed to load,
+    // since the whole button then held nothing but a 10px word. The label always renders;
+    // the icon is decoration on top of it.
     <button
       onClick={onClick}
-      title={ROLE_SHORT[role]}
-      className={`flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md transition-colors ${
-        active ? "bg-accent/20 ring-1 ring-accent" : "bg-surface-2 hover:bg-surface-2/80"
+      aria-pressed={active}
+      className={`flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
+        active ? "bg-accent/20 text-accent" : "bg-surface-2 text-text-muted hover:text-text"
       }`}
     >
-      {!errored ? (
+      {!errored && (
         <Image
           src={roleIconUrl(role)}
-          alt={role}
-          width={18}
-          height={18}
+          alt=""
+          aria-hidden
+          width={14}
+          height={14}
           onError={() => setErrored(true)}
           unoptimized
+          className="opacity-80"
         />
-      ) : (
-        <span className="text-[10px] font-bold text-text-muted">{ROLE_SHORT[role]}</span>
       )}
+      {ROLE_SHORT[role]}
     </button>
   );
 }
