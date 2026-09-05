@@ -9,13 +9,16 @@ import { ARSENAL, type ArsenalKey } from "./ArsenalPanels";
 const ADVANCE_MS = 7000;
 
 /**
- * The five things LaneIQ is, in one panel.
+ * The six things LaneIQ is, in one panel.
  *
  * The page used to explain exactly one of them — paste a Riot ID, get a report —
  * and left the Academy, the Draft Room, the esports hub and the streamer kit
- * undiscoverable to anyone who had not already signed up. Five separate bands
+ * undiscoverable to anyone who had not already signed up. Six separate bands
  * would have doubled the page; one panel that rotates through them costs a
  * screen and a half.
+ *
+ * The second tab is the human coach marketplace, next to the AI one on purpose:
+ * whichever tab a reader lands on, the rail says the product sells both.
  *
  * Auto-advance is a courtesy for the reader who does not know there is anything
  * to click, so it stops the moment they show intent (hover, focus, or a click)
@@ -59,7 +62,7 @@ export function ArsenalTabs(): React.ReactElement {
   return (
     <section id="arsenal" className="px-5 pt-16 md:px-8 md:pt-[72px]">
       <div className="mx-auto max-w-[1240px]">
-        <SectionHead title="One account, the whole stack" aside="Five ways in" />
+        <SectionHead title="One account, the whole stack" aside="Six ways in" />
 
         <div
           className="notch-lg grid grid-cols-1 overflow-hidden border border-border bg-surface lg:grid-cols-[300px_1fr]"
@@ -118,8 +121,8 @@ export function ArsenalTabs(): React.ReactElement {
             })}
 
             {/* The rail is stretched to the panel's height, and the `bg-line-1`
-                that draws the 1px dividers shows through whatever the five tabs
-                do not fill — which read as a blank sixth tab. This fills the
+                that draws the 1px dividers shows through whatever the tabs
+                do not fill — which read as one more blank tab. This fills the
                 remainder with the panel ground instead. */}
             <span aria-hidden className="hidden flex-1 bg-background lg:block" />
           </div>

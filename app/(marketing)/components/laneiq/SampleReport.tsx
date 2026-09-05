@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { championSplashUrl } from "@/lib/ddragon";
 import { ActionRow, InsightCard, Meter } from "./ReportParts";
@@ -120,6 +121,19 @@ export function SampleReport(): React.ReactElement {
             </HudStagger>
           </div>
         </div>
+      </div>
+
+      {/* The one link in the page body to the AI coach's own page. It used to be a menu
+          entry on the bar, which is now the coach marketplace's — and a product argued by
+          four sections needs a way through to its own page more than it needs a word in a
+          panel. The footer's Product column carries the other one. */}
+      <div className="mx-auto mt-4 flex max-w-[1240px] justify-end">
+        <Link
+          href="/coaching"
+          className="font-mono text-[11px] uppercase tracking-label text-accent"
+        >
+          How the report is built &rarr;
+        </Link>
       </div>
     </section>
   );

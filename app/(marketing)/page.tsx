@@ -18,13 +18,13 @@ import { PricingStrip } from "./components/laneiq/PricingStrip";
 import { ClosingSplash } from "./components/laneiq/ClosingSplash";
 
 export const metadata: Metadata = {
-  title: { absolute: "LoL AI Coach — Free LoL Tools & AI-Powered Coaching" },
+  title: { absolute: "LoL AI Coach — Free LoL Tools, AI Coaching & Real Coaches" },
   description:
-    "Paste your Riot ID and get the one habit costing you LP. Free League of Legends tools — counters, matchups, draft analysis and tier lists from real ranked data. Plus a 61-lesson academy, a fearless draft room and live esports. No login required for the tools.",
+    "Paste your Riot ID and get the one habit costing you LP — or book a human coach whose rank we read from their own Riot account. Free League of Legends tools: counters, matchups, draft analysis and tier lists from real ranked data. Plus a 61-lesson academy, a fearless draft room and live esports. No login required for the tools.",
   openGraph: {
-    title: "LoL AI Coach — Free LoL Tools & AI-Powered Coaching",
+    title: "LoL AI Coach — Free LoL Tools, AI Coaching & Real Coaches",
     description:
-      "Free LoL tools from real ranked data — counters, matchups, drafts, tier lists — plus AI coaching on your own games.",
+      "Free LoL tools from real ranked data — counters, matchups, drafts, tier lists — plus AI coaching on your own games and human coaches whose rank we checked.",
     type: "website",
   },
 };
@@ -37,6 +37,10 @@ export const metadata: Metadata = {
  * `HowItWorksStrip` sits third rather than eighth. It used to come after the
  * sample report, which showed a first-time reader the payoff before telling them
  * what produced it.
+ *
+ * `CoachingBand` sits fifth rather than fourteenth. Coaching here means two products —
+ * a report and a person — and the page argued the first sixteen times and the second
+ * once, near the bottom. The human one now answers the sample report directly.
  */
 export default function LandingPage(): React.ReactElement {
   return (
@@ -45,6 +49,10 @@ export default function LandingPage(): React.ReactElement {
       <DataStrip />
       <HowItWorksStrip />
       <SampleReport />
+
+      {/* Straight after the report, because it is the answer to the reader the report
+          did not convince: the same job, done by a person we checked. */}
+      <CoachingBand />
 
       {/* The Academy, Draft Room, esports hub and streamer kit all ship, and none
           of them appeared anywhere on this page before. */}
@@ -69,7 +77,6 @@ export default function LandingPage(): React.ReactElement {
       <FreeToolsGrid />
       <DailyQuizStrip />
       <TierListPreview />
-      <CoachingBand />
       <ProvenanceStrip />
       <PricingStrip />
       <ClosingSplash />

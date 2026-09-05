@@ -1,9 +1,9 @@
 "use client";
 
-import { AcademyVisual, CoachVisual, CreatorVisual } from "./ArsenalVisuals";
+import { AcademyVisual, CoachVisual, CoachMarketVisual, CreatorVisual } from "./ArsenalVisuals";
 import { DraftVisual, EsportsVisual } from "./ArsenalBoards";
 
-export type ArsenalKey = "coach" | "academy" | "draft" | "esports" | "creator";
+export type ArsenalKey = "coach" | "coaches" | "academy" | "draft" | "esports" | "creator";
 
 export interface ArsenalEntry {
   key: ArsenalKey;
@@ -45,6 +45,29 @@ export const ARSENAL: readonly ArsenalEntry[] = [
     cta: "See a full report",
     href: "#report",
     Panel: CoachVisual,
+  },
+  {
+    // Second, immediately after the AI one, because that adjacency is the claim: the
+    // report and the person are two products here, not a product and an upsell. Every
+    // number below is read from the section itself — the badge refresh is
+    // `refreshCoachRanks.ts` (every 6 hours, stale at 36), the three kinds are
+    // `KIND_OPTIONS` in `marketplace/components/options.ts`, and the review blind is
+    // `REVIEW_BLIND_DAYS` in `marketplace/policy.ts`.
+    key: "coaches",
+    title: "Coaches",
+    hint: "A person, with a rank we checked",
+    kicker: "// The person",
+    headline: "Book a human whose rank we read ourselves",
+    body: "A storefront you can filter by rank, role, language and price. Every rank on it was read from that coach's own linked Riot account and is shown with the date we checked it — nobody here typed their rank into a box.",
+    points: [
+      "Replay review, live 1:1 session, or live game coaching",
+      "Rank re-read from Riot every six hours, always dated",
+      "Price and free slots visible before you message anyone",
+      "Every booking change recorded with who did it and why",
+    ],
+    cta: "Browse coaches",
+    href: "/coaches",
+    Panel: CoachMarketVisual,
   },
   {
     key: "academy",
