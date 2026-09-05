@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { parsePosition, POSITION_LABELS } from "@/domains/meta";
+import { getMetaSnapshot, parsePosition, POSITION_LABELS, POSITION_SLUG } from "@/domains/meta";
 import { BuildView } from "@/domains/meta/components/build/BuildView";
 import { ProPlayStrip } from "@/domains/esports/components/ProPlayStrip";
 import { loadBuildData } from "@/domains/meta/components/build/loadBuildData";
@@ -8,10 +8,28 @@ import { loadBuildData } from "@/domains/meta/components/build/loadBuildData";
 export const revalidate = 43200; // 12h ISR
 export const dynamicParams = true;
 
-// Lane variants render on demand (ISR); the primary /builds/[champion] page is
-// prerendered, which is enough for initial crawl.
-export function generateStaticParams(): { champion: string; role: string }[] {
-  return [];
+/**
+ * Prerender every lane of the ~30 most-picked champions; the rest render on demand (ISR),
+ * the discipline `/builds/[champion]`, `/aram` and `/counters` already follow.
+ *
+ * The list must not be empty, which is what it used to return. A dynamic route with nothing
+ * in the prerender manifest has no fallback to render an unknown param through, so Next
+ * generates it as a static render with no way to bail out — and the `(tools)` layout reads
+ * the session, which is dynamic. Every lane URL then answered 500 in production while dev,
+ * where nothing is statically generated, served all 270 of them happily.
+ */
+export async function generateStaticParams(): Promise<{ champion: string; role: string }[]> {
+  const snapshot = await getMetaSnapshot();
+  if (!snapshot) return [];
+  return [...snapshot.champions]
+    .sort((a, b) => b.overallPickRate - a.overallPickRate)
+    .slice(0, 30)
+    .flatMap((champion) =>
+      champion.positions.map((entry) => ({
+        champion: champion.championKey,
+        role: POSITION_SLUG[entry.position],
+      }))
+    );
 }
 
 interface PageProps {
