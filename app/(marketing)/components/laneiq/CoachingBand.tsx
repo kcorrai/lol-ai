@@ -1,4 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
+import { championSplashUrl, rankEmblemUrl } from "@/lib/ddragon";
 import { SectionHead } from "./SectionHead";
 import { EdgeSweep, HudStagger, HudStaggerItem } from "./motion";
 
@@ -76,9 +78,33 @@ export function CoachingBand(): React.ReactElement {
         <SectionHead title="When you want a person" aside="Coach marketplace" />
 
         <div className="notch-lg relative overflow-hidden border border-border bg-surface">
+          {/* Ground art, on `AcademyBand`'s pattern — a champion at a fifth of full strength
+              under a gradient and the scanlines. Not a coach: there are no photographs of these
+              people and inventing some would be the one dishonest thing this section could do,
+              given that its whole argument is that what it shows you was checked. */}
+          <Image
+            src={championSplashUrl("Braum")}
+            alt=""
+            aria-hidden
+            fill
+            sizes="(max-width: 1240px) 100vw, 1240px"
+            className="object-cover object-[46%_14%] opacity-[0.5] grayscale-[0.25]"
+          />
+          {/* Tuned by looking, twice. `AcademyBand`'s weights put the art in the DOM and left it
+              invisible on screen — the bytes without the picture. Two things were eating it: the
+              gradient was densest across the left column, which is the only half that is
+              transparent, and the right column paints its own opaque `bg-surface-dark` over
+              everything behind it. So the dark end is pulled back to the first eighth, where the
+              headline actually needs contrast, and clears from there. */}
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-[linear-gradient(90deg,var(--ink-1000)_10%,rgba(6,10,9,.70)_38%,rgba(6,10,9,.34)_100%)]"
+          />
+          <div aria-hidden className="bg-scanline absolute inset-0" />
+
           <EdgeSweep />
 
-          <div className="grid lg:grid-cols-[1.05fr_1fr]">
+          <div className="relative grid lg:grid-cols-[1.05fr_1fr]">
             <div className="border-b border-border p-6 md:p-8 lg:border-b-0 lg:border-r">
               <span className="font-mono text-[11px] uppercase tracking-label text-accent">
                 {"// Marketplace"}
@@ -116,7 +142,10 @@ export function CoachingBand(): React.ReactElement {
               </Link>
             </div>
 
-            <div className="flex flex-col bg-surface-dark p-6 md:p-8">
+            {/* Not `bg-surface-dark`: opaque, it painted over the ground art behind the whole
+                right half. At 82% the column still reads as the darker of the two and the
+                picture survives underneath it. */}
+            <div className="flex flex-col bg-surface-dark/[0.82] p-6 md:p-8">
               <span className="hud-label">{"// Three ways to be coached"}</span>
               <HudStagger className="mt-3.5 grid gap-2.5">
                 {SELLS.map((s, i) => (
@@ -137,6 +166,33 @@ export function CoachingBand(): React.ReactElement {
                   </HudStaggerItem>
                 ))}
               </HudStagger>
+
+              {/* The badge itself, which the column below spent four bullets describing and
+                  never showed. The crest is Riot's own — the same asset the leaderboard and
+                  `RankedCard` draw — because a rank we say we read should look like the rank
+                  the game gives, not like a word we typed. No portrait and no name: the coach
+                  is a real person we do not have, and a made-up one would undercut the only
+                  claim this section makes. */}
+              <div className="notch-sm mt-6 flex items-center gap-3.5 border border-accent/40 bg-background p-4">
+                <Image
+                  src={rankEmblemUrl("DIAMOND")}
+                  alt=""
+                  aria-hidden
+                  width={46}
+                  height={46}
+                  unoptimized
+                  className="shrink-0"
+                />
+                <div className="min-w-0">
+                  <p className="font-display text-[14px] font-bold uppercase tracking-[0.05em] text-text">
+                    Diamond I · Mid
+                  </p>
+                  <p className="mt-1 font-mono text-[10.5px] uppercase tracking-label text-accent">
+                    Rank checked by LaneIQ &middot; 6h ago
+                  </p>
+                </div>
+                <span className="ml-auto shrink-0 font-mono text-[11px] text-accent">4.9 ★</span>
+              </div>
 
               <p className="mt-auto max-w-[46ch] pt-6 font-mono text-[10.5px] uppercase leading-relaxed tracking-label text-text-faint">
                 One booking is one session &middot; no packages &middot; reviews stay blind for 14

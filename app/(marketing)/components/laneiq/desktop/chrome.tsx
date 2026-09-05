@@ -14,6 +14,13 @@
  *
  * Everything here is presentational and server-rendered: no state, no motion, no client
  * bundle. The sections that place these supply the entrance animation.
+ *
+ * The drawings do carry real Data Dragon art — item icons and champion portraits — and those
+ * leaves (`ItemIcon`, `ChampionIcon`) are client components, because both fall back to a plain
+ * tile when the CDN misses. That is not a retreat from "drawn, not photographed" (ADR-050):
+ * the rule is about not photographing our own screens. The game's art is the game's, the real
+ * panels draw exactly these icons, and a build path written out as five words was a worse
+ * likeness than one showing what a player recognises mid-game.
  */
 
 /**
