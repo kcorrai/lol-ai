@@ -1,6 +1,21 @@
 import Link from "next/link";
 import { SectionHead } from "./SectionHead";
 import { HudStagger, HudStaggerItem } from "./motion";
+import { FeatureCard } from "./screens/account/FeatureCard";
+import {
+  HeatMapMark,
+  ImprovementMark,
+  MatchSearchMark,
+  OtpMark,
+  TimelineMark,
+} from "./screens/account/performanceMarks";
+import {
+  BadgesMark,
+  LeaderboardMark,
+  MilestoneMark,
+  RecapMark,
+  RoadmapMark,
+} from "./screens/account/progressMarks";
 
 /**
  * The ten screens an account opens that this page never named.
@@ -15,15 +30,23 @@ import { HudStagger, HudStaggerItem } from "./motion";
  * and this labels it for somebody deciding whether to. Neither list should move because the
  * other one did.
  *
- * No pictures either, which is not the same decision the rest of the page made. `ProductShowcase`
- * draws four screens because four is a number a reader looks at; ten drawings would be a
- * contact sheet, and nobody reads a contact sheet. This band names them instead.
+ * It had no pictures either, which was not the decision the rest of the page made.
+ * `ProductShowcase` draws four screens because four is a number a reader looks at; ten drawn at
+ * once would be a contact sheet, and nobody reads a contact sheet.
+ *
+ * Ten drawn *one at a time* is a different object. Each cell now carries the screen it names,
+ * shown only while the pointer is on it — so the section still reads as a list of ten names,
+ * and a reader who wants to know what one of them looks like can find out without leaving the
+ * page. `screens/account/FeatureCard.tsx` is the panel; ADR-052 is why it is allowed to open
+ * over its neighbours.
  */
 
 interface Feature {
   name: string;
   detail: string;
   href: string;
+  /** The screen, drawn — shown in the preview panel. Read off the real one, and it cites it. */
+  Mark: () => React.ReactElement;
 }
 
 const FEATURES: readonly Feature[] = [
@@ -31,51 +54,61 @@ const FEATURES: readonly Feature[] = [
     name: "Heat map",
     detail: "Where you die, drawn on the map. The shape of it is usually the habit.",
     href: "/analysis",
+    Mark: HeatMapMark,
   },
   {
     name: "Match search",
     detail: "Your whole history, filtered by champion, role, queue, patch or who you queued with.",
     href: "/matches",
+    Mark: MatchSearchMark,
   },
   {
     name: "Career timeline",
     detail: "Every rank you have held and what changed around each move, on one line.",
     href: "/timeline",
+    Mark: TimelineMark,
   },
   {
     name: "Season recap",
     detail: "The year read back to you — and a link you can share without an account.",
     href: "/recap",
+    Mark: RecapMark,
   },
   {
     name: "Milestone",
     detail: "What this month was worth, measured against the last one rather than a global mean.",
     href: "/milestone",
+    Mark: MilestoneMark,
   },
   {
     name: "Rank roadmap",
     detail: "Name the rank you want; get the fourteen-day plan and the check-ins that grade it.",
     href: "/roadmap",
+    Mark: RoadmapMark,
   },
   {
     name: "Improvement",
     detail: "Whether the thing you were told to fix is actually moving, game over game.",
     href: "/improvement",
+    Mark: ImprovementMark,
   },
   {
     name: "OTP assistant",
     detail: "For the one-trick: every matchup your champion has, ranked by what it costs you.",
     href: "/otp",
+    Mark: OtpMark,
   },
   {
     name: "Leaderboard",
     detail: "Where you sit against everyone else here, not against the whole server.",
     href: "/leaderboard",
+    Mark: LeaderboardMark,
   },
   {
     name: "Badges",
     detail: "What you have actually done — earned from your match history, not from logging in.",
     href: "/achievements",
+    Mark: BadgesMark,
   },
 ];
 
@@ -94,22 +127,8 @@ export function AccountBand(): React.ReactElement {
 
         <HudStagger className="grid grid-cols-1 gap-px border border-border bg-line-1 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f) => (
-            <HudStaggerItem key={f.href}>
-              <Link
-                href={f.href}
-                className="group relative flex h-full flex-col bg-background p-5 transition-colors duration-[160ms] ease-out hover:bg-surface-2"
-              >
-                {/* One accent edge on hover — the system's signature for a live card.
-                    Nothing scales: ADR-015 forbids growth on hover. */}
-                <span
-                  aria-hidden
-                  className="absolute inset-x-0 top-0 h-px bg-accent opacity-0 transition-opacity duration-[160ms] ease-out group-hover:opacity-100 motion-reduce:transition-none"
-                />
-                <p className="font-display text-[15px] font-extrabold uppercase tracking-[0.05em] text-text">
-                  {f.name}
-                </p>
-                <p className="mt-1.5 text-[13px] leading-relaxed text-text-muted">{f.detail}</p>
-              </Link>
+            <HudStaggerItem key={f.href} className="h-full">
+              <FeatureCard name={f.name} detail={f.detail} href={f.href} Mark={f.Mark} />
             </HudStaggerItem>
           ))}
 
