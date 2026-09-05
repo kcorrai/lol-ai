@@ -14,9 +14,13 @@
  * chrome here is one thin strip with a name on it and nothing that can be mistaken for the
  * site's own furniture.
  *
- * Everything is presentational and server-rendered. The sections that place these supply the
- * entrance animation.
+ * Everything is presentational and server-rendered, bar the two leaves that draw real art —
+ * `Portrait` and `Crest`. The sections that place these supply the entrance animation.
  */
+
+import Image from "next/image";
+import { ChampionIcon } from "@/components/ui/ChampionIcon";
+import type { ProTeam } from "../proTeams";
 
 /** A quantity as a length. Fixed, never animated — see `desktop/chrome.tsx`'s `Bar`. */
 export function Track({
@@ -195,12 +199,46 @@ export function TierBadge({ tier }: { tier: string }): React.ReactElement {
   );
 }
 
-/** A champion's stand-in portrait. Never real art: it would need a network round trip. */
-export function Portrait({ size = 18 }: { size?: number }): React.ReactElement {
+/**
+ * A champion's portrait.
+ *
+ * Real Data Dragon art whenever the drawing knows which champion it means, which is nearly
+ * always: these screens name Ahri and Viktor in the row beside the tile, and a named champion
+ * over a blank square was the one thing in these illustrations that read as unfinished rather
+ * than as drawn. `desktop/chrome.tsx` already settled the principle — the game's art is the
+ * game's, and ADR-050's rule is about not photographing *our* screens.
+ *
+ * `ChampionIcon` is a client component because it falls back to a letter tile when the CDN
+ * misses; the empty tile below is what is left for the rows that stand for a champion without
+ * naming one.
+ */
+export function Portrait({ size = 18, name }: { size?: number; name?: string }): React.ReactElement {
+  if (name) return <ChampionIcon name={name} size={size} className="shrink-0" />;
   return (
     <span
       aria-hidden
       className="block shrink-0 border border-line-1 bg-surface-2"
+      style={{ width: size, height: size }}
+    />
+  );
+}
+
+/**
+ * A pro team's crest, drawn the way `proTeams.ts` explains.
+ *
+ * Fixed box plus `object-contain`, because these logos are every aspect ratio there is and a
+ * scoreboard row has to line up anyway.
+ */
+export function Crest({ team, size = 20 }: { team: ProTeam; size?: number }): React.ReactElement {
+  return (
+    <Image
+      src={team.logo}
+      alt=""
+      aria-hidden
+      width={size}
+      height={size}
+      unoptimized
+      className="shrink-0 object-contain"
       style={{ width: size, height: size }}
     />
   );

@@ -23,10 +23,22 @@ describe("the landing page's product imagery", () => {
   // The regression guard for ADR-050. Both sections rendered captures out of
   // `public/screenshots/`, that directory is gone, and an `<img>` pointing into it would 404
   // in production while looking fine in a component test that only checked for links.
-  it("renders no image at all", () => {
+  //
+  // The four screens draw real champion portraits and real team crests now — see the note in
+  // `screenChrome.tsx`. ADR-050 rules out photographing our own product, not drawing with
+  // Riot's published art, so the guard checks the directory it was always about and that
+  // every remaining source is one of the hosts the CSP already allows.
+  it("photographs nothing, and draws only with Riot's published art", () => {
     const { container } = render(<ProductShowcase />);
 
-    expect(container.querySelectorAll("img")).toHaveLength(0);
+    const sources = [...container.querySelectorAll("img")].map((i) => i.getAttribute("src") ?? "");
+    expect(sources.length).toBeGreaterThan(0);
+    for (const src of sources) {
+      expect(src).not.toContain("/screenshots/");
+      expect(src).toMatch(
+        /^https:\/\/(ddragon\.leagueoflegends\.com|static\.lolesports\.com)\//
+      );
+    }
   });
 
   it("labels every drawing for a reader who cannot see it", () => {

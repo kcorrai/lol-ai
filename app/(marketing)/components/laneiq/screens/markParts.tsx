@@ -14,6 +14,12 @@ import { Portrait } from "./screenChrome";
  * clicking. So a champion is a portrait plus a bordered plate carrying a rank ordinal,
  * and every row ends in a figure. Ordinals and counts are used wherever a number is
  * needed for that reason, because unlike a win rate they cannot go stale (ADR-050).
+ *
+ * The portrait is the champion's real Data Dragon art. It was an empty tile, which met the
+ * letter of the rule above and not its point: six tiles of grey squares still read as six
+ * tiles that had not loaded. Every champion below is written as a display name, never as a
+ * Data Dragon key — `normalizeChampionKey` owns that mapping, and a hand-written key 403s
+ * back into the letter tile the portrait falls back to.
  */
 
 /**
@@ -22,12 +28,15 @@ import { Portrait } from "./screenChrome";
  */
 export function Plate({
   rank,
+  champion,
   width = 62,
   tone = "idle",
   grow = false,
 }: {
   /** 1-based; drawn zero-padded, the way every ranked column in the product is. */
   rank: number;
+  /** Display name. Falls back to the empty tile when a mark stands for no one in particular. */
+  champion?: string;
   width?: number;
   tone?: "idle" | "accent" | "danger";
   /** Share the row's width instead of taking `width`. What a band of champions does. */
@@ -44,7 +53,7 @@ export function Plate({
         grow ? "min-w-0 flex-1" : ""
       }`}
     >
-      <Portrait size={11} />
+      <Portrait size={11} name={champion} />
       <span
         className="font-mono text-[8px] tabular-nums text-text-muted"
         style={grow ? undefined : { width: width - 22 }}
@@ -63,18 +72,19 @@ export function Plate({
  * a band of four is the right picture anyway — fewer champions, more room each.
  */
 export function PlateRow({
-  count,
+  champions,
   from = 1,
   tone = "idle",
 }: {
-  count: number;
+  /** One plate per champion, in order. The list is the count. */
+  champions: readonly string[];
   from?: number;
   tone?: "idle" | "accent" | "danger";
 }): React.ReactElement {
   return (
     <span className="flex min-w-0 flex-1 gap-1">
-      {Array.from({ length: count }, (_, i) => (
-        <Plate key={i} rank={from + i} tone={tone} grow />
+      {champions.map((c, i) => (
+        <Plate key={c} rank={from + i} champion={c} tone={tone} grow />
       ))}
     </span>
   );
@@ -105,30 +115,44 @@ export function LaneChips({ active }: { active: string }): React.ReactElement {
   );
 }
 
-/** A draft slot — a champion's square on a pick or ban rail. */
+/**
+ * A draft slot — a champion's square on a pick or ban rail.
+ *
+ * A filled slot holds the champion that was taken, because that is the only difference
+ * between a draft rail and ten coloured squares. A banned one is drawn desaturated and dim,
+ * which is how the real `BanRail` shows a champion nobody can have. `empty` is a slot the
+ * draft has not reached, so it has nothing to show and stays a tile.
+ */
 export function Slot({
   tone,
+  champion,
   size = 15,
   state = "filled",
 }: {
   tone: "blue" | "red";
+  /** Display name. Omitted on `empty` slots, which stand for a turn nobody has taken. */
+  champion?: string;
   size?: number;
-  /** `pending` is the slot on the clock; `empty` is one nobody has reached yet. */
-  state?: "filled" | "pending" | "empty";
+  /** `pending` is the slot on the clock; `banned` is struck through; `empty` is unreached. */
+  state?: "filled" | "banned" | "pending" | "empty";
 }): React.ReactElement {
   const edge =
     tone === "blue"
       ? { filled: "border-accent-blue/60 bg-accent-blue/20", pending: "border-accent bg-accent/20" }
       : { filled: "border-danger/60 bg-danger/20", pending: "border-accent bg-accent/20" };
+  const frame =
+    state === "empty"
+      ? "border-line-1 bg-surface-2"
+      : edge[state === "pending" ? "pending" : "filled"];
   return (
     <span
-      className={`block shrink-0 border ${
-        state === "empty"
-          ? "border-line-1 bg-surface-2"
-          : edge[state === "pending" ? "pending" : "filled"]
+      className={`grid shrink-0 place-items-center overflow-hidden border ${frame} ${
+        state === "banned" ? "opacity-45 grayscale" : ""
       }`}
       style={{ width: size, height: size }}
-    />
+    >
+      {champion && state !== "empty" ? <Portrait size={size - 2} name={champion} /> : null}
+    </span>
   );
 }
 

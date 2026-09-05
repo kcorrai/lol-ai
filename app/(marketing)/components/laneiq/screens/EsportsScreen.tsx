@@ -1,5 +1,6 @@
 import { Illustration } from "../desktop/chrome";
-import { Portrait, Window } from "./screenChrome";
+import { PRO_TEAMS, type ProTeam } from "../proTeams";
+import { Crest, Window } from "./screenChrome";
 
 /**
  * The esports hub, drawn.
@@ -8,19 +9,30 @@ import { Portrait, Window } from "./screenChrome";
  * its pulsing marker and series score, `HubSchedule`'s "Next up" rows, and the standings
  * panel from `HubRail`. The `// …` heading on the last one is that rail's own convention.
  *
- * Team names are two-and-three letter stand-ins rather than real organisations. A drawing
- * that named actual teams would be asserting a fixture that is not happening.
+ * The teams are real, and their crests are Riot's own (`proTeams.ts`). They were "TBD" and a
+ * row of dashes, on the reasoning that naming a fixture asserts one that is not happening —
+ * but the caption under every one of these drawings already says it is a drawing, and a
+ * scoreboard nobody can recognise is a picture of a scoreboard rather than of this product.
+ * What a reader knows at a glance is the crest; the scores and kickoff times beside it are
+ * invented, exactly as the readiness score in the dashboard drawing is.
  */
 
-const NEXT: readonly { at: string; home: string; away: string; bo: string }[] = [
-  { at: "18:00", home: "TBD", away: "TBD", bo: "Bo3" },
-  { at: "21:00", home: "TBD", away: "TBD", bo: "Bo5" },
+const LIVE: { league: string; home: ProTeam; away: ProTeam; score: [string, string] } = {
+  league: "LEC",
+  home: PRO_TEAMS.G2,
+  away: PRO_TEAMS.FNC,
+  score: ["1", "0"],
+};
+
+const NEXT: readonly { at: string; home: ProTeam; away: ProTeam; bo: string }[] = [
+  { at: "18:00", home: PRO_TEAMS.T1, away: PRO_TEAMS.GEN, bo: "Bo3" },
+  { at: "21:00", home: PRO_TEAMS.BLG, away: PRO_TEAMS.JDG, bo: "Bo5" },
 ];
 
-const STANDINGS: readonly { n: string; team: string; record: string }[] = [
-  { n: "1", team: "———", record: "12–5" },
-  { n: "2", team: "———", record: "11–6" },
-  { n: "3", team: "———", record: "9–8" },
+const STANDINGS: readonly { n: string; team: ProTeam; record: string }[] = [
+  { n: "1", team: PRO_TEAMS.T1, record: "12–5" },
+  { n: "2", team: PRO_TEAMS.GEN, record: "11–6" },
+  { n: "3", team: PRO_TEAMS.HLE, record: "9–8" },
 ];
 
 export function EsportsScreen(): React.ReactElement {
@@ -43,15 +55,17 @@ export function EsportsScreen(): React.ReactElement {
                 Live now
               </span>
               <span className="ml-auto font-mono text-[8.5px] uppercase tracking-[0.14em] text-text-faint">
-                Bo5
+                {LIVE.league} · Bo5
               </span>
             </div>
             <div className="mt-2.5 flex items-center justify-center gap-3">
-              <Portrait size={20} />
+              <Crest team={LIVE.home} size={22} />
               <span className="font-display text-[19px] font-extrabold tabular-nums leading-none text-text">
-                1<span className="mx-1.5 text-text-faint">–</span>0
+                {LIVE.score[0]}
+                <span className="mx-1.5 text-text-faint">–</span>
+                {LIVE.score[1]}
               </span>
-              <Portrait size={20} />
+              <Crest team={LIVE.away} size={22} />
             </div>
           </div>
 
@@ -67,9 +81,11 @@ export function EsportsScreen(): React.ReactElement {
                 >
                   <span className="font-mono text-[9.5px] tabular-nums text-text-body">{m.at}</span>
                   <span className="flex items-center gap-1.5">
-                    <Portrait size={13} />
+                    <Crest team={m.home} size={14} />
+                    <span className="font-mono text-[9px] text-text-muted">{m.home.code}</span>
                     <span className="font-mono text-[9px] text-text-faint">vs</span>
-                    <Portrait size={13} />
+                    <Crest team={m.away} size={14} />
+                    <span className="font-mono text-[9px] text-text-muted">{m.away.code}</span>
                   </span>
                   <span className="font-mono text-[8.5px] uppercase tracking-[0.12em] text-text-faint">
                     {m.bo}
@@ -89,9 +105,9 @@ export function EsportsScreen(): React.ReactElement {
                   <span className="w-3 font-mono text-[9.5px] tabular-nums text-text-faint">
                     {s.n}
                   </span>
-                  <Portrait size={13} />
+                  <Crest team={s.team} size={14} />
                   <span className="flex-1 truncate font-mono text-[10px] text-text-muted">
-                    {s.team}
+                    {s.team.name}
                   </span>
                   <span className="font-mono text-[10px] tabular-nums text-text-body">
                     {s.record}

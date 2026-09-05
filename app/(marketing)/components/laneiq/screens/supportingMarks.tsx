@@ -1,3 +1,6 @@
+import Image from "next/image";
+import { ItemIcon } from "@/components/ui/ItemIcon";
+import { keystoneIconUrl } from "@/lib/ddragonRunes";
 import { TierBadge, Track } from "./screenChrome";
 import { Delta, MarkNote, Plate, Slot } from "./markParts";
 
@@ -9,6 +12,13 @@ import { Delta, MarkNote, Plate, Slot } from "./markParts";
  */
 
 /** Two comps, graded against each other — `/tools/draft-analyzer`. */
+// Two finished comps, five champions each — the analyzer only has anything to say once both
+// sides are full. Display names, never Data Dragon keys (`markParts.tsx`).
+const COMPS: Record<"blue" | "red", readonly string[]> = {
+  blue: ["K'Sante", "Sejuani", "Orianna", "Jinx", "Rell"],
+  red: ["Aatrox", "Vi", "Ahri", "Ashe", "Nautilus"],
+};
+
 export function DraftMark(): React.ReactElement {
   return (
     <div aria-hidden className="grid gap-2">
@@ -21,8 +31,8 @@ export function DraftMark(): React.ReactElement {
           >
             {side}
           </span>
-          {[0, 1, 2, 3, 4].map((i) => (
-            <Slot key={i} tone={side} />
+          {COMPS[side].map((c) => (
+            <Slot key={c} tone={side} champion={c} />
           ))}
           <span
             className={`ml-auto font-mono text-[13px] font-bold tabular-nums ${
@@ -50,12 +60,41 @@ export function DraftMark(): React.ReactElement {
   );
 }
 
-/** A keystone, the items it is bought towards, and the order the spells go up. */
+/**
+ * A keystone, the items it is bought towards, and the order the spells go up.
+ *
+ * Riot's own rune and item art, the same assets `desktop/OverlayVisual.tsx` draws its build
+ * path from. A rotated green square standing for a keystone and six grey boxes standing for
+ * items was the tile in this grid that said least about what its tool does — a build page is
+ * read by recognising the icons, so the drawing has to carry them.
+ *
+ * Electrocute into a mid-lane burst build. Item ids are Data Dragon's and are stable across
+ * patches; the three unbought ones are dimmed rather than hidden, which is how a build path
+ * reads as a path.
+ */
+const KEYSTONE_ID = 9101; // Electrocute
+const BUILD: readonly { id: number; done: boolean }[] = [
+  { id: 6655, done: true }, // Luden's Companion
+  { id: 3020, done: true }, // Sorcerer's Shoes
+  { id: 4645, done: true }, // Shadowflame
+  { id: 3089, done: false }, // Rabadon's Deathcap
+  { id: 3157, done: false }, // Zhonya's Hourglass
+  { id: 3135, done: false }, // Void Staff
+];
+
 export function BuildMark(): React.ReactElement {
   return (
     <div aria-hidden className="grid gap-2">
       <div className="flex items-center gap-2">
-        <span className="block h-[16px] w-[16px] rotate-45 border border-accent bg-accent/25" />
+        <Image
+          src={keystoneIconUrl(KEYSTONE_ID)}
+          alt=""
+          aria-hidden
+          width={18}
+          height={18}
+          unoptimized
+          className="block shrink-0"
+        />
         <span className="flex gap-1">
           {[0, 1, 2].map((i) => (
             <span key={i} className="block h-[7px] w-[7px] border border-accent/40" />
@@ -64,13 +103,14 @@ export function BuildMark(): React.ReactElement {
         <MarkNote>keystone</MarkNote>
       </div>
       <div className="flex items-center gap-1.5">
-        {[true, true, true, false, false, false].map((done, i) => (
+        {BUILD.map((item) => (
           <span
-            key={i}
-            className={`block h-[16px] w-[16px] border ${
-              done ? "border-accent bg-accent/25" : "border-line-1 bg-surface-2"
-            }`}
-          />
+            key={item.id}
+            className={`flex shrink-0 ${item.done ? "" : "opacity-40 grayscale"}`}
+            style={{ lineHeight: 0 }}
+          >
+            <ItemIcon itemId={item.id} size={16} />
+          </span>
         ))}
         <span className="ml-1 font-mono text-[9.5px] tabular-nums text-text-muted">3 / 6</span>
         <span className="ml-auto">
@@ -108,12 +148,12 @@ export function AramMark(): React.ReactElement {
         <MarkNote>howling abyss</MarkNote>
       </div>
       {[
-        { r: 1, mod: "+5% dmg", up: true },
-        { r: 2, mod: "−10% heal", up: false },
-        { r: 3, mod: "+8% taken", up: false },
+        { r: 1, c: "Ziggs", mod: "+5% dmg", up: true },
+        { r: 2, c: "Soraka", mod: "−10% heal", up: false },
+        { r: 3, c: "Lux", mod: "+8% taken", up: false },
       ].map((row) => (
-        <div key={row.r} className="flex items-center gap-2">
-          <Plate rank={row.r} tone={row.up ? "accent" : "danger"} />
+        <div key={row.c} className="flex items-center gap-2">
+          <Plate rank={row.r} champion={row.c} tone={row.up ? "accent" : "danger"} />
           <span
             className={`font-mono text-[9.5px] tabular-nums ${
               row.up ? "text-accent" : "text-danger"
@@ -139,13 +179,13 @@ export function MetaMark(): React.ReactElement {
         <MarkNote>falling</MarkNote>
       </div>
       {[
-        { r: 1, d: "+2.1", up: true, w: 68 },
-        { r: 2, d: "+1.4", up: true, w: 52 },
-        { r: 3, d: "−1.8", up: false, w: 44 },
-        { r: 4, d: "−2.6", up: false, w: 60 },
+        { r: 1, c: "Yone", d: "+2.1", up: true, w: 68 },
+        { r: 2, c: "Sejuani", d: "+1.4", up: true, w: 52 },
+        { r: 3, c: "Kai'Sa", d: "−1.8", up: false, w: 44 },
+        { r: 4, c: "Nautilus", d: "−2.6", up: false, w: 60 },
       ].map((row) => (
-        <div key={row.d} className="flex items-center gap-2">
-          <Plate rank={row.r} tone={row.up ? "accent" : "danger"} />
+        <div key={row.c} className="flex items-center gap-2">
+          <Plate rank={row.r} champion={row.c} tone={row.up ? "accent" : "danger"} />
           <Track value={row.w} tone={row.up ? "accent" : "danger"} className="min-w-0 flex-1" />
           <Delta value={row.d} up={row.up} />
         </div>

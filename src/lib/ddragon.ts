@@ -78,8 +78,16 @@ export function itemIconUrl(itemId: number): string {
   return `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}/img/item/${itemId}.png`;
 }
 
+// The full-colour ranked crest, the same one the game client draws on a profile.
+//
+// This used to read the `ranked-mini-crests` set, which is an 80px monochrome glyph: legible
+// as a marker beside a name, but not recognisable as the tier it stands for — "Diamond I"
+// next to a small blue shape is still two words doing all the work. That set also has no
+// `emerald.png` at all, so one whole tier rendered a broken image (LA-113). This one is 500px,
+// in colour, and complete: iron through challenger, plus `unranked` for a player with no
+// placement yet.
 export function rankEmblemUrl(tier: string): string {
-  return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-mini-crests/${tier.toLowerCase()}.png`;
+  return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/${tier.toLowerCase()}.png`;
 }
 
 // Position/role icons — DB stores: TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY, which is

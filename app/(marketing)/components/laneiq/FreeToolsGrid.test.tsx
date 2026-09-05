@@ -3,13 +3,23 @@ import { render } from "@testing-library/react";
 import { FreeToolsGrid } from "./FreeToolsGrid";
 
 describe("the free tools grid", () => {
-  // The regression guard for ADR-050. These six tiles carried their meaning in a background
-  // image out of `public/screenshots/`; that directory is gone, and an `<img>` still pointing
-  // into it would 404 in production while a test that only checked the links stayed green.
-  it("renders no image at all", () => {
+  // The regression guard for ADR-050. These tiles carried their meaning in a background image
+  // out of `public/screenshots/`; that directory is gone, and an `<img>` still pointing into it
+  // would 404 in production while a test that only checked the links stayed green.
+  //
+  // It used to assert no image at all, which was the right guard for the wrong reason: what
+  // ADR-050 rules out is photographing our own screens, not drawing with the game's art. The
+  // marks carry real champion, item and rune icons now, so the guard names the directory it
+  // was always about and checks the rest come from Riot's CDNs.
+  it("photographs nothing, and draws only with the game's own art", () => {
     const { container } = render(<FreeToolsGrid />);
 
-    expect(container.querySelectorAll("img")).toHaveLength(0);
+    const sources = [...container.querySelectorAll("img")].map((i) => i.getAttribute("src") ?? "");
+    expect(sources.length).toBeGreaterThan(0);
+    for (const src of sources) {
+      expect(src).not.toContain("/screenshots/");
+      expect(src).toMatch(/^https:\/\/ddragon\.leagueoflegends\.com\//);
+    }
   });
 
   // The tiles changed what they show. Where they go is the part that must not move.

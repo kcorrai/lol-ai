@@ -88,14 +88,13 @@ export function CreatorVisual(): React.ReactElement {
       {/* The widget as a viewer sees it on stream, crest included — a rank overlay that was
           only two words is not one anybody would put on a broadcast.
 
-          Diamond rather than the Emerald this used to read, because `rankEmblemUrl` cannot
-          currently draw Emerald: the mini-crest set publishes `emerald.svg` where every other
-          tier is a `.png`, so that one url 404s. It is a real bug with twelve call sites and it
-          is not this section's to fix — LA-113 has it. Shipping a broken image here to make the
-          point was the one option not worth taking. */}
+          Emerald again. It read Diamond for as long as `rankEmblemUrl` pointed at the
+          mini-crest set, which publishes no `emerald.png` and 404'd for that one tier
+          (LA-113); the colour crests it reads now are complete, so the tier this widget
+          actually wants to show is available again. */}
       <div className="notch-sm flex items-center gap-3 border border-accent/40 bg-background p-3">
         <Image
-          src={rankEmblemUrl("DIAMOND")}
+          src={rankEmblemUrl("EMERALD")}
           alt=""
           aria-hidden
           width={38}
@@ -105,7 +104,7 @@ export function CreatorVisual(): React.ReactElement {
         />
         <div className="min-w-0">
           <p className="hud-label">Rank widget</p>
-          <p className="mt-1 font-display text-lg font-extrabold uppercase text-text">Diamond IV</p>
+          <p className="mt-1 font-display text-lg font-extrabold uppercase text-text">Emerald II</p>
           <p className="font-mono text-[11.5px] text-accent">+42 LP today · 6W 3L</p>
         </div>
       </div>
