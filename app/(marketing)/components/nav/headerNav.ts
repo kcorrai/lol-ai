@@ -5,13 +5,15 @@
  * wordmark, a search box and two calls to action runs out of room — so the eighth thing
  * this product shipped had nowhere to go, and the desktop companion never got announced.
  *
- * Three of the five entries are menus, so a new tool or a new lesson path lands inside a
+ * Two of the six entries are menus, so a new tool or a new lesson path lands inside a
  * panel that has room for it rather than on the bar that does not. Adding one here is a
  * one-line change with no layout consequence, which is the whole point of the shape.
  *
- * The two flat entries are the exception that proves it: a destination goes on the bar
+ * The four flat entries are the exception that proves it: a destination goes on the bar
  * itself only when the bar is the thing announcing it, rather than one more place it can
- * be found. That is true of pricing, and it is true of the coach marketplace.
+ * be found. That is true of pricing and of the coach marketplace, and it is now true of
+ * the draft room and esports — a panel labelled "Play" made a visitor click to find out
+ * that the site had a draft room at all, which is the one thing about it worth saying.
  *
  * Marketing's own names, not `navConfig.ts`'s: the sidebar labels a screen for somebody who
  * already pays for it, and this labels it for somebody deciding whether to. The two drift
@@ -62,17 +64,15 @@ export const HEADER_NAV: readonly HeaderEntry[] = [
       { href: "/champions", label: "Champions", hint: "Abilities, stats, skins, matchups" },
     ],
   },
-  {
-    key: "play",
-    label: "Play",
-    items: [
-      { href: "/draft", label: "Draft room", hint: "Fearless pick/ban, one link, no login" },
-      { href: "/esports", label: "Esports", hint: "Live scores and the pro meta" },
-      // Multi-search sits here rather than under Tools: it is something you reach for in
-      // champion select, next to the draft room, not something you browse on a quiet evening.
-      { href: "/tools/multi-search", label: "Multi-search", hint: "Scout all ten, no login" },
-    ],
-  },
+  // What the "Play" panel used to hide, on the bar instead — esports first, then the draft
+  // room, in the order they sit to the right of Learn.
+  //
+  // Both are destinations rather than categories: neither has a second page to group with,
+  // so the panel was a click that bought nothing but a label. Multi-search was the third
+  // item and is gone from the bar entirely; the page still stands and the footer and the
+  // tools index still point at it.
+  { href: "/esports", label: "Esports" },
+  { href: "/draft", label: "Draft room" },
   // The coach marketplace, on the bar rather than inside a panel.
   //
   // This was a three-item "Coaching" menu: the AI coach, the marketplace, and Teams. The

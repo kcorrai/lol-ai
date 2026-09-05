@@ -99,6 +99,28 @@ describe("HEADER_NAV", () => {
     expect(flat.map((l) => l.href)).toContain("/coaches");
   });
 
+  it("carries the draft room and esports on the bar, to the right of Learn", () => {
+    // They used to be two thirds of a "Play" panel. Neither has a sibling page to group
+    // with, so the panel was a click that bought a label and hid the fact that the site has
+    // a draft room at all. Order matters as much as presence: the bar reads left to right,
+    // and these two were placed after Learn rather than appended past Pricing.
+    const labels = HEADER_NAV.map((e) => e.label);
+    expect(labels.indexOf("Esports")).toBe(labels.indexOf("Learn") + 1);
+    expect(labels.indexOf("Draft room")).toBe(labels.indexOf("Esports") + 1);
+
+    const flat = HEADER_NAV.filter((e) => !isMenu(e)) as HeaderLink[];
+    expect(flat.map((l) => l.href)).toEqual(
+      expect.arrayContaining(["/esports", "/draft"])
+    );
+  });
+
+  it("keeps multi-search off the bar", () => {
+    // The third item of the old panel, dropped rather than rehoused: it is not a thing this
+    // header should be spending a word on. The page itself still stands, and the footer and
+    // the tools index still point at it — this is a navigation decision, not a deletion.
+    expect(allLinks().map((l) => l.href)).not.toContain("/tools/multi-search");
+  });
+
   it("never sends a visitor from the bar into a login form", () => {
     // The defect this file's Coaching panel had: "AI coach" and "Teams" pointed into the
     // application, which the middleware guards, so the one person the panel was written for
