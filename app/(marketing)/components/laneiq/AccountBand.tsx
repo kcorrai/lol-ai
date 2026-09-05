@@ -2,19 +2,13 @@ import Link from "next/link";
 import { SectionHead } from "./SectionHead";
 import { HudStagger, HudStaggerItem } from "./motion";
 import { FeatureCard } from "./screens/account/FeatureCard";
-import {
-  HeatMapMark,
-  ImprovementMark,
-  MatchSearchMark,
-  OtpMark,
-  TimelineMark,
-} from "./screens/account/performanceMarks";
+import { HeatMapMark, MatchSearchMark, TimelineMark } from "./screens/account/historyMarks";
+import { ImprovementMark, OtpMark, RoadmapMark } from "./screens/account/planMarks";
 import {
   BadgesMark,
   LeaderboardMark,
   MilestoneMark,
   RecapMark,
-  RoadmapMark,
 } from "./screens/account/progressMarks";
 
 /**
