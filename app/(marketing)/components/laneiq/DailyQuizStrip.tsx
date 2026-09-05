@@ -49,7 +49,7 @@ export function DailyQuizStrip(): React.ReactElement {
             alt=""
             aria-hidden
             fill
-            sizes="100vw"
+            sizes="(max-width: 1240px) 100vw, 1240px"
             className="object-cover object-[60%_20%] opacity-30 grayscale-[0.35]"
           />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,var(--ink-1000)_22%,rgba(6,10,9,.72)_66%,rgba(6,10,9,.4)_100%)]" />
