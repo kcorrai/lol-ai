@@ -71,7 +71,7 @@ export function AcademyBand(): React.ReactElement {
             alt=""
             aria-hidden
             fill
-            sizes="100vw"
+            sizes="(max-width: 1240px) 100vw, 1240px"
             className="object-cover object-[54%_18%] opacity-[0.22] grayscale-[0.4]"
           />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,var(--ink-1000)_24%,rgba(6,10,9,.74)_70%,rgba(6,10,9,.44)_100%)]" />
