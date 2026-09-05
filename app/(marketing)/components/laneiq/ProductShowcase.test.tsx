@@ -35,9 +35,7 @@ describe("the landing page's product imagery", () => {
     expect(sources.length).toBeGreaterThan(0);
     for (const src of sources) {
       expect(src).not.toContain("/screenshots/");
-      expect(src).toMatch(
-        /^https:\/\/(ddragon\.leagueoflegends\.com|static\.lolesports\.com)\//
-      );
+      expect(src).toMatch(/^https:\/\/(ddragon\.leagueoflegends\.com|static\.lolesports\.com)\//);
     }
   });
 
