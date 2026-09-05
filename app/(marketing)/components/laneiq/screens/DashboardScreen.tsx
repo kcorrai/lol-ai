@@ -121,7 +121,8 @@ export function DashboardScreen(): React.ReactElement {
 
               <Card label="Last game" meta="Victory">
                 <div className="flex items-center gap-2">
-                  <Portrait size={22} />
+                  {/* The row underneath says Ahri; the tile beside it now shows her. */}
+                  <Portrait size={22} name="Ahri" />
                   <div className="min-w-0">
                     <p className="truncate font-display text-[12px] font-bold uppercase tracking-[0.05em] text-text">
                       Ahri · Mid

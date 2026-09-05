@@ -28,17 +28,17 @@ import { LaneChips, MarkNote, Plate, PlateRow, Slot } from "./markParts";
 /** A tier band: the letter, then the champions sitting in it. */
 function Band({
   tier,
-  count,
+  champions,
   from,
 }: {
   tier: string;
-  count: number;
+  champions: readonly string[];
   from: number;
 }): React.ReactElement {
   return (
     <div className="flex items-center gap-1.5">
       <TierBadge tier={tier} />
-      <PlateRow count={count} from={from} tone={tier === "S" ? "accent" : "idle"} />
+      <PlateRow champions={champions} from={from} tone={tier === "S" ? "accent" : "idle"} />
     </div>
   );
 }
@@ -54,20 +54,20 @@ export function CounterMark(): React.ReactElement {
     <div aria-hidden className="grid gap-[7px]">
       <div className="flex items-center gap-2 pb-0.5">
         <MarkNote>vs</MarkNote>
-        <Portrait size={15} />
+        <Portrait size={15} name="Zed" />
         <span className="border border-line-1 px-1 py-px font-mono text-[7.5px] tracking-[0.1em] text-text-muted">
           MID
         </span>
         <MarkNote>best answers</MarkNote>
       </div>
       {[
-        { r: 1, w: 74, v: "54.1%", up: true },
-        { r: 2, w: 61, v: "52.6%", up: true },
-        { r: 3, w: 55, v: "51.2%", up: true },
-        { r: 4, w: 42, v: "47.9%", up: false },
+        { r: 1, c: "Malzahar", w: 74, v: "54.1%", up: true },
+        { r: 2, c: "Lissandra", w: 61, v: "52.6%", up: true },
+        { r: 3, c: "Galio", w: 55, v: "51.2%", up: true },
+        { r: 4, c: "Kassadin", w: 42, v: "47.9%", up: false },
       ].map((row) => (
-        <div key={row.v} className="flex items-center gap-2">
-          <Plate rank={row.r} tone={row.up ? "accent" : "danger"} />
+        <div key={row.c} className="flex items-center gap-2">
+          <Plate rank={row.r} champion={row.c} tone={row.up ? "accent" : "danger"} />
           <Track value={row.w} tone={row.up ? "accent" : "danger"} className="min-w-0 flex-1" />
           <span
             className={`w-[38px] shrink-0 text-right font-mono text-[10px] tabular-nums ${
@@ -90,9 +90,9 @@ export function TierMark(): React.ReactElement {
         <LaneChips active="MID" />
         <MarkNote>this patch</MarkNote>
       </div>
-      <Band tier="S" count={3} from={1} />
-      <Band tier="A" count={4} from={4} />
-      <Band tier="B" count={4} from={8} />
+      <Band tier="S" champions={["Ahri", "Viktor", "Sylas"]} from={1} />
+      <Band tier="A" champions={["Syndra", "Orianna", "Yone", "Akali"]} from={4} />
+      <Band tier="B" champions={["Zed", "Vex", "Ryze", "Corki"]} from={8} />
     </div>
   );
 }
@@ -102,19 +102,26 @@ export function TierMark(): React.ReactElement {
  * `TurnIndicator.tsx`. The clock and the slot under it are the point: this is the only
  * tool in the grid where something is happening while you look at it.
  */
+// A draft eleven actions deep: three bans a side, two picks each locked, and red on the
+// clock for its third. An empty string is a slot the sequence has not reached.
+const BLUE_BANS: readonly string[] = ["Aatrox", "Vi", "Ahri", "", ""];
+const RED_BANS: readonly string[] = ["Jinx", "Sett", "Zed", "", ""];
+const BLUE_PICKS: readonly string[] = ["K'Sante", "Sejuani", "Orianna", "", ""];
+const RED_PICKS: readonly string[] = ["Rell", "Ashe", "", "", ""];
+
 export function DraftRoomMark(): React.ReactElement {
   return (
     <div aria-hidden className="grid gap-2">
       <div className="flex items-center gap-2">
         <MarkNote>bans</MarkNote>
         <span className="flex gap-1">
-          {[0, 1, 2, 3, 4].map((i) => (
-            <Slot key={`b${i}`} tone="blue" size={11} state={i > 2 ? "empty" : "filled"} />
+          {BLUE_BANS.map((c, i) => (
+            <Slot key={`b${i}`} tone="blue" champion={c} size={11} state={c ? "banned" : "empty"} />
           ))}
         </span>
         <span className="flex gap-1">
-          {[0, 1, 2, 3, 4].map((i) => (
-            <Slot key={`r${i}`} tone="red" size={11} state={i > 2 ? "empty" : "filled"} />
+          {RED_BANS.map((c, i) => (
+            <Slot key={`r${i}`} tone="red" champion={c} size={11} state={c ? "banned" : "empty"} />
           ))}
         </span>
         <span className="ml-auto shrink-0 border border-accent/50 px-1 py-px font-mono text-[7.5px] tracking-[0.1em] text-accent">
@@ -125,8 +132,8 @@ export function DraftRoomMark(): React.ReactElement {
         <span className="w-7 shrink-0 font-mono text-[8.5px] uppercase tracking-[0.12em] text-accent-blue">
           Blue
         </span>
-        {[0, 1, 2, 3, 4].map((i) => (
-          <Slot key={i} tone="blue" state={i > 2 ? "empty" : "filled"} />
+        {BLUE_PICKS.map((c, i) => (
+          <Slot key={i} tone="blue" champion={c} state={c ? "filled" : "empty"} />
         ))}
         <span className="ml-auto font-mono text-[13px] font-bold tabular-nums text-accent">
           0:24
@@ -136,8 +143,13 @@ export function DraftRoomMark(): React.ReactElement {
         <span className="w-7 shrink-0 font-mono text-[8.5px] uppercase tracking-[0.12em] text-danger">
           Red
         </span>
-        {[0, 1, 2, 3, 4].map((i) => (
-          <Slot key={i} tone="red" state={i === 2 ? "pending" : i > 2 ? "empty" : "filled"} />
+        {RED_PICKS.map((c, i) => (
+          <Slot
+            key={i}
+            tone="red"
+            champion={c}
+            state={i === 2 ? "pending" : c ? "filled" : "empty"}
+          />
         ))}
         <span className="ml-auto">
           <MarkNote>red to pick</MarkNote>

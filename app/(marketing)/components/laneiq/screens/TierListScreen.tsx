@@ -14,6 +14,8 @@ import { Portrait, TierBadge, Window } from "./screenChrome";
  * reads one.
  */
 
+// Display names, not Data Dragon keys: `normalizeChampionKey` owns that mapping and a
+// hand-written key 403s into a letter tile.
 const ROWS: readonly { n: string; tier: string; name: string; delta: string; win: string }[] = [
   { n: "1", tier: "S", name: "Ahri", delta: "▲1", win: "50.9%" },
   { n: "2", tier: "S", name: "Viktor", delta: "▲1", win: "50.3%" },
@@ -71,7 +73,7 @@ export function TierListScreen(): React.ReactElement {
                 <span className="font-mono text-[9.5px] tabular-nums text-text-faint">{r.n}</span>
                 <TierBadge tier={r.tier} />
                 <span className="flex min-w-0 items-center gap-1.5">
-                  <Portrait size={14} />
+                  <Portrait size={15} name={r.name} />
                   <span className="truncate text-[11px] text-text">{r.name}</span>
                 </span>
                 <span

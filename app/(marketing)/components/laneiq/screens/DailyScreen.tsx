@@ -28,11 +28,26 @@ const MODES: readonly string[] = [
 
 type Cell = "exact" | "partial" | "none";
 
-/** Three guesses closing in — the shape of a solve, not a real day's answer. */
-const GUESSES: readonly (readonly Cell[])[] = [
-  ["none", "exact", "none", "partial", "none", "none", "partial", "none"],
-  ["none", "exact", "partial", "partial", "exact", "none", "partial", "none"],
-  ["exact", "exact", "partial", "exact", "exact", "partial", "exact", "none"],
+/**
+ * Three guesses closing in — the shape of a solve, not a real day's answer.
+ *
+ * Each carries the champion that was guessed, drawn as the portrait the real grid puts at the
+ * head of its row. Display names, not Data Dragon keys: `normalizeChampionKey` owns that
+ * mapping and a hand-written key 403s into a letter tile.
+ */
+const GUESSES: readonly { champion: string; cells: readonly Cell[] }[] = [
+  {
+    champion: "Lux",
+    cells: ["none", "exact", "none", "partial", "none", "none", "partial", "none"],
+  },
+  {
+    champion: "Syndra",
+    cells: ["none", "exact", "partial", "partial", "exact", "none", "partial", "none"],
+  },
+  {
+    champion: "Ahri",
+    cells: ["exact", "exact", "partial", "exact", "exact", "partial", "exact", "none"],
+  },
 ];
 
 const CELL: Record<Cell, string> = {
@@ -63,18 +78,13 @@ export function DailyScreen(): React.ReactElement {
           </div>
 
           <div className="mt-3 grid gap-1.5">
-            {GUESSES.map((row, i) => (
-              <div
-                // The two rows are positions in a sequence, not entities — the index is the
-                // only identity they have.
-                key={i}
-                className="grid grid-cols-[auto_1fr] items-center gap-2"
-              >
+            {GUESSES.map((row) => (
+              <div key={row.champion} className="grid grid-cols-[auto_1fr] items-center gap-2">
                 <span className="flex items-center gap-1.5">
-                  <Portrait size={16} />
+                  <Portrait size={16} name={row.champion} />
                 </span>
                 <span className="grid grid-cols-8 gap-1">
-                  {row.map((c, j) => (
+                  {row.cells.map((c, j) => (
                     <span key={j} aria-hidden className={`block h-4 border ${CELL[c]}`} />
                   ))}
                 </span>
