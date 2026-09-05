@@ -89,13 +89,8 @@ export function QuizBoard({
       />
 
       <div className="grid lg:grid-cols-[minmax(0,1fr)_264px]">
-        <div key={mode} className="grid min-w-0 animate-quiz-stage gap-4 p-5">
+        <div key={mode} className="min-w-0 animate-quiz-stage p-5">
           <PuzzlePrompt prompt={puzzle.prompt} misses={game.misses} revealed={finished} />
-          {mode === "classic" ? (
-            <ClassicGrid results={game.state.results} />
-          ) : (
-            <GuessList results={game.state.results} />
-          )}
         </div>
         <ClueLadder mode={mode} misses={game.misses} hints={hints} />
       </div>
@@ -128,6 +123,18 @@ export function QuizBoard({
               Give up
             </button>
           </div>
+        </div>
+      )}
+
+      {/* Classic carries its own empty state — the other modes' list is nothing
+          at all until a guess has been made. */}
+      {(mode === "classic" || game.state.results.length > 0) && (
+        <div className="border-t border-line-1 p-5">
+          {mode === "classic" ? (
+            <ClassicGrid results={game.state.results} />
+          ) : (
+            <GuessList results={game.state.results} />
+          )}
         </div>
       )}
 

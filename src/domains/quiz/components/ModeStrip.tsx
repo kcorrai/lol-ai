@@ -81,7 +81,9 @@ export function ModeStrip({ active, results, onSelect }: ModeStripProps): React.
     <div
       role="tablist"
       aria-label="Quiz modes"
-      className="grid auto-cols-[minmax(132px,1fr)] grid-flow-col gap-2.5 overflow-x-auto pb-1 [scrollbar-width:none]"
+      // Wraps rather than scrolls: a single row pushed the last tabs off the
+      // right edge, where nothing hinted they were there.
+      className="grid grid-cols-2 gap-2.5 sm:grid-cols-5"
     >
       {QUIZ_TILES.map((tile) => {
         const on = tile.key === active;
@@ -95,7 +97,7 @@ export function ModeStrip({ active, results, onSelect }: ModeStripProps): React.
             aria-label={tile.label}
             aria-selected={on}
             onClick={() => onSelect(tile.key)}
-            className={`notch relative h-[116px] min-w-[132px] overflow-hidden border p-0 text-left transition-transform duration-150 ease-out hover:-translate-y-0.5 ${
+            className={`notch relative h-[116px] min-w-0 overflow-hidden border p-0 text-left transition-transform duration-150 ease-out hover:-translate-y-0.5 ${
               on ? "glow-accent-soft border-accent" : "border-line-1"
             }`}
           >

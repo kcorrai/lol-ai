@@ -76,9 +76,11 @@ export function ChampionGuessInput({
   return (
     <div className="relative grid grid-cols-[minmax(0,1fr)_auto] gap-2.5">
       <div className="relative">
+        {/* z-10 because the field's chamfer is a clip-path, which paints the
+            input over anything stacked at auto — the icon included. */}
         <Search
           aria-hidden
-          className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-fg-4"
+          className="pointer-events-none absolute right-3.5 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-fg-3"
         />
         <input
           ref={inputRef}
@@ -95,7 +97,7 @@ export function ChampionGuessInput({
           aria-autocomplete="list"
           autoComplete="off"
           spellCheck={false}
-          className="tag-cut h-11 w-full border border-line-2 bg-surface-dark pl-10 pr-3.5 font-sans text-sm text-fg-1 placeholder:text-fg-4 focus:border-accent focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+          className="tag-cut h-11 w-full border border-line-2 bg-surface-dark pl-3.5 pr-10 font-sans text-sm text-fg-1 placeholder:text-fg-4 focus:border-accent focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
         />
       </div>
 
@@ -110,8 +112,8 @@ export function ChampionGuessInput({
       </button>
 
       {suggestions.length > 0 && (
-        // Opens upward: the guess bar sits on the bottom edge of the stage panel,
-        // and a downward list would be clipped by the panel's own chamfer.
+        // Opens upward over the puzzle: the panel clips whatever leaves it, and
+        // the guesses below the bar are a shorter drop than the puzzle above it.
         <ul
           role="listbox"
           className="absolute bottom-full left-0 right-0 z-30 mb-1.5 max-h-[222px] overflow-y-auto border border-line-2 bg-surface-2 shadow-[var(--shadow-2)]"
