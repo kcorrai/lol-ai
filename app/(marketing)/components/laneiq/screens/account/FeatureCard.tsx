@@ -120,6 +120,12 @@ export function FeatureCard({ name, detail, href, Mark }: FeatureCardProps): Rea
               <div className="p-3" style={{ background: "var(--bg-grid)" }}>
                 <Mark />
               </div>
+              {/* ADR-050: a picture of a product is read as a photograph of it unless
+                  something says otherwise. One caption here rather than one inside each of the
+                  ten marks — they all sit in this panel and nowhere else. */}
+              <p className="hud-label border-t border-line-1 px-4 py-2">
+                {"// Illustration — drawn, not a capture"}
+              </p>
             </div>
           </motion.div>
         ) : null}
