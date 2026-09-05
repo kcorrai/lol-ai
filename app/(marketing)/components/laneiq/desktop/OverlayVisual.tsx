@@ -1,3 +1,7 @@
+import Image from "next/image";
+import { ChampionIcon } from "@/components/ui/ChampionIcon";
+import { ItemIcon } from "@/components/ui/ItemIcon";
+import { championSplashUrl } from "@/lib/ddragon";
 import { Bar, Chip, Illustration, Panel, Stat } from "./chrome";
 
 /**
@@ -18,12 +22,23 @@ import { Bar, Chip, Illustration, Panel, Stat } from "./chrome";
  * about the player, and averaging them produces a number true of nobody.
  */
 
-const ITEMS: readonly { name: string; done: boolean }[] = [
-  { name: "Eclipse", done: true },
-  { name: "Ionian Boots", done: true },
-  { name: "Sundered Sky", done: true },
-  { name: "Death's Dance", done: false },
-  { name: "Sterak's Gage", done: false },
+/**
+ * The build, with the icons the real panel draws.
+ *
+ * `desktop/src/components/build/BuildReading.tsx` renders an item as its icon *and* its name,
+ * because "the icon beside each one is what they actually recognise mid-game". This drawing
+ * showed only the names, which made it a worse likeness of the panel than it needed to be.
+ *
+ * The ids are Data Dragon's, read off `item.json` for the pinned version rather than recalled
+ * — they are the one thing here a reader can catch us getting wrong, since a wrong id renders
+ * somebody else's item. Verified 200 on the CDN at the time of writing.
+ */
+const ITEMS: readonly { id: number; name: string; done: boolean }[] = [
+  { id: 6692, name: "Eclipse", done: true },
+  { id: 3158, name: "Ionian Boots", done: true },
+  { id: 6610, name: "Sundered Sky", done: true },
+  { id: 6333, name: "Death's Dance", done: false },
+  { id: 3053, name: "Sterak's Gage", done: false },
 ];
 
 export function OverlayVisual({ compact = false }: { compact?: boolean } = {}): React.ReactElement {
@@ -34,11 +49,21 @@ export function OverlayVisual({ compact = false }: { compact?: boolean } = {}): 
     >
       <div className="notch-lg relative overflow-hidden border border-border bg-ink-1000">
         {/* The match underneath.
-            Deliberately not a screenshot of League and deliberately not champion art: this is
-            the ground the overlay is transparent to, and anything legible in it would compete
-            with the panels, which are the subject. What it has to do instead is read as depth
-            rather than as an empty box — so it is a fight's worth of coloured light going off
-            behind frosted glass, two teams' worth of it, over the instrument grid. */}
+            Still not a screenshot of League — there is no honest way to ship one — but no longer
+            nothing either. An earlier pass argued champion art would compete with the panels and
+            left only coloured light, which read as an empty box: the overlay is transparent to
+            *something*, and a reader could not tell what. Darius is the champion the panels are
+            about, so he is what is behind them, at a fifth of full strength and desaturated with
+            the light and the vignette still stacked on top. Nothing in him survives legibly at
+            that weight, which was the original worry, and the frame stops looking unfinished. */}
+        <Image
+          src={championSplashUrl("Darius")}
+          alt=""
+          aria-hidden
+          fill
+          sizes="(max-width: 1024px) 100vw, 720px"
+          className="object-cover object-[62%_28%] opacity-[0.2] grayscale-[0.35]"
+        />
         <div
           aria-hidden
           className="absolute inset-0"
@@ -82,8 +107,18 @@ export function OverlayVisual({ compact = false }: { compact?: boolean } = {}): 
                 `compact`, which left the landing band's frame two-thirds empty — the panels
                 are the subject, and fewer of them does not make the picture smaller, it makes
                 it emptier. `compact` is a width and a padding, nothing else. */}
-            <Panel title="This lane" meta="Darius vs Sett · 15.3">
+            <Panel title="This lane" meta="15.3">
               <div className="grid gap-2.5">
+                {/* The matchup, as the two faces rather than as two words in the header. Display
+                    names, not Data Dragon keys: `normalizeChampionKey` owns that mapping and a
+                    hand-written key 403s into a letter tile. */}
+                <div className="flex items-center gap-2">
+                  <ChampionIcon name="Darius" size={18} />
+                  <span className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-text-faint">
+                    vs
+                  </span>
+                  <ChampionIcon name="Sett" size={18} />
+                </div>
                 <div className="flex items-baseline justify-between gap-2">
                   <span className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-text-faint">
                     Patch
@@ -109,12 +144,17 @@ export function OverlayVisual({ compact = false }: { compact?: boolean } = {}): 
             <Panel title="Build" meta="Next: Death's Dance">
               <div className="grid gap-2">
                 {ITEMS.map((item) => (
-                  <div key={item.name} className="flex items-center gap-2.5">
+                  <div key={item.id} className="flex items-center gap-2.5">
+                    {/* Bought items are lit and unbought ones are dimmed, which is the state
+                        the empty boxes used to carry in their border. Dimming the icon rather
+                        than hiding it keeps the build path readable as a path — the reader can
+                        see what is coming, not only what is there. */}
                     <span
-                      className={`h-4 w-4 shrink-0 border ${
-                        item.done ? "border-accent bg-accent/20" : "border-line-1 bg-surface-dark"
-                      }`}
-                    />
+                      className={`flex shrink-0 ${item.done ? "" : "opacity-40 grayscale"}`}
+                      style={{ lineHeight: 0 }}
+                    >
+                      <ItemIcon itemId={item.id} size={18} />
+                    </span>
                     <span
                       className={`min-w-0 flex-1 truncate text-[11px] ${
                         item.done ? "text-text-body" : "text-text-faint"
