@@ -80,25 +80,28 @@ export async function getWarmupStatus(riotAccountId: string): Promise<WarmupData
   // ── Historical comparison (last 30 days) ────────────────────────────────────
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
-  // Get all ranked games from the past 30 days grouped by calendar day
-  const historicalRanked = await prisma.matchParticipant.findMany({
-    where: {
-      puuid: puuid ?? "",
-      queueType: "RANKED_SOLO_5x5",
-      gameStart: { gte: thirtyDaysAgo },
-    },
-    orderBy: { gameStart: "asc" },
-    select: { won: true, gameStart: true },
-  });
-
-  const historicalWarmup = await prisma.matchParticipant.findMany({
-    where: {
-      puuid: puuid ?? "",
-      queueType: { in: [...WARMUP_QUEUES] },
-      gameStart: { gte: thirtyDaysAgo },
-    },
-    select: { gameStart: true },
-  });
+  // Two disjoint queue filters over the same window — neither reads the other's result, so
+  // they go together. Awaited one after the other this was two round trips deep for no reason.
+  const [historicalRanked, historicalWarmup] = await Promise.all([
+    // All ranked games from the past 30 days, later grouped by calendar day.
+    prisma.matchParticipant.findMany({
+      where: {
+        puuid: puuid ?? "",
+        queueType: "RANKED_SOLO_5x5",
+        gameStart: { gte: thirtyDaysAgo },
+      },
+      orderBy: { gameStart: "asc" },
+      select: { won: true, gameStart: true },
+    }),
+    prisma.matchParticipant.findMany({
+      where: {
+        puuid: puuid ?? "",
+        queueType: { in: [...WARMUP_QUEUES] },
+        gameStart: { gte: thirtyDaysAgo },
+      },
+      select: { gameStart: true },
+    }),
+  ]);
 
   // Group ranked first-game-of-day by whether warmup existed before it
   const warmupGameTimes = historicalWarmup.map((m) => m.gameStart.getTime());
