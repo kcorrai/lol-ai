@@ -1,8 +1,14 @@
 import { resolveGuess } from "@/domains/quiz/services/championPool";
 import { compareClassic } from "@/domains/quiz/services/classicMode";
+import { explainFor } from "@/domains/quiz/services/explainService";
 import { answerFor, hintFor } from "@/domains/quiz/services/puzzleService";
 import { utcDateKey } from "@/domains/quiz/services/dailySeed";
-import type { GuessResult, QuizChampion, QuizMode } from "@/domains/quiz/types/quiz.types";
+import type {
+  GuessResult,
+  PuzzleExplanation,
+  QuizChampion,
+  QuizMode,
+} from "@/domains/quiz/types/quiz.types";
 
 // Guesses are judged on the server. The client is never told the answer, so the
 // only way to see it is to solve the puzzle or give up — which is also why the
@@ -40,7 +46,8 @@ export function judgeGuess(
   const guess = resolveGuess(rawGuess);
   if (!guess) throw new UnknownChampionError(rawGuess);
 
-  const answer = answerFor(mode, utcDateKey(now), practiceSeed);
+  const dateKey = utcDateKey(now);
+  const answer = answerFor(mode, dateKey, practiceSeed);
   const correct = guess.id === answer.id;
 
   const result: GuessResult = { guess: guess.id, correct };
@@ -52,6 +59,7 @@ export function judgeGuess(
 
   if (correct) {
     result.answer = reveal(answer);
+    result.explanation = explainFor(mode, answer, practiceSeed ?? dateKey);
     return result;
   }
 
@@ -63,9 +71,15 @@ export function judgeGuess(
   return result;
 }
 
-/** Gives up on the puzzle and reveals the answer. */
-export function revealAnswer(mode: QuizMode, now: Date, practiceSeed?: string): RevealedAnswer {
-  return reveal(answerFor(mode, utcDateKey(now), practiceSeed));
+/** Gives up on the puzzle: the answer, and why it was the answer. */
+export function revealAnswer(
+  mode: QuizMode,
+  now: Date,
+  practiceSeed?: string
+): { answer: RevealedAnswer; explanation?: PuzzleExplanation } {
+  const dateKey = utcDateKey(now);
+  const answer = answerFor(mode, dateKey, practiceSeed);
+  return { answer: reveal(answer), explanation: explainFor(mode, answer, practiceSeed ?? dateKey) };
 }
 
 /** How many wrong guesses precede a solve — what the share grid counts. */

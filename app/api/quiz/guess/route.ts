@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
       if (userId && !giveUp.data.practiceSeed) {
         await recordBestEffort(() => recordGiveUp(userId, giveUp.data.mode, now));
       }
-      return apiSuccess({ answer: revealAnswer(giveUp.data.mode, now, giveUp.data.practiceSeed) });
+      return apiSuccess(revealAnswer(giveUp.data.mode, now, giveUp.data.practiceSeed));
     }
 
     const parsed = bodySchema.safeParse(raw);

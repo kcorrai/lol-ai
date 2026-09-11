@@ -175,11 +175,13 @@ export function PuzzlePrompt({ prompt, misses, revealed }: PuzzlePromptProps): R
               Seven of these eight champions share something. One does not.
             </p>
             <p className="mt-3.5 font-mono text-[10px] uppercase tracking-label text-fg-4">
-              {prompt.trait
-                ? prompt.trait.value
-                  ? `The other seven share this ${prompt.trait.category}: ${prompt.trait.value}`
-                  : `The other seven share a ${prompt.trait.category}`
-                : "What they share arrives after three misses"}
+              {revealed
+                ? "What they shared is spelled out below"
+                : prompt.trait
+                  ? prompt.trait.value
+                    ? `The other seven share this ${prompt.trait.category}: ${prompt.trait.value}`
+                    : `The other seven share a ${prompt.trait.category}`
+                  : "What they share arrives after three misses"}
             </p>
           </div>
           <Caption>Pick the impostor from the board below</Caption>

@@ -72,7 +72,7 @@ function post(body: unknown): NextRequest {
 beforeEach(() => {
   vi.clearAllMocks();
   mockJudge.mockReturnValue(VERDICT);
-  mockReveal.mockReturnValue(ANSWER);
+  mockReveal.mockReturnValue({ answer: ANSWER });
   mockSession.mockResolvedValue({ user: { id: "user-1" } });
 });
 

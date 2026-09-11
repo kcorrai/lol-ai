@@ -1,0 +1,1745 @@
+{
+  "⌛": [
+    "hourglass",
+    "time",
+    "sand",
+    "countdown",
+    "doom"
+  ],
+  "⏰": [
+    "clock",
+    "alarm",
+    "time",
+    "hour",
+    "countdown"
+  ],
+  "⏱️": [
+    "time",
+    "clock",
+    "chrono",
+    "stopwatch",
+    "rewind"
+  ],
+  "☀️": [
+    "sun",
+    "solar",
+    "light",
+    "sunlight",
+    "dawn",
+    "daylight",
+    "radiant",
+    "ascend",
+    "shurima"
+  ],
+  "☁️": [
+    "cloud",
+    "sky",
+    "mist",
+    "wind"
+  ],
+  "☄️": [
+    "comet",
+    "meteor",
+    "falling star"
+  ],
+  "☠️": [
+    "death",
+    "skull",
+    "poison",
+    "reaper",
+    "doom",
+    "grave"
+  ],
+  "☯️": [
+    "balance",
+    "harmony",
+    "duality",
+    "equilibrium",
+    "wuju",
+    "twin",
+    "yin",
+    "yang"
+  ],
+  "⚓": [
+    "anchor",
+    "harbor",
+    "sailor",
+    "hook"
+  ],
+  "⚔️": [
+    "swords",
+    "sword",
+    "blade",
+    "war",
+    "duel",
+    "strike",
+    "steel",
+    "edge",
+    "slash",
+    "cleave",
+    "weapon"
+  ],
+  "⚖️": [
+    "scales",
+    "justice",
+    "judgement",
+    "judgment",
+    "balance",
+    "law"
+  ],
+  "⚙️": [
+    "gear",
+    "machine",
+    "engine",
+    "mechanic",
+    "clockwork",
+    "construct",
+    "automaton",
+    "hextech",
+    "cog",
+    "steam",
+    "iron"
+  ],
+  "⚡": [
+    "lightning",
+    "thunder",
+    "bolt",
+    "shock",
+    "storm",
+    "electric",
+    "spark"
+  ],
+  "⚪": [
+    "white",
+    "pale",
+    "light",
+    "lunar"
+  ],
+  "⚫": [
+    "black",
+    "void",
+    "dark",
+    "shadow",
+    "night"
+  ],
+  "⚰️": [
+    "coffin",
+    "casket",
+    "grave",
+    "tomb",
+    "burial",
+    "undertaker",
+    "dead",
+    "death"
+  ],
+  "⚱️": [
+    "urn",
+    "ashes",
+    "remains",
+    "ritual",
+    "vessel"
+  ],
+  "⛄": [
+    "snowman",
+    "snow",
+    "ice",
+    "frost",
+    "winter"
+  ],
+  "⛓️": [
+    "chains",
+    "chain",
+    "shackle",
+    "bind",
+    "bound",
+    "tether",
+    "grasp",
+    "hook",
+    "lash",
+    "anchor"
+  ],
+  "⛰️": [
+    "mountain",
+    "peak",
+    "stone",
+    "rock",
+    "summit"
+  ],
+  "✂️": [
+    "scissors",
+    "shears",
+    "cut",
+    "sever"
+  ],
+  "✈️": [
+    "flight",
+    "fly",
+    "wings",
+    "soar",
+    "glide"
+  ],
+  "✊": [
+    "fist",
+    "grip",
+    "punch",
+    "grasp"
+  ],
+  "✝️": [
+    "cross",
+    "faith",
+    "zealot",
+    "holy"
+  ],
+  "✨": [
+    "magic",
+    "mage",
+    "arcane",
+    "spell",
+    "enchant",
+    "lucent",
+    "spirit",
+    "sparkle",
+    "star",
+    "shimmer"
+  ],
+  "❄️": [
+    "ice",
+    "frost",
+    "freeze",
+    "cryo",
+    "winter",
+    "snow",
+    "glacial"
+  ],
+  "❤️": [
+    "heart",
+    "love",
+    "life",
+    "vitality"
+  ],
+  "⭐": [
+    "star",
+    "stellar",
+    "celestial",
+    "starchild"
+  ],
+  "🃏": [
+    "card",
+    "joker",
+    "deck",
+    "gambler",
+    "trick"
+  ],
+  "🌀": [
+    "spiral",
+    "vortex",
+    "whirl",
+    "cyclone",
+    "portal"
+  ],
+  "🌈": [
+    "rainbow",
+    "colour",
+    "color",
+    "prism",
+    "bright"
+  ],
+  "🌊": [
+    "wave",
+    "water",
+    "tide",
+    "ocean",
+    "sea",
+    "flood"
+  ],
+  "🌋": [
+    "volcano",
+    "lava",
+    "magma",
+    "eruption",
+    "molten"
+  ],
+  "🌌": [
+    "cosmos",
+    "stars",
+    "space",
+    "celestial",
+    "void",
+    "galaxy"
+  ],
+  "🌍": [
+    "earth",
+    "world",
+    "globe",
+    "land",
+    "ground"
+  ],
+  "🌑": [
+    "eclipse",
+    "new moon",
+    "dark moon",
+    "shadow"
+  ],
+  "🌙": [
+    "moon",
+    "lunar",
+    "crescent",
+    "night",
+    "eclipse",
+    "moonlight",
+    "moonsilver"
+  ],
+  "🌩️": [
+    "lightning",
+    "storm",
+    "thunder",
+    "bolt",
+    "shock"
+  ],
+  "🌪️": [
+    "tornado",
+    "whirlwind",
+    "cyclone",
+    "storm",
+    "wind"
+  ],
+  "🌫️": [
+    "mist",
+    "fog",
+    "haze",
+    "shroud",
+    "veil"
+  ],
+  "🌱": [
+    "sprout",
+    "seed",
+    "growth",
+    "bloom",
+    "nature"
+  ],
+  "🌳": [
+    "tree",
+    "forest",
+    "wood",
+    "root",
+    "treant"
+  ],
+  "🌸": [
+    "blossom",
+    "bloom",
+    "flower",
+    "petal",
+    "cherry",
+    "spring",
+    "garden",
+    "lotus",
+    "seed"
+  ],
+  "🌹": [
+    "rose",
+    "thorn",
+    "flower",
+    "petal",
+    "bloom"
+  ],
+  "🌻": [
+    "sunflower",
+    "sun",
+    "flower",
+    "bloom"
+  ],
+  "🌾": [
+    "wheat",
+    "harvest",
+    "scythe",
+    "field"
+  ],
+  "🌿": [
+    "herb",
+    "vine",
+    "plant",
+    "nature",
+    "growth"
+  ],
+  "🍂": [
+    "autumn",
+    "leaves",
+    "fall",
+    "wither",
+    "decay"
+  ],
+  "🍃": [
+    "leaf",
+    "leaves",
+    "nature",
+    "wind",
+    "forest"
+  ],
+  "🍄": [
+    "mushroom",
+    "shroom",
+    "spore",
+    "fungus"
+  ],
+  "🍊": [
+    "orange",
+    "citrus",
+    "scurvy",
+    "fruit"
+  ],
+  "🍺": [
+    "beer",
+    "ale",
+    "drink",
+    "brew",
+    "tavern"
+  ],
+  "🎀": [
+    "ribbon",
+    "bow",
+    "pretty",
+    "gift"
+  ],
+  "🎁": [
+    "gift",
+    "present",
+    "bandage"
+  ],
+  "🎃": [
+    "pumpkin",
+    "harvest",
+    "scarecrow",
+    "fear"
+  ],
+  "🎈": [
+    "balloon",
+    "float",
+    "party",
+    "lift"
+  ],
+  "🎖️": [
+    "medal",
+    "honour",
+    "honor",
+    "soldier",
+    "rank",
+    "commander"
+  ],
+  "🎤": [
+    "microphone",
+    "voice",
+    "song",
+    "sing",
+    "star"
+  ],
+  "🎨": [
+    "paint",
+    "art",
+    "colour",
+    "color",
+    "canvas"
+  ],
+  "🎩": [
+    "hat",
+    "gentleman",
+    "showman"
+  ],
+  "🎭": [
+    "mask",
+    "masks",
+    "deception",
+    "deceive",
+    "disguise",
+    "trickster",
+    "illusion",
+    "clone",
+    "mimic",
+    "faces"
+  ],
+  "🎯": [
+    "target",
+    "aim",
+    "mark",
+    "bullseye",
+    "precision",
+    "focus",
+    "perfect",
+    "dart"
+  ],
+  "🎵": [
+    "music",
+    "song",
+    "note",
+    "melody",
+    "chime",
+    "tune"
+  ],
+  "🎻": [
+    "violin",
+    "strings",
+    "music",
+    "song"
+  ],
+  "🏒": [
+    "club",
+    "stick",
+    "swing",
+    "hockey"
+  ],
+  "🏜️": [
+    "desert",
+    "sand",
+    "dunes",
+    "shurima"
+  ],
+  "🏮": [
+    "lantern",
+    "light",
+    "spirit",
+    "ionia",
+    "festival"
+  ],
+  "🏴‍☠️": [
+    "pirate",
+    "plunder",
+    "captain",
+    "buccaneer"
+  ],
+  "🏹": [
+    "bow",
+    "arrow",
+    "archer",
+    "marksman",
+    "volley",
+    "shot"
+  ],
+  "🐀": [
+    "rat",
+    "rodent",
+    "plague",
+    "vermin",
+    "sewer"
+  ],
+  "🐂": [
+    "bull",
+    "ox",
+    "minotaur",
+    "horns"
+  ],
+  "🐆": [
+    "leopard",
+    "cheetah",
+    "cat",
+    "claws",
+    "pounce"
+  ],
+  "🐉": [
+    "dragon",
+    "drake",
+    "wyrm",
+    "serpent"
+  ],
+  "🐊": [
+    "crocodile",
+    "croc",
+    "jaws",
+    "reptile",
+    "swamp"
+  ],
+  "🐍": [
+    "snake",
+    "serpent",
+    "viper",
+    "naga",
+    "venom"
+  ],
+  "🐑": [
+    "sheep",
+    "lamb",
+    "wool",
+    "shepherd"
+  ],
+  "🐒": [
+    "monkey",
+    "ape",
+    "simian",
+    "king"
+  ],
+  "🐓": [
+    "rooster",
+    "bird",
+    "crow",
+    "cluck"
+  ],
+  "🐕": [
+    "dog",
+    "hound",
+    "yordle",
+    "loyal"
+  ],
+  "🐕‍🦺": [
+    "hound",
+    "dog",
+    "guard",
+    "companion"
+  ],
+  "🐗": [
+    "boar",
+    "tusk",
+    "charge",
+    "beast"
+  ],
+  "🐙": [
+    "octopus",
+    "tentacle",
+    "kraken"
+  ],
+  "🐚": [
+    "shell",
+    "conch",
+    "sea",
+    "pearl"
+  ],
+  "🐛": [
+    "bug",
+    "worm",
+    "grub",
+    "larva",
+    "insect"
+  ],
+  "🐟": [
+    "fish",
+    "fin",
+    "scales",
+    "sea"
+  ],
+  "🐣": [
+    "hatchling",
+    "chick",
+    "egg",
+    "hatch",
+    "young"
+  ],
+  "🐦": [
+    "bird",
+    "wings",
+    "feather",
+    "avian"
+  ],
+  "🐦‍⬛": [
+    "crow",
+    "raven",
+    "black bird",
+    "flock",
+    "murder"
+  ],
+  "🐮": [
+    "cow",
+    "bull",
+    "minotaur"
+  ],
+  "🐯": [
+    "tiger",
+    "stripes",
+    "fangs",
+    "beast",
+    "claws"
+  ],
+  "🐰": [
+    "rabbit",
+    "bunny",
+    "hare",
+    "ears"
+  ],
+  "🐱": [
+    "cat",
+    "kitten",
+    "feline",
+    "claws",
+    "purr"
+  ],
+  "🐲": [
+    "dragon",
+    "drake",
+    "wyrm",
+    "scales"
+  ],
+  "🐴": [
+    "horse",
+    "steed",
+    "mount",
+    "unicorn"
+  ],
+  "🐸": [
+    "frog",
+    "toad",
+    "swamp",
+    "tongue"
+  ],
+  "🐺": [
+    "wolf",
+    "lupine",
+    "howl"
+  ],
+  "🐻": [
+    "bear",
+    "ursine"
+  ],
+  "🐻‍❄️": [
+    "polar bear",
+    "bear",
+    "ice",
+    "frost",
+    "ursine"
+  ],
+  "🐿️": [
+    "squirrel",
+    "yordle",
+    "critter",
+    "tiny",
+    "small",
+    "poro"
+  ],
+  "👁️": [
+    "eye",
+    "sight",
+    "vision",
+    "gaze",
+    "watcher"
+  ],
+  "👁️‍🗨️": [
+    "eye",
+    "watcher",
+    "sight",
+    "vision",
+    "gaze"
+  ],
+  "👅": [
+    "tongue",
+    "lick",
+    "taste",
+    "lash"
+  ],
+  "👊": [
+    "punch",
+    "fist",
+    "strike",
+    "brawl"
+  ],
+  "👑": [
+    "crown",
+    "king",
+    "queen",
+    "empress",
+    "emperor",
+    "royal",
+    "throne",
+    "prince",
+    "ruler"
+  ],
+  "👥": [
+    "shadow",
+    "clone",
+    "two",
+    "double",
+    "twin"
+  ],
+  "👦": [
+    "boy",
+    "child",
+    "youth",
+    "son"
+  ],
+  "👧": [
+    "girl",
+    "child",
+    "daughter"
+  ],
+  "👨": [
+    "man",
+    "brother",
+    "father"
+  ],
+  "👩": [
+    "woman",
+    "lady",
+    "sister",
+    "mother"
+  ],
+  "👩‍👧": [
+    "mother",
+    "daughter",
+    "family",
+    "matriarch"
+  ],
+  "👮": [
+    "sheriff",
+    "law",
+    "enforcer",
+    "police",
+    "warden"
+  ],
+  "👮‍♀️": [
+    "sheriff",
+    "law",
+    "enforcer",
+    "police",
+    "warden"
+  ],
+  "👹": [
+    "demon",
+    "void",
+    "voidborn",
+    "monster",
+    "horror",
+    "ogre",
+    "yordle",
+    "oni"
+  ],
+  "👺": [
+    "oni",
+    "mask",
+    "demon",
+    "yokai",
+    "vastaya"
+  ],
+  "👻": [
+    "ghost",
+    "spirit",
+    "wraith",
+    "spectre",
+    "specter",
+    "phantom",
+    "haunt",
+    "soul"
+  ],
+  "👼": [
+    "angel",
+    "wings",
+    "celestial",
+    "judgement",
+    "aspect"
+  ],
+  "💀": [
+    "skull",
+    "death",
+    "undead",
+    "grave",
+    "bone",
+    "reaper",
+    "doom"
+  ],
+  "💃": [
+    "dance",
+    "dancer",
+    "grace",
+    "twirl",
+    "flourish",
+    "sway",
+    "spin"
+  ],
+  "💉": [
+    "syringe",
+    "poison",
+    "chemical",
+    "toxin",
+    "serum",
+    "infect",
+    "injection",
+    "plague",
+    "cure",
+    "chem"
+  ],
+  "💋": [
+    "kiss",
+    "lips",
+    "charm",
+    "seduce",
+    "lover"
+  ],
+  "💍": [
+    "ring",
+    "band",
+    "vow",
+    "bond"
+  ],
+  "💎": [
+    "gem",
+    "crystal",
+    "jewel",
+    "diamond",
+    "hex",
+    "prismatic",
+    "shard",
+    "brilliance"
+  ],
+  "💔": [
+    "broken heart",
+    "heartbreak",
+    "grief",
+    "loss",
+    "sorrow"
+  ],
+  "💗": [
+    "heart",
+    "love",
+    "charm",
+    "beloved"
+  ],
+  "💙": [
+    "blue",
+    "heart",
+    "frost"
+  ],
+  "💚": [
+    "green",
+    "nature",
+    "life",
+    "heal"
+  ],
+  "💛": [
+    "yellow",
+    "heart",
+    "gold",
+    "warmth"
+  ],
+  "💜": [
+    "purple",
+    "void",
+    "violet"
+  ],
+  "💡": [
+    "idea",
+    "invention",
+    "inventor",
+    "spark",
+    "light"
+  ],
+  "💢": [
+    "rage",
+    "anger",
+    "fury",
+    "wrath"
+  ],
+  "💣": [
+    "bomb",
+    "explosive",
+    "blast",
+    "grenade",
+    "mine"
+  ],
+  "💤": [
+    "sleep",
+    "dream",
+    "slumber",
+    "nap"
+  ],
+  "💥": [
+    "explosion",
+    "blast",
+    "burst",
+    "impact",
+    "boom",
+    "bomb",
+    "detonate",
+    "shatter",
+    "charge"
+  ],
+  "💧": [
+    "water",
+    "drop",
+    "tear",
+    "tide",
+    "liquid",
+    "ooze",
+    "slime",
+    "goo",
+    "pool",
+    "spill",
+    "flow"
+  ],
+  "💨": [
+    "wind",
+    "dash",
+    "gust",
+    "air",
+    "swift"
+  ],
+  "💪": [
+    "strength",
+    "muscle",
+    "brawn",
+    "might",
+    "mighty"
+  ],
+  "💫": [
+    "dizzy",
+    "stun",
+    "swirl",
+    "star",
+    "daze"
+  ],
+  "📖": [
+    "book",
+    "tome",
+    "story",
+    "lore",
+    "page"
+  ],
+  "📘": [
+    "book",
+    "tome",
+    "grimoire",
+    "page",
+    "lesson"
+  ],
+  "📦": [
+    "box",
+    "crate",
+    "package",
+    "cargo"
+  ],
+  "🔄": [
+    "cycle",
+    "transform",
+    "form",
+    "stance",
+    "swap",
+    "switch",
+    "rewind",
+    "revive",
+    "rebirth",
+    "reset",
+    "loop",
+    "shift",
+    "rotate",
+    "return",
+    "reborn",
+    "spin"
+  ],
+  "🔔": [
+    "bell",
+    "chime",
+    "toll"
+  ],
+  "🔗": [
+    "chain",
+    "link",
+    "bind",
+    "shackle"
+  ],
+  "🔥": [
+    "fire",
+    "flame",
+    "burn",
+    "infernal",
+    "pyro",
+    "ember",
+    "blaze",
+    "scorch",
+    "incinerate",
+    "inferno",
+    "molten",
+    "heat",
+    "flare"
+  ],
+  "🔦": [
+    "lantern",
+    "light",
+    "beam",
+    "lamp",
+    "torch"
+  ],
+  "🔧": [
+    "wrench",
+    "tool",
+    "tinker",
+    "repair",
+    "mechanic"
+  ],
+  "🔨": [
+    "hammer",
+    "smith",
+    "forge",
+    "mallet",
+    "smash",
+    "anvil",
+    "crush"
+  ],
+  "🔩": [
+    "bolt",
+    "screw",
+    "scrap",
+    "metal",
+    "junk"
+  ],
+  "🔪": [
+    "knife",
+    "blade",
+    "dagger",
+    "slice",
+    "slash",
+    "shiv",
+    "stab",
+    "carve",
+    "cut"
+  ],
+  "🔫": [
+    "gun",
+    "marksman",
+    "rifle",
+    "cannon",
+    "musket",
+    "gunner",
+    "pistol",
+    "shot",
+    "bullet",
+    "revolver",
+    "trigger",
+    "ammo"
+  ],
+  "🔮": [
+    "orb",
+    "crystal",
+    "sphere",
+    "prophecy",
+    "seer",
+    "scry",
+    "arcane",
+    "gaze",
+    "ball"
+  ],
+  "🔱": [
+    "trident",
+    "spear",
+    "tide",
+    "sea"
+  ],
+  "🔴": [
+    "red",
+    "crimson",
+    "blood"
+  ],
+  "🔵": [
+    "blue",
+    "orb",
+    "mana"
+  ],
+  "🕊️": [
+    "dove",
+    "bird",
+    "peace",
+    "wings",
+    "feather"
+  ],
+  "🕯️": [
+    "candle",
+    "flame",
+    "wick",
+    "vigil"
+  ],
+  "🕳️": [
+    "hole",
+    "pit",
+    "burrow",
+    "tunnel",
+    "void"
+  ],
+  "🕶️": [
+    "shades",
+    "rogue",
+    "outlaw"
+  ],
+  "🕷️": [
+    "spider",
+    "arachnid",
+    "web",
+    "widow"
+  ],
+  "🕸️": [
+    "web",
+    "spider",
+    "silk",
+    "net"
+  ],
+  "🖌️": [
+    "brush",
+    "paint",
+    "stroke",
+    "art"
+  ],
+  "🖤": [
+    "black",
+    "dark",
+    "shadow",
+    "void"
+  ],
+  "🗝️": [
+    "key",
+    "lock",
+    "unlock",
+    "warden",
+    "prison"
+  ],
+  "🗡️": [
+    "dagger",
+    "blade",
+    "knife",
+    "sword"
+  ],
+  "🗺️": [
+    "map",
+    "explorer",
+    "wander",
+    "journey"
+  ],
+  "🗿": [
+    "statue",
+    "stone",
+    "monument",
+    "ruin",
+    "ascended"
+  ],
+  "🤖": [
+    "robot",
+    "machine",
+    "golem",
+    "automaton",
+    "construct",
+    "mecha",
+    "hextech",
+    "iron",
+    "steel"
+  ],
+  "🤜": [
+    "fist",
+    "punch",
+    "brawler",
+    "strike"
+  ],
+  "🤠": [
+    "cowboy",
+    "outlaw",
+    "sheriff",
+    "frontier"
+  ],
+  "🤪": [
+    "mad",
+    "crazy",
+    "insane",
+    "lunatic",
+    "mayhem"
+  ],
+  "🤸": [
+    "acrobat",
+    "bounce",
+    "leap",
+    "jump",
+    "hop",
+    "spring",
+    "tumble",
+    "flip",
+    "agile",
+    "vault"
+  ],
+  "🤺": [
+    "fencer",
+    "duel",
+    "rapier",
+    "blade",
+    "lunge"
+  ],
+  "🥊": [
+    "boxing",
+    "fist",
+    "punch",
+    "brawler",
+    "fight"
+  ],
+  "🥋": [
+    "martial",
+    "discipline",
+    "training",
+    "monk",
+    "fist"
+  ],
+  "🥚": [
+    "egg",
+    "rebirth",
+    "reborn"
+  ],
+  "🥛": [
+    "milk",
+    "poro",
+    "freljord"
+  ],
+  "🥷": [
+    "ninja",
+    "shadow",
+    "assassin"
+  ],
+  "🥼": [
+    "coat",
+    "doctor",
+    "scientist",
+    "lab"
+  ],
+  "🦁": [
+    "lion",
+    "mane",
+    "pride",
+    "roar",
+    "courage",
+    "beast"
+  ],
+  "🦂": [
+    "scorpion",
+    "sting",
+    "tail"
+  ],
+  "🦄": [
+    "unicorn",
+    "horn",
+    "horse",
+    "magic"
+  ],
+  "🦅": [
+    "eagle",
+    "hawk",
+    "falcon",
+    "raptor",
+    "bird",
+    "talon",
+    "wing",
+    "swoop",
+    "feather"
+  ],
+  "🦇": [
+    "bat",
+    "wings",
+    "night",
+    "echo"
+  ],
+  "🦊": [
+    "fox",
+    "vulpine"
+  ],
+  "🦋": [
+    "butterfly",
+    "wings",
+    "moth"
+  ],
+  "🦌": [
+    "deer",
+    "stag",
+    "antlers",
+    "horns"
+  ],
+  "🦎": [
+    "lizard",
+    "reptile",
+    "scales",
+    "chameleon"
+  ],
+  "🦑": [
+    "squid",
+    "tentacle",
+    "void"
+  ],
+  "🦖": [
+    "dinosaur",
+    "beast",
+    "jaws",
+    "roar"
+  ],
+  "🦗": [
+    "cricket",
+    "insect",
+    "bug",
+    "chitin"
+  ],
+  "🦯": [
+    "cane",
+    "blind",
+    "staff",
+    "stick"
+  ],
+  "🦴": [
+    "bone",
+    "skeleton",
+    "remains",
+    "graveyard"
+  ],
+  "🦵": [
+    "leg",
+    "kick",
+    "stance"
+  ],
+  "🦷": [
+    "tooth",
+    "fang",
+    "bite",
+    "jaws"
+  ],
+  "🧊": [
+    "ice",
+    "frost",
+    "freeze",
+    "frozen",
+    "glacial"
+  ],
+  "🧌": [
+    "troll",
+    "brute",
+    "giant",
+    "ogre"
+  ],
+  "🧕": [
+    "veil",
+    "hood",
+    "shroud",
+    "cloak"
+  ],
+  "🧙": [
+    "wizard",
+    "mage",
+    "sorcerer",
+    "spellcaster",
+    "arcanist"
+  ],
+  "🧙‍♀️": [
+    "witch",
+    "sorceress",
+    "mage",
+    "spellcaster",
+    "enchantress"
+  ],
+  "🧚": [
+    "fairy",
+    "fae",
+    "sprite",
+    "wings",
+    "pixie"
+  ],
+  "🧛": [
+    "vampire",
+    "blood",
+    "fang",
+    "thirst"
+  ],
+  "🧜‍♀️": [
+    "mermaid",
+    "siren",
+    "sea",
+    "tide",
+    "marai"
+  ],
+  "🧟": [
+    "undead",
+    "zombie",
+    "revenant",
+    "corpse"
+  ],
+  "🧪": [
+    "potion",
+    "chem",
+    "chemtech",
+    "chemical",
+    "toxic",
+    "toxin",
+    "alchemy",
+    "elixir",
+    "concoction",
+    "formula",
+    "experiment",
+    "brew",
+    "flask"
+  ],
+  "🧲": [
+    "magnet",
+    "pull",
+    "attract",
+    "grab",
+    "hook"
+  ],
+  "🧵": [
+    "thread",
+    "string",
+    "weave",
+    "stitch",
+    "puppet"
+  ],
+  "🧸": [
+    "bear",
+    "teddy",
+    "toy"
+  ],
+  "🩰": [
+    "dance",
+    "ballet",
+    "grace",
+    "graceful"
+  ],
+  "🩸": [
+    "blood",
+    "bleed",
+    "hemo",
+    "crimson",
+    "sanguine",
+    "vein",
+    "carnage",
+    "gore"
+  ],
+  "🩹": [
+    "bandage",
+    "wrap",
+    "mummy"
+  ],
+  "🪃": [
+    "boomerang",
+    "return",
+    "throw",
+    "arc"
+  ],
+  "🪓": [
+    "axe",
+    "cleaver",
+    "hatchet"
+  ],
+  "🪝": [
+    "hook",
+    "grapple",
+    "hookshot",
+    "catch"
+  ],
+  "🪞": [
+    "mirror",
+    "reflection",
+    "copy",
+    "mimic"
+  ],
+  "🪡": [
+    "needle",
+    "stitch",
+    "sew",
+    "thread"
+  ],
+  "🪤": [
+    "trap",
+    "snare",
+    "net",
+    "ambush"
+  ],
+  "🪨": [
+    "rock",
+    "stone",
+    "boulder",
+    "earth"
+  ],
+  "🪶": [
+    "feather",
+    "quill",
+    "plume",
+    "wings"
+  ],
+  "😄": [
+    "smile",
+    "grin",
+    "cheer",
+    "joy"
+  ],
+  "😈": [
+    "demon",
+    "devil",
+    "darkin",
+    "fiend",
+    "wicked",
+    "sin",
+    "mischief",
+    "imp",
+    "curse"
+  ],
+  "😊": [
+    "kind",
+    "gentle",
+    "smile",
+    "warm",
+    "joy",
+    "friend",
+    "happy"
+  ],
+  "😋": [
+    "hungry",
+    "taste",
+    "devour",
+    "feast",
+    "gourmand"
+  ],
+  "😏": [
+    "smirk",
+    "sly",
+    "charm",
+    "rogue"
+  ],
+  "😔": [
+    "sorrow",
+    "gloom",
+    "regret",
+    "melancholy"
+  ],
+  "😜": [
+    "playful",
+    "tease",
+    "prank",
+    "mischief"
+  ],
+  "😠": [
+    "anger",
+    "grumpy",
+    "sour",
+    "temper"
+  ],
+  "😡": [
+    "anger",
+    "rage",
+    "fury",
+    "wrath"
+  ],
+  "😢": [
+    "tears",
+    "sad",
+    "cry",
+    "sorrow",
+    "mourn"
+  ],
+  "😤": [
+    "snort",
+    "huff",
+    "charge",
+    "fury"
+  ],
+  "😱": [
+    "fear",
+    "terror",
+    "scream",
+    "nightmare",
+    "horror",
+    "dread"
+  ],
+  "😴": [
+    "sleep",
+    "slumber",
+    "dream",
+    "drowsy"
+  ],
+  "😶": [
+    "silence",
+    "silent",
+    "quiet",
+    "mute",
+    "hush"
+  ],
+  "🙏": [
+    "prayer",
+    "devotion",
+    "monk",
+    "faith",
+    "blessing"
+  ],
+  "🚀": [
+    "rocket",
+    "launch",
+    "flight",
+    "blast"
+  ],
+  "🚂": [
+    "steam",
+    "engine",
+    "piltover",
+    "zaun"
+  ],
+  "🚩": [
+    "flag",
+    "banner",
+    "standard",
+    "rally"
+  ],
+  "🚬": [
+    "smoke",
+    "cigar",
+    "ash"
+  ],
+  "🚶": [
+    "walk",
+    "wander",
+    "traveller",
+    "traveler",
+    "stride"
+  ],
+  "🛡️": [
+    "shield",
+    "guard",
+    "protect",
+    "defend",
+    "ward",
+    "barrier",
+    "bulwark",
+    "defender",
+    "warden",
+    "aegis",
+    "stand"
+  ],
+  "🛢️": [
+    "barrel",
+    "keg",
+    "powder",
+    "cask"
+  ],
+  "🛹": [
+    "board",
+    "skate",
+    "ride",
+    "glide"
+  ],
+  "🟠": [
+    "orange",
+    "amber",
+    "ember"
+  ],
+  "🟡": [
+    "yellow",
+    "gold",
+    "golden",
+    "amber"
+  ],
+  "🟢": [
+    "green",
+    "poison",
+    "toxic",
+    "venom"
+  ],
+  "🟣": [
+    "purple",
+    "void",
+    "violet"
+  ],
+  "🟤": [
+    "brown",
+    "earth",
+    "dirt"
+  ],
+  "🟦": [
+    "blue",
+    "square",
+    "hex",
+    "crystal"
+  ],
+  "4️⃣": [
+    "four",
+    "fourth",
+    "iv"
+  ],
+  "9️⃣": [
+    "nine"
+  ]
+}

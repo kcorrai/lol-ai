@@ -179,4 +179,74 @@ export interface GuessResult {
   answer?: { id: string; name: string; title: string };
   /** Extra clue unlocked by this miss, if the mode has one. */
   hint?: string;
+  /** Why the answer was the answer. Emoji and Impostor only, and only once the
+   *  puzzle is over — it names the champion outright. */
+  explanation?: PuzzleExplanation;
 }
+
+/** Where in a champion's own record an emoji's meaning turned up. */
+export type EchoSource =
+  | "name"
+  | "title"
+  | "ability"
+  | "species"
+  | "region"
+  | "class"
+  | "resource"
+  | "lore";
+
+/** One decoded emoji: what the picture shows, and where the champion echoes it. */
+export interface EmojiClue {
+  glyph: string;
+  /** What the emoji depicts, in a word — "fox", "crown", "ice". */
+  label: string;
+  /** A plain colour swatch is a different kind of clue from a picture: there is
+   *  usually no word for it anywhere, and saying so beats implying a failure. */
+  kind: "colour" | "symbol";
+  /** Absent when nothing in the champion's record carries the word. Saying
+   *  nothing is better than inventing a connection. */
+  echo?: {
+    source: EchoSource;
+    /** The champion's own text — a title, an ability name, a lore sentence. */
+    text: string;
+    /** The word that matched, so the UI can pick it out inside `text`. */
+    term: string;
+  };
+}
+
+/** The answer's public facts, shown alongside the decoded clues. */
+export interface ChampionFingerprint {
+  id: string;
+  name: string;
+  title: string;
+  species: string[];
+  regions: string[];
+  classes: string[];
+  resource: string;
+  rangeType: RangeType;
+  positions: Position[];
+}
+
+/** One of the eight Impostor portraits, with what it holds on the hidden axis. */
+export interface ImpostorVerdict {
+  id: string;
+  name: string;
+  isImpostor: boolean;
+  /** Everything this champion carries on the trait's axis — its regions, its
+   *  classes, and so on. Empty only if the dataset has nothing there. */
+  values: string[];
+}
+
+/** Why the answer was the answer. Sent only once the puzzle is finished. */
+export type PuzzleExplanation =
+  | { kind: "emoji"; champion: ChampionFingerprint; clues: EmojiClue[] }
+  | {
+      kind: "impostor";
+      /** How the axis reads: "region", "class", "release era". */
+      category: string;
+      /** What the other seven shared. */
+      value: string;
+      /** What the impostor had there instead — empty when it had nothing. */
+      impostorValues: string[];
+      candidates: ImpostorVerdict[];
+    };

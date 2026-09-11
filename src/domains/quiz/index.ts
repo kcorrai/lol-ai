@@ -8,12 +8,17 @@ export type {
   BuildSpell,
   CellMatch,
   ChampionAbility,
+  ChampionFingerprint,
   ClassicCell,
   ClassicRow,
   DailyPuzzle,
+  EchoSource,
+  EmojiClue,
   Gender,
   GuessResult,
+  ImpostorVerdict,
   Position,
+  PuzzleExplanation,
   QuizChampion,
   QuizMode,
   QuizPrompt,
@@ -46,6 +51,8 @@ export {
 } from "./services/puzzleService";
 
 export { UnknownChampionError, judgeGuess, missCount, revealAnswer } from "./services/guessService";
+
+export { explainEmoji, explainFor, explainImpostor } from "./services/explainService";
 
 export { rankPlayers } from "./services/leaderboardRanking";
 export type { PlayerResults, RankedPlayer } from "./services/leaderboardRanking";

@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useDailyQuiz } from "@/hooks/useDailyQuiz";
 import { useQuizGame, type QuizGameState } from "@/hooks/useQuizGame";
 import type { ModeResult, QuizMode } from "@/domains/quiz";
+import { AnswerExplainer } from "./AnswerExplainer";
 import { ClassicGrid } from "./ClassicGrid";
 import { ClueLadder } from "./ClueLadder";
 import { GuessArea } from "./GuessArea";
@@ -136,6 +137,13 @@ export function QuizBoard({
             <GuessList results={game.state.results} />
           )}
         </div>
+      )}
+
+      {finished && game.state.explanation && game.state.answer && (
+        <AnswerExplainer
+          explanation={game.state.explanation}
+          answerName={game.state.answer.name}
+        />
       )}
 
       {finished && practiceSeed && game.state.answer && (

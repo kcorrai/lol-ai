@@ -2295,6 +2295,15 @@ Guesses are graded here rather than in the browser: the alternative, shipping
 the champion and comparing client-side, is solvable from devtools. Returns
 `answer` only once the puzzle is solved or given up on.
 
+Alongside `answer`, Emoji and Impostor also return `explanation` — why the answer
+was the answer. Emoji sends each of the five glyphs with the word it depicts and,
+where one exists, the place that word turns up in the champion's own record (a
+title, an ability name, a lore sentence, with the matched term named so the UI
+can pick it out). Impostor sends the hidden trait, what the seven shared, and
+what every one of the eight carried on that axis. Both are derived from the
+committed dataset, and both carry the champion's name, so neither is ever sent
+before the puzzle is over.
+
 - `422 UNKNOWN_CHAMPION` when the guess matches no champion. Names are folded
   before matching, so `kaisa`, `Kai'Sa`, `j4` and `Wukong` all resolve.
 - Rate limited to 30/min per IP — the roster is 173 names, and an unthrottled

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { GuessResult, QuizMode } from "@/domains/quiz";
+import type { GuessResult, PuzzleExplanation, QuizMode } from "@/domains/quiz";
 
 // One mode's play state for one day, kept in localStorage so an anonymous player
 // keeps their board on refresh. Signed-in players also get a server-side record
@@ -13,6 +13,9 @@ export interface QuizGameState {
   solved: boolean;
   gaveUp: boolean;
   answer?: NonNullable<GuessResult["answer"]>;
+  /** Why the answer was the answer — Emoji and Impostor only. Stored with the
+   *  board so a refresh does not throw the payoff away. */
+  explanation?: PuzzleExplanation;
 }
 
 const EMPTY: QuizGameState = { results: [], solved: false, gaveUp: false };
@@ -114,6 +117,7 @@ export function useQuizGame(dateKey: string | undefined, mode: QuizMode, practic
           solved: result.correct,
           gaveUp: false,
           answer: result.answer,
+          explanation: result.explanation,
         };
         persist(next);
         return next;
@@ -137,10 +141,18 @@ export function useQuizGame(dateKey: string | undefined, mode: QuizMode, practic
         body: JSON.stringify({ mode, giveUp: true, ...(practiceSeed ? { practiceSeed } : {}) }),
       });
       const json = (await res.json()) as {
-        data?: { answer: NonNullable<GuessResult["answer"]> };
+        data?: {
+          answer: NonNullable<GuessResult["answer"]>;
+          explanation?: PuzzleExplanation;
+        };
       };
       if (!json.data) return null;
-      const next: QuizGameState = { ...state, gaveUp: true, answer: json.data.answer };
+      const next: QuizGameState = {
+        ...state,
+        gaveUp: true,
+        answer: json.data.answer,
+        explanation: json.data.explanation,
+      };
       persist(next);
       return next;
     } catch {

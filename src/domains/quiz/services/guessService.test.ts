@@ -83,11 +83,17 @@ describe("judgeGuess", () => {
 describe("revealAnswer", () => {
   it("hands over the answer when the player gives up", () => {
     const answer = answerFor("emoji", "2026-08-17");
-    expect(revealAnswer("emoji", NOW)).toEqual({
+    expect(revealAnswer("emoji", NOW).answer).toEqual({
       id: answer.id,
       name: answer.name,
       title: answer.title,
     });
+  });
+
+  it("explains the answer for the two modes that have an explanation", () => {
+    expect(revealAnswer("emoji", NOW).explanation?.kind).toBe("emoji");
+    expect(revealAnswer("impostor", NOW).explanation?.kind).toBe("impostor");
+    expect(revealAnswer("classic", NOW).explanation).toBeUndefined();
   });
 });
 
