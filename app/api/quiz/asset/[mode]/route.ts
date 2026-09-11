@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { apiError } from "@/lib/api/response";
+import { checkRateLimit, getIp, rateLimitResponse } from "@/lib/api/rateLimit";
 import {
   DATASET_VERSION,
   abilityFor,
@@ -19,6 +21,27 @@ import { logger } from "@/lib/utils/logger";
 // under a URL that says only which mode it is.
 
 const DDRAGON = "https://ddragon.leagueoflegends.com";
+
+/**
+ * The one public route that spends somebody else's bandwidth.
+ *
+ * Every other asset here is answered from the edge, because the daily URL is the same URL for
+ * everyone all day. A practice `seed` is not: each distinct value is a distinct URL, a cache
+ * miss by construction, and an outbound request to Data Dragon that this server pays for and
+ * Riot's CDN sees coming from our address. Without a ceiling, walking the seed space is a free
+ * way to turn one visitor into unlimited origin traffic.
+ *
+ * Generous, because a real player loading a practice round pulls one image and the page may
+ * legitimately retry: this stops a loop, not a person.
+ */
+const ASSET_RATE_LIMIT = { limit: 60, windowMs: 60_000 };
+
+/**
+ * The same bound `/api/quiz/today` and `/api/quiz/guess` already put on a practice seed. This
+ * route read the raw parameter instead, so the one endpoint that does work per distinct seed
+ * was the one that accepted a seed of any length.
+ */
+const seedSchema = z.string().min(1).max(64);
 
 /**
  * Candidates in preference order.
@@ -47,8 +70,17 @@ function candidates(mode: string, dateKey: string, seed?: string): string[] {
 }
 
 export async function GET(request: NextRequest, { params }: { params: { mode: string } }) {
+  const rl = await checkRateLimit(`quiz-asset:${getIp(request)}`, ASSET_RATE_LIMIT);
+  if (!rl.allowed) return rateLimitResponse(rl.retryAfterMs, rl.limit);
+
   const now = new Date();
-  const seed = request.nextUrl.searchParams.get("seed") ?? undefined;
+  const rawSeed = request.nextUrl.searchParams.get("seed");
+  let seed: string | undefined;
+  if (rawSeed !== null) {
+    const parsed = seedSchema.safeParse(rawSeed);
+    if (!parsed.success) return apiError("VALIDATION_ERROR", parsed.error.issues[0].message, 422);
+    seed = parsed.data;
+  }
 
   try {
     const urls = candidates(params.mode, utcDateKey(now), seed);
