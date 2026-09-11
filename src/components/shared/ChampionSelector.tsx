@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { X, ChevronDown, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
@@ -34,6 +34,10 @@ export function ChampionSelector({
   className,
 }: ChampionSelectorProps) {
   const { data: allChampions = [] } = useAllChampions();
+  // Ties the search box to the list it drives, and each option to the id the box points at
+  // while arrowing. Without those links a screen reader hears the typing and nothing else.
+  const listId = useId();
+  const optionId = (index: number): string => `${listId}-option-${index}`;
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [cursor, setCursor] = useState(0);
@@ -118,20 +122,23 @@ export function ChampionSelector({
         type="button"
         onClick={openDropdown}
         disabled={disabled}
+        aria-haspopup="listbox"
+        aria-expanded={open}
         className={cn(
           "flex w-full items-center gap-2 rounded-md border border-border bg-surface px-3 text-sm text-text",
           "hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           "disabled:cursor-not-allowed disabled:opacity-50",
           size === "sm" && "h-9",
           size === "md" && "h-10",
-          size === "lg" && "h-12"
+          size === "lg" && "h-12",
+          // Room for the clear control, which now sits over the trigger rather than inside it.
+          selectedChampion && "pr-10"
         )}
       >
         {selectedChampion ? (
           <>
             <ChampionIcon name={selectedChampion.name} size={iconSize} />
             <span className="flex-1 text-left font-medium">{selectedChampion.name}</span>
-            <X className="h-4 w-4 shrink-0 text-text-muted hover:text-text" onClick={clear} />
           </>
         ) : (
           <>
@@ -141,6 +148,25 @@ export function ChampionSelector({
           </>
         )}
       </button>
+
+      {/*
+        A sibling of the trigger, not a child of it. As an `onClick` on the bare icon it was
+        unreachable by keyboard — there was no way to undo a selection without a mouse — and a
+        button nested inside a button is not valid HTML either, so moving it out fixes both.
+      */}
+      {selectedChampion && !disabled && (
+        <button
+          type="button"
+          onClick={clear}
+          aria-label={`Clear ${selectedChampion.name}`}
+          className={cn(
+            "absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-text-muted",
+            "hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          )}
+        >
+          <X className="h-4 w-4" />
+        </button>
+      )}
 
       {/* Dropdown */}
       {open && (
@@ -152,16 +178,31 @@ export function ChampionSelector({
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Search..."
+              // A placeholder is not a name: it disappears as soon as anything is typed, and
+              // assistive technology is not obliged to read it at all.
+              aria-label="Search champions"
+              role="combobox"
+              aria-expanded
+              aria-controls={listId}
+              aria-autocomplete="list"
+              // The arrow keys move a highlight this box owns, so it has to say which option
+              // is highlighted; otherwise arrowing through the list is silent.
+              aria-activedescendant={filtered[cursor] ? optionId(cursor) : undefined}
               className="w-full bg-transparent text-sm text-text placeholder:text-text-muted focus:outline-none"
             />
           </div>
-          <ul ref={listRef} className="max-h-60 overflow-y-auto py-1" role="listbox">
+          <ul id={listId} ref={listRef} className="max-h-60 overflow-y-auto py-1" role="listbox">
             {filtered.length === 0 && (
-              <li className="px-3 py-2 text-sm text-text-muted">No results found</li>
+              // Not an option — a listbox whose only child is a non-selectable row still
+              // announces "1 item" unless that row is taken out of the option count.
+              <li role="presentation" className="px-3 py-2 text-sm text-text-muted">
+                No results found
+              </li>
             )}
             {filtered.map((champ, i) => (
               <li
                 key={champ.id}
+                id={optionId(i)}
                 role="option"
                 aria-selected={champ.name === value}
                 onClick={() => select(champ.name)}
