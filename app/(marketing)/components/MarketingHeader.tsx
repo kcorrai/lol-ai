@@ -89,10 +89,21 @@ export function MarketingHeader(): React.ReactElement {
         </div>
 
         <div className="ml-auto flex items-center gap-2 xl:hidden">
-          {/* Icon only: on a 390px bar the label would push the sign-up button off the edge,
-              which is the failure this header was rebuilt to stop. The drawer under it
-              carries the same control with its words on. */}
-          <DownloadCta compact />
+          {/*
+            Icon only: on a 390px bar the label would push the sign-up button off the edge,
+            which is the failure this header was rebuilt to stop. The drawer under it carries
+            the same control with its words on.
+
+            And gone entirely below `sm`. Even wordless it is 36px plus its gap, and the row —
+            wordmark 152, "Start free" 108, the menu button 36 — needs every one of those 44
+            back to fit inside 360px, which is a Galaxy S9 and half the Android phones still in
+            use. Without this the bar ran 20px past the edge and gave *every page on the site*
+            a horizontal scrollbar. The drawer is one tap away and lists this with its label,
+            so what a small phone loses is a second entry point, not the destination.
+          */}
+          <span className="hidden sm:flex sm:items-center">
+            <DownloadCta compact />
+          </span>
           <Link
             href={isAuthenticated ? "/dashboard" : "/register"}
             className="tag-cut flex h-8 items-center whitespace-nowrap bg-accent px-3 font-display text-[10px] font-bold uppercase tracking-[0.1em] text-background"
