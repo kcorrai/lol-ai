@@ -15,6 +15,7 @@ vi.mock("@/domains/identity/services/profileService", () => ({
 }));
 
 import { GET as summonerOg } from "../../../app/api/og/summoner/route";
+import { GET as quizShare } from "../../../app/api/quiz/share/route";
 import { GET as profileOg } from "../../../app/api/og/profile/[slug]/route";
 import { ReportOgCard } from "../../../app/api/og/report/[shareToken]/reportOgTemplate";
 import { AchievementOgCard } from "../../../app/api/achievements/share/[achievementId]/achievementOgTemplate";
@@ -278,5 +279,22 @@ describe("every OG surface lays out under satori", () => {
     await expectRenders(
       renderOgImage({ title: "LoL Tier List", subtitle: "Every role, every patch", badge: "Free" })
     );
+  });
+
+  it("the quiz scorecard renders a full day", async () => {
+    await expectBodyRenders(
+      await quizShare(
+        new NextRequest("http://localhost/api/quiz/share?n=985&s=12&r=0-4-1.2-9-0.5-1-1")
+      )
+    );
+  });
+
+  it("the quiz scorecard renders a day nobody has played yet", async () => {
+    await expectBodyRenders(await quizShare(new NextRequest("http://localhost/api/quiz/share?n=1")));
+  });
+
+  it("the quiz scorecard refuses a puzzle number it cannot draw", async () => {
+    const res = await quizShare(new NextRequest("http://localhost/api/quiz/share?n=nope"));
+    expect(res.status).toBe(400);
   });
 });

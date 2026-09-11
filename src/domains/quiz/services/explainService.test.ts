@@ -36,9 +36,7 @@ describe("explainEmoji", () => {
     const explanation = explainEmoji(ahri);
     if (explanation.kind !== "emoji") throw new Error("wrong kind");
 
-    expect(explanation.clues.map((c) => c.glyph)).toEqual(
-      visibleEmoji(ahri, EMOJI_PER_CHAMPION)
-    );
+    expect(explanation.clues.map((c) => c.glyph)).toEqual(visibleEmoji(ahri, EMOJI_PER_CHAMPION));
     expect(explanation.clues).toHaveLength(EMOJI_PER_CHAMPION);
     expect(explanation.champion.name).toBe("Ahri");
     expect(explanation.champion.title).toBe(ahri.title);

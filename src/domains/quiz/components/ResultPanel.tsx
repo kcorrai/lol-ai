@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { ArrowRight, Check, Share2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
-import { buildShareGrid, type ModeResult } from "@/domains/quiz";
+import type { ModeResult } from "@/domains/quiz";
+import { ShareCard } from "./ShareCard";
 
 interface ResultPanelProps {
   puzzleNumber: number;
@@ -29,21 +29,6 @@ export function ResultPanel({
   allResults,
   onNextMode,
 }: ResultPanelProps): React.JSX.Element {
-  const [copied, setCopied] = useState(false);
-
-  const share = buildShareGrid({ puzzleNumber, results: allResults, streak });
-
-  async function copy(): Promise<void> {
-    try {
-      await navigator.clipboard.writeText(share);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Clipboard is blocked in some embedded browsers; the block below is on
-      // screen anyway, so there is nothing to recover from.
-    }
-  }
-
   return (
     <div
       className={`animate-quiz-rise border-t ${
@@ -77,37 +62,18 @@ export function ResultPanel({
           </p>
         </div>
 
-        <div className="relative ml-auto flex flex-wrap gap-2.5">
-          <button
-            type="button"
-            onClick={copy}
-            className="tag-cut flex items-center gap-2 border border-line-2 bg-surface-2 px-3.5 py-2 font-mono text-[11px] uppercase tracking-label text-fg-1 transition-colors hover:border-accent hover:text-accent"
-          >
-            {copied ? (
-              <Check aria-hidden className="h-3.5 w-3.5" />
-            ) : (
-              <Share2 aria-hidden className="h-3.5 w-3.5" />
-            )}
-            {copied ? "Copied" : "Share result"}
-          </button>
-          <button
-            type="button"
-            onClick={onNextMode}
-            className="tag-cut btn-glow flex items-center gap-2 border border-accent bg-accent px-3.5 py-2 font-mono text-[11px] font-bold uppercase tracking-label text-ink-1000 hover:bg-acid-400"
-          >
-            Next mode
-            <ArrowRight aria-hidden className="h-3.5 w-3.5" />
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={onNextMode}
+          className="tag-cut btn-glow ml-auto flex items-center gap-2 border border-accent bg-accent px-3.5 py-2 font-mono text-[11px] font-bold uppercase tracking-label text-ink-1000 hover:bg-acid-400"
+        >
+          Next mode
+          <ArrowRight aria-hidden className="h-3.5 w-3.5" />
+        </button>
       </div>
 
-      <div className="px-5 pb-4">
-        <pre className="tag-cut overflow-x-auto whitespace-pre border border-line-2 bg-surface-dark p-3 font-mono text-[11.5px] leading-relaxed text-fg-2">
-          {share}
-        </pre>
-        <p className="mt-2 font-mono text-[10px] uppercase tracking-label text-fg-4">
-          Names no champion — safe to post before your friends have played
-        </p>
+      <div className="border-t border-line-1 px-5 py-4">
+        <ShareCard puzzleNumber={puzzleNumber} results={allResults} streak={streak} />
       </div>
     </div>
   );

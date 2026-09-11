@@ -2309,6 +2309,18 @@ before the puzzle is over.
 - Rate limited to 30/min per IP — the roster is 173 names, and an unthrottled
   script would walk it in a second.
 
+### `GET /api/quiz/share?n=<puzzle>&s=<streak>&r=<runs>`
+
+The day's scorecard as a 1000×1000 PNG — the picture the result panel shows and
+the file a player posts. `r` is one `modeIndex-guesses-solved` triple per played
+mode, joined by `.`; anything malformed in it is dropped rather than failing the
+image. Public, anonymous and rate limited to 60/min per IP.
+
+The card carries a puzzle number, a run of squares, a tally and a streak, and
+never a champion, so it is safe to post before anyone else has played. Because
+the query fully determines the picture, the response is cached immutably. See
+`docs/adr/ADR-053-the-day-is-shared-as-a-drawn-card.md`.
+
 ### `GET /api/quiz/asset/[mode]?seed=<seed>`
 
 Streams the Ability icon or Splash art. **This endpoint exists because Data

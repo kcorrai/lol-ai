@@ -62,7 +62,10 @@ function Fingerprint({ champion }: { champion: ChampionFingerprint }): React.JSX
       <span
         aria-hidden
         className="absolute inset-0 bg-cover opacity-[0.14]"
-        style={{ backgroundImage: `url('${championSplashUrl(champion.name)}')`, backgroundPosition: "52% 18%" }}
+        style={{
+          backgroundImage: `url('${championSplashUrl(champion.name)}')`,
+          backgroundPosition: "52% 18%",
+        }}
       />
       <span
         aria-hidden
@@ -138,8 +141,8 @@ export function EmojiDecoder({ champion, clues }: EmojiDecoderProps): React.JSX.
       </ol>
 
       <p className="font-mono text-[10px] uppercase tracking-label text-fg-4">
-        A clue with nothing beside it is the picture on its own — a colour, or a
-        likeness no word in the record carries
+        A clue with nothing beside it is the picture on its own — a colour, or a likeness no word in
+        the record carries
       </p>
     </div>
   );

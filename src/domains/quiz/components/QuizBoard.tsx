@@ -140,10 +140,7 @@ export function QuizBoard({
       )}
 
       {finished && game.state.explanation && game.state.answer && (
-        <AnswerExplainer
-          explanation={game.state.explanation}
-          answerName={game.state.answer.name}
-        />
+        <AnswerExplainer explanation={game.state.explanation} answerName={game.state.answer.name} />
       )}
 
       {finished && practiceSeed && game.state.answer && (

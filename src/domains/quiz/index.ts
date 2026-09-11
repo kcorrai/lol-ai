@@ -60,6 +60,9 @@ export type { PlayerResults, RankedPlayer } from "./services/leaderboardRanking"
 export { buildShareGrid } from "./services/shareGrid";
 export type { ModeResult, ShareGridInput } from "./services/shareGrid";
 
+export { buildShareCard, parseShareResults, shareCardParams } from "./services/shareCard";
+export type { ShareCardInput, ShareCardModel, ShareCardRow, ShareTile } from "./services/shareCard";
+
 export {
   FREEZES_PER_WEEK,
   INITIAL_STREAK,
