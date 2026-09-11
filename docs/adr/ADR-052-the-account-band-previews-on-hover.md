@@ -31,7 +31,7 @@ A cell may open a panel on hover to reveal something it could not otherwise carr
 is bound by all of the following.
 
 **It does not move the page.** The panel is absolutely positioned and centred on its cell, so
-it opens *over* its neighbours. A cell that expanded in flow would shove every row beneath it
+it opens _over_ its neighbours. A cell that expanded in flow would shove every row beneath it
 down the page each time the pointer crossed a border; a section that jumps under the cursor is
 worse than one that stays quiet.
 
