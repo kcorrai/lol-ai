@@ -104,21 +104,30 @@ export function FeatureCard({
 
       <AnimatePresence>
         {show ? (
-          <motion.div
+          // Two elements, and the split is not cosmetic. The centring lives out here as a
+          // static `-translate-*`, and only the inner element animates — because Framer Motion
+          // writes the values it animates into an inline `transform`, and an inline transform
+          // beats a Tailwind class. With `scale` and `y` on the same element as the centring,
+          // the class is overwritten the moment the animation starts and the panel's top-left
+          // corner lands on the cell's centre instead of its middle: the whole panel appears
+          // half a cell down and to the right, over the wrong neighbours.
+          <div
             // Decorative twice over: the link underneath already announces the name and the
             // sentence, and `pointer-events-none` keeps the panel from becoming a target the
             // cursor could get stuck on. The link stays the only hit area in this cell.
             aria-hidden
             className="pointer-events-none absolute left-1/2 top-1/2 z-30 w-[calc(100%+28px)] -translate-x-1/2 -translate-y-1/2"
-            initial={reduced ? { opacity: 1 } : { opacity: 0, y: 6, scale: 0.985 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={reduced ? { opacity: 1 } : { opacity: 0, y: 4, scale: 0.99 }}
-            transition={{ duration: reduced ? 0 : 0.2, ease: EASE }}
           >
             {/* `shadow` rather than the notch clip-path, which would cut the shadow away. The
                 panel has to read as lifted off the grid it is covering, and the 1px accent
                 outline alone does not do that over a cell of the same colour. */}
-            <div className="notch border border-accent/50 bg-surface shadow-[0_18px_40px_rgba(0,0,0,0.55)]">
+            <motion.div
+              className="notch border border-accent/50 bg-surface shadow-[0_18px_40px_rgba(0,0,0,0.55)]"
+              initial={reduced ? { opacity: 1 } : { opacity: 0, y: 6, scale: 0.985 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={reduced ? { opacity: 1 } : { opacity: 0, y: 4, scale: 0.99 }}
+              transition={{ duration: reduced ? 0 : 0.2, ease: EASE }}
+            >
               <div className="border-b border-line-1 px-4 py-3">
                 <p className="font-display text-[14px] font-extrabold uppercase tracking-[0.05em] text-text">
                   {name}
@@ -137,8 +146,8 @@ export function FeatureCard({
               <p className="hud-label border-t border-line-1 px-4 py-2">
                 {"// Illustration — drawn, not a capture"}
               </p>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         ) : null}
       </AnimatePresence>
     </div>
