@@ -176,14 +176,32 @@ export default async function EsportsTeamsPage(): Promise<React.ReactElement> {
           </section>
 
           <div className="mt-5 grid gap-5">
+            {/* Each group is `min-w-0` because it is a grid item, and a grid item's automatic
+                minimum size is its min-content width. Everything below it truncates, and
+                truncated text is `nowrap`, so the group's min-content was the longest team name
+                in the league — which is how a page of short tiles ended up wider than a phone.
+                Capping the section is what lets the tiles inside it actually truncate. */}
             {groups.map((group) => (
-              <section key={group.name} id={group.id} className="scroll-mt-24">
-                <h2 className="sticky top-[var(--esports-sticky-top,0px)] z-30 flex items-center gap-3 border border-border bg-[var(--surface-glass)] px-4 py-2.5 backdrop-blur-[14px]">
+              <section key={group.name} id={group.id} className="min-w-0 scroll-mt-24">
+                {/*
+                  Wraps rather than truncates. Either half of this row can be the long one —
+                  "Esports Balkan League · EMEA" is a long name beside a short region, and "LCL ·
+                  Commonwealth of Independent States" is the reverse — so there is no single
+                  element that is safe to cut short. With every child `shrink-0` and no wrapping,
+                  the team count was pushed off the side of a phone; shrinking one of them
+                  instead collapsed whichever one happened to be short to nothing.
+
+                  Letting it run onto a second line keeps all three readable at any width and
+                  changes nothing above `sm`, where it has always fitted on one. The rule is
+                  decorative and only makes sense filling a single line, so it sits out below
+                  that breakpoint.
+                */}
+                <h2 className="sticky top-[var(--esports-sticky-top,0px)] z-30 flex flex-wrap items-center gap-x-3 gap-y-1 border border-border bg-[var(--surface-glass)] px-4 py-2.5 backdrop-blur-[14px]">
                   <span className="shrink-0 font-display text-sm font-extrabold uppercase tracking-[0.1em] text-text">
                     {group.name}
                   </span>
                   {group.region && <span className="hud-label shrink-0">{group.region}</span>}
-                  <span className="h-px flex-1 bg-line-1" aria-hidden />
+                  <span className="hidden h-px flex-1 bg-line-1 sm:block" aria-hidden />
                   <span className="hud-label shrink-0">{group.teams.length} teams</span>
                 </h2>
                 <div className="mt-2.5 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

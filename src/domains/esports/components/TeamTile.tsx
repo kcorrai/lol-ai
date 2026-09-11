@@ -7,7 +7,11 @@ export function TeamTile({ team }: { team: EsportsTeam }): React.ReactElement {
   return (
     <Link
       href={`/esports/teams/${team.slug}`}
-      className="notch-sm relative flex items-center gap-3 border border-line-1 bg-surface px-3.5 py-3 transition-colors hover:border-line-2 hover:bg-surface-2"
+      // `min-w-0` because this is a grid item, whose automatic minimum size is its min-content
+      // width — and the two lines below are `truncate`, so they are `nowrap` and their
+      // min-content is the whole team name. The tile pinned itself to the longest name in the
+      // league and took the page's horizontal scrollbar with it on a phone.
+      className="notch-sm relative flex min-w-0 items-center gap-3 border border-line-1 bg-surface px-3.5 py-3 transition-colors hover:border-line-2 hover:bg-surface-2"
     >
       <TeamCrest src={team.image} code={team.code || team.name} size={30} />
       <span className="min-w-0">

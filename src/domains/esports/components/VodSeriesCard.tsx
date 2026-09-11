@@ -52,7 +52,12 @@ export function VodSeriesCard({ series }: { series: VodSeries }): React.ReactEle
   const [home, away] = series.teams;
 
   return (
-    <article className="gaming-card notch-sm px-4 py-3">
+    // `min-w-0` because this is laid out as a grid item, and a grid item's automatic minimum
+    // size is its min-content width — which here is both team names at full length, since they
+    // are `truncate` and therefore `nowrap`. The card was pinning itself to ~560px and taking
+    // the page's horizontal scrollbar with it on a phone. The `min-w-0` on the names inside
+    // cannot help: it stops them stretching their own flex line, not the grid track.
+    <article className="gaming-card notch-sm min-w-0 px-4 py-3">
       <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
         <p className="hud-label">
           {series.leagueName}

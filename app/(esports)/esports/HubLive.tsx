@@ -46,13 +46,21 @@ export function HubLive({
           const [broadcast] = streamLinks(event.streams);
 
           return (
+            // `min-w-0` because this is a grid item, and a grid item's automatic minimum size
+            // is its min-content width — which here is the league and block names at full
+            // length, since the line below is `truncate` and therefore `nowrap`. A league
+            // called "Hellenic Legends League · Playoffs" pushed the card past the edge of a
+            // phone and gave the whole page a horizontal scrollbar.
             <article
               key={event.matchId}
-              className="notch border border-danger/70 bg-surface shadow-[0_0_30px_rgba(255,90,90,0.10)] transition-colors hover:border-danger"
+              className="notch min-w-0 border border-danger/70 bg-surface shadow-[0_0_30px_rgba(255,90,90,0.10)] transition-colors hover:border-danger"
             >
               <Link href={`/esports/matches/${event.matchId}`} className="block">
                 <div className="flex items-center justify-between gap-3 border-b border-line-1 bg-surface-2 px-4 py-2.5">
-                  <span className="hud-label truncate text-[10.5px] text-text-body">
+                  {/* `min-w-0` is what lets `truncate` do anything at all here: a flex item's
+                      automatic minimum size is its content, so without it the text refuses to
+                      shrink and simply overflows instead of ellipsing. */}
+                  <span className="hud-label min-w-0 truncate text-[10.5px] text-text-body">
                     {event.league.name}
                     {event.blockName ? ` · ${event.blockName}` : ""}
                   </span>

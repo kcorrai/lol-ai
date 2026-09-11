@@ -30,7 +30,10 @@ export function FeaturedTeamCard({
   return (
     <Link
       href={`/esports/teams/${team.slug}`}
-      className={`notch block px-4 py-4 transition-colors ${
+      // `min-w-0` because this is a grid item, whose automatic minimum size is its min-content
+      // width — and the team name and league line below are `truncate`, so they are `nowrap`
+      // and their min-content is the whole string. The card pinned itself wider than the phone.
+      className={`notch block min-w-0 px-4 py-4 transition-colors ${
         live
           ? "border border-danger bg-surface shadow-[0_0_26px_rgba(255,90,90,0.10)] hover:bg-surface-2"
           : "bg-hero-fade border border-border bg-surface hover:border-line-2 hover:bg-surface-2"

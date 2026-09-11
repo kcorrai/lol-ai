@@ -8,10 +8,16 @@ function LiveCard({ event }: { event: EsportsEvent }): React.ReactElement {
   return (
     <Link
       href={`/esports/matches/${event.matchId}`}
-      className="notch block border border-danger bg-surface shadow-[0_0_26px_rgba(255,90,90,0.10)] transition-colors hover:bg-surface-2"
+      // `min-w-0` because this is a grid item, and a grid item's automatic minimum size is its
+      // min-content width — which, with `truncate` rows inside, is the longest league name at
+      // full length. The card grew past the edge of a phone and took the page's horizontal
+      // scrollbar with it.
+      className="notch block min-w-0 border border-danger bg-surface shadow-[0_0_26px_rgba(255,90,90,0.10)] transition-colors hover:bg-surface-2"
     >
       <span className="flex items-center justify-between gap-3 border-b border-line-1 bg-surface-2 px-4 py-2.5">
-        <span className="truncate font-mono text-[10px] uppercase tracking-label text-text-body">
+        {/* `min-w-0` is what lets `truncate` do anything: a flex item's automatic minimum size
+            is its content, so without it the text refuses to shrink and overflows instead. */}
+        <span className="min-w-0 truncate font-mono text-[10px] uppercase tracking-label text-text-body">
           {event.league.name}
           {event.blockName ? ` · ${event.blockName}` : ""}
         </span>
@@ -24,7 +30,7 @@ function LiveCard({ event }: { event: EsportsEvent }): React.ReactElement {
       <span className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3.5 px-4 py-4">
         <span className="flex min-w-0 items-center gap-3">
           <TeamCrest src={home?.image ?? null} code={home?.code ?? "TBD"} size={32} />
-          <span className="truncate font-display text-[17px] font-extrabold uppercase tracking-[0.05em] text-text">
+          <span className="min-w-0 truncate font-display text-[17px] font-extrabold uppercase tracking-[0.05em] text-text">
             {home?.code || home?.name || "TBD"}
           </span>
         </span>
@@ -47,7 +53,7 @@ function LiveCard({ event }: { event: EsportsEvent }): React.ReactElement {
       </span>
 
       <span className="flex items-center justify-between gap-3 border-t border-line-1 px-4 py-2.5">
-        <span className="truncate font-mono text-[10.5px] tracking-[0.1em] text-text-muted">
+        <span className="min-w-0 truncate font-mono text-[10.5px] tracking-[0.1em] text-text-muted">
           {event.streams.length > 0
             ? `${event.streams.length} ${event.streams.length === 1 ? "stream" : "streams"} live`
             : "In progress"}
