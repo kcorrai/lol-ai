@@ -148,7 +148,12 @@ async function checkWeekWarrior(riotAccountId: string): Promise<boolean> {
 }
 
 async function checkImprovementPlan(riotAccountId: string): Promise<boolean> {
-  const plan = await prisma.improvementPlan.findFirst({ where: { riotAccountId } });
+  // Existence, not content — same reason `checkFirstReport` projects: unprojected this pulled
+  // the plan's `targets` JSON across the wire to answer a boolean.
+  const plan = await prisma.improvementPlan.findFirst({
+    where: { riotAccountId },
+    select: { id: true },
+  });
   return plan !== null;
 }
 
@@ -176,29 +181,38 @@ export async function checkAndAwardAchievements(
     select: { achievementId: true },
   });
   const earnedSet = new Set(earned.map((e) => e.achievementId));
-  const newlyEarned: string[] = [];
 
-  for (const entry of ACHIEVEMENT_CATALOG) {
-    if (earnedSet.has(entry.id)) continue;
-    const checker = CHECKERS[entry.id];
-    if (!checker) continue;
+  // Run together rather than one after another. The checkers are independent — each reads the
+  // player's own history and none can influence another's answer — but awaited in a loop they
+  // queued about two dozen round trips end to end, six of which were the same account lookup
+  // repeated. Awarding concurrently is safe because the catalogue visits each id exactly once,
+  // so no two of these writes can collide.
+  const results = await Promise.all(
+    ACHIEVEMENT_CATALOG.map(async (entry) => {
+      if (earnedSet.has(entry.id)) return null;
+      const checker = CHECKERS[entry.id];
+      if (!checker) return null;
 
-    try {
-      const qualifies = await checker(riotAccountId);
-      if (!qualifies) continue;
+      try {
+        if (!(await checker(riotAccountId))) return null;
 
-      await prisma.userAchievement.create({
-        data: { userId, achievementId: entry.id },
-      });
-      newlyEarned.push(entry.id);
-      earnedSet.add(entry.id);
-      logger.info(`[achievements] Awarded "${entry.id}" to user ${userId}`);
-    } catch (err) {
-      logger.warn(
-        `[achievements] Checker failed for "${entry.id}": ${err instanceof Error ? err.message : String(err)}`
-      );
-    }
-  }
+        await prisma.userAchievement.create({
+          data: { userId, achievementId: entry.id },
+        });
+        logger.info(`[achievements] Awarded "${entry.id}" to user ${userId}`);
+        return entry.id;
+      } catch (err) {
+        // One failing checker must not cost the player the other eleven, which is what the
+        // per-entry catch bought when this was a loop. Promise.all would reject on the first
+        // rejection, so the catch has to stay inside.
+        logger.warn(
+          `[achievements] Checker failed for "${entry.id}": ${err instanceof Error ? err.message : String(err)}`
+        );
+        return null;
+      }
+    })
+  );
 
-  return newlyEarned;
+  // Catalogue order, which is the order the loop awarded in.
+  return results.filter((id): id is string => id !== null);
 }
