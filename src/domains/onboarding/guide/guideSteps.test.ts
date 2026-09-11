@@ -65,7 +65,10 @@ describe("GUIDE_STEPS", () => {
   // the match-page redesign dropped the link that carried it, so the test kept
   // passing while the forced journey hard-locked on that step. A hand-kept copy
   // of reality asserts nothing about reality.
-  it("only spotlights anchors the app actually renders", () => {
+  // Reading every .tsx in `app` and `src` is about a second alone, but inside a full
+  // `vitest run` it competes with 300-odd other files for the same disk and overran the
+  // default 5s budget — the suite went red on a timeout rather than on a missing anchor.
+  it("only spotlights anchors the app actually renders", { timeout: 60_000 }, () => {
     const anchors = new Set<string>(NAV_TOUR_IDS);
     // Both shapes count: a literal `data-tour="x"`, and the conditional
     // `data-tour={cond ? "x" : undefined}` the row-level anchors use.

@@ -1,13 +1,15 @@
 import { describe, it, expect } from "vitest";
-import { readdirSync, readFileSync, statSync } from "fs";
+import { readdirSync, readFileSync } from "fs";
 import { join } from "path";
 import { AI_TASKS, tierFor, type AiTask } from "./taskTiers";
 
 function walk(dir: string, out: string[] = []): string[] {
-  for (const entry of readdirSync(dir)) {
-    const full = join(dir, entry);
-    if (statSync(full).isDirectory()) walk(full, out);
-    else if (/\.tsx?$/.test(entry) && !/\.test\.tsx?$/.test(entry)) out.push(full);
+  // `withFileTypes` reads the entry kind out of the listing the OS already returned; the plain
+  // form costs a `statSync` per entry, which is ~2000 extra syscalls on a tree this size.
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) walk(full, out);
+    else if (/\.tsx?$/.test(entry.name) && !/\.test\.tsx?$/.test(entry.name)) out.push(full);
   }
   return out;
 }
@@ -40,7 +42,10 @@ describe("AI task tiers", () => {
    * call site was deleted rots silently, and the next person reading this file to find out what
    * the full model costs would be reading a lie.
    */
-  it("lists exactly the tasks that are actually called", () => {
+  // Reading every source file in the repo is about a second alone, but inside a full
+  // `vitest run` this competes with 300-odd other files for the same disk and overran the
+  // default 5s budget — the suite went red on a timeout rather than on a real mismatch.
+  it("lists exactly the tasks that are actually called", { timeout: 60_000 }, () => {
     expect(callSiteTasks()).toEqual(Object.keys(AI_TASKS).sort());
   });
 

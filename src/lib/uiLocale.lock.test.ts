@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { readdirSync, readFileSync, statSync } from "fs";
+import { readdirSync, readFileSync } from "fs";
 import { join } from "path";
 
 /**
@@ -18,11 +18,13 @@ import { join } from "path";
 
 /** Every `.ts`/`.tsx` in the tree that is not a test. */
 function walk(dir: string, out: string[] = []): string[] {
-  for (const entry of readdirSync(dir)) {
-    if (entry === "node_modules" || entry === "dist" || entry === ".next") continue;
-    const full = join(dir, entry);
-    if (statSync(full).isDirectory()) walk(full, out);
-    else if (/\.tsx?$/.test(entry) && !/\.test\.tsx?$/.test(entry)) out.push(full);
+  // `withFileTypes` reads the entry kind out of the listing the OS already returned; the plain
+  // form costs a `statSync` per entry, which is ~2000 extra syscalls on a tree this size.
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (entry.name === "node_modules" || entry.name === "dist" || entry.name === ".next") continue;
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) walk(full, out);
+    else if (/\.tsx?$/.test(entry.name) && !/\.test\.tsx?$/.test(entry.name)) out.push(full);
   }
   return out;
 }
@@ -47,15 +49,17 @@ const ROOTS = ["src", "app", join("desktop", "src")];
 const ALLOWED = [join("src", "lib", "uiLocale.ts")];
 
 describe("no formatting call takes its language from the machine", () => {
+  // Walked once and shared. The "looked at the whole tree" test below used to walk it a
+  // second time, which doubled the slowest thing in this file for no extra assurance.
+  const files = ROOTS.flatMap((root) => walk(root));
+
   const offenders: string[] = [];
-  for (const root of ROOTS) {
-    for (const file of walk(root)) {
-      if (ALLOWED.some((allowed) => file.endsWith(allowed))) continue;
-      const source = readFileSync(file, "utf8");
-      for (const match of source.matchAll(LOCALE_LESS)) {
-        const line = source.slice(0, match.index).split("\n").length;
-        offenders.push(`${file}:${line} ${match[0].trim()}`);
-      }
+  for (const file of files) {
+    if (ALLOWED.some((allowed) => file.endsWith(allowed))) continue;
+    const source = readFileSync(file, "utf8");
+    for (const match of source.matchAll(LOCALE_LESS)) {
+      const line = source.slice(0, match.index).split("\n").length;
+      offenders.push(`${file}:${line} ${match[0].trim()}`);
     }
   }
 
@@ -68,8 +72,6 @@ describe("no formatting call takes its language from the machine", () => {
   // Without this the test above passes by walking nothing at all — a wrong root, a rename,
   // a `walk` that quietly returns empty — which is how a lock stops being one.
   it("looked at the whole tree", () => {
-    const files = ROOTS.flatMap((root) => walk(root));
-
     expect(files.length).toBeGreaterThan(500);
     expect(files.some((f) => f.includes(join("desktop", "src")))).toBe(true);
     expect(files.some((f) => f.startsWith("app"))).toBe(true);

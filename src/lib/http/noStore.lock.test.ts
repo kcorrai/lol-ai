@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { existsSync, readdirSync, readFileSync, statSync } from "fs";
+import { existsSync, readdirSync, readFileSync } from "fs";
 import { join } from "path";
 
 /**
@@ -24,11 +24,14 @@ import { join } from "path";
 
 /** Every `.ts`/`.tsx` in the tree that is not itself a test. */
 function walk(dir: string, out: string[] = []): string[] {
-  for (const entry of readdirSync(dir)) {
-    if (entry === "node_modules" || entry === "dist" || entry === ".next") continue;
-    const full = join(dir, entry);
-    if (statSync(full).isDirectory()) walk(full, out);
-    else if (/\.tsx?$/.test(entry) && !/\.test\.tsx?$/.test(entry)) out.push(full);
+  // `withFileTypes` reads the entry kind out of the directory listing the OS already
+  // returned. The plain form needs a `statSync` per entry, which on a tree this size is
+  // ~2000 extra syscalls per walk — and this test shares a machine with 300-odd others.
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    if (entry.name === "node_modules" || entry.name === "dist" || entry.name === ".next") continue;
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) walk(full, out);
+    else if (/\.tsx?$/.test(entry.name) && !/\.test\.tsx?$/.test(entry.name)) out.push(full);
   }
   return out;
 }
@@ -55,8 +58,17 @@ function isClientComponent(source: string): boolean {
 /** The two products, plus the app router's pages. */
 const ROOTS = ["src", "app", join("desktop", "src")];
 
+/**
+ * This test reads every source file in the repository. Alone that is about a second; inside
+ * a full `vitest run` it competes with 300-odd other files for the same disk and the default
+ * 5s budget is not enough — the suite went red on a timeout, not on a violation. The work is
+ * bounded and known, so the budget is raised here rather than globally, which would blunt the
+ * timeout for every test that has no business taking this long.
+ */
+const TREE_WALK_TIMEOUT_MS = 60_000;
+
 describe("no server-side fetch asks for cache: no-store", () => {
-  it("finds none anywhere in the tree", () => {
+  it("finds none anywhere in the tree", { timeout: TREE_WALK_TIMEOUT_MS }, () => {
     const offenders: string[] = [];
 
     for (const root of ROOTS) {
@@ -77,9 +89,7 @@ describe("no server-side fetch asks for cache: no-store", () => {
   });
 
   it("does not mistake a Cache-Control response header for a fetch option", () => {
-    expect(NO_STORE_FETCH_OPTION.test('res.headers.set("Cache-Control", "no-store")')).toBe(
-      false
-    );
+    expect(NO_STORE_FETCH_OPTION.test('res.headers.set("Cache-Control", "no-store")')).toBe(false);
     expect(NO_STORE_FETCH_OPTION.test('"Cache-Control": "no-store"')).toBe(false);
     expect(NO_STORE_FETCH_OPTION.test('const NO_STORE = "no-store";')).toBe(false);
   });
