@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 interface Props {
   value: number;
@@ -8,19 +8,45 @@ interface Props {
   className?: string;
 }
 
-// Formats a large number compactly: 38_692_282 -> "38.6M".
+// Formats a large number compactly: 38_692_282 -> "38.7M".
 function formatCompact(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
   if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
   return String(Math.round(n));
 }
 
+/**
+ * The browser has one, the server does not, and the server does not need one — it renders once
+ * and never repaints, so the distinction only matters on the client. React warns if you call
+ * `useLayoutEffect` during SSR, hence the swap rather than the bare hook.
+ */
+const useBeforePaint = typeof window === "undefined" ? useEffect : useLayoutEffect;
+
 // Animates a count-up from 0 to `value` once, when scrolled into view. Respects
 // prefers-reduced-motion (jumps straight to the final value).
 export function CountUp({ value, durationMs = 1400, className }: Props) {
-  const [display, setDisplay] = useState(0);
+  /**
+   * Seeded with the real number, not with 0.
+   *
+   * Starting at 0 meant the server-rendered HTML said 0 — so the marketing pages' central
+   * claim ("Powered by N ranked games") reached every crawler that does not run scripts, and
+   * every visitor with scripting off, as "Powered by 0 ranked games". The animation is a
+   * decoration on top of a fact; the fact has to be in the markup.
+   */
+  const [display, setDisplay] = useState(value);
   const ref = useRef<HTMLSpanElement>(null);
   const started = useRef(false);
+
+  /**
+   * Wind it back to 0 so the count has somewhere to start, before the browser paints — in a
+   * plain effect this lands after the first paint and the real number flashes for a frame.
+   * Skipped entirely under prefers-reduced-motion, which leaves the final value showing.
+   */
+  useBeforePaint(() => {
+    if (started.current) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    setDisplay(0);
+  }, []);
 
   useEffect(() => {
     const node = ref.current;
