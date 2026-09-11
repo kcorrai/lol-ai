@@ -105,6 +105,23 @@ describe("detectNotableEvents", () => {
     const events = detectNotableEvents(0, 1, 1.0, 5, false, "UTILITY", true, 10);
     expect(events).not.toContain("Low vision score: 5");
   });
+
+  it("flags MVP when the player took at least 40% of the team's kills", () => {
+    const events = detectNotableEvents(4, 1, 5.0, 20, false, "MIDDLE", true, 10);
+    expect(events).toContain("Dominant contribution to team win");
+  });
+
+  it("does not call a scoreless player MVP of a win with no team kills", () => {
+    // The remake / missing-totals case. `0 >= 0 * 0.4` is true, so before the zero guard this
+    // handed the badge to somebody who did nothing.
+    const events = detectNotableEvents(0, 0, 0, 0, false, "MIDDLE", true, 0);
+    expect(events).not.toContain("Dominant contribution to team win");
+  });
+
+  it("does not flag MVP on a loss", () => {
+    const events = detectNotableEvents(9, 1, 5.0, 20, false, "MIDDLE", false, 10);
+    expect(events).not.toContain("Dominant contribution to team win");
+  });
 });
 
 describe("identifyStrongestArea", () => {

@@ -68,7 +68,13 @@ export function detectNotableEvents(
   }
   if (visionScore > 40)
     events.push({ type: "high_vision", description: `Outstanding vision: ${visionScore}` });
-  if (won && kills + 0 >= teamKills * 0.4) {
+  // `teamKills > 0` guards the degenerate win — a remake, or a record whose team totals came
+  // back missing. Without it the test is `0 >= 0`, which is true, and a player who got no
+  // kills at all was told they made a dominant contribution. Every other ratio in this file
+  // already refuses a zero denominator; this one compared against it instead of dividing by
+  // it, so it slipped through. The `+ 0` it replaces was dead arithmetic left over from when
+  // this counted assists, which the signature no longer carries.
+  if (won && teamKills > 0 && kills >= teamKills * 0.4) {
     events.push({ type: "mvp", description: "Dominant contribution to team win" });
   }
 
