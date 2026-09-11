@@ -30,6 +30,9 @@ export function ProfileHero({ data, region }: Props): React.ReactElement {
             fill
             alt=""
             aria-hidden
+            // Capped by the page's `max-w-[1240px]`; `fill` would otherwise ask for 100vw and
+            // pull the largest splash Data Dragon has to sit behind the hero at 10% opacity.
+            sizes="(max-width: 1240px) 100vw, 1240px"
             src={splashUrl}
             className="object-cover object-[60%_15%] opacity-[0.10]"
             style={{ filter: "blur(2px) saturate(0.45)" }}

@@ -112,6 +112,10 @@ export default function AchievementsPage() {
           fill
           alt=""
           aria-hidden
+          // The banner is never wider than the page's own `max-w-4xl`. Without this, `fill`
+          // defaults to 100vw and a wide screen fetches the 3840px splash to sit behind text
+          // at 20% opacity under a blur.
+          sizes="(max-width: 896px) 100vw, 896px"
           src={championSplashUrl("Jinx")}
           className="object-cover object-[40%_20%] opacity-[0.2]"
           style={{ filter: "blur(2px) saturate(0.5)" }}

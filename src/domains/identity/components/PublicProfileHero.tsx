@@ -95,6 +95,8 @@ export function PublicProfileHero({
             fill
             alt=""
             aria-hidden
+            // The public profile page is `max-w-2xl`, so this never needs more than 672px.
+            sizes="(max-width: 672px) 100vw, 672px"
             src={splashUrl}
             className="object-cover object-[65%_15%]"
             style={{ filter: "saturate(0.6) brightness(0.3)" }}

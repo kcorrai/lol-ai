@@ -82,6 +82,9 @@ export function ImprovementPlanWidget({ riotAccountId }: ImprovementPlanWidgetPr
           fill
           alt=""
           aria-hidden
+          // Widest as the full-width card on /roadmap; narrower as a dashboard column. Either
+          // way far short of the 100vw `fill` assumes on its own.
+          sizes="(max-width: 1024px) 100vw, 800px"
           src={championSplashUrl("Ryze")}
           className="object-cover object-[70%_20%] opacity-[0.13]"
           style={{ filter: "blur(3px) saturate(0.4)" }}
