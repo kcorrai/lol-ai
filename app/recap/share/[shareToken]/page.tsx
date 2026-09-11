@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { prisma } from "@/lib/db/prisma";
 import { notFound } from "next/navigation";
 import type { RecapData } from "@/domains/analysis/services/recapService";
@@ -7,11 +8,43 @@ interface Props {
   params: { shareToken: string };
 }
 
-export default async function PublicRecapPage({ params }: Props) {
-  const recap = await prisma.seasonRecap.findUnique({
-    where: { shareToken: params.shareToken },
+/** The recap behind a share token, or null. Shared by the metadata and the page. */
+async function loadSharedRecap(shareToken: string) {
+  return prisma.seasonRecap.findUnique({
+    where: { shareToken },
     select: { data: true, seasonLabel: true, generatedAt: true, isPublic: true },
   });
+}
+
+/**
+ * This page exists to be pasted into Discord, and it was the one share surface with nothing for
+ * Discord to read: no title beyond the site default, no description, so a link that is a
+ * player's whole season arrived looking like every other link on the site.
+ *
+ * `noindex`, like the draft room's own token URLs. The token is a capability, not an address —
+ * it is handed to specific people, and a search engine is not one of them. Making the recap
+ * public is permission for the people holding the link, not for the open web.
+ */
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const recap = await loadSharedRecap(params.shareToken);
+  if (!recap || !recap.isPublic) {
+    return { title: "Recap not found", robots: { index: false, follow: false } };
+  }
+
+  const data = recap.data as unknown as RecapData;
+  const lp = `${data.lpDelta > 0 ? "+" : ""}${data.lpDelta} LP`;
+  const title = `${recap.seasonLabel} Recap`;
+
+  return {
+    title,
+    description: `${data.totalMatches} games · ${data.winRate}% win rate · ${lp} · best champion ${data.topChampion.name}.`,
+    robots: { index: false, follow: false },
+    openGraph: { title, description: `${data.totalMatches} games · ${lp}` },
+  };
+}
+
+export default async function PublicRecapPage({ params }: Props) {
+  const recap = await loadSharedRecap(params.shareToken);
 
   if (!recap || !recap.isPublic) notFound();
 
