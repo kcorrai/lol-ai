@@ -37,9 +37,16 @@ export function DrillCard({ drill, onAnswered }: DrillCardProps): React.ReactEle
   }
 
   return (
-    <section className="notch my-7 border border-line-2 bg-surface-dark">
-      <div className="flex items-center gap-3.5 border-b border-line-1 px-5 py-2.5">
-        <span className="hud-label text-accent">{KIND_LABEL[drill.kind]}</span>
+    <section
+      className={`notch my-[18px] animate-hud-enter border bg-surface ${
+        result ? "border-border" : "glow-accent-soft border-acid-500"
+      }`}
+    >
+      <div className="flex items-center gap-3.5 border-b border-line-1 px-5 py-3.5">
+        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-accent">
+          {"// "}
+          {KIND_LABEL[drill.kind]}
+        </span>
         {result && (
           <span
             className={`ml-auto flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-label ${
@@ -79,25 +86,36 @@ export function DrillCard({ drill, onAnswered }: DrillCardProps): React.ReactEle
         ) : drill.kind === "map" ? (
           <MapDrillBody drill={drill} picked={picked} locked={result !== null} onPick={answer} />
         ) : (
-          <ul className="mt-4 flex flex-col gap-2">
+          <ul className="mt-4 grid gap-2.5">
             {drill.options.map((option) => {
               const isPicked = picked === option.id;
               const reveal = result !== null;
+              const right = reveal && option.correct;
+              const wrong = reveal && isPicked && !option.correct;
               return (
                 <li key={option.id}>
                   <button
                     type="button"
                     disabled={reveal}
                     onClick={() => answer([option.id])}
-                    className={`notch-sm w-full border px-4 py-2.5 text-left text-[13.5px] transition-colors ${
-                      reveal && option.correct
-                        ? "border-acid-500 bg-[var(--surface-accent)] text-text"
-                        : isPicked
-                          ? "border-danger text-text"
-                          : "border-line-1 text-text-body hover:border-line-3 disabled:hover:border-line-1"
+                    className={`tag-cut flex w-full items-center gap-3 border px-[15px] py-3 text-left text-[14px] transition-colors ${
+                      right
+                        ? "glow-accent-soft animate-quiz-pop border-acid-500 bg-[var(--surface-accent)] text-text"
+                        : wrong
+                          ? "animate-quiz-shake border-danger bg-danger/10 text-text"
+                          : reveal
+                            ? "border-line-2 bg-surface-dark text-text-muted"
+                            : "border-line-2 bg-surface-dark text-text hover:border-line-3"
                     }`}
                   >
-                    {option.label}
+                    <span className="flex-1">{option.label}</span>
+                    {(right || wrong) && (
+                      <span
+                        className={`font-mono text-[12px] ${right ? "text-accent" : "text-danger"}`}
+                      >
+                        {right ? "✓" : "✕"}
+                      </span>
+                    )}
                   </button>
                   {reveal && (isPicked || option.correct) && (
                     <p className="mt-1.5 pl-1 text-[12.5px] leading-relaxed text-text-muted">

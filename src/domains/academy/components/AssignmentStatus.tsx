@@ -8,6 +8,7 @@ import type {
   AssignmentView,
 } from "@/domains/academy/services/assignmentService";
 import { useRestartAssignment } from "@/hooks/useAcademyProgress";
+import { Pips } from "@/domains/academy/components/Pips";
 
 interface AssignmentStatusProps {
   assignment: AssignmentView;
@@ -16,14 +17,16 @@ interface AssignmentStatusProps {
 }
 
 const HEAD: Record<Status, { label: string; tone: string; Icon: typeof Target }> = {
-  active: { label: "Field assignment in progress", tone: "text-accent", Icon: Target },
+  active: { label: "Field assignment in progress", tone: "text-warning", Icon: Target },
   passed: { label: "Mastered — you did it in game", tone: "text-accent", Icon: CheckCircle2 },
   failed: { label: "Not this time", tone: "text-danger", Icon: XCircle },
   expired: { label: "Assignment expired", tone: "text-warning", Icon: Clock },
 };
 
 const BORDER: Record<Status, string> = {
-  active: "border-line-2",
+  // Amber while it is still being judged: this is the one panel on the page that is waiting
+  // on the player to go and play, and it should not read as finished.
+  active: "border-warning",
   passed: "border-acid-500 glow-accent-soft",
   failed: "border-line-2",
   expired: "border-line-2",
@@ -47,18 +50,32 @@ export function AssignmentStatus({
   }
 
   return (
-    <section className={`notch mt-10 border bg-surface ${BORDER[assignment.status]}`}>
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line-1 px-5 py-3.5">
-        <span className={`hud-label flex items-center gap-2 ${tone}`}>
+    <section
+      className={`notch relative mt-[18px] animate-hud-enter overflow-hidden border bg-surface ${BORDER[assignment.status]}`}
+    >
+      {assignment.status === "active" && (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 left-0 w-[16%] animate-quiz-sweep bg-[linear-gradient(90deg,transparent,rgba(255,194,75,0.09),transparent)] [animation-duration:5.4s] [animation-iteration-count:infinite]"
+        />
+      )}
+      <div className="relative flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line-1 px-5 py-3.5">
+        <span
+          className={`flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] ${tone}`}
+        >
           <Icon className="h-3.5 w-3.5" strokeWidth={2} />
+          {"// "}
           {label}
         </span>
-        <span className="ml-auto font-mono text-[11.5px] text-text-muted">
-          {assignment.gamesObserved}/{assignment.gamesRequired} ranked games
+        <span className="ml-auto flex items-center gap-2.5">
+          <Pips done={assignment.gamesObserved} total={assignment.gamesRequired} />
+          <span className="font-mono text-[11.5px] tabular-nums text-text-muted">
+            {assignment.gamesObserved}/{assignment.gamesRequired} ranked games
+          </span>
         </span>
       </div>
 
-      <div className="p-5">
+      <div className="relative p-5">
         <p className="text-[14.5px] leading-relaxed text-text">{instruction}</p>
 
         <div className="mt-4 grid grid-cols-3 gap-px bg-line-1">
@@ -121,9 +138,11 @@ function Stat({
 }): React.ReactElement {
   const tone = bad ? "text-danger" : accent ? "text-accent" : "text-text";
   return (
-    <div className="bg-surface px-4 py-3">
-      <p className="hud-label">{label}</p>
-      <p className={`mt-1 font-mono text-base font-bold ${tone}`}>{value}</p>
+    <div className="bg-surface px-4 py-3.5">
+      <p className="hud-label text-text-faint">{label}</p>
+      <p className={`mt-2 font-mono text-[22px] font-bold tabular-nums leading-none ${tone}`}>
+        {value}
+      </p>
     </div>
   );
 }

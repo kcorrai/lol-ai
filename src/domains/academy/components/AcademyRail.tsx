@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import { GraduationCap } from "lucide-react";
 import { coreTracks, roleTracks } from "@/domains/academy/curriculum";
 
-const LINK = "font-mono text-[11px] uppercase tracking-label transition-colors whitespace-nowrap";
+const TAB =
+  "flex-none whitespace-nowrap border-b-2 px-3.5 py-3.5 font-mono text-[10.5px] uppercase tracking-[0.14em] transition-colors";
 
 /**
  * The Academy's own navigation. The section reads as a separate place inside the site,
@@ -26,16 +27,19 @@ export function AcademyRail(): React.ReactElement {
   ];
 
   return (
-    <div className="border-b border-border bg-[var(--surface-glass)] backdrop-blur-[14px]">
-      <div className="mx-auto flex h-11 max-w-[1240px] items-center gap-6 overflow-x-auto px-5 md:px-8">
-        <span className="flex items-center gap-2 text-accent">
+    <div className="border-b border-line-1 bg-background">
+      <div
+        data-subnav
+        className="mx-auto flex max-w-[1240px] items-center gap-0.5 overflow-x-auto px-5 md:px-8"
+      >
+        <span className="flex flex-none items-center gap-2 pr-4 text-accent">
           <GraduationCap className="h-4 w-4" strokeWidth={1.75} />
-          <span className="font-display text-[11px] font-bold uppercase tracking-[0.1em]">
+          <span className="font-display text-[13px] font-extrabold uppercase tracking-[0.1em]">
             Academy
           </span>
         </span>
 
-        <nav className="flex items-center gap-5">
+        <nav className="flex items-center gap-0.5">
           {items.map((item) => {
             const active =
               item.href === "/academy"
@@ -49,7 +53,11 @@ export function AcademyRail(): React.ReactElement {
                 key={item.href}
                 href={item.href}
                 aria-current={active ? "page" : undefined}
-                className={`${LINK} ${active ? "text-accent" : "text-text-muted hover:text-text"}`}
+                className={`${TAB} ${
+                  active
+                    ? "border-b-accent text-accent"
+                    : "border-b-transparent text-text-muted hover:text-text"
+                }`}
               >
                 {item.label}
               </Link>

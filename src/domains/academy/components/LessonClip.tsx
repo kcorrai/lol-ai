@@ -10,19 +10,22 @@ import type { ClipBlock } from "@/domains/academy/types";
  */
 export function LessonClip({ block }: { block: ClipBlock }): React.ReactElement {
   return (
-    <figure className="my-6">
-      <div className="notch border border-line-1 bg-surface p-5">
+    <figure className="notch my-[18px] animate-hud-enter border border-border bg-surface">
+      <div className="border-b border-line-1 px-5 py-3.5">
+        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-text-faint">
+          {"// "}
+          {block.caption}
+        </span>
+      </div>
+      <div className="p-5">
         <AbilityClip
           videoUrl={abilityVideoUrl(String(block.championId), block.slot)}
           posterUrl={championIconUrl(block.championName)}
           alt={`${block.championName} ability preview`}
-          className="mx-auto aspect-video w-full max-w-[420px] rounded ring-1 ring-line-2"
+          className="well mx-auto aspect-video w-full max-w-[420px] border border-line-2"
         />
         <p className="mt-4 text-[13.5px] leading-relaxed text-text-body">{block.note}</p>
       </div>
-      <figcaption className="mt-2 font-mono text-[11px] text-text-faint">
-        {block.caption}
-      </figcaption>
     </figure>
   );
 }

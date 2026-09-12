@@ -15,6 +15,13 @@ export interface PlacementSignal {
   label: string;
   value: string;
   verdict: SignalVerdict;
+  /**
+   * 0–1: where the reading sits on the run from the weak threshold to the strong one, with
+   * "lower is better" metrics already flipped so 1 always means good. The verdict is the
+   * judgement; this is how close the number is to the next one, which is what a meter can
+   * show and three words cannot.
+   */
+  strength: number;
   /** The leak this signal raises when it comes back weak. */
   leak: LeakTag;
 }
@@ -74,6 +81,15 @@ function judge(value: number, t: Threshold): SignalVerdict {
   return value >= t.strong ? "strong" : "ok";
 }
 
+/**
+ * How far along the weak→strong run the reading sits, clamped to the ends. The two
+ * thresholds are never equal, so the division is safe.
+ */
+function strengthOf(value: number, t: Threshold): number {
+  const span = t.strong - t.weak;
+  return Math.max(0, Math.min(1, (value - t.weak) / span));
+}
+
 function formatValue(value: number, t: Threshold): string {
   const decimals = t.weak < 2 ? 2 : 1;
   return `${value.toFixed(decimals)}${t.unit}`;
@@ -93,7 +109,13 @@ export function placeFromProfile(profile: PlayerPerformanceProfile): Placement {
 
   const signals: PlacementSignal[] = readings.map(([key, value]) => {
     const t = THRESHOLDS[key];
-    return { label: t.label, value: formatValue(value, t), verdict: judge(value, t), leak: t.leak };
+    return {
+      label: t.label,
+      value: formatValue(value, t),
+      verdict: judge(value, t),
+      strength: strengthOf(value, t),
+      leak: t.leak,
+    };
   });
 
   const weak = signals.filter((s) => s.verdict === "weak");

@@ -277,6 +277,13 @@ export interface Track {
   level: TrackLevel;
   lessons: Lesson[];
   /**
+   * Data Dragon champion key whose splash backs the track's card and page header. Decoration,
+   * not content: it is always behind a scrim dark enough to read text over, and the track means
+   * the same thing without it. Each track takes a different champion — two cards can appear
+   * side by side on the hub, and the same face twice reads as a bug.
+   */
+  art: string;
+  /**
    * Set on a role path, absent on a core track. Role paths sit *beside* the curriculum rather
    * than inside it: they only cover what is specific to the role, and the Academy never picks
    * one for a player whose own games are in a different role (ADR-028).

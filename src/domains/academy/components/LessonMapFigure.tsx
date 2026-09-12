@@ -15,10 +15,17 @@ function pinClass(tone: MapAnnotation["tone"]): string {
  */
 export function LessonMapFigure({ block }: { block: MapFigureBlock }): React.ReactElement {
   return (
-    <figure className="my-6">
-      <div className="notch border border-line-1 bg-surface p-5">
-        <div className="relative mx-auto aspect-square w-full max-w-[320px]">
+    <figure className="notch my-[18px] animate-hud-enter border border-border bg-surface">
+      <div className="border-b border-line-1 px-5 py-3.5">
+        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-text-faint">
+          {"// "}
+          {block.caption}
+        </span>
+      </div>
+      <div className="p-5">
+        <div className="well relative mx-auto aspect-square w-full max-w-[320px] border border-line-2">
           <RiftMap />
+          <span aria-hidden className="bg-scanline pointer-events-none absolute inset-0" />
 
           {block.annotations.map((annotation, i) => (
             <span
@@ -57,9 +64,6 @@ export function LessonMapFigure({ block }: { block: MapFigureBlock }): React.Rea
           ))}
         </ol>
       </div>
-      <figcaption className="mt-2 font-mono text-[11px] text-text-faint">
-        {block.caption}
-      </figcaption>
     </figure>
   );
 }

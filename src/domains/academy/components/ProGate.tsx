@@ -8,12 +8,12 @@ import { Lock } from "lucide-react";
  */
 export function ProGate({ lessonTitle }: { lessonTitle: string }): React.ReactElement {
   return (
-    <section className="notch relative mt-8 border border-line-2 bg-surface p-6">
+    <section className="notch relative mt-[18px] animate-hud-enter border border-line-2 bg-surface p-6">
       <div className="bg-protect-bottom pointer-events-none absolute -top-16 left-0 h-16 w-full" />
 
-      <p className="hud-label flex items-center gap-2 text-accent">
+      <p className="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-accent">
         <Lock className="h-3.5 w-3.5" strokeWidth={2} />
-        The rest of this lesson is Pro
+        {"// The rest of this lesson is Pro"}
       </p>
 
       <h2 className="mt-2.5 font-display text-lg font-bold uppercase tracking-[0.02em] text-text">
