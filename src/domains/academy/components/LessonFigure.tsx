@@ -10,33 +10,36 @@ import type { FigureBlock } from "@/domains/academy/types";
  */
 export function LessonFigure({ block }: { block: FigureBlock }): React.ReactElement {
   return (
-    <figure className="my-6">
-      <div className="notch border border-line-1 bg-surface p-5">
-        <ul className="grid gap-4 sm:grid-cols-2">
-          {block.assets.map((asset) => {
-            const { src, name } = resolveAsset(asset.ref);
-            return (
-              <li key={`${asset.label}-${name}`} className="flex gap-3.5">
-                <Image
-                  src={src}
-                  alt={name}
-                  width={44}
-                  height={44}
-                  className="h-11 w-11 shrink-0 rounded ring-1 ring-line-2"
-                  unoptimized
-                />
-                <div className="min-w-0">
-                  <p className="hud-label text-accent">{asset.label}</p>
-                  <p className="mt-1 text-[13.5px] leading-relaxed text-text-body">{asset.note}</p>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+    <figure className="notch my-[18px] animate-hud-enter border border-border bg-surface">
+      <div className="border-b border-line-1 px-5 py-3.5">
+        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-text-faint">
+          {"// "}
+          {block.caption}
+        </span>
       </div>
-      <figcaption className="mt-2 font-mono text-[11px] text-text-faint">
-        {block.caption}
-      </figcaption>
+      <ul className="grid gap-4 p-5 sm:grid-cols-2">
+        {block.assets.map((asset) => {
+          const { src, name } = resolveAsset(asset.ref);
+          return (
+            <li key={`${asset.label}-${name}`} className="flex gap-3.5">
+              <Image
+                src={src}
+                alt={name}
+                width={42}
+                height={42}
+                className="tag-cut h-[42px] w-[42px] shrink-0 border border-acid-500/60 bg-surface-dark"
+                unoptimized
+              />
+              <div className="min-w-0">
+                <p className="font-display text-[15px] font-extrabold uppercase tracking-[0.04em] text-text">
+                  {asset.label}
+                </p>
+                <p className="mt-1.5 text-[13.5px] leading-relaxed text-text-body">{asset.note}</p>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
     </figure>
   );
 }

@@ -14,6 +14,18 @@ export async function getLessonStatuses(userId: string): Promise<Map<string, Les
   return new Map(rows.map((r) => [r.lessonId, r.status]));
 }
 
+/**
+ * Academy XP paid out so far. Summed from the rows that paid it rather than recomputed from
+ * statuses, so a lesson that earned XP under older rules keeps what it was paid.
+ */
+export async function getAcademyXp(userId: string): Promise<number> {
+  const total = await prisma.academyProgress.aggregate({
+    where: { userId },
+    _sum: { xpAwarded: true },
+  });
+  return total._sum.xpAwarded ?? 0;
+}
+
 export async function getLessonProgress(
   userId: string,
   lessonId: string

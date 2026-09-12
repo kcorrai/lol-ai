@@ -5,17 +5,21 @@ import {
   allLessons,
   getAssignmentForLesson,
   getLesson,
+  getLessonStatuses,
+  getTrack,
   isGated,
   lessonId as toLessonId,
   lessonNeighbours,
   previewAssignmentTarget,
   visibleBlocks,
   visibleDrills,
+  type LessonStatus,
 } from "@/domains/academy";
 import { AssignmentStatus } from "@/domains/academy/components/AssignmentStatus";
 import { LessonBody } from "@/domains/academy/components/LessonBody";
+import { LessonIntro } from "@/domains/academy/components/LessonIntro";
+import { LessonRail } from "@/domains/academy/components/LessonRail";
 import { ProGate } from "@/domains/academy/components/ProGate";
-import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { getSession } from "@/lib/auth/session";
 import { getCurrentSubscription } from "@/lib/subscription/subscriptionService";
 
@@ -41,6 +45,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function LessonPage({ params }: PageProps): Promise<React.ReactElement> {
   const lesson = getLesson(params.track, params.lesson);
   if (!lesson) notFound();
+  const track = getTrack(lesson.trackId);
 
   const session = await getSession();
   const userId = session?.user?.id;
@@ -53,80 +58,90 @@ export default async function LessonPage({ params }: PageProps): Promise<React.R
 
   // The stored assignment is the live one, judged against real matches. The computed target is
   // only the preview a player without one sees — anonymous, unsynced, or behind the pro gate.
-  const [stored, assignment] = await Promise.all([
+  const [stored, assignment, statuses] = await Promise.all([
     userId && !gated ? getAssignmentForLesson(userId, id) : Promise.resolve(null),
     userId && !gated ? previewAssignmentTarget(userId, id) : Promise.resolve(null),
+    userId ? getLessonStatuses(userId) : Promise.resolve(new Map<string, LessonStatus>()),
   ]);
 
   return (
-    <article className="mx-auto max-w-[760px] px-5 py-10 md:px-8 md:py-14">
-      <Breadcrumb
-        items={[
-          { name: "Academy", href: "/academy" },
-          { name: params.track, href: `/academy/${lesson.trackId}` },
-          { name: lesson.title, href: `/academy/${lesson.trackId}/${lesson.slug}` },
-        ]}
-      />
+    <div className="mx-auto max-w-[1240px] px-5 py-7 md:px-8">
+      <p className="hud-label text-text-faint">
+        <Link href="/academy" className="text-text-muted transition-colors hover:text-accent">
+          Academy
+        </Link>{" "}
+        /{" "}
+        <Link
+          href={`/academy/${lesson.trackId}`}
+          className="text-text-muted transition-colors hover:text-accent"
+        >
+          {track?.title ?? params.track}
+        </Link>{" "}
+        / {lesson.title}
+      </p>
 
-      <header className="mt-4">
-        <p className="hud-label text-accent">
-          Lesson {index} of {total} · {lesson.minutes} min
-        </p>
-        <h1 className="mt-2 font-display text-3xl font-black uppercase leading-[1.1] tracking-[0.01em] text-text md:text-4xl">
-          {lesson.title}
-        </h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-text-body">{lesson.summary}</p>
+      <div className="mt-4 grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <article className="min-w-0">
+          <LessonIntro
+            eyebrow={`Lesson ${index} of ${total} · ${lesson.minutes} min`}
+            title={lesson.title}
+            summary={lesson.summary}
+            objectives={lesson.objectives}
+          />
 
-        <div className="notch mt-6 border border-line-1 bg-surface-2 p-5">
-          <p className="hud-label">What you will be able to do</p>
-          <ul className="mt-2.5 flex flex-col gap-1.5">
-            {lesson.objectives.map((objective) => (
-              <li key={objective} className="text-[13.5px] leading-relaxed text-text-body">
-                — {objective}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </header>
+          <div className="mt-[18px]">
+            <LessonBody
+              lessonId={id}
+              blocks={visibleBlocks(lesson, hasPro)}
+              drills={visibleDrills(lesson, hasPro)}
+              assignment={assignment}
+              next={
+                next ? { href: `/academy/${next.trackId}/${next.slug}`, title: next.title } : null
+              }
+              isAuthenticated={Boolean(userId)}
+              liveAssignment={stored !== null}
+            />
+          </div>
 
-      <div className="mt-8">
-        <LessonBody
-          lessonId={id}
-          blocks={visibleBlocks(lesson, hasPro)}
-          drills={visibleDrills(lesson, hasPro)}
-          assignment={assignment}
-          next={next ? { href: `/academy/${next.trackId}/${next.slug}`, title: next.title } : null}
-          isAuthenticated={Boolean(userId)}
-          liveAssignment={stored !== null}
-        />
+          {stored && (
+            <AssignmentStatus assignment={stored} instruction={lesson.assignment.instruction} />
+          )}
+
+          {gated && <ProGate lessonTitle={lesson.title} />}
+
+          <nav className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-line-1 pt-5">
+            {previous ? (
+              <Link
+                href={`/academy/${previous.trackId}/${previous.slug}`}
+                className="hud-label text-accent transition-colors hover:text-acid-400"
+              >
+                ← {previous.title}
+              </Link>
+            ) : (
+              <span />
+            )}
+            {next && (
+              <Link
+                href={`/academy/${next.trackId}/${next.slug}`}
+                className="hud-label text-right text-accent transition-colors hover:text-acid-400"
+              >
+                {next.title} →
+              </Link>
+            )}
+          </nav>
+        </article>
+
+        {track && (
+          <LessonRail
+            lessons={track.lessons}
+            trackId={track.id}
+            trackTitle={track.title}
+            current={lesson.slug}
+            statuses={statuses}
+            target={assignment}
+          />
+        )}
       </div>
-
-      {stored && (
-        <AssignmentStatus assignment={stored} instruction={lesson.assignment.instruction} />
-      )}
-
-      {gated && <ProGate lessonTitle={lesson.title} />}
-
-      <nav className="mt-10 flex items-center justify-between gap-4 border-t border-line-1 pt-5">
-        {previous ? (
-          <Link
-            href={`/academy/${previous.trackId}/${previous.slug}`}
-            className="font-mono text-[11px] uppercase tracking-label text-text-muted hover:text-accent"
-          >
-            ← {previous.title}
-          </Link>
-        ) : (
-          <span />
-        )}
-        {next && (
-          <Link
-            href={`/academy/${next.trackId}/${next.slug}`}
-            className="text-right font-mono text-[11px] uppercase tracking-label text-text-muted hover:text-accent"
-          >
-            {next.title} →
-          </Link>
-        )}
-      </nav>
-    </article>
+    </div>
   );
 }

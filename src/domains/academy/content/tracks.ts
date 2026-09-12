@@ -77,6 +77,7 @@ import { dyingForTheRightReason } from "./support/dyingForTheRightReason";
 export const TRACKS: readonly Track[] = [
   {
     id: "foundations",
+    art: "Viego",
     title: "Foundations",
     tagline: "What the game is actually about",
     description:
@@ -93,6 +94,7 @@ export const TRACKS: readonly Track[] = [
   },
   {
     id: "laning",
+    art: "Ahri",
     title: "Laning",
     tagline: "Wave management, trades and tempo",
     description:
@@ -109,6 +111,7 @@ export const TRACKS: readonly Track[] = [
   },
   {
     id: "vision",
+    art: "Thresh",
     title: "Vision & Map",
     tagline: "Knowing what is not on your screen",
     description:
@@ -125,6 +128,7 @@ export const TRACKS: readonly Track[] = [
   },
   {
     id: "macro",
+    art: "Skarner",
     title: "Macro",
     tagline: "Being somewhere else, on purpose",
     description:
@@ -141,6 +145,7 @@ export const TRACKS: readonly Track[] = [
   },
   {
     id: "teamfighting",
+    art: "Ambessa",
     title: "Teamfighting",
     tagline: "Decided before anyone presses anything",
     description:
@@ -157,6 +162,7 @@ export const TRACKS: readonly Track[] = [
   },
   {
     id: "mental",
+    art: "Yasuo",
     title: "Mental & Consistency",
     tagline: "The games around the game",
     description:
@@ -177,6 +183,7 @@ export const TRACKS: readonly Track[] = [
   // deliberately — a role path that repeats the curriculum is padding.
   {
     id: "top",
+    art: "Darius",
     role: "top",
     title: "Top Path",
     tagline: "The island, and the two ways off it",
@@ -187,6 +194,7 @@ export const TRACKS: readonly Track[] = [
   },
   {
     id: "jungle",
+    art: "LeeSin",
     role: "jungle",
     title: "Jungle Path",
     tagline: "Time is the resource, camps are the clock",
@@ -203,6 +211,7 @@ export const TRACKS: readonly Track[] = [
   },
   {
     id: "mid",
+    art: "Zed",
     role: "mid",
     title: "Mid Path",
     tagline: "The right to leave, and what it costs",
@@ -219,6 +228,7 @@ export const TRACKS: readonly Track[] = [
   },
   {
     id: "adc",
+    art: "Jinx",
     role: "adc",
     title: "ADC Path",
     tagline: "Range is a stat, and seconds are the score",
@@ -229,6 +239,7 @@ export const TRACKS: readonly Track[] = [
   },
   {
     id: "support",
+    art: "Rakan",
     role: "support",
     title: "Support Path",
     tagline: "The cheapest body on the map",

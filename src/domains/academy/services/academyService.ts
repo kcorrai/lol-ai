@@ -2,12 +2,16 @@ import { getActiveHabits, getPlayerPerformanceProfile } from "@/domains/analysis
 import { listAccounts } from "@/domains/riot";
 import { DEFAULT_PLACEMENT, placeFromProfile, type Placement } from "@/domains/academy/placement";
 import { chooseNextLesson, type Recommendation } from "@/domains/academy/recommendation";
-import { getLessonStatuses } from "@/domains/academy/services/progressService";
+import { getAcademyXp, getLessonStatuses } from "@/domains/academy/services/progressService";
 import {
   getActiveAssignments,
   type AssignmentView,
 } from "@/domains/academy/services/assignmentService";
 import { primaryPositionForAccount } from "@/domains/academy/services/assignmentReadings";
+import {
+  listChampionOptions,
+  type ChampionOption,
+} from "@/domains/academy/services/championLessonService";
 import { roleFromPosition } from "@/domains/academy/roles";
 import type { LeakTag, LessonStatus, RoleId } from "@/domains/academy/types";
 
@@ -31,6 +35,10 @@ export interface AcademyOverview {
   personalised: boolean;
   /** The role the player actually queues, which decides whose role path is theirs. */
   role: RoleId | null;
+  /** Academy XP paid out so far. Zero for a signed-out visitor. */
+  xp: number;
+  /** The player's own champions, most worth one-tricking first. Empty without a linked account. */
+  champions: ChampionOption[];
 }
 
 /**
@@ -52,13 +60,17 @@ export async function getAcademyOverview(userId: string | null): Promise<Academy
       assignments: [],
       personalised: false,
       role: null,
+      xp: 0,
+      champions: [],
     };
   }
 
-  const [statuses, assignments, riotAccountId] = await Promise.all([
+  const [statuses, assignments, riotAccountId, xp, champions] = await Promise.all([
     getLessonStatuses(userId),
     getActiveAssignments(userId),
     primaryRiotAccountId(userId),
+    getAcademyXp(userId),
+    listChampionOptions(userId),
   ]);
 
   const { placement, detectedLeaks, personalised, role } = await personalise(riotAccountId);
@@ -70,6 +82,8 @@ export async function getAcademyOverview(userId: string | null): Promise<Academy
     assignments,
     personalised,
     role,
+    xp,
+    champions,
   };
 }
 

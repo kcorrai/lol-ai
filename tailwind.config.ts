@@ -219,6 +219,48 @@ const config: Config = {
           "60%": { transform: "translateX(-2px)" },
           "80%": { transform: "translateX(2px)" },
         },
+
+        // Academy motion. Progress is the section's whole subject, so the things that
+        // measure it draw themselves in rather than appearing already full.
+        "academy-ring": {
+          // The element sets --ring-dash to its own circumference; one keyframe serves
+          // every ring size.
+          from: { strokeDashoffset: "var(--ring-dash)" },
+        },
+        "academy-bar": {
+          from: { width: "0" },
+        },
+        "academy-row": {
+          from: { opacity: "0", transform: "translateX(-6px)" },
+          to: { opacity: "1", transform: "none" },
+        },
+        // A longer travel than `quiz-scan`: this crosses a full-width hero, not a card.
+        "academy-scan": {
+          "0%": { transform: "translateY(-120%)" },
+          "100%": { transform: "translateY(640%)" },
+        },
+        // The ward candidates on a map drill. They are centred and turned on their corner, so
+        // every keyframe has to restate the whole transform or the marker jumps off its spot.
+        "academy-ward": {
+          "0%, 100%": {
+            transform: "translate(-50%,-50%) rotate(45deg) scale(1)",
+            opacity: "0.62",
+          },
+          "50%": {
+            transform: "translate(-50%,-50%) rotate(45deg) scale(1.1)",
+            opacity: "1",
+          },
+        },
+        "academy-ward-hit": {
+          "0%": { transform: "translate(-50%,-50%) rotate(45deg) scale(1)" },
+          "44%": { transform: "translate(-50%,-50%) rotate(45deg) scale(1.3)" },
+          "100%": { transform: "translate(-50%,-50%) rotate(45deg) scale(1.08)" },
+        },
+        "academy-ward-miss": {
+          "0%, 100%": { transform: "translate(-50%,-50%) rotate(45deg)" },
+          "25%": { transform: "translate(-58%,-50%) rotate(45deg)" },
+          "60%": { transform: "translate(-42%,-50%) rotate(45deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -237,6 +279,13 @@ const config: Config = {
         "quiz-rise": "quiz-rise 420ms cubic-bezier(.16,.84,.44,1) both",
         "quiz-pop": "quiz-pop 320ms cubic-bezier(.2,1.4,.4,1) both",
         "quiz-shake": "quiz-shake 280ms cubic-bezier(.16,.84,.44,1) both",
+        "academy-ring": "academy-ring 1.1s cubic-bezier(.16,.84,.44,1) both",
+        "academy-bar": "academy-bar 700ms cubic-bezier(.16,.84,.44,1) both",
+        "academy-row": "academy-row 320ms cubic-bezier(.16,.84,.44,1) both",
+        "academy-scan": "academy-scan 9s linear infinite",
+        "academy-ward": "academy-ward 2.6s ease-in-out infinite",
+        "academy-ward-hit": "academy-ward-hit 360ms cubic-bezier(.2,1.4,.4,1) both",
+        "academy-ward-miss": "academy-ward-miss 300ms cubic-bezier(.16,.84,.44,1) both",
       },
     },
   },

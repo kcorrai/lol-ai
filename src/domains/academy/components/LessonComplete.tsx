@@ -33,9 +33,11 @@ export function LessonComplete({
   xpAwarded,
 }: LessonCompleteProps): React.ReactElement {
   return (
-    <section className="notch glow-accent-soft mt-10 border border-acid-500 bg-surface">
+    <section className="notch glow-accent-soft mt-[18px] animate-hud-enter border border-acid-500 bg-surface">
       <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-line-1 px-5 py-3.5">
-        <span className="hud-label text-accent">Lesson complete</span>
+        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-accent">
+          {"// Lesson complete"}
+        </span>
         <span className="font-mono text-sm font-bold text-text">
           {score.correct}/{score.total} drills
         </span>
