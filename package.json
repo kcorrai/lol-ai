@@ -5,7 +5,7 @@
   "scripts": {
     "postinstall": "patch-package",
     "predev": "tsx scripts/preflightDatabase.ts",
-    "dev": "next dev --turbo -p 3001",
+    "dev": "next dev -p 3001",
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
