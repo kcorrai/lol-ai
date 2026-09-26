@@ -10,13 +10,13 @@ dashboard took 15–65s the first time and 6s after that, and every page, even
 measured on 2026-09-26 by switching it on and off with everything else fixed
 (Next 14.2.35, Ryzen 7 5700X, Windows, local Postgres):
 
-| Cause | With | Without |
-| --- | --- | --- |
-| Turbopack (`next dev --turbo`, TASK-286) | every warm request ~1.2s | 0.05–0.2s |
-| Same, cold compile of 12 public routes, `.next` removed | ~155s total | ~44s total |
-| Next disposing routes idle for 60s, keeping at most 5 | a second pass over the 200 API routes took 4 min, as long as the first | compiled once per session |
-| `withSentryConfig` in dev, no DSN set | startup 18–27s, 10 API compiles 15–22s | startup ~6s, 12–13s |
-| Upstash from a dev machine | ~130ms per round trip; signed-in API calls ~430ms | ~130ms |
+| Cause                                                   | With                                                                   | Without                   |
+| ------------------------------------------------------- | ---------------------------------------------------------------------- | ------------------------- |
+| Turbopack (`next dev --turbo`, TASK-286)                | every warm request ~1.2s                                               | 0.05–0.2s                 |
+| Same, cold compile of 12 public routes, `.next` removed | ~155s total                                                            | ~44s total                |
+| Next disposing routes idle for 60s, keeping at most 5   | a second pass over the 200 API routes took 4 min, as long as the first | compiled once per session |
+| `withSentryConfig` in dev, no DSN set                   | startup 18–27s, 10 API compiles 15–22s                                 | startup ~6s, 12–13s       |
+| Upstash from a dev machine                              | ~130ms per round trip; signed-in API calls ~430ms                      | ~130ms                    |
 
 TASK-286 picked Turbopack when warm renders were 0.06s in both bundlers. That no
 longer holds, and webpack's cold compiles are now faster too.
