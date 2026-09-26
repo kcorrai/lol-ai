@@ -42,6 +42,14 @@ const CSP = [
 ].join("; ");
 
 const nextConfig = {
+  // Dev only — `next build` ignores it. Next's default throws away any route not touched for 60s
+  // and keeps at most 5, so returning to the dashboard a minute later recompiled its ~25 API
+  // routes again (measured: a second pass over all 200 API routes took 4 minutes, as long as the
+  // first). An hour and a buffer of 100 keep what one session has compiled compiled (ADR-054).
+  onDemandEntries: {
+    maxInactiveAge: 60 * 60 * 1000,
+    pagesBufferLength: 100,
+  },
   experimental: {
     // lucide-react is imported by 187 files, all in named-import form; without this its barrel is
     // re-resolved at every one of them. The other three are large packages with few consumers, so
