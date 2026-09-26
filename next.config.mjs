@@ -139,19 +139,26 @@ const nextConfig = {
   },
 };
 
-export default withSentryConfig(nextConfig, {
-  silent: true,
-  // No SENTRY_AUTH_TOKEN needed — source map upload disabled
-  sourcemaps: {
-    disable: true,
-  },
-  webpack: {
-    // Disable auto-instrumentation to keep build times fast
-    autoInstrumentServerFunctions: false,
-    autoInstrumentMiddleware: false,
-    autoInstrumentAppDirectory: false,
-    treeshake: {
-      removeDebugLogging: true,
-    },
-  },
-});
+// A dev server with no DSN has nothing to report to, but the wrapper still threads its loaders
+// through every compile: startup went from ~6s to 18-27s with it, and API routes compiled a third
+// slower (ADR-054). Setting NEXT_PUBLIC_SENTRY_DSN locally brings it back; builds always wrap.
+const skipSentryWrapper = isDev && !process.env.NEXT_PUBLIC_SENTRY_DSN;
+
+export default skipSentryWrapper
+  ? nextConfig
+  : withSentryConfig(nextConfig, {
+      silent: true,
+      // No SENTRY_AUTH_TOKEN needed — source map upload disabled
+      sourcemaps: {
+        disable: true,
+      },
+      webpack: {
+        // Disable auto-instrumentation to keep build times fast
+        autoInstrumentServerFunctions: false,
+        autoInstrumentMiddleware: false,
+        autoInstrumentAppDirectory: false,
+        treeshake: {
+          removeDebugLogging: true,
+        },
+      },
+    });
