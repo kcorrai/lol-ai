@@ -69,6 +69,8 @@ export interface CoachCard {
 export interface CoachPublicProfile extends CoachCard {
   bio: string;
   timezone: string;
+  /** A YouTube video link the coach introduces themselves in. */
+  introVideoUrl: string | null;
   listings: Listing[];
   reviews: PublicReview[];
 }

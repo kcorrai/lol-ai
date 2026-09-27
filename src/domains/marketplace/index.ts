@@ -347,3 +347,5 @@ export type {
   Slot,
   VodReviewDelivery,
 } from "@/domains/marketplace/types";
+
+export { youtubeVideoId, youtubeEmbedUrl } from "@/domains/marketplace/youtube";

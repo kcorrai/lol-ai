@@ -70,7 +70,7 @@ export async function listCoaches(limit = 60): Promise<CoachCard[]> {
 export async function getCoachProfilePage(slug: string): Promise<CoachPublicProfile | null> {
   const row = await prisma.coachProfile.findFirst({
     where: { slug, status: "APPROVED" },
-    select: { ...CARD_SELECT, bio: true, timezone: true },
+    select: { ...CARD_SELECT, bio: true, timezone: true, introVideoUrl: true },
   });
   if (!row) return null;
 
@@ -81,7 +81,14 @@ export async function getCoachProfilePage(slug: string): Promise<CoachPublicProf
   ]);
   if (!card) return null;
 
-  return { ...card, bio: row.bio, timezone: row.timezone, listings, reviews };
+  return {
+    ...card,
+    bio: row.bio,
+    timezone: row.timezone,
+    introVideoUrl: row.introVideoUrl,
+    listings,
+    reviews,
+  };
 }
 
 /** One coach by slug, or null. Approved only, for the same reason as above. */
