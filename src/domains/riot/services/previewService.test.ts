@@ -26,6 +26,7 @@ import {
 import { getCached, setCached } from "@/lib/ai/aiCache";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { matchFixture } from "./preview/previewFixtures";
+import { ApiError } from "@/lib/api/errors";
 import { buildAccountPreview, buildPublicProfile } from "./previewService";
 
 const PUUID = "puuid-1";
@@ -173,5 +174,58 @@ describe("buildPublicProfile", () => {
     const profileKey = vi.mocked(setCached).mock.calls[0]?.[0];
 
     expect(profileKey).not.toBe(previewKey);
+  });
+});
+
+describe("buildPublicProfile — what reaches Riot", () => {
+  const notFound = () => new ApiError("RIOT_NOT_FOUND", "Resource not found on Riot API", 404);
+
+  it("serves a cached profile without running the visitor's gate", async () => {
+    vi.mocked(getCached).mockResolvedValueOnce({ puuid: PUUID } as never);
+    const beforeRiot = vi.fn(async () => {});
+
+    await buildPublicProfile("kaanproak0", "TR1", "tr1", { beforeRiot });
+
+    expect(beforeRiot).not.toHaveBeenCalled();
+    expect(getAccountByRiotId).not.toHaveBeenCalled();
+  });
+
+  it("runs the gate before the first Riot call, and stops there when it throws", async () => {
+    const beforeRiot = vi.fn(async () => {
+      throw new Error("throttled");
+    });
+
+    await expect(buildPublicProfile("kaanproak0", "TR1", "tr1", { beforeRiot })).rejects.toThrow(
+      "throttled"
+    );
+    expect(getAccountByRiotId).not.toHaveBeenCalled();
+  });
+
+  it("remembers a missing player briefly, so the next lookup does not reach Riot", async () => {
+    vi.mocked(getAccountByRiotId).mockRejectedValue(notFound());
+
+    await expect(buildPublicProfile("nobody", "TR1", "tr1")).rejects.toMatchObject({
+      code: "RIOT_NOT_FOUND",
+    });
+    const [key, , value, ttlDays] = vi.mocked(setCached).mock.calls[0] ?? [];
+    expect(value).toBe(true);
+    expect(ttlDays).toBeLessThan(1 / 24);
+
+    vi.mocked(getAccountByRiotId).mockClear();
+    vi.mocked(getCached).mockImplementation(async (k) => (k === key ? true : null));
+
+    await expect(buildPublicProfile("nobody", "TR1", "tr1")).rejects.toMatchObject({
+      code: "RIOT_NOT_FOUND",
+    });
+    expect(getAccountByRiotId).not.toHaveBeenCalled();
+  });
+
+  it("does not remember a failure that was not a miss", async () => {
+    vi.mocked(getAccountByRiotId).mockRejectedValue(
+      new ApiError("RIOT_RATE_LIMITED", "Riot API rate limit exceeded", 429)
+    );
+
+    await expect(buildPublicProfile("busy", "TR1", "tr1")).rejects.toThrow();
+    expect(setCached).not.toHaveBeenCalled();
   });
 });
