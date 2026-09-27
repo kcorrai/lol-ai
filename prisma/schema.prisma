@@ -1547,6 +1547,10 @@ model CoachProfile {
   // and is resolved to UTC per calendar day, never once — see CoachAvailability.
   timezone String @default("UTC")
 
+  // A YouTube link the coach introduces themselves in (ADR-058). We host no
+  // video (ADR-021): the profile embeds YouTube's own player, click-to-load.
+  introVideoUrl String?
+
   // Basis points, so 2000 = 20%. Per coach rather than global because the rate
   // is a deal, and deals differ; the platform default lives in policy.ts.
   commissionBps Int @default(2000)

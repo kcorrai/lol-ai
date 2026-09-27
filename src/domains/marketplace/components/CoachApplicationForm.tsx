@@ -17,6 +17,7 @@ import { REGIONS } from "@/lib/riot/regions";
 // below are erased at compile time and are safe either way.
 import { MIN_BIO_LENGTH } from "@/domains/marketplace/policy";
 import type { CoachProfileInput, OwnCoachProfile } from "@/domains/marketplace";
+import { youtubeVideoId } from "@/domains/marketplace/youtube";
 import { ChipSelect } from "@/domains/marketplace/components/ChipSelect";
 import { LANGUAGE_OPTIONS, ROLE_OPTIONS } from "@/domains/marketplace/components/options";
 import { HudPanel } from "@/domains/marketplace/components/hud/HudPanel";
@@ -25,6 +26,10 @@ const schema = z.object({
   displayName: z.string().min(2, "At least 2 characters").max(48),
   headline: z.string().min(4, "One line about what you coach").max(120),
   bio: z.string().min(MIN_BIO_LENGTH, `At least ${MIN_BIO_LENGTH} characters`).max(4000),
+  introVideoUrl: z
+    .string()
+    .max(200)
+    .refine((v) => !v.trim() || youtubeVideoId(v) !== null, "Use a YouTube video link"),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -56,6 +61,7 @@ export function CoachApplicationForm({ profile, saving, onSave }: Props): React.
       displayName: profile?.displayName ?? "",
       headline: profile?.headline ?? "",
       bio: profile?.bio ?? "",
+      introVideoUrl: profile?.introVideoUrl ?? "",
     },
   });
 
@@ -70,6 +76,7 @@ export function CoachApplicationForm({ profile, saving, onSave }: Props): React.
     try {
       await onSave({
         ...values,
+        introVideoUrl: values.introVideoUrl.trim() || null,
         languages,
         regions,
         roles: roles as CoachProfileInput["roles"],
@@ -149,6 +156,18 @@ export function CoachApplicationForm({ profile, saving, onSave }: Props): React.
           </div>
           {errors.bio && <p className="text-xs text-danger">{errors.bio.message}</p>}
         </div>
+
+        <Field
+          label="Intro video (optional)"
+          hint="A YouTube link where you introduce yourself. Students who see a face book more."
+          error={errors.introVideoUrl?.message}
+        >
+          <Input
+            id="introVideoUrl"
+            placeholder="https://youtube.com/watch?v=…"
+            {...register("introVideoUrl")}
+          />
+        </Field>
 
         <ChipGroup label="Roles you coach" count={roles.length}>
           <ChipSelect

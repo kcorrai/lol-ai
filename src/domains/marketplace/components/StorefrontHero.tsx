@@ -1,4 +1,6 @@
-import { BadgeCheck, HandCoins, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, BadgeCheck, HandCoins, ShieldCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { RankCrest } from "@/domains/marketplace/components/hud/RankCrest";
 import { tierTint } from "@/domains/marketplace/components/hud/tierTone";
 
@@ -64,6 +66,18 @@ export function StorefrontHero({
               </li>
             ))}
           </ul>
+
+          <div className="mt-7 flex flex-wrap items-center gap-3">
+            <Button asChild size="lg">
+              <Link href="/coaches/match">
+                Find my coach
+                <ArrowRight className="h-4 w-4" aria-hidden />
+              </Link>
+            </Button>
+            <span className="text-[12.5px] text-text-muted">
+              Six quick questions, or browse everyone below
+            </span>
+          </div>
         </div>
 
         <div className="grid gap-6">

@@ -1,3 +1,4 @@
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { MIN_REVIEWS_FOR_SCORE } from "@/domains/marketplace/policy";
 import { badgesFor } from "@/domains/marketplace/services/rankBadgeService";
@@ -56,26 +57,7 @@ export async function listCoaches(limit = 60): Promise<CoachCard[]> {
 
   const badges = await badgesFor(rows.map((row) => row.id));
 
-  return rows.map((row) => ({
-    slug: row.slug as string,
-    displayName: row.displayName,
-    headline: row.headline,
-    languages: row.languages,
-    regions: row.regions,
-    roles: row.roles,
-    championIds: row.championIds,
-    badge: badges.get(row.id) ?? null,
-    // Withheld below the threshold: a single five-star review is not a rating,
-    // and showing it as one is how every marketplace's numbers stop meaning
-    // anything. The card shows a "New" badge instead.
-    rating: row.ratingCount >= MIN_REVIEWS_FOR_SCORE ? row.ratingBayes : null,
-    ratingCount: row.ratingCount,
-    sessionsCompleted: row.sessionsCompleted,
-    fromPriceCents: row.listings[0]?.priceCents ?? null,
-    currency: row.listings[0]?.currency ?? "USD",
-    acceptingStudents: row.acceptingStudents,
-    offersTrial: row._count.listings > 0,
-  }));
+  return rows.map((row) => toCard(row, badges.get(row.id) ?? null));
 }
 
 /**
@@ -88,7 +70,7 @@ export async function listCoaches(limit = 60): Promise<CoachCard[]> {
 export async function getCoachProfilePage(slug: string): Promise<CoachPublicProfile | null> {
   const row = await prisma.coachProfile.findFirst({
     where: { slug, status: "APPROVED" },
-    select: { ...CARD_SELECT, bio: true, timezone: true },
+    select: { ...CARD_SELECT, bio: true, timezone: true, introVideoUrl: true },
   });
   if (!row) return null;
 
@@ -99,7 +81,14 @@ export async function getCoachProfilePage(slug: string): Promise<CoachPublicProf
   ]);
   if (!card) return null;
 
-  return { ...card, bio: row.bio, timezone: row.timezone, listings, reviews };
+  return {
+    ...card,
+    bio: row.bio,
+    timezone: row.timezone,
+    introVideoUrl: row.introVideoUrl,
+    listings,
+    reviews,
+  };
 }
 
 /** One coach by slug, or null. Approved only, for the same reason as above. */
@@ -112,6 +101,37 @@ export async function getCoachBySlug(slug: string): Promise<CoachCard | null> {
 
   const badges = await badgesFor([row.id]);
 
+  return toCard(row, badges.get(row.id) ?? null);
+}
+
+/**
+ * The newest coaches without a rating yet, for the storefront's "New on LaneIQ" strip.
+ *
+ * Search orders by the Wilson bound, which puts everyone without reviews last —
+ * correct for a ranking, and a trap for supply: a new coach nobody sees never
+ * gets the sessions that would move them up. This is the one place they are
+ * shown for being new rather than for being rated.
+ */
+export async function newCoaches(limit = 3): Promise<CoachCard[]> {
+  const rows = await prisma.coachProfile.findMany({
+    where: {
+      status: "APPROVED",
+      slug: { not: null },
+      acceptingStudents: true,
+      ratingCount: { lt: MIN_REVIEWS_FOR_SCORE },
+    },
+    orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
+    take: limit,
+    select: CARD_SELECT,
+  });
+
+  const badges = await badgesFor(rows.map((row) => row.id));
+  return rows.map((row) => toCard(row, badges.get(row.id) ?? null));
+}
+
+type CardRow = Prisma.CoachProfileGetPayload<{ select: typeof CARD_SELECT }>;
+
+function toCard(row: CardRow, badge: CoachCard["badge"]): CoachCard {
   return {
     slug: row.slug as string,
     displayName: row.displayName,
@@ -120,7 +140,10 @@ export async function getCoachBySlug(slug: string): Promise<CoachCard | null> {
     regions: row.regions,
     roles: row.roles,
     championIds: row.championIds,
-    badge: badges.get(row.id) ?? null,
+    badge,
+    // Withheld below the threshold: a single five-star review is not a rating,
+    // and showing it as one is how every marketplace's numbers stop meaning
+    // anything. The card shows a "New" badge instead.
     rating: row.ratingCount >= MIN_REVIEWS_FOR_SCORE ? row.ratingBayes : null,
     ratingCount: row.ratingCount,
     sessionsCompleted: row.sessionsCompleted,

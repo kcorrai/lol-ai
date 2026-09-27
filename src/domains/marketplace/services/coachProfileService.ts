@@ -21,6 +21,8 @@ export interface CoachProfileInput {
   roles: Position[];
   championIds: number[];
   timezone: string;
+  /** A YouTube video link; the route has already checked it is one. */
+  introVideoUrl?: string | null;
 }
 
 export interface OwnCoachProfile extends CoachApplicationState {
@@ -33,6 +35,7 @@ export interface OwnCoachProfile extends CoachApplicationState {
   roles: Position[];
   championIds: number[];
   timezone: string;
+  introVideoUrl: string | null;
   /** Basis points the platform keeps, snapshotted per profile — 2000 is 20%. */
   commissionBps: number;
   acceptingStudents: boolean;
@@ -54,6 +57,7 @@ const OWN_PROFILE_SELECT = {
   roles: true,
   championIds: true,
   timezone: true,
+  introVideoUrl: true,
   commissionBps: true,
   acceptingStudents: true,
   ratingBayes: true,

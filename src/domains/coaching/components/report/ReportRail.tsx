@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Download, Mic } from "lucide-react";
 import { StatBlock } from "@/components/dashboard/laneiq/HudPanel";
 import { ReportRating } from "@/domains/coaching/components/ReportRating";
+import { ReportCoachCard } from "@/domains/coaching/components/report/ReportCoachCard";
 import { ShareReportButton } from "@/domains/coaching/components/ShareReportButton";
 import type { CoachingReportDetail } from "@/types/coaching.frontend";
 
@@ -46,6 +47,8 @@ export function ReportRail({
           {report.focusArea && <StatBlock label="Focus" value={report.focusArea} />}
         </div>
       </section>
+
+      <ReportCoachCard report={report} isPro={isPro} />
 
       <section className={`${PANEL} grid gap-2.5 px-4 py-4`}>
         <div className="hud-label text-[10.5px]">{"// This report"}</div>

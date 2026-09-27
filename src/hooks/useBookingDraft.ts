@@ -34,7 +34,9 @@ function keyFor(listingId: string): string {
  */
 export function useBookingDraft(
   listingId: string,
-  initial: Partial<BookingDraft>
+  initial: Partial<BookingDraft>,
+  /** Read on arrival, browser-side; used only when nothing else supplied a goal. */
+  fallbackGoal?: () => string
 ): {
   draft: BookingDraft;
   update: (patch: Partial<BookingDraft>) => void;
@@ -44,13 +46,20 @@ export function useBookingDraft(
   const [draft, setDraft] = useState<BookingDraft>({ ...EMPTY, ...initial });
 
   useEffect(() => {
+    let restored: Partial<BookingDraft> = {};
     try {
       const raw = window.sessionStorage.getItem(keyFor(listingId));
-      if (raw)
-        setDraft((current) => ({ ...current, ...(JSON.parse(raw) as Partial<BookingDraft>) }));
+      if (raw) restored = JSON.parse(raw) as Partial<BookingDraft>;
     } catch {
       // No storage, or a draft we cannot read: start from the page's own defaults.
     }
+    const fallback = fallbackGoal?.() ?? "";
+    setDraft((current) => {
+      const merged = { ...current, ...restored };
+      return merged.goal || !fallback ? merged : { ...merged, goal: fallback };
+    });
+    // Once per listing, on arrival. The fallback is a reader, not state to track.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listingId]);
 
   const update = useCallback((patch: Partial<BookingDraft>) => {
