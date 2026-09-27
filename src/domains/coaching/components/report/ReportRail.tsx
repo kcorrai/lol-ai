@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Download, Mic } from "lucide-react";
+import { Download } from "lucide-react";
 import { StatBlock } from "@/components/dashboard/laneiq/HudPanel";
 import { ReportRating } from "@/domains/coaching/components/ReportRating";
 import { ReportCoachCard } from "@/domains/coaching/components/report/ReportCoachCard";
@@ -17,17 +17,10 @@ const MATCHES_SHOWN = 5;
 interface ReportRailProps {
   report: CoachingReportDetail;
   isPro: boolean;
-  voiceOpen: boolean;
-  onToggleVoice: () => void;
 }
 
 /** Everything about the report rather than in it: potential, the actions, the sample, the rating. */
-export function ReportRail({
-  report,
-  isPro,
-  voiceOpen,
-  onToggleVoice,
-}: ReportRailProps): React.ReactElement {
+export function ReportRail({ report, isPro }: ReportRailProps): React.ReactElement {
   return (
     <div className="grid gap-3.5 lg:sticky lg:top-6">
       <section className={`${PANEL} bg-hero-fade px-4 py-4`}>
@@ -52,12 +45,6 @@ export function ReportRail({
 
       <section className={`${PANEL} grid gap-2.5 px-4 py-4`}>
         <div className="hud-label text-[10.5px]">{"// This report"}</div>
-        {isPro && (
-          <button type="button" onClick={onToggleVoice} className={ACTION}>
-            <Mic aria-hidden className="h-3.5 w-3.5" />
-            {voiceOpen ? "Close voice coach" : "Speak with voice coach"}
-          </button>
-        )}
         <a href={`/api/coaching/reports/${report.id}/pdf`} download className={ACTION}>
           <Download aria-hidden className="h-3.5 w-3.5" />
           Download PDF

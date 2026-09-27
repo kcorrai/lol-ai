@@ -52,12 +52,28 @@ export async function buildCoachChatContext(
   });
 }
 
+// The whole transcript is re-billed as input on every turn, so a long conversation costs more per
+// reply the longer it runs. The coach's context lives in the system prompt, not the history, so the
+// last few exchanges are all a reply needs.
+const MODEL_HISTORY_MESSAGES = 12;
+
+// Keeps the recent turns, starting on a user message — Anthropic rejects a conversation that opens
+// with the assistant.
+export function recentChatHistory(messages: ChatMessage[]): ChatMessage[] {
+  const recent = messages.slice(-MODEL_HISTORY_MESSAGES);
+  const firstUser = recent.findIndex((m) => m.role === "user");
+  return firstUser === -1 ? recent : recent.slice(firstUser);
+}
+
 // Streams the AI chat completion as UTF-8 text chunks.
 export function createCoachChatStream(
   systemPrompt: string,
   messages: ChatMessage[]
 ): ReadableStream<Uint8Array> {
-  const tokenStream = getAiClient("coach-chat").streamChat(systemPrompt, messages);
+  const tokenStream = getAiClient("coach-chat").streamChat(
+    systemPrompt,
+    recentChatHistory(messages)
+  );
   const encoder = new TextEncoder();
 
   return new ReadableStream<Uint8Array>({

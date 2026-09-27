@@ -37,7 +37,6 @@ const GROUPS: CompareGroup[] = [
       { label: "Improvement plan history", free: "—", pro: "Full", team: "Full" },
       { label: "Shareable AI report cards", free: "—", pro: "Yes", team: "Yes" },
       { label: "Weekly development email", free: "—", pro: "Yes", team: "Yes" },
-      { label: "Voice coaching", free: "—", pro: "Yes", team: "Yes" },
       { label: "Priority AI processing", free: "—", pro: "Yes", team: "Yes" },
     ],
   },

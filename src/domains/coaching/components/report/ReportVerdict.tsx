@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { championSplashUrl } from "@/lib/ddragon";
-import { ListenButton } from "@/domains/coaching/components/ListenButton";
 import type { CoachingReportDetail } from "@/types/coaching.frontend";
 
 /**
@@ -11,10 +10,8 @@ import type { CoachingReportDetail } from "@/types/coaching.frontend";
  */
 export function ReportVerdict({
   report,
-  isPro,
 }: {
   report: CoachingReportDetail;
-  isPro: boolean;
 }): React.ReactElement | null {
   if (!report.summary && !report.coachPersonaResponse) return null;
 
@@ -47,9 +44,6 @@ export function ReportVerdict({
           <span className="font-mono text-[10.5px] uppercase tracking-label text-accent">
             {"// Coach's verdict"}
           </span>
-          {isPro && report.coachPersonaResponse && (
-            <ListenButton reportId={report.id} text={report.coachPersonaResponse} />
-          )}
         </div>
 
         <h2 className="max-w-[22ch] font-display text-[24px] font-extrabold uppercase leading-[1.14] tracking-[0.02em] text-text md:text-[32px]">

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
@@ -8,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { ErrorState } from "@/components/ui/error-state";
 import { PageSkeleton } from "@/components/layout/PageSkeleton";
 import { CoachingReportDetail } from "@/domains/coaching/components/CoachingReportDetail";
-import { VoiceCoachPanel } from "@/domains/coaching/components/VoiceCoachPanel";
 import { ReportRail } from "@/domains/coaching/components/report/ReportRail";
 import { useCoachingReport } from "@/hooks/useCoachingReport";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -38,7 +36,6 @@ export default function ReportDetailPage(): React.ReactElement {
   const { reportId } = useParams<{ reportId: string }>();
   const { data: report, isLoading, error, refetch } = useCoachingReport(reportId);
   const { data: sub } = useSubscription();
-  const [voiceOpen, setVoiceOpen] = useState(false);
 
   const isPro = sub?.plan === "pro" || sub?.plan === "elite";
 
@@ -103,23 +100,9 @@ export default function ReportDetailPage(): React.ReactElement {
         <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_328px]">
           <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-5">
             <CoachingReportDetail report={report} isPro={isPro} />
-
-            {voiceOpen && isPro && (
-              <div className="h-[480px]">
-                <VoiceCoachPanel
-                  riotAccountId={report.riotAccountId}
-                  onClose={() => setVoiceOpen(false)}
-                />
-              </div>
-            )}
           </div>
 
-          <ReportRail
-            report={report}
-            isPro={isPro}
-            voiceOpen={voiceOpen}
-            onToggleVoice={() => setVoiceOpen((o) => !o)}
-          />
+          <ReportRail report={report} isPro={isPro} />
         </div>
       )}
     </div>

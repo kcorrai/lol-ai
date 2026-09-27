@@ -25,7 +25,6 @@ const PRO_FEATURES = [
   "Improvement plan and history",
   "Shareable AI report cards",
   "Weekly development email",
-  "Voice coaching",
 ];
 
 const MONTHLY_PRICE = "$9.99";
