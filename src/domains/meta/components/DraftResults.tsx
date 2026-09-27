@@ -1,140 +1,91 @@
-import { ChampionIcon } from "@/components/ui/ChampionIcon";
-import { POSITION_LABELS } from "@/domains/meta/positions";
-import { GameLengthCurve } from "@/domains/meta/components/build/GameLengthCurve";
+import { ScalingChart } from "@/domains/meta/components/ScalingChart";
+import { DraftTeamPanel } from "@/domains/meta/components/draft/DraftTeamPanel";
+import { DraftLaneTable } from "@/domains/meta/components/draft/DraftLaneTable";
+import { laneTally } from "@/domains/meta/services/draftEvalService";
 // The leaf module, not the domain barrel: this file now lives *inside* the meta domain, and a
 // component importing its own domain's public API is how an import cycle starts.
-import type { DraftEvaluation, LaneEdge, TeamEval } from "@/domains/meta/services/draftEval.types";
+import type { DraftEvaluation } from "@/domains/meta/services/draftEval.types";
 
-function DamageBar({ ad, ap }: { ad: number; ap: number }) {
+/** The verdict with the two numbers it rests on: lanes won and average meta win rate. */
+function DraftHeadline({ evaluation }: { evaluation: DraftEvaluation }): React.ReactElement {
+  const { blue, red } = evaluation;
+  const tally = laneTally(evaluation.laneEdges);
+  const total = blue.avgWinRate + red.avgWinRate;
+  const blueShare = total > 0 ? (blue.avgWinRate / total) * 100 : 50;
+
   return (
-    <div className="flex h-2 overflow-hidden rounded-full bg-surface-2">
-      <div className="bg-danger" style={{ width: `${ad}%` }} title={`AD ${ad}%`} />
-      <div className="bg-info" style={{ width: `${ap}%` }} title={`AP ${ap}%`} />
-    </div>
-  );
-}
-
-function TeamCard({ team, label, accent }: { team: TeamEval; label: string; accent: string }) {
-  return (
-    <div className="rounded-2xl border border-border bg-surface/60 p-5">
-      <h3 className={`mb-3 font-display text-sm font-bold uppercase tracking-wide ${accent}`}>
-        {label}
-      </h3>
-
-      <div className="mb-4 flex flex-wrap gap-2">
-        {team.champions.map((c) => (
-          <div key={c.key} className="flex items-center gap-1.5 rounded-lg bg-surface-2 px-2 py-1">
-            <ChampionIcon name={c.key} size={22} />
-            <span className="text-xs font-medium text-text">{c.name}</span>
-          </div>
-        ))}
+    <section className="notch-lg glow-accent-soft grid gap-6 border border-acid-500 bg-surface px-6 py-5 md:grid-cols-[1.4fr_1fr] md:items-center">
+      <div>
+        <h2 className="font-mono text-[10.5px] uppercase tracking-label text-acid-500">
+          {"// Stats-based verdict"}
+        </h2>
+        <p className="mt-2.5 text-[15px] leading-relaxed text-text">{evaluation.verdict}</p>
       </div>
 
-      <dl className="space-y-2.5 text-sm">
-        <div className="flex items-center justify-between">
-          <dt className="text-text-muted">Avg win rate</dt>
-          <dd className="font-bold text-text">{team.avgWinRate}%</dd>
-        </div>
+      <div className="grid gap-4">
+        {evaluation.laneEdges.length > 0 && (
+          <div className="flex items-end justify-between gap-3">
+            <span className="hud-label text-[10px]">Lanes favoured</span>
+            <span className="font-mono text-[28px] font-bold tabular-nums leading-none">
+              <span className="text-info">{tally.blue}</span>
+              <span className="px-1.5 text-text-muted">–</span>
+              <span className="text-danger">{tally.red}</span>
+              {tally.even > 0 && (
+                <span className="ml-2 text-[11px] font-normal text-text-muted">
+                  {tally.even} even
+                </span>
+              )}
+            </span>
+          </div>
+        )}
         <div>
-          <dt className="mb-1 text-text-muted">Damage profile</dt>
-          <DamageBar ad={team.adShare} ap={team.apShare} />
-          <dd className="mt-1 flex justify-between text-[11px] text-text-muted">
-            <span>{team.adShare}% AD</span>
-            <span>{team.apShare}% AP</span>
-          </dd>
+          <div className="mb-1.5 flex justify-between font-mono text-[11px] font-bold tabular-nums">
+            <span className="text-info">{blue.avgWinRate}%</span>
+            <span className="hud-label text-[9.5px]">Avg meta win rate</span>
+            <span className="text-danger">{red.avgWinRate}%</span>
+          </div>
+          <div className="flex h-2 gap-0.5">
+            <div className="bg-info" style={{ width: `${blueShare}%` }} />
+            <div className="bg-danger" style={{ width: `${100 - blueShare}%` }} />
+          </div>
         </div>
-        <div className="flex items-center justify-between">
-          <dt className="text-text-muted">Frontline</dt>
-          <dd className="font-semibold text-text">{team.frontlineScore}/100</dd>
-        </div>
-        <div className="flex items-center justify-between">
-          <dt className="text-text-muted">Scaling</dt>
-          <dd className="font-semibold capitalize text-text">
-            {team.scalingLean}
-            {team.gameLengthCurve.length > 0 && (
-              <span className="ml-1 text-[11px] font-normal text-text-muted">
-                (from real games)
-              </span>
-            )}
-          </dd>
-        </div>
-      </dl>
-    </div>
-  );
-}
-
-function LaneEdgeRow({ edge }: { edge: LaneEdge }) {
-  const color =
-    edge.favored === "blue"
-      ? "text-info"
-      : edge.favored === "red"
-        ? "text-danger"
-        : "text-text-muted";
-  return (
-    <li className="flex items-center gap-3 rounded-lg border border-border bg-surface px-3 py-2">
-      <span className="w-16 shrink-0 text-xs font-semibold text-text-muted">
-        {POSITION_LABELS[edge.position]}
-      </span>
-      <ChampionIcon name={edge.blueKey} size={26} />
-      <span className="text-xs text-text-muted">vs</span>
-      <ChampionIcon name={edge.redKey} size={26} />
-      <span className={`ml-auto text-xs font-medium ${color}`}>{edge.note}</span>
-    </li>
+      </div>
+    </section>
   );
 }
 
 export function DraftResults({ evaluation }: { evaluation: DraftEvaluation }) {
+  const names = new Map(
+    [...evaluation.blue.champions, ...evaluation.red.champions].map((c) => [c.key, c.name])
+  );
+  const hasCurves =
+    evaluation.blue.gameLengthCurve.length > 0 || evaluation.red.gameLengthCurve.length > 0;
+
   return (
-    <div className="space-y-8">
-      <div className="rounded-2xl border border-accent/30 bg-accent/5 p-5">
-        <h2 className="mb-1 font-display text-sm font-bold uppercase tracking-wide text-accent">
-          Stats-based verdict
-        </h2>
-        <p className="text-sm text-text">{evaluation.verdict}</p>
-      </div>
+    <div className="grid gap-6">
+      <DraftHeadline evaluation={evaluation} />
+
+      <DraftLaneTable edges={evaluation.laneEdges} names={names} />
 
       <div className="grid gap-5 md:grid-cols-2">
-        <TeamCard team={evaluation.blue} label="Blue Team" accent="text-info" />
-        <TeamCard team={evaluation.red} label="Red Team" accent="text-danger" />
+        <DraftTeamPanel team={evaluation.blue} side="blue" />
+        <DraftTeamPanel team={evaluation.red} side="red" />
       </div>
 
-      {(evaluation.blue.gameLengthCurve.length > 0 ||
-        evaluation.red.gameLengthCurve.length > 0) && (
-        <div>
-          <h2 className="mb-3 font-display text-lg font-bold text-text">Win rate by game length</h2>
-          <p className="mb-3 text-sm text-text-muted">
-            Each team&apos;s aggregated win rate across game durations, from real ranked games.
+      {hasCurves && (
+        <section className="notch border border-border bg-surface p-5">
+          <h2 className="hud-label text-[10.5px]">Win rate by game length</h2>
+          <p className="mb-4 mt-1 text-xs text-text-muted">
+            The average of each side&apos;s champions&apos; own win rate by game length, from real
+            ranked games this patch.
           </p>
-          <div className="grid gap-5 md:grid-cols-2">
-            {evaluation.blue.gameLengthCurve.length > 0 && (
-              <div>
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-info">
-                  Blue Team
-                </p>
-                <GameLengthCurve points={evaluation.blue.gameLengthCurve} />
-              </div>
-            )}
-            {evaluation.red.gameLengthCurve.length > 0 && (
-              <div>
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-danger">
-                  Red Team
-                </p>
-                <GameLengthCurve points={evaluation.red.gameLengthCurve} />
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {evaluation.laneEdges.length > 0 && (
-        <div>
-          <h2 className="mb-3 font-display text-lg font-bold text-text">Lane matchups</h2>
-          <ul className="flex flex-col gap-2">
-            {evaluation.laneEdges.map((edge) => (
-              <LaneEdgeRow key={edge.position} edge={edge} />
-            ))}
-          </ul>
-        </div>
+          <ScalingChart
+            series={[
+              { label: "Blue team", points: evaluation.blue.gameLengthCurve, tone: "info" },
+              { label: "Red team", points: evaluation.red.gameLengthCurve, tone: "danger" },
+            ]}
+          />
+        </section>
       )}
     </div>
   );

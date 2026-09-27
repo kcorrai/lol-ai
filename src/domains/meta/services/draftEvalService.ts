@@ -60,7 +60,32 @@ async function computeLaneEdges(
   return edges;
 }
 
-function buildVerdict(blue: TeamEval, red: TeamEval): string {
+export interface LaneTally {
+  blue: number;
+  red: number;
+  even: number;
+}
+
+/** How many of the head-to-head lanes each side is favoured in. */
+export function laneTally(edges: LaneEdge[]): LaneTally {
+  return {
+    blue: edges.filter((e) => e.favored === "blue").length,
+    red: edges.filter((e) => e.favored === "red").length,
+    even: edges.filter((e) => e.favored === "even").length,
+  };
+}
+
+// Lanes are only mentioned once there are enough of them to call it a pattern: one favoured lane
+// out of one filled is the lane note's job, not the verdict's.
+function laneSentence(edges: LaneEdge[]): string | null {
+  if (edges.length < 3) return null;
+  const { blue, red } = laneTally(edges);
+  if (blue === red) return `The lanes are split (${blue}–${red}, the rest even).`;
+  const side = blue > red ? "Blue" : "Red";
+  return `${side} is favoured in ${Math.max(blue, red)} of ${edges.length} lanes.`;
+}
+
+function buildVerdict(blue: TeamEval, red: TeamEval, edges: LaneEdge[]): string {
   const parts: string[] = [];
   const wrDiff = blue.avgWinRate - red.avgWinRate;
   if (Math.abs(wrDiff) < 0.5) {
@@ -88,10 +113,17 @@ function buildVerdict(blue: TeamEval, red: TeamEval): string {
       );
   }
 
+  const lanes = laneSentence(edges);
+  if (lanes) parts.push(lanes);
+
   if (blue.frontlineScore - red.frontlineScore >= 25)
-    parts.push("Blue has the stronger frontline to engage and peel.");
+    parts.push("Blue has the sturdier frontline to absorb and peel.");
   else if (red.frontlineScore - blue.frontlineScore >= 25)
-    parts.push("Red has the stronger frontline to engage and peel.");
+    parts.push("Red has the sturdier frontline to absorb and peel.");
+
+  if (blue.engageScore - red.engageScore >= 25) parts.push("Blue has more ways to start a fight.");
+  else if (red.engageScore - blue.engageScore >= 25)
+    parts.push("Red has more ways to start a fight.");
 
   return parts.join(" ");
 }
@@ -139,6 +171,6 @@ export async function evaluateDraft(
     blue: blueEval,
     red: redEval,
     laneEdges,
-    verdict: buildVerdict(blueEval, redEval),
+    verdict: buildVerdict(blueEval, redEval, laneEdges),
   };
 }
