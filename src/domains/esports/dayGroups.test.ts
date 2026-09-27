@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { groupByDay, withinDays } from "./dayGroups";
+import { groupByDay, withinDays, zoneFor } from "./dayGroups";
 import type { EsportsEvent } from "./types";
 
 function event(matchId: string, startTime: string): EsportsEvent {
@@ -103,5 +103,37 @@ describe("withinDays", () => {
     );
 
     expect(kept.map((e) => e.matchId)).toEqual(["soon", "edge"]);
+  });
+});
+
+describe("groupByDay in a picked zone", () => {
+  it("files a match under the day it is in that zone", () => {
+    // 22:00 UTC on the 15th is already the 16th in Seoul and still the 15th
+    // in Los Angeles.
+    const late = [event("late", "2026-08-15T22:00:00Z")];
+
+    expect(groupByDay(late, { zone: { timeZone: "Asia/Seoul" }, now: NOW })[0].key).toBe(
+      "2026-08-16"
+    );
+    expect(groupByDay(late, { zone: { timeZone: "America/Los_Angeles" }, now: NOW })[0].key).toBe(
+      "2026-08-15"
+    );
+  });
+
+  it("says Today and Tomorrow against that zone's calendar", () => {
+    const groups = groupByDay(
+      [event("a", "2026-08-15T13:00:00Z"), event("b", "2026-08-15T16:00:00Z")],
+      { zone: { timeZone: "Asia/Seoul" }, now: NOW }
+    );
+
+    // NOW is 21:00 on the 15th in Seoul: 22:00 is today, 01:00 is tomorrow.
+    expect(groups.map((g) => g.label)).toEqual(["Today", "Tomorrow"]);
+  });
+});
+
+describe("zoneFor", () => {
+  it("uses the browser's zone until one is picked", () => {
+    expect(zoneFor(null)).toBe("local");
+    expect(zoneFor("Europe/Istanbul")).toEqual({ timeZone: "Europe/Istanbul" });
   });
 });

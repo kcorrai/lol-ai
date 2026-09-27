@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { SeriesRow } from "@/domains/esports/components/SeriesRow";
-import { groupByDay } from "@/domains/esports/dayGroups";
+import { groupByDay, zoneFor } from "@/domains/esports/dayGroups";
+import { useEsportsPrefsStore } from "@/lib/stores/esportsPrefsStore";
 import type { EsportsEvent } from "@/domains/esports/types";
 import { formatDate } from "@/lib/uiLocale";
 
@@ -46,13 +47,14 @@ export function ScheduleDays({
   descending = false,
   highlightNext = false,
 }: ScheduleDaysProps): React.ReactElement {
+  const timeZone = useEsportsPrefsStore((state) => state.timeZone);
   const [groups, setGroups] = useState(() =>
     groupByDay(events, { zone: "utc", now: new Date(), descending })
   );
 
   useEffect(() => {
-    setGroups(groupByDay(events, { zone: "local", now: new Date(), descending }));
-  }, [events, descending]);
+    setGroups(groupByDay(events, { zone: zoneFor(timeZone), now: new Date(), descending }));
+  }, [events, descending, timeZone]);
 
   return (
     <div className="grid gap-5">
