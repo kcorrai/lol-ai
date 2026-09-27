@@ -2,10 +2,13 @@ import { GoldCurveAxes } from "@/domains/esports/components/GoldCurveAxes";
 import { GoldCurveMarkers, MARKER_LEGEND } from "@/domains/esports/components/GoldCurveMarkers";
 import {
   curveMid,
+  curveSpan,
   objectiveMarkers,
   plotGoldCurve,
+  stackDepth,
   type CurveBox,
   type CurvePoint,
+  type ObjectiveMarker,
 } from "@/domains/esports/goldCurveGeometry";
 import { sampleClock } from "@/domains/esports/timeline";
 import type { GameTimeline } from "@/domains/esports/types";
@@ -20,15 +23,36 @@ import type { GameTimeline } from "@/domains/esports/types";
  */
 
 const WIDTH = 640;
-const HEIGHT = 242;
+/** Room on the left for the gold labels ("+10k" is the widest). */
+const LEFT = 40;
+const RIGHT = WIDTH - 8;
+const PLOT_HEIGHT = 176;
+/** How far each further marker in a stack sits from the one before it. */
+const STACK_STEP = 16;
+
+interface Layout {
+  box: CurveBox;
+  height: number;
+  /** Centre of the marker nearest the chart, on each side. */
+  blueRow: number;
+  redRow: number;
+}
+
 /**
- * Room on the left for the gold labels ("+10k" is the widest), above for blue's
- * objective row, and below for the minutes and then red's objective row.
+ * Blue's objectives above the chart, then the chart, the minutes, and red's
+ * objectives below — each marker row as tall as that side's deepest stack.
  */
-const BOX: CurveBox = { left: 40, right: WIDTH - 8, top: 26, bottom: HEIGHT - 40 };
-const MID = curveMid(BOX);
-const BLUE_ROW = BOX.top - 14;
-const RED_ROW = BOX.bottom + 30;
+function layout(markers: ObjectiveMarker[]): Layout {
+  const top = 26 + Math.max(0, stackDepth(markers, "blue") - 1) * STACK_STEP;
+  const bottom = top + PLOT_HEIGHT;
+  const height = bottom + 40 + Math.max(0, stackDepth(markers, "red") - 1) * STACK_STEP;
+  return {
+    box: { left: LEFT, right: RIGHT, top, bottom },
+    height,
+    blueRow: top - 14,
+    redRow: bottom + 30,
+  };
+}
 
 interface GoldCurveProps {
   timeline: GameTimeline;
@@ -51,20 +75,30 @@ export function GoldCurve({
   // Two points is the least that draws a line rather than a dot.
   if (timeline.samples.length < 2) return null;
 
-  const { points, scale, span } = plotGoldCurve(timeline, BOX);
+  // Markers only need the horizontal extent, and their stacks decide how tall
+  // the chart is, so they are placed before the curve is.
+  const markers = objectiveMarkers(timeline, curveSpan(timeline), {
+    left: LEFT,
+    right: RIGHT,
+    top: 0,
+    bottom: 0,
+  });
+  const { box, height, blueRow, redRow } = layout(markers);
+  const mid = curveMid(box);
+
+  const { points, scale, span } = plotGoldCurve(timeline, box);
   const line = points.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
 
   // One closed shape, filled twice through clips that cut it at the zero line —
   // the half above is blue's lead, the half below is red's.
-  const area = `${BOX.left},${MID} ${line} ${points[points.length - 1].x.toFixed(1)},${MID}`;
+  const area = `${box.left},${mid} ${line} ${points[points.length - 1].x.toFixed(1)},${mid}`;
 
   const last = points[points.length - 1];
-  const markers = objectiveMarkers(timeline, span, BOX);
 
   return (
     <figure className="gaming-card notch-sm px-3 py-4">
       <svg
-        viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+        viewBox={`0 0 ${WIDTH} ${height}`}
         className="h-auto w-full"
         role="img"
         aria-label={`Gold difference over ${sampleClock(span)}, sampled every ${
@@ -77,14 +111,14 @@ export function GoldCurve({
       >
         <defs>
           <clipPath id="gold-curve-above">
-            <rect x="0" y="0" width={WIDTH} height={MID} />
+            <rect x="0" y="0" width={WIDTH} height={mid} />
           </clipPath>
           <clipPath id="gold-curve-below">
-            <rect x="0" y={MID} width={WIDTH} height={HEIGHT - MID} />
+            <rect x="0" y={mid} width={WIDTH} height={height - mid} />
           </clipPath>
         </defs>
 
-        <GoldCurveAxes box={BOX} scale={scale} span={span} blueName={blueName} redName={redName} />
+        <GoldCurveAxes box={box} scale={scale} span={span} blueName={blueName} redName={redName} />
 
         <polygon
           points={area}
@@ -100,7 +134,7 @@ export function GoldCurve({
         />
 
         {/* The zero line is the reading: which side of it the curve sits on. */}
-        <line x1={BOX.left} y1={MID} x2={BOX.right} y2={MID} stroke="#6C817B" strokeWidth="1" />
+        <line x1={box.left} y1={mid} x2={box.right} y2={mid} stroke="#6C817B" strokeWidth="1" />
 
         <polyline
           points={line}
@@ -124,8 +158,9 @@ export function GoldCurve({
 
         <GoldCurveMarkers
           markers={markers}
-          blueY={BLUE_ROW}
-          redY={RED_ROW}
+          blueY={blueRow}
+          redY={redRow}
+          step={STACK_STEP}
           blueName={blueName}
           redName={redName}
         />

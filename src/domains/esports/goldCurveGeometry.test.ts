@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
-  MARKER_GAP,
+  MARKER_INSET,
   MIN_SCALE_GOLD,
   goldTicks,
   niceGoldScale,
   objectiveMarkers,
+  stackDepth,
   goldToY,
   plotGoldCurve,
   timeToX,
@@ -121,37 +122,63 @@ describe("objectiveMarkers", () => {
         { seconds: 480, blue: { towers: 1 } },
         { seconds: 960, red: { barons: 1 } },
       ]),
-      960,
+      1000,
       wide
     );
 
     expect(markers).toEqual([
-      expect.objectContaining({ side: "blue", kind: "tower", count: 1, x: 500, seconds: 480 }),
-      expect.objectContaining({ side: "red", kind: "baron", count: 1, x: 990, seconds: 960 }),
+      expect.objectContaining({ side: "blue", kind: "tower", x: 480, stack: 0, seconds: 480 }),
+      expect.objectContaining({ side: "red", kind: "baron", x: 960, stack: 0, seconds: 960 }),
     ]);
   });
 
-  it("fans out objectives that share a side and a sample", () => {
+  it("stacks objectives sharing a side and a sample on that sample's time", () => {
     const markers = objectiveMarkers(
-      timeline([{ seconds: 240 }, { seconds: 480, blue: { towers: 2, dragons: 1 } }]),
-      960,
+      timeline([
+        { seconds: 240 },
+        { seconds: 480, blue: { towers: 2, dragons: 1 }, red: { towers: 1 } },
+      ]),
+      1000,
       wide
     );
 
-    expect(markers.map((marker) => marker.x)).toEqual([500 - MARKER_GAP / 2, 500 + MARKER_GAP / 2]);
-    expect(markers[0]).toMatchObject({ kind: "tower", count: 2 });
+    expect(
+      markers.map(({ side, kind, x, stack, count }) => ({ side, kind, x, stack, count }))
+    ).toEqual([
+      { side: "blue", kind: "tower", x: 480, stack: 0, count: 2 },
+      { side: "blue", kind: "dragon", x: 480, stack: 1, count: 1 },
+      { side: "red", kind: "tower", x: 480, stack: 0, count: 1 },
+    ]);
   });
 
-  it("pulls a fan at the edge inside the chart as a whole", () => {
-    const markers = objectiveMarkers(
-      timeline([{ seconds: 240 }, { seconds: 480, red: { towers: 1, inhibitors: 1 } }]),
+  it("keeps a marker on the last sample inside the chart", () => {
+    const [marker] = objectiveMarkers(
+      timeline([{ seconds: 240 }, { seconds: 480, red: { towers: 1 } }]),
       480,
       wide
     );
 
-    expect(markers.map((marker) => marker.x)).toEqual([
-      1000 - MARKER_GAP * 1.5,
-      1000 - MARKER_GAP / 2,
+    expect(marker.x).toBe(1000 - MARKER_INSET);
+  });
+
+  it("folds a closing frame that lands on the previous stack into it", () => {
+    // 44:10 and 45:05 in a 45:05 game sit 12 units apart on a 592-wide chart.
+    const box = { left: 40, right: 632, top: 0, bottom: 100 };
+    const markers = objectiveMarkers(
+      timeline([
+        { seconds: 240 },
+        { seconds: 2650, red: { towers: 2, dragons: 1 } },
+        { seconds: 2705, red: { towers: 3, dragons: 1 } },
+      ]),
+      2705,
+      box
+    );
+
+    expect(new Set(markers.map((marker) => marker.x)).size).toBe(1);
+    expect(markers.map((marker) => [marker.kind, marker.stack, marker.seconds])).toEqual([
+      ["tower", 0, 2650],
+      ["dragon", 1, 2650],
+      ["tower", 2, 2705],
     ]);
   });
 
@@ -160,40 +187,18 @@ describe("objectiveMarkers", () => {
   });
 });
 
-describe("objectiveMarkers spreading", () => {
-  const wide: CurveBox = { left: 0, right: 1000, top: 0, bottom: 100 };
-
-  it("pushes a neighbouring sample's marker clear of a crowded one", () => {
-    // Samples 20 units apart: the first sample's pair fans to 490/510, so the
-    // next sample's marker at 520 has to move to 530.
+describe("stackDepth", () => {
+  it("is the tallest stack on the side, or 0 when it took nothing", () => {
     const markers = objectiveMarkers(
       timeline([
-        { seconds: 240 },
-        { seconds: 500, blue: { towers: 1, dragons: 1 } },
-        { seconds: 520, blue: { towers: 2, dragons: 1 } },
-        { seconds: 1000 },
+        { seconds: 240, blue: { towers: 1 } },
+        { seconds: 480, blue: { towers: 2, inhibitors: 1, barons: 1 } },
       ]),
-      1000,
-      wide
+      480,
+      { left: 0, right: 1000, top: 0, bottom: 100 }
     );
 
-    expect(markers.map((marker) => marker.x)).toEqual([490, 510, 530]);
-  });
-
-  it("never lets two markers in a row overlap", () => {
-    const markers = objectiveMarkers(
-      timeline([
-        { seconds: 240 },
-        { seconds: 900, red: { towers: 2, inhibitors: 1 } },
-        { seconds: 960, red: { towers: 3, inhibitors: 2, barons: 1 } },
-        { seconds: 1000, red: { towers: 4, inhibitors: 2, barons: 1, dragons: 1 } },
-      ]),
-      1000,
-      wide
-    );
-
-    const xs = markers.map((marker) => marker.x);
-    xs.slice(1).forEach((x, i) => expect(x - xs[i]).toBeGreaterThanOrEqual(MARKER_GAP));
-    expect(xs[xs.length - 1]).toBeLessThanOrEqual(1000 - MARKER_GAP / 2);
+    expect(stackDepth(markers, "blue")).toBe(3);
+    expect(stackDepth(markers, "red")).toBe(0);
   });
 });
