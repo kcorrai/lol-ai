@@ -41,7 +41,7 @@ export function counterHowToPlay(
   }
 
   parts.push(
-    `Pick a counter from the list below, respect ${data.name}'s power spikes, and track its cooldowns so you only commit to trades when its key abilities are down. Counter data updates automatically every patch.`
+    `Pick a counter from the list above, respect ${data.name}'s power spikes, and track its cooldowns so you only commit to trades when its key abilities are down. Counter data updates automatically every patch.`
   );
   return parts.join(" ");
 }

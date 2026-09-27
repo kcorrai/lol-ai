@@ -4,23 +4,6 @@ import type { TierListEntry } from "@/domains/meta";
 // podium are client components, and reaching for the meta barrel would drag the server-only
 // logger and `async_hooks` into the browser bundle.
 
-const TIER_CHIP: Record<string, string> = {
-  S: "border-warning/60 bg-warning/15 text-warning",
-  A: "border-accent/60 bg-accent/10 text-accent",
-  B: "border-info/60 bg-info/10 text-info",
-  C: "border-line-2 bg-surface-2 text-text-body",
-  D: "border-danger/50 bg-danger/10 text-danger",
-};
-
-/**
- * Chip classes for a tier letter. A tiny sample makes an S/A grade meaningless, so those rows
- * get a grey chip rather than a confident colour.
- */
-export function tierChipClass(letter: string, lowConfidence = false): string {
-  if (lowConfidence) return "border-border bg-transparent text-text-muted/60";
-  return TIER_CHIP[letter] ?? "border-border bg-transparent text-text-muted";
-}
-
 /** One line on what a tier means — the group headers down the ranking table. */
 export const TIER_NOTE: Record<string, string> = {
   S: "Pick these blind",

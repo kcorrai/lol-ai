@@ -4,8 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { championSplashUrl } from "@/lib/ddragon";
-import { tierLetter } from "@/domains/meta/tierLetter";
-import { formatGames, movementOf, tierChipClass } from "./tierDisplay";
+import { tierChipClass, tierLetter } from "@/domains/meta/tierLetter";
+import { formatGames, movementOf } from "./tierDisplay";
 import type { TierListEntry } from "@/domains/meta";
 
 interface TierPodiumProps {

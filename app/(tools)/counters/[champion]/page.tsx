@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
   getCounterData,
@@ -18,9 +17,10 @@ import { CounterResults } from "@/domains/meta/components/CounterResults";
 import { RelatedChampions } from "@/domains/meta/components/RelatedChampions";
 import { DataFreshness } from "@/domains/meta/components/DataFreshness";
 import { CounterInsights } from "./CounterInsights";
+import { CounterSubject } from "@/domains/meta/components/CounterSubject";
+import { HUD_LINK, hudChip } from "../../hudChip";
 import { ProPlayStrip } from "@/domains/esports/components/ProPlayStrip";
 import { fetchChampionDetail } from "@/lib/ddragon/championsData";
-import { championSplashUrl } from "@/lib/ddragon";
 import { jsonLdProps } from "@/lib/security/jsonLd";
 
 export const revalidate = 43200; // 12h ISR
@@ -134,7 +134,7 @@ export default async function ChampionCountersPage({ params, searchParams }: Pag
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12">
+    <div className="mx-auto max-w-[1240px] px-5 py-12 md:px-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdProps(breadcrumbJsonLd)} />
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdProps(faqJsonLd)} />
 
@@ -151,77 +151,58 @@ export default async function ChampionCountersPage({ params, searchParams }: Pag
       </nav>
 
       {/* Hero */}
-      <div className="relative mb-10 overflow-hidden rounded-2xl border border-border">
-        <Image
-          src={championSplashUrl(detail.id)}
-          alt={`${detail.name} splash art`}
-          width={1215}
-          height={340}
-          className="h-48 w-full object-cover object-top md:h-64"
-          unoptimized
-          priority
+      {data ? (
+        <CounterSubject
+          championKey={data.championKey}
+          name={detail.name}
+          laneLabel={POSITION_LABELS[data.position]}
+          gamePatch={formatGamePatch(data.patch)}
+          stats={data.stats}
+          heading="h1"
+          title={`${detail.name} Counters`}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-        <div className="absolute bottom-0 p-6">
-          <h1 className="font-display text-3xl font-black text-text md:text-4xl">
-            {detail.name} Counters
-          </h1>
-          <p className="mt-1 max-w-2xl text-sm text-text-muted">
-            Best champions to beat {detail.name}
-            {data
-              ? ` in ${POSITION_LABELS[data.position]} — Patch ${formatGamePatch(data.patch)}`
-              : ""}
-            , by ranked win rate.
-          </p>
-        </div>
-      </div>
+      ) : (
+        <h1 className="mb-6 font-display text-[34px] font-black uppercase leading-[0.98] tracking-[0.02em] text-text md:text-[44px]">
+          {detail.name} Counters
+        </h1>
+      )}
 
-      {/* Lane filter — only when the champion plays more than one lane */}
-      {data && data.availablePositions.length > 1 && (
-        <div className="mb-3 flex flex-wrap items-center gap-1.5">
-          <span className="mr-1 text-[11px] uppercase tracking-wide text-text-muted">Lane</span>
-          {data.availablePositions.map((pos) => (
+      <div className="notch mb-6 grid gap-3 border border-border bg-surface px-4 py-3.5">
+        {/* Lane filter — only when the champion plays more than one lane */}
+        {data && data.availablePositions.length > 1 && (
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="hud-label mr-1 w-10 text-[10px]">Lane</span>
+            {data.availablePositions.map((pos) => (
+              <Link
+                key={pos}
+                href={counterHref(detail.id, pos, tier)}
+                className={hudChip(pos === data.position)}
+              >
+                {POSITION_LABELS[pos]}
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {/* Rank bracket filter */}
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="hud-label mr-1 w-10 text-[10px]">Rank</span>
+          <Link
+            href={counterHref(detail.id, requestedPosition, null)}
+            className={hudChip(tier === null)}
+          >
+            Default
+          </Link>
+          {SNAPSHOT_TIERS.map((t) => (
             <Link
-              key={pos}
-              href={counterHref(detail.id, pos, tier)}
-              className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
-                pos === data.position
-                  ? "bg-accent text-background"
-                  : "border border-border bg-surface text-text-muted hover:border-accent/40 hover:text-text"
-              }`}
+              key={t}
+              href={counterHref(detail.id, requestedPosition, t)}
+              className={hudChip(t === tier)}
             >
-              {POSITION_LABELS[pos]}
+              {TIER_LABELS[t]}
             </Link>
           ))}
         </div>
-      )}
-
-      {/* Rank bracket filter */}
-      <div className="mb-6 flex flex-wrap items-center gap-1.5">
-        <span className="mr-1 text-[11px] uppercase tracking-wide text-text-muted">Rank</span>
-        <Link
-          href={counterHref(detail.id, requestedPosition, null)}
-          className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
-            tier === null
-              ? "bg-accent text-background"
-              : "border border-border bg-surface text-text-muted hover:border-accent/40 hover:text-text"
-          }`}
-        >
-          Default
-        </Link>
-        {SNAPSHOT_TIERS.map((t) => (
-          <Link
-            key={t}
-            href={counterHref(detail.id, requestedPosition, t)}
-            className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
-              t === tier
-                ? "bg-accent text-background"
-                : "border border-border bg-surface text-text-muted hover:border-accent/40 hover:text-text"
-            }`}
-          >
-            {TIER_LABELS[t]}
-          </Link>
-        ))}
       </div>
 
       {data && (
@@ -241,7 +222,7 @@ export default async function ChampionCountersPage({ params, searchParams }: Pag
           subjectKey={data.championKey}
         />
       ) : (
-        <p className="rounded-xl border border-dashed border-border px-4 py-10 text-center text-text-muted">
+        <p className="notch border border-border bg-surface px-4 py-10 text-center text-text-muted">
           Counter data for {detail.name} is refreshing. Check back shortly.
         </p>
       )}
@@ -263,23 +244,14 @@ export default async function ChampionCountersPage({ params, searchParams }: Pag
       </div>
 
       {/* Internal links */}
-      <div className="mt-12 flex flex-wrap gap-3 text-sm">
-        <Link
-          href={`/tools/counter-picker?champion=${detail.id}`}
-          className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
-        >
+      <div className="mt-12 flex flex-wrap gap-2.5">
+        <Link href={`/tools/counter-picker?champion=${detail.id}`} className={HUD_LINK}>
           Explore {detail.name} in the counter picker →
         </Link>
-        <Link
-          href={`/champions/${detail.id}`}
-          className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
-        >
+        <Link href={`/champions/${detail.id}`} className={HUD_LINK}>
           {detail.name} champion guide →
         </Link>
-        <Link
-          href="/tools/tier-list"
-          className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
-        >
+        <Link href="/tools/tier-list" className={HUD_LINK}>
           Current tier list →
         </Link>
       </div>

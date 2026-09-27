@@ -8,19 +8,21 @@ import { formatCount } from "@/lib/uiLocale";
 type Tone = "good" | "bad";
 
 const TONE = {
-  good: { bar: "bg-success/25", text: "text-success" },
-  bad: { bar: "bg-danger/25", text: "text-danger" },
+  good: { bar: "bg-success", text: "text-success", edge: "border-l-success" },
+  bad: { bar: "bg-danger", text: "text-danger", edge: "border-l-danger" },
 } as const;
 
 function MatchupRow({
   matchup,
   width,
   tone,
+  rank,
   subjectKey,
 }: {
   matchup: CounterMatchup;
   width: number;
   tone: Tone;
+  rank: number;
   subjectKey?: string;
 }) {
   // With a subject, link to the head-to-head matchup guide; otherwise to the
@@ -32,23 +34,26 @@ function MatchupRow({
   return (
     <Link
       href={href}
-      className="relative flex items-center gap-3 overflow-hidden rounded-lg border border-border bg-surface px-3 py-2 transition-colors hover:border-accent/40"
+      className={`group grid grid-cols-[18px_36px_minmax(0,1fr)_auto] items-center gap-3 border border-l-2 border-border bg-surface px-3 py-2 transition-colors hover:border-accent/40 hover:bg-surface-2 ${TONE[tone].edge}`}
     >
-      {/* Relative cue only — the percentage beside it is the accessible value. */}
-      <span
-        aria-hidden
-        className={`absolute inset-y-0 left-0 ${TONE[tone].bar}`}
-        style={{ width: `${width}%` }}
-      />
-      <ChampionIcon name={matchup.championKey} size={36} className="relative shrink-0" />
-      <span className="relative min-w-0 flex-1 truncate text-sm font-medium text-text">
-        {matchup.name}
+      <span className="font-mono text-[11px] tabular-nums text-text-muted">{rank}</span>
+      <ChampionIcon name={matchup.championKey} size={36} className="shrink-0" />
+      <span className="min-w-0">
+        <span className="block truncate text-sm font-semibold text-text group-hover:text-accent">
+          {matchup.name}
+        </span>
+        {/* Relative cue only — the percentage beside it is the accessible value. */}
+        <span aria-hidden className="mt-1.5 block h-1 w-full max-w-[220px] bg-surface-dark">
+          <span className={`block h-1 ${TONE[tone].bar}`} style={{ width: `${width}%` }} />
+        </span>
       </span>
-      <span className="relative shrink-0 text-right">
-        <span className={`block text-sm font-bold ${TONE[tone].text}`}>
+      <span className="shrink-0 text-right">
+        <span
+          className={`block font-mono text-[15px] font-bold tabular-nums leading-none ${TONE[tone].text}`}
+        >
           {matchup.opponentWinRate.toFixed(1)}%
         </span>
-        <span className="block text-[10px] text-text-muted">
+        <span className="mt-1 block font-mono text-[10px] tabular-nums text-text-muted">
           {formatCount(matchup.games)} games
         </span>
       </span>
@@ -74,18 +79,24 @@ function MatchupColumn({
   const edges = matchups.map((m) => matchupEdge(m.opponentWinRate));
 
   return (
-    <div>
-      <h2 className="font-display text-lg font-bold text-text">{title}</h2>
-      <p className="mb-3 text-xs text-text-muted">{subtitle}</p>
+    <div className="min-w-0">
+      <h2
+        className={`flex items-center gap-2 font-display text-[17px] font-black uppercase tracking-[0.03em] ${TONE[tone].text}`}
+      >
+        <span aria-hidden>{tone === "good" ? "▲" : "▼"}</span>
+        <span className="text-text">{title}</span>
+      </h2>
+      <p className="mb-3 mt-1 text-xs text-text-muted">{subtitle}</p>
       {matchups.length === 0 ? (
-        <p className="rounded-lg border border-dashed border-border px-3 py-6 text-center text-sm text-text-muted">
+        <p className="notch border border-border bg-surface px-3 py-6 text-center text-sm text-text-muted">
           {emptyLabel}
         </p>
       ) : (
-        <div className="flex flex-col gap-2">
-          {matchups.map((m) => (
+        <div className="notch flex flex-col gap-1">
+          {matchups.map((m, i) => (
             <MatchupRow
               key={m.championId}
+              rank={i + 1}
               matchup={m}
               width={barWidth(matchupEdge(m.opponentWinRate), edges)}
               tone={tone}

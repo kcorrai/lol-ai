@@ -14,3 +14,7 @@ export const HUD_CHIP_DISABLED =
 export function hudChip(active: boolean, enabled = true): string {
   return `${HUD_CHIP} ${active ? HUD_CHIP_ON : HUD_CHIP_OFF}${enabled ? "" : ` ${HUD_CHIP_DISABLED}`}`;
 }
+
+/** A "go elsewhere" link at the foot of a tool — the next page a reader is likely to want. */
+export const HUD_LINK =
+  "notch-sm border border-border bg-surface px-4 py-2 font-mono text-[11px] uppercase tracking-label text-text-muted transition-colors hover:border-accent/40 hover:text-text";

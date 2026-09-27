@@ -3,6 +3,7 @@ import type { CounterResult } from "@/domains/meta";
 import { GameLengthCurve } from "@/domains/meta/components/build/GameLengthCurve";
 import { TrendSparkline } from "@/domains/meta/components/build/TrendSparkline";
 import { counterHowToPlay } from "./counterText";
+import { HUD_LINK } from "../../hudChip";
 
 interface CounterInsightsProps {
   data: CounterResult;
@@ -20,10 +21,10 @@ export function CounterInsights({ data, laneLabel, gamePatch, enemyTips }: Count
 
   return (
     <div className="mt-12">
-      <h2 className="mb-3 font-display text-lg font-bold text-text">
+      <h2 className="mb-3 font-display text-[20px] font-black uppercase tracking-[0.03em] text-text">
         How to play against {data.name}
       </h2>
-      <p className="leading-relaxed text-text-muted">
+      <p className="max-w-[80ch] leading-relaxed text-text-body">
         {counterHowToPlay(data, laneLabel, gamePatch, enemyTips)}
       </p>
 
@@ -34,10 +35,7 @@ export function CounterInsights({ data, laneLabel, gamePatch, enemyTips }: Count
         </div>
       )}
 
-      <Link
-        href={`/builds/${data.championKey}`}
-        className="mt-6 inline-block rounded-lg border border-border bg-surface px-4 py-2 text-sm text-text-muted hover:border-accent/40 hover:text-text"
-      >
+      <Link href={`/builds/${data.championKey}`} className={`mt-6 inline-block ${HUD_LINK}`}>
         {data.name} build, runes &amp; skill order →
       </Link>
     </div>

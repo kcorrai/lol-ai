@@ -17,6 +17,9 @@ import { CounterPickerControls } from "./CounterPickerControls";
 import { ToolHeader } from "../../ToolHeader";
 import { ToolEmpty } from "../../ToolEmpty";
 import { ToolCta } from "../../ToolCta";
+import { HUD_LINK } from "../../hudChip";
+import { PopularPickGrid } from "./PopularPickGrid";
+import { CounterSubject } from "@/domains/meta/components/CounterSubject";
 import { jsonLdProps } from "@/lib/security/jsonLd";
 
 interface PageProps {
@@ -111,7 +114,9 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
         <ToolEmpty
           title="Pick a champion"
           body="Choose the champion you are laning against to see who beats it, and who it beats."
-        />
+        >
+          <PopularPickGrid champions={popular} />
+        </ToolEmpty>
       )}
 
       {champion && !result && (
@@ -123,12 +128,15 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
 
       {result && (
         <>
-          <div className="mb-6 flex items-center gap-2 text-sm text-text-muted">
-            <span className="rounded-full bg-surface-2 px-3 py-1 font-semibold text-text">
-              {POSITION_LABELS[result.position]}
-            </span>
-            <span>Patch {formatGamePatch(result.patch)}</span>
-          </div>
+          <CounterSubject
+            championKey={result.championKey}
+            name={result.name}
+            laneLabel={POSITION_LABELS[result.position]}
+            gamePatch={formatGamePatch(result.patch)}
+            stats={result.stats}
+            heading="h2"
+            title={`${result.name} counters`}
+          />
 
           <CounterResults
             name={result.name}
@@ -139,17 +147,11 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
 
           <PersonalMatchupPanel championId={result.championId} championName={result.name} />
 
-          <div className="mt-8 flex flex-wrap gap-3 text-sm">
-            <Link
-              href={`/counters/${result.championKey}`}
-              className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
-            >
+          <div className="mt-8 flex flex-wrap gap-2.5">
+            <Link href={`/counters/${result.championKey}`} className={HUD_LINK}>
               View the full {result.name} counter guide →
             </Link>
-            <Link
-              href={`/builds/${result.championKey}`}
-              className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
-            >
+            <Link href={`/builds/${result.championKey}`} className={HUD_LINK}>
               {result.name} build &amp; runes →
             </Link>
           </div>
@@ -163,7 +165,7 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
         </>
       )}
 
-      <RelatedChampions title="Popular this patch" champions={popular} />
+      {champion && <RelatedChampions title="Popular this patch" champions={popular} />}
     </div>
   );
 }

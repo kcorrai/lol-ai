@@ -19,13 +19,16 @@ export function RelatedChampions({
 
   return (
     <div className="mt-12">
-      <h2 className="mb-3 font-display text-lg font-bold text-text">{title}</h2>
+      <h2 className="hud-label mb-3 flex items-center gap-3.5 text-[11px]">
+        {title}
+        <span className="h-px flex-1 bg-line-1" aria-hidden />
+      </h2>
       <div className="flex flex-wrap gap-2">
         {champions.map((c) => (
           <Link
             key={c.key}
             href={`/counters/${c.key}`}
-            className="flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-1.5 text-sm text-text-muted transition-colors hover:border-accent/40 hover:text-text"
+            className="tag-cut flex items-center gap-2 border border-border bg-surface py-1 pl-1 pr-3.5 text-sm text-text-muted transition-colors hover:border-accent/40 hover:text-text"
           >
             <ChampionIcon name={c.key} size={22} />
             <span>{c.name}</span>

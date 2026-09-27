@@ -25,7 +25,7 @@ export function DataFreshness({
 }) {
   return (
     <div
-      className={`flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-muted ${className}`}
+      className={`flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10.5px] uppercase tracking-[0.12em] text-text-muted ${className}`}
     >
       <span>Data updated {hoursAgo(fetchedAt)}h ago</span>
       <span aria-hidden>·</span>

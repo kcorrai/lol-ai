@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
-import { TIER_NOTE, formatGames, tierChipClass, winRateScale } from "./tierDisplay";
+import { TIER_NOTE, formatGames, winRateScale } from "./tierDisplay";
+import { tierChipClass } from "@/domains/meta/tierLetter";
 import { Movement, SortButton, groupByTier } from "./TierTableParts";
 import type { SortColumn, SortDirection, TierRow } from "./sortEntries";
 
