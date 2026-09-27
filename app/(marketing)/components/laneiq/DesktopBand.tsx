@@ -116,7 +116,12 @@ export function DesktopBand(): React.ReactElement {
               </p>
             </div>
 
-            <OverlayVisual compact />
+            {/* Not on phones. A drawing of an in-game overlay was 730px tall at 390px wide — the
+                longest single thing on the landing page — for an app a phone cannot install.
+                The four points below still say what it does. */}
+            <div className="hidden sm:block">
+              <OverlayVisual compact />
+            </div>
           </div>
 
           <HudStagger className="mt-8 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
