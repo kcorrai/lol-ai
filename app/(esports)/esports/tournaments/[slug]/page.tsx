@@ -26,7 +26,7 @@ import { bracketLayout } from "@/domains/esports/bracket";
 import { TournamentStateBadge } from "@/domains/esports/components/TournamentStateBadge";
 import { StandingsTable } from "@/domains/esports/components/StandingsTable";
 import { BracketView } from "@/domains/esports/components/BracketView";
-import { MatchRow } from "@/domains/esports/components/MatchRow";
+import { MatchListSection } from "@/domains/esports/components/MatchListSection";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
 import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
@@ -133,9 +133,11 @@ function Header({
 function Stage({
   stage,
   startTimes,
+  finalMatchId,
 }: {
   stage: StandingsStage;
   startTimes: Map<string, string>;
+  finalMatchId?: string;
 }): React.ReactElement {
   // The feed repeats the stage name on a single-section stage ("Knockouts /
   // Knockouts"); saying it twice reads as a mistake.
@@ -152,7 +154,10 @@ function Stage({
       {stage.kind === "table" ? (
         <StandingsTable rows={stage.rows} />
       ) : (
-        <BracketView layout={bracketLayout(stage.matches, startTimes)} />
+        <BracketView
+          layout={bracketLayout(stage.matches, startTimes)}
+          finalMatchId={finalMatchId}
+        />
       )}
     </section>
   );
@@ -186,7 +191,7 @@ export default async function TournamentPage({ params }: PageProps): Promise<Rea
   const next = upcoming.filter(inTournament).slice(0, 10);
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 md:py-14">
+    <div className="mx-auto max-w-6xl px-4 py-12 md:py-14">
       <EsportsJsonLd
         schema={{
           kind: "list",
@@ -222,47 +227,14 @@ export default async function TournamentPage({ params }: PageProps): Promise<Rea
             key={`${stage.stageName}-${stage.sectionName}-${index}`}
             stage={stage}
             startTimes={startTimes}
+            finalMatchId={champion?.matchId}
           />
         ))
       )}
 
-      {next.length > 0 && (
-        <section className="mt-12">
-          <h2 className="mb-3 font-display text-xl font-extrabold uppercase text-text md:text-2xl">
-            Upcoming
-          </h2>
-          <div className="grid gap-2">
-            {next.map((event) => (
-              <MatchRow
-                key={event.matchId}
-                event={event}
-                href={`/esports/matches/${event.matchId}`}
-                showLeague={false}
-                withDate
-              />
-            ))}
-          </div>
-        </section>
-      )}
+      <MatchListSection title="Upcoming" events={next} />
 
-      {results.length > 0 && (
-        <section className="mt-12">
-          <h2 className="mb-3 font-display text-xl font-extrabold uppercase text-text md:text-2xl">
-            Latest results
-          </h2>
-          <div className="grid gap-2">
-            {results.map((event) => (
-              <MatchRow
-                key={event.matchId}
-                event={event}
-                href={`/esports/matches/${event.matchId}`}
-                showLeague={false}
-                withDate
-              />
-            ))}
-          </div>
-        </section>
-      )}
+      <MatchListSection title="Latest results" events={results} />
 
       <p className="mt-12 text-sm text-text-muted">
         See which champions were picked across this split in the{" "}
