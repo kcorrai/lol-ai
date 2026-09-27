@@ -11,15 +11,16 @@ import {
   primaryTable,
   getUpcoming,
   getCompleted,
-  formatTournamentDates,
   isoDay,
-  relativeTiming,
   tournamentName,
-  tournamentState,
 } from "@/domains/esports";
 import type { EsportsLeague, EsportsTournament } from "@/domains/esports";
-import { MatchRow } from "@/domains/esports/components/MatchRow";
+import { MatchListSection } from "@/domains/esports/components/MatchListSection";
 import { StandingsTable } from "@/domains/esports/components/StandingsTable";
+import { BracketView } from "@/domains/esports/components/BracketView";
+import { LeagueSplitStatus } from "@/domains/esports/components/LeagueSplitStatus";
+import { SplitList } from "@/domains/esports/components/SplitList";
+import { bracketLayout } from "@/domains/esports/bracket";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
 import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
@@ -103,12 +104,24 @@ export default async function LeaguePage({ params }: PageProps): Promise<React.R
   const table = primaryTable(stages);
 
   const today = isoDay(new Date());
-  const currentState = current ? tournamentState(current, today) : null;
   // A concluded split leaves the reader asking "so when is the next one?" —
   // for Worlds and MSI that gap is most of the year.
   const nextUp = tournaments
     .filter((t) => t.startDate && t.startDate > today)
     .sort((a, b) => (a.startDate ?? "").localeCompare(b.startDate ?? ""))[0];
+
+  // The latest bracket anyone has been drawn into — the playoffs, once a split
+  // reaches them. A table alone says nothing about who is still in it.
+  const bracket = [...stages]
+    .reverse()
+    .find(
+      (stage): stage is Extract<(typeof stages)[number], { kind: "bracket" }> =>
+        stage.kind === "bracket" &&
+        stage.matches.some((match) => match.teams.some((team) => team.decided))
+    );
+  const startTimes = new Map(
+    [...upcoming, ...results].map((event) => [event.matchId, event.startTime])
+  );
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 md:py-14">
@@ -132,12 +145,15 @@ export default async function LeaguePage({ params }: PageProps): Promise<React.R
 
       <LeagueHeader league={league} tournament={current} />
 
-      {currentState === "ended" && nextUp && (
-        <p className="gaming-card notch-sm mb-8 px-4 py-3 text-sm text-text-body">
-          <span className="text-text">{tournamentName(nextUp, league)}</span>:{" "}
-          {relativeTiming(nextUp, today).toLowerCase()}. Below is how{" "}
-          {current ? tournamentName(current, league) : "the last split"} finished.
-        </p>
+      {current && (
+        <LeagueSplitStatus
+          league={league}
+          current={current}
+          stages={stages}
+          stageNow={upcoming[0]?.blockName ?? null}
+          nextUp={nextUp}
+          today={today}
+        />
       )}
 
       <section>
@@ -154,76 +170,44 @@ export default async function LeaguePage({ params }: PageProps): Promise<React.R
         ) : (
           <p className="gaming-card notch-sm px-4 py-5 text-sm text-text-muted">
             {stages.length > 0
-              ? `This split is played as a bracket rather than a table — the results below show how it ${currentState === "ended" ? "finished" : "is going"}.`
+              ? "This split is played as a bracket rather than a table — see it below."
               : "No standings published for this split yet."}
           </p>
         )}
       </section>
 
-      {upcoming.length > 0 && (
+      {bracket && current && (
         <section className="mt-12">
-          <h2 className="mb-3 font-display text-xl font-extrabold uppercase text-text md:text-2xl">
-            Upcoming
-          </h2>
-          <div className="grid gap-2">
-            {upcoming.map((event) => (
-              <MatchRow
-                key={event.matchId}
-                event={event}
-                href={`/esports/matches/${event.matchId}`}
-                showLeague={false}
-                withDate
-              />
-            ))}
+          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+            <h2 className="font-display text-xl font-extrabold uppercase text-text md:text-2xl">
+              {bracket.stageName}
+            </h2>
+            <Link
+              href={`/esports/tournaments/${current.slug}`}
+              className="font-mono text-[11px] uppercase tracking-label text-accent hover:underline"
+            >
+              Full tournament →
+            </Link>
           </div>
+          <BracketView layout={bracketLayout(bracket.matches, startTimes)} />
         </section>
       )}
 
-      {results.length > 0 && (
-        <section className="mt-12">
-          <h2 className="mb-3 font-display text-xl font-extrabold uppercase text-text md:text-2xl">
-            Latest results
-          </h2>
-          <div className="grid gap-2">
-            {results.map((event) => (
-              <MatchRow
-                key={event.matchId}
-                event={event}
-                href={`/esports/matches/${event.matchId}`}
-                showLeague={false}
-                withDate
-              />
-            ))}
-          </div>
-        </section>
-      )}
+      <MatchListSection title="Upcoming" events={upcoming} />
+
+      <MatchListSection title="Latest results" events={results} />
 
       {tournaments.length > 1 && (
         <section className="mt-12">
           <h2 className="mb-3 font-display text-xl font-extrabold uppercase text-text md:text-2xl">
             Splits
           </h2>
-          <ul className="grid gap-1.5">
-            {tournaments.slice(0, 8).map((tournament) => (
-              <li
-                key={tournament.id}
-                className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border/60 pb-1.5 text-sm last:border-0"
-              >
-                <Link
-                  href={`/esports/tournaments/${tournament.slug}`}
-                  className={`hover:text-accent ${tournament.id === current?.id ? "text-text" : "text-text-body"}`}
-                >
-                  {tournamentName(tournament, league)}
-                  {tournament.id === current?.id && (
-                    <span className="hud-label ml-2 text-accent">Current</span>
-                  )}
-                </Link>
-                <span className="font-mono text-[11px] text-text-faint">
-                  {formatTournamentDates(tournament) || "—"}
-                </span>
-              </li>
-            ))}
-          </ul>
+          <SplitList
+            league={league}
+            tournaments={tournaments}
+            currentId={current?.id ?? null}
+            today={today}
+          />
         </section>
       )}
 

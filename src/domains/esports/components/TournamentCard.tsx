@@ -15,7 +15,7 @@ import type { TournamentOverviewEntry } from "@/domains/esports/services/tournam
  * How far through a running split today is, as a bar and a count. A split's
  * length is the one thing a reader cannot see from its dates at a glance.
  */
-function Progress({ day, of }: { day: number; of: number }): React.ReactElement {
+export function TournamentProgress({ day, of }: { day: number; of: number }): React.ReactElement {
   const percent = Math.round((day / of) * 100);
   return (
     <div className="mt-3">
@@ -104,7 +104,7 @@ export function TournamentCard({
         <TournamentStateBadge state={state} detail={relativeTiming(tournament, today)} />
       </span>
 
-      {progress && <Progress day={progress.day} of={progress.of} />}
+      {progress && <TournamentProgress day={progress.day} of={progress.of} />}
       {champion && <ChampionLine champion={champion} />}
     </Link>
   );

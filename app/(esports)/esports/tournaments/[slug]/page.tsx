@@ -26,7 +26,7 @@ import { bracketLayout } from "@/domains/esports/bracket";
 import { TournamentStateBadge } from "@/domains/esports/components/TournamentStateBadge";
 import { StandingsTable } from "@/domains/esports/components/StandingsTable";
 import { BracketView } from "@/domains/esports/components/BracketView";
-import { MatchRow } from "@/domains/esports/components/MatchRow";
+import { MatchListSection } from "@/domains/esports/components/MatchListSection";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
 import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
@@ -226,43 +226,9 @@ export default async function TournamentPage({ params }: PageProps): Promise<Rea
         ))
       )}
 
-      {next.length > 0 && (
-        <section className="mt-12">
-          <h2 className="mb-3 font-display text-xl font-extrabold uppercase text-text md:text-2xl">
-            Upcoming
-          </h2>
-          <div className="grid gap-2">
-            {next.map((event) => (
-              <MatchRow
-                key={event.matchId}
-                event={event}
-                href={`/esports/matches/${event.matchId}`}
-                showLeague={false}
-                withDate
-              />
-            ))}
-          </div>
-        </section>
-      )}
+      <MatchListSection title="Upcoming" events={next} />
 
-      {results.length > 0 && (
-        <section className="mt-12">
-          <h2 className="mb-3 font-display text-xl font-extrabold uppercase text-text md:text-2xl">
-            Latest results
-          </h2>
-          <div className="grid gap-2">
-            {results.map((event) => (
-              <MatchRow
-                key={event.matchId}
-                event={event}
-                href={`/esports/matches/${event.matchId}`}
-                showLeague={false}
-                withDate
-              />
-            ))}
-          </div>
-        </section>
-      )}
+      <MatchListSection title="Latest results" events={results} />
 
       <p className="mt-12 text-sm text-text-muted">
         See which champions were picked across this split in the{" "}
