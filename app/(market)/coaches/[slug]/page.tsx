@@ -6,6 +6,7 @@ import { coachProfileJsonLd } from "@/domains/marketplace/jsonLd";
 import { regionLabel } from "@/lib/riot/regions";
 import { languageLabel } from "@/domains/marketplace/components/options";
 import { CoachReviewsSection } from "@/domains/marketplace/components/CoachReviewsSection";
+import { IntroVideo } from "@/domains/marketplace/components/IntroVideo";
 import { CoachProfileHero } from "@/domains/marketplace/components/CoachProfileHero";
 import { CoachProfileRail } from "@/domains/marketplace/components/CoachProfileRail";
 import { jsonLdProps } from "@/lib/security/jsonLd";
@@ -79,6 +80,10 @@ export default async function CoachProfilePage({ params }: Props) {
                 </div>
               )}
             </section>
+
+            {coach.introVideoUrl && (
+              <IntroVideo url={coach.introVideoUrl} coachName={coach.displayName} />
+            )}
 
             <section className="notch bg-hero-fade border border-border bg-surface p-6 md:p-7">
               <h2 className="mb-4 font-display text-[22px] font-extrabold uppercase tracking-[0.03em] text-text md:text-[26px]">

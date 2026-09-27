@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { getOwnProfile, saveOwnProfile, setAcceptingStudents } from "@/domains/marketplace";
+import {
+  getOwnProfile,
+  saveOwnProfile,
+  setAcceptingStudents,
+  youtubeVideoId,
+} from "@/domains/marketplace";
 import { withAuth } from "@/lib/api/withAuth";
 import { apiSuccess } from "@/lib/api/response";
 import { Errors } from "@/lib/api/errors";
@@ -21,6 +26,14 @@ const ProfileBody = z.object({
     .max(5),
   championIds: z.array(z.number().int().positive()).max(30).default([]),
   timezone: z.string().trim().min(1).max(64),
+  // Empty means "no video"; anything else must be a YouTube video link.
+  introVideoUrl: z
+    .string()
+    .trim()
+    .max(200)
+    .nullish()
+    .transform((v) => v || null)
+    .refine((v) => v === null || youtubeVideoId(v) !== null, "Use a YouTube video link"),
 });
 
 // GET /api/coaches/me — the caller's own coach profile, or null if they have

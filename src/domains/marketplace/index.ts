@@ -99,6 +99,7 @@ export {
   getCoachBySlug,
   getCoachProfilePage,
   storefrontTotals,
+  newCoaches,
 } from "@/domains/marketplace/services/coachSearchService";
 export type { StorefrontTotals } from "@/domains/marketplace/services/coachSearchService";
 
@@ -346,3 +347,5 @@ export type {
   Slot,
   VodReviewDelivery,
 } from "@/domains/marketplace/types";
+
+export { youtubeVideoId, youtubeEmbedUrl } from "@/domains/marketplace/youtube";
