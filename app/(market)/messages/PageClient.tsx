@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { MessagesSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,7 +14,9 @@ import { statusMeta } from "@/domains/marketplace/components/BookingRow";
 
 export default function MessagesPage(): React.ReactElement {
   const { data, isLoading } = useThreads();
-  const [open, setOpen] = useState<string | null>(null);
+  // `?thread=` opens a thread straight away — the "ask a question" button on a
+  // coach's profile lands here with the one it just created.
+  const [open, setOpen] = useState<string | null>(useSearchParams().get("thread"));
 
   const threads = data?.threads ?? [];
   const selected = open ?? threads[0]?.id ?? null;
@@ -55,8 +58,8 @@ export default function MessagesPage(): React.ReactElement {
             No conversations
           </p>
           <p className="mx-auto mt-3 max-w-[46ch] text-[14.5px] text-text-body">
-            A thread opens once you have booked a coach, or once somebody has booked you. That gate
-            is deliberate — it is what stops the section becoming a cold-message inbox.
+            Ask a coach a question from their profile, or book a session — either opens a thread
+            here. Contact details are stripped from messages, so everything stays covered.
           </p>
         </section>
       )}
@@ -105,7 +108,11 @@ export default function MessagesPage(): React.ReactElement {
                     </span>
 
                     <span className="mt-2 flex items-center gap-2">
-                      {state && <StatusChip tone={state.tone}>{state.label}</StatusChip>}
+                      {state ? (
+                        <StatusChip tone={state.tone}>{state.label}</StatusChip>
+                      ) : (
+                        <StatusChip tone="info">Question</StatusChip>
+                      )}
                       {thread.unread > 0 && (
                         <span className="grid h-[17px] w-[17px] place-items-center rounded-full bg-accent font-mono text-[9px] font-bold text-background">
                           {thread.unread}

@@ -10,8 +10,18 @@ vi.mock("@/lib/db/prisma", () => ({
   },
 }));
 
+vi.mock("@/domains/marketplace/services/questionGate", () => ({
+  hasBooking: vi.fn(),
+  mayAskAgain: vi.fn(),
+}));
+
 import { prisma } from "@/lib/db/prisma";
-import { getThread, listThreads } from "@/domains/marketplace/services/messagingService";
+import { hasBooking, mayAskAgain } from "@/domains/marketplace/services/questionGate";
+import {
+  getThread,
+  listThreads,
+  sendMessage,
+} from "@/domains/marketplace/services/messagingService";
 
 const db = prisma as unknown as {
   conversation: { findUnique: ReturnType<typeof vi.fn>; findMany: ReturnType<typeof vi.fn> };
@@ -187,5 +197,38 @@ describe("listThreads booking lookup", () => {
 
     expect(threads).toEqual([]);
     expect(db.$queryRaw).not.toHaveBeenCalled();
+  });
+});
+
+describe("sendMessage before a booking", () => {
+  const booked = vi.mocked(hasBooking);
+  const mayAsk = vi.mocked(mayAskAgain);
+
+  it("holds a student with no booking once their questions are unanswered", async () => {
+    booked.mockResolvedValue(false);
+    mayAsk.mockResolvedValue(false);
+
+    expect(await sendMessage(CONVERSATION, ME, "one more thing")).toEqual({
+      ok: false,
+      reason: "awaiting-reply",
+    });
+  });
+
+  it("never holds the coach", async () => {
+    db.conversation.findUnique.mockResolvedValue({
+      ...conversation(),
+      studentId: THEM,
+      coachProfile: { ...conversation().coachProfile, userId: ME },
+    });
+    booked.mockResolvedValue(false);
+    mayAsk.mockResolvedValue(false);
+    (prisma.$transaction as ReturnType<typeof vi.fn>).mockResolvedValue([
+      { id: "m-2", body: "sure", wasRedacted: false, createdAt: new Date(), readAt: null },
+    ]);
+
+    const result = await sendMessage(CONVERSATION, ME, "sure");
+
+    expect(result.ok).toBe(true);
+    expect(mayAsk).not.toHaveBeenCalled();
   });
 });

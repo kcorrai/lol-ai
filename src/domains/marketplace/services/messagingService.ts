@@ -1,6 +1,7 @@
 import type { BookingStatus } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { redactContacts, redactionNotice } from "@/domains/marketplace/redact";
+import { hasBooking, mayAskAgain } from "@/domains/marketplace/services/questionGate";
 
 // Coach ↔ student messages.
 //
@@ -36,8 +37,8 @@ export interface ThreadSummary {
   preview: string | null;
   /**
    * The state of the most recent booking between these two, which is what the
-   * thread is nearly always about. Null when they have never had one — which
-   * cannot happen today, because a thread needs a booking to exist.
+   * thread is nearly always about. Null when they have never had one: a
+   * question asked before booking.
    */
   bookingStatus: BookingStatus | null;
 }
@@ -49,7 +50,7 @@ export interface ThreadView extends Omit<ThreadSummary, "preview" | "bookingStat
 
 export type SendOutcome =
   | { ok: true; message: MessageView; notice: string | null }
-  | { ok: false; reason: "not-found" | "no-booking" };
+  | { ok: false; reason: "not-found" | "awaiting-reply" };
 
 /** Both sides of a conversation, and which one the caller is. Null when neither. */
 async function membership(conversationId: string, userId: string) {
@@ -211,34 +212,6 @@ export async function getThread(
   };
 }
 
-/**
- * The student's thread with a coach, created on first use.
- *
- * Only openable by a student who has booked that coach. Open messaging would
- * turn the storefront into an inbox for anyone who can type a slug, and the
- * first thing that inbox fills with is people arranging to pay each other
- * somewhere else.
- */
-export async function openThread(
-  coachProfileId: string,
-  studentId: string
-): Promise<{ ok: true; conversationId: string } | { ok: false; reason: "no-booking" }> {
-  const booking = await prisma.booking.findFirst({
-    where: { coachProfileId, studentId },
-    select: { id: true },
-  });
-  if (!booking) return { ok: false, reason: "no-booking" };
-
-  const conversation = await prisma.conversation.upsert({
-    where: { coachProfileId_studentId: { coachProfileId, studentId } },
-    create: { coachProfileId, studentId },
-    update: {},
-    select: { id: true },
-  });
-
-  return { ok: true, conversationId: conversation.id };
-}
-
 /** Send one message. The stored body is already redacted — see `redact.ts`. */
 export async function sendMessage(
   conversationId: string,
@@ -248,6 +221,16 @@ export async function sendMessage(
 ): Promise<SendOutcome> {
   const found = await membership(conversationId, userId);
   if (!found) return { ok: false, reason: "not-found" };
+
+  // A student who has not booked is asking questions, and waits for an answer
+  // after a couple — see questionGate.ts.
+  if (
+    !found.isCoach &&
+    !(await hasBooking(found.conversation.coachProfile.id, userId)) &&
+    !(await mayAskAgain(conversationId, userId))
+  ) {
+    return { ok: false, reason: "awaiting-reply" };
+  }
 
   const redaction = redactContacts(body.trim());
 

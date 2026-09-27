@@ -39,9 +39,15 @@ export function ThreadView({ conversationId }: Props): React.ReactElement {
     if (!body) return;
 
     setNotice(null);
-    const result = await send.mutateAsync(body);
-    setDraft("");
-    setNotice(result.notice);
+    try {
+      const result = await send.mutateAsync(body);
+      setDraft("");
+      setNotice(result.notice);
+    } catch (err) {
+      // Refusals (waiting on a coach's reply to a question) keep the draft, so
+      // nothing typed is lost while the reason is on screen.
+      setNotice(err instanceof Error ? err.message : "That message was not sent.");
+    }
   }
 
   if (isLoading) return <Skeleton className="h-[28rem] w-full" />;

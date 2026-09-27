@@ -7,6 +7,7 @@ import type { CoachPublicProfile } from "@/domains/marketplace/types";
 import { Button } from "@/components/ui/button";
 import { HudPanel } from "@/domains/marketplace/components/hud/HudPanel";
 import { BookingSteps } from "@/domains/marketplace/components/BookingSteps";
+import { AskCoachButton } from "@/domains/marketplace/components/AskCoachButton";
 import { NextSlotCard } from "@/domains/marketplace/components/NextSlotCard";
 
 interface Props {
@@ -63,6 +64,9 @@ export function CoachProfileRail({
             </a>
           </Button>
         )}
+        <div className="mt-2.5">
+          <AskCoachButton coachSlug={coachSlug} coachName={coach.displayName} />
+        </div>
         <p className="mt-3 text-center text-[11.5px] text-text-faint">
           Nothing is charged until they accept
         </p>

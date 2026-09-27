@@ -48,7 +48,13 @@ export function POST(
       parsed.data.body,
       parsed.data.bookingId
     );
-    if (!result.ok) throw Errors.notFound("Conversation");
+    if (!result.ok) {
+      throw result.reason === "awaiting-reply"
+        ? Errors.conflict(
+            "Give the coach a chance to answer first — or book a session to keep talking freely."
+          )
+        : Errors.notFound("Conversation");
+    }
 
     // `notice` is set when something was stripped, so the sender finds out from
     // the response rather than from the message looking odd afterwards.
