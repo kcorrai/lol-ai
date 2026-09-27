@@ -17,7 +17,7 @@ function HeroCard({ mover, numericKey, direction }: HeroCardProps) {
   return (
     <Link
       href={`/builds/${mover.championKey}`}
-      className={`group relative overflow-hidden rounded-2xl border transition-colors ${
+      className={`notch group relative overflow-hidden border transition-colors ${
         up ? "border-success/30 hover:border-success/60" : "border-danger/30 hover:border-danger/60"
       }`}
     >

@@ -3,6 +3,8 @@ import Link from "next/link";
 import { getMetaReport, formatGamePatch } from "@/domains/meta";
 import { patchNotesUrl } from "@/lib/lolPatch";
 import { Breadcrumb } from "@/components/shared/Breadcrumb";
+import { ToolHeader } from "../ToolHeader";
+import { HUD_LINK } from "../hudChip";
 import { DataFreshness } from "@/domains/meta/components/DataFreshness";
 import { MoverList } from "./MoverList";
 import { MetaHero } from "./MetaHero";
@@ -80,7 +82,7 @@ export default async function MetaReportPage() {
   ];
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-14">
+    <div className="mx-auto max-w-[1100px] px-5 py-12 md:px-8">
       {jsonLd.map((ld, i) => (
         <script key={i} type="application/ld+json" dangerouslySetInnerHTML={jsonLdProps(ld)} />
       ))}
@@ -92,17 +94,13 @@ export default async function MetaReportPage() {
         ]}
       />
 
-      <header className="mb-4">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
-          Free · No login required
-        </p>
-        <h1 className="font-display text-3xl font-black text-text md:text-4xl">
-          LoL Patch {patch} Meta Report — Winners &amp; Losers
-        </h1>
-      </header>
+      <ToolHeader
+        title={`LoL Patch ${patch} Meta Report — Winners & Losers`}
+        subtitle="The champions that climbed and fell the furthest this patch, by change in overall rank."
+      />
 
       {/* Freshness strip */}
-      <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-muted">
+      <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10.5px] uppercase tracking-[0.12em] text-text-muted">
         <DataFreshness
           fetchedAt={report.fetchedAt}
           patch={report.patch}
@@ -130,12 +128,12 @@ export default async function MetaReportPage() {
 
       {/* Kept in the HTML for search (TASK-186 added it for Google's scaled-content rules), but
           folded away — it was the first thing on the page and nobody read it. */}
-      <details className="group mt-6 rounded-2xl border border-border bg-surface/60 p-4">
-        <summary className="cursor-pointer list-none text-sm font-semibold text-text marker:hidden">
+      <details className="notch group mt-6 border border-border bg-surface p-4">
+        <summary className="cursor-pointer list-none font-mono text-[11px] uppercase tracking-label text-text marker:hidden">
           <span className="text-accent group-open:hidden">Read the full patch breakdown →</span>
           <span className="hidden text-accent group-open:inline">Hide the full breakdown ↑</span>
         </summary>
-        <p className="mt-3 leading-relaxed text-text-muted">{summary}</p>
+        <p className="mt-3 leading-relaxed text-text-body">{summary}</p>
       </details>
 
       <p className="mt-4 text-xs leading-relaxed text-text-muted/70">
@@ -147,10 +145,15 @@ export default async function MetaReportPage() {
 
       {/* FAQ */}
       <div className="mt-10">
-        <h2 className="mb-3 font-display text-lg font-bold text-text">Patch {patch} FAQ</h2>
-        <div className="space-y-3">
+        <h2 className="mb-3 font-display text-[20px] font-black uppercase tracking-[0.03em] text-text">
+          Patch {patch} FAQ
+        </h2>
+        <div className="grid gap-1.5">
           {faq.map((f) => (
-            <div key={f.question} className="rounded-xl border border-border bg-surface p-4">
+            <div
+              key={f.question}
+              className="border border-l-2 border-border border-l-accent bg-surface p-4"
+            >
               <p className="font-semibold text-text">{f.question}</p>
               <p className="mt-1 text-sm text-text-muted">{f.answer}</p>
             </div>
@@ -159,29 +162,17 @@ export default async function MetaReportPage() {
       </div>
 
       {/* Cross-links */}
-      <div className="mt-10 flex flex-wrap gap-3 text-sm">
-        <Link
-          href="/tools/tier-list"
-          className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
-        >
+      <div className="mt-10 flex flex-wrap gap-2.5">
+        <Link href="/tools/tier-list" className={HUD_LINK}>
           Full tier list →
         </Link>
-        <Link
-          href="/builds"
-          className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
-        >
+        <Link href="/builds" className={HUD_LINK}>
           Champion builds →
         </Link>
-        <Link
-          href="/esports/champions"
-          className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
-        >
+        <Link href="/esports/champions" className={HUD_LINK}>
           What the pros are picking →
         </Link>
-        <Link
-          href="/aram/tier-list"
-          className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
-        >
+        <Link href="/aram/tier-list" className={HUD_LINK}>
           ARAM tier list →
         </Link>
       </div>
