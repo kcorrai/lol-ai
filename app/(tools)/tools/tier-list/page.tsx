@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { permanentRedirect } from "next/navigation";
-import { getTierList, parsePosition, POSITION_SLUG, formatGamePatch } from "@/domains/meta";
+import { getTierList, formatGamePatch } from "@/domains/meta";
 import type { CanonicalPosition } from "@/domains/meta";
 import { getProPresence } from "@/domains/esports";
 import { Breadcrumb } from "@/components/shared/Breadcrumb";
@@ -11,17 +10,12 @@ import { PublicOnly } from "@/components/tools/PublicOnly";
 import { jsonLdProps } from "@/lib/security/jsonLd";
 
 export const revalidate = 43200; // 12h ISR
-// Per request, said out loud: this page reads search params. Left implicit, a build whose
-// generateStaticParams comes back empty (snapshot unavailable) marks the route static, and every
-// visit then fails with "static to dynamic at runtime" (ADR-059).
-export const dynamic = "force-dynamic";
+// Static: the legacy `?role=` redirect this page used to perform now happens in middleware
+// (ADR-061), so nothing here reads the request.
+export const dynamic = "force-static";
 
 // The default landing view; role-specific hubs live at /tools/tier-list/[role].
 const DEFAULT_POSITION: CanonicalPosition = "MIDDLE";
-
-interface PageProps {
-  searchParams: { role?: string };
-}
 
 export async function generateMetadata(): Promise<Metadata> {
   const list = await getTierList(DEFAULT_POSITION);
@@ -33,11 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function TierListPage({ searchParams }: PageProps) {
-  // Legacy ?role= query params are consolidated onto the path-based role hubs.
-  const requested = parsePosition(searchParams.role);
-  if (requested) permanentRedirect(`/tools/tier-list/${POSITION_SLUG[requested]}`);
-
+export default async function TierListPage() {
   // The pro read is cache-only and resolves to null on a cold sample, so it can
   // sit beside the tier list rather than behind it (TASK-310).
   const [list, proPresence] = await Promise.all([getTierList(DEFAULT_POSITION), getProPresence()]);

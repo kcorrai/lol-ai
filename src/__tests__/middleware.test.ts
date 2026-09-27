@@ -59,6 +59,8 @@ describe("middleware auth coverage", () => {
       // AUTH_PATHS would bounce a half-authenticated visitor away from the very page it sends
       // them to, and PROTECTED_PATHS would demand the session it exists to complete.
       ...constPaths("TWO_FACTOR_PATH"),
+      // Public tool pages, woken for only to rewrite their filters onto cacheable paths (ADR-061).
+      ...constPaths("TOOL_FILTER_PATHS"),
     ]);
     const stray = config.matcher.map(matcherRoot).filter((p) => !handled.has(p));
 
@@ -167,4 +169,29 @@ describe("the AI coach's front door", () => {
       expect(location).toContain(`callbackUrl=${encodeURIComponent(path)}`);
     }
   );
+});
+
+describe("tool filter rewrites", () => {
+  beforeEach(() => getToken.mockReset());
+
+  it("serves a filtered counters page from its cacheable path without reading the session", async () => {
+    const { middleware } = await import("../../middleware");
+    const res = await middleware(
+      new NextRequest(new URL("/counters/Jhin?tier=emerald_plus", "https://lolaicoach.test"))
+    );
+
+    expect(res.headers.get("x-middleware-rewrite")).toBe(
+      "https://lolaicoach.test/counters/Jhin/f/emerald_plus/any"
+    );
+    expect(getToken).not.toHaveBeenCalled();
+  });
+
+  it("answers 404 to the internal path asked for directly", async () => {
+    const { middleware } = await import("../../middleware");
+    const res = await middleware(
+      new NextRequest(new URL("/counters/Jhin/f/x/y", "https://lolaicoach.test"))
+    );
+
+    expect(res.status).toBe(404);
+  });
 });

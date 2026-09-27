@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { readdirSync, readFileSync } from "fs";
-import { join, relative } from "path";
+import { existsSync, readdirSync, readFileSync } from "fs";
+import { dirname, join, relative } from "path";
 
 /**
  * The lock on how a tool page renders (ADR-059).
@@ -14,7 +14,9 @@ import { join, relative } from "path";
  *   `generateStaticParams` comes back empty, and then every visit fails with "static to dynamic
  *   at runtime" — which is how `/counters/[champion]` answered 500 to every request in LA-126.
  *
- * So: reads search params → `force-dynamic`; otherwise → `force-static`.
+ * So: reads search params → `force-dynamic`; otherwise → `force-static`. The exception is a page
+ * with an `f/` directory beside it (ADR-061): middleware rewrites its filtered requests there, so
+ * the page itself only ever sees empty search params and is static, as are the copies under `f/`.
  */
 
 const TOOLS = join(__dirname);
@@ -29,7 +31,12 @@ function pages(dir: string, out: string[] = []): string[] {
 }
 
 const isrPages = pages(TOOLS)
-  .map((file) => ({ file: relative(TOOLS, file), source: readFileSync(file, "utf8") }))
+  .map((file) => ({
+    file: relative(TOOLS, file),
+    source: readFileSync(file, "utf8"),
+    rewritten:
+      existsSync(join(dirname(file), "f")) || relative(TOOLS, file).split(/[\\/]/).includes("f"),
+  }))
   .filter(({ source }) => /^export const revalidate\b/m.test(source));
 
 describe("tool page render mode", () => {
@@ -37,9 +44,12 @@ describe("tool page render mode", () => {
     expect(isrPages.length).toBeGreaterThan(5);
   });
 
-  it.each(isrPages.map((p) => [p.file, p.source] as const))("%s declares it", (_file, source) => {
-    const readsSearchParams = /\bsearchParams\b/.test(source);
-    const expected = readsSearchParams ? "force-dynamic" : "force-static";
-    expect(source).toMatch(new RegExp(`^export const dynamic = "${expected}";`, "m"));
-  });
+  it.each(isrPages.map((p) => [p.file, p.source, p.rewritten] as const))(
+    "%s declares it",
+    (_file, source, rewritten) => {
+      const readsSearchParams = /\bsearchParams\b/.test(source);
+      const expected = readsSearchParams && !rewritten ? "force-dynamic" : "force-static";
+      expect(source).toMatch(new RegExp(`^export const dynamic = "${expected}";`, "m"));
+    }
+  );
 });
