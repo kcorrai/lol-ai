@@ -9,6 +9,7 @@ import { isScheduled } from "@/domains/marketplace/policy";
 import type { Listing } from "@/domains/marketplace/types";
 import { useCoachSlots, useCreateBooking } from "@/hooks/useBookings";
 import { useBookingDraft } from "@/hooks/useBookingDraft";
+import { recallGoal } from "@/domains/marketplace/carriedGoal";
 import { SlotPicker } from "@/domains/marketplace/components/SlotPicker";
 import { MatchPicker } from "@/domains/marketplace/components/booking/MatchPicker";
 import { BookingSummary } from "@/domains/marketplace/components/booking/BookingSummary";
@@ -45,10 +46,13 @@ export function BookingRequest({
   const scheduled = isScheduled(listing.kind);
   const here = `/coaches/${coach.slug}/book/${listing.id}`;
 
-  const { draft, update, persist, clear } = useBookingDraft(listing.id, {
-    start: initialStart,
-    goal: initialGoal,
-  });
+  // A goal said earlier — in the match quiz or from an AI report — starts the
+  // box when neither the URL nor a saved draft has one.
+  const { draft, update, persist, clear } = useBookingDraft(
+    listing.id,
+    { start: initialStart, goal: initialGoal },
+    recallGoal
+  );
   const slots = useCoachSlots(coach.slug, scheduled ? listing.id : null);
   const create = useCreateBooking();
   const [error, setError] = useState<string | null>(null);
