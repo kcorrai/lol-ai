@@ -11,6 +11,10 @@ import { PublicOnly } from "@/components/tools/PublicOnly";
 import { jsonLdProps } from "@/lib/security/jsonLd";
 
 export const revalidate = 43200; // 12h ISR
+// Per request, said out loud: this page reads search params. Left implicit, a build whose
+// generateStaticParams comes back empty (snapshot unavailable) marks the route static, and every
+// visit then fails with "static to dynamic at runtime" (ADR-059).
+export const dynamic = "force-dynamic";
 
 // The default landing view; role-specific hubs live at /tools/tier-list/[role].
 const DEFAULT_POSITION: CanonicalPosition = "MIDDLE";
