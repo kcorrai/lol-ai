@@ -319,14 +319,20 @@ Trigger a manual match history sync.
 ```json
 {
   "data": {
-    "jobId": "uuid",
-    "status": "queued",
-    "estimatedSeconds": 15
+    "status": "pending",
+    "riotAccountId": "uuid"
   }
 }
 ```
 
-**Notes:** Debounced — max 1 sync per 5 minutes per account.
+When nothing is started, `status` is the account's current sync status (`RUNNING`, `FAILED`, …).
+
+**Notes:**
+
+- One sync at a time per account, and **at most one attempt every 2 minutes** — counted from the
+  last attempt, not the last success, so a sync that failed on a Riot rate limit is not retried
+  by every dashboard visit (`SYNC_ATTEMPT_COOLDOWN_MS`, shared with the overlay's refresh).
+- 30 requests per hour per user.
 
 ---
 

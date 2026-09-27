@@ -27,8 +27,22 @@ export const OVERLAY_SYNC_STALE_MS = 3 * 60 * 1000;
  */
 const STUCK_MS = 5 * 60 * 1000;
 
+/**
+ * The least time between two sync attempts, whatever became of the first.
+ *
+ * Freshness alone was measured from the last *successful* sync, so a sync that failed — Riot
+ * rate limiting us, most likely — left the account exactly as stale as before, and the next
+ * dashboard visit or overlay poll started another one straight away. Every visitor then retried
+ * into the limit that caused the failure. Counting from the last attempt breaks that loop.
+ */
+export const SYNC_ATTEMPT_COOLDOWN_MS = 2 * 60 * 1000;
+
 export interface SyncFreshnessResult {
   requested: boolean;
+  /** Why nothing was started; absent when a sync was requested. */
+  reason?: "missing" | "in-progress" | "recent";
+  /** The account's sync status as it was read, for a caller that reports it. */
+  status?: string;
 }
 
 export async function requestSyncIfStale(
@@ -41,15 +55,20 @@ export async function requestSyncIfStale(
     where: { id: riotAccountId },
     select: { lastSyncedAt: true, syncStatus: true, syncStartedAt: true },
   });
-  if (!account) return { requested: false };
+  if (!account) return { requested: false, reason: "missing" };
 
   const inProgress = account.syncStatus === "RUNNING" || account.syncStatus === "PENDING";
   const startedMs = account.syncStartedAt?.getTime() ?? 0;
   const isStuck = now.getTime() - startedMs > STUCK_MS;
-  if (inProgress && !isStuck) return { requested: false };
+  if (inProgress && !isStuck) {
+    return { requested: false, reason: "in-progress", status: account.syncStatus };
+  }
 
   const syncedMs = account.lastSyncedAt?.getTime() ?? 0;
-  if (now.getTime() - syncedMs < staleMs) return { requested: false };
+  const attemptedRecently = now.getTime() - startedMs < SYNC_ATTEMPT_COOLDOWN_MS;
+  if (now.getTime() - syncedMs < staleMs || attemptedRecently) {
+    return { requested: false, reason: "recent", status: account.syncStatus };
+  }
 
   await prisma.riotAccount.update({
     where: { id: riotAccountId },
