@@ -73,7 +73,10 @@ export function HubLive({
                 <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 py-5">
                   {home ? <TeamBadge team={home} /> : <span className="hud-label">TBD</span>}
                   <div className="text-center">
-                    <div className="font-mono text-[30px] font-bold tabular-nums leading-none text-text">
+                    <div
+                      className="font-mono text-[30px] font-bold tabular-nums leading-none text-text"
+                      data-spoiler=""
+                    >
                       {home?.gameWins ?? 0}
                       <span className="mx-2 text-text-faint">–</span>
                       {away?.gameWins ?? 0}

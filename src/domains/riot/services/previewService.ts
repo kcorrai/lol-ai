@@ -7,6 +7,7 @@ import {
   type PreviewSource,
 } from "@/domains/riot/services/preview/previewSource";
 import { getCached, setCached, buildCacheKey } from "@/lib/ai/aiCache";
+import { ApiError } from "@/lib/api/errors";
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import type {
   PreviewChampion,
@@ -18,6 +19,14 @@ import type {
 } from "@/types/preview";
 
 const CACHE_TTL_DAYS = 1;
+/**
+ * How long "no such player" is remembered.
+ *
+ * Without it a miss was the most expensive lookup there is: nothing to cache, so the same typo —
+ * or a script guessing names — reached Riot on every request. Short, because a name that did not
+ * exist can be taken by a rename.
+ */
+const MISSING_TTL_DAYS = 10 / (24 * 60);
 /** Top champions shown on the profile, and the mastery strip beside them. */
 const TOP_CHAMPION_COUNT = 3;
 const MASTERY_COUNT = 3;
@@ -144,10 +153,20 @@ export async function buildAccountPreview(
  * that the landing page and the Discord bot never pay to build scoreboards they do not draw —
  * the landing page is under an LCP budget (CLAUDE.md §10).
  */
+export interface PublicProfileOptions {
+  /**
+   * Runs once the caches have missed and before anything is asked of Riot; throw to stop there.
+   * The caller's per-visitor limit lives here, so a cached profile is never what a visitor is
+   * limited on — only the lookups that cost Riot budget are.
+   */
+  beforeRiot?: () => Promise<void>;
+}
+
 export async function buildPublicProfile(
   gameName: string,
   tagLine: string,
-  region: string
+  region: string,
+  options: PublicProfileOptions = {}
 ): Promise<PublicProfileResponse> {
   const cacheKey = buildCacheKey("public-profile-v1", {
     gameName,
@@ -159,7 +178,19 @@ export async function buildPublicProfile(
   const cached = await readCache<PublicProfileResponse>(cacheKey);
   if (cached) return cached;
 
-  const source = await fetchPreviewSource(gameName, tagLine, region);
+  const missingKey = buildCacheKey("public-profile-missing-v1", { gameName, tagLine, region });
+  if (await readCache<boolean>(missingKey)) {
+    throw new ApiError("RIOT_NOT_FOUND", "Resource not found on Riot API", 404);
+  }
+
+  await options.beforeRiot?.();
+
+  const source = await fetchPreviewSource(gameName, tagLine, region).catch(async (err: unknown) => {
+    if (err instanceof ApiError && err.code === "RIOT_NOT_FOUND") {
+      await writeCache(missingKey, "preview-missing", true, MISSING_TTL_DAYS);
+    }
+    throw err;
+  });
   const preview = toPreviewResponse(source, gameName);
 
   // Mastery soft-fails to [] inside the client, so this cannot be the reason a profile 500s.
@@ -194,9 +225,14 @@ async function readCache<T>(key: string): Promise<T | null> {
  * The payload is already complete by the time this runs, so a write failure must not discard it.
  * Neon being unreachable used to turn a fully served preview into a 500 (TASK-285).
  */
-async function writeCache(key: string, kind: string, value: unknown): Promise<void> {
+async function writeCache(
+  key: string,
+  kind: string,
+  value: unknown,
+  ttlDays: number = CACHE_TTL_DAYS
+): Promise<void> {
   try {
-    await setCached(key, kind, value, CACHE_TTL_DAYS);
+    await setCached(key, kind, value, ttlDays);
   } catch {
     // Cache unavailable — serve the freshly built result anyway.
   }

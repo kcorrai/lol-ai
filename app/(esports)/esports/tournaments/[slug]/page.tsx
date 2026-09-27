@@ -110,18 +110,21 @@ function Header({
         </p>
         {champion && (
           <p className="mt-3 text-sm text-text-body">
-            Won by <span className="font-bold text-text">{champion.winner.name}</span>
-            {champion.runnerUp ? (
-              <>
-                , {champion.score} over {champion.runnerUp.name} in the{" "}
-                <Link
-                  href={`/esports/matches/${champion.matchId}`}
-                  className="text-accent hover:underline"
-                >
-                  final
-                </Link>
-              </>
-            ) : null}
+            Won by{" "}
+            <span data-spoiler="">
+              <span className="font-bold text-text">{champion.winner.name}</span>
+              {champion.runnerUp ? (
+                <>
+                  , {champion.score} over {champion.runnerUp.name} in the{" "}
+                  <Link
+                    href={`/esports/matches/${champion.matchId}`}
+                    className="text-accent hover:underline"
+                  >
+                    final
+                  </Link>
+                </>
+              ) : null}
+            </span>
             .
           </p>
         )}

@@ -38,6 +38,8 @@ export function TeamBadge({
   return (
     <div
       className={`flex min-w-0 items-center gap-2 ${align === "right" ? "flex-row-reverse text-right" : ""}`}
+      // A dimmed loser is the result told another way; spoiler mode undims it.
+      data-spoiler-outcome={muted ? "" : undefined}
     >
       {logo}
       <span

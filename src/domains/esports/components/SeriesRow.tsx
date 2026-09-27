@@ -53,6 +53,7 @@ function Side({
   return (
     <span
       className={`flex min-w-0 items-center gap-2.5 ${align === "right" ? "flex-row-reverse" : ""}`}
+      data-spoiler-outcome={muted ? "" : undefined}
     >
       <TeamCrest src={team.image} code={team.code || team.name} size={24} />
       <span
@@ -105,6 +106,7 @@ export function SeriesRow({
             className={`font-mono text-[10px] font-bold uppercase tracking-label ${
               outcome === "win" ? "text-accent" : "text-danger"
             }`}
+            data-spoiler=""
           >
             {outcome === "win" ? "Win" : "Loss"}
           </span>
@@ -141,7 +143,10 @@ export function SeriesRow({
       <span className="col-span-2 grid min-w-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2.5 sm:col-span-3 sm:gap-3.5">
         <Side team={home} align="right" muted={decided && home?.outcome === "loss"} />
         {decided || live ? (
-          <span className="whitespace-nowrap text-center font-mono text-base font-bold text-text">
+          <span
+            className="whitespace-nowrap text-center font-mono text-base font-bold text-text"
+            data-spoiler=""
+          >
             {home?.gameWins ?? 0}
             <span className="mx-1 text-text-faint">–</span>
             {away?.gameWins ?? 0}
@@ -177,10 +182,19 @@ export function SeriesRow({
     COLUMNS[showLeague ? "league" : "bare"][withDate ? "dated" : "clock"],
   ].join(" ");
 
-  if (!href) return <article className={className}>{body}</article>;
+  // The rail's colour is the win or the loss said in the margin.
+  const spoiler = { "data-spoiler-scope": "", "data-spoiler-rail": outcome ? "" : undefined };
+
+  if (!href) {
+    return (
+      <article className={className} {...spoiler}>
+        {body}
+      </article>
+    );
+  }
 
   return (
-    <Link href={href} className={className}>
+    <Link href={href} className={className} {...spoiler}>
       {body}
     </Link>
   );

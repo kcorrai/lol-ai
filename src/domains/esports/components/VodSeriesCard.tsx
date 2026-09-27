@@ -94,7 +94,7 @@ export function VodSeriesCard({ series }: { series: VodSeries }): React.ReactEle
             </span>
           </span>
         ))}
-        <span className="shrink-0 font-mono text-sm font-bold text-text">
+        <span className="shrink-0 font-mono text-sm font-bold text-text" data-spoiler="">
           {home?.gameWins ?? 0}
           <span className="mx-1 text-text-faint">–</span>
           {away?.gameWins ?? 0}

@@ -3,6 +3,7 @@
 import { useLiveGame } from "@/hooks/useLiveEsports";
 import { DraftPanel } from "@/domains/esports/components/DraftPanel";
 import { LiveGoldCurve } from "@/domains/esports/components/LiveGoldCurve";
+import { SpoilerBlock } from "@/domains/esports/components/SpoilerBlock";
 import { Scoreboard } from "@/domains/esports/components/Scoreboard";
 import { formatDuration } from "@/domains/esports/duration";
 import type { GameStats, GameTimeline } from "@/domains/esports/types";
@@ -51,35 +52,37 @@ export function LiveGameStats({
         <DraftPanel blue={stats.blue} red={stats.red} blueName={blueName} redName={redName} />
       </section>
 
-      <section className="mt-12">
-        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="font-display text-xl font-extrabold uppercase text-text md:text-2xl">
-            Scoreboard
-          </h2>
-          {/* Elapsed rather than final while the game is on, so the per-minute
+      <SpoilerBlock what="the live scoreboard and gold curve">
+        <section className="mt-12">
+          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+            <h2 className="font-display text-xl font-extrabold uppercase text-text md:text-2xl">
+              Scoreboard
+            </h2>
+            {/* Elapsed rather than final while the game is on, so the per-minute
               columns beside it are read against the clock they were taken at. */}
-          {stats.durationSeconds !== null && (
-            <span className="hud-label">
-              {formatDuration(stats.durationSeconds)} {stats.finished ? "game" : "elapsed"}
-            </span>
-          )}
-        </div>
-        <Scoreboard
-          blue={stats.blue}
-          red={stats.red}
+            {stats.durationSeconds !== null && (
+              <span className="hud-label">
+                {formatDuration(stats.durationSeconds)} {stats.finished ? "game" : "elapsed"}
+              </span>
+            )}
+          </div>
+          <Scoreboard
+            blue={stats.blue}
+            red={stats.red}
+            blueName={blueName}
+            redName={redName}
+            durationSeconds={stats.durationSeconds}
+          />
+        </section>
+
+        <LiveGoldCurve
+          gameId={gameId}
+          initial={initialTimeline}
+          live={!stats.finished}
           blueName={blueName}
           redName={redName}
-          durationSeconds={stats.durationSeconds}
         />
-      </section>
-
-      <LiveGoldCurve
-        gameId={gameId}
-        initial={initialTimeline}
-        live={!stats.finished}
-        blueName={blueName}
-        redName={redName}
-      />
+      </SpoilerBlock>
     </>
   );
 }

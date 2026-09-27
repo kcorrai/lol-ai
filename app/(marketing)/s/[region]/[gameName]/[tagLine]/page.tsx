@@ -59,11 +59,7 @@ export default async function SummonerPage({ params }: Props): Promise<React.Rea
 
   if (!result.ok) {
     return (
-      <ProfileNotFound
-        riotId={`${gameName}#${tagLine}`}
-        region={region}
-        rateLimited={result.reason === "rate-limited"}
-      />
+      <ProfileNotFound riotId={`${gameName}#${tagLine}`} region={region} reason={result.reason} />
     );
   }
 

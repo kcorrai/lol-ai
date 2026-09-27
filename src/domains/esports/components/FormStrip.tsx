@@ -27,6 +27,7 @@ export function FormStrip({
     <span
       className="flex items-center gap-1"
       aria-label={`Form, oldest to most recent: ${chronological.join(", ")}`}
+      data-spoiler=""
     >
       {labelled && <span className="hud-label mr-1">Form</span>}
       {chronological.map((result, index) => (
