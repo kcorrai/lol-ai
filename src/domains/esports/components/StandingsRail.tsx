@@ -34,7 +34,7 @@ export function StandingsRail({
         {fullHref && (
           <Link
             href={fullHref}
-            className="shrink-0 font-mono text-[9.5px] uppercase tracking-label text-accent hover:underline"
+            className="shrink-0 font-mono text-[11px] uppercase tracking-label text-accent hover:underline"
           >
             Full →
           </Link>

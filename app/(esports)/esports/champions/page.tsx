@@ -131,7 +131,7 @@ export default async function ProChampionsPage({
         <section className="mt-6">
           <div className="mb-3 flex items-center gap-3">
             <span className="h-[7px] w-[7px] bg-accent" aria-hidden />
-            <h2 className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-text">
+            <h2 className="font-mono text-[11px] uppercase tracking-[0.18em] text-text">
               Most contested this window
             </h2>
             <span className="h-px flex-1 bg-line-1" aria-hidden />
@@ -165,7 +165,7 @@ export default async function ProChampionsPage({
             <ProMetaTable champions={champions} sort={sort} />
           </div>
 
-          <div className="mt-3.5 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 font-mono text-[10px] uppercase tracking-[0.12em] text-text-faint">
+          <div className="mt-3.5 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-[0.12em] text-text-faint">
             <span>{champions.length} champions shown</span>
             {/* Bans are the obvious missing column, and their absence is a fact
                 about the feed rather than an oversight — better said than left

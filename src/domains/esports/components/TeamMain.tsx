@@ -89,7 +89,7 @@ export function TeamMain({
             action={
               <Link
                 href="/esports/vods"
-                className="shrink-0 font-mono text-[10.5px] uppercase tracking-label text-accent hover:underline"
+                className="shrink-0 font-mono text-[11px] uppercase tracking-label text-accent hover:underline"
               >
                 VOD archive →
               </Link>

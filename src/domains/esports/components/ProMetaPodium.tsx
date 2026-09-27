@@ -44,11 +44,11 @@ function Card({ champion, rank }: { champion: ProChampionStat; rank: number }): 
 
       <span className="relative flex h-full min-h-[196px] flex-col justify-between gap-5 p-4">
         <span className="flex items-start justify-between gap-2.5">
-          <span className="font-mono text-[9.5px] uppercase tracking-label text-text-muted">
+          <span className="font-mono text-[11px] uppercase tracking-label text-text-muted">
             #{rank}
             {champion.topRole ? ` · ${ROLE_SHORT[champion.topRole]}` : ""}
           </span>
-          <span className="tag-cut border border-accent bg-[var(--surface-accent)] px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-label text-accent">
+          <span className="tag-cut border border-accent bg-[var(--surface-accent)] px-1.5 py-0.5 font-mono text-[11px] font-bold uppercase tracking-label text-accent">
             {champion.pickRate.toFixed(0)}% pick
           </span>
         </span>
@@ -66,7 +66,7 @@ function Card({ champion, rank }: { champion: ProChampionStat; rank: number }): 
             >
               {champion.winRate === null ? "—" : `${champion.winRate.toFixed(0)}%`}
             </span>
-            <span className="font-mono text-[10px] uppercase tracking-label text-text-muted">
+            <span className="font-mono text-[11px] uppercase tracking-label text-text-muted">
               win · {champion.wins}–{losses}
             </span>
           </span>

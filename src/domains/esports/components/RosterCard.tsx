@@ -46,12 +46,12 @@ export function RosterCard({
             {player.handle}
           </span>
           {lane && (
-            <span className="tag-cut shrink-0 bg-surface-2 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-label text-accent">
+            <span className="tag-cut shrink-0 bg-surface-2 px-1.5 py-0.5 font-mono text-[11px] uppercase tracking-label text-accent">
               {lane}
             </span>
           )}
         </p>
-        <p className="mt-0.5 truncate font-mono text-[9.5px] tracking-[0.12em] text-text-faint">
+        <p className="mt-0.5 truncate font-mono text-[11px] tracking-[0.12em] text-text-faint">
           {player.fullName ?? (lane ? "Name unpublished" : "Substitute / staff")}
         </p>
       </div>

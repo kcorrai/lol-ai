@@ -29,7 +29,7 @@ function Side({
         <span className="block truncate font-display text-2xl font-extrabold uppercase tracking-[0.05em] text-text">
           {side?.code || side?.name || "TBD"}
         </span>
-        <span className="mt-0.5 block truncate font-mono text-[10px] uppercase tracking-label text-text-faint">
+        <span className="mt-0.5 block truncate font-mono text-[11px] uppercase tracking-label text-text-faint">
           {side?.name ?? "To be decided"}
           {side?.record ? ` · ${side.record.wins}W ${side.record.losses}L` : ""}
         </span>
@@ -61,13 +61,13 @@ export function NextMatchCard({
   return (
     <section className="notch glow-accent-soft bg-hero-fade border border-accent bg-surface">
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5 border-b border-line-1 px-5 py-3">
-        <h2 className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-accent">
+        <h2 className="font-mono text-[11px] uppercase tracking-[0.18em] text-accent">
           {"// Next match"}
         </h2>
         <MatchTime
           startTime={event.startTime}
           withDate
-          className="text-right font-mono text-[10.5px] uppercase tracking-label text-text-muted"
+          className="text-right font-mono text-[11px] uppercase tracking-label text-text-muted"
         />
       </div>
 
@@ -85,7 +85,7 @@ export function NextMatchCard({
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-line-1 px-5 py-3">
-        <span className="font-mono text-[10.5px] tracking-[0.1em] text-text-muted">
+        <span className="font-mono text-[11px] tracking-[0.1em] text-text-muted">
           {record && headToHead && headToHead.meetings.length > 0 ? (
             <>
               Recent meetings ·{" "}
@@ -99,7 +99,7 @@ export function NextMatchCard({
         </span>
         <Link
           href={`/esports/matches/${event.matchId}`}
-          className="shrink-0 font-mono text-[10.5px] uppercase tracking-label text-accent hover:underline"
+          className="shrink-0 font-mono text-[11px] uppercase tracking-label text-accent hover:underline"
         >
           Match page →
         </Link>

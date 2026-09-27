@@ -13,7 +13,7 @@ interface HubRailProps {
 
 const PANEL = "notch border border-border bg-surface";
 const PANEL_HEAD =
-  "border-b border-line-1 px-4 py-3 font-mono text-[10.5px] uppercase tracking-label text-text-muted";
+  "border-b border-line-1 px-4 py-3 font-mono text-[11px] uppercase tracking-label text-text-muted";
 
 const STANDINGS_SHOWN = 6;
 const PICKS_SHOWN = 5;
@@ -65,7 +65,7 @@ export function HubRail({ standings, proMeta }: HubRailProps): React.ReactElemen
           <div className="px-4 py-2.5">
             <Link
               href={`/esports/leagues/${standings.leagueSlug}`}
-              className="font-mono text-[10px] uppercase tracking-label text-accent hover:underline"
+              className="font-mono text-[11px] uppercase tracking-label text-accent hover:underline"
             >
               Full table →
             </Link>
@@ -86,7 +86,7 @@ export function HubRail({ standings, proMeta }: HubRailProps): React.ReactElemen
               <ChampionIcon name={champion.championId} size={28} />
               <span className="min-w-0">
                 <span className="block truncate text-[13px] text-text">{champion.championId}</span>
-                <span className="block font-mono text-[9.5px] uppercase tracking-label text-text-faint">
+                <span className="block font-mono text-[11px] uppercase tracking-label text-text-faint">
                   {champion.topRole ? `${roleLabel(champion.topRole)} · ` : ""}
                   {champion.picks} games
                 </span>
@@ -97,12 +97,12 @@ export function HubRail({ standings, proMeta }: HubRailProps): React.ReactElemen
             </div>
           ))}
           <div className="flex items-center justify-between gap-3 px-4 py-2.5">
-            <span className="font-mono text-[10px] uppercase tracking-label text-text-faint">
+            <span className="font-mono text-[11px] uppercase tracking-label text-text-faint">
               Pick rate over {proMeta.games} games
             </span>
             <Link
               href="/esports/champions"
-              className="shrink-0 font-mono text-[10px] uppercase tracking-label text-accent hover:underline"
+              className="shrink-0 font-mono text-[11px] uppercase tracking-label text-accent hover:underline"
             >
               All →
             </Link>

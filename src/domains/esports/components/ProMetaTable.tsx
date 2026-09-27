@@ -115,7 +115,7 @@ export function ProMetaTable({
                     </Link>
                   </span>
                 </td>
-                <td className="px-3 py-2 font-mono text-[10px] uppercase tracking-label text-text-muted">
+                <td className="px-3 py-2 font-mono text-[11px] uppercase tracking-label text-text-muted">
                   <RoleSplit champion={champion} />
                 </td>
                 <td className="px-3 py-2 text-right font-mono text-text">{champion.picks}</td>
