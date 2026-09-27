@@ -58,7 +58,7 @@ export function CoachCardTile({ coach, featured }: Props): React.ReactElement {
               Top rated
             </span>
           )}
-          <span className="line-clamp-2 block font-display text-[15.5px] font-extrabold uppercase leading-tight tracking-[0.03em] text-text">
+          <span className="line-clamp-2 block break-words font-display text-[14px] font-extrabold uppercase leading-tight tracking-[0.03em] text-text sm:text-[15.5px]">
             {coach.displayName}
           </span>
           <RankLine coach={coach} />

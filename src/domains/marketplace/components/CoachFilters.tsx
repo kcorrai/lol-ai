@@ -123,7 +123,7 @@ export function CoachFilters({ filtered, total }: Props): React.ReactElement {
         />
       </div>
 
-      <div className="grid gap-2.5 p-3 sm:grid-cols-2 md:p-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2.5 p-3 md:p-4 lg:grid-cols-4">
         {SELECTS.map((select) => (
           <FilterSelect
             key={select.param}

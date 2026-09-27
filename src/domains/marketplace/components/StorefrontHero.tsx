@@ -109,8 +109,10 @@ function Readout({
   bordered?: boolean;
 }): React.ReactElement {
   return (
-    <div className={bordered ? "border-l border-line-1 px-4 py-3.5" : "px-4 py-3.5"}>
-      <dt className="truncate font-mono text-[9.5px] uppercase tracking-[0.16em] text-text-muted">
+    <div
+      className={bordered ? "border-l border-line-1 px-3 py-3.5 sm:px-4" : "px-3 py-3.5 sm:px-4"}
+    >
+      <dt className="font-mono text-[9px] uppercase leading-tight tracking-[0.16em] text-text-muted sm:text-[9.5px]">
         {label}
       </dt>
       <dd
