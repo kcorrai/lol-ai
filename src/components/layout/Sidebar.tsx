@@ -98,7 +98,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         </div>
         {!collapsed && (
           <span className="font-display text-base font-bold tracking-wide text-text">
-            LoL AI Coach
+            LaneIQ
           </span>
         )}
       </div>

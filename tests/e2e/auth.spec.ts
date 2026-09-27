@@ -9,7 +9,7 @@ test.describe("Authentication", () => {
     const uniqueEmail = `reg-${Date.now()}@e2e-reg.test`;
 
     await page.goto("/register");
-    await expect(page).toHaveTitle("Create Account | LoL AI Coach");
+    await expect(page).toHaveTitle("Create Account | LaneIQ");
 
     await page.fill("#name", "New Player");
     await page.fill("#email", uniqueEmail);
@@ -41,7 +41,7 @@ test.describe("Authentication", () => {
 
   test("Login — valid credentials redirect to dashboard", async ({ page }) => {
     await page.goto("/login");
-    await expect(page).toHaveTitle("Log in | LoL AI Coach");
+    await expect(page).toHaveTitle("Log in | LaneIQ");
 
     await page.fill("#email", E2E_USER.email);
     await page.fill("#password", E2E_USER.password);

@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     "Paste your Riot ID and get a free read of your last 10 games, no account. The full AI coach opens your matches with their timelines, grades them against your own rank, and returns a session review, a champion focus or a climb roadmap.",
   alternates: { canonical: "/coaching" },
   openGraph: {
-    title: "LoL AI Coach — your games read, one habit named",
+    title: "LaneIQ AI Coach — your games read, one habit named",
     description:
       "Not a tier list. It opens your own matches, grades them against the rank you are in, and names the thing you keep doing.",
     type: "website",

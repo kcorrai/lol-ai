@@ -93,7 +93,7 @@ export function buildMonthlyMilestoneEmail(data: MonthlyMilestoneData): {
 
         <!-- Header -->
         <tr><td style="background:#C6FF3D15;border-bottom:1px solid #20302D;padding:20px 24px">
-          <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#C6FF3D">LoL AI Coach</p>
+          <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#C6FF3D">LaneIQ</p>
           <p style="margin:4px 0 0;font-size:20px;font-weight:700;color:#E9F5EE">${safeMonth} Recap — ${safeName}</p>
         </td></tr>
 
@@ -144,7 +144,7 @@ export function buildMonthlyMilestoneEmail(data: MonthlyMilestoneData): {
         <!-- Footer -->
         <tr><td style="border-top:1px solid #20302D;padding:16px 24px;text-align:center">
           <p style="margin:0;font-size:10px;color:#6C817B">
-            LoL AI Coach isn't endorsed by Riot Games ·
+            LaneIQ isn't endorsed by Riot Games ·
             <a href="${safeAppUrl}/privacy" style="color:#6C817B">Privacy</a> ·
             <a href="${safeAppUrl}/settings/profile" style="color:#6C817B">Unsubscribe</a>
           </p>

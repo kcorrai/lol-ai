@@ -20,7 +20,7 @@ export function TopBar() {
       {/* Logo — only visible on mobile since sidebar shows it on desktop */}
       <Link href="/dashboard" className="flex min-w-0 items-center gap-2 md:hidden">
         <Zap className="h-5 w-5 shrink-0 text-accent" />
-        <span className="truncate font-display text-base font-bold text-text">LoL AI Coach</span>
+        <span className="truncate font-display text-base font-bold text-text">LaneIQ</span>
       </Link>
 
       {/* Only from lg: at 390px the bar is already 12px over budget without it (TASK-295). */}

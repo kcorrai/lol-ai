@@ -18,7 +18,7 @@ interface PageProps {
 export function generateMetadata({ searchParams }: PageProps): Metadata {
   const a = searchParams.a?.trim();
   const b = searchParams.b?.trim();
-  // The root layout template appends " | LoL AI Coach"; repeating it here put the name in
+  // The root layout template appends " | LaneIQ"; repeating it here put the name in
   // the tab twice.
   const title =
     a && b

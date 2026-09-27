@@ -8,7 +8,7 @@ import { AcademyRail } from "@/domains/academy/components/AcademyRail";
 
 export const metadata: Metadata = {
   title: {
-    default: "LoL Academy | LoL AI Coach",
+    default: "LoL Academy | LaneIQ",
     template: "%s | LoL Academy",
   },
 };

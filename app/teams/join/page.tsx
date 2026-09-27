@@ -39,7 +39,7 @@ function TeamJoinContent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-sm rounded-xl border border-border bg-surface p-8 text-center">
-        <p className="mb-2 text-2xl font-bold text-accent">⚡ LoL AI Coach</p>
+        <p className="mb-2 text-2xl font-bold text-accent">⚡ LaneIQ</p>
 
         {state === "no-token" && (
           <>

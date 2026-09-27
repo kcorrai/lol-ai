@@ -86,7 +86,7 @@ export async function MarketingFooter(): Promise<React.ReactElement> {
       <div className="mx-auto max-w-[1240px]">
         <div className="grid grid-cols-2 gap-7 md:grid-cols-3 lg:grid-cols-[1.2fr_repeat(5,1fr)]">
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
-            <Wordmark size={16} />
+            <Wordmark size={20} />
           </div>
           <LinkColumn title="Product" links={product} />
           <LinkColumn title="Tier lists" links={tierLists} />

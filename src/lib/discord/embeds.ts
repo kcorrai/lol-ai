@@ -96,7 +96,7 @@ export function weeklyRecapEmbed(params: {
 export function testEmbed(): DiscordEmbed {
   return {
     title: "✅ Test Notification",
-    description: "Your LoL AI Coach Discord integration is set up successfully!",
+    description: "Your LaneIQ Discord integration is set up successfully!",
     color: 0x6366f1,
     footer: FOOTER,
   };
