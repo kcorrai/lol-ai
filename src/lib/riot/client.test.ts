@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { RiotHttpClient } from "./client";
 import type { CacheStore } from "./cache";
-import type { TokenBucket } from "./rateLimit";
+import { RiotRateLimiter } from "./rateLimit";
+import { MemoryWindowStore } from "./rateLimitStores";
 
 function makeCache(): CacheStore & { store: Map<string, unknown> } {
   const store = new Map<string, unknown>();
@@ -22,7 +23,7 @@ function makeCache(): CacheStore & { store: Map<string, unknown> } {
   };
 }
 
-const limiter = { consume: async () => {} } as unknown as TokenBucket;
+const limiter = new RiotRateLimiter({ store: new MemoryWindowStore() });
 
 function mockFetch(payload: unknown) {
   return vi.fn(async () => ({
@@ -117,5 +118,58 @@ describe("RiotHttpClient timeouts", () => {
 
     expect(out).toEqual({ ok: 1 });
     expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("RiotHttpClient rate limiting", () => {
+  beforeEach(() => vi.restoreAllMocks());
+
+  function response(status: number, headers: Record<string, string>) {
+    return {
+      ok: status < 400,
+      status,
+      json: async () => ({}),
+      headers: { get: (name: string) => headers[name] ?? null },
+    };
+  }
+
+  it("asks the limiter for room in the request's region before every attempt", async () => {
+    const acquire = vi.fn(async () => {});
+    const gate = { acquire, learn: vi.fn(), pause: vi.fn() } as unknown as RiotRateLimiter;
+    global.fetch = vi.fn(async () => response(200, {})) as unknown as typeof fetch;
+
+    await new RiotHttpClient("key", makeCache(), gate).get("https://euw1.api.riotgames.com/x");
+
+    expect(acquire).toHaveBeenCalledWith("euw1.api.riotgames.com");
+  });
+
+  it("learns the key's real limits from the response", async () => {
+    const learn = vi.fn();
+    const gate = { acquire: vi.fn(), learn, pause: vi.fn() } as unknown as RiotRateLimiter;
+    global.fetch = vi.fn(async () =>
+      response(200, { "X-App-Rate-Limit": "500:10,30000:600" })
+    ) as unknown as typeof fetch;
+
+    await new RiotHttpClient("key", makeCache(), gate).get("https://europe.api.riotgames.com/x");
+
+    expect(learn).toHaveBeenCalledWith("europe.api.riotgames.com", "500:10,30000:600");
+  });
+
+  it("pauses the whole region on an application 429, and not on a method 429", async () => {
+    const pause = vi.fn(async () => {});
+    const gate = { acquire: vi.fn(), learn: vi.fn(), pause } as unknown as RiotRateLimiter;
+    const client = new RiotHttpClient("key", makeCache(), gate);
+
+    global.fetch = vi.fn(async () =>
+      response(429, { "Retry-After": "30", "X-Rate-Limit-Type": "method" })
+    ) as unknown as typeof fetch;
+    await expect(client.get("https://euw1.api.riotgames.com/x")).rejects.toThrow();
+    expect(pause).not.toHaveBeenCalled();
+
+    global.fetch = vi.fn(async () =>
+      response(429, { "Retry-After": "30", "X-Rate-Limit-Type": "application" })
+    ) as unknown as typeof fetch;
+    await expect(client.get("https://euw1.api.riotgames.com/x")).rejects.toThrow();
+    expect(pause).toHaveBeenCalledWith("euw1.api.riotgames.com", 30_000);
   });
 });

@@ -1,5 +1,6 @@
 import { riotCache, type CacheStore } from "@/lib/riot/cache";
-import { riotRateLimiter, type TokenBucket } from "@/lib/riot/rateLimit";
+import { getRiotRateLimiter, type RiotRateLimiter } from "@/lib/riot/rateLimit";
+import { rateLimitScope } from "@/lib/riot/rateLimitPolicy";
 import { withRetry } from "@/lib/riot/retry";
 import { normalizeRiotError } from "@/lib/riot/errors";
 import { isRiotMocked, riotFixtureFor } from "@/lib/riot/e2eFixtures";
@@ -25,12 +26,13 @@ const REQUEST_TIMEOUT_MS = 10_000;
 export class RiotHttpClient {
   private readonly apiKey: string;
   private readonly cache: CacheStore;
-  private readonly limiter: TokenBucket;
+  private readonly limiter: RiotRateLimiter | null;
 
   constructor(
     apiKey: string = process.env.RIOT_API_KEY ?? "",
     cache: CacheStore = riotCache,
-    limiter: TokenBucket = riotRateLimiter
+    // Resolved on first use rather than here, so importing the client never reaches for Redis.
+    limiter: RiotRateLimiter | null = null
   ) {
     this.apiKey = apiKey;
     this.cache = cache;
@@ -50,11 +52,9 @@ export class RiotHttpClient {
       }
     }
 
-    if (!skipRateLimit) {
-      await this.limiter.consume();
-    }
-
-    const result = await withRetry(() => this.fetch<T>(url), {
+    // Inside the retry, so a retry is counted like any other request — a retried 429 that skipped
+    // the gate was exactly the burst that earns a blacklist.
+    const result = await withRetry(() => this.limitedFetch<T>(url, skipRateLimit), {
       maxAttempts: 3,
       baseDelayMs: 1000,
       maxDelayMs: 10_000,
@@ -68,7 +68,16 @@ export class RiotHttpClient {
     return result;
   }
 
-  private async fetch<T>(url: string): Promise<T> {
+  private async limitedFetch<T>(url: string, skipRateLimit: boolean): Promise<T> {
+    if (skipRateLimit || isRiotMocked()) return this.fetch<T>(url);
+
+    const limiter = this.limiter ?? (await getRiotRateLimiter());
+    const scope = rateLimitScope(url);
+    await limiter.acquire(scope);
+    return this.fetch<T>(url, limiter, scope);
+  }
+
+  private async fetch<T>(url: string, limiter?: RiotRateLimiter, scope?: string): Promise<T> {
     logger.debug(`[RiotClient] GET ${url}`);
 
     // The one gate. Every Riot request in the app leaves from here, so a mocked run cannot reach
@@ -98,9 +107,17 @@ export class RiotHttpClient {
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
 
+    if (limiter && scope) limiter.learn(scope, response.headers.get("X-App-Rate-Limit"));
+
     if (!response.ok) {
       const retryAfter = response.headers.get("Retry-After");
       const retryAfterSeconds = retryAfter ? Number(retryAfter) : undefined;
+      // Only an application-wide 429 stops everyone. A method 429 is one endpoint's budget, and a
+      // service 429 is Riot's own capacity — neither is a reason to stop calling other endpoints.
+      const limitType = response.headers.get("X-Rate-Limit-Type");
+      if (response.status === 429 && limitType === "application" && limiter && scope) {
+        await limiter.pause(scope, (retryAfterSeconds ?? 1) * 1000);
+      }
       throw normalizeRiotError(response.status, retryAfterSeconds);
     }
 

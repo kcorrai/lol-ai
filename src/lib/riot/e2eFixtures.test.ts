@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { e2eMockPuuid, isRiotMocked, riotFixtureFor, UnmockedRiotEndpoint } from "./e2eFixtures";
 import { RiotHttpClient } from "./client";
 import type { CacheStore } from "./cache";
-import type { TokenBucket } from "./rateLimit";
+import type { RiotRateLimiter } from "./rateLimit";
 
 const EUROPE = "https://europe.api.riotgames.com";
 const EUW = "https://euw1.api.riotgames.com";
@@ -118,8 +118,12 @@ function emptyCache(): CacheStore {
   };
 }
 
-function noLimiter(): TokenBucket {
-  return { consume: async () => {} } as unknown as TokenBucket;
+function noLimiter(): RiotRateLimiter {
+  return {
+    acquire: async () => {},
+    learn: () => {},
+    pause: async () => {},
+  } as unknown as RiotRateLimiter;
 }
 
 describe("the client gate", () => {

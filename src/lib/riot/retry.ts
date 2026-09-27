@@ -71,6 +71,11 @@ export async function withRetry<T>(
       // Last attempt — no more retries
       if (attempt === maxAttempts) break;
 
+      // Told to wait longer than we would ever back off: waiting it out holds a request open for
+      // up to two minutes on a personal key's long window. Hand the 429 up instead; the pages say
+      // "Riot is busy" and background jobs are retried later by Inngest.
+      if (retryAfterMs !== undefined && retryAfterMs > maxDelayMs) throw err;
+
       // Wait time: Retry-After header takes priority; else exponential backoff.
       //
       // Both branches are jittered. Riot hands the same Retry-After to every caller it rate
