@@ -24,6 +24,8 @@ export function ReportCoachCard({
   isPro: boolean;
 }): React.ReactElement {
   const { data: ranked } = useRankedData(report.riotAccountId);
+  // Unranked, or rank not loaded yet: no floor, and the card does not claim one.
+  const tier = ranked?.rank?.tier ?? null;
   const top = isPro
     ? [...(report.weaknesses ?? [])].sort((a, b) => PRIORITY[a.priority] - PRIORITY[b.priority])[0]
     : undefined;
@@ -45,13 +47,15 @@ export function ReportCoachCard({
           : "A human coach can work through this with you, in your own games."}
       </p>
       <Link
-        href={coachesForReport(ranked?.rank?.tier ?? null, goal)}
+        href={coachesForReport(tier, goal)}
         className="notch-sm mt-3 flex h-9 items-center justify-center border border-accent/50 bg-accent/10 font-mono text-[11px] uppercase tracking-label text-accent transition-colors hover:bg-accent/20"
       >
         Find a coach
       </Link>
       <p className="mt-2 text-[11px] text-text-faint">
-        Coaches ranked above you, checked from their Riot accounts.
+        {tier
+          ? "Coaches ranked above you, checked from their Riot accounts."
+          : "Every coach's rank is checked from their own Riot account."}
       </p>
     </section>
   );
