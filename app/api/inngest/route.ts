@@ -1,5 +1,6 @@
 import { serve } from "inngest/next";
 import { inngest } from "@/inngest/client";
+import { runAsBackground } from "@/lib/riot/priority";
 import { runCoachingJob } from "@/inngest/functions/runCoachingJob";
 import { matchSyncWorker } from "@/inngest/functions/matchSync";
 import { autoSessionReview } from "@/inngest/functions/autoSessionReview";
@@ -38,7 +39,7 @@ import { academyAssignmentChecker } from "@/inngest/functions/academyAssignmentC
 import { academyDecayChecker } from "@/inngest/functions/academyDecayChecker";
 import { discordInteractionWorker } from "@/inngest/functions/discordInteraction";
 
-export const { GET, POST, PUT } = serve({
+const handlers = serve({
   client: inngest,
   functions: [
     runCoachingJob,
@@ -77,3 +78,14 @@ export const { GET, POST, PUT } = serve({
     discordInteractionWorker,
   ],
 });
+
+// Everything Inngest runs is background work: it counts against at most half of the Riot budget,
+// so a sweep or a queue of syncs can never leave a visitor's profile lookup without room (ADR-062).
+type Handler = (typeof handlers)["POST"];
+function background(handler: Handler): Handler {
+  return ((...args: Parameters<Handler>) => runAsBackground(() => handler(...args))) as Handler;
+}
+
+export const GET = background(handlers.GET);
+export const POST = background(handlers.POST);
+export const PUT = background(handlers.PUT);

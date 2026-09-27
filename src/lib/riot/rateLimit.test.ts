@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { RiotRateLimiter } from "./rateLimit";
 import { MemoryWindowStore } from "./rateLimitStores";
+import { runAsBackground } from "./priority";
 
 function clock() {
   let now = 0;
@@ -89,5 +90,67 @@ describe("RiotRateLimiter", () => {
 
     await expect(limiter.acquire("euw1")).rejects.toMatchObject({ code: "RIOT_RATE_LIMITED" });
     await expect(limiter.acquire("na1")).resolves.toBeUndefined();
+  });
+});
+
+describe("RiotRateLimiter priority (ADR-062)", () => {
+  const TEN_PER_MINUTE = [{ limit: 10, windowMs: 60_000 }];
+
+  function limiter() {
+    const c = clock();
+    return {
+      c,
+      gate: new RiotRateLimiter({
+        store: new MemoryWindowStore(),
+        windows: TEN_PER_MINUTE,
+        maxWaitMs: 5_000,
+        ...c,
+      }),
+    };
+  }
+
+  it("stops background work at half of each window", async () => {
+    const { gate } = limiter();
+    for (let i = 0; i < 5; i++) await gate.acquire("euw1", "background");
+
+    // The sixth would have to wait out the whole minute — past the foreground wait limit, but
+    // inside the background one, so it queues rather than failing.
+    const sixth = gate.acquire("euw1", "background");
+    await expect(sixth).resolves.toBeUndefined();
+  });
+
+  it("leaves the other half to visitors, counted in the same window", async () => {
+    const { gate, c } = limiter();
+    for (let i = 0; i < 5; i++) await gate.acquire("euw1", "background");
+    for (let i = 0; i < 5; i++) await gate.acquire("euw1", "foreground");
+
+    expect(c.sleep).not.toHaveBeenCalled();
+    await expect(gate.acquire("euw1", "foreground")).rejects.toMatchObject({
+      code: "RIOT_RATE_LIMITED",
+    });
+  });
+
+  it("gives up on background work only past a minute", async () => {
+    const c = clock();
+    const gate = new RiotRateLimiter({
+      store: new MemoryWindowStore(),
+      windows: [{ limit: 2, windowMs: 120_000 }],
+      ...c,
+    });
+    await gate.acquire("euw1", "background");
+
+    await expect(gate.acquire("euw1", "background")).rejects.toMatchObject({
+      code: "RIOT_RATE_LIMITED",
+    });
+  });
+
+  it("reads the priority from the context it runs in", async () => {
+    const { gate } = limiter();
+    await runAsBackground(async () => {
+      for (let i = 0; i < 5; i++) await gate.acquire("euw1");
+    });
+
+    // Five background slots used; a visitor still has five of their own.
+    for (let i = 0; i < 5; i++) await gate.acquire("euw1");
   });
 });

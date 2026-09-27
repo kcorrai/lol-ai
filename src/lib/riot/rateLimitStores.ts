@@ -94,7 +94,9 @@ export class UpstashWindowStore implements WindowStore {
     const key = `${w.limit}:${w.windowMs}`;
     let limiter = this.limiters.get(key);
     if (!limiter) {
-      limiter = this.makeLimiter(w, `${PREFIX}:${key}`);
+      // The Redis key names the window, not the limit: background work checks the same count
+      // against a lower ceiling (ADR-062), and a key per limit would give it a budget of its own.
+      limiter = this.makeLimiter(w, `${PREFIX}:${w.windowMs}`);
       this.limiters.set(key, limiter);
     }
     return limiter;
