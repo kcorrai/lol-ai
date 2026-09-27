@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import type { BracketLayout } from "@/domains/esports/bracket";
+import { BracketScroller } from "@/domains/esports/components/BracketScroller";
+import { roundLabel, type BracketLayout } from "@/domains/esports/bracket";
 import type { BracketMatch, BracketTeam } from "@/domains/esports/types";
 
 function Side({ team, decided }: { team: BracketTeam; decided: boolean }): React.ReactElement {
@@ -74,7 +75,14 @@ function Fixture({ match }: { match: BracketMatch }): React.ReactElement {
  * in a single column rather than drawn as a bracket that would imply an order
  * nobody has decided.
  */
-export function BracketView({ layout }: { layout: BracketLayout }): React.ReactElement | null {
+export function BracketView({
+  layout,
+  finalMatchId,
+}: {
+  layout: BracketLayout;
+  /** The match that decided the title, once the tournament is over. */
+  finalMatchId?: string;
+}): React.ReactElement | null {
   if (layout.rounds.length === 0) return null;
 
   if (!layout.derived) {
@@ -88,11 +96,11 @@ export function BracketView({ layout }: { layout: BracketLayout }): React.ReactE
   }
 
   return (
-    <div className="overflow-x-auto pb-2">
-      <div className="flex min-w-max gap-4">
+    <BracketScroller>
+      <div className="flex min-w-max gap-3">
         {layout.rounds.map((round) => (
-          <div key={round.number} className="flex w-56 shrink-0 flex-col gap-2">
-            <p className="hud-label">{round.name ?? `Round ${round.number}`}</p>
+          <div key={round.number} className="flex w-52 shrink-0 flex-col gap-2">
+            <p className="hud-label">{roundLabel(round, finalMatchId)}</p>
             {/* Centred against the previous column so the columns read as a
                 progression even without connector lines — which cannot be drawn
                 honestly, since the feed never says which match feeds which. */}
@@ -104,6 +112,6 @@ export function BracketView({ layout }: { layout: BracketLayout }): React.ReactE
           </div>
         ))}
       </div>
-    </div>
+    </BracketScroller>
   );
 }

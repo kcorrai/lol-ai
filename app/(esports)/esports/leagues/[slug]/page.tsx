@@ -12,7 +12,9 @@ import {
   getUpcoming,
   getCompleted,
   isoDay,
+  tournamentChampion,
   tournamentName,
+  tournamentState,
 } from "@/domains/esports";
 import type { EsportsLeague, EsportsTournament } from "@/domains/esports";
 import { MatchListSection } from "@/domains/esports/components/MatchListSection";
@@ -189,7 +191,14 @@ export default async function LeaguePage({ params }: PageProps): Promise<React.R
               Full tournament →
             </Link>
           </div>
-          <BracketView layout={bracketLayout(bracket.matches, startTimes)} />
+          <BracketView
+            layout={bracketLayout(bracket.matches, startTimes)}
+            finalMatchId={
+              tournamentState(current, today) === "ended"
+                ? tournamentChampion(stages)?.matchId
+                : undefined
+            }
+          />
         </section>
       )}
 

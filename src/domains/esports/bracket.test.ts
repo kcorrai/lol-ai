@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { bracketLayout, bracketWinner } from "./bracket";
+import { bracketLayout, bracketWinner, roundLabel } from "./bracket";
 import type { BracketMatch, BracketTeam } from "./types";
 
 function team(code: string, outcome: "win" | "loss" | null = null): BracketTeam {
@@ -142,5 +142,24 @@ describe("bracketWinner", () => {
   it("names the winner and stays quiet while a match is undecided", () => {
     expect(bracketWinner(match("m", [team("A", "win"), team("B", "loss")]))?.code).toBe("A");
     expect(bracketWinner(match("m", [TBD, TBD]))).toBeNull();
+  });
+});
+
+describe("roundLabel", () => {
+  const final = match("gf", [team("G2", "win"), team("MKOI", "loss")]);
+
+  it("keeps a name the layout gave the round", () => {
+    expect(roundLabel({ number: 3, name: "Semifinals", matches: [final] }, "gf")).toBe(
+      "Semifinals"
+    );
+  });
+
+  it("calls a column holding only the title-deciding match the final", () => {
+    expect(roundLabel({ number: 5, name: null, matches: [final] }, "gf")).toBe("Final");
+  });
+
+  it("numbers every other round", () => {
+    expect(roundLabel({ number: 5, name: null, matches: [final] }, undefined)).toBe("Round 5");
+    expect(roundLabel({ number: 4, name: null, matches: [final] }, "other")).toBe("Round 4");
   });
 });

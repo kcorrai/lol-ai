@@ -112,3 +112,16 @@ export function bracketLayout(
 export function bracketWinner(match: BracketMatch): BracketMatch["teams"][number] | null {
   return match.teams.find((team) => team.outcome === "win") ?? null;
 }
+
+/**
+ * A round's caption. The layout names the rounds of a clean knockout; a double
+ * elimination bracket it cannot name, but the page that knows which match
+ * decided the title can, and a column holding only that match is the final.
+ */
+export function roundLabel(round: BracketRound, finalMatchId: string | undefined): string {
+  if (round.name) return round.name;
+  if (finalMatchId && round.matches.length === 1 && round.matches[0].matchId === finalMatchId) {
+    return "Final";
+  }
+  return `Round ${round.number}`;
+}
