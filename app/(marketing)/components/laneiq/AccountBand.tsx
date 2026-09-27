@@ -115,7 +115,7 @@ export function AccountBand(): React.ReactElement {
     <section id="account" className="px-5 pt-16 md:px-8 md:pt-[72px]">
       <div className="mx-auto max-w-[1240px]">
         <SectionHead
-          title="Ten more screens behind the account"
+          title="What a free account unlocks"
           aside={
             <Link href="/register" className="text-accent">
               Start free &rarr;

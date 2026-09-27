@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { championSplashUrl } from "@/lib/ddragon";
 import { ActionRow, InsightCard, Meter } from "./ReportParts";
+import { SectionHead } from "./SectionHead";
 import { EdgeSweep, HudStagger, HudStaggerItem } from "./motion";
 import type { Action, Grade, Insight } from "./ReportParts";
 
@@ -54,6 +55,11 @@ function HeadStat({ label, value }: { label: string; value: string }): React.Rea
 export function SampleReport(): React.ReactElement {
   return (
     <section id="report" className="px-5 pt-16 md:px-8 md:pt-[72px]">
+      {/* The panel had no heading, so a first-time reader met a stranger's Riot ID and a wall
+          of grades with nothing saying what it was. The aside says the player is invented. */}
+      <div className="mx-auto max-w-[1240px]">
+        <SectionHead title="What you get back" aside="Example report · sample player" />
+      </div>
       <div className="notch-lg relative mx-auto max-w-[1240px] overflow-hidden border border-border bg-surface">
         <EdgeSweep className="z-10" />
         {/* Splash header */}
@@ -103,7 +109,7 @@ export function SampleReport(): React.ReactElement {
           </div>
 
           <div className="p-6 md:p-7">
-            <span className="hud-label">{"// Graded"}</span>
+            <span className="hud-label">{"// Your scores"}</span>
             <div className="my-3 grid gap-3">
               {GRADES.map((grade) => (
                 <Meter key={grade.label} {...grade} />

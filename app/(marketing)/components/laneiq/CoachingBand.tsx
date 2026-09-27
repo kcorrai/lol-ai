@@ -75,7 +75,7 @@ export function CoachingBand(): React.ReactElement {
   return (
     <section id="coaches" className="px-5 pt-16 md:px-8 md:pt-[72px]">
       <div className="mx-auto max-w-[1240px]">
-        <SectionHead title="When you want a person" aside="Coach marketplace" />
+        <SectionHead title="Prefer a human coach?" aside="Coach marketplace" />
 
         <div className="notch-lg relative overflow-hidden border border-border bg-surface">
           {/* Ground art, on `AcademyBand`'s pattern — a champion at a fifth of full strength

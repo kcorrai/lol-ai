@@ -45,7 +45,7 @@ export function ProvenanceStrip(): React.ReactElement {
   return (
     <section className="px-5 pt-16 md:px-8 md:pt-[72px]">
       <div className="mx-auto max-w-[1240px]">
-        <SectionHead title="Where the numbers come from" aside="No vibes" />
+        <SectionHead title="Where the numbers come from" aside="Real ranked games only" />
         <HudStagger className="grid grid-cols-1 gap-px border border-border bg-line-1 sm:grid-cols-2">
           {SOURCES.map((s) => (
             <HudStaggerItem key={s.name} className="h-full">
