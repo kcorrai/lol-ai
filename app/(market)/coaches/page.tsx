@@ -111,7 +111,7 @@ export default async function CoachesPage({ searchParams }: Props) {
           </section>
         ) : (
           <>
-            <div className="mt-4 grid items-start gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {coaches.map((coach, i) => (
                 <CoachCardTile
                   key={coach.slug}
