@@ -67,6 +67,7 @@ export function parseSearchQuery(params: Params): CoachSearchQuery {
     // Defaults on: a coach who cannot take you is a worse result than one who
     // can, and somebody browsing has not asked to see closed doors.
     availableOnly: one(params, "all") !== "1",
+    trialOnly: one(params, "trial") === "1" || undefined,
     sort: SORTS.includes(one(params, "sort") as CoachSort)
       ? (one(params, "sort") as CoachSort)
       : "rating",
@@ -97,6 +98,7 @@ export function buildSearchParams(query: CoachSearchQuery): string {
   if (query.language) params.set("lang", query.language);
   if (query.region) params.set("region", query.region);
   if (query.maxPriceCents) params.set("maxPrice", String(query.maxPriceCents / 100));
+  if (query.trialOnly) params.set("trial", "1");
   if (query.availableOnly === false) params.set("all", "1");
   if (query.sort && query.sort !== "rating") params.set("sort", query.sort);
 
@@ -121,6 +123,7 @@ export function isFiltered(query: CoachSearchQuery): boolean {
     query.language ||
     query.region ||
     query.maxPriceCents ||
+    query.trialOnly ||
     query.availableOnly === false
   );
 }

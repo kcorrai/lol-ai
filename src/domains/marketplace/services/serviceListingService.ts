@@ -6,6 +6,7 @@ import {
   MAX_PRICE_CENTS,
   MIN_DURATION_MINUTES,
   MAX_DURATION_MINUTES,
+  MAX_TRIAL_MINUTES,
   isScheduled,
 } from "@/domains/marketplace/policy";
 import type { Listing } from "@/domains/marketplace/types";
@@ -23,6 +24,8 @@ export interface ListingInput {
   currency: string;
   /** Async only. Ignored — and nulled — for the scheduled kinds. */
   deliveryHours: number | null;
+  /** A short first session, once per student per coach. Absent means not a trial. */
+  isTrial?: boolean;
 }
 
 const LISTING_SELECT = {
@@ -34,6 +37,7 @@ const LISTING_SELECT = {
   priceCents: true,
   currency: true,
   deliveryHours: true,
+  isTrial: true,
 } as const;
 
 export type ListingOutcome =
@@ -175,6 +179,9 @@ function validate(input: ListingInput): string | null {
   if (!isScheduled(input.kind) && (input.deliveryHours ?? 0) < 1) {
     return "An async review needs a turnaround you are promising, in hours.";
   }
+  if (input.isTrial && input.durationMinutes > MAX_TRIAL_MINUTES) {
+    return `A trial can be at most ${MAX_TRIAL_MINUTES} minutes.`;
+  }
   return null;
 }
 
@@ -188,5 +195,6 @@ function normalise(input: ListingInput) {
     priceCents: input.priceCents,
     currency: input.currency,
     deliveryHours: isScheduled(input.kind) ? null : input.deliveryHours,
+    isTrial: input.isTrial ?? false,
   };
 }

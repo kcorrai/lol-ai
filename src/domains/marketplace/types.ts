@@ -39,6 +39,8 @@ export interface Listing {
   currency: string;
   /** Async only: the promised turnaround. Null for the scheduled kinds. */
   deliveryHours: number | null;
+  /** A short first session, bookable once per student per coach. */
+  isTrial: boolean;
 }
 
 /** A coach as they appear on a search card — deliberately smaller than the profile. */
@@ -59,6 +61,8 @@ export interface CoachCard {
   fromPriceCents: number | null;
   currency: string;
   acceptingStudents: boolean;
+  /** Whether any active listing is a trial. */
+  offersTrial: boolean;
 }
 
 /** The full public profile at `/coaches/[slug]`. */
@@ -101,6 +105,8 @@ export interface Slot {
 /** A booking as either side sees it in their own list. */
 export interface BookingSummary {
   id: string;
+  /** What was booked, so the student can ask for the same thing again. */
+  listingId: string;
   kind: SessionKind;
   status: BookingStatus;
   /** Null for the unscheduled kind. ISO, UTC. */
@@ -146,6 +152,8 @@ export interface CoachSearchQuery {
   championId?: number;
   maxPriceCents?: number;
   minTier?: RankTier;
+  /** Only coaches with an active trial listing. */
+  trialOnly?: boolean;
   /** Only coaches taking new students. Defaults to true. */
   availableOnly?: boolean;
   sort?: CoachSort;

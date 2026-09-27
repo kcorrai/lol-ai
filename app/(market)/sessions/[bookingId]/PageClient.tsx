@@ -22,6 +22,7 @@ import { SpectatePanel } from "@/domains/marketplace/components/SpectatePanel";
 import { ReviewPanel } from "@/domains/marketplace/components/ReviewPanel";
 import { DisputePanel } from "@/domains/marketplace/components/DisputePanel";
 import { SessionProgress } from "@/domains/marketplace/components/sessions/SessionProgress";
+import { BookAgainPanel } from "@/domains/marketplace/components/sessions/BookAgainPanel";
 import { SessionMoneyPanel } from "@/domains/marketplace/components/sessions/SessionMoneyPanel";
 import { HudPanel } from "@/domains/marketplace/components/hud/HudPanel";
 import { MarketStat } from "@/domains/marketplace/components/hud/MarketStat";
@@ -199,6 +200,8 @@ export default function SessionPage({ bookingId }: { bookingId: string }): React
           </div>
 
           <div className="grid gap-3.5 lg:sticky lg:top-20">
+            <BookAgainPanel booking={booking} />
+
             <HudPanel label="Who you are with" className="bg-hero-fade">
               <div className="flex items-center gap-3">
                 <CoachPortrait name={other} size="sm" />

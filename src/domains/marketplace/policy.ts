@@ -73,6 +73,12 @@ export const MAX_PRICE_CENTS = 100_000;
 export const MIN_DURATION_MINUTES = 15;
 export const MAX_DURATION_MINUTES = 240;
 
+/**
+ * The longest a trial may run. A trial is a meeting, not a discount on the real
+ * thing — kept short so a coach cannot sell their whole product at trial price.
+ */
+export const MAX_TRIAL_MINUTES = 30;
+
 /** Session kinds that occupy a calendar slot, as opposed to running against a deadline. */
 const SCHEDULED_KINDS: readonly SessionKind[] = ["LIVE_SESSION", "LIVE_SPECTATE"];
 

@@ -26,6 +26,10 @@ export function bookingRefusal(reason: string) {
       return Errors.conflict(
         "You already have requests waiting with this coach. Give them a chance to answer those first."
       );
+    case "trial-used":
+      return Errors.conflict(
+        "You have already had a trial with this coach. Book one of their full sessions instead."
+      );
     default:
       return Errors.validation("That booking could not be made.");
   }

@@ -22,6 +22,7 @@ export const ListingBody = z.object({
   // ISO 4217. Uppercased here so "usd" and "USD" cannot become two currencies.
   currency: z.string().trim().length(3).toUpperCase(),
   deliveryHours: z.number().int().min(1).max(336).nullable().default(null),
+  isTrial: z.boolean().default(false),
 });
 
 export type ListingBodyInput = z.infer<typeof ListingBody>;
