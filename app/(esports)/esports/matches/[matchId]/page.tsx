@@ -217,6 +217,7 @@ export default async function MatchPage({
             <LiveGameStats
               gameId={game.id}
               initial={stats}
+              initialTimeline={timeline}
               blueName={sideName(match, game, stats.blue)}
               redName={sideName(match, game, stats.red)}
             />

@@ -2,14 +2,17 @@
 
 import { useLiveGame } from "@/hooks/useLiveEsports";
 import { DraftPanel } from "@/domains/esports/components/DraftPanel";
+import { LiveGoldCurve } from "@/domains/esports/components/LiveGoldCurve";
 import { Scoreboard } from "@/domains/esports/components/Scoreboard";
 import { formatDuration } from "@/domains/esports/duration";
-import type { GameStats } from "@/domains/esports/types";
+import type { GameStats, GameTimeline } from "@/domains/esports/types";
 
 interface LiveGameStatsProps {
   gameId: string;
   /** Server-rendered snapshot: what the HTML ships with. */
   initial: GameStats;
+  /** The page's snapshot of the gold curve, null before the walk has a sample. */
+  initialTimeline: GameTimeline | null;
   blueName: string;
   redName: string;
 }
@@ -25,6 +28,7 @@ interface LiveGameStatsProps {
 export function LiveGameStats({
   gameId,
   initial,
+  initialTimeline,
   blueName,
   redName,
 }: LiveGameStatsProps): React.ReactElement {
@@ -68,6 +72,14 @@ export function LiveGameStats({
           durationSeconds={stats.durationSeconds}
         />
       </section>
+
+      <LiveGoldCurve
+        gameId={gameId}
+        initial={initialTimeline}
+        live={!stats.finished}
+        blueName={blueName}
+        redName={redName}
+      />
     </>
   );
 }
