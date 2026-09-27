@@ -1884,6 +1884,29 @@ This week's three duo quests with progress. Rate limit 60/hour.
 
 ---
 
+## Live esports (TASK-304)
+
+### `GET /api/esports/live`
+
+Public and unauthenticated — the only esports endpoint a browser polls. Rate
+limited to 60 requests a minute per IP, and cached at the edge for 20 seconds
+(`s-maxage=20, stale-while-revalidate=40`), under the client's poll interval.
+
+| Query                   | Answers                                                                                      |
+| ----------------------- | -------------------------------------------------------------------------------------------- |
+| _(none)_                | `{ "data": { "events": [...] } }` — every live match, with its streams.                      |
+| `gameId`                | `{ "data": { "game": GameStats \| null } }` — one game's draft and scoreboard.               |
+| `gameId` + `timeline=1` | `{ "data": { "timeline": GameTimeline \| null } }` — the game's sampled gold curve (LA-123). |
+
+- **The timeline is a separate request, not part of every game poll.** It is a
+  walk of several feed requests, and the curve only moves once per four-minute
+  sampling window, so the match page polls it every four minutes while the
+  scoreboard polls every thirty seconds.
+- `timeline` is `null` until the walk has a sample, which is the first few
+  minutes of a game. `timeline=1` without a `gameId` is ignored.
+
+---
+
 ## Following an esports team (TASK-313)
 
 The only authenticated surface in the esports section, and the only one that

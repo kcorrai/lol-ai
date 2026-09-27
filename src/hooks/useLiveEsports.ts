@@ -2,9 +2,11 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api/fetcher";
-import type { EsportsEvent, GameStats } from "@/domains/esports";
+import type { EsportsEvent, GameStats, GameTimeline } from "@/domains/esports";
 
 const POLL_MS = 30_000;
+/** The walk samples a game every four minutes, so the curve cannot move faster. */
+const TIMELINE_POLL_MS = 4 * 60_000;
 
 interface LiveEventsResponse {
   events: EsportsEvent[];
@@ -12,6 +14,10 @@ interface LiveEventsResponse {
 
 interface LiveGameResponse {
   game: GameStats | null;
+}
+
+interface LiveTimelineResponse {
+  timeline: GameTimeline | null;
 }
 
 /**
@@ -43,6 +49,29 @@ export function useLiveGame(gameId: string | null, enabled = true) {
     queryFn: () => apiFetch<LiveGameResponse>(`/api/esports/live?gameId=${gameId}`),
     enabled: enabled && Boolean(gameId),
     refetchInterval: (query) => (query.state.data?.game?.finished === false ? POLL_MS : false),
+    placeholderData: (previous) => previous,
+  });
+}
+
+/**
+ * A live game's gold curve. Polled once per sampling window rather than with
+ * the scoreboard: each poll re-walks the game, and between windows it would
+ * only return the same samples again. Turned off once the game is finished.
+ */
+export function useLiveTimeline(
+  gameId: string | null,
+  initial: GameTimeline | null,
+  enabled = true
+) {
+  return useQuery<LiveTimelineResponse>({
+    queryKey: ["esports-live-timeline", gameId],
+    queryFn: () => apiFetch<LiveTimelineResponse>(`/api/esports/live?gameId=${gameId}&timeline=1`),
+    enabled: enabled && Boolean(gameId),
+    initialData: initial ? { timeline: initial } : undefined,
+    // The page's own copy can be up to an hour old, so the first poll is not
+    // held back for a full window.
+    initialDataUpdatedAt: 0,
+    refetchInterval: enabled ? TIMELINE_POLL_MS : false,
     placeholderData: (previous) => previous,
   });
 }
