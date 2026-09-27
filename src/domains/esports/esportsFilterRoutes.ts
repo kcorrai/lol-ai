@@ -11,15 +11,13 @@ import { FILTER_SEGMENT, toSegment, type FilterRoute } from "@/lib/routing/filte
 //
 // Every value is normalised to one spelling before it becomes a path, so two queries that mean
 // the same thing share one cached page. League values cannot be checked against the feed from
-// here, so they are held to a strict shape; one that matches the shape but names no league renders
-// the page's own "not found" — the same exposure `/esports/matches/[matchId]` has always had.
+// here, so they are held to a strict shape, and the internal route answers 404 to one that
+// matches the shape but names no league — so a made-up league cannot mint a cached page.
 //
 // Imports are constant-only modules: this runs in middleware.
 
 const MATCH = /^\/esports\/matches\/([^/]+)$/;
-const INTERNAL = new RegExp(
-  `^/esports/(champions|vods|matches/[^/]+)/${FILTER_SEGMENT}(/|$)`
-);
+const INTERNAL = new RegExp(`^/esports/(champions|vods|matches/[^/]+)/${FILTER_SEGMENT}(/|$)`);
 
 /** A game in a series. Best-of-five is the longest the pro circuit plays. */
 const GAME = /^[1-5]$/;
