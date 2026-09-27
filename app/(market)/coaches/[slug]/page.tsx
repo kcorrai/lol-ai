@@ -5,7 +5,7 @@ import { ListingCard } from "@/domains/marketplace/components/ListingCard";
 import { coachProfileJsonLd } from "@/domains/marketplace/jsonLd";
 import { regionLabel } from "@/lib/riot/regions";
 import { languageLabel } from "@/domains/marketplace/components/options";
-import { CoachReviewCard } from "@/domains/marketplace/components/CoachReviewCard";
+import { CoachReviewsSection } from "@/domains/marketplace/components/CoachReviewsSection";
 import { CoachProfileHero } from "@/domains/marketplace/components/CoachProfileHero";
 import { CoachProfileRail } from "@/domains/marketplace/components/CoachProfileRail";
 import { jsonLdProps } from "@/lib/security/jsonLd";
@@ -49,15 +49,15 @@ export default async function CoachProfilePage({ params }: Props) {
 
       <CoachProfileHero coach={coach} />
 
-      <div className="mx-auto max-w-[1240px] px-5 pb-16 pt-6 md:px-8">
-        <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_314px]">
-          <div className="grid min-w-0 gap-5">
+      <div className="mx-auto max-w-[1240px] px-5 pb-16 pt-8 md:px-8">
+        <div className="grid items-start gap-7 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="grid min-w-0 gap-9">
             <section id="listings" className="scroll-mt-20">
-              <div className="mb-3.5 flex flex-wrap items-baseline justify-between gap-3.5">
-                <h2 className="font-display text-[26px] font-extrabold uppercase tracking-[0.03em] text-text">
+              <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3.5">
+                <h2 className="font-display text-[22px] font-extrabold uppercase tracking-[0.03em] text-text md:text-[26px]">
                   What {coach.displayName} sells
                 </h2>
-                <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-text-faint">
+                <span className="text-[12.5px] text-text-muted">
                   Nothing is charged until they accept
                 </span>
               </div>
@@ -67,7 +67,7 @@ export default async function CoachProfilePage({ params }: Props) {
                   Nothing on sale yet. This coach has been approved but has not published a listing.
                 </p>
               ) : (
-                <div className="grid gap-3">
+                <div className="grid gap-3.5">
                   {coach.listings.map((listing) => (
                     <ListingCard
                       key={listing.id}
@@ -80,11 +80,11 @@ export default async function CoachProfilePage({ params }: Props) {
               )}
             </section>
 
-            <section className="notch bg-hero-fade border border-border bg-surface p-6">
-              <p className="mb-3.5 font-mono text-[10px] uppercase tracking-[0.18em] text-accent">
-                {"// How they coach"}
-              </p>
-              <p className="max-w-[66ch] whitespace-pre-wrap text-[14.5px] text-text-body">
+            <section className="notch bg-hero-fade border border-border bg-surface p-6 md:p-7">
+              <h2 className="mb-4 font-display text-[22px] font-extrabold uppercase tracking-[0.03em] text-text md:text-[26px]">
+                How they coach
+              </h2>
+              <p className="max-w-[66ch] whitespace-pre-wrap text-[15px] leading-relaxed text-text-body">
                 {coach.bio}
               </p>
 
@@ -95,28 +95,7 @@ export default async function CoachProfilePage({ params }: Props) {
               </div>
             </section>
 
-            {coach.reviews.length > 0 && (
-              <section>
-                <div className="mb-3.5 flex flex-wrap items-baseline justify-between gap-3.5">
-                  <h2 className="font-display text-[26px] font-extrabold uppercase tracking-[0.03em] text-text">
-                    What students said
-                  </h2>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-text-faint">
-                    {coach.ratingCount} {coach.ratingCount === 1 ? "review" : "reviews"} &middot;
-                    only from paid sessions
-                  </span>
-                </div>
-                <div className="grid gap-3">
-                  {coach.reviews.map((review) => (
-                    <CoachReviewCard
-                      key={review.id}
-                      review={review}
-                      coachName={coach.displayName}
-                    />
-                  ))}
-                </div>
-              </section>
-            )}
+            <CoachReviewsSection coach={coach} />
           </div>
 
           <CoachProfileRail
