@@ -75,7 +75,11 @@ export function StorefrontHero({
                   tier={tier}
                   size={i === 0 ? "xl" : "lg"}
                   className={
-                    i === 0 ? "z-10 order-2 -mx-4" : i === 1 ? "order-1 opacity-80" : "order-3 opacity-80"
+                    i === 0
+                      ? "z-10 order-2 -mx-4"
+                      : i === 1
+                        ? "order-1 opacity-80"
+                        : "order-3 opacity-80"
                   }
                 />
               ))}
