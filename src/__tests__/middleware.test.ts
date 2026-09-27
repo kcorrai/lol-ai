@@ -59,8 +59,8 @@ describe("middleware auth coverage", () => {
       // AUTH_PATHS would bounce a half-authenticated visitor away from the very page it sends
       // them to, and PROTECTED_PATHS would demand the session it exists to complete.
       ...constPaths("TWO_FACTOR_PATH"),
-      // Public tool pages, woken for only to rewrite their filters onto cacheable paths (ADR-061).
-      ...constPaths("TOOL_FILTER_PATHS"),
+      // Public pages, woken for only to rewrite their filters onto cacheable paths (ADR-061).
+      ...constPaths("FILTER_REWRITE_PATHS"),
     ]);
     const stray = config.matcher.map(matcherRoot).filter((p) => !handled.has(p));
 
@@ -182,6 +182,18 @@ describe("tool filter rewrites", () => {
 
     expect(res.headers.get("x-middleware-rewrite")).toBe(
       "https://lolaicoach.test/counters/Jhin/f/emerald_plus/any"
+    );
+    expect(getToken).not.toHaveBeenCalled();
+  });
+
+  it("serves one game of an esports series from its cacheable path", async () => {
+    const { middleware } = await import("../../middleware");
+    const res = await middleware(
+      new NextRequest(new URL("/esports/matches/123?g=2", "https://lolaicoach.test"))
+    );
+
+    expect(res.headers.get("x-middleware-rewrite")).toBe(
+      "https://lolaicoach.test/esports/matches/123/f/2"
     );
     expect(getToken).not.toHaveBeenCalled();
   });

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { toolFilterRoute } from "@/domains/meta/toolFilterRoutes";
+import { esportsFilterRoute } from "@/domains/esports/esportsFilterRoutes";
 
 const PROTECTED_PATHS = [
   "/dashboard",
@@ -34,8 +35,14 @@ const PROTECTED_PATHS = [
   "/messages",
 ];
 
-// Public tool pages the middleware wakes for only to rewrite their filters (ADR-061).
-const TOOL_FILTER_PATHS = ["/tools/tier-list", "/counters"];
+// Public pages the middleware wakes for only to rewrite their filters (ADR-061).
+const FILTER_REWRITE_PATHS = [
+  "/tools/tier-list",
+  "/counters",
+  "/esports/champions",
+  "/esports/vods",
+  "/esports/matches",
+];
 
 const AUTH_PATHS = ["/login", "/register", "/forgot-password", "/reset-password"];
 
@@ -64,7 +71,9 @@ export async function middleware(req: NextRequest) {
 
   // Filtered tool pages are rewritten onto a cacheable path before anything else runs; they are
   // public, so none of the session checks below apply to them (ADR-061).
-  const toolRoute = toolFilterRoute(pathname, req.nextUrl.searchParams);
+  const toolRoute =
+    toolFilterRoute(pathname, req.nextUrl.searchParams) ??
+    esportsFilterRoute(pathname, req.nextUrl.searchParams);
   if (toolRoute?.kind === "not-found") return new NextResponse(null, { status: 404 });
   if (toolRoute) {
     const target = req.nextUrl.clone();
@@ -74,7 +83,7 @@ export async function middleware(req: NextRequest) {
       ? NextResponse.redirect(target, 308)
       : NextResponse.rewrite(target);
   }
-  if (TOOL_FILTER_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
+  if (FILTER_REWRITE_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
     return NextResponse.next();
   }
 
@@ -181,5 +190,10 @@ export const config = {
     "/tools/tier-list",
     "/tools/tier-list/:path*",
     "/counters/:path*",
+    "/esports/champions",
+    "/esports/champions/:path*",
+    "/esports/vods",
+    "/esports/vods/:path*",
+    "/esports/matches/:path*",
   ],
 };
