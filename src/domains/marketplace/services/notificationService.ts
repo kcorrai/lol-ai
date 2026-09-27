@@ -116,8 +116,34 @@ export async function notify(event: MarketplaceNotification): Promise<void> {
         actionUrl: composed.actionUrl,
       },
     });
+    if (DISCORD_TYPES.has(event.type)) await alsoOnDiscord(composed);
   } catch (error) {
     logger.error("[marketplace] could not write a notification", { type: event.type, error });
+  }
+}
+
+/**
+ * The two events worth a ping outside the site: the session is on, and it is
+ * about to start. Everything else waits in the app. Only reaches users who
+ * linked Discord through the bot; see `messageLinkedUser`.
+ */
+const DISCORD_TYPES: ReadonlySet<MarketplaceNotification["type"]> = new Set([
+  "booking.accepted",
+  "session.reminder",
+]);
+
+async function alsoOnDiscord(composed: Composed): Promise<void> {
+  try {
+    // Loaded on demand: the discord domain pulls in the bot's command tree,
+    // which nothing else on the booking path needs.
+    const { messageLinkedUser } = await import("@/domains/discord");
+    const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
+    await messageLinkedUser(
+      composed.userId,
+      [`**${composed.title}**`, composed.body, `${base}${composed.actionUrl}`].join("\n")
+    );
+  } catch (error) {
+    logger.warn("[marketplace] Discord copy of a notification failed", { error });
   }
 }
 
