@@ -1,12 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { declaresRenderMode, renderModeCases } from "@/test/renderModeLock";
 
-// The lock on how a tool page renders — see src/test/renderModeLock.ts for the rule and why.
-// `/counters/[champion]` answered 500 to every request in LA-126 for want of it.
+// The lock on how an esports page renders — see src/test/renderModeLock.ts for the rule and why.
 const cases = renderModeCases(__dirname);
 
-describe("tool page render mode", () => {
-  it("finds the ISR tool pages", () => {
+describe("esports page render mode", () => {
+  it("finds the ISR esports pages", () => {
     expect(cases.length).toBeGreaterThan(5);
   });
 

@@ -9,6 +9,9 @@ import { VodSeriesCard } from "@/domains/esports/components/VodSeriesCard";
 import { VOD_PAGE_SIZE as PAGE_SIZE, shownCount } from "@/domains/esports/vodPaging";
 
 export const revalidate = 900; // The archive gains a series within hours of it being played.
+// Per request, said out loud: this page reads search params. Left implicit, a build can mark the
+// route static and every visit then fails with "static to dynamic at runtime" (ADR-059).
+export const dynamic = "force-dynamic";
 
 interface PageProps {
   searchParams: { league?: string; show?: string };

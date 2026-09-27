@@ -3,8 +3,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useQueryClient } from "@tanstack/react-query";
 
 // TASK-308: the draft room is a public tool that uses React Query, so the signed-out branch must
-// mount a provider too. LA-112: the choice of chrome now happens here, in the browser, so the
-// layout above it can stay static.
+// mount a provider too. LA-112 / ADR-059: the choice of chrome happens here, in the browser, so
+// the tools and esports layouts above it can stay static.
 
 const auth = vi.hoisted(() => ({ isAuthenticated: false }));
 vi.mock("@/hooks/useAuth", () => ({ useAuth: () => auth }));
@@ -19,7 +19,7 @@ vi.mock("@/components/layout/ToolsAppChrome", async () => {
   };
 });
 
-import { ToolsChrome } from "./ToolsChrome";
+import { PublicChrome } from "./PublicChrome";
 
 /** A tool that needs a QueryClient, the way the draft room does. */
 function NeedsQueryClient(): React.ReactElement {
@@ -29,12 +29,12 @@ function NeedsQueryClient(): React.ReactElement {
 
 function renderChrome() {
   return render(
-    <ToolsChrome
+    <PublicChrome
       header={<header>marketing header</header>}
       footer={<footer>marketing footer</footer>}
     >
       <NeedsQueryClient />
-    </ToolsChrome>
+    </PublicChrome>
   );
 }
 
@@ -42,7 +42,7 @@ beforeEach(() => {
   auth.isAuthenticated = false;
 });
 
-describe("ToolsChrome", () => {
+describe("PublicChrome", () => {
   it("wraps a signed-out visitor's tool in the marketing chrome, with a QueryClient", () => {
     renderChrome();
 
@@ -62,11 +62,13 @@ describe("ToolsChrome", () => {
   });
 });
 
-describe("tools layout", () => {
-  it("never reads the session on the server, so its pages can be static", async () => {
-    const source = await import("node:fs").then((fs) =>
-      fs.readFileSync(`${__dirname}/layout.tsx`, "utf8")
-    );
-    expect(source).not.toMatch(/getSession|getServerSession|cookies\(|headers\(/);
-  });
+describe("public section layouts", () => {
+  it.each(["app/(tools)/layout.tsx", "app/(esports)/layout.tsx"])(
+    "%s never reads the session on the server, so its pages can be static",
+    async (file) => {
+      const fs = await import("node:fs");
+      const source = fs.readFileSync(`${process.cwd()}/${file}`, "utf8");
+      expect(source).not.toMatch(/getSession|getServerSession|cookies\(|headers\(/);
+    }
+  );
 });

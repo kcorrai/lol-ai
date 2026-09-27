@@ -22,6 +22,9 @@ import { TeamTile } from "@/domains/esports/components/TeamTile";
 // Rosters change between splits, not daily — but the strip at the top says who
 // is playing today, and a day-old answer to that is a wrong one.
 export const revalidate = 900;
+// Static despite the no-cache reads under it (esports feeds, Redis): without this, any one of
+// them sets the page's revalidate to 0 and it is rendered per request instead (ADR-059).
+export const dynamic = "force-static";
 
 export const metadata: Metadata = {
   title: "LoL Esports Teams — Rosters, Results & Schedule",
