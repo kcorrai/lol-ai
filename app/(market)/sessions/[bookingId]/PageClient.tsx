@@ -22,6 +22,7 @@ import { SpectatePanel } from "@/domains/marketplace/components/SpectatePanel";
 import { ReviewPanel } from "@/domains/marketplace/components/ReviewPanel";
 import { DisputePanel } from "@/domains/marketplace/components/DisputePanel";
 import { SessionProgress } from "@/domains/marketplace/components/sessions/SessionProgress";
+import { SessionGoalsPanel } from "@/domains/marketplace/components/sessions/SessionGoalsPanel";
 import { BookAgainPanel } from "@/domains/marketplace/components/sessions/BookAgainPanel";
 import { SessionMoneyPanel } from "@/domains/marketplace/components/sessions/SessionMoneyPanel";
 import { HudPanel } from "@/domains/marketplace/components/hud/HudPanel";
@@ -177,6 +178,8 @@ export default function SessionPage({ bookingId }: { bookingId: string }): React
                 )}
               </div>
             </HudPanel>
+
+            <SessionGoalsPanel booking={booking} />
 
             {booking.role === "coach" && <SessionPrepPanel bookingId={bookingId} />}
 
