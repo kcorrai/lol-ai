@@ -12,6 +12,11 @@ export {
   getTournamentIndex,
 } from "@/domains/esports/services/leagueService";
 export type { TournamentEntry } from "@/domains/esports/services/leagueService";
+export { getTournamentOverview } from "@/domains/esports/services/tournamentOverviewService";
+export type {
+  TournamentOverview,
+  TournamentOverviewEntry,
+} from "@/domains/esports/services/tournamentOverviewService";
 export {
   daysBetween,
   formatTournamentDates,
