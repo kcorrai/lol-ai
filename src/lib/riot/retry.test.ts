@@ -90,7 +90,7 @@ describe("withRetry", () => {
           .fn()
           .mockRejectedValueOnce(normalizeRiotError(429, 2)) // Retry-After: 2s
           .mockResolvedValue("ok");
-        await withRetry(fn, FAST);
+        await withRetry(fn, { ...FAST, maxDelayMs: 10_000 });
       }
 
       timeout.mockRestore();
@@ -99,6 +99,15 @@ describe("withRetry", () => {
       expect(delays[0]).toBeGreaterThanOrEqual(2000);
       expect(delays[1]).toBeGreaterThanOrEqual(2000);
       expect(delays[0]).not.toBe(delays[1]);
+    });
+
+    it("hands a Retry-After longer than maxDelayMs straight back instead of waiting it out", async () => {
+      const fn = vi.fn().mockRejectedValue(normalizeRiotError(429, 90)); // a spent two-minute window
+
+      await expect(withRetry(fn, { ...FAST, maxDelayMs: 10_000 })).rejects.toMatchObject({
+        code: "RIOT_RATE_LIMITED",
+      });
+      expect(fn).toHaveBeenCalledTimes(1);
     });
 
     it("caps exponential backoff at maxDelayMs", async () => {
