@@ -11,7 +11,6 @@ const PRO_FEATURES = [
   "Unlimited AI reports",
   "Last 100 games parsed",
   "Habit detection & climb roadmap",
-  "Voice coaching",
 ];
 
 function Price({ amount, per }: { amount: string; per?: string }): React.ReactElement {

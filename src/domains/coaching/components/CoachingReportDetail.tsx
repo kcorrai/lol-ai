@@ -45,7 +45,7 @@ interface Props {
 export function CoachingReportDetail({ report, isPro }: Props): React.ReactElement {
   return (
     <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-5">
-      <ReportVerdict report={report} isPro={isPro} />
+      <ReportVerdict report={report} />
 
       {isPro ? (
         <>

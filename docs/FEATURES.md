@@ -258,13 +258,11 @@ High-uncertainty features. Architecture must support but not require these.
 
 ---
 
-### F-023 — Voice Coaching Mode
+### F-023 — Voice Coaching Mode (removed 2026-09-27)
 
-Text-to-speech playback of coaching reports. "Press play and hear your coach."
-
-**User Benefit:** Accessibility. Listen while driving or doing other things.  
-**Difficulty:** Low (with TTS API)  
-**Dependencies:** F-006, TTS integration (ElevenLabs or similar)
+Text-to-speech playback of coaching reports and a speak-to-the-coach panel. Both shipped and were
+removed: players were not expected to use them, and every playback was a paid synthesis that the AI
+usage ledger and budget cap could not see. The written coach chat covers the same need.
 
 ---
 
