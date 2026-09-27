@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api/fetcher";
 import type { DailyPuzzle, QuizMode } from "@/domains/quiz";
 
@@ -25,5 +25,10 @@ export function useDailyQuiz(mode: QuizMode, misses: number, practiceSeed?: stri
       apiFetch<DailyQuizResponse>(`/api/quiz/today?mode=${mode}&misses=${keyedMisses}${seedParam}`),
     // The puzzle is fixed for the whole UTC day, so refetching it is wasted work.
     staleTime: 15 * 60 * 1000,
+    // A miss re-keys the widening modes. Without the previous puzzle held on
+    // screen the board drops to its skeleton, unmounting the guess input and
+    // the focus with it. QuizBoard is keyed per mode, so this never shows one
+    // mode's puzzle under another.
+    placeholderData: keepPreviousData,
   });
 }

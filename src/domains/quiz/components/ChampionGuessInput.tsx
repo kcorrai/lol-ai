@@ -52,6 +52,9 @@ export function ChampionGuessInput({
   }
 
   function submit(): void {
+    // The previous guess is still being checked: keep what was typed rather
+    // than throw it away on a submit the game would refuse anyway.
+    if (disabled) return;
     const choice = suggestions[highlight]?.name ?? query.trim();
     if (choice) commit(choice);
   }
@@ -91,13 +94,16 @@ export function ChampionGuessInput({
             setHighlight(0);
           }}
           onKeyDown={onKeyDown}
-          disabled={disabled}
-          placeholder={disabled ? "Solved — come back tomorrow" : "Type a champion…"}
+          // Never `disabled`: a disabled input drops focus, so every guess would
+          // send the player back to the mouse. Typing ahead while the last guess
+          // is checked is fine — submit() holds the next one until it lands.
+          aria-busy={disabled}
+          placeholder="Type a champion…"
           aria-label="Guess a champion"
           aria-autocomplete="list"
           autoComplete="off"
           spellCheck={false}
-          className="tag-cut h-11 w-full border border-line-2 bg-surface-dark pl-3.5 pr-10 font-sans text-sm text-fg-1 placeholder:text-fg-4 focus:border-accent focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+          className="tag-cut h-11 w-full border border-line-2 bg-surface-dark pl-3.5 pr-10 font-sans text-sm text-fg-1 placeholder:text-fg-4 focus:border-accent focus:outline-none"
         />
       </div>
 
@@ -125,7 +131,9 @@ export function ChampionGuessInput({
                 role="option"
                 aria-selected={index === highlight}
                 onMouseEnter={() => setHighlight(index)}
-                onClick={() => commit(champ.name)}
+                onClick={() => {
+                  if (!disabled) commit(champ.name);
+                }}
                 className={`flex w-full items-center gap-2.5 border-b border-line-1 px-3 py-2 text-left text-[13.5px] last:border-b-0 ${
                   index === highlight ? "bg-ink-600 text-fg-1" : "text-fg-2"
                 }`}
