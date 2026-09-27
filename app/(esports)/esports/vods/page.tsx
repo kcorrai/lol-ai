@@ -6,11 +6,12 @@ import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrumb";
 import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
 import { VodSeriesCard } from "@/domains/esports/components/VodSeriesCard";
+import { VOD_PAGE_SIZE as PAGE_SIZE, shownCount } from "@/domains/esports/vodPaging";
 
 export const revalidate = 900; // The archive gains a series within hours of it being played.
 
 interface PageProps {
-  searchParams: { league?: string };
+  searchParams: { league?: string; show?: string };
 }
 
 export function generateMetadata({ searchParams }: PageProps): Metadata {
@@ -24,12 +25,19 @@ export function generateMetadata({ searchParams }: PageProps): Metadata {
       "Every recently recorded League of Legends pro series, game by game, deep-linked to the moment each game starts. Filter by league and jump straight to the draft, scoreboard and gold curve.",
     alternates: { canonical: "/esports/vods" },
     // One archive at many query strings is one page (ADR-017 §3).
-    robots: league ? { index: false, follow: true } : undefined,
+    // A filtered or lengthened copy of the archive is the same page again.
+    robots: league || searchParams.show ? { index: false, follow: true } : undefined,
   };
 }
 
-/** How many series a single page of the archive shows. */
-const PAGE_SIZE = 40;
+/** The archive's URL with a league filter and a length, dropping what is default. */
+function archiveHref(league: string | undefined, show: number): string {
+  const params = new URLSearchParams();
+  if (league) params.set("league", league);
+  if (show > PAGE_SIZE) params.set("show", String(show));
+  const query = params.toString();
+  return query ? `/esports/vods?${query}` : "/esports/vods";
+}
 
 function countGames(series: VodSeries[]): number {
   return series.reduce((total, entry) => total + entry.games.length, 0);
@@ -43,7 +51,7 @@ export default async function EsportsVodsPage({
 
   const selected = searchParams.league;
   const filtered = selected ? all.filter((entry) => entry.leagueName === selected) : all;
-  const shown = filtered.slice(0, PAGE_SIZE);
+  const shown = filtered.slice(0, shownCount(searchParams.show, filtered.length));
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 md:py-14">
@@ -125,10 +133,18 @@ export default async function EsportsVodsPage({
       )}
 
       {filtered.length > shown.length && (
-        <p className="mt-6 text-sm text-text-muted">
-          Showing the {PAGE_SIZE} most recent of {filtered.length}. Older games stay on each
-          league&rsquo;s own page.
-        </p>
+        <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <Link
+            href={archiveHref(selected, shown.length + PAGE_SIZE)}
+            scroll={false}
+            className="border border-accent px-3 py-1.5 font-mono text-[11px] uppercase tracking-label text-accent transition-colors hover:bg-accent hover:text-background"
+          >
+            Show {Math.min(PAGE_SIZE, filtered.length - shown.length)} more
+          </Link>
+          <p className="text-sm text-text-muted">
+            Showing the {shown.length} most recent of {filtered.length}.
+          </p>
+        </div>
       )}
 
       <p className="mt-12 text-sm text-text-muted">

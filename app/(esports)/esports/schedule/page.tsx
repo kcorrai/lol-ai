@@ -135,7 +135,9 @@ export default async function EsportsSchedulePage(): Promise<React.ReactElement>
                 </Link>
               }
             >
-              Recent results
+              {/* The window is said, not left for a reader to discover by
+                  looking for a result that is not there. */}
+              Results · last {RESULT_DAYS} days
             </HudHeading>
             <ScheduleDays events={results} descending />
           </section>
