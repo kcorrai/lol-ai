@@ -8,6 +8,7 @@ import {
   getCurrentTournament,
   getStandings,
   getProMeta,
+  getTournamentOverview,
   primaryTable,
   prominentLeagues,
 } from "@/domains/esports";
@@ -22,6 +23,7 @@ import { HubRail } from "./HubRail";
 import { HubResults } from "./HubResults";
 import { HubSchedule } from "./HubSchedule";
 import { HubStats } from "./HubStats";
+import { HubTournaments } from "./HubTournaments";
 
 // Five minutes. The hub's job is "what is on right now", and the live block polls on top of this.
 export const revalidate = 300;
@@ -82,12 +84,13 @@ function SectionHead({
 }
 
 export default async function EsportsHubPage(): Promise<React.ReactElement> {
-  const [live, upcoming, results, leagues, proMeta] = await Promise.all([
+  const [live, upcoming, results, leagues, proMeta, tournaments] = await Promise.all([
     getLiveEvents(),
     getUpcoming({ limit: 24 }),
     getCompleted({ limit: 12 }),
     getLeagues(),
     getProMeta(),
+    getTournamentOverview(),
   ]);
   const standings = await railStandings(leagues);
 
@@ -149,6 +152,17 @@ export default async function EsportsHubPage(): Promise<React.ReactElement> {
           </span>
         </div>
       )}
+
+      {/* Where the season stands, before the matches in it: which tournaments
+          are on, what starts next and who just won. */}
+      <section className="mt-6">
+        <SectionHead
+          title="Tournaments"
+          href="/esports/tournaments"
+          linkLabel="All tournaments →"
+        />
+        <HubTournaments overview={tournaments} />
+      </section>
 
       {nothingAtAll ? (
         <div className="notch mt-6 border border-border bg-surface px-5 py-8 text-center">
