@@ -25,7 +25,8 @@ export const MARKER_LEGEND = "T tower · I inhibitor · D dragon · B baron";
 
 /**
  * Objectives as badges on the gold curve, blue's along the top and red's along
- * the bottom, so a lead can be read next to what bought it.
+ * the bottom, so a lead can be read next to what bought it. Several taken in
+ * one sample stack on that sample's time.
  *
  * The title says "by", as the ledger under the chart does: the walk samples the
  * game every few minutes and only knows which window an objective fell in.
@@ -34,20 +35,24 @@ export function GoldCurveMarkers({
   markers,
   blueY,
   redY,
+  step,
   blueName,
   redName,
 }: {
   markers: ObjectiveMarker[];
-  /** Vertical centre of each side's row. */
+  /** Vertical centre of the marker nearest the chart, on each side. */
   blueY: number;
   redY: number;
+  /** How far each stacked marker sits beyond the one before it. */
+  step: number;
   blueName: string;
   redName: string;
 }): React.ReactElement {
   return (
     <g>
       {markers.map((marker) => {
-        const y = marker.side === "blue" ? blueY : redY;
+        // Stacks grow away from the chart: blue's upwards, red's downwards.
+        const y = marker.side === "blue" ? blueY - marker.stack * step : redY + marker.stack * step;
         const colour = COLOUR[marker.side];
         const team = marker.side === "blue" ? blueName : redName;
         const noun = marker.count === 1 ? NAME[marker.kind].one : NAME[marker.kind].many;
