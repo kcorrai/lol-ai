@@ -8,9 +8,22 @@ import {
   getStandings,
   getUpcoming,
   getCompleted,
+  formatTournamentDates,
+  isoDay,
+  relativeTiming,
+  tournamentChampion,
+  tournamentName as nameOf,
+  tournamentState,
 } from "@/domains/esports";
-import type { EsportsEvent, StandingsStage, TournamentEntry } from "@/domains/esports";
-import { bracketLayout, bracketWinner } from "@/domains/esports/bracket";
+import type {
+  EsportsEvent,
+  StandingsStage,
+  TournamentChampion,
+  TournamentEntry,
+  TournamentState,
+} from "@/domains/esports";
+import { bracketLayout } from "@/domains/esports/bracket";
+import { TournamentStateBadge } from "@/domains/esports/components/TournamentStateBadge";
 import { StandingsTable } from "@/domains/esports/components/StandingsTable";
 import { BracketView } from "@/domains/esports/components/BracketView";
 import { MatchRow } from "@/domains/esports/components/MatchRow";
@@ -25,31 +38,8 @@ interface PageProps {
   params: { slug: string };
 }
 
-/**
- * A tournament's name, as a reader writes it.
- *
- * Feed slugs are machine-shaped ("lck_split_2_2026") and title-casing them
- * alone produces "Lck Split 2 2026" — every league acronym mangled. The slug
- * usually opens with the league's own slug, so that prefix is swapped for the
- * league's real name and only the rest is title-cased.
- */
 function tournamentName(entry: TournamentEntry): string {
-  const { tournament, league } = entry;
-  const titleCase = (value: string): string =>
-    value
-      .replace(/[_-]+/g, " ")
-      .replace(/\b\w/g, (character) => character.toUpperCase())
-      .trim();
-
-  const slug = tournament.slug.toLowerCase();
-  const prefix = league.slug.toLowerCase();
-
-  if (slug === prefix) return league.name;
-  if (slug.startsWith(`${prefix}_`) || slug.startsWith(`${prefix}-`)) {
-    return `${league.name} ${titleCase(slug.slice(prefix.length + 1))}`.trim();
-  }
-
-  return titleCase(tournament.slug);
+  return nameOf(entry.tournament, entry.league);
 }
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
@@ -77,45 +67,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-type TournamentState = "upcoming" | "running" | "ended";
-
-function stateOf(entry: TournamentEntry, today: string): TournamentState {
-  const { startDate, endDate } = entry.tournament;
-  if (startDate && startDate > today) return "upcoming";
-  if (endDate && endDate < today) return "ended";
-  return "running";
-}
-
-/**
- * The team that won the last decided match of the last bracket stage.
- *
- * Only claimed for a tournament that has actually ended: the final of a running
- * bracket is a match nobody has played, and naming a champion from a
- * semi-final winner would be worse than naming none.
- */
-function champion(stages: StandingsStage[], state: TournamentState): string | null {
-  if (state !== "ended") return null;
-
-  const brackets = stages.filter(
-    (stage): stage is Extract<StandingsStage, { kind: "bracket" }> => stage.kind === "bracket"
-  );
-  const last = brackets[brackets.length - 1];
-  if (!last) return null;
-
-  const final = [...last.matches].reverse().find((match) => bracketWinner(match) !== null);
-  return final ? (bracketWinner(final)?.name ?? null) : null;
-}
-
 function Header({
   entry,
   state,
-  winner,
+  timing,
+  champion,
 }: {
   entry: TournamentEntry;
   state: TournamentState;
-  winner: string | null;
+  timing: string;
+  champion: TournamentChampion | null;
 }): React.ReactElement {
   const { tournament, league } = entry;
+  const dates = formatTournamentDates(tournament);
 
   return (
     <header className="mb-8 flex flex-wrap items-start gap-4">
@@ -134,17 +98,31 @@ function Header({
         <h1 className="font-display text-3xl font-black uppercase text-text md:text-4xl">
           {tournamentName(entry)}
         </h1>
-        <p className="mt-1 font-mono text-[11px] uppercase tracking-label text-text-muted">
-          <Link href={`/esports/leagues/${league.slug}`} className="hover:text-accent">
+        <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-text-muted">
+          <Link
+            href={`/esports/leagues/${league.slug}`}
+            className="font-mono text-[11px] uppercase tracking-label hover:text-accent"
+          >
             {league.name}
           </Link>
-          {tournament.startDate ? ` · ${tournament.startDate}` : ""}
-          {tournament.endDate ? ` → ${tournament.endDate}` : ""}
-          {state === "running" ? " · Running" : ""}
+          {dates && <span>{dates}</span>}
+          <TournamentStateBadge state={state} detail={timing} />
         </p>
-        {winner && (
-          <p className="mt-2 text-sm text-text-body">
-            Won by <span className="font-bold text-text">{winner}</span>.
+        {champion && (
+          <p className="mt-3 text-sm text-text-body">
+            Won by <span className="font-bold text-text">{champion.winner.name}</span>
+            {champion.runnerUp ? (
+              <>
+                , {champion.score} over {champion.runnerUp.name} in the{" "}
+                <Link
+                  href={`/esports/matches/${champion.matchId}`}
+                  className="text-accent hover:underline"
+                >
+                  final
+                </Link>
+              </>
+            ) : null}
+            .
           </p>
         )}
       </div>
@@ -198,9 +176,11 @@ export default async function TournamentPage({ params }: PageProps): Promise<Rea
   const events = [...upcoming, ...completed].filter(inTournament);
   const startTimes = new Map(events.map((event) => [event.matchId, event.startTime]));
 
-  const today = new Date().toISOString().slice(0, 10);
-  const state = stateOf(entry, today);
-  const winner = champion(stages, state);
+  const today = isoDay(new Date());
+  const state = tournamentState(tournament, today);
+  // Only claimed once the tournament has ended: the "final" of a running
+  // bracket is a match nobody has played.
+  const champion = state === "ended" ? tournamentChampion(stages) : null;
 
   const results = completed.filter(inTournament).slice(0, 10);
   const next = upcoming.filter(inTournament).slice(0, 10);
@@ -223,7 +203,12 @@ export default async function TournamentPage({ params }: PageProps): Promise<Rea
         ]}
       />
 
-      <Header entry={entry} state={state} winner={winner} />
+      <Header
+        entry={entry}
+        state={state}
+        timing={relativeTiming(tournament, today)}
+        champion={champion}
+      />
 
       {stages.length === 0 ? (
         <p className="gaming-card notch-sm px-4 py-5 text-sm text-text-muted">

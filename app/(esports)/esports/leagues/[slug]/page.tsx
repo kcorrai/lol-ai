@@ -11,6 +11,11 @@ import {
   primaryTable,
   getUpcoming,
   getCompleted,
+  formatTournamentDates,
+  isoDay,
+  relativeTiming,
+  tournamentName,
+  tournamentState,
 } from "@/domains/esports";
 import type { EsportsLeague, EsportsTournament } from "@/domains/esports";
 import { MatchRow } from "@/domains/esports/components/MatchRow";
@@ -50,20 +55,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-function splitLabel(tournament: EsportsTournament): string {
-  // Feed slugs are machine-shaped ("lec_split_3_2026") — the words are right,
-  // the punctuation is not.
-  return tournament.slug.replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
-type TournamentState = "upcoming" | "running" | "ended";
-
-function tournamentState(tournament: EsportsTournament, today: string): TournamentState {
-  if (tournament.startDate && tournament.startDate > today) return "upcoming";
-  if (tournament.endDate && tournament.endDate < today) return "ended";
-  return "running";
-}
-
 function LeagueHeader({
   league,
   tournament,
@@ -90,7 +81,7 @@ function LeagueHeader({
         </h1>
         <p className="mt-1 font-mono text-[11px] uppercase tracking-label text-text-muted">
           {league.region.toLowerCase()}
-          {tournament ? ` · ${splitLabel(tournament)}` : ""}
+          {tournament ? ` · ${tournamentName(tournament, league)}` : ""}
         </p>
       </div>
     </header>
@@ -111,7 +102,7 @@ export default async function LeaguePage({ params }: PageProps): Promise<React.R
   const stages = current ? await getStandings(current.id) : [];
   const table = primaryTable(stages);
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = isoDay(new Date());
   const currentState = current ? tournamentState(current, today) : null;
   // A concluded split leaves the reader asking "so when is the next one?" —
   // for Worlds and MSI that gap is most of the year.
@@ -143,8 +134,9 @@ export default async function LeaguePage({ params }: PageProps): Promise<React.R
 
       {currentState === "ended" && nextUp && (
         <p className="gaming-card notch-sm mb-8 px-4 py-3 text-sm text-text-body">
-          <span className="text-text">{splitLabel(nextUp)}</span> starts {nextUp.startDate}. Below
-          is how {splitLabel(current!)} finished.
+          <span className="text-text">{tournamentName(nextUp, league)}</span>:{" "}
+          {relativeTiming(nextUp, today).toLowerCase()}. Below is how{" "}
+          {current ? tournamentName(current, league) : "the last split"} finished.
         </p>
       )}
 
@@ -221,14 +213,13 @@ export default async function LeaguePage({ params }: PageProps): Promise<React.R
                   href={`/esports/tournaments/${tournament.slug}`}
                   className={`hover:text-accent ${tournament.id === current?.id ? "text-text" : "text-text-body"}`}
                 >
-                  {splitLabel(tournament)}
+                  {tournamentName(tournament, league)}
                   {tournament.id === current?.id && (
                     <span className="hud-label ml-2 text-accent">Current</span>
                   )}
                 </Link>
                 <span className="font-mono text-[11px] text-text-faint">
-                  {tournament.startDate ?? "—"}
-                  {tournament.endDate ? ` → ${tournament.endDate}` : ""}
+                  {formatTournamentDates(tournament) || "—"}
                 </span>
               </li>
             ))}
