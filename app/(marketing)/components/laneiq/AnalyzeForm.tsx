@@ -10,8 +10,9 @@ import { DEFAULT_REGION } from "@/lib/riot/regions";
 // Shown one at a time while the request is in flight. The work is real, but it
 // finishes faster than a player can read four lines — so these advance on a timer
 // rather than tracking actual pipeline stages.
+// The first line names MATCH_DEPTH (src/domains/riot/services/preview/previewSource.ts).
 const STEPS: readonly string[] = [
-  "Pulling last 20 ranked matches…",
+  "Pulling last 10 ranked matches…",
   "Parsing timeline events…",
   "Grading against your rank…",
   "Writing the verdict…",
@@ -43,6 +44,10 @@ export function AnalyzeForm(): React.ReactElement {
     setError(null);
     setResult(null);
 
+    if (!input.trim()) {
+      setError("Enter your Riot ID first — GameName#TAG");
+      return;
+    }
     const parts = input.trim().split("#");
     if (parts.length !== 2 || !parts[0] || !parts[1]) {
       setError("Format: GameName#TAG");
@@ -90,9 +95,11 @@ export function AnalyzeForm(): React.ReactElement {
           onRegionChange={setRegion}
         />
 
+        {/* Never disabled for an empty box: a greyed-out button read as broken, and it left the
+            header's buttons as the brightest thing in the hero. An empty submit explains itself. */}
         <button
           type="submit"
-          disabled={loading || !input.trim()}
+          disabled={loading}
           className="tag-cut flex h-12 items-center justify-center gap-2 bg-accent px-6 font-display text-xs font-bold uppercase tracking-[0.1em] text-background transition-colors duration-150 hover:bg-acid-400 active:translate-y-px active:bg-acid-600 disabled:bg-line-2 disabled:text-text-faint"
         >
           {loading ? "Analyzing" : "Analyze"}

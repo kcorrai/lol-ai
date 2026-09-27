@@ -85,11 +85,10 @@ const MATCHES: ReadonlyArray<{
   a: ProTeam;
   b: ProTeam;
   score: string;
-  live: boolean;
 }> = [
-  { league: "LEC", a: PRO_TEAMS.G2, b: PRO_TEAMS.FNC, score: "1 – 0", live: true },
-  { league: "LCK", a: PRO_TEAMS.T1, b: PRO_TEAMS.GEN, score: "2 – 1", live: false },
-  { league: "LPL", a: PRO_TEAMS.BLG, b: PRO_TEAMS.JDG, score: "0 – 0", live: false },
+  { league: "LEC", a: PRO_TEAMS.G2, b: PRO_TEAMS.FNC, score: "1 – 0" },
+  { league: "LCK", a: PRO_TEAMS.T1, b: PRO_TEAMS.GEN, score: "2 – 1" },
+  { league: "LPL", a: PRO_TEAMS.BLG, b: PRO_TEAMS.JDG, score: "0 – 0" },
 ];
 
 /**
@@ -117,7 +116,9 @@ function Crest({ team, size = 20 }: { team: ProTeam; size?: number }): React.Rea
 
 export function EsportsVisual(): React.ReactElement {
   return (
-    <Frame label="// Live now">
+    // These scores are fixed. The frame used to say "Live now" over them with a live dot, a
+    // claim anyone who follows the leagues could check and find false.
+    <Frame label="// Illustration · scoreboard">
       {MATCHES.map((m) => (
         <Row key={`${m.a.code}${m.b.code}`}>
           <div className="grid grid-cols-[40px_1fr_auto] items-center gap-3">
@@ -131,10 +132,7 @@ export function EsportsVisual(): React.ReactElement {
               <Crest team={m.b} />
               <span className="truncate">{m.b.code}</span>
             </span>
-            <span className={`font-mono text-[13px] ${m.live ? "text-accent" : "text-text-body"}`}>
-              {m.live ? "● " : ""}
-              {m.score}
-            </span>
+            <span className="font-mono text-[13px] text-text-body">{m.score}</span>
           </div>
         </Row>
       ))}
