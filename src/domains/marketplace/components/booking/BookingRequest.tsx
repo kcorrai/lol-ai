@@ -3,9 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { isScheduled } from "@/domains/marketplace/policy";
 import type { Listing } from "@/domains/marketplace/types";
@@ -14,6 +12,7 @@ import { useBookingDraft } from "@/hooks/useBookingDraft";
 import { SlotPicker } from "@/domains/marketplace/components/SlotPicker";
 import { MatchPicker } from "@/domains/marketplace/components/booking/MatchPicker";
 import { BookingSummary } from "@/domains/marketplace/components/booking/BookingSummary";
+import { SubmitButtons } from "@/domains/marketplace/components/booking/SubmitButtons";
 import { BookingStep as Step } from "@/domains/marketplace/components/booking/BookingStep";
 
 const MIN_GOAL = 10;
@@ -53,6 +52,16 @@ export function BookingRequest({
   const slots = useCoachSlots(coach.slug, scheduled ? listing.id : null);
   const create = useCreateBooking();
   const [error, setError] = useState<string | null>(null);
+
+  // A prefilled or restored time is only a suggestion: once the coach's free
+  // slots are known, one that is no longer among them is dropped rather than
+  // sent to be refused.
+  const freeSlots = slots.data?.slots;
+  useEffect(() => {
+    if (!freeSlots || !draft.start) return;
+    const wanted = Date.parse(draft.start);
+    if (!freeSlots.some((slot) => Date.parse(slot.start) === wanted)) update({ start: null });
+  }, [freeSlots, draft.start, update]);
 
   const slotOk = !scheduled || Boolean(draft.start);
   const sourceOk = scheduled || draft.matchIds.length > 0 || Boolean(draft.vodUrl.trim());
@@ -166,31 +175,13 @@ export function BookingRequest({
           </p>
         )}
 
-        {signedIn ? (
-          <Button
-            onClick={() => void submit()}
-            disabled={!ready || create.isPending}
-            className="w-full"
-          >
-            {create.isPending ? "Sending…" : "Send request"}
-            <ArrowRight className="h-4 w-4" aria-hidden />
-          </Button>
-        ) : (
-          <>
-            <Button onClick={() => signInFirst("/login")} disabled={!ready} className="w-full">
-              Sign in to send request
-              <ArrowRight className="h-4 w-4" aria-hidden />
-            </Button>
-            <button
-              type="button"
-              onClick={() => signInFirst("/register")}
-              disabled={!ready}
-              className="text-center text-[12.5px] text-text-muted underline-offset-4 hover:text-accent hover:underline disabled:opacity-50"
-            >
-              New here? Create a free account — your request is kept
-            </button>
-          </>
-        )}
+        <SubmitButtons
+          signedIn={signedIn}
+          ready={ready}
+          pending={create.isPending}
+          onSubmit={() => void submit()}
+          onSignIn={signInFirst}
+        />
         {hint && <p className="text-center text-[12px] text-text-muted">{hint}</p>}
         <Link
           href={`/coaches/${coach.slug}`}

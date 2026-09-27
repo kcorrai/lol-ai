@@ -7,6 +7,7 @@ import type { BookingSummary } from "@/domains/marketplace/types";
 
 const SUMMARY_SELECT = {
   id: true,
+  listingId: true,
   kind: true,
   status: true,
   startTime: true,
@@ -50,6 +51,7 @@ type Row = {
 function toSummary(row: Row): BookingSummary {
   return {
     id: row.id,
+    listingId: row.listingId,
     kind: row.kind,
     status: row.status,
     startTime: row.startTime?.toISOString() ?? null,

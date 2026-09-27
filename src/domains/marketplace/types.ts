@@ -101,6 +101,8 @@ export interface Slot {
 /** A booking as either side sees it in their own list. */
 export interface BookingSummary {
   id: string;
+  /** What was booked, so the student can ask for the same thing again. */
+  listingId: string;
   kind: SessionKind;
   status: BookingStatus;
   /** Null for the unscheduled kind. ISO, UTC. */
