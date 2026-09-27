@@ -1,5 +1,6 @@
 import { parseRegion, parseTier } from "@/domains/meta/services/opggShared";
 import { parsePosition, POSITION_SLUG } from "@/domains/meta/positions";
+import { ANY, FILTER_SEGMENT, type FilterRoute } from "@/lib/routing/filterRewrite";
 
 // Filtered tool pages, served from the page cache (ADR-061).
 //
@@ -15,17 +16,7 @@ import { parsePosition, POSITION_SLUG } from "@/domains/meta/positions";
 //
 // Imports are the two constant-only modules, never the domain index: this runs in middleware.
 
-/** Stands in for a filter that is not set; never a valid tier, region or role. */
-export const ANY = "any";
-
-/** The internal segment. Requests that name it directly are refused in middleware. */
-export const FILTER_SEGMENT = "f";
-
-export type ToolFilterRoute =
-  | { kind: "rewrite"; pathname: string }
-  | { kind: "redirect"; pathname: string }
-  | { kind: "not-found" }
-  | null;
+export type ToolFilterRoute = FilterRoute;
 
 const TIER_LIST_ROLE = /^\/tools\/tier-list\/([^/]+)$/;
 const COUNTERS = /^\/counters\/([^/]+)$/;
@@ -64,9 +55,4 @@ export function toolFilterRoute(pathname: string, query: URLSearchParams): ToolF
   }
 
   return null;
-}
-
-/** The segment back to the value the page expects, or undefined for "not set". */
-export function fromSegment(segment: string): string | undefined {
-  return segment === ANY ? undefined : segment;
 }

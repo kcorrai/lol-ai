@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fromSegment, toolFilterRoute } from "./toolFilterRoutes";
+import { toolFilterRoute } from "./toolFilterRoutes";
 
 const route = (path: string, query = "") => toolFilterRoute(path, new URLSearchParams(query));
 
@@ -46,12 +46,5 @@ describe("toolFilterRoute", () => {
   it("leaves the rest of the tools alone", () => {
     expect(route("/counters/Jhin/opengraph-image-abc")).toBeNull();
     expect(route("/tools/counter-picker", "tier=emerald_plus")).toBeNull();
-  });
-});
-
-describe("fromSegment", () => {
-  it("reads the placeholder as not set", () => {
-    expect(fromSegment("any")).toBeUndefined();
-    expect(fromSegment("emerald_plus")).toBe("emerald_plus");
   });
 });
