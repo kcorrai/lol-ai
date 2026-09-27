@@ -8,12 +8,7 @@ import { tierLabel } from "@/lib/riot/rankDisplay";
 import { Button } from "@/components/ui/button";
 import { useRiotAccounts } from "@/hooks/useRiotAccounts";
 import { useRankedData } from "@/hooks/useRankedData";
-import {
-  FOCUS_AREAS,
-  goalFor,
-  quizResultPath,
-  type QuizAnswers,
-} from "@/lib/coachMatch/matchQuiz";
+import { FOCUS_AREAS, goalFor, quizResultPath, type QuizAnswers } from "@/lib/coachMatch/matchQuiz";
 import { rememberGoal } from "@/lib/coachMatch/carriedGoal";
 import { Choice, Question } from "@/domains/marketplace/components/QuizParts";
 import { RoleIcon } from "@/domains/marketplace/components/hud/RoleIcon";

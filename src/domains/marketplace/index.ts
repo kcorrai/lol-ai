@@ -99,6 +99,7 @@ export {
   getCoachBySlug,
   getCoachProfilePage,
   storefrontTotals,
+  newCoaches,
 } from "@/domains/marketplace/services/coachSearchService";
 export type { StorefrontTotals } from "@/domains/marketplace/services/coachSearchService";
 

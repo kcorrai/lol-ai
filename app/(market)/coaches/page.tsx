@@ -11,10 +11,16 @@ import {
   pageOf,
   storefrontTotals,
   compareRanks,
+  newCoaches,
 } from "@/domains/marketplace";
 import type { CoachCard } from "@/domains/marketplace/types";
 import { Button } from "@/components/ui/button";
 import { GoalCarrier } from "@/domains/marketplace/components/GoalCarrier";
+import {
+  CoachOnLaneIq,
+  HowItWorks,
+  NewCoachesStrip,
+} from "@/domains/marketplace/components/StorefrontSections";
 import { StorefrontHero } from "@/domains/marketplace/components/StorefrontHero";
 import { CoachCardTile } from "@/domains/marketplace/components/CoachCardTile";
 import { CoachFilters } from "@/domains/marketplace/components/CoachFilters";
@@ -40,8 +46,13 @@ interface Props {
 
 export default async function CoachesPage({ searchParams }: Props) {
   const query = parseSearchQuery(searchParams);
-  const [result, totals] = await Promise.all([searchCoaches(query), storefrontTotals()]);
   const filtered = isFiltered(query);
+  const firstPage = !filtered && pageOf(query) === 1;
+  const [result, totals, fresh] = await Promise.all([
+    searchCoaches(query),
+    storefrontTotals(),
+    firstPage ? newCoaches(3) : Promise.resolve([]),
+  ]);
 
   const coaches =
     query.sort === "price_asc"
@@ -132,6 +143,13 @@ export default async function CoachesPage({ searchParams }: Props) {
             />
           </>
         )}
+
+        {/* New coaches already on this page are not shown twice. */}
+        <NewCoachesStrip
+          coaches={fresh.filter((c) => !coaches.some((shown) => shown.slug === c.slug))}
+        />
+        {firstPage && <HowItWorks />}
+        <CoachOnLaneIq />
       </div>
     </>
   );
