@@ -86,9 +86,11 @@ export function buildPrompt(input: CoachingInput, reportType: ReportType): Built
     .filter(Boolean)
     .join("\n");
 
-  const systemAddendum = isAram ? ARAM_SYSTEM_ADDENDUM : "";
-  const systemPrompt = `${SYSTEM_PROMPT_CORE}${systemAddendum}\n\nANALYSIS CONTEXT:\n${contextInjection}`;
-  const userMessage = `Analyze this player's performance data and provide coaching:\n\n${JSON.stringify(input, null, 2)}`;
+  // The system prompt holds only text that is identical across players, so providers can bill it
+  // from their prompt cache; anything about this player goes in the user message after it. The data
+  // is serialised without indentation because every space of pretty-printing is a paid token.
+  const systemPrompt = `${SYSTEM_PROMPT_CORE}${isAram ? ARAM_SYSTEM_ADDENDUM : ""}`;
+  const userMessage = `ANALYSIS CONTEXT:\n${contextInjection}\n\nAnalyze this player's performance data and provide coaching:\n\n${JSON.stringify(input)}`;
 
   return { systemPrompt, userMessage };
 }
