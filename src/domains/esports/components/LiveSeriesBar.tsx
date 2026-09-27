@@ -17,11 +17,11 @@ function LiveCard({ event }: { event: EsportsEvent }): React.ReactElement {
       <span className="flex items-center justify-between gap-3 border-b border-line-1 bg-surface-2 px-4 py-2.5">
         {/* `min-w-0` is what lets `truncate` do anything: a flex item's automatic minimum size
             is its content, so without it the text refuses to shrink and overflows instead. */}
-        <span className="min-w-0 truncate font-mono text-[10px] uppercase tracking-label text-text-body">
+        <span className="min-w-0 truncate font-mono text-[11px] uppercase tracking-label text-text-body">
           {event.league.name}
           {event.blockName ? ` · ${event.blockName}` : ""}
         </span>
-        <span className="flex shrink-0 items-center gap-1.5 font-mono text-[10px] uppercase tracking-label text-danger">
+        <span className="flex shrink-0 items-center gap-1.5 font-mono text-[11px] uppercase tracking-label text-danger">
           <span className="h-1.5 w-1.5 bg-danger motion-safe:animate-pulse" aria-hidden />
           Live
         </span>
@@ -43,7 +43,7 @@ function LiveCard({ event }: { event: EsportsEvent }): React.ReactElement {
             <span className="mx-1.5 text-text-faint">–</span>
             {away?.gameWins ?? 0}
           </span>
-          <span className="mt-1.5 block font-mono text-[9px] uppercase tracking-label text-text-faint">
+          <span className="mt-1.5 block font-mono text-[11px] uppercase tracking-label text-text-faint">
             {event.bestOf ? `Bo${event.bestOf}` : "Series"}
           </span>
         </span>
@@ -56,12 +56,12 @@ function LiveCard({ event }: { event: EsportsEvent }): React.ReactElement {
       </span>
 
       <span className="flex items-center justify-between gap-3 border-t border-line-1 px-4 py-2.5">
-        <span className="min-w-0 truncate font-mono text-[10.5px] tracking-[0.1em] text-text-muted">
+        <span className="min-w-0 truncate font-mono text-[11px] tracking-[0.1em] text-text-muted">
           {event.streams.length > 0
             ? `${event.streams.length} ${event.streams.length === 1 ? "stream" : "streams"} live`
             : "In progress"}
         </span>
-        <span className="shrink-0 font-mono text-[10.5px] uppercase tracking-label text-accent">
+        <span className="shrink-0 font-mono text-[11px] uppercase tracking-label text-accent">
           Watch →
         </span>
       </span>
@@ -84,7 +84,7 @@ export function LiveSeriesBar({ events }: { events: EsportsEvent[] }): React.Rea
       <div className="mx-auto max-w-[1240px] px-5 py-5 md:px-8">
         <div className="mb-3 flex items-center gap-3">
           <span className="h-[7px] w-[7px] bg-danger motion-safe:animate-pulse" aria-hidden />
-          <h2 className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-text">
+          <h2 className="font-mono text-[11px] uppercase tracking-[0.18em] text-text">
             Live right now
           </h2>
           <span className="h-px flex-1 bg-line-1" aria-hidden />

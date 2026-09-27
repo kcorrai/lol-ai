@@ -33,7 +33,7 @@ export function StatBlock({
       <p className="mt-1.5 flex items-baseline gap-2">
         <span className={`font-mono text-2xl font-bold leading-none ${TONE[tone]}`}>{value}</span>
         {unit && (
-          <span className="font-mono text-[10px] uppercase tracking-label text-text-faint">
+          <span className="font-mono text-[11px] uppercase tracking-label text-text-faint">
             {unit}
           </span>
         )}

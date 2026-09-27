@@ -23,7 +23,7 @@ function Group({
   return (
     <div>
       <div className="mb-2 flex items-center gap-2.5">
-        <h3 className="font-mono text-[9.5px] uppercase tracking-[0.2em] text-accent">{title}</h3>
+        <h3 className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent">{title}</h3>
         <span className="h-px flex-1 bg-line-1" aria-hidden />
       </div>
       <div className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3">

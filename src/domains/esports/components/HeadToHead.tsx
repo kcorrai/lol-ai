@@ -37,7 +37,7 @@ export function HeadToHead({
             <span className="mx-1.5 text-text-faint">–</span>
             {record.seriesWins.b}
           </span>
-          <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-label text-text-muted">
+          <span className="mt-0.5 block font-mono text-[11px] uppercase tracking-label text-text-muted">
             {record.gameWins.a}–{record.gameWins.b} on games
           </span>
         </p>

@@ -95,10 +95,10 @@ export function ProAverages({
       <dl className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {stats(averages).map((stat) => (
           <div key={stat.label} className="gaming-card notch-sm px-3 py-3">
-            <dt className="hud-label text-[10px]">{stat.label}</dt>
+            <dt className="hud-label">{stat.label}</dt>
             <dd className="mt-1 font-mono text-lg font-bold text-text">{stat.value}</dd>
             {stat.note && (
-              <p className="mt-0.5 font-mono text-[10px] uppercase tracking-label text-text-muted">
+              <p className="mt-0.5 font-mono text-[11px] uppercase tracking-label text-text-muted">
                 {stat.note}
               </p>
             )}

@@ -29,7 +29,7 @@ export function HubLive({
         <span className="h-1.5 w-1.5 bg-danger motion-safe:animate-pulse" aria-hidden />
         <span className="font-mono text-[11px] uppercase tracking-label text-text">Live now</span>
         <span className="h-px flex-1 bg-line-1" />
-        <span className="hud-label text-[10.5px]">
+        <span className="hud-label">
           {events.length} in progress
           {/* A failed poll keeps the last scoreboard on screen and says so, rather than
               clearing it or pretending it is current. */}
@@ -60,11 +60,11 @@ export function HubLive({
                   {/* `min-w-0` is what lets `truncate` do anything at all here: a flex item's
                       automatic minimum size is its content, so without it the text refuses to
                       shrink and simply overflows instead of ellipsing. */}
-                  <span className="hud-label min-w-0 truncate text-[10.5px] text-text-body">
+                  <span className="hud-label min-w-0 truncate text-[11px] text-text-body">
                     {event.league.name}
                     {event.blockName ? ` · ${event.blockName}` : ""}
                   </span>
-                  <span className="flex shrink-0 items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-label text-danger">
+                  <span className="flex shrink-0 items-center gap-1.5 font-mono text-[11px] uppercase tracking-label text-danger">
                     <span className="h-1.5 w-1.5 bg-danger motion-safe:animate-pulse" aria-hidden />
                     Live
                   </span>
@@ -82,7 +82,7 @@ export function HubLive({
                       {away?.gameWins ?? 0}
                     </div>
                     {event.bestOf && (
-                      <div className="hud-label mt-1.5 text-[10px]">Bo{event.bestOf}</div>
+                      <div className="hud-label mt-1.5 text-[11px]">Bo{event.bestOf}</div>
                     )}
                   </div>
                   {away ? (
@@ -102,17 +102,17 @@ export function HubLive({
                     href={broadcast.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1 font-mono text-[10.5px] uppercase tracking-label text-text-body transition-colors hover:text-accent"
+                    className="flex items-center gap-1 font-mono text-[11px] uppercase tracking-label text-text-body transition-colors hover:text-accent"
                   >
                     Watch on {broadcast.provider === "twitch" ? "Twitch" : "YouTube"}
                     <ArrowUpRight aria-hidden className="h-3.5 w-3.5" />
                   </a>
                 ) : (
-                  <span className="hud-label text-[10.5px]">Draft, builds and per-game stats</span>
+                  <span className="hud-label">Draft, builds and per-game stats</span>
                 )}
                 <Link
                   href={`/esports/matches/${event.matchId}`}
-                  className="flex items-center gap-1 font-mono text-[10.5px] uppercase tracking-label text-accent"
+                  className="flex items-center gap-1 font-mono text-[11px] uppercase tracking-label text-accent"
                 >
                   Open match
                   <ArrowUpRight aria-hidden className="h-3.5 w-3.5" />

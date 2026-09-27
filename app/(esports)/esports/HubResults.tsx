@@ -25,13 +25,13 @@ export function HubResults({ events }: { events: EsportsEvent[] }): React.ReactE
             data-spoiler-scope=""
           >
             <span className="grid min-w-0 gap-0.5">
-              <span className="truncate font-mono text-[10px] uppercase tracking-label text-text-body">
+              <span className="truncate font-mono text-[11px] uppercase tracking-label text-text-body">
                 {event.league.name}
               </span>
               <MatchTime
                 startTime={event.startTime}
                 withDate
-                className="font-mono text-[9.5px] uppercase tracking-label text-text-faint [&>span]:inline [&>span]:after:content-['_']"
+                className="font-mono text-[11px] uppercase tracking-label text-text-faint [&>span]:inline [&>span]:after:content-['_']"
               />
             </span>
             <span className="order-3 col-span-2 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3.5 sm:contents">
@@ -54,7 +54,7 @@ export function HubResults({ events }: { events: EsportsEvent[] }): React.ReactE
                 <span className="hud-label">TBD</span>
               )}
             </span>
-            <span className="order-2 text-right font-mono text-[10px] uppercase tracking-label text-accent sm:order-none">
+            <span className="order-2 text-right font-mono text-[11px] uppercase tracking-label text-accent sm:order-none">
               {/* A recorded series says so, since watching it is the other
                   reason to open a result. */}
               {event.hasVod ? "Draft · VOD →" : "Draft →"}

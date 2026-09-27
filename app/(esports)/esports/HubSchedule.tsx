@@ -37,10 +37,10 @@ export function HubSchedule({ events }: { events: EsportsEvent[] }): React.React
       {groups.map((group) => (
         <div key={group.key} className="min-w-0">
           <div className="flex items-center gap-3 border border-b-0 border-line-1 bg-surface-dark px-4 py-2">
-            <span className="font-mono text-[10.5px] uppercase tracking-label text-text">
+            <span className="font-mono text-[11px] uppercase tracking-label text-text">
               {group.label}
             </span>
-            <span className="ml-auto font-mono text-[10.5px] tracking-[0.14em] text-text-faint">
+            <span className="ml-auto font-mono text-[11px] tracking-[0.14em] text-text-faint">
               {group.events.length} match{group.events.length === 1 ? "" : "es"}
             </span>
           </div>
@@ -59,11 +59,11 @@ export function HubSchedule({ events }: { events: EsportsEvent[] }): React.React
                     className="font-mono text-sm tabular-nums text-text"
                   />
                   <span className="grid min-w-0 gap-0.5">
-                    <span className="truncate font-mono text-[10px] uppercase tracking-label text-text-body">
+                    <span className="truncate font-mono text-[11px] uppercase tracking-label text-text-body">
                       {event.league.name}
                     </span>
                     {event.blockName && (
-                      <span className="truncate font-mono text-[9.5px] uppercase tracking-label text-text-faint">
+                      <span className="truncate font-mono text-[11px] uppercase tracking-label text-text-faint">
                         {event.blockName}
                       </span>
                     )}
@@ -74,7 +74,7 @@ export function HubSchedule({ events }: { events: EsportsEvent[] }): React.React
                     ) : (
                       <span className="hud-label text-right">TBD</span>
                     )}
-                    <span className="hud-label text-center text-[10.5px]">
+                    <span className="hud-label text-center text-[11px]">
                       {event.bestOf ? `Bo${event.bestOf}` : "vs"}
                     </span>
                     {away ? <TeamBadge team={away} /> : <span className="hud-label">TBD</span>}
