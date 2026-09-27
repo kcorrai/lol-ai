@@ -1,4 +1,10 @@
-import { goldDiff, sampleClock } from "@/domains/esports/timeline";
+import {
+  plotGoldCurve,
+  timeToX,
+  type CurveBox,
+  type CurvePoint,
+} from "@/domains/esports/goldCurveGeometry";
+import { sampleClock } from "@/domains/esports/timeline";
 import type { GameTimeline } from "@/domains/esports/types";
 
 /**
@@ -15,52 +21,23 @@ const HEIGHT = 200;
 const PAD_X = 8;
 const PAD_Y = 12;
 const MID = HEIGHT / 2;
-
-/** Never scale to less than this, or a level game draws a dramatic wobble. */
-const MIN_SCALE_GOLD = 2000;
+const BOX: CurveBox = { left: PAD_X, right: WIDTH - PAD_X, top: PAD_Y, bottom: HEIGHT - PAD_Y };
 
 /** A gridline every five minutes, which is how a game is talked about. */
 const GRID_SECONDS = 5 * 60;
 
-interface Point {
-  x: number;
-  y: number;
-  seconds: number;
-  diff: number;
-}
-
 /** "12:00 — blue +3,400", as one string. */
-function pointLabel(point: Point): string {
+function pointLabel(point: CurvePoint): string {
   if (point.diff === 0) return `${sampleClock(point.seconds)} — level`;
   const side = point.diff > 0 ? "blue" : "red";
   return `${sampleClock(point.seconds)} — ${side} +${Math.abs(point.diff).toLocaleString("en-US")}`;
-}
-
-function plot(timeline: GameTimeline): { points: Point[]; scale: number; span: number } {
-  const span = Math.max(...timeline.samples.map((sample) => sample.seconds), 1);
-  const scale = Math.max(
-    MIN_SCALE_GOLD,
-    ...timeline.samples.map((sample) => Math.abs(goldDiff(sample)))
-  );
-
-  const points = timeline.samples.map((sample) => {
-    const diff = goldDiff(sample);
-    return {
-      seconds: sample.seconds,
-      diff,
-      x: PAD_X + (sample.seconds / span) * (WIDTH - PAD_X * 2),
-      y: MID - (diff / scale) * (MID - PAD_Y),
-    };
-  });
-
-  return { points, scale, span };
 }
 
 export function GoldCurve({ timeline }: { timeline: GameTimeline }): React.ReactElement | null {
   // Two points is the least that draws a line rather than a dot.
   if (timeline.samples.length < 2) return null;
 
-  const { points, scale, span } = plot(timeline);
+  const { points, scale, span } = plotGoldCurve(timeline, BOX);
   const line = points.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
 
   // One closed shape, filled twice through clips that cut it at the zero line —
@@ -96,7 +73,7 @@ export function GoldCurve({ timeline }: { timeline: GameTimeline }): React.React
         </defs>
 
         {gridlines.map((at) => {
-          const x = PAD_X + (at / span) * (WIDTH - PAD_X * 2);
+          const x = timeToX(at, span, BOX);
           return (
             <g key={at}>
               <line x1={x} y1={PAD_Y} x2={x} y2={HEIGHT - PAD_Y} stroke="#20302D" strokeWidth="1" />
