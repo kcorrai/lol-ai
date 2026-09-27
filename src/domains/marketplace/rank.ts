@@ -85,6 +85,17 @@ export function formatRank(rank: Rank): string {
   return `${titleCase(rank.tier)} ${rank.division}`;
 }
 
+/**
+ * How a peak rank is written.
+ *
+ * A peak is stored without its LP, so an apex peak run through `formatRank`
+ * would claim "Master 0 LP" — a number nobody ever had. Up there the tier alone
+ * is the honest claim.
+ */
+export function formatPeak(tier: RankTier, division: RankDivision | null): string {
+  return isApex(tier) ? titleCase(tier) : `${titleCase(tier)} ${division ?? "I"}`;
+}
+
 function titleCase(tier: RankTier): string {
   return tier.charAt(0) + tier.slice(1).toLowerCase();
 }

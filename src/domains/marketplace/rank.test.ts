@@ -6,6 +6,7 @@ import {
   rankScore,
   tiersAtOrAbove,
   formatRank,
+  formatPeak,
 } from "@/domains/marketplace/rank";
 
 describe("compareRanks", () => {
@@ -117,5 +118,17 @@ describe("formatRank", () => {
       "Challenger 1204 LP"
     );
     expect(formatRank({ tier: "MASTER", division: "I" })).toBe("Master 0 LP");
+  });
+});
+
+describe("formatPeak", () => {
+  it("writes an apex peak as the tier alone, since no LP is stored for it", () => {
+    expect(formatPeak("MASTER", "I")).toBe("Master");
+    expect(formatPeak("CHALLENGER", null)).toBe("Challenger");
+  });
+
+  it("keeps the division below apex", () => {
+    expect(formatPeak("DIAMOND", "II")).toBe("Diamond II");
+    expect(formatPeak("EMERALD", null)).toBe("Emerald I");
   });
 });
