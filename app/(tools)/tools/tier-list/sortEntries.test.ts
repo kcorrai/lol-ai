@@ -11,6 +11,7 @@ const entry = (over: Partial<TierRow> & { championKey: string }): TierRow => ({
   banRate: 5,
   games: 1000,
   lowConfidence: false,
+  weakAgainst: [],
   proPickRate: null,
   ...over,
 });

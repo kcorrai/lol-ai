@@ -4,7 +4,8 @@ import Link from "next/link";
 import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { TIER_NOTE, formatGames, winRateScale } from "./tierDisplay";
 import { tierChipClass } from "@/domains/meta/tierLetter";
-import { Movement, SortButton, groupByTier } from "./TierTableParts";
+import { Movement, WeakAgainst, groupByTier } from "./TierTableParts";
+import { TierTableHeader } from "./TierTableHeader";
 import type { SortColumn, SortDirection, TierRow } from "./sortEntries";
 
 interface TierTableProps {
@@ -33,6 +34,8 @@ export function TierTable({
   showPro,
 }: TierTableProps): React.ReactElement {
   const scale = winRateScale(entries);
+  // ARAM (and a snapshot without matchup data) has nothing to put here, so the column goes.
+  const showWeak = entries.some((e) => e.weakAgainst.length > 0);
   const groups = groupByTier(entries);
   const gridTemplateColumns = [
     "44px",
@@ -42,6 +45,7 @@ export function TierTable({
     "132px",
     "82px",
     showBan ? "82px" : null,
+    showWeak ? "92px" : null,
     showPro ? "76px" : null,
   ]
     .filter(Boolean)
@@ -51,67 +55,17 @@ export function TierTable({
 
   return (
     <section className="notch overflow-x-auto border border-border bg-surface">
-      <div className="min-w-[720px]">
-        <div
-          className="grid items-center gap-3.5 border-b border-line-2 bg-surface-2 px-5 py-3 font-mono text-[10.5px] uppercase tracking-label text-text-muted"
-          style={{ gridTemplateColumns }}
-        >
-          <span>#</span>
-          <SortButton
-            label="Tier"
-            column="tier"
-            sort={sort}
-            direction={direction}
-            onSort={onSort}
-          />
-          {/* Champion is not sortable — the name column identifies a row, it doesn't rank it. */}
-          <span>Champion</span>
-          {showMovement && (
-            <span className="text-center">
-              <SortButton
-                label="Δ Patch"
-                column="movement"
-                sort={sort}
-                direction={direction}
-                onSort={onSort}
-              />
-            </span>
-          )}
-          <SortButton
-            label="Win"
-            column="winRate"
-            sort={sort}
-            direction={direction}
-            onSort={onSort}
-          />
-          <SortButton
-            label="Pick"
-            column="pickRate"
-            sort={sort}
-            direction={direction}
-            onSort={onSort}
-          />
-          {showBan && (
-            <SortButton
-              label="Ban"
-              column="banRate"
-              sort={sort}
-              direction={direction}
-              onSort={onSort}
-            />
-          )}
-          {showPro && (
-            <span title="Share of recent professional games this champion was picked in">
-              <SortButton
-                label="Pro"
-                column="pro"
-                sort={sort}
-                direction={direction}
-                onSort={onSort}
-              />
-            </span>
-          )}
-        </div>
+      <div className={showWeak ? "min-w-[820px]" : "min-w-[720px]"}>
+        <TierTableHeader
+          gridTemplateColumns={gridTemplateColumns}
+          sort={sort}
+          direction={direction}
+          onSort={onSort}
+          showBan={showBan}
+          showMovement={showMovement}
+          showWeak={showWeak}
+          showPro={showPro}
+        />
 
         {groups.map((group) => (
           <div key={`${group.letter}-${group.rows[0].championKey}`}>
@@ -193,6 +147,7 @@ export function TierTable({
                       {entry.banRate.toFixed(1)}%
                     </span>
                   )}
+                  {showWeak && <WeakAgainst entry={entry} />}
                   {showPro &&
                     (entry.proPickRate === null ? (
                       // An em dash, not 0% — the champion is absent from the pro

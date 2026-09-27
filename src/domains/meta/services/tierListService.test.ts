@@ -4,7 +4,7 @@ vi.mock("@/domains/meta/services/metaStatsService", () => ({
   getMetaSnapshot: vi.fn(),
 }));
 
-import { getTierList, tierLetter } from "./tierListService";
+import { getTierList, tierLetter, weakAgainstOf } from "./tierListService";
 import { getMetaSnapshot } from "@/domains/meta/services/metaStatsService";
 import type { ChampionMetaStats, MetaSnapshot } from "@/domains/meta/types";
 
@@ -108,5 +108,34 @@ describe("getTierList", () => {
     // Every confident row ranks above the noisy one.
     expect(list!.entries[list!.entries.length - 1].championKey).toBe("Noisy");
     expect(list!.entries.find((e) => e.championKey === "Yasuo")!.lowConfidence).toBe(false);
+  });
+});
+
+describe("weakAgainstOf", () => {
+  const keys = new Map([
+    [10, "Akshan"],
+    [11, "Zoe"],
+    [12, "Annie"],
+    [13, "Talon"],
+    [14, "Lux"],
+  ]);
+  const entry = (opponentId: number, subjectWinRate: number) => ({
+    opponentId,
+    games: 800,
+    subjectWins: 0,
+    subjectWinRate,
+  });
+
+  it("keeps the three hardest losing matchups, in order", () => {
+    const counters = [entry(10, 46), entry(11, 47), entry(12, 48), entry(13, 49), entry(14, 53)];
+    expect(weakAgainstOf(counters, keys)).toEqual(["Akshan", "Zoe", "Annie"]);
+  });
+
+  it("stops at the first matchup the champion does not lose", () => {
+    expect(weakAgainstOf([entry(10, 48), entry(11, 50), entry(12, 49)], keys)).toEqual(["Akshan"]);
+  });
+
+  it("skips an opponent the snapshot cannot name", () => {
+    expect(weakAgainstOf([entry(99, 45), entry(10, 47)], keys)).toEqual(["Akshan"]);
   });
 });

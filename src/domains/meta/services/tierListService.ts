@@ -1,5 +1,5 @@
 import { getMetaSnapshot } from "@/domains/meta/services/metaStatsService";
-import type { CanonicalPosition } from "@/domains/meta/types";
+import type { CanonicalPosition, PositionStats } from "@/domains/meta/types";
 import type { SnapshotTier } from "@/domains/meta/services/opggShared";
 
 export interface TierListEntry {
@@ -13,6 +13,7 @@ export interface TierListEntry {
   banRate: number; // 0-100
   games: number; // sample size in this lane
   lowConfidence: boolean; // sample too small for the tier/rank to be trustworthy
+  weakAgainst: string[]; // Data Dragon ids of up to 3 lane opponents that beat it, hardest first
 }
 
 export interface RoleTierList {
@@ -36,6 +37,29 @@ const MIN_PICK_RATE = 0.3;
 // the default view is unaffected. Flagged rows are kept but marked and sunk.
 const MIN_CONFIDENT_GAMES = 200;
 
+// How many "weak against" portraits a row carries — enough to name the problem, few enough to fit.
+const WEAK_AGAINST_COUNT = 3;
+
+/**
+ * The lane opponents that beat a champion, hardest first, as Data Dragon ids.
+ *
+ * The snapshot's counters are already sample-filtered and sorted by the subject's win rate, so this
+ * only keeps the losing matchups and resolves ids; an opponent the snapshot cannot name is skipped
+ * rather than shown as a broken portrait.
+ */
+export function weakAgainstOf(
+  counters: PositionStats["counters"],
+  keyById: Map<number, string>
+): string[] {
+  const keys: string[] = [];
+  for (const c of counters) {
+    if (keys.length === WEAK_AGAINST_COUNT || c.subjectWinRate >= 50) break;
+    const key = keyById.get(c.opponentId);
+    if (key) keys.push(key);
+  }
+  return keys;
+}
+
 // Returns the champion tier list for one lane, ordered best-first, or null if the
 // meta snapshot is unavailable. An optional rank bracket (tier) narrows the data
 // to that op.gg bracket (e.g. diamond_plus).
@@ -48,6 +72,7 @@ export async function getTierList(
   const snapshot = await getMetaSnapshot({ tier, region });
   if (!snapshot) return null;
 
+  const keyById = new Map(snapshot.champions.map((c) => [c.championId, c.championKey]));
   const entries: TierListEntry[] = [];
   for (const champion of snapshot.champions) {
     const stats = champion.positions.find((p) => p.position === position);
@@ -63,6 +88,7 @@ export async function getTierList(
       banRate: stats.banRate,
       games: stats.games,
       lowConfidence: stats.games < MIN_CONFIDENT_GAMES,
+      weakAgainst: weakAgainstOf(stats.counters, keyById),
     });
   }
 
@@ -116,6 +142,7 @@ export async function getAramTierList(): Promise<RoleTierList | null> {
       banRate: 0,
       games: c.overallGames,
       lowConfidence: c.overallGames > 0 && c.overallGames < MIN_CONFIDENT_GAMES,
+      weakAgainst: [], // ARAM has no lanes, so no lane opponents
     }));
 
   sortTierEntries(entries);

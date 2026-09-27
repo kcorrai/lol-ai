@@ -40,6 +40,7 @@ function tierListEntry(over: Partial<TierListEntry> = {}): TierListEntry {
     banRate: 3.2,
     games: 4250,
     lowConfidence: false,
+    weakAgainst: [],
     ...over,
   };
 }

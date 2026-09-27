@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { tierLetter } from "@/domains/meta/tierLetter";
 import { movementOf } from "./tierDisplay";
 import type { SortColumn, SortDirection } from "./sortEntries";
@@ -74,6 +76,38 @@ export function Movement({ entry }: { entry: TierListEntry }): React.ReactElemen
     <span className={`text-center font-mono text-xs ${delta > 0 ? "text-accent" : "text-danger"}`}>
       {delta > 0 ? "▲" : "▼"}
       {Math.abs(delta)}
+    </span>
+  );
+}
+
+/**
+ * The lane opponents that beat this champion, as portraits linking to the head-to-head guide.
+ * The slug is built here rather than imported: matchupSlug lives beside server-only code.
+ */
+export function WeakAgainst({ entry }: { entry: TierListEntry }): React.ReactElement {
+  if (entry.weakAgainst.length === 0) {
+    return (
+      <span
+        className="font-mono text-[13px] text-text-faint"
+        title="No losing lane matchup with enough games in this patch's sample"
+      >
+        &mdash;
+      </span>
+    );
+  }
+  return (
+    <span className="flex items-center gap-1">
+      {entry.weakAgainst.map((key) => (
+        <Link
+          key={key}
+          href={`/matchups/${[entry.championKey.toLowerCase(), key.toLowerCase()].sort().join("-vs-")}`}
+          title={`${entry.name} vs ${key}`}
+          aria-label={`${entry.name} is weak against ${key}`}
+          className="opacity-80 transition-opacity hover:opacity-100"
+        >
+          <ChampionIcon name={key} size={24} />
+        </Link>
+      ))}
     </span>
   );
 }

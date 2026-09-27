@@ -31,6 +31,7 @@ function entry(name: string, tier: number, rank: number, prevPatchRank: number):
     banRate: 2,
     games: 4000,
     lowConfidence: false,
+    weakAgainst: [],
   };
 }
 
