@@ -1547,7 +1547,7 @@ model CoachProfile {
   // and is resolved to UTC per calendar day, never once — see CoachAvailability.
   timezone String @default("UTC")
 
-  // A YouTube link the coach introduces themselves in (ADR-058). We host no
+  // A YouTube link the coach introduces themselves in (ADR-063). We host no
   // video (ADR-021): the profile embeds YouTube's own player, click-to-load.
   introVideoUrl String?
 
@@ -1647,7 +1647,7 @@ model CoachListing {
   // the promise is a calendar slot instead.
   deliveryHours Int?
 
-  // A short first session a student may take once per coach (ADR-058). The one-per-pair
+  // A short first session a student may take once per coach (ADR-063). The one-per-pair
   // rule lives in bookingService, not in a constraint, because a declined or expired
   // trial must not use it up.
   isTrial Boolean @default(false)
@@ -1796,7 +1796,7 @@ model Booking {
   @@map("bookings")
 }
 
-// What a coach asks the student to hit after a session (ADR-058). Measured, not
+// What a coach asks the student to hit after a session (ADR-063). Measured, not
 // described: each metric is read from the student's own stored ranked games, so
 // progress is a count of games, not somebody's impression.
 enum SessionGoalMetric {
