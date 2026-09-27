@@ -12,6 +12,22 @@ export {
   getTournamentIndex,
 } from "@/domains/esports/services/leagueService";
 export type { TournamentEntry } from "@/domains/esports/services/leagueService";
+export {
+  daysBetween,
+  formatTournamentDates,
+  groupTournaments,
+  isoDay,
+  relativeTiming,
+  tournamentChampion,
+  tournamentName,
+  tournamentProgress,
+  tournamentState,
+} from "@/domains/esports/tournaments";
+export type {
+  TournamentChampion,
+  TournamentState,
+  TournamentWithLeague,
+} from "@/domains/esports/tournaments";
 export { getStandings, primaryTable } from "@/domains/esports/services/standingsService";
 export { getMatch, defaultGame } from "@/domains/esports/services/matchService";
 export { getGameStats } from "@/domains/esports/services/gameStatsService";
