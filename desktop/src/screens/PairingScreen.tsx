@@ -31,7 +31,7 @@ export function PairingScreen({ pairing }: { pairing: PairingHandle }): React.Re
           <Retryable
             onRetry={retry}
             reason={state.error}
-            what="This machine holds a token, but LoL AI Coach could not be reached to confirm it.
+            what="This machine holds a token, but LaneIQ could not be reached to confirm it.
               Nothing is wrong with the pairing — the website is out of reach."
           />
         ) : state.status === "unknown" ? (
@@ -58,7 +58,7 @@ export function PairingScreen({ pairing }: { pairing: PairingHandle }): React.Re
         <HudPanel title="Pair this device">
           <div className="grid gap-4">
             <p className="text-sm text-text-body">
-              This opens LoL AI Coach in your browser and asks you to approve this machine. Nothing
+              This opens LaneIQ in your browser and asks you to approve this machine. Nothing
               to type.
             </p>
 
@@ -92,7 +92,7 @@ export function PairingScreen({ pairing }: { pairing: PairingHandle }): React.Re
       <HudPanel title="How it works">
         <ol className="grid gap-2 text-sm text-text-body">
           {[
-            "This app asks LoL AI Coach to pair, and opens the page where you say yes.",
+            "This app asks LaneIQ to pair, and opens the page where you say yes.",
             "You sign in there if you are not already, and press Approve.",
             "This window notices within a couple of seconds and finishes on its own.",
             "The token goes to your operating system's keychain, not to a file.",

@@ -1,8 +1,8 @@
 [package]
 name = "lol-ai-desktop"
 version = "0.1.0"
-description = "LoL AI Coach desktop companion"
-authors = ["LoL AI Coach"]
+description = "LaneIQ desktop companion"
+authors = ["LaneIQ"]
 license = "UNLICENSED"
 edition = "2021"
 rust-version = "1.77.2"

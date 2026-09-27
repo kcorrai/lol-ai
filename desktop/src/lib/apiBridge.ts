@@ -91,7 +91,7 @@ async function readBody(input: RequestInfo | URL, init?: RequestInit): Promise<u
   if (typeof raw !== "string") {
     // FormData, Blob and friends. Nothing behind these screens sends one, and guessing at
     // a JSON shape for it would be worse than saying so.
-    throw new Error("The desktop app can only send JSON to LoL AI Coach.");
+    throw new Error("The desktop app can only send JSON to LaneIQ.");
   }
 
   try {
@@ -135,7 +135,7 @@ export function installApiBridge(): void {
       return envelope(
         502,
         "DESKTOP_BRIDGE_FAILED",
-        typeof err === "string" ? err : "Could not reach LoL AI Coach."
+        typeof err === "string" ? err : "Could not reach LaneIQ."
       );
     }
 

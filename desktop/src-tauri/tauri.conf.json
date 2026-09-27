@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "LoL AI Coach",
+  "productName": "LaneIQ",
   "version": "0.1.0",
   "identifier": "gg.lolaicoach.desktop",
   "build": {
@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "LoL AI Coach",
+        "title": "LaneIQ",
         "width": 1100,
         "height": 720,
         "minWidth": 900,
@@ -24,7 +24,7 @@
       },
       {
         "label": "overlay",
-        "title": "LoL AI Coach overlay",
+        "title": "LaneIQ overlay",
         "url": "index.html",
         "width": 340,
         "height": 620,

@@ -120,7 +120,7 @@ describe("readChampion", () => {
   it("falls back to a plain message when the rejection is not a string", async () => {
     invoke.mockRejectedValue({ unexpected: true });
 
-    await expect(readChampion("Ahri", "MIDDLE")).rejects.toThrow("Could not reach LoL AI Coach.");
+    await expect(readChampion("Ahri", "MIDDLE")).rejects.toThrow("Could not reach LaneIQ.");
   });
 });
 

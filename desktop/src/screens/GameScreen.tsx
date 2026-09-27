@@ -130,7 +130,7 @@ function NoGame({
       body={read.reason}
       steps={[
         "Make sure a game is actually running — the port only opens in-game.",
-        "Run LoL AI Coach as administrator if the League client is elevated.",
+        "Run LaneIQ as administrator if the League client is elevated.",
         "Allow 127.0.0.1:2999 through your firewall.",
       ]}
     />

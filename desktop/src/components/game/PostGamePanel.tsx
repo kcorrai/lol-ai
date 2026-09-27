@@ -120,7 +120,7 @@ function Body({ state }: { state: PostGameState }): React.ReactElement {
         </PanelNote>
       );
     case "reporting":
-      return <PanelNote busy>Telling LoL AI Coach your game just ended…</PanelNote>;
+      return <PanelNote busy>Telling LaneIQ your game just ended…</PanelNote>;
     case "unpaired":
       return <PanelNote>Pair this machine on the Pairing screen.</PanelNote>;
     case "error":
