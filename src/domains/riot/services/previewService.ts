@@ -153,6 +153,15 @@ export async function buildAccountPreview(
  * that the landing page and the Discord bot never pay to build scoreboards they do not draw —
  * the landing page is under an LCP budget (CLAUDE.md §10).
  */
+export function publicProfileCacheKey(gameName: string, tagLine: string, region: string): string {
+  return buildCacheKey("public-profile-v1", {
+    gameName,
+    tagLine,
+    region,
+    depth: String(MATCH_DEPTH),
+  });
+}
+
 export interface PublicProfileOptions {
   /**
    * Runs once the caches have missed and before anything is asked of Riot; throw to stop there.
@@ -168,12 +177,7 @@ export async function buildPublicProfile(
   region: string,
   options: PublicProfileOptions = {}
 ): Promise<PublicProfileResponse> {
-  const cacheKey = buildCacheKey("public-profile-v1", {
-    gameName,
-    tagLine,
-    region,
-    depth: String(MATCH_DEPTH),
-  });
+  const cacheKey = publicProfileCacheKey(gameName, tagLine, region);
 
   const cached = await readCache<PublicProfileResponse>(cacheKey);
   if (cached) return cached;
@@ -206,6 +210,7 @@ export async function buildPublicProfile(
     puuid: source.account.puuid,
     mastery: await toMastery(masteryEntries),
     scoreboards,
+    fetchedAt: new Date().toISOString(),
   };
 
   await writeCache(cacheKey, "preview", result);
