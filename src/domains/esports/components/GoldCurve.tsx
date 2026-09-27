@@ -1,6 +1,8 @@
 import { GoldCurveAxes } from "@/domains/esports/components/GoldCurveAxes";
+import { GoldCurveMarkers, MARKER_LEGEND } from "@/domains/esports/components/GoldCurveMarkers";
 import {
   curveMid,
+  objectiveMarkers,
   plotGoldCurve,
   type CurveBox,
   type CurvePoint,
@@ -18,10 +20,15 @@ import type { GameTimeline } from "@/domains/esports/types";
  */
 
 const WIDTH = 640;
-const HEIGHT = 210;
-/** Room on the left for the gold labels ("+10k" is the widest), and below for minutes. */
-const BOX: CurveBox = { left: 40, right: WIDTH - 8, top: 12, bottom: HEIGHT - 20 };
+const HEIGHT = 242;
+/**
+ * Room on the left for the gold labels ("+10k" is the widest), above for blue's
+ * objective row, and below for the minutes and then red's objective row.
+ */
+const BOX: CurveBox = { left: 40, right: WIDTH - 8, top: 26, bottom: HEIGHT - 40 };
 const MID = curveMid(BOX);
+const BLUE_ROW = BOX.top - 14;
+const RED_ROW = BOX.bottom + 30;
 
 interface GoldCurveProps {
   timeline: GameTimeline;
@@ -52,6 +59,7 @@ export function GoldCurve({
   const area = `${BOX.left},${MID} ${line} ${points[points.length - 1].x.toFixed(1)},${MID}`;
 
   const last = points[points.length - 1];
+  const markers = objectiveMarkers(timeline, span, BOX);
 
   return (
     <figure className="gaming-card notch-sm px-3 py-4">
@@ -111,12 +119,21 @@ export function GoldCurve({
             <title>{pointLabel(point, blueName, redName)}</title>
           </circle>
         ))}
+
+        <GoldCurveMarkers
+          markers={markers}
+          blueY={BLUE_ROW}
+          redY={RED_ROW}
+          blueName={blueName}
+          redName={redName}
+        />
       </svg>
 
       <figcaption className="mt-2 flex flex-wrap items-baseline justify-between gap-2 font-mono text-[11px] text-text-muted">
         <span>
           Gold lead · <span className="text-accent-blue">{blueName}</span> above,{" "}
           <span className="text-danger">{redName}</span> below
+          {markers.length > 0 ? ` · ${MARKER_LEGEND}` : ""}
         </span>
         <span>
           Sampled every {timeline.intervalSeconds / 60} min

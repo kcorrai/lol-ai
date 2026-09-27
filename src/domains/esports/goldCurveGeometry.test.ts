@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  MARKER_GAP,
   MIN_SCALE_GOLD,
   goldTicks,
   niceGoldScale,
+  objectiveMarkers,
   goldToY,
   plotGoldCurve,
   timeToX,
@@ -106,5 +108,54 @@ describe("goldTicks", () => {
       "−1.5k",
       "−3k",
     ]);
+  });
+});
+
+describe("objectiveMarkers", () => {
+  const wide: CurveBox = { left: 0, right: 1000, top: 0, bottom: 100 };
+
+  it("places each objective at the sample it was first seen in", () => {
+    const markers = objectiveMarkers(
+      timeline([
+        { seconds: 240 },
+        { seconds: 480, blue: { towers: 1 } },
+        { seconds: 960, red: { barons: 1 } },
+      ]),
+      960,
+      wide
+    );
+
+    expect(markers).toEqual([
+      expect.objectContaining({ side: "blue", kind: "tower", count: 1, x: 500, seconds: 480 }),
+      expect.objectContaining({ side: "red", kind: "baron", count: 1, x: 990, seconds: 960 }),
+    ]);
+  });
+
+  it("fans out objectives that share a side and a sample", () => {
+    const markers = objectiveMarkers(
+      timeline([{ seconds: 240 }, { seconds: 480, blue: { towers: 2, dragons: 1 } }]),
+      960,
+      wide
+    );
+
+    expect(markers.map((marker) => marker.x)).toEqual([500 - MARKER_GAP / 2, 500 + MARKER_GAP / 2]);
+    expect(markers[0]).toMatchObject({ kind: "tower", count: 2 });
+  });
+
+  it("pulls a fan at the edge inside the chart as a whole", () => {
+    const markers = objectiveMarkers(
+      timeline([{ seconds: 240 }, { seconds: 480, red: { towers: 1, inhibitors: 1 } }]),
+      480,
+      wide
+    );
+
+    expect(markers.map((marker) => marker.x)).toEqual([
+      1000 - MARKER_GAP * 1.5,
+      1000 - MARKER_GAP / 2,
+    ]);
+  });
+
+  it("returns nothing for a game with no objectives", () => {
+    expect(objectiveMarkers(timeline([{ seconds: 240 }, { seconds: 480 }]), 480, wide)).toEqual([]);
   });
 });
