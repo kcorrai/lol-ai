@@ -1,4 +1,4 @@
-# LoL AI Coach — desktop companion
+# LaneIQ — desktop companion
 
 Reads Riot's **Live Client Data API** on the player's own machine. That API listens on
 `https://127.0.0.1:2999` and nothing running on a server can reach it — which is the whole
@@ -288,7 +288,7 @@ frontend is bundled, so it needs no Vite. `LOLAI_API_BASE` is there because a re
 otherwise compiles in `https://lolaicoach.gg`, which does not resolve yet; a build for a real
 release drops it.
 
-The third puts "LoL AI Coach" on the desktop and in the Start menu, pointing at
+The third puts "LaneIQ" on the desktop and in the Start menu, pointing at
 `scripts/launch.vbs` rather than at the exe. The launcher is what makes the shortcut worth
 having: the coaching half of every screen goes to the website, so it starts the Postgres
 cluster at `C:\pgdata\lolai` and the site's own `npm run dev` when they are not already up,
@@ -356,5 +356,5 @@ exists risks the Riot API key for the whole product, the website included.
 cargo build --features lcu     # only for a build that has been through Riot's approval
 ```
 
-LoL AI Coach isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot
+LaneIQ isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot
 Games or anyone officially involved in producing or managing Riot Games properties.

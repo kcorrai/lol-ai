@@ -70,7 +70,7 @@ export function renderWeeklyEmail(stats: WeeklyStats): { subject: string; html: 
 
         <!-- Header -->
         <tr><td style="background:#C6FF3D15;border-bottom:1px solid #20302D;padding:20px 24px">
-          <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#C6FF3D">LoL AI Coach</p>
+          <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#C6FF3D">LaneIQ</p>
           <p style="margin:4px 0 0;font-size:18px;font-weight:700;color:#E9F5EE">Weekly Update — ${safeGameName}</p>
         </td></tr>
 
@@ -122,7 +122,7 @@ export function renderWeeklyEmail(stats: WeeklyStats): { subject: string; html: 
         <!-- Footer -->
         <tr><td style="border-top:1px solid #20302D;padding:16px 24px;text-align:center">
           <p style="margin:0;font-size:10px;color:#6C817B">
-            LoL AI Coach isn't endorsed by Riot Games ·
+            LaneIQ isn't endorsed by Riot Games ·
             <a href="${appUrl}/privacy" style="color:#6C817B">Privacy</a> ·
             <a href="${appUrl}/settings" style="color:#6C817B">Unsubscribe</a>
           </p>

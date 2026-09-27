@@ -49,7 +49,7 @@ export async function GET(
             color: "#fff",
           }}
         >
-          LoL AI Coach
+          LaneIQ
         </div>
       </div>
       <div style={{ fontSize: 52, fontWeight: 900, lineHeight: 1.1, marginBottom: 16 }}>{name}</div>

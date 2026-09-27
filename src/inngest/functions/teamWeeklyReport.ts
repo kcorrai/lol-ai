@@ -93,7 +93,7 @@ export const teamWeeklyReport = inngest.createFunction(
         if (!resend) break;
         await resend.emails
           .send({
-            from: "LoL AI Coach <noreply@lolaicoach.gg>",
+            from: "LaneIQ <noreply@lolaicoach.gg>",
             to: email,
             subject: `${team.name} Weekly Report`,
             html,

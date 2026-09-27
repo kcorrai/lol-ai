@@ -114,6 +114,10 @@ describe("championPool", () => {
       deaths,
       assists,
       creepScore: 250,
+      startTime: "2026-09-01T10:00:00Z",
+      won: true,
+      killParticipation: 0.6,
+      durationSeconds: 1800,
     };
   }
 

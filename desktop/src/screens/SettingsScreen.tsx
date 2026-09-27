@@ -38,7 +38,7 @@ export function SettingsScreen(): React.ReactElement {
           </li>
         </ul>
         <p className="mt-4 border-t border-line-1 pt-3 text-xs text-text-muted">
-          LoL AI Coach isn&apos;t endorsed by Riot Games and doesn&apos;t reflect the views or
+          LaneIQ isn&apos;t endorsed by Riot Games and doesn&apos;t reflect the views or
           opinions of Riot Games or anyone officially involved in producing or managing Riot Games
           properties.
         </p>

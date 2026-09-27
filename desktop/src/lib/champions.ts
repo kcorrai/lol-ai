@@ -92,5 +92,5 @@ export async function readChampion(key: string, lane: Lane): Promise<DesktopCham
  * player what to do next.
  */
 function asError(err: unknown): ChampionsError {
-  return new ChampionsError(typeof err === "string" ? err : "Could not reach LoL AI Coach.");
+  return new ChampionsError(typeof err === "string" ? err : "Could not reach LaneIQ.");
 }

@@ -55,7 +55,7 @@ function TeamSide({
           {name}
         </span>
         {team.code && (
-          <span className="mt-1 block font-mono text-[10.5px] uppercase tracking-wide text-fg-4">
+          <span className="mt-1 block font-mono text-[11px] uppercase tracking-wide text-fg-4">
             {team.code}
           </span>
         )}
@@ -89,7 +89,7 @@ export function SeriesHeader({
 
   return (
     <header className="notch bg-hero-fade relative overflow-hidden border border-border bg-surface px-5 py-6 md:px-7">
-      <p className="font-mono text-[10.5px] uppercase tracking-label text-acid-500">
+      <p className="font-mono text-[11px] uppercase tracking-label text-acid-500">
         {"// "}
         {match.league.slug ? (
           <Link href={`/esports/leagues/${match.league.slug}`} className="hover:text-acid-400">
@@ -109,12 +109,15 @@ export function SeriesHeader({
         <TeamSide team={home} slug={home ? teamSlugs.get(home.id) : undefined} align="left" />
 
         <div className="text-center">
-          <div className="font-mono text-3xl font-bold tabular-nums leading-none text-fg-1 md:text-4xl">
+          <div
+            className="font-mono text-3xl font-bold tabular-nums leading-none text-fg-1 md:text-4xl"
+            data-spoiler=""
+          >
             {home?.gameWins ?? 0}
             <span className="mx-2 text-fg-4">–</span>
             {away?.gameWins ?? 0}
           </div>
-          <div className="mt-2 font-mono text-[10px] uppercase tracking-label text-fg-4">
+          <div className="mt-2 font-mono text-[11px] uppercase tracking-label text-fg-4">
             {decided ? "Result" : "Not started"}
           </div>
         </div>

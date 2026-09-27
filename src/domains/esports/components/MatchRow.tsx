@@ -28,7 +28,7 @@ function Score({ event }: { event: EsportsEvent }): React.ReactElement {
   }
 
   return (
-    <span className="whitespace-nowrap font-mono text-base font-bold text-text">
+    <span className="whitespace-nowrap font-mono text-base font-bold text-text" data-spoiler="">
       {home?.gameWins ?? 0}
       <span className="mx-1 text-text-faint">–</span>
       {away?.gameWins ?? 0}
@@ -133,10 +133,16 @@ export function MatchRow({
     showLeague ? "sm:grid-cols-[8rem_1fr_6rem]" : "sm:grid-cols-[1fr_6rem]",
   ].join(" ");
 
-  if (!href) return <article className={className}>{body}</article>;
+  if (!href) {
+    return (
+      <article className={className} data-spoiler-scope="">
+        {body}
+      </article>
+    );
+  }
 
   return (
-    <Link href={href} className={className}>
+    <Link href={href} className={className} data-spoiler-scope="">
       {body}
     </Link>
   );

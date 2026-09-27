@@ -53,7 +53,7 @@ export async function GET(req: NextRequest): Promise<Response> {
             color: "#fff",
           }}
         >
-          LoL AI Coach
+          LaneIQ
         </div>
         {region && (
           <div style={{ fontSize: 14, color: "#A7BCB5", letterSpacing: 2 }}>

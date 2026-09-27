@@ -11,6 +11,12 @@ function rate(value: number | null, digits = 1): string {
   return value === null ? "—" : value.toFixed(digits);
 }
 
+/**
+ * The player column stays put while the numbers scroll under it on a phone —
+ * a row of figures with its name scrolled away is a row of figures about nobody.
+ */
+const STICKY = "sticky left-0 z-10 bg-surface";
+
 interface Column {
   label: string;
   /** Spelled out on hover, and in the key under the tables for touch readers. */
@@ -74,7 +80,9 @@ function SideTable({
                 <th
                   key={column.label}
                   scope="col"
-                  className={`hud-label px-2 py-2 font-normal ${column.numeric ? "text-right" : ""}`}
+                  className={`hud-label px-2 py-2 font-normal ${column.numeric ? "text-right" : ""} ${
+                    column.label === "Player" ? STICKY : ""
+                  }`}
                 >
                   {column.title ? (
                     <abbr
@@ -93,7 +101,7 @@ function SideTable({
           <tbody>
             {team.participants.map((p) => (
               <tr key={p.participantId} className="border-b border-border/60 last:border-0">
-                <td className="px-2 py-2">
+                <td className={`px-2 py-2 ${STICKY}`}>
                   <span className="flex min-w-0 items-center gap-2">
                     <ChampionIcon name={p.championId} size={24} />
                     <span className="min-w-0">
@@ -167,7 +175,7 @@ export function Scoreboard({
   durationSeconds?: number | null;
 }): React.ReactElement {
   return (
-    <div className="grid gap-6">
+    <div className="grid grid-cols-1 gap-6">
       <SideTable team={blue} name={blueName} durationSeconds={durationSeconds} />
       <SideTable team={red} name={redName} durationSeconds={durationSeconds} />
       <p className="-mt-3 font-mono text-[11px] text-text-muted">{COLUMN_KEY}</p>

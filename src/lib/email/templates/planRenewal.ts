@@ -16,7 +16,7 @@ export function buildPlanRenewalEmail({ gameName, appUrl }: PlanRenewalEmailData
   subject: string;
   html: string;
 } {
-  const subject = "Your new 14-day improvement plan is ready — LoL AI Coach";
+  const subject = "Your new 14-day improvement plan is ready — LaneIQ";
   const safeName = escapeHtml(gameName);
   const safeUrl = escapeHtml(`${appUrl}/dashboard`);
 
@@ -36,7 +36,7 @@ export function buildPlanRenewalEmail({ gameName, appUrl }: PlanRenewalEmailData
           <!-- Header -->
           <tr>
             <td style="background:#0C1110;border-radius:12px 12px 0 0;padding:28px 32px;border-bottom:1px solid #20302D;">
-              <span style="font-size:18px;font-weight:700;color:#C6FF3D;letter-spacing:0.04em;">LoL AI Coach</span>
+              <span style="font-size:18px;font-weight:700;color:#C6FF3D;letter-spacing:0.04em;">LaneIQ</span>
             </td>
           </tr>
 
@@ -73,7 +73,7 @@ export function buildPlanRenewalEmail({ gameName, appUrl }: PlanRenewalEmailData
           <tr>
             <td style="padding:20px 0 0;text-align:center;">
               <p style="margin:0;font-size:11px;color:#485954;">
-                LoL AI Coach &mdash; AI-powered League of Legends coaching
+                LaneIQ &mdash; AI-powered League of Legends coaching
               </p>
             </td>
           </tr>

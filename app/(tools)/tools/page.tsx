@@ -58,7 +58,7 @@ export default async function ToolsHubPage(): Promise<React.JSX.Element> {
   const softwareJsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "LoL AI Coach Free Tools",
+    name: "LaneIQ Free Tools",
     applicationCategory: "GameApplication",
     operatingSystem: "Web",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },

@@ -1,12 +1,13 @@
 // No mark exists for the product, so the wordmark is type-set: Orbitron 800,
-// uppercase, with the middle token carrying the accent (ADR-015).
-export function Wordmark({ size = 17 }: { size?: number }): React.ReactElement {
+// uppercase, with the accent on "IQ" — the half of the name that is the product's claim
+// (ADR-015 rations the accent to one token).
+export function Wordmark({ size = 21 }: { size?: number }): React.ReactElement {
   return (
     <span
       className="whitespace-nowrap font-display font-extrabold uppercase tracking-[0.06em] text-text"
       style={{ fontSize: size }}
     >
-      LoL <span className="text-accent">AI</span> Coach
+      Lane<span className="text-accent">IQ</span>
     </span>
   );
 }

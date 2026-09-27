@@ -1,3 +1,4 @@
+import { TimeZoneNote } from "@/domains/esports/components/TimeZoneNote";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getLeagues, getUpcoming, getCompleted, getLiveEvents } from "@/domains/esports";
@@ -103,11 +104,11 @@ export default async function EsportsSchedulePage(): Promise<React.ReactElement>
                 Results
               </a>
             </nav>
-            <span className="hud-label ml-auto">Times in your own zone</span>
+            <TimeZoneNote className="hud-label ml-auto" />
           </div>
           <div className="flex flex-wrap items-center gap-2 border-t border-line-1 pt-3">
             <span className="hud-label mr-1">League</span>
-            <LeagueChips leagues={featured} />
+            <LeagueChips leagues={featured} liveSlugs={live.map((event) => event.league.slug)} />
           </div>
         </section>
 
@@ -128,13 +129,15 @@ export default async function EsportsSchedulePage(): Promise<React.ReactElement>
               action={
                 <Link
                   href="/esports/vods"
-                  className="shrink-0 font-mono text-[10.5px] uppercase tracking-label text-accent hover:underline"
+                  className="shrink-0 font-mono text-[11px] uppercase tracking-label text-accent hover:underline"
                 >
                   VOD archive →
                 </Link>
               }
             >
-              Recent results
+              {/* The window is said, not left for a reader to discover by
+                  looking for a result that is not there. */}
+              Results · last {RESULT_DAYS} days
             </HudHeading>
             <ScheduleDays events={results} descending />
           </section>

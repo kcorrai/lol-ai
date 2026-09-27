@@ -43,13 +43,13 @@ describe("generateTotpSetup", () => {
     expect(setup.otpauthUrl).toContain(`secret=${setup.secret}`);
   });
 
-  // The URI is scanned by an authenticator app; a raw "@" or space breaks the
-  // parse in some clients, so both the issuer and the account must be encoded.
+  // The URI is scanned by an authenticator app; a raw "@" or "+" breaks the parse in
+  // some clients, so the account must be encoded. The issuer names the product.
   it("url-encodes the account label", () => {
     const setup = generateTotpSetup("player+tag@example.com");
 
     expect(setup.otpauthUrl).toContain("player%2Btag%40example.com");
-    expect(setup.otpauthUrl).toContain("LoL%20AI%20Coach");
+    expect(setup.otpauthUrl).toContain("issuer=LaneIQ");
   });
 
   it("issues distinct secrets and backup codes on each call", () => {

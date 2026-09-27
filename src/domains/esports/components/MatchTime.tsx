@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { formatDate, formatTime } from "@/lib/uiLocale";
+import { useEsportsPrefsStore } from "@/lib/stores/esportsPrefsStore";
 
 interface MatchTimeProps {
   /** ISO 8601 kickoff, as published (UTC). */
@@ -34,12 +35,16 @@ function formatUtc(iso: string, withDate: boolean): Parts {
   };
 }
 
-function formatLocal(iso: string, withDate: boolean): Parts {
+/** In the zone the reader picked, or their browser's own when they have not. */
+function formatLocal(iso: string, withDate: boolean, timeZone: string | null): Parts {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return { day: null, time: "" };
+  const zone = timeZone ? { timeZone } : {};
   return {
-    day: withDate ? formatDate(date, { weekday: "short", day: "numeric", month: "short" }) : null,
-    time: formatTime(date, { hour: "2-digit", minute: "2-digit" }),
+    day: withDate
+      ? formatDate(date, { weekday: "short", day: "numeric", month: "short", ...zone })
+      : null,
+    time: formatTime(date, { hour: "2-digit", minute: "2-digit", ...zone }),
   };
 }
 
@@ -56,11 +61,12 @@ export function MatchTime({
   withDate = false,
   className = "",
 }: MatchTimeProps): React.ReactElement {
+  const timeZone = useEsportsPrefsStore((state) => state.timeZone);
   const [parts, setParts] = useState(() => formatUtc(startTime, withDate));
 
   useEffect(() => {
-    setParts(formatLocal(startTime, withDate));
-  }, [startTime, withDate]);
+    setParts(formatLocal(startTime, withDate, timeZone));
+  }, [startTime, withDate, timeZone]);
 
   return (
     <time dateTime={startTime} className={className}>

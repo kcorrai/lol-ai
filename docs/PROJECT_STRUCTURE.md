@@ -1,4 +1,4 @@
-# Project Structure — LoL AI Coach
+# Project Structure — LaneIQ
 
 **Version:** 1.0
 

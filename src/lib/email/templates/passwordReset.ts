@@ -8,7 +8,7 @@ function escapeHtml(str: string): string {
 }
 
 export function buildPasswordResetEmail(resetUrl: string): { subject: string; html: string } {
-  const subject = "Reset your LoL AI Coach password";
+  const subject = "Reset your LaneIQ password";
   const safeUrl = escapeHtml(resetUrl);
 
   const html = `<!DOCTYPE html>
@@ -28,7 +28,7 @@ export function buildPasswordResetEmail(resetUrl: string): { subject: string; ht
           <tr>
             <td style="background:#0C1110;border-radius:12px 12px 0 0;padding:28px 32px;border-bottom:1px solid #20302D;">
               <span style="font-size:18px;font-weight:700;color:#C6FF3D;letter-spacing:0.04em;">
-                LoL AI Coach
+                LaneIQ
               </span>
             </td>
           </tr>
@@ -40,7 +40,7 @@ export function buildPasswordResetEmail(resetUrl: string): { subject: string; ht
                 Reset your password
               </h1>
               <p style="margin:0 0 24px;font-size:14px;line-height:1.6;color:#6C817B;">
-                We received a request to reset the password for your LoL AI Coach account.
+                We received a request to reset the password for your LaneIQ account.
                 Click the button below to set a new password. This link is valid for
                 <strong style="color:#E9F5EE;">1 hour</strong>.
               </p>
@@ -77,7 +77,7 @@ export function buildPasswordResetEmail(resetUrl: string): { subject: string; ht
           <tr>
             <td style="padding:20px 0 0;text-align:center;">
               <p style="margin:0;font-size:11px;color:#485954;">
-                LoL AI Coach &mdash; AI-powered League of Legends coaching
+                LaneIQ &mdash; AI-powered League of Legends coaching
               </p>
             </td>
           </tr>

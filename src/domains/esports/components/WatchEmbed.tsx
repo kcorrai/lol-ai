@@ -39,12 +39,12 @@ export function WatchEmbed({
         <span className="tag-cut inline-grid h-11 w-11 place-items-center border border-accent/50 bg-accent/10 text-accent transition-colors group-hover:bg-accent/20">
           <Play aria-hidden className="h-4 w-4 fill-current" />
         </span>
-        <span className="font-mono text-[10.5px] uppercase tracking-label text-text-muted">
+        <span className="font-mono text-[11px] uppercase tracking-label text-text-muted">
           Play {label}
         </span>
         {/* Said once, plainly, instead of a banner: the reader is choosing to
             load someone else's player, and that is worth one line. */}
-        <span className="text-[10.5px] text-text-faint">Loads the official player</span>
+        <span className="text-[11px] text-text-faint">Loads the official player</span>
       </button>
     );
   }

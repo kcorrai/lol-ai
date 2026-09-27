@@ -53,6 +53,7 @@ function Side({
   return (
     <span
       className={`flex min-w-0 items-center gap-2.5 ${align === "right" ? "flex-row-reverse" : ""}`}
+      data-spoiler-outcome={muted ? "" : undefined}
     >
       <TeamCrest src={team.image} code={team.code || team.name} size={24} />
       <span
@@ -102,9 +103,10 @@ export function SeriesRow({
       <span className="grid gap-0.5">
         {outcome ? (
           <span
-            className={`font-mono text-[10px] font-bold uppercase tracking-label ${
+            className={`font-mono text-[11px] font-bold uppercase tracking-label ${
               outcome === "win" ? "text-accent" : "text-danger"
             }`}
+            data-spoiler=""
           >
             {outcome === "win" ? "Win" : "Loss"}
           </span>
@@ -122,16 +124,16 @@ export function SeriesRow({
             }`}
           />
         )}
-        {highlight && <span className="hud-label text-[9px]">Next up</span>}
+        {highlight && <span className="hud-label">Next up</span>}
       </span>
 
       {showLeague && (
         <span className="grid min-w-0 gap-0.5">
-          <span className="truncate font-mono text-[10px] uppercase tracking-label text-text-muted">
+          <span className="truncate font-mono text-[11px] uppercase tracking-label text-text-muted">
             {event.league.name}
           </span>
           {event.blockName && (
-            <span className="truncate font-mono text-[9px] uppercase tracking-label text-text-faint">
+            <span className="truncate font-mono text-[11px] uppercase tracking-label text-text-faint">
               {event.blockName}
             </span>
           )}
@@ -141,7 +143,10 @@ export function SeriesRow({
       <span className="col-span-2 grid min-w-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2.5 sm:col-span-3 sm:gap-3.5">
         <Side team={home} align="right" muted={decided && home?.outcome === "loss"} />
         {decided || live ? (
-          <span className="whitespace-nowrap text-center font-mono text-base font-bold text-text">
+          <span
+            className="whitespace-nowrap text-center font-mono text-base font-bold text-text"
+            data-spoiler=""
+          >
             {home?.gameWins ?? 0}
             <span className="mx-1 text-text-faint">–</span>
             {away?.gameWins ?? 0}
@@ -156,7 +161,7 @@ export function SeriesRow({
 
       {/* Hidden on phones, where the middle cell already prints the format and
           the row has no width to spare for a repeat of it. */}
-      <span className="hidden text-right font-mono text-[9.5px] uppercase tracking-label text-text-faint sm:block">
+      <span className="hidden text-right font-mono text-[11px] uppercase tracking-label text-text-faint sm:block">
         {decided ? (
           <>
             Final
@@ -177,10 +182,19 @@ export function SeriesRow({
     COLUMNS[showLeague ? "league" : "bare"][withDate ? "dated" : "clock"],
   ].join(" ");
 
-  if (!href) return <article className={className}>{body}</article>;
+  // The rail's colour is the win or the loss said in the margin.
+  const spoiler = { "data-spoiler-scope": "", "data-spoiler-rail": outcome ? "" : undefined };
+
+  if (!href) {
+    return (
+      <article className={className} {...spoiler}>
+        {body}
+      </article>
+    );
+  }
 
   return (
-    <Link href={href} className={className}>
+    <Link href={href} className={className} {...spoiler}>
       {body}
     </Link>
   );

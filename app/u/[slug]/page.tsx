@@ -70,7 +70,7 @@ export default async function PublicProfilePage({ params }: Props) {
           href="/"
           className="font-display text-base font-bold text-accent transition-opacity hover:opacity-80"
         >
-          LoL AI Coach
+          LaneIQ
         </Link>
       </nav>
 

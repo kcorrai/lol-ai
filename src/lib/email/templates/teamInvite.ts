@@ -38,7 +38,7 @@ export function buildTeamInviteEmail(data: TeamInviteEmailData): { subject: stri
           <!-- Header -->
           <tr>
             <td style="background:#0C1110;border-radius:12px 12px 0 0;padding:28px 32px;border-bottom:1px solid #20302D;">
-              <span style="font-size:18px;font-weight:700;color:#C6FF3D;letter-spacing:0.04em;">⚡ LoL AI Coach</span>
+              <span style="font-size:18px;font-weight:700;color:#C6FF3D;letter-spacing:0.04em;">⚡ LaneIQ</span>
             </td>
           </tr>
 
@@ -52,7 +52,7 @@ export function buildTeamInviteEmail(data: TeamInviteEmailData): { subject: stri
               <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#A7BCB5;">
                 <strong style="color:#E9F5EE;">${safeInviterName}</strong> has invited you to join the
                 <strong style="color:#C6FF3D;">${safeTeamName}</strong> team.
-                With LoL AI Coach, you can track your team's match analyses and coaching reports together.
+                With LaneIQ, you can track your team's match analyses and coaching reports together.
               </p>
 
               <!-- CTA -->
@@ -78,7 +78,7 @@ export function buildTeamInviteEmail(data: TeamInviteEmailData): { subject: stri
           <tr>
             <td style="background:#050706;border-radius:0 0 12px 12px;padding:20px 32px;text-align:center;">
               <p style="margin:0;font-size:11px;color:#485954;">
-                LoL AI Coach · <a href="${safeAppUrl}" style="color:#485954;">lolaicoach.gg</a><br/>
+                LaneIQ · <a href="${safeAppUrl}" style="color:#485954;">lolaicoach.gg</a><br/>
                 Didn't expect this invitation? You can ignore this email.
               </p>
             </td>

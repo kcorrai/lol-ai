@@ -1,7 +1,23 @@
 import type { EsportsEvent } from "@/domains/esports/types";
 import { formatDate } from "@/lib/uiLocale";
 
-export type DayZone = "utc" | "local";
+/**
+ * Which calendar the days are read in: UTC (the server's first paint), the
+ * browser's own zone, or a zone the reader picked by name.
+ */
+export type DayZone = "utc" | "local" | { timeZone: string };
+
+/** A picked zone as a DayZone, or the browser's own when none is picked. */
+export function zoneFor(timeZone: string | null): DayZone {
+  return timeZone ? { timeZone } : "local";
+}
+
+/** The `Intl` option that formats in this zone; empty for the browser's own. */
+export function zoneOption(zone: DayZone): { timeZone?: string } {
+  if (zone === "utc") return { timeZone: "UTC" };
+  if (zone === "local") return {};
+  return { timeZone: zone.timeZone };
+}
 
 export interface DayGroup {
   /** YYYY-MM-DD in the chosen zone. Stable enough to use as a React key. */
@@ -13,6 +29,15 @@ export interface DayGroup {
 
 function dayKey(date: Date, zone: DayZone): string {
   if (zone === "utc") return date.toISOString().slice(0, 10);
+  if (typeof zone === "object") {
+    // en-CA writes dates as YYYY-MM-DD, which is exactly the key's shape.
+    return new Intl.DateTimeFormat("en-CA", {
+      timeZone: zone.timeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(date);
+  }
   // Local: build the key from local parts rather than shifting the instant, so
   // it lands on the same calendar day the reader would say it is.
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -36,7 +61,7 @@ function dayLabel(date: Date, zone: DayZone, now: Date): string {
     weekday: "short",
     day: "numeric",
     month: "short",
-    ...(zone === "utc" ? { timeZone: "UTC" } : {}),
+    ...zoneOption(zone),
   });
 }
 

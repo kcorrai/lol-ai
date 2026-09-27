@@ -12,7 +12,7 @@ import { needsSetup, pairingStateFor } from "./usePairing";
  * the app then told a player holding a working token that nothing was stored for it.
  */
 describe("pairingStateFor", () => {
-  const message = "could not reach LoL AI Coach: connection refused";
+  const message = "could not reach LaneIQ: connection refused";
 
   it("is offline when the store holds a token and the website is out of reach", () => {
     expect(pairingStateFor({ status: "paired" }, message)).toEqual({

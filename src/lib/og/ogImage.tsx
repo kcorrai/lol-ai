@@ -29,7 +29,7 @@ export function renderOgImage({ title, subtitle, badge }: OgOptions): ImageRespo
         <div
           style={{ width: "18px", height: "18px", borderRadius: "4px", background: "#C6FF3D" }}
         />
-        <div style={{ fontSize: "30px", fontWeight: 700, color: "#E9F5EE" }}>LoL AI Coach</div>
+        <div style={{ fontSize: "30px", fontWeight: 700, color: "#E9F5EE" }}>LaneIQ</div>
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>

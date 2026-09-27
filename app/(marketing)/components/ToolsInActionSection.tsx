@@ -34,14 +34,14 @@ const TOOLS: ToolShot[] = [
     description:
       "See exactly who counters any champion — ranked by real win rate across millions of games this patch.",
     image: "/screenshots/counter-picker.jpeg",
-    alt: "LoL AI Coach counter picker showing the best counters for Yasuo",
+    alt: "LaneIQ counter picker showing the best counters for Yasuo",
   },
   {
     href: "/tools/tier-list",
     title: "Tier List",
     description: "The strongest champions per lane every patch, with live win, pick and ban rates.",
     image: "/screenshots/tier-list.jpeg",
-    alt: "LoL AI Coach tier list for the current patch",
+    alt: "LaneIQ tier list for the current patch",
   },
   {
     href: "/tools/draft-analyzer",
@@ -49,7 +49,7 @@ const TOOLS: ToolShot[] = [
     description:
       "Build both team comps and get a stats-based read on damage, frontline, scaling and every lane matchup.",
     image: "/screenshots/draft-analyzer.jpeg",
-    alt: "LoL AI Coach draft analyzer comparing two team compositions",
+    alt: "LaneIQ draft analyzer comparing two team compositions",
   },
 ];
 

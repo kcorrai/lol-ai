@@ -5,12 +5,12 @@ import { DesktopStory } from "./DesktopStory";
 import { OverlayVisual } from "../components/laneiq/desktop/OverlayVisual";
 
 export const metadata: Metadata = {
-  title: { absolute: "Desktop App — LoL AI Coach Companion for Windows, macOS and Linux" },
+  title: { absolute: "Desktop App — LaneIQ Companion for Windows, macOS and Linux" },
   description:
     "The companion reads your live League game from your own machine — the matchup, the game plan and what has already happened, in an overlay you can dismiss. Pair it in two clicks; your password never enters it.",
   alternates: { canonical: "/download" },
   openGraph: {
-    title: "LoL AI Coach — the desktop companion",
+    title: "LaneIQ — the desktop companion",
     description:
       "Live matchup reading and a game plan over your running game. Riot's Live Client API only listens on your own machine, so a website cannot do this.",
     type: "website",

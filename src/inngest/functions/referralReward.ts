@@ -37,7 +37,7 @@ export const referralReward = inngest.createFunction(
     if (user.email && resend) {
       await resend.emails
         .send({
-          from: "LoL AI Coach <noreply@lolai.coach>",
+          from: "LaneIQ <noreply@lolai.coach>",
           to: user.email,
           subject: "Your invitation was accepted — you earned 1 week of free Pro!",
           html: `<p>Hi ${user.name ?? "Coach"},</p>

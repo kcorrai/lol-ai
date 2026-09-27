@@ -26,7 +26,7 @@ export function SeriesRail({ match, activeGameId }: SeriesRailProps): React.JSX.
     <div className="grid gap-3.5 lg:sticky lg:top-4">
       {playable.length > 1 && (
         <section className="notch border border-border bg-surface">
-          <div className="border-b border-line-1 px-4 py-3 font-mono text-[10px] uppercase tracking-label text-text-muted">
+          <div className="border-b border-line-1 px-4 py-3 font-mono text-[11px] uppercase tracking-label text-text-muted">
             {"// SERIES"}
           </div>
           {playable.map((game) => {
@@ -54,7 +54,7 @@ export function SeriesRail({ match, activeGameId }: SeriesRailProps): React.JSX.
                   Game {game.number}
                 </span>
                 <span
-                  className={`ml-auto font-mono text-[10px] uppercase tracking-wide ${
+                  className={`ml-auto font-mono text-[11px] uppercase tracking-wide ${
                     game.state === "inProgress" ? "text-danger" : "text-fg-4"
                   }`}
                 >
@@ -75,7 +75,7 @@ export function SeriesRail({ match, activeGameId }: SeriesRailProps): React.JSX.
         </p>
         <Link
           href="/tools/draft-analyzer"
-          className="notch-sm inline-flex w-full items-center justify-center gap-2 border border-line-2 px-3 py-2 font-mono text-[10px] uppercase tracking-label text-fg-2 transition-colors hover:border-acid-500 hover:text-acid-500"
+          className="notch-sm inline-flex w-full items-center justify-center gap-2 border border-line-2 px-3 py-2 font-mono text-[11px] uppercase tracking-label text-fg-2 transition-colors hover:border-acid-500 hover:text-acid-500"
         >
           Open draft analyzer →
         </Link>
@@ -90,7 +90,7 @@ export function SeriesRail({ match, activeGameId }: SeriesRailProps): React.JSX.
         </p>
         <Link
           href="/esports/champions"
-          className="notch-sm inline-flex w-full items-center justify-center gap-2 border border-line-2 px-3 py-2 font-mono text-[10px] uppercase tracking-label text-fg-2 transition-colors hover:border-acid-500 hover:text-acid-500"
+          className="notch-sm inline-flex w-full items-center justify-center gap-2 border border-line-2 px-3 py-2 font-mono text-[11px] uppercase tracking-label text-fg-2 transition-colors hover:border-acid-500 hover:text-acid-500"
         >
           Pro champion meta →
         </Link>

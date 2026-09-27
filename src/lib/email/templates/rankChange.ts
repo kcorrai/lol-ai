@@ -49,7 +49,7 @@ export function buildRankChangeEmail(data: RankChangeEmailData): { subject: stri
           <!-- Header -->
           <tr>
             <td style="background:#0C1110;border-radius:12px 12px 0 0;padding:28px 32px;border-bottom:1px solid #20302D;">
-              <span style="font-size:18px;font-weight:700;color:#C6FF3D;letter-spacing:0.04em;">⚡ LoL AI Coach</span>
+              <span style="font-size:18px;font-weight:700;color:#C6FF3D;letter-spacing:0.04em;">⚡ LaneIQ</span>
             </td>
           </tr>
 
@@ -94,7 +94,7 @@ export function buildRankChangeEmail(data: RankChangeEmailData): { subject: stri
           <tr>
             <td style="background:#050706;border-radius:0 0 12px 12px;padding:20px 32px;text-align:center;">
               <p style="margin:0;font-size:11px;color:#485954;">
-                LoL AI Coach · <a href="${safeUrl}" style="color:#485954;">lolaicoach.gg</a><br/>
+                LaneIQ · <a href="${safeUrl}" style="color:#485954;">lolaicoach.gg</a><br/>
                 <a href="${safeUrl}/settings/profile" style="color:#485954;">Unsubscribe</a>
               </p>
             </td>

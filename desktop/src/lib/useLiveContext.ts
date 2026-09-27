@@ -61,7 +61,7 @@ export function useLiveContext(read: LiveRead<AllGameData>): LiveContextState {
         if (cancelled) return;
         setState({
           status: "error",
-          message: err instanceof Error ? err.message : "Could not reach LoL AI Coach.",
+          message: err instanceof Error ? err.message : "Could not reach LaneIQ.",
         });
       });
 

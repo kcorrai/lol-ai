@@ -29,7 +29,7 @@ export function AuthArt(): React.ReactElement {
       <div className="bg-hero-fade absolute inset-0" />
 
       <div className="relative flex items-center gap-3.5 px-10 pt-9">
-        <Wordmark size={19} />
+        <Wordmark size={23} />
         <span className="h-4 w-px bg-line-2" />
         <span className="font-mono text-[10.5px] uppercase tracking-label text-text-muted">
           Performance review for ranked

@@ -5,11 +5,11 @@ self.addEventListener("push", (event) => {
   try {
     payload = event.data.json();
   } catch {
-    payload = { title: "LoL AI Coach", body: event.data.text() };
+    payload = { title: "LaneIQ", body: event.data.text() };
   }
 
   const {
-    title = "LoL AI Coach",
+    title = "LaneIQ",
     body = "",
     icon = "/icon-192.png",
     url = "/dashboard",

@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 // POST /api/discord/link — completes the handshake /lolai link started.
 //
 // The token proves which Discord account asked; the session proves which
-// LoL AI Coach account is answering. Neither half alone is enough, which is
+// LaneIQ account is answering. Neither half alone is enough, which is
 // what makes this safe without an OAuth round trip.
 export const POST = withAuth(async (req: NextRequest, { userId }) => {
   let body: unknown;

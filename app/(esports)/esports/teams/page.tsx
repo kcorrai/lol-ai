@@ -137,13 +137,13 @@ export default async function EsportsTeamsPage(): Promise<React.ReactElement> {
       {playing.length > 0 && (
         <section className="mt-6">
           <div className="mb-3 flex items-center gap-3">
-            <h2 className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-accent">
+            <h2 className="font-mono text-[11px] uppercase tracking-[0.18em] text-accent">
               {"// Playing today"}
             </h2>
             <span className="h-px flex-1 bg-line-1" aria-hidden />
             <Link
               href="/esports/schedule"
-              className="shrink-0 font-mono text-[9.5px] uppercase tracking-label text-accent hover:underline"
+              className="shrink-0 font-mono text-[11px] uppercase tracking-label text-accent hover:underline"
             >
               Full schedule →
             </Link>

@@ -31,13 +31,13 @@ export function HeadToHead({
         <p className="min-w-0 flex-1 truncate font-display text-sm font-bold uppercase text-text">
           {aName}
         </p>
-        <p className="shrink-0 text-center">
+        <p className="shrink-0 text-center" data-spoiler="">
           <span className="font-mono text-xl font-bold text-text">
             {record.seriesWins.a}
             <span className="mx-1.5 text-text-faint">–</span>
             {record.seriesWins.b}
           </span>
-          <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-label text-text-muted">
+          <span className="mt-0.5 block font-mono text-[11px] uppercase tracking-label text-text-muted">
             {record.gameWins.a}–{record.gameWins.b} on games
           </span>
         </p>
@@ -58,7 +58,7 @@ export function HeadToHead({
                 {entry.blockName ?? ""}
                 {entry.bestOf ? `${entry.blockName ? " · " : ""}Bo${entry.bestOf}` : ""}
               </span>
-              <span className="shrink-0 font-mono text-sm text-text">
+              <span className="shrink-0 font-mono text-sm text-text" data-spoiler="">
                 <span className={entry.winner === "a" ? "text-accent" : "text-text-muted"}>
                   {entry.score.a}
                 </span>

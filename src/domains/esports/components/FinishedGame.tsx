@@ -1,5 +1,6 @@
 import { DraftPanel } from "@/domains/esports/components/DraftPanel";
 import { Scoreboard } from "@/domains/esports/components/Scoreboard";
+import { SpoilerBlock } from "@/domains/esports/components/SpoilerBlock";
 import { StatSheet, hasFinalStats } from "@/domains/esports/components/StatSheet";
 import { GoldCurve } from "@/domains/esports/components/GoldCurve";
 import { ObjectiveLedger } from "@/domains/esports/components/ObjectiveLedger";
@@ -59,42 +60,46 @@ export function FinishedGame({
         <DraftPanel {...sides} />
       </Section>
 
-      <Section
-        title="Scoreboard"
-        aside={
-          stats.durationSeconds !== null
-            ? `${formatDuration(stats.durationSeconds)} game`
-            : undefined
-        }
-      >
-        <Scoreboard {...sides} durationSeconds={stats.durationSeconds} />
-      </Section>
-
-      {/* One sample is a dot, not a curve. */}
-      {timeline && timeline.samples.length > 1 && (
+      {/* The first section inside the block drops its own margin, so the block
+          carries it. */}
+      <SpoilerBlock what="the scoreboard, gold curve and final stats" className="mt-12">
         <Section
-          title="How the game went"
+          title="Scoreboard"
           aside={
-            peak
-              ? `Biggest lead ${(peak.gold / 1000).toFixed(1)}k · ${
-                  peak.side === "blue" ? blueName : redName
-                }`
+            stats.durationSeconds !== null
+              ? `${formatDuration(stats.durationSeconds)} game`
               : undefined
           }
         >
-          <div className="grid gap-4">
-            <GoldCurve timeline={timeline} blueName={blueName} redName={redName} />
-            <ObjectiveLedger timeline={timeline} blueName={blueName} redName={redName} />
-          </div>
+          <Scoreboard {...sides} durationSeconds={stats.durationSeconds} />
         </Section>
-      )}
 
-      {/* What they were holding, as opposed to what they did with it. */}
-      {hasFinalStats(stats.blue, stats.red) && (
-        <Section title="Final stats" aside="Attack speed and life steal are percentages">
-          <StatSheet {...sides} />
-        </Section>
-      )}
+        {/* One sample is a dot, not a curve. */}
+        {timeline && timeline.samples.length > 1 && (
+          <Section
+            title="How the game went"
+            aside={
+              peak
+                ? `Biggest lead ${(peak.gold / 1000).toFixed(1)}k · ${
+                    peak.side === "blue" ? blueName : redName
+                  }`
+                : undefined
+            }
+          >
+            <div className="grid grid-cols-1 gap-4">
+              <GoldCurve timeline={timeline} blueName={blueName} redName={redName} />
+              <ObjectiveLedger timeline={timeline} blueName={blueName} redName={redName} />
+            </div>
+          </Section>
+        )}
+
+        {/* What they were holding, as opposed to what they did with it. */}
+        {hasFinalStats(stats.blue, stats.red) && (
+          <Section title="Final stats" aside="Attack speed and life steal are percentages">
+            <StatSheet {...sides} />
+          </Section>
+        )}
+      </SpoilerBlock>
     </>
   );
 }

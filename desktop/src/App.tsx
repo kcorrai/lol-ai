@@ -77,7 +77,7 @@ export function App(): React.ReactElement {
   // machine flashing a pairing form, or an unpaired one flashing fourteen rows it cannot
   // open. One quiet screen costs less than either.
   if (pairing.state.status === "loading") {
-    return <SetupFrame title="LoL AI Coach" lede="Checking whether this machine is paired…" />;
+    return <SetupFrame title="LaneIQ" lede="Checking whether this machine is paired…" />;
   }
 
   if (setup) {

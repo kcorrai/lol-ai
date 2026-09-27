@@ -27,7 +27,7 @@ export function buildCheckoutAbandonedEmail(data: CheckoutAbandonedEmailData): {
                 Finish upgrading to Pro
               </h1>
               <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#A7BCB5;">
-                Hi <strong style="color:#E9F5EE;">${safeName}</strong>, you started upgrading to LoL AI Coach Pro but didn't finish.
+                Hi <strong style="color:#E9F5EE;">${safeName}</strong>, you started upgrading to LaneIQ Pro but didn't finish.
               </p>
               <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#A7BCB5;">
                 Pro unlocks unlimited AI coaching reports on your own games, full counter lists, matchup intelligence, champion mastery scores and a personal climb plan.

@@ -6,7 +6,7 @@ import { getDesktopRelease, pickDownload } from "@/lib/desktop/release";
 import { useEffect, useState } from "react";
 import { SectionHead } from "./SectionHead";
 import { EdgeSweep, HudStagger, HudStaggerItem } from "./motion";
-import { OverlayVisual } from "./desktop/OverlayVisual";
+import { OverlayDemo } from "./desktop/OverlayDemo";
 
 /**
  * The desktop companion, which this page had never once mentioned.
@@ -120,7 +120,7 @@ export function DesktopBand(): React.ReactElement {
                 longest single thing on the landing page — for an app a phone cannot install.
                 The four points below still say what it does. */}
             <div className="hidden sm:block">
-              <OverlayVisual compact />
+              <OverlayDemo compact />
             </div>
           </div>
 
