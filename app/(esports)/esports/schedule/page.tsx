@@ -1,3 +1,4 @@
+import { TimeZoneNote } from "@/domains/esports/components/TimeZoneNote";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getLeagues, getUpcoming, getCompleted, getLiveEvents } from "@/domains/esports";
@@ -103,7 +104,7 @@ export default async function EsportsSchedulePage(): Promise<React.ReactElement>
                 Results
               </a>
             </nav>
-            <span className="hud-label ml-auto">Times in your own zone</span>
+            <TimeZoneNote className="hud-label ml-auto" />
           </div>
           <div className="flex flex-wrap items-center gap-2 border-t border-line-1 pt-3">
             <span className="hud-label mr-1">League</span>

@@ -15,6 +15,7 @@ import {
 import type { EsportsLeague, StandingsRow } from "@/domains/esports";
 import { LeagueChips } from "@/domains/esports/components/LeagueChips";
 import { LeagueGrid } from "@/domains/esports/components/LeagueGrid";
+import { TimeZoneNote } from "@/domains/esports/components/TimeZoneNote";
 import { DataCredit } from "@/domains/esports/components/DataCredit";
 import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
 import { PublicOnly } from "@/components/tools/PublicOnly";
@@ -147,9 +148,7 @@ export default async function EsportsHubPage(): Promise<React.ReactElement> {
         <div className="notch mt-6 flex flex-wrap items-center gap-3 border border-border bg-surface px-4 py-3">
           <span className="hud-label text-[10px]">League</span>
           <LeagueChips leagues={prominentLeagues(featured, CHIP_LEAGUES)} />
-          <span className="ml-auto font-mono text-[10px] uppercase tracking-label text-text-faint">
-            Times in your zone
-          </span>
+          <TimeZoneNote className="ml-auto font-mono text-[10px] uppercase tracking-label text-text-faint" />
         </div>
       )}
 

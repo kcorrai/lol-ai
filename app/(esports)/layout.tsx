@@ -5,6 +5,7 @@ import { QueryProvider } from "@/components/providers/QueryProvider";
 import { getSession } from "@/lib/auth/session";
 import { EsportsNav } from "@/domains/esports/components/EsportsNav";
 import { SpoilerToggle } from "@/domains/esports/components/SpoilerToggle";
+import { TimeZoneSelect } from "@/domains/esports/components/TimeZoneSelect";
 import { SPOILER_PREPAINT_SCRIPT } from "@/domains/esports/spoilerScript";
 
 /**
@@ -17,7 +18,14 @@ function SectionChrome(): React.ReactElement {
       {/* Runs as the HTML is parsed, before anything below it paints, so a
           reader who hides scores never sees one flash up. */}
       <script dangerouslySetInnerHTML={{ __html: SPOILER_PREPAINT_SCRIPT }} />
-      <EsportsNav actions={<SpoilerToggle />} />
+      <EsportsNav
+        actions={
+          <>
+            <TimeZoneSelect />
+            <SpoilerToggle />
+          </>
+        }
+      />
     </>
   );
 }

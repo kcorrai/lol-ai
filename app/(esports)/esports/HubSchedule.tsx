@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { MatchTime } from "@/domains/esports/components/MatchTime";
 import { TeamBadge } from "@/domains/esports/components/TeamBadge";
-import { groupByDay } from "@/domains/esports/dayGroups";
+import { groupByDay, zoneFor } from "@/domains/esports/dayGroups";
+import { useEsportsPrefsStore } from "@/lib/stores/esportsPrefsStore";
 import type { EsportsEvent } from "@/domains/esports";
 
 const ROW = "grid items-center gap-3.5 border-b border-line-1 px-4 py-2.5 last:border-b-0";
@@ -17,11 +18,12 @@ const ROW_COLUMNS = "76px minmax(96px,116px) minmax(0,1fr) 56px minmax(0,1fr)";
  * mount. Grouping in UTC alone would file a late-night match under tomorrow for readers west of it.
  */
 export function HubSchedule({ events }: { events: EsportsEvent[] }): React.ReactElement {
+  const timeZone = useEsportsPrefsStore((state) => state.timeZone);
   const [groups, setGroups] = useState(() => groupByDay(events, { zone: "utc", now: new Date() }));
 
   useEffect(() => {
-    setGroups(groupByDay(events, { zone: "local", now: new Date() }));
-  }, [events]);
+    setGroups(groupByDay(events, { zone: zoneFor(timeZone), now: new Date() }));
+  }, [events, timeZone]);
 
   return (
     // `min-w-0` all the way down: a grid item defaults to min-width:auto, so without it the
