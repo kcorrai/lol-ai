@@ -28,6 +28,14 @@ export interface BookingRequest {
   vodUrl?: string | null;
 }
 
+/** Outcomes after which a trial was never actually had, so it can be booked again. */
+const TRIAL_NOT_SPENT = [
+  "DECLINED",
+  "EXPIRED",
+  "CANCELLED_BY_STUDENT",
+  "CANCELLED_BY_COACH",
+] as const;
+
 export type CreateOutcome =
   | { ok: true; bookingId: string }
   | {
@@ -40,7 +48,8 @@ export type CreateOutcome =
         | "slot-taken"
         | "material-required"
         | "account-not-owned"
-        | "too-many-pending";
+        | "too-many-pending"
+        | "trial-used";
     };
 
 /**
@@ -57,6 +66,7 @@ export async function createBooking(request: BookingRequest): Promise<CreateOutc
     select: {
       id: true,
       kind: true,
+      isTrial: true,
       durationMinutes: true,
       priceCents: true,
       currency: true,
@@ -103,6 +113,20 @@ export async function createBooking(request: BookingRequest): Promise<CreateOutc
     },
   });
   if (pending >= MAX_PENDING_PER_COACH) return { ok: false, reason: "too-many-pending" };
+
+  // One trial per student per coach. A trial that never happened — declined,
+  // expired or cancelled — does not count, or a coach's silence would spend it.
+  if (listing.isTrial) {
+    const trials = await prisma.booking.count({
+      where: {
+        studentId: request.studentId,
+        coachProfileId: listing.coachProfileId,
+        listing: { isTrial: true },
+        status: { notIn: [...TRIAL_NOT_SPENT] },
+      },
+    });
+    if (trials > 0) return { ok: false, reason: "trial-used" };
+  }
 
   if (request.riotAccountId) {
     const owned = await prisma.riotAccount.findFirst({

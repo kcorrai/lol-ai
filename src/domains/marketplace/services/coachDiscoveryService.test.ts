@@ -66,6 +66,14 @@ describe("searchCoaches", () => {
     });
   });
 
+  it("narrows to coaches with an active trial listing", async () => {
+    await searchCoaches(parseSearchQuery({ trial: "1", kind: "LIVE_SESSION" }));
+
+    expect(whereOf().listings).toEqual({
+      some: { isActive: true, kind: "LIVE_SESSION", isTrial: true },
+    });
+  });
+
   it("does not add a listing predicate when neither was asked for", async () => {
     await searchCoaches(parseSearchQuery({ role: "TOP" }));
 

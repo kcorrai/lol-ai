@@ -30,6 +30,8 @@ const CARD_SELECT = {
     take: 1,
     select: { priceCents: true, currency: true },
   },
+  // Counted rather than fetched: the card only needs to know whether one exists.
+  _count: { select: { listings: { where: { isActive: true, isTrial: true } } } },
 } as const;
 
 /**
@@ -72,6 +74,7 @@ export async function listCoaches(limit = 60): Promise<CoachCard[]> {
     fromPriceCents: row.listings[0]?.priceCents ?? null,
     currency: row.listings[0]?.currency ?? "USD",
     acceptingStudents: row.acceptingStudents,
+    offersTrial: row._count.listings > 0,
   }));
 }
 
@@ -124,6 +127,7 @@ export async function getCoachBySlug(slug: string): Promise<CoachCard | null> {
     fromPriceCents: row.listings[0]?.priceCents ?? null,
     currency: row.listings[0]?.currency ?? "USD",
     acceptingStudents: row.acceptingStudents,
+    offersTrial: row._count.listings > 0,
   };
 }
 

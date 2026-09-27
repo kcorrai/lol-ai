@@ -89,6 +89,7 @@ export function CoachFilters({ filtered, total }: Props): React.ReactElement {
       param: s.param,
       label: labelOf(s.options, params.get(s.param) ?? ""),
     })),
+    ...(params.get("trial") === "1" ? [{ param: "trial", label: "Offers a trial" }] : []),
     ...(params.get("all") === "1" ? [{ param: "all", label: "Incl. paused coaches" }] : []),
   ];
 
@@ -164,6 +165,15 @@ export function CoachFilters({ filtered, total }: Props): React.ReactElement {
         )}
 
         <label className="ml-auto flex cursor-pointer items-center gap-2 text-[12.5px] text-text-muted hover:text-text">
+          <input
+            type="checkbox"
+            checked={params.get("trial") === "1"}
+            onChange={(e) => setParam("trial", e.target.checked ? "1" : "")}
+            className="h-3.5 w-3.5 accent-accent"
+          />
+          Offers a trial session
+        </label>
+        <label className="flex cursor-pointer items-center gap-2 text-[12.5px] text-text-muted hover:text-text">
           <input
             type="checkbox"
             checked={params.get("all") === "1"}

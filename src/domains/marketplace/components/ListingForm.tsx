@@ -6,7 +6,12 @@ import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { isScheduled, splitPrice, DEFAULT_COMMISSION_BPS } from "@/domains/marketplace/policy";
+import {
+  isScheduled,
+  splitPrice,
+  DEFAULT_COMMISSION_BPS,
+  MAX_TRIAL_MINUTES,
+} from "@/domains/marketplace/policy";
 import { formatMoney } from "@/domains/marketplace/money";
 import type { ListingBodyInput } from "@/domains/marketplace/listingSchema";
 import type { OwnListing } from "@/hooks/useCoachListings";
@@ -28,6 +33,7 @@ interface FormShape {
   price: number;
   currency: string;
   deliveryHours: number;
+  isTrial: boolean;
 }
 
 /**
@@ -53,6 +59,7 @@ export function ListingForm({ initial, saving, onSubmit, onCancel }: Props): Rea
       price: initial ? initial.priceCents / 100 : 25,
       currency: initial?.currency ?? "USD",
       deliveryHours: initial?.deliveryHours ?? 48,
+      isTrial: initial?.isTrial ?? false,
     },
   });
 
@@ -73,6 +80,7 @@ export function ListingForm({ initial, saving, onSubmit, onCancel }: Props): Rea
         priceCents: Math.round(Number(values.price) * 100),
         currency: values.currency.toUpperCase(),
         deliveryHours: scheduled ? null : Number(values.deliveryHours),
+        isTrial: values.isTrial,
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not save that listing.");
@@ -170,6 +178,14 @@ export function ListingForm({ initial, saving, onSubmit, onCancel }: Props): Rea
           </Field>
         )}
       </div>
+
+      <label className="flex cursor-pointer items-start gap-2.5 text-[13px] text-text-body">
+        <input type="checkbox" className="mt-0.5 h-4 w-4 accent-accent" {...register("isTrial")} />
+        <span>
+          This is a trial — a short first session, {MAX_TRIAL_MINUTES} minutes at most, each student
+          can book once with you. Students filter for coaches who offer one.
+        </span>
+      </label>
 
       <Field label="What the student actually gets">
         <textarea

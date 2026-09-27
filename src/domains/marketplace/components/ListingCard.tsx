@@ -22,10 +22,10 @@ const KIND_ICON: Record<string, LucideIcon> = {
 /**
  * One thing a coach sells, as a student reads it.
  *
- * Still a server component. `ListingBookPanel` is the only client boundary on
- * the card, so the page keeps rendering for search engines and for anyone with
- * JavaScript off — which matters, because this is the page the section is
- * trying to get found on.
+ * A server component with no client boundary at all — the request button is a
+ * plain link — so the page renders for search engines and for anyone with
+ * JavaScript off, which matters on the page the section is trying to get
+ * found on.
  */
 export function ListingCard({ listing, coachSlug, acceptingStudents }: Props): React.ReactElement {
   const scheduled = isScheduled(listing.kind);
@@ -54,6 +54,11 @@ export function ListingCard({ listing, coachSlug, acceptingStudents }: Props): R
             )}
           >
             {kindLabel(listing.kind)}
+            {listing.isTrial && (
+              <span className="ml-2 border border-warning/60 bg-warning/10 px-1.5 py-0.5 text-warning">
+                Trial · once per student
+              </span>
+            )}
           </p>
           <h3 className="mt-1 font-display text-[16px] font-extrabold uppercase leading-snug tracking-[0.03em] text-text">
             {listing.title}
