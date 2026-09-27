@@ -5,6 +5,9 @@ import { loadMatchupData } from "@/domains/meta/components/matchup/loadMatchupDa
 import { MatchupPageView } from "@/domains/meta/components/matchup/MatchupPageView";
 
 export const revalidate = 43200; // 12h ISR
+// Static despite the no-cache reads under it (Redis, op.gg, esports): without this, any one of
+// them sets the page's revalidate to 0 and it is rendered per request instead (ADR-059).
+export const dynamic = "force-static";
 export const dynamicParams = true;
 
 // Prerender the ~200 highest-signal pairs; the rest render on demand (ISR).
