@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { coachFloor, goalFor, quizResultPath } from "@/domains/marketplace/matchQuiz";
-import type { QuizAnswers } from "@/domains/marketplace/matchQuiz";
+import { coachFloor, coachesForReport, goalFor, quizResultPath } from "@/lib/coachMatch/matchQuiz";
+import type { QuizAnswers } from "@/lib/coachMatch/matchQuiz";
 
 const NONE: QuizAnswers = {
   role: null,
@@ -56,5 +56,20 @@ describe("quizResultPath", () => {
     expect(params.get("maxPrice")).toBe("40");
     expect(params.get("lang")).toBe("en");
     expect(params.get("goal")).toBe("I want to work on my laning phase.");
+  });
+});
+
+describe("coachesForReport", () => {
+  it("asks for coaches above the player with the finding as the goal", () => {
+    const params = new URL(coachesForReport("GOLD", "Work on: wave management"), "https://x.test")
+      .searchParams;
+
+    expect(params.get("minTier")).toBe("PLATINUM");
+    expect(params.get("goal")).toBe("Work on: wave management");
+    expect(params.get("role")).toBeNull();
+  });
+
+  it("falls back to the whole storefront with nothing to go on", () => {
+    expect(coachesForReport(null, "")).toBe("/coaches");
   });
 });

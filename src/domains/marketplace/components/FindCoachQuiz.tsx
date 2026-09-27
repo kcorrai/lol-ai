@@ -13,8 +13,8 @@ import {
   goalFor,
   quizResultPath,
   type QuizAnswers,
-} from "@/domains/marketplace/matchQuiz";
-import { rememberGoal } from "@/domains/marketplace/carriedGoal";
+} from "@/lib/coachMatch/matchQuiz";
+import { rememberGoal } from "@/lib/coachMatch/carriedGoal";
 import { Choice, Question } from "@/domains/marketplace/components/QuizParts";
 import { RoleIcon } from "@/domains/marketplace/components/hud/RoleIcon";
 import {

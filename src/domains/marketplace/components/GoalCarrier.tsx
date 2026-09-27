@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { rememberGoal } from "@/domains/marketplace/carriedGoal";
+import { rememberGoal } from "@/lib/coachMatch/carriedGoal";
 
 /** Picks a `?goal=` off the storefront URL and keeps it for the booking request. Renders nothing. */
 export function GoalCarrier(): null {

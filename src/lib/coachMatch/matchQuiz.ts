@@ -74,3 +74,17 @@ export function quizResultPath(answers: QuizAnswers): string {
   const qs = params.toString();
   return qs ? `/coaches?${qs}` : "/coaches";
 }
+
+/**
+ * The storefront for a player arriving from an AI report: coaches above their
+ * rank, with the report's own finding as the goal. No role — a report does not
+ * record one, and guessing it would hide the coaches who fit.
+ */
+export function coachesForReport(tier: RankTier | null, goal: string): string {
+  const params = new URLSearchParams();
+  const floor = coachFloor(tier);
+  if (floor) params.set("minTier", floor);
+  if (goal) params.set("goal", goal.slice(0, 300));
+  const qs = params.toString();
+  return qs ? `/coaches?${qs}` : "/coaches";
+}
