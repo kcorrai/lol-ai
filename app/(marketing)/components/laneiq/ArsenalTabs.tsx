@@ -62,7 +62,7 @@ export function ArsenalTabs(): React.ReactElement {
   return (
     <section id="arsenal" className="px-5 pt-16 md:px-8 md:pt-[72px]">
       <div className="mx-auto max-w-[1240px]">
-        <SectionHead title="One account, the whole stack" aside="Six ways in" />
+        <SectionHead title="Everything in one account" aside="Six parts, one login" />
 
         <div
           className="notch-lg grid grid-cols-1 overflow-hidden border border-border bg-surface lg:grid-cols-[300px_1fr]"

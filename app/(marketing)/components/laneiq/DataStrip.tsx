@@ -29,7 +29,9 @@ export async function DataStrip(): Promise<React.ReactElement | null> {
   const movers = [...report.climbers.slice(0, 2), ...report.fallers.slice(0, 1)];
 
   return (
-    <section className="border-b border-border bg-surface-dark px-5 py-5 md:px-8">
+    // It used to sit flush under the hero, where only a bottom rule was needed. It now opens the
+    // provenance argument further down, so it carries its own top margin and both rules.
+    <section className="mt-16 border-y border-border bg-surface-dark px-5 py-5 md:mt-[72px] md:px-8">
       <HudStagger
         className={`mx-auto grid max-w-[1240px] grid-cols-2 gap-6 ${stale ? "md:grid-cols-3" : "md:grid-cols-4"}`}
       >

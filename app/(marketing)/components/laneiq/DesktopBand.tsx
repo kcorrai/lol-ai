@@ -62,7 +62,7 @@ export function DesktopBand(): React.ReactElement {
   return (
     <section id="desktop" className="px-5 pt-16 md:px-8 md:pt-[72px]">
       <div className="mx-auto max-w-[1240px]">
-        <SectionHead title="And one that runs on your PC" aside="Windows · macOS · Linux" />
+        <SectionHead title="Live help while you play" aside="Windows · macOS · Linux" />
 
         <div className="notch-lg relative overflow-hidden border border-border bg-surface p-6 md:p-8">
           <EdgeSweep />
@@ -79,9 +79,9 @@ export function DesktopBand(): React.ReactElement {
                 It watches the game you are playing
               </h3>
               <p className="mt-3.5 max-w-[48ch] text-[15px] leading-relaxed text-text-body">
-                Riot publishes your live game to one address — <code>127.0.0.1:2999</code> — and
-                nothing running on a server can reach it. So we wrote something that runs where you
-                do, and put the reading over the top of the match.
+                League shares your live game only with programs on your own computer, at{" "}
+                <code>127.0.0.1:2999</code> — no website can reach it. So we built a small app that
+                runs next to the game and puts its advice on top of the match.
               </p>
 
               <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
@@ -116,7 +116,12 @@ export function DesktopBand(): React.ReactElement {
               </p>
             </div>
 
-            <OverlayVisual compact />
+            {/* Not on phones. A drawing of an in-game overlay was 730px tall at 390px wide — the
+                longest single thing on the landing page — for an app a phone cannot install.
+                The four points below still say what it does. */}
+            <div className="hidden sm:block">
+              <OverlayVisual compact />
+            </div>
           </div>
 
           <HudStagger className="mt-8 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">

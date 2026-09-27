@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { championSplashUrl } from "@/lib/ddragon";
 import { AnalyzeForm } from "./AnalyzeForm";
+import { HeroDemo } from "./HeroDemo";
 import { HeroIntro, HeroSweep } from "./HeroMotion";
 
 // Base Thresh (skin 0). Champion splashes are 1215×717 and painted for exactly this
@@ -43,35 +44,42 @@ export function LandingHero(): React.ReactElement {
         <HeroSweep />
       </div>
 
-      <div className="relative mx-auto w-full max-w-[1240px] px-5 pb-11 pt-24 md:px-8">
-        {/* One accent word, not a gradient: the system rations lime to the single
+      <div className="relative mx-auto flex w-full max-w-[1240px] items-end justify-between gap-10 px-5 pb-11 pt-24 md:px-8">
+        <div className="min-w-0 flex-1">
+          {/* One accent word, not a gradient: the system rations lime to the single
             thing that matters on a screen, and here that is the promise itself. */}
-        <HeroIntro step={0}>
-          <h1 className="max-w-[14ch] font-display text-[38px] font-black uppercase leading-[0.94] text-text md:text-[64px]">
-            Your next rank is a <span className="text-accent">habit</span> away
-          </h1>
-        </HeroIntro>
-        <HeroIntro step={1}>
-          {/* Ten, not twenty: the public preview slices ten matches
+          <HeroIntro step={0}>
+            <h1 className="max-w-[14ch] font-display text-[38px] font-black uppercase leading-[0.94] text-text md:text-[64px]">
+              Your next rank is a <span className="text-accent">habit</span> away
+            </h1>
+          </HeroIntro>
+          <HeroIntro step={1}>
+            {/* Ten, not twenty: the public preview slices ten matches
               (src/domains/riot/services/previewService.ts:18). */}
-          <p className="mb-6 mt-4 max-w-[44ch] text-base text-text-body md:text-[17px]">
-            Paste your Riot ID. We read your last 10 games and name the one to fix.
-          </p>
-        </HeroIntro>
-        <HeroIntro step={2}>
-          <AnalyzeForm />
-        </HeroIntro>
-        {/* Text, not a second button: the hero rations its one filled control to the form.
+            <p className="mb-6 mt-4 max-w-[44ch] text-base text-text-body md:text-[17px]">
+              Paste your Riot ID. We read your last 10 games and name the one to fix.
+            </p>
+          </HeroIntro>
+          <HeroIntro step={2}>
+            <AnalyzeForm />
+          </HeroIntro>
+          {/* Text, not a second button: the hero rations its one filled control to the form.
             It is here at all because the other half of what this site sells is a person,
             and a visitor who wants that should not have to scroll to learn it exists. */}
-        <HeroIntro step={3}>
-          <p className="mt-3.5 text-[13px] text-text-muted">
-            Or{" "}
-            <Link href="/coaches" className="text-accent underline-offset-4 hover:underline">
-              book a human coach
-            </Link>{" "}
-            whose rank we read from their own Riot account.
-          </p>
+          <HeroIntro step={3}>
+            <p className="mt-3.5 text-[13px] text-text-muted">
+              Or{" "}
+              <Link href="/coaches" className="text-accent underline-offset-4 hover:underline">
+                book a human coach
+              </Link>{" "}
+              whose rank we read from their own Riot account.
+            </p>
+          </HeroIntro>
+        </div>
+
+        {/* Last in the entrance queue, so the headline and the form land first. */}
+        <HeroIntro step={4}>
+          <HeroDemo />
         </HeroIntro>
       </div>
     </section>
