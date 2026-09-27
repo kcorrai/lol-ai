@@ -111,8 +111,10 @@ export function GoldCurve({
           strokeLinecap="round"
         />
 
-        {points.map((point) => (
-          <circle key={point.seconds} cx={point.x} cy={point.y} r="2.5" fill="#E9F5EE">
+        {/* Keyed by position: the feed can publish two samples at the same
+            second (seen at 4:08 on SR vs FlyQuest), and the list never reorders. */}
+        {points.map((point, index) => (
+          <circle key={index} cx={point.x} cy={point.y} r="2.5" fill="#E9F5EE">
             {/* One string, not an interpolation split across children: the
                 browser parses a <title>'s content as raw text and merges the
                 nodes, so a multi-child title hydrates as a mismatch. */}
