@@ -1,4 +1,4 @@
--- Measurable goals a coach sets after a session, tracked over the student's next ranked games (ADR-058).
+-- Measurable goals a coach sets after a session, tracked over the student's next ranked games (ADR-063).
 CREATE TYPE "SessionGoalMetric" AS ENUM ('CS_PER_MIN', 'DEATHS', 'VISION_PER_MIN', 'KDA');
 
 CREATE TABLE "session_goals" (

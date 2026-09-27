@@ -2035,7 +2035,10 @@ Otherwise `profile` carries the editable fields plus `status`
 
 Create or update it. Body: `displayName`, `headline`, `bio`, `languages[]`
 (ISO 639-1), `regions[]`, `roles[]` (`Position`), `championIds[]`, `timezone`
-(IANA).
+(IANA), `introVideoUrl` (optional; a YouTube video link, or empty/null for none).
+
+- `422` when `introVideoUrl` is not a YouTube video — a channel, a playlist or
+  another site is refused rather than guessed at (ADR-063).
 
 - `409` while the profile is `PENDING` or `SUSPENDED`. A profile that can be
   edited under a reviewer is one where what gets approved is not what was read.
@@ -2198,7 +2201,10 @@ Returns an empty list, not a `404`, for a user with no coach profile.
 
 Add one. Body: `kind` (`VOD_REVIEW|LIVE_SESSION|LIVE_SPECTATE`), `title`,
 `description`, `durationMinutes`, `priceCents`, `currency` (ISO 4217,
-uppercased), `deliveryHours`.
+uppercased), `deliveryHours`, `isTrial` (default `false`).
+
+- A trial may run at most 30 minutes (`MAX_TRIAL_MINUTES`); `422` otherwise.
+  Each student can book one trial per coach (ADR-063).
 
 - **Listings may be prepared before approval.** The storefront filters on the
   profile's status, so nothing leaks by letting a coach get ready while they
@@ -2502,6 +2508,28 @@ Creates a **request**, not a confirmed session — the coach has 48 hours
 - `422` for a scheduled kind with no time, or an async kind with neither a match
   id nor a video link (a review with nothing to review is a session the coach
   cannot start).
+- `409` on a second trial with the same coach. A trial that was declined, expired
+  or cancelled does not count (ADR-063).
+
+### `GET /api/bookings/[bookingId]/goals`
+
+The session's goals and the student's games against them, for either side of the
+booking (`404` for anyone else). Answers `{ goals[], tracked, games[], window }`:
+each goal carries `metric`, `target`, `direction` and `hits`; `games` are the
+first `window` (10) ranked games on the booking's Riot account after the goal was
+set, each with a value and a met/missed per goal. `tracked: false` when no Riot
+account was attached. Read from stored matches only — no Riot or AI call.
+
+### `PUT /api/bookings/[bookingId]/goals`
+
+The coach replaces the session's goals. Body: `{ goals: [{ metric, target }] }`,
+at most three, `metric` one of `CS_PER_MIN | DEATHS | VISION_PER_MIN | KDA`.
+
+- `404` unless the caller is the booking's coach.
+- `409` before the session has been accepted.
+- `422` on a repeated metric or a target outside the metric's range.
+- A goal whose target is only adjusted keeps its start date, so games already
+  counted towards it still count.
 
 ### `GET /api/bookings?as=student|coach`
 
@@ -2656,15 +2684,17 @@ coach with two students has two threads and addressing by coach alone would
 pick one arbitrarily.
 
 - `GET /api/threads` — every conversation the caller is in, with unread counts.
-- `POST /api/threads` — `{ coachProfileId }`. The student's thread with a coach,
-  created on first use. **`403` without a booking between them**: open messaging
-  would turn the storefront into an inbox for anyone who can type a slug, and
-  the first thing that inbox fills with is people arranging to pay each other
-  somewhere else.
+- `POST /api/threads` — `{ coachProfileId }` or `{ coachSlug }`. The student's
+  thread with a coach, created on first use. **No booking is required** (ADR-063):
+  a student may ask before paying. The gate is narrower instead — five new
+  question threads a day across all coaches (`409` past it), `404` for a coach
+  who is not listed, `403` for messaging yourself. An existing thread always opens.
 - `GET /api/threads/[conversationId]` — the thread, oldest first. Marks the
   other side's messages read.
 - `POST /api/threads/[conversationId]` — send one. Answers with the stored
-  message and a `notice` when something was stripped.
+  message and a `notice` when something was stripped. A student who has never
+  booked the coach may send two messages until the coach replies; the third is
+  a `409` telling them to wait or book.
 
 **Contact details are removed before storage, not on display.** A detail that
 can be recovered from the row later has not really been removed, and keeping it

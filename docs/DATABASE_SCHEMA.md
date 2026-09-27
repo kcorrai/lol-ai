@@ -908,6 +908,17 @@ ADR-019.
   and `bookings.riotAccountId` are both `ON DELETE SET NULL`: unlinking a Riot
   account must not delete a coach's profile or a settled booking.
 
+### Learning-product additions (ADR-063)
+
+All additive: two columns, one enum, one table.
+
+| Change                              | Migration                            | Notes                                                                                                                                                        |
+| ----------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `coach_listings.isTrial boolean`    | `20260927120000_coach_listing_trial` | Default `false`. A trial is ≤ 30 minutes; one per student per coach, enforced in `bookingService` so a declined/expired/cancelled trial does not use it up.  |
+| `coach_profiles.introVideoUrl text` | `20260927130000_coach_intro_video`   | Nullable. YouTube video links only, checked at the route; embedded click-to-load, nothing hosted (ADR-021).                                                  |
+| enum `SessionGoalMetric`            | `20260927140000_session_goals`       | `CS_PER_MIN`, `DEATHS`, `VISION_PER_MIN`, `KDA`. Direction and allowed range per metric live in `src/domains/marketplace/goalMetrics.ts`.                    |
+| table `session_goals`               | `20260927140000_session_goals`       | `id`, `bookingId → bookings (CASCADE)`, `metric`, `target float`, `createdAt`. `UNIQUE (bookingId, metric)`. Progress counts ranked games after `createdAt`. |
+
 ## Daily quiz
 
 - **The puzzles are not stored.** `dailySeed.ts` derives each day's answer from
@@ -1239,19 +1250,19 @@ Added by `20260829084513_desktop_pairing_requests` for
 image of `desktop_pairing_codes`: that one is minted **by** a signed-in player, this one is
 created by an app with no session at all, so its owner arrives later.
 
-| Column       | Type          | Constraints                      | Notes                                                                                                                                        |
-| ------------ | ------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`         | `uuid`        | PK                               | Travels in the approval URL, and is deliberately **not** sufficient to claim the token.                                                      |
-| `secretHash` | `text`        | NOT NULL, UNIQUE                 | SHA-256 of the 32 random bytes the app generated. The secret itself never reaches this database.                                              |
-| `label`      | `text`        | NOT NULL                         | The machine's account of itself. Shown on the approval page; never trusted for anything but display.                                          |
-| `platform`   | `text`        | NOT NULL                         | `windows` \| `macos` \| `linux`                                                                                                              |
-| `appVersion` | `text`        | NULLABLE                         |                                                                                                                                              |
-| `createdAt`  | `timestamptz` | NOT NULL                         |                                                                                                                                              |
-| `expiresAt`  | `timestamptz` | NOT NULL                         | 10 minutes after the request, the same window a code gets.                                                                                    |
-| `approvedAt` | `timestamptz` | NULLABLE                         | Set by the conditional update that mints the device, so two tabs pressing Approve produce one.                                               |
+| Column       | Type          | Constraints                                | Notes                                                                                                                                                                             |
+| ------------ | ------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`         | `uuid`        | PK                                         | Travels in the approval URL, and is deliberately **not** sufficient to claim the token.                                                                                           |
+| `secretHash` | `text`        | NOT NULL, UNIQUE                           | SHA-256 of the 32 random bytes the app generated. The secret itself never reaches this database.                                                                                  |
+| `label`      | `text`        | NOT NULL                                   | The machine's account of itself. Shown on the approval page; never trusted for anything but display.                                                                              |
+| `platform`   | `text`        | NOT NULL                                   | `windows` \| `macos` \| `linux`                                                                                                                                                   |
+| `appVersion` | `text`        | NULLABLE                                   |                                                                                                                                                                                   |
+| `createdAt`  | `timestamptz` | NOT NULL                                   |                                                                                                                                                                                   |
+| `expiresAt`  | `timestamptz` | NOT NULL                                   | 10 minutes after the request, the same window a code gets.                                                                                                                        |
+| `approvedAt` | `timestamptz` | NULLABLE                                   | Set by the conditional update that mints the device, so two tabs pressing Approve produce one.                                                                                    |
 | `userId`     | `uuid`        | FK → users.id, ON DELETE CASCADE, NULLABLE | **Null until approved.** This is the column that could not be shared with `desktop_pairing_codes`: making it optional there would give away a guarantee that table currently has. |
-| `deviceId`   | `uuid`        | NULLABLE                         | The device approval created. Not a foreign key, for the same reason the code table's is not: the record should outlive a revoked device row. |
-| `claimedAt`  | `timestamptz` | NULLABLE                         | Set when the app has taken the token. A second claim finds this non-null and gets nothing.                                                   |
+| `deviceId`   | `uuid`        | NULLABLE                                   | The device approval created. Not a foreign key, for the same reason the code table's is not: the record should outlive a revoked device row.                                      |
+| `claimedAt`  | `timestamptz` | NULLABLE                                   | Set when the app has taken the token. A second claim finds this non-null and gets nothing.                                                                                        |
 
 **Indexes:**
 
