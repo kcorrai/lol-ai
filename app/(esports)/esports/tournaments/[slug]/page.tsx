@@ -32,6 +32,9 @@ import { EsportsBreadcrumb } from "@/domains/esports/components/EsportsBreadcrum
 import { EsportsJsonLd } from "@/domains/esports/components/EsportsJsonLd";
 
 export const revalidate = 3600;
+// Static despite the no-cache reads under it (esports feeds, Redis): without this, any one of
+// them sets the page's revalidate to 0 and it is rendered per request instead (ADR-059).
+export const dynamic = "force-static";
 export const dynamicParams = true;
 
 interface PageProps {

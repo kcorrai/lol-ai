@@ -1,4 +1,5 @@
 import { normalizeRiotError } from "@/lib/riot/errors";
+import { currentPriority, type RiotPriority } from "@/lib/riot/priority";
 import {
   configuredWindows,
   parseRateLimitHeader,
@@ -27,6 +28,18 @@ import {
  * Inngest later.
  */
 const MAX_WAIT_MS = 5_000;
+
+/**
+ * How much of each window background work may fill, and how long it may queue (ADR-062).
+ *
+ * Background work counts in the same windows as everyone else but stops at half of each, so the
+ * other half is always there for a person. It can afford to wait longer for room: nobody is
+ * watching it, and an Inngest step has minutes, not seconds.
+ */
+const PRIORITY: Record<RiotPriority, { share: number; maxWaitMs: number | null }> = {
+  foreground: { share: 1, maxWaitMs: null },
+  background: { share: 0.5, maxWaitMs: 60_000 },
+};
 
 export interface RiotLimiterOptions {
   store?: WindowStore;
@@ -60,11 +73,16 @@ export class RiotRateLimiter {
   }
 
   /** Wait for room in `scope`, or throw a 429 if there will be none soon enough. */
-  async acquire(scope: string): Promise<void> {
-    const deadline = this.now() + this.maxWaitMs;
+  async acquire(scope: string, priority: RiotPriority = currentPriority()): Promise<void> {
+    const { share, maxWaitMs } = PRIORITY[priority];
+    const deadline = this.now() + (maxWaitMs ?? this.maxWaitMs);
+    const windows = this.windowsFor(scope).map((w) => ({
+      ...w,
+      limit: Math.max(1, Math.floor(w.limit * share)),
+    }));
 
     for (;;) {
-      const wait = await this.store.take(scope, this.windowsFor(scope), this.now());
+      const wait = await this.store.take(scope, windows, this.now());
       if (wait === 0) return;
 
       if (this.now() + wait > deadline) {

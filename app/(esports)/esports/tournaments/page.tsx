@@ -13,6 +13,9 @@ import { daysBetween, tournamentName } from "@/domains/esports";
 
 // Hourly, like the tournament lists and standings it reads.
 export const revalidate = 3600;
+// Static despite the no-cache reads under it (esports feeds, Redis): without this, any one of
+// them sets the page's revalidate to 0 and it is rendered per request instead (ADR-059).
+export const dynamic = "force-static";
 
 export const metadata: Metadata = {
   title: "LoL Esports Tournaments — On Now, Coming Up & Recent Winners",

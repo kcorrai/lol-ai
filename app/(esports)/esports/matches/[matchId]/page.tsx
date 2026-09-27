@@ -28,6 +28,9 @@ import { embedParent, primaryStreamEmbed, primaryVodEmbed } from "@/domains/espo
 // An hour for the series shell. Completed game stats behind it are immutable and
 // cached for a month; a live game refreshes on its own thirty-second window.
 export const revalidate = 3600;
+// Per request, said out loud: this page reads search params. Left implicit, a build can mark the
+// route static and every visit then fails with "static to dynamic at runtime" (ADR-059).
+export const dynamic = "force-dynamic";
 
 interface PageProps {
   params: { matchId: string };

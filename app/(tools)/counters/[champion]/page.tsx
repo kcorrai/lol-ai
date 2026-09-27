@@ -24,10 +24,9 @@ import { championSplashUrl } from "@/lib/ddragon";
 import { jsonLdProps } from "@/lib/security/jsonLd";
 
 export const revalidate = 43200; // 12h ISR
-// Per request, said out loud: this page reads search params. Left implicit, a build whose
-// generateStaticParams comes back empty (snapshot unavailable) marks the route static, and every
-// visit then fails with "static to dynamic at runtime" (ADR-059).
-export const dynamic = "force-dynamic";
+// Static: filtered requests never reach this route — middleware rewrites them onto the cacheable
+// copy under `f/` (ADR-061) — so the search params it still reads are always empty here.
+export const dynamic = "force-static";
 export const dynamicParams = true;
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg";

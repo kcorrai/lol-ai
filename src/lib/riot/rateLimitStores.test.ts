@@ -78,6 +78,22 @@ describe("UpstashWindowStore", () => {
     expect(calls).toEqual([]);
   });
 
+  it("counts every limit on the same window in the same Redis key", async () => {
+    const prefixes: string[] = [];
+    const store = new UpstashWindowStore(
+      { set: vi.fn(async () => "OK"), pttl: vi.fn(async () => -2) },
+      (_w, prefix) => {
+        prefixes.push(prefix);
+        return { limit: async () => ({ success: true, reset: 0 }) };
+      }
+    );
+
+    await store.take("euw1", [{ limit: 90, windowMs: 120_000 }], 0);
+    await store.take("euw1", [{ limit: 45, windowMs: 120_000 }], 0);
+
+    expect(prefixes).toEqual(["riot-app:120000", "riot-app:120000"]);
+  });
+
   it("writes a pause every instance can see", async () => {
     const { store, redis } = fakes({});
     await store.pause("euw1", 30_000);
