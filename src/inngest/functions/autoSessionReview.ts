@@ -6,7 +6,11 @@ import { getAccountPuuid } from "@/domains/riot/services/accountLookup";
 import { createPendingReport } from "@/domains/coaching/services/reportService";
 
 const MIN_MATCHES = 3;
-const DEDUP_WINDOW_MS = 3 * 60 * 60 * 1000; // 3 hours
+// One automatic report per account per day. The desktop app syncs after every game, and paid plans
+// have no report limit, so a three-hour window let an evening of play produce up to eight reports —
+// each on the full model, whether or not the player ever opened it. Reports asked for by hand are
+// not held to this.
+const DEDUP_WINDOW_MS = 24 * 60 * 60 * 1000;
 
 export const autoSessionReview = inngest.createFunction(
   {
@@ -61,7 +65,7 @@ export const autoSessionReview = inngest.createFunction(
       }
     }
 
-    // ── Dedup: skip if a report was created for this account in the last 3h ──
+    // ── Dedup: skip if a report was created for this account in the last day ─
     const recentReport = await prisma.coachingReport.findFirst({
       where: {
         riotAccountId,
