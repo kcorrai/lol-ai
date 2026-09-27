@@ -38,13 +38,13 @@ SCHEMA:
 }`;
 
 const FOCUS_PROMPTS: Record<ReportType, string> = {
-  session_review: `Analyze the last ${0} games as a session. Identify: (1) the most consistent mistake pattern, (2) what the player does well, (3) the single highest-impact change they can make.`,
+  session_review: `Analyze the last {games} games as a session. Identify: (1) the most consistent mistake pattern, (2) what the player does well, (3) the single highest-impact change they can make.`,
   champion_focus: `Analyze the player's performance specifically on the champions shown. Compare to their overall average. Identify champion-specific weaknesses (mechanics, build paths, matchup handling).`,
   climb_roadmap: `Given the player's current stats, rank, and champion pool, create a structured climb plan. Define: what rank they can realistically reach, which champion they should focus on, and what 3 habits to build over the next 50 games.`,
 };
 
 const ARAM_FOCUS_PROMPTS: Record<ReportType, string> = {
-  session_review: `Analyze these ${0} ARAM games. Focus on: (1) teamfight positioning — are they dying early or surviving to deal damage?, (2) damage output vs benchmark (~22% share), (3) peel/engage execution. Do NOT comment on CS.`,
+  session_review: `Analyze these {games} ARAM games. Focus on: (1) teamfight positioning — are they dying early or surviving to deal damage?, (2) damage output vs benchmark (~22% share), (3) peel/engage execution. Do NOT comment on CS.`,
   champion_focus: `Analyze ARAM performance on the specific champions shown. Identify: champion-specific teamfight role execution, whether the player builds correctly for ARAM (e.g. Grievous Wounds, Ability Haste), and damage/healing contribution.`,
   climb_roadmap: `For ARAM improvement, build a practice plan around: teamfight fundamentals, champion-specific mechanics, and resource management. Identify which champion the player excels on and which they should avoid.`,
 };
@@ -68,8 +68,10 @@ export function buildPrompt(input: CoachingInput, reportType: ReportType): Built
       : "";
 
   const focusPrompts = isAram ? ARAM_FOCUS_PROMPTS : FOCUS_PROMPTS;
+  // A plain `{games}` token rather than `${0}`: inside a template literal `${0}` is interpolated
+  // when the constant is defined, so the prompt used to tell the model it was reading 0 games.
   const focusInstruction = focusPrompts[reportType].replace(
-    "${0}",
+    "{games}",
     String(input.analysisContext.periodGames)
   );
 

@@ -41,6 +41,18 @@ describe("buildPrompt", () => {
     expect(userMessage).toContain("Focus area requested by player: laning.");
   });
 
+  it("tells the model how many games it is reading", () => {
+    expect(buildPrompt(input(), "session_review").userMessage).toContain(
+      "Analyze the last 5 games as a session."
+    );
+    expect(
+      buildPrompt(
+        input({ analysisContext: { periodGames: 4, queueType: "ARAM" } }),
+        "session_review"
+      ).userMessage
+    ).toContain("Analyze these 4 ARAM games.");
+  });
+
   it("sends the player data without indentation", () => {
     const data = input();
     const { userMessage } = buildPrompt(data, "session_review");
