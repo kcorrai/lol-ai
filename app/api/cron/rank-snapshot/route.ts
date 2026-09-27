@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sweepRankSnapshots } from "@/domains/riot/services/rankSnapshotSweepService";
 import { checkCronAuth } from "@/lib/api/cronAuth";
+import { runAsBackground } from "@/lib/riot/priority";
 import { logger } from "@/lib/utils/logger";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +16,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
   logger.info("[cron] rank-snapshot: starting");
 
-  const result = await sweepRankSnapshots();
+  // Background work: at most half the Riot budget, so the sweep never crowds out visitors (ADR-062).
+  const result = await runAsBackground(() => sweepRankSnapshots());
 
   // A sweep that sampled nobody must not answer 200: Vercel's cron monitoring reads the status, and
   // a green run every night while the rank history stands still is the failure this job is for.

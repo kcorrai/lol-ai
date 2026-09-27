@@ -15,6 +15,9 @@ import { RecentProGames, TopPlayers } from "@/domains/esports/components/ProCham
 import { YouVsThePros } from "@/domains/esports/components/YouVsThePros";
 
 export const revalidate = 86400;
+// Static despite the no-cache reads under it (esports feeds, Redis): without this, any one of
+// them sets the page's revalidate to 0 and it is rendered per request instead (ADR-059).
+export const dynamic = "force-static";
 export const dynamicParams = true;
 
 interface PageProps {

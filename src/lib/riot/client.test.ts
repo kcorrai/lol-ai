@@ -1,5 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+
+vi.mock("./alarms", () => ({ raiseRiotAlarm: vi.fn() }));
 import { RiotHttpClient } from "./client";
+import { raiseRiotAlarm } from "./alarms";
 import type { CacheStore } from "./cache";
 import { RiotRateLimiter } from "./rateLimit";
 import { MemoryWindowStore } from "./rateLimitStores";
@@ -171,5 +174,30 @@ describe("RiotHttpClient rate limiting", () => {
     ) as unknown as typeof fetch;
     await expect(client.get("https://euw1.api.riotgames.com/x")).rejects.toThrow();
     expect(pause).toHaveBeenCalledWith("euw1.api.riotgames.com", 30_000);
+  });
+
+  it("raises an alarm on an application 429 and on a refused key, and on nothing else", async () => {
+    const gate = { acquire: vi.fn(), learn: vi.fn(), pause: vi.fn() } as unknown as RiotRateLimiter;
+    const client = new RiotHttpClient("key", makeCache(), gate);
+    const alarm = vi.mocked(raiseRiotAlarm);
+    alarm.mockClear();
+
+    global.fetch = vi.fn(async () => response(404, {})) as unknown as typeof fetch;
+    await expect(client.get("https://euw1.api.riotgames.com/x")).rejects.toThrow();
+    expect(alarm).not.toHaveBeenCalled();
+
+    global.fetch = vi.fn(async () =>
+      response(429, { "Retry-After": "30", "X-Rate-Limit-Type": "application" })
+    ) as unknown as typeof fetch;
+    await expect(client.get("https://euw1.api.riotgames.com/x")).rejects.toThrow();
+    expect(alarm).toHaveBeenLastCalledWith("app-rate-limited", "euw1.api.riotgames.com", {
+      retryAfterSeconds: 30,
+    });
+
+    global.fetch = vi.fn(async () => response(403, {})) as unknown as typeof fetch;
+    await expect(client.get("https://euw1.api.riotgames.com/x")).rejects.toThrow();
+    expect(alarm).toHaveBeenLastCalledWith("key-rejected", "euw1.api.riotgames.com", {
+      status: 403,
+    });
   });
 });

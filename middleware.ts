@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { toolFilterRoute } from "@/domains/meta/toolFilterRoutes";
 
 const PROTECTED_PATHS = [
   "/dashboard",
@@ -33,6 +34,9 @@ const PROTECTED_PATHS = [
   "/messages",
 ];
 
+// Public tool pages the middleware wakes for only to rewrite their filters (ADR-061).
+const TOOL_FILTER_PATHS = ["/tools/tier-list", "/counters"];
+
 const AUTH_PATHS = ["/login", "/register", "/forgot-password", "/reset-password"];
 
 // Paths that sit under a guarded prefix but are public on purpose. A share link is
@@ -57,6 +61,22 @@ const COACHING_INTRO_PATH = "/ai-coach";
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  // Filtered tool pages are rewritten onto a cacheable path before anything else runs; they are
+  // public, so none of the session checks below apply to them (ADR-061).
+  const toolRoute = toolFilterRoute(pathname, req.nextUrl.searchParams);
+  if (toolRoute?.kind === "not-found") return new NextResponse(null, { status: 404 });
+  if (toolRoute) {
+    const target = req.nextUrl.clone();
+    target.pathname = toolRoute.pathname;
+    target.search = "";
+    return toolRoute.kind === "redirect"
+      ? NextResponse.redirect(target, 308)
+      : NextResponse.rewrite(target);
+  }
+  if (TOOL_FILTER_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
+    return NextResponse.next();
+  }
 
   // getToken is lightweight — reads and verifies the session cookie without a DB call
   const token = await getToken({ req, secret: process.env.AUTH_SECRET });
@@ -157,5 +177,9 @@ export const config = {
     "/register",
     "/forgot-password",
     "/reset-password",
+    // Filter rewrites only (ADR-061); the handler returns before any session check for these.
+    "/tools/tier-list",
+    "/tools/tier-list/:path*",
+    "/counters/:path*",
   ],
 };

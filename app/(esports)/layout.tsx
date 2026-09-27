@@ -1,8 +1,6 @@
 import { MarketingHeader } from "../(marketing)/components/MarketingHeader";
 import { MarketingFooter } from "../(marketing)/components/MarketingFooter";
-import { ToolsAppChrome } from "@/components/layout/ToolsAppChrome";
-import { QueryProvider } from "@/components/providers/QueryProvider";
-import { getSession } from "@/lib/auth/session";
+import { PublicChrome } from "@/components/layout/PublicChrome";
 import { EsportsNav } from "@/domains/esports/components/EsportsNav";
 import { SpoilerToggle } from "@/domains/esports/components/SpoilerToggle";
 import { TimeZoneSelect } from "@/domains/esports/components/TimeZoneSelect";
@@ -42,37 +40,19 @@ function SectionChrome(): React.ReactElement {
 const APP_STICKY_TOP = { "--esports-sticky-top": "0px" } as React.CSSProperties;
 const MARKETING_STICKY_TOP = { "--esports-sticky-top": "62px" } as React.CSSProperties;
 
-// The esports section is public and built for search, but signed-in members
-// reach it from the sidebar too. Same split as the Free Tools (TASK-237): the
-// app shell keeps members in context, marketing chrome greets everyone else.
-export default async function EsportsLayout({ children }: { children: React.ReactNode }) {
-  const session = await getSession();
-
-  if (session?.user) {
-    return (
-      <ToolsAppChrome>
-        <div style={APP_STICKY_TOP}>
-          <SectionChrome />
-          {children}
-        </div>
-      </ToolsAppChrome>
-    );
-  }
-
-  // The signed-out branch needs its own provider: the live scoreboard polls
-  // through React Query and the section is deliberately login-free. One per
-  // branch — nesting a second under ToolsAppChrome's would mean two clients and
-  // two caches on the same page.
+// The esports section is public and built for search, but signed-in members reach it from the
+// sidebar too. Same split as the Free Tools (TASK-237), chosen in the browser by PublicChrome:
+// reading the session here made every esports page dynamic and switched ISR off (ADR-059).
+export default function EsportsLayout({ children }: { children: React.ReactNode }) {
   return (
-    <QueryProvider>
-      <div className="flex min-h-screen flex-col bg-background" style={MARKETING_STICKY_TOP}>
-        <MarketingHeader />
-        <main className="flex-1">
-          <SectionChrome />
-          {children}
-        </main>
-        <MarketingFooter />
-      </div>
-    </QueryProvider>
+    <PublicChrome
+      header={<MarketingHeader />}
+      footer={<MarketingFooter />}
+      appStyle={APP_STICKY_TOP}
+      marketingStyle={MARKETING_STICKY_TOP}
+    >
+      <SectionChrome />
+      {children}
+    </PublicChrome>
   );
 }

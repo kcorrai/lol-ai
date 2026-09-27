@@ -28,6 +28,9 @@ import { HubTournaments } from "./HubTournaments";
 
 // Five minutes. The hub's job is "what is on right now", and the live block polls on top of this.
 export const revalidate = 300;
+// Static despite the no-cache reads under it (esports feeds, Redis): without this, any one of
+// them sets the page's revalidate to 0 and it is rendered per request instead (ADR-059).
+export const dynamic = "force-static";
 
 export const metadata: Metadata = {
   // No brand suffix: the root layout's title template appends one already.
