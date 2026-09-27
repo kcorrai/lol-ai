@@ -43,9 +43,15 @@ export function DraftBuilder({ champions, blue, red }: Props) {
       {(["blue", "red"] as const).map((side) => {
         const team = side === "blue" ? blue : red;
         const accent = side === "blue" ? "text-info" : "text-danger";
+        const edge = side === "blue" ? "border-l-info" : "border-l-danger";
         return (
-          <div key={side} className="rounded-2xl border border-border bg-surface/60 p-4">
-            <h2 className={`mb-3 font-display text-sm font-bold uppercase tracking-wide ${accent}`}>
+          <div
+            key={side}
+            className={`notch border border-l-2 border-border bg-surface p-4 ${edge}`}
+          >
+            <h2
+              className={`mb-3 font-mono text-[11px] font-bold uppercase tracking-label ${accent}`}
+            >
               {side === "blue" ? "Blue Team" : "Red Team"}
             </h2>
             <div className="flex flex-col gap-2">
@@ -59,7 +65,7 @@ export function DraftBuilder({ champions, blue, red }: Props) {
                 const options = champions.filter((c) => !taken.has(c.key));
                 return (
                   <div key={pos} className="flex items-center gap-2">
-                    <span className="w-16 shrink-0 text-xs font-semibold text-text-muted">
+                    <span className="hud-label w-16 shrink-0 text-[10px]">
                       {POSITION_LABELS[pos]}
                     </span>
                     <ChampionCombobox

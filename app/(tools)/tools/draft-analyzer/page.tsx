@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import {
   evaluateDraft,
   getMetaSnapshot,
@@ -11,7 +10,9 @@ import {
 import { fetchAllChampions } from "@/lib/ddragon/championsData";
 import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { ToolUpgradeNudge } from "../../ToolUpgradeNudge";
-import { PublicOnly } from "@/components/tools/PublicOnly";
+import { ToolHeader } from "../../ToolHeader";
+import { ToolEmpty } from "../../ToolEmpty";
+import { ToolCta } from "../../ToolCta";
 import { DraftBuilder } from "./DraftBuilder";
 import { LiveGameButton } from "@/components/tools/LiveGameButton";
 import { DraftResults } from "@/domains/meta/components/DraftResults";
@@ -75,7 +76,7 @@ export default async function DraftAnalyzerPage({ searchParams }: PageProps) {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-14">
+    <div className="mx-auto max-w-[1240px] px-5 py-12 md:px-8">
       <Breadcrumb
         items={[
           { name: "Free Tools", href: "/tools" },
@@ -83,18 +84,10 @@ export default async function DraftAnalyzerPage({ searchParams }: PageProps) {
         ]}
       />
 
-      <header className="mb-8">
-        <PublicOnly>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
-            Free Tool · No login required
-          </p>
-        </PublicOnly>
-        <h1 className="font-display text-3xl font-black text-text md:text-4xl">Draft Analyzer</h1>
-        <p className="mt-2 max-w-2xl text-text-muted">
-          Build both team comps and get a stats-based read on damage balance, frontline, scaling,
-          meta strength and every lane matchup.
-        </p>
-      </header>
+      <ToolHeader
+        title="Draft Analyzer"
+        subtitle="Build both team comps and get a stats-based read on damage balance, frontline, engage, scaling, meta strength and every lane matchup."
+      />
 
       <div className="mb-10">
         <LiveGameButton mode="draft" />
@@ -102,43 +95,33 @@ export default async function DraftAnalyzerPage({ searchParams }: PageProps) {
       </div>
 
       {!hasPicks && (
-        <p className="rounded-xl border border-dashed border-border px-4 py-12 text-center text-text-muted">
-          Add at least one champion to each team to analyze the draft.
-        </p>
+        <ToolEmpty
+          title="Add a champion to each side"
+          body="One pick per team is enough to start; every lane you fill adds a head-to-head read."
+        />
       )}
 
       {hasPicks && !evaluation && (
-        <p className="rounded-xl border border-dashed border-border px-4 py-12 text-center text-text-muted">
-          Meta data is unavailable right now. Please try again shortly.
-        </p>
+        <ToolEmpty
+          title="Meta data is unavailable"
+          body="The ranked snapshot could not be read right now. Please try again shortly."
+        />
       )}
 
       {evaluation && (
         <>
-          <div className="mb-6 text-sm text-text-muted">
-            Patch {formatGamePatch(evaluation.patch)}
-          </div>
+          <p className="hud-label mb-4 text-[10.5px]">
+            Patch {formatGamePatch(evaluation.patch)} · ranked solo/duo
+          </p>
           <DraftResults evaluation={evaluation} />
 
           <ToolUpgradeNudge message="Go Pro for AI coaching on YOUR games — how your real drafts play out, your worst matchups, and a step-by-step climb plan." />
 
-          <PublicOnly>
-            <div className="mt-12 rounded-2xl border border-accent/30 bg-accent/5 p-6 text-center">
-              <h2 className="font-display text-xl font-bold text-text">
-                Want a deeper, personalized read on your games?
-              </h2>
-              <p className="mx-auto mt-2 max-w-xl text-sm text-text-muted">
-                This tool is stats-based. Connect your Riot account for an AI coaching report that
-                analyzes your actual drafts, mistakes, and how to climb.
-              </p>
-              <Link
-                href="/register"
-                className="mt-5 inline-block rounded-md bg-accent px-6 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
-              >
-                Get your free AI analysis
-              </Link>
-            </div>
-          </PublicOnly>
+          <ToolCta
+            eyebrow="This read is stats-based"
+            title="Want a deeper, personalized read on your games?"
+            body="Connect your Riot account for an AI coaching report that analyzes your actual drafts, mistakes, and how to climb."
+          />
         </>
       )}
     </div>

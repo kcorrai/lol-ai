@@ -68,7 +68,7 @@ export function ChampionCombobox({
           setOpen((v) => !v);
           setTimeout(() => inputRef.current?.focus(), 0);
         }}
-        className="flex w-full items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2.5 text-left transition-colors hover:border-accent/40"
+        className="notch-sm flex w-full items-center gap-2 border border-border bg-surface-dark px-3 py-2.5 text-left transition-colors hover:border-accent/40"
       >
         {selected ? (
           <>
@@ -92,7 +92,7 @@ export function ChampionCombobox({
       </button>
 
       {open && (
-        <div className="absolute z-20 mt-2 w-full rounded-lg border border-border bg-surface shadow-2xl">
+        <div className="absolute z-20 mt-2 w-full border border-border bg-surface shadow-2xl">
           <div className="flex items-center gap-2 border-b border-border px-3 py-2">
             <Search className="h-4 w-4 text-text-muted" />
             <input

@@ -13,8 +13,10 @@ import { CounterResults } from "@/domains/meta/components/CounterResults";
 import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { RelatedChampions } from "@/domains/meta/components/RelatedChampions";
 import { PersonalMatchupPanel } from "@/domains/counter/components/PersonalMatchupPanel";
-import { PublicOnly } from "@/components/tools/PublicOnly";
 import { CounterPickerControls } from "./CounterPickerControls";
+import { ToolHeader } from "../../ToolHeader";
+import { ToolEmpty } from "../../ToolEmpty";
+import { ToolCta } from "../../ToolCta";
 import { jsonLdProps } from "@/lib/security/jsonLd";
 
 interface PageProps {
@@ -80,7 +82,7 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-14">
+    <div className="mx-auto max-w-[1240px] px-5 py-12 md:px-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdProps(faqJsonLd)} />
 
       <Breadcrumb
@@ -90,20 +92,12 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
         ]}
       />
 
-      <header className="mb-8">
-        <PublicOnly>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
-            Free Tool · No login required
-          </p>
-        </PublicOnly>
-        <h1 className="font-display text-3xl font-black text-text md:text-4xl">Counter Picker</h1>
-        <p className="mt-2 max-w-2xl text-text-muted">
-          Pick a champion to see who counters it and which matchups it wins, ranked by real ranked
-          win rate.
-        </p>
-      </header>
+      <ToolHeader
+        title="Counter Picker"
+        subtitle="Pick a champion to see who counters it and which matchups it wins, ranked by real ranked win rate."
+      />
 
-      <div className="mb-10 rounded-2xl border border-border bg-surface/60 p-5">
+      <div className="notch mb-10 border border-border bg-surface px-4 py-4">
         <CounterPickerControls
           champions={championOptions}
           champion={result?.championKey ?? champion}
@@ -114,16 +108,17 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
       </div>
 
       {!champion && (
-        <p className="rounded-xl border border-dashed border-border px-4 py-12 text-center text-text-muted">
-          Select a champion above to see its counters.
-        </p>
+        <ToolEmpty
+          title="Pick a champion"
+          body="Choose the champion you are laning against to see who beats it, and who it beats."
+        />
       )}
 
       {champion && !result && (
-        <p className="rounded-xl border border-dashed border-border px-4 py-12 text-center text-text-muted">
-          No ranked data available for <span className="font-semibold text-text">{champion}</span>{" "}
-          right now. Try another champion.
-        </p>
+        <ToolEmpty
+          title={`No ranked data for ${champion}`}
+          body="There is no sample for this champion right now. Try another champion."
+        />
       )}
 
       {result && (
@@ -159,23 +154,12 @@ export default async function CounterPickerPage({ searchParams }: PageProps) {
             </Link>
           </div>
 
-          <PublicOnly>
-            <div className="mt-12 rounded-2xl border border-accent/30 bg-accent/5 p-6 text-center">
-              <h2 className="font-display text-xl font-bold text-text">
-                Want to know why you keep losing this matchup?
-              </h2>
-              <p className="mx-auto mt-2 max-w-xl text-sm text-text-muted">
-                Connect your Riot account and get a personal AI coaching report on your own games —
-                your worst matchups, mistakes, and how to fix them.
-              </p>
-              <Link
-                href="/register"
-                className="mt-5 inline-block rounded-md bg-accent px-6 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
-              >
-                Get your free AI analysis
-              </Link>
-            </div>
-          </PublicOnly>
+          <ToolCta
+            eyebrow="Counters are the average player"
+            title="Want to know why you keep losing this matchup?"
+            body="Connect your Riot account and get a personal AI coaching report on your own games — your worst matchups, mistakes, and how to fix them."
+            splashKey={result.championKey}
+          />
         </>
       )}
 

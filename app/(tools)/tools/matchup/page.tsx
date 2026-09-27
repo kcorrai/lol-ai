@@ -8,7 +8,9 @@ import { MatchupReportCard } from "./MatchupReportCard";
 import { MatchupBuildSummary } from "./MatchupBuildSummary";
 import { loadMatchupExtras } from "./loadMatchupExtras";
 import { ToolUpgradeNudge } from "../../ToolUpgradeNudge";
-import { PublicOnly } from "@/components/tools/PublicOnly";
+import { ToolHeader } from "../../ToolHeader";
+import { ToolEmpty } from "../../ToolEmpty";
+import { ToolCta } from "../../ToolCta";
 import { LiveGameButton } from "@/components/tools/LiveGameButton";
 
 interface PageProps {
@@ -54,7 +56,7 @@ export default async function MatchupPage({ searchParams }: PageProps) {
     .sort((x, y) => x.name.localeCompare(y.name));
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-14">
+    <div className="mx-auto max-w-[1100px] px-5 py-12 md:px-8">
       <Breadcrumb
         items={[
           { name: "Free Tools", href: "/tools" },
@@ -62,21 +64,14 @@ export default async function MatchupPage({ searchParams }: PageProps) {
         ]}
       />
 
-      <header className="mb-8">
-        <PublicOnly>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-accent">
-            Free Tool · No login required
-          </p>
-        </PublicOnly>
-        <h1 className="font-display text-3xl font-black text-text md:text-4xl">Matchup Analyzer</h1>
-        <p className="mt-2 text-text-muted">
-          Compare two champions head-to-head and see who wins the lane, by real ranked win rate.
-        </p>
-      </header>
+      <ToolHeader
+        title="Matchup Analyzer"
+        subtitle="Compare two champions head-to-head and see who wins the lane, by real ranked win rate."
+      />
 
       <LiveGameButton mode="matchup" />
 
-      <div className="mb-10 rounded-2xl border border-border bg-surface/60 p-5">
+      <div className="notch mb-10 border border-border bg-surface px-4 py-4">
         <MatchupControls
           champions={championOptions}
           championA={report?.championA.key ?? a}
@@ -87,15 +82,17 @@ export default async function MatchupPage({ searchParams }: PageProps) {
       </div>
 
       {(!a || !b) && (
-        <p className="rounded-xl border border-dashed border-border px-4 py-12 text-center text-text-muted">
-          Pick two champions above to compare the matchup.
-        </p>
+        <ToolEmpty
+          title="Pick two champions"
+          body="Your champion on the left, the one you are laning against on the right."
+        />
       )}
 
       {a && b && !report && (
-        <p className="rounded-xl border border-dashed border-border px-4 py-12 text-center text-text-muted">
-          No ranked data available for this matchup right now. Try different champions.
-        </p>
+        <ToolEmpty
+          title="No ranked data for this matchup"
+          body="There is no sample for this pairing right now. Try different champions."
+        />
       )}
 
       {report && (
@@ -128,23 +125,12 @@ export default async function MatchupPage({ searchParams }: PageProps) {
             </Link>
           </div>
 
-          <PublicOnly>
-            <div className="mt-8 rounded-2xl border border-accent/30 bg-accent/5 p-6 text-center">
-              <h2 className="font-display text-xl font-bold text-text">
-                Struggling with this lane in your own games?
-              </h2>
-              <p className="mx-auto mt-2 max-w-xl text-sm text-text-muted">
-                Connect your Riot account for a personal AI coaching report that breaks down your
-                real matchups, mistakes, and how to climb.
-              </p>
-              <Link
-                href="/register"
-                className="mt-5 inline-block rounded-md bg-accent px-6 py-2.5 text-sm font-semibold text-background transition-opacity hover:opacity-90"
-              >
-                Get your free AI analysis
-              </Link>
-            </div>
-          </PublicOnly>
+          <ToolCta
+            eyebrow="The average lane is not your lane"
+            title="Struggling with this lane in your own games?"
+            body="Connect your Riot account for a personal AI coaching report that breaks down your real matchups, mistakes, and how to climb."
+            splashKey={report.championB.key}
+          />
         </>
       )}
     </div>

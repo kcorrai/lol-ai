@@ -1,11 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ArrowRight } from "lucide-react";
 import { ChampionCombobox, type ChampionOption } from "@/domains/meta/components/ChampionCombobox";
 import { ALL_POSITIONS, POSITION_LABELS } from "@/domains/meta/positions";
 import type { CanonicalPosition } from "@/domains/meta/types";
-import { cn } from "@/lib/utils";
+import { hudChip } from "../../hudChip";
 
 interface Props {
   champions: ChampionOption[];
@@ -43,7 +42,9 @@ export function MatchupControls({
           placeholder="Your champion…"
           className="flex-1"
         />
-        <ArrowRight className="mx-auto h-5 w-5 shrink-0 rotate-90 text-text-muted sm:rotate-0" />
+        <span className="mx-auto shrink-0 font-mono text-[11px] uppercase tracking-label text-text-muted">
+          vs
+        </span>
         <ChampionCombobox
           champions={champions}
           value={championB}
@@ -64,14 +65,7 @@ export function MatchupControls({
                 type="button"
                 disabled={!enabled}
                 onClick={() => navigate(championA, championB, pos)}
-                className={cn(
-                  "rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors",
-                  active
-                    ? "bg-accent text-background"
-                    : "border border-border bg-surface text-text-muted hover:border-accent/40 hover:text-text",
-                  !enabled &&
-                    "cursor-not-allowed opacity-40 hover:border-border hover:text-text-muted"
-                )}
+                className={hudChip(active, enabled)}
               >
                 {POSITION_LABELS[pos]}
               </button>

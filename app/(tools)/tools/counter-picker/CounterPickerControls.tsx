@@ -7,7 +7,7 @@ import { ChampionCombobox, type ChampionOption } from "@/domains/meta/components
 import { ALL_POSITIONS, POSITION_LABELS } from "@/domains/meta/positions";
 import { SNAPSHOT_TIERS, TIER_LABELS, type SnapshotTier } from "@/domains/meta/services/opggShared";
 import type { CanonicalPosition } from "@/domains/meta/types";
-import { cn } from "@/lib/utils";
+import { hudChip } from "../../hudChip";
 
 interface Props {
   champions: ChampionOption[];
@@ -16,11 +16,6 @@ interface Props {
   availablePositions: CanonicalPosition[];
   tier: SnapshotTier | null; // active rank bracket (null = op.gg default)
 }
-
-const pillBase = "rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors";
-const activePill = "bg-accent text-background";
-const idlePill =
-  "border border-border bg-surface text-text-muted hover:border-accent/40 hover:text-text";
 
 export function CounterPickerControls({
   champions,
@@ -67,12 +62,7 @@ export function CounterPickerControls({
                   type="button"
                   disabled={!enabled}
                   onClick={() => navigate(champion, pos, tier)}
-                  className={cn(
-                    pillBase,
-                    active ? activePill : idlePill,
-                    !enabled &&
-                      "cursor-not-allowed opacity-40 hover:border-border hover:text-text-muted"
-                  )}
+                  className={hudChip(active, enabled)}
                 >
                   {POSITION_LABELS[pos]}
                 </button>
@@ -83,12 +73,12 @@ export function CounterPickerControls({
       </div>
 
       {champion && (
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="mr-1 text-[11px] uppercase tracking-wide text-text-muted">Rank</span>
+        <div className="flex flex-wrap items-center gap-1.5 border-t border-line-1 pt-3">
+          <span className="hud-label mr-1 text-[10px]">Rank</span>
           <button
             type="button"
             onClick={() => navigate(champion, position, null)}
-            className={cn(pillBase, tier === null ? activePill : idlePill)}
+            className={hudChip(tier === null)}
           >
             Default
           </button>
@@ -97,7 +87,7 @@ export function CounterPickerControls({
               key={t}
               type="button"
               onClick={() => navigate(champion, position, t)}
-              className={cn(pillBase, t === tier ? activePill : idlePill)}
+              className={hudChip(t === tier)}
             >
               {TIER_LABELS[t]}
             </button>
