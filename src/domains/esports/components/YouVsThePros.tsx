@@ -7,7 +7,8 @@ import { useSession } from "next-auth/react";
 import { useYouVsPros } from "@/hooks/useYouVsPros";
 import { REGIONS, DEFAULT_REGION } from "@/lib/riot/regions";
 import { splitRiotId } from "@/lib/riot/riotId";
-import { buildComparison, formatMetric, isLowSample } from "@/domains/esports/comparison";
+import { buildComparison, isLowSample } from "@/domains/esports/comparison";
+import { ComparisonRowView } from "@/domains/esports/components/ComparisonRowView";
 import type { PlayerChampionAverages } from "@/domains/esports/comparison";
 import type { ProChampionAverages } from "@/domains/esports/types";
 
@@ -15,29 +16,6 @@ function track(event: string, properties: Record<string, unknown>): void {
   // The provider only initialises when a key is configured, so this is a no-op
   // in development rather than a crash.
   if (posthog.__loaded) posthog.capture(event, properties);
-}
-
-function Row({
-  label,
-  pro,
-  you,
-  reading,
-}: {
-  label: string;
-  pro: string;
-  you: string;
-  reading: string | null;
-}): React.ReactElement {
-  return (
-    <tr className="border-b border-border/60 align-top last:border-0">
-      <th scope="row" className="px-3 py-2 text-left font-normal text-text-body">
-        {label}
-        {reading && <span className="mt-0.5 block text-xs text-text-faint">{reading}</span>}
-      </th>
-      <td className="whitespace-nowrap px-3 py-2 text-right font-mono text-text">{pro}</td>
-      <td className="whitespace-nowrap px-3 py-2 text-right font-mono text-text">{you}</td>
-    </tr>
-  );
 }
 
 function Comparison({
@@ -65,27 +43,29 @@ function Comparison({
       )}
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[22rem] border-collapse text-sm">
+        <table className="w-full min-w-[26rem] border-collapse text-sm">
           <thead>
             <tr className="border-b border-border text-left">
-              <th scope="col" className="hud-label px-3 py-2 font-normal" />
+              <th scope="col" className="hud-label px-3 py-2 font-normal">
+                {/* What the two bars under each metric are, said once. */}
+                <span className="normal-case tracking-normal">
+                  Grey bar pros · coloured bar you
+                </span>
+              </th>
               <th scope="col" className="hud-label px-3 py-2 text-right font-normal">
                 Pros ({proGames})
               </th>
               <th scope="col" className="hud-label px-3 py-2 text-right font-normal">
                 {label} ({you.games})
               </th>
+              <th scope="col" className="hud-label px-3 py-2 text-right font-normal">
+                Gap
+              </th>
             </tr>
           </thead>
           <tbody>
             {rows.map((row) => (
-              <Row
-                key={row.key}
-                label={row.label}
-                pro={formatMetric(row.pro, row.format)}
-                you={formatMetric(row.you, row.format)}
-                reading={row.reading}
-              />
+              <ComparisonRowView key={row.key} row={row} lowSample={isLowSample(you)} />
             ))}
           </tbody>
         </table>
