@@ -55,4 +55,7 @@ list from the CDN and rendering it — snapshot read and all — for every visit
 - Measured with `npm run load:test` at 50 concurrent visitors on a local production build: the
   cached pages hold a p50 under 20 ms with no errors, while the two per-request pages sit at
   ~3 s p50 and ~6 s p99. Making them cacheable means moving their filters to the client.
-- The esports pages have the same `no-cache` exposure and were not changed here.
+- The esports section had both causes too. Its layout now uses the same client-side chrome
+  (`PublicChrome`, shared with the tools), and every esports ISR page declares its render mode,
+  enforced by `app/(esports)/renderMode.lock.test.ts`. The rule itself lives in
+  `src/test/renderModeLock.ts`.
