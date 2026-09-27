@@ -1,6 +1,7 @@
+import { GoldCurveAxes } from "@/domains/esports/components/GoldCurveAxes";
 import {
+  curveMid,
   plotGoldCurve,
-  timeToX,
   type CurveBox,
   type CurvePoint,
 } from "@/domains/esports/goldCurveGeometry";
@@ -17,23 +18,29 @@ import type { GameTimeline } from "@/domains/esports/types";
  */
 
 const WIDTH = 640;
-const HEIGHT = 200;
-const PAD_X = 8;
-const PAD_Y = 12;
-const MID = HEIGHT / 2;
-const BOX: CurveBox = { left: PAD_X, right: WIDTH - PAD_X, top: PAD_Y, bottom: HEIGHT - PAD_Y };
+const HEIGHT = 210;
+/** Room on the left for the gold labels ("+10k" is the widest), and below for minutes. */
+const BOX: CurveBox = { left: 40, right: WIDTH - 8, top: 12, bottom: HEIGHT - 20 };
+const MID = curveMid(BOX);
 
-/** A gridline every five minutes, which is how a game is talked about. */
-const GRID_SECONDS = 5 * 60;
+interface GoldCurveProps {
+  timeline: GameTimeline;
+  blueName: string;
+  redName: string;
+}
 
-/** "12:00 — blue +3,400", as one string. */
-function pointLabel(point: CurvePoint): string {
+/** "12:00 — T1 +3,400", as one string. */
+function pointLabel(point: CurvePoint, blueName: string, redName: string): string {
   if (point.diff === 0) return `${sampleClock(point.seconds)} — level`;
-  const side = point.diff > 0 ? "blue" : "red";
+  const side = point.diff > 0 ? blueName : redName;
   return `${sampleClock(point.seconds)} — ${side} +${Math.abs(point.diff).toLocaleString("en-US")}`;
 }
 
-export function GoldCurve({ timeline }: { timeline: GameTimeline }): React.ReactElement | null {
+export function GoldCurve({
+  timeline,
+  blueName,
+  redName,
+}: GoldCurveProps): React.ReactElement | null {
   // Two points is the least that draws a line rather than a dot.
   if (timeline.samples.length < 2) return null;
 
@@ -42,10 +49,7 @@ export function GoldCurve({ timeline }: { timeline: GameTimeline }): React.React
 
   // One closed shape, filled twice through clips that cut it at the zero line —
   // the half above is blue's lead, the half below is red's.
-  const area = `${PAD_X},${MID} ${line} ${points[points.length - 1].x.toFixed(1)},${MID}`;
-
-  const gridlines: number[] = [];
-  for (let at = GRID_SECONDS; at < span; at += GRID_SECONDS) gridlines.push(at);
+  const area = `${BOX.left},${MID} ${line} ${points[points.length - 1].x.toFixed(1)},${MID}`;
 
   const last = points[points.length - 1];
 
@@ -60,7 +64,7 @@ export function GoldCurve({ timeline }: { timeline: GameTimeline }): React.React
         } minutes. It ends with ${
           last.diff === 0
             ? "the sides level"
-            : `${last.diff > 0 ? "blue" : "red"} ahead by ${Math.abs(last.diff).toLocaleString("en-US")} gold`
+            : `${last.diff > 0 ? blueName : redName} ahead by ${Math.abs(last.diff).toLocaleString("en-US")} gold`
         }.`}
       >
         <defs>
@@ -68,21 +72,11 @@ export function GoldCurve({ timeline }: { timeline: GameTimeline }): React.React
             <rect x="0" y="0" width={WIDTH} height={MID} />
           </clipPath>
           <clipPath id="gold-curve-below">
-            <rect x="0" y={MID} width={WIDTH} height={MID} />
+            <rect x="0" y={MID} width={WIDTH} height={HEIGHT - MID} />
           </clipPath>
         </defs>
 
-        {gridlines.map((at) => {
-          const x = timeToX(at, span, BOX);
-          return (
-            <g key={at}>
-              <line x1={x} y1={PAD_Y} x2={x} y2={HEIGHT - PAD_Y} stroke="#20302D" strokeWidth="1" />
-              <text x={x + 4} y={HEIGHT - 2} fill="#485954" fontSize="10" fontFamily="monospace">
-                {`${at / 60}m`}
-              </text>
-            </g>
-          );
-        })}
+        <GoldCurveAxes box={BOX} scale={scale} span={span} blueName={blueName} redName={redName} />
 
         <polygon
           points={area}
@@ -98,7 +92,7 @@ export function GoldCurve({ timeline }: { timeline: GameTimeline }): React.React
         />
 
         {/* The zero line is the reading: which side of it the curve sits on. */}
-        <line x1={PAD_X} y1={MID} x2={WIDTH - PAD_X} y2={MID} stroke="#6C817B" strokeWidth="1" />
+        <line x1={BOX.left} y1={MID} x2={BOX.right} y2={MID} stroke="#6C817B" strokeWidth="1" />
 
         <polyline
           points={line}
@@ -114,15 +108,15 @@ export function GoldCurve({ timeline }: { timeline: GameTimeline }): React.React
             {/* One string, not an interpolation split across children: the
                 browser parses a <title>'s content as raw text and merges the
                 nodes, so a multi-child title hydrates as a mismatch. */}
-            <title>{pointLabel(point)}</title>
+            <title>{pointLabel(point, blueName, redName)}</title>
           </circle>
         ))}
       </svg>
 
       <figcaption className="mt-2 flex flex-wrap items-baseline justify-between gap-2 font-mono text-[11px] text-text-muted">
         <span>
-          <span className="text-accent-blue">Blue</span> above,{" "}
-          <span className="text-danger">red</span> below · scale ±{(scale / 1000).toFixed(1)}k gold
+          Gold lead · <span className="text-accent-blue">{blueName}</span> above,{" "}
+          <span className="text-danger">{redName}</span> below
         </span>
         <span>
           Sampled every {timeline.intervalSeconds / 60} min

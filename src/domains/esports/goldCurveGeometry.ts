@@ -24,6 +24,34 @@ export interface CurvePoint {
 /** Never scale to less than this, or a level game draws a dramatic wobble. */
 export const MIN_SCALE_GOLD = 2000;
 
+export interface GoldTick {
+  gold: number;
+  label: string;
+}
+
+/**
+ * The scale rounded up to a whole thousand, so the axis reads "+4k" rather
+ * than "+3.7k" and the half-way tick lands on a number people say out loud.
+ */
+export function niceGoldScale(largestLead: number): number {
+  return Math.max(MIN_SCALE_GOLD, Math.ceil(largestLead / 1000) * 1000);
+}
+
+/** "+2k", "−1.5k", "0" — signed by who is ahead, blue positive. */
+export function formatGoldK(gold: number): string {
+  if (gold === 0) return "0";
+  const thousands = Math.round((Math.abs(gold) / 1000) * 10) / 10;
+  return `${gold > 0 ? "+" : "−"}${thousands}k`;
+}
+
+/** Five marks down the axis: both extremes, both halves, and level. */
+export function goldTicks(scale: number): GoldTick[] {
+  return [scale, scale / 2, 0, -scale / 2, -scale].map((gold) => ({
+    gold,
+    label: formatGoldK(gold),
+  }));
+}
+
 export function curveMid(box: CurveBox): number {
   return (box.top + box.bottom) / 2;
 }
@@ -44,9 +72,8 @@ export function plotGoldCurve(
   box: CurveBox
 ): { points: CurvePoint[]; scale: number; span: number } {
   const span = Math.max(...timeline.samples.map((sample) => sample.seconds), 1);
-  const scale = Math.max(
-    MIN_SCALE_GOLD,
-    ...timeline.samples.map((sample) => Math.abs(goldDiff(sample)))
+  const scale = niceGoldScale(
+    Math.max(...timeline.samples.map((sample) => Math.abs(goldDiff(sample))))
   );
 
   const points = timeline.samples.map((sample) => {

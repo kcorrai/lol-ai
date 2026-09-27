@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   MIN_SCALE_GOLD,
+  goldTicks,
+  niceGoldScale,
   goldToY,
   plotGoldCurve,
   timeToX,
@@ -56,19 +58,19 @@ describe("goldToY", () => {
 });
 
 describe("plotGoldCurve", () => {
-  it("scales to the largest lead either side held", () => {
+  it("scales to the largest lead either side held, rounded to a thousand", () => {
     const { scale, span, points } = plotGoldCurve(
       timeline([
         { seconds: 240, blue: { gold: 5000 }, red: { gold: 4000 } },
-        { seconds: 480, blue: { gold: 9000 }, red: { gold: 13000 } },
+        { seconds: 480, blue: { gold: 9000 }, red: { gold: 12800 } },
       ]),
       BOX
     );
 
     expect(scale).toBe(4000);
     expect(span).toBe(480);
-    expect(points.map((point) => point.diff)).toEqual([1000, -4000]);
-    expect(points[1]).toMatchObject({ x: 110, y: 100 });
+    expect(points.map((point) => point.diff)).toEqual([1000, -3800]);
+    expect(points[1]).toMatchObject({ x: 110, y: 97.5 });
   });
 
   it("never scales below the floor, so a level game stays flat", () => {
@@ -81,5 +83,28 @@ describe("plotGoldCurve", () => {
     );
 
     expect(scale).toBe(MIN_SCALE_GOLD);
+  });
+});
+
+describe("niceGoldScale", () => {
+  it("rounds the largest lead up to a whole thousand", () => {
+    expect(niceGoldScale(7340)).toBe(8000);
+    expect(niceGoldScale(4000)).toBe(4000);
+  });
+
+  it("keeps the floor for a close game", () => {
+    expect(niceGoldScale(300)).toBe(MIN_SCALE_GOLD);
+  });
+});
+
+describe("goldTicks", () => {
+  it("labels both extremes, both halves and level, blue positive", () => {
+    expect(goldTicks(3000).map((tick) => tick.label)).toEqual([
+      "+3k",
+      "+1.5k",
+      "0",
+      "−1.5k",
+      "−3k",
+    ]);
   });
 });
