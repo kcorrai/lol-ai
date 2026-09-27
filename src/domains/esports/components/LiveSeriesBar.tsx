@@ -35,7 +35,10 @@ function LiveCard({ event }: { event: EsportsEvent }): React.ReactElement {
           </span>
         </span>
         <span className="text-center">
-          <span className="block font-mono text-2xl font-bold leading-none text-text">
+          <span
+            className="block font-mono text-2xl font-bold leading-none text-text"
+            data-spoiler=""
+          >
             {home?.gameWins ?? 0}
             <span className="mx-1.5 text-text-faint">–</span>
             {away?.gameWins ?? 0}

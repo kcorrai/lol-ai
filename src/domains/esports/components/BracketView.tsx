@@ -10,6 +10,8 @@ function Side({ team, decided }: { team: BracketTeam; decided: boolean }): React
   return (
     <span
       className={`flex items-center gap-2 px-2.5 py-1.5 ${won ? "text-text" : "text-text-muted"}`}
+      // Bold and bright is the winner; spoiler mode draws both sides alike.
+      data-spoiler-outcome={decided ? "flat" : undefined}
     >
       {team.image ? (
         <Image
@@ -28,7 +30,10 @@ function Side({ team, decided }: { team: BracketTeam; decided: boolean }): React
         {team.name}
       </span>
       {decided && (
-        <span className={`shrink-0 font-mono text-xs ${won ? "text-accent" : "text-text-faint"}`}>
+        <span
+          className={`shrink-0 font-mono text-xs ${won ? "text-accent" : "text-text-faint"}`}
+          data-spoiler=""
+        >
           {team.gameWins}
         </span>
       )}
@@ -50,13 +55,18 @@ function Fixture({ match }: { match: BracketMatch }): React.ReactElement {
 
   // A slot with no teams yet links nowhere: there is no match page to open.
   if (!known) {
-    return <span className="gaming-card notch-sm block opacity-60">{body}</span>;
+    return (
+      <span className="gaming-card notch-sm block opacity-60" data-spoiler-scope="">
+        {body}
+      </span>
+    );
   }
 
   return (
     <Link
       href={`/esports/matches/${match.matchId}`}
       className="gaming-card notch-sm block transition-colors hover:border-line-2"
+      data-spoiler-scope=""
     >
       {body}
     </Link>

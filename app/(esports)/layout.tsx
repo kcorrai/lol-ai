@@ -4,6 +4,23 @@ import { ToolsAppChrome } from "@/components/layout/ToolsAppChrome";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { getSession } from "@/lib/auth/session";
 import { EsportsNav } from "@/domains/esports/components/EsportsNav";
+import { SpoilerToggle } from "@/domains/esports/components/SpoilerToggle";
+import { SPOILER_PREPAINT_SCRIPT } from "@/domains/esports/spoilerScript";
+
+/**
+ * The section's chrome: spoiler mode applied before paint, then the tab row
+ * with the viewer's settings at its end. Shared by both shells below.
+ */
+function SectionChrome(): React.ReactElement {
+  return (
+    <>
+      {/* Runs as the HTML is parsed, before anything below it paints, so a
+          reader who hides scores never sees one flash up. */}
+      <script dangerouslySetInnerHTML={{ __html: SPOILER_PREPAINT_SCRIPT }} />
+      <EsportsNav actions={<SpoilerToggle />} />
+    </>
+  );
+}
 
 /**
  * How far down a sticky day or league heading has to stop.
@@ -27,7 +44,7 @@ export default async function EsportsLayout({ children }: { children: React.Reac
     return (
       <ToolsAppChrome>
         <div style={APP_STICKY_TOP}>
-          <EsportsNav />
+          <SectionChrome />
           {children}
         </div>
       </ToolsAppChrome>
@@ -43,7 +60,7 @@ export default async function EsportsLayout({ children }: { children: React.Reac
       <div className="flex min-h-screen flex-col bg-background" style={MARKETING_STICKY_TOP}>
         <MarketingHeader />
         <main className="flex-1">
-          <EsportsNav />
+          <SectionChrome />
           {children}
         </main>
         <MarketingFooter />

@@ -312,3 +312,66 @@
     }
   }
 }
+
+/* ── Esports spoiler mode ─────────────────────────────────────────────────
+   Set on <html> by the esports layout's pre-paint script and SpoilerToggle.
+   Components only mark what would give a result away; these rules decide how
+   it is hidden, so server-rendered pages stay server-rendered. Anything inside
+   a [data-revealed] scope has been clicked open and is left alone.
+
+   [data-spoiler]          a score or winner — masked behind a "?" chip
+   [data-spoiler-outcome]  winner/loser styling — flattened to one look
+   [data-spoiler-rail]     a row's win/loss edge colour — cleared
+   [data-spoiler-block]    a whole section — swapped for its placeholder */
+html[data-hide-scores="true"] [data-spoiler]:not([data-revealed], [data-revealed] *) {
+  position: relative;
+  cursor: pointer;
+  border-radius: 2px;
+  background-color: var(--surface-raised);
+  color: transparent !important;
+  user-select: none;
+}
+html[data-hide-scores="true"] [data-spoiler]:not([data-revealed], [data-revealed] *) * {
+  color: transparent !important;
+  visibility: hidden;
+}
+html[data-hide-scores="true"] [data-spoiler]:not([data-revealed], [data-revealed] *)::after {
+  content: "?";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: ui-monospace, monospace;
+  font-size: 0.85em;
+  font-weight: 700;
+  color: var(--fg-3);
+  visibility: visible;
+}
+html[data-hide-scores="true"] [data-spoiler-outcome]:not([data-revealed] *),
+html[data-hide-scores="true"] [data-spoiler-outcome]:not([data-revealed] *) * {
+  opacity: 1 !important;
+}
+html[data-hide-scores="true"] [data-spoiler-outcome]:not([data-revealed] *, [data-spoiler]),
+html[data-hide-scores="true"]
+  [data-spoiler-outcome]:not([data-revealed] *)
+  :not([data-spoiler], [data-spoiler] *) {
+  color: var(--fg-1) !important;
+}
+html[data-hide-scores="true"] [data-spoiler-outcome="flat"]:not([data-revealed] *) * {
+  font-weight: inherit !important;
+}
+html[data-hide-scores="true"] [data-spoiler-rail]:not([data-revealed], [data-revealed] *) {
+  border-left-color: transparent !important;
+}
+[data-spoiler-placeholder] {
+  display: none;
+}
+html[data-hide-scores="true"] [data-spoiler-block]:not([data-revealed]) {
+  display: none;
+}
+html[data-hide-scores="true"]
+  [data-spoiler-block]:not([data-revealed])
+  + [data-spoiler-placeholder] {
+  display: block;
+}

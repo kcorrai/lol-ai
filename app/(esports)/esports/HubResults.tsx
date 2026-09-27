@@ -18,6 +18,7 @@ export function HubResults({ events }: { events: EsportsEvent[] }): React.ReactE
             href={`/esports/matches/${event.matchId}`}
             className="grid items-center gap-3.5 border-b border-line-1 px-4 py-2.5 transition-colors last:border-b-0 hover:bg-surface-2/60"
             style={{ gridTemplateColumns: ROW_COLUMNS }}
+            data-spoiler-scope=""
           >
             <span className="grid min-w-0 gap-0.5">
               <span className="truncate font-mono text-[10px] uppercase tracking-label text-text-body">
@@ -34,7 +35,10 @@ export function HubResults({ events }: { events: EsportsEvent[] }): React.ReactE
             ) : (
               <span className="hud-label text-right">TBD</span>
             )}
-            <span className="text-center font-mono text-base font-bold tabular-nums text-text">
+            <span
+              className="text-center font-mono text-base font-bold tabular-nums text-text"
+              data-spoiler=""
+            >
               {home?.gameWins ?? 0}
               <span className="mx-1.5 text-text-faint">–</span>
               {away?.gameWins ?? 0}
