@@ -25,8 +25,10 @@ const CARD_SELECT = {
   ratingCount: true,
   sessionsCompleted: true,
   acceptingStudents: true,
+  // The advertised "from" price is the cheapest real session. A trial is priced
+  // as an introduction, and quoting it as the coach's rate would mislead.
   listings: {
-    where: { isActive: true },
+    where: { isActive: true, isTrial: false },
     orderBy: { priceCents: "asc" as const },
     take: 1,
     select: { priceCents: true, currency: true },
@@ -96,6 +98,9 @@ function buildWhere(query: CoachSearchQuery): Prisma.CoachProfileWhereInput {
   const listing: Prisma.CoachListingWhereInput = { isActive: true };
   if (query.kind) listing.kind = query.kind;
   if (query.maxPriceCents) listing.priceCents = { lte: query.maxPriceCents };
+  // A budget is about the sessions themselves: a cheap trial alone does not put
+  // a coach inside it, unless the student is looking for trials specifically.
+  if (query.maxPriceCents && !query.trialOnly) listing.isTrial = false;
   if (query.trialOnly) listing.isTrial = true;
   if (query.kind || query.maxPriceCents || query.trialOnly) where.listings = { some: listing };
 

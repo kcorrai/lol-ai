@@ -62,7 +62,7 @@ describe("searchCoaches", () => {
     await searchCoaches(parseSearchQuery({ kind: "LIVE_SESSION", maxPrice: "40" }));
 
     expect(whereOf().listings).toEqual({
-      some: { isActive: true, kind: "LIVE_SESSION", priceCents: { lte: 4000 } },
+      some: { isActive: true, kind: "LIVE_SESSION", priceCents: { lte: 4000 }, isTrial: false },
     });
   });
 

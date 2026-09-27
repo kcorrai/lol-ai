@@ -25,8 +25,10 @@ const CARD_SELECT = {
   ratingCount: true,
   sessionsCompleted: true,
   acceptingStudents: true,
+  // The advertised "from" price is the cheapest real session. A trial is priced
+  // as an introduction, and quoting it as the coach's rate would mislead.
   listings: {
-    where: { isActive: true },
+    where: { isActive: true, isTrial: false },
     orderBy: { priceCents: "asc" as const },
     take: 1,
     select: { priceCents: true, currency: true },

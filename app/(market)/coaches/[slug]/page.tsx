@@ -36,10 +36,12 @@ export default async function CoachProfilePage({ params }: Props) {
 
   const url = `${process.env.NEXT_PUBLIC_APP_URL ?? "https://lolaicoach.gg"}/coaches/${params.slug}`;
   const scheduledListing = coach.listings.find((l) => isScheduled(l.kind)) ?? null;
-  const cheapest = coach.listings.reduce<number | null>(
-    (min, l) => (min === null || l.priceCents < min ? l.priceCents : min),
-    null
-  );
+  // Trials are left out: they are an introduction, not the coach's rate.
+  const cheapest = coach.listings
+    .filter((l) => !l.isTrial)
+    .reduce<
+      number | null
+    >((min, l) => (min === null || l.priceCents < min ? l.priceCents : min), null);
 
   return (
     <>
