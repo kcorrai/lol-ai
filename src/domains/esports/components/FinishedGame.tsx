@@ -86,7 +86,7 @@ export function FinishedGame({
                 : undefined
             }
           >
-            <div className="grid gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <GoldCurve timeline={timeline} blueName={blueName} redName={redName} />
               <ObjectiveLedger timeline={timeline} blueName={blueName} redName={redName} />
             </div>

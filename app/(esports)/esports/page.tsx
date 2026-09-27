@@ -75,7 +75,7 @@ function SectionHead({
       {href && linkLabel && (
         <Link
           href={href}
-          className="shrink-0 font-mono text-[10.5px] uppercase tracking-label text-accent hover:underline"
+          className="shrink-0 font-mono text-[11px] uppercase tracking-label text-accent hover:underline"
         >
           {linkLabel}
         </Link>
@@ -146,9 +146,9 @@ export default async function EsportsHubPage(): Promise<React.ReactElement> {
 
       {featured.length > 0 && (
         <div className="notch mt-6 flex flex-wrap items-center gap-3 border border-border bg-surface px-4 py-3">
-          <span className="hud-label text-[10px]">League</span>
+          <span className="hud-label">League</span>
           <LeagueChips leagues={prominentLeagues(featured, CHIP_LEAGUES)} />
-          <TimeZoneNote className="ml-auto font-mono text-[10px] uppercase tracking-label text-text-faint" />
+          <TimeZoneNote className="ml-auto font-mono text-[11px] uppercase tracking-label text-text-faint" />
         </div>
       )}
 
@@ -174,7 +174,7 @@ export default async function EsportsHubPage(): Promise<React.ReactElement> {
           </p>
         </div>
       ) : (
-        <div className="mt-5 grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="mt-5 grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="grid min-w-0 gap-7">
             {live.length > 0 && <HubLive initialEvents={live} />}
 

@@ -36,7 +36,7 @@ export function TeamHero({ team, form, stats, children }: TeamHeroProps): React.
               <h1 className="font-display text-[34px] font-black uppercase leading-[0.9] tracking-[0.02em] text-text md:text-[52px]">
                 {team.name}
               </h1>
-              <p className="mt-2.5 font-mono text-[10.5px] uppercase tracking-[0.18em] text-text-muted">
+              <p className="mt-2.5 font-mono text-[11px] uppercase tracking-[0.18em] text-text-muted">
                 {team.code}
                 {team.league ? ` · ${team.league.name}` : ""}
                 {team.league?.region ? ` · ${team.league.region}` : ""}

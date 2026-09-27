@@ -170,8 +170,8 @@ export default async function MatchPage({
 
       <SeriesHeader match={match} teamSlugs={teamSlugs} startTime={startTime} />
 
-      <div className="mt-5 grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_306px]">
-        <div className="grid min-w-0 gap-5">
+      <div className="mt-5 grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,1fr)_306px]">
+        <div className="grid min-w-0 grid-cols-1 gap-5">
           {game && <GameSwitcher match={match} activeId={game.id} />}
 
           {/* While a series is on, the live broadcast is what someone wants; the

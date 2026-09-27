@@ -129,13 +129,15 @@ export default async function EsportsSchedulePage(): Promise<React.ReactElement>
               action={
                 <Link
                   href="/esports/vods"
-                  className="shrink-0 font-mono text-[10.5px] uppercase tracking-label text-accent hover:underline"
+                  className="shrink-0 font-mono text-[11px] uppercase tracking-label text-accent hover:underline"
                 >
                   VOD archive →
                 </Link>
               }
             >
-              Recent results
+              {/* The window is said, not left for a reader to discover by
+                  looking for a result that is not there. */}
+              Results · last {RESULT_DAYS} days
             </HudHeading>
             <ScheduleDays events={results} descending />
           </section>

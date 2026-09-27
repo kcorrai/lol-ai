@@ -18,7 +18,7 @@ export function TeamTile({ team }: { team: EsportsTeam }): React.ReactElement {
         <span className="block truncate font-display text-sm font-bold uppercase tracking-[0.05em] text-text">
           {team.name}
         </span>
-        <span className="mt-0.5 block truncate font-mono text-[9px] uppercase tracking-label text-text-faint">
+        <span className="mt-0.5 block truncate font-mono text-[11px] uppercase tracking-label text-text-faint">
           {team.code}
           {team.league ? ` · ${team.league.name}` : ""}
         </span>

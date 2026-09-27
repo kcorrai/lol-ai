@@ -45,7 +45,7 @@ export function FeaturedTeamCard({
           <span className="block truncate font-display text-xl font-extrabold uppercase tracking-[0.05em] text-text">
             {team.code || team.name}
           </span>
-          <span className="mt-0.5 block truncate font-mono text-[9.5px] uppercase tracking-label text-text-faint">
+          <span className="mt-0.5 block truncate font-mono text-[11px] uppercase tracking-label text-text-faint">
             {team.name}
             {team.league ? ` · ${team.league.name}` : ""}
           </span>
@@ -59,14 +59,14 @@ export function FeaturedTeamCard({
           <span className="hud-label">No recorded results</span>
         )}
         {live ? (
-          <span className="flex shrink-0 items-center gap-1.5 font-mono text-[10.5px] uppercase tracking-[0.12em] text-danger">
+          <span className="flex shrink-0 items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.12em] text-danger">
             <span className="h-1.5 w-1.5 bg-danger motion-safe:animate-pulse" aria-hidden />
             Live now
           </span>
         ) : (
           <MatchTime
             startTime={startTime}
-            className="shrink-0 text-right font-mono text-[10.5px] uppercase tracking-[0.12em] text-text-muted"
+            className="shrink-0 text-right font-mono text-[11px] uppercase tracking-[0.12em] text-text-muted"
           />
         )}
       </span>

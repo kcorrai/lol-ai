@@ -6,7 +6,7 @@ import { useFollowedTeams } from "@/hooks/useFollowedTeams";
 
 const PANEL = "notch border border-border bg-surface";
 const PANEL_HEAD =
-  "border-b border-line-1 px-4 py-3 font-mono text-[10.5px] uppercase tracking-label text-text-muted";
+  "border-b border-line-1 px-4 py-3 font-mono text-[11px] uppercase tracking-label text-text-muted";
 
 /**
  * The reader's followed teams, at the top of the hub rail (TASK-313).
