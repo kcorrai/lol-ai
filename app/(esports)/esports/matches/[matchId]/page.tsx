@@ -27,10 +27,13 @@ import { embedParent, primaryStreamEmbed, primaryVodEmbed } from "@/domains/espo
 
 // An hour for the series shell. Completed game stats behind it are immutable and
 // cached for a month; a live game refreshes on its own thirty-second window.
-export const revalidate = 3600;
-// Per request, said out loud: this page reads search params. Left implicit, a build can mark the
-// route static and every visit then fails with "static to dynamic at runtime" (ADR-059).
-export const dynamic = "force-dynamic";
+// Five minutes, not an hour: the page decides server-side whether a game is unstarted, live or
+// finished and whether to offer the live broadcast, and while a series is on that should lag by
+// minutes at most. The live stats themselves are polled in the browser (LiveGameStats).
+export const revalidate = 300;
+// Static: `?g=` requests never reach this route — middleware rewrites them onto the cacheable
+// copy under `f/` (ADR-061) — so the search params it still reads are always empty here.
+export const dynamic = "force-static";
 
 interface PageProps {
   params: { matchId: string };

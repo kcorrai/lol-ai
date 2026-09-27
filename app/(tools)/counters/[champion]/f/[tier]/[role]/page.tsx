@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { fromSegment } from "@/domains/meta/toolFilterRoutes";
+import { fromSegment } from "@/lib/routing/filterRewrite";
 import ChampionCountersPage, { generateMetadata as countersMetadata } from "../../../page";
 
 // A filtered counters page, reached only through the middleware rewrite of

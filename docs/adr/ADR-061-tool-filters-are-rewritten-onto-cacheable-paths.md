@@ -45,3 +45,27 @@ changing the visible URLs would move every shared and indexed link.
 - Filtered pages keep their `noindex` and their canonical to the clean page; that came from the
   page's own `generateMetadata`, which the internal route calls with the same filters.
 - `app/(tools)/renderMode.lock.test.ts` treats a page with an `f/` directory beside it as static.
+
+## Extension: esports
+
+The same rewrite now covers the three esports pages that read search params, which the
+50-visitor load test put at ~2.3 s p50 and which halved the whole server's throughput:
+
+| Visible URL                                 | Served by                                     |
+| ------------------------------------------- | --------------------------------------------- |
+| `/esports/matches/[id]?g=2`                 | `/esports/matches/[id]/f/2`                   |
+| `/esports/champions?league=…&sort=…&role=…` | `/esports/champions/f/[league]/[sort]/[role]` |
+| `/esports/vods?league=…&show=…`             | `/esports/vods/f/[league]/[show]`             |
+
+- `g` is rewritten only for 1–5; `sort` only when it is the non-default `winRate`; `show` is
+  rounded up to whole pages of 40 and refused past 2000.
+- League values cannot be checked against the feed from middleware, so they are held to a strict
+  shape there, and the internal route answers 404 to one that matches the shape but names no
+  league. A made-up league therefore cannot mint a cached copy of the page.
+- The shared pieces (`ANY`, the `f` segment, encoding a value as a segment) moved to
+  `src/lib/routing/filterRewrite.ts`; the esports mapping is `src/domains/esports/esportsFilterRoutes.ts`.
+- The match page's `revalidate` drops from an hour to five minutes. It decides server-side whether
+  a game is unstarted, live or finished and whether to offer the live broadcast, and a cached copy
+  should not lag a live series by an hour. The live stats themselves are polled in the browser.
+- Same load test after, across tools and esports: every path 100% cache hits, no errors, p99 under
+  0.9 s, ~109 requests a second on one local process (the esports pages are heavier HTML).

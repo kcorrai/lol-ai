@@ -20,9 +20,9 @@ import { ProMetaTable } from "@/domains/esports/components/ProMetaTable";
 import { StatBlock } from "@/domains/esports/components/StatBlock";
 
 export const revalidate = 3600;
-// Per request, said out loud: this page reads search params. Left implicit, a build can mark the
-// route static and every visit then fails with "static to dynamic at runtime" (ADR-059).
-export const dynamic = "force-dynamic";
+// Static: filtered requests never reach this route — middleware rewrites them onto the cacheable
+// copy under `f/` (ADR-061) — so the search params it still reads are always empty here.
+export const dynamic = "force-static";
 
 interface PageProps {
   searchParams: { league?: string; sort?: string; role?: string };

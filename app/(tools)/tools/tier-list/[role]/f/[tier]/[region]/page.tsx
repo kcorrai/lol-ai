@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { fromSegment } from "@/domains/meta/toolFilterRoutes";
+import { fromSegment } from "@/lib/routing/filterRewrite";
 import RoleTierListPage, { generateMetadata as roleMetadata } from "../../../page";
 
 // A filtered role tier list, reached only through the middleware rewrite of
