@@ -3,6 +3,7 @@ import { MarketingFooter } from "../(marketing)/components/MarketingFooter";
 import { ToolsAppChrome } from "@/components/layout/ToolsAppChrome";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { getSession } from "@/lib/auth/session";
+import { EsportsNav } from "@/domains/esports/components/EsportsNav";
 
 /**
  * How far down a sticky day or league heading has to stop.
@@ -25,7 +26,10 @@ export default async function EsportsLayout({ children }: { children: React.Reac
   if (session?.user) {
     return (
       <ToolsAppChrome>
-        <div style={APP_STICKY_TOP}>{children}</div>
+        <div style={APP_STICKY_TOP}>
+          <EsportsNav />
+          {children}
+        </div>
       </ToolsAppChrome>
     );
   }
@@ -38,7 +42,10 @@ export default async function EsportsLayout({ children }: { children: React.Reac
     <QueryProvider>
       <div className="flex min-h-screen flex-col bg-background" style={MARKETING_STICKY_TOP}>
         <MarketingHeader />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          <EsportsNav />
+          {children}
+        </main>
         <MarketingFooter />
       </div>
     </QueryProvider>
