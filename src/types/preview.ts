@@ -99,4 +99,6 @@ export interface PublicProfileResponse extends PreviewResponse {
   mastery: PreviewMastery[];
   /** Keyed by `PreviewMatch.matchId`. */
   scoreboards: Record<string, PreviewScoreboard>;
+  /** ISO time the profile was read from Riot. Absent on entries cached before it existed. */
+  fetchedAt?: string;
 }

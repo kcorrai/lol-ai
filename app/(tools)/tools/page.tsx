@@ -15,6 +15,9 @@ export const metadata: Metadata = {
 };
 
 export const revalidate = 43200; // 12h ISR — the hub only moves when the snapshot does.
+// Static despite the no-cache reads under it (Redis, op.gg, esports): without this, any one of
+// them sets the page's revalidate to 0 and it is rendered per request instead (ADR-059).
+export const dynamic = "force-static";
 
 function formatCompact(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;

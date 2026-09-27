@@ -12,6 +12,7 @@ import { ProfileRoles } from "../../../components/ProfileRoles";
 import { ProfileMatches } from "../../../components/ProfileMatches";
 import { ProfileNotFound } from "../../../components/ProfileNotFound";
 import { ClaimProfileButton } from "../../../components/ClaimProfileButton";
+import { ProfileRefresh } from "../../../components/ProfileRefresh";
 import { profileMetadata } from "../../../components/profileMetadata";
 import { jsonLdProps } from "@/lib/security/jsonLd";
 
@@ -90,8 +91,14 @@ export default async function SummonerPage({ params }: Props): Promise<React.Rea
 
       {/* Searching the next player is the most likely next action on this page, so the box is
           here rather than only in the header. */}
-      <div className="max-w-[420px]">
-        <PlayerSearchBar placeholder="Search another player" />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="w-full max-w-[420px]">
+          <PlayerSearchBar placeholder="Search another player" />
+        </div>
+        <ProfileRefresh
+          target={{ region, gameName: summoner.gameName, tagLine: summoner.tagLine }}
+          fetchedAt={result.data.fetchedAt}
+        />
       </div>
 
       <ProfileHero data={result.data} region={region} />

@@ -2,6 +2,10 @@ import { cache } from "react";
 import { headers } from "next/headers";
 import { buildPublicProfile } from "@/domains/riot/services/previewService";
 import { VALID_REGIONS } from "@/domains/riot/services/riotApiClient";
+import {
+  FRESH_PROFILE_LOOKUPS,
+  freshLookupKey,
+} from "@/domains/riot/services/preview/profileRefresh";
 import { ApiError } from "@/lib/api/errors";
 import { checkRateLimit, ipFromHeaders } from "@/lib/api/rateLimit";
 import type { PublicProfileResponse } from "@/types/preview";
@@ -10,19 +14,13 @@ export type ProfileResult =
   | { ok: true; data: PublicProfileResponse }
   | { ok: false; reason: "not-found" | "rate-limited" | "throttled" };
 
-/**
- * Profiles one visitor may pull fresh from Riot in ten minutes.
- *
- * Only fresh ones count — a cached profile costs nothing and is never limited. A fresh one costs
- * about fifteen Riot calls, and on a personal key the whole site gets ninety every two minutes, so
- * without this one script guessing names empties the budget for everyone.
- */
-const FRESH_LOOKUPS = { limit: 10, windowMs: 10 * 60_000 };
-
 class LookupThrottled extends Error {}
 
 async function limitFreshLookups(): Promise<void> {
-  const limit = await checkRateLimit(`profile-lookup:${ipFromHeaders(headers())}`, FRESH_LOOKUPS);
+  const limit = await checkRateLimit(
+    freshLookupKey(ipFromHeaders(headers())),
+    FRESH_PROFILE_LOOKUPS
+  );
   if (!limit.allowed) throw new LookupThrottled();
 }
 

@@ -5,6 +5,9 @@ import { BuildView } from "@/domains/meta/components/build/BuildView";
 import { loadAramBuildData } from "@/domains/meta/components/build/loadBuildData";
 
 export const revalidate = 43200; // 12h ISR
+// Static despite the no-cache reads under it (Redis, op.gg, esports): without this, any one of
+// them sets the page's revalidate to 0 and it is rendered per request instead (ADR-059).
+export const dynamic = "force-static";
 export const dynamicParams = true;
 
 // Prerender the ~30 most-picked ARAM champions; the rest render on demand (ISR).
