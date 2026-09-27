@@ -11,6 +11,30 @@ function rate(value: number | null, digits = 1): string {
   return value === null ? "—" : value.toFixed(digits);
 }
 
+interface Column {
+  label: string;
+  /** Spelled out on hover, and in the key under the tables for touch readers. */
+  title?: string;
+  numeric?: boolean;
+}
+
+const COLUMNS: Column[] = [
+  { label: "Player" },
+  { label: "KDA", title: "Kills / deaths / assists", numeric: true },
+  { label: "CS", title: "Creep score — minions and monsters killed", numeric: true },
+  { label: "CS/m", title: "Creep score per minute", numeric: true },
+  { label: "Gold", title: "Gold earned", numeric: true },
+  { label: "G/m", title: "Gold per minute", numeric: true },
+  { label: "KP", title: "Kill participation — share of team kills taken part in", numeric: true },
+  { label: "Vision", title: "Wards placed / wards destroyed", numeric: true },
+  { label: "DMG", title: "Share of the team's damage to champions", numeric: true },
+  { label: "Items" },
+];
+
+/** The abbreviations spelled out once, for readers who cannot hover a header. */
+const COLUMN_KEY =
+  "CS minions and monsters killed · /m per minute · KP kill participation · Vision wards placed / destroyed · DMG share of team damage to champions";
+
 function SideTable({
   team,
   name,
@@ -46,36 +70,24 @@ function SideTable({
         <table className="w-full min-w-[44rem] border-collapse text-sm">
           <thead>
             <tr className="border-b border-border text-left">
-              <th scope="col" className="hud-label px-2 py-2 font-normal">
-                Player
-              </th>
-              <th scope="col" className="hud-label px-2 py-2 text-right font-normal">
-                KDA
-              </th>
-              <th scope="col" className="hud-label px-2 py-2 text-right font-normal">
-                CS
-              </th>
-              <th scope="col" className="hud-label px-2 py-2 text-right font-normal">
-                CS/m
-              </th>
-              <th scope="col" className="hud-label px-2 py-2 text-right font-normal">
-                Gold
-              </th>
-              <th scope="col" className="hud-label px-2 py-2 text-right font-normal">
-                G/m
-              </th>
-              <th scope="col" className="hud-label px-2 py-2 text-right font-normal">
-                KP
-              </th>
-              <th scope="col" className="hud-label px-2 py-2 text-right font-normal">
-                Vision
-              </th>
-              <th scope="col" className="hud-label px-2 py-2 text-right font-normal">
-                DMG
-              </th>
-              <th scope="col" className="hud-label px-2 py-2 font-normal">
-                Items
-              </th>
+              {COLUMNS.map((column) => (
+                <th
+                  key={column.label}
+                  scope="col"
+                  className={`hud-label px-2 py-2 font-normal ${column.numeric ? "text-right" : ""}`}
+                >
+                  {column.title ? (
+                    <abbr
+                      title={column.title}
+                      className="cursor-help underline decoration-dotted underline-offset-4"
+                    >
+                      {column.label}
+                    </abbr>
+                  ) : (
+                    column.label
+                  )}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -158,6 +170,7 @@ export function Scoreboard({
     <div className="grid gap-6">
       <SideTable team={blue} name={blueName} durationSeconds={durationSeconds} />
       <SideTable team={red} name={redName} durationSeconds={durationSeconds} />
+      <p className="-mt-3 font-mono text-[11px] text-text-muted">{COLUMN_KEY}</p>
     </div>
   );
 }
