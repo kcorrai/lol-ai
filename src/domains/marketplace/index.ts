@@ -349,3 +349,17 @@ export type {
 } from "@/domains/marketplace/types";
 
 export { youtubeVideoId, youtubeEmbedUrl } from "@/domains/marketplace/youtube";
+
+export {
+  setGoals,
+  goalProgress,
+  MAX_GOALS,
+  GOAL_WINDOW_GAMES,
+} from "@/domains/marketplace/services/sessionGoalService";
+export type {
+  GoalInput,
+  GoalView,
+  GoalGame,
+  GoalProgress,
+  SetGoalsOutcome,
+} from "@/domains/marketplace/services/sessionGoalService";

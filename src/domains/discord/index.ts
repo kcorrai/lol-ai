@@ -6,3 +6,5 @@ export { parseCommandInteraction, parseComponentInteraction } from "@/domains/di
 export type { BotRequest } from "@/domains/discord/request";
 export { COMMAND_DEFINITIONS } from "@/domains/discord/commandDefinitions";
 export type { SlashCommandDefinition } from "@/domains/discord/commandDefinitions";
+
+export { messageLinkedUser } from "@/domains/discord/directMessageService";
