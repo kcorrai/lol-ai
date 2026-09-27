@@ -96,6 +96,7 @@ export function CoachCardTile({ coach, featured }: Props): React.ReactElement {
             <span className="text-[12px] text-text-muted">({coach.ratingCount})</span>
           </span>
         )}
+        {coach.offersTrial && <span className="text-[12px] text-warning">Trial available</span>}
         <span className="ml-auto text-[12px] text-text-muted">
           <span className="font-mono text-text">{coach.sessionsCompleted}</span>{" "}
           {coach.sessionsCompleted === 1 ? "session" : "sessions"}

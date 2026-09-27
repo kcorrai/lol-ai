@@ -242,4 +242,36 @@ describe("createBooking", () => {
       expect(result.ok).toBe(true);
     });
   });
+
+  describe("trial", () => {
+    const TRIAL = { ...LIVE_LISTING, isTrial: true, durationMinutes: 30 };
+
+    it("refuses a second trial with the same coach", async () => {
+      mockPrisma.coachListing.findFirst.mockResolvedValue(TRIAL as never);
+      mockPrisma.booking.count.mockResolvedValueOnce(0 as never).mockResolvedValueOnce(1 as never);
+
+      expect(await createBooking(REQUEST)).toEqual({ ok: false, reason: "trial-used" });
+      expect(tx.booking.create).not.toHaveBeenCalled();
+    });
+
+    it("does not count a trial that never happened", async () => {
+      mockPrisma.coachListing.findFirst.mockResolvedValue(TRIAL as never);
+
+      const result = await createBooking(REQUEST);
+
+      expect(result.ok).toBe(true);
+      expect(mockPrisma.booking.count).toHaveBeenLastCalledWith({
+        where: expect.objectContaining({
+          listing: { isTrial: true },
+          status: { notIn: ["DECLINED", "EXPIRED", "CANCELLED_BY_STUDENT", "CANCELLED_BY_COACH"] },
+        }),
+      });
+    });
+
+    it("does not look for earlier trials when the listing is not one", async () => {
+      await createBooking(REQUEST);
+
+      expect(mockPrisma.booking.count).toHaveBeenCalledTimes(1);
+    });
+  });
 });

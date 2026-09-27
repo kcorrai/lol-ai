@@ -84,6 +84,21 @@ describe("createListing", () => {
     expect(mockPrisma.coachListing.create).not.toHaveBeenCalled();
   });
 
+  it("refuses a trial longer than the trial ceiling", async () => {
+    const result = await createListing("user-1", { ...VOD, isTrial: true, durationMinutes: 60 });
+
+    expect(result).toMatchObject({ ok: false, reason: "invalid" });
+    expect(mockPrisma.coachListing.create).not.toHaveBeenCalled();
+  });
+
+  it("stores a short trial as one", async () => {
+    await createListing("user-1", { ...VOD, isTrial: true, durationMinutes: 30 });
+
+    expect(mockPrisma.coachListing.create).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ isTrial: true }) })
+    );
+  });
+
   it.each([
     ["under the floor", 100],
     ["over the ceiling", 500_000],

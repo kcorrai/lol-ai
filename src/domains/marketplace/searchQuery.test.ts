@@ -134,3 +134,14 @@ describe("isFiltered", () => {
     expect(isFiltered(parseSearchQuery(params))).toBe(true);
   });
 });
+
+describe("trial filter", () => {
+  it("reads, writes and counts the trial filter", () => {
+    const query = parseSearchQuery({ trial: "1" });
+
+    expect(query.trialOnly).toBe(true);
+    expect(canonicalPath(query)).toBe("/coaches?trial=1");
+    expect(isFiltered(query)).toBe(true);
+    expect(parseSearchQuery({ trial: "yes" }).trialOnly).toBeUndefined();
+  });
+});

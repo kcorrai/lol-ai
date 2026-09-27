@@ -31,6 +31,8 @@ const CARD_SELECT = {
     take: 1,
     select: { priceCents: true, currency: true },
   },
+  // Counted rather than fetched: the card only needs to know whether one exists.
+  _count: { select: { listings: { where: { isActive: true, isTrial: true } } } },
 } as const;
 
 /** Search the storefront. Page numbers, not cursors — see the note below. */
@@ -88,13 +90,14 @@ function buildWhere(query: CoachSearchQuery): Prisma.CoachProfileWhereInput {
     };
   }
 
-  // Both listing filters land in one `some`, so "a live session under $40"
+  // Every listing filter lands in one `some`, so "a live session under $40"
   // means one listing that is both — not a live session and, separately,
   // something cheap.
   const listing: Prisma.CoachListingWhereInput = { isActive: true };
   if (query.kind) listing.kind = query.kind;
   if (query.maxPriceCents) listing.priceCents = { lte: query.maxPriceCents };
-  if (query.kind || query.maxPriceCents) where.listings = { some: listing };
+  if (query.trialOnly) listing.isTrial = true;
+  if (query.kind || query.maxPriceCents || query.trialOnly) where.listings = { some: listing };
 
   return where;
 }
@@ -138,6 +141,7 @@ function toCard(row: CardRow, badge: CoachCard["badge"]): CoachCard {
     fromPriceCents: row.listings[0]?.priceCents ?? null,
     currency: row.listings[0]?.currency ?? "USD",
     acceptingStudents: row.acceptingStudents,
+    offersTrial: row._count.listings > 0,
   };
 }
 

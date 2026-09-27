@@ -1643,6 +1643,11 @@ model CoachListing {
   // the promise is a calendar slot instead.
   deliveryHours Int?
 
+  // A short first session a student may take once per coach (ADR-058). The one-per-pair
+  // rule lives in bookingService, not in a constraint, because a declined or expired
+  // trial must not use it up.
+  isTrial Boolean @default(false)
+
   isActive  Boolean  @default(true)
   sortOrder Int      @default(0)
   createdAt DateTime @default(now())

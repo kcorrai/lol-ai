@@ -54,6 +54,11 @@ export function ListingCard({ listing, coachSlug, acceptingStudents }: Props): R
             )}
           >
             {kindLabel(listing.kind)}
+            {listing.isTrial && (
+              <span className="ml-2 border border-warning/60 bg-warning/10 px-1.5 py-0.5 text-warning">
+                Trial · once per student
+              </span>
+            )}
           </p>
           <h3 className="mt-1 font-display text-[16px] font-extrabold uppercase leading-snug tracking-[0.03em] text-text">
             {listing.title}
