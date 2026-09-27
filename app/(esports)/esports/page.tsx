@@ -147,7 +147,10 @@ export default async function EsportsHubPage(): Promise<React.ReactElement> {
       {featured.length > 0 && (
         <div className="notch mt-6 flex flex-wrap items-center gap-3 border border-border bg-surface px-4 py-3">
           <span className="hud-label">League</span>
-          <LeagueChips leagues={prominentLeagues(featured, CHIP_LEAGUES)} />
+          <LeagueChips
+            leagues={prominentLeagues(featured, CHIP_LEAGUES)}
+            liveSlugs={live.map((event) => event.league.slug)}
+          />
           <TimeZoneNote className="ml-auto font-mono text-[11px] uppercase tracking-label text-text-faint" />
         </div>
       )}

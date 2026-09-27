@@ -108,7 +108,7 @@ export default async function EsportsSchedulePage(): Promise<React.ReactElement>
           </div>
           <div className="flex flex-wrap items-center gap-2 border-t border-line-1 pt-3">
             <span className="hud-label mr-1">League</span>
-            <LeagueChips leagues={featured} />
+            <LeagueChips leagues={featured} liveSlugs={live.map((event) => event.league.slug)} />
           </div>
         </section>
 
