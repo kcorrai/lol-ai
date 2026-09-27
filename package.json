@@ -27,7 +27,8 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:report": "playwright show-report",
-    "db:preflight": "tsx scripts/preflightDatabase.ts"
+    "db:preflight": "tsx scripts/preflightDatabase.ts",
+    "load:test": "tsx scripts/loadTest.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.101.0",

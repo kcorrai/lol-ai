@@ -47,6 +47,12 @@ list from the CDN and rendering it — snapshot read and all — for every visit
 - A signed-in visitor sees the marketing chrome for the moment before the client session loads,
   then the app shell. That is the price of the page being cacheable for everyone else.
 - `/counters/[champion]`, `/tools/tier-list` and `/tools/tier-list/[role]` read search params
-  and remain per-request. Making them cacheable means moving their filters to the client; that
-  is separate work.
+  and remain per-request — and say so with `export const dynamic = "force-dynamic"`. Left
+  implicit, a build whose `generateStaticParams` came back empty (snapshot unavailable) marked
+  `/counters/[champion]` static, and every visit then failed with "static to dynamic at runtime";
+  the load test in LA-126 found it answering 500 to every request. `app/(tools)/renderMode.lock.test.ts`
+  now requires every ISR tool page to declare one mode or the other.
+- Measured with `npm run load:test` at 50 concurrent visitors on a local production build: the
+  cached pages hold a p50 under 20 ms with no errors, while the two per-request pages sit at
+  ~3 s p50 and ~6 s p99. Making them cacheable means moving their filters to the client.
 - The esports pages have the same `no-cache` exposure and were not changed here.
