@@ -133,9 +133,11 @@ function Header({
 function Stage({
   stage,
   startTimes,
+  finalMatchId,
 }: {
   stage: StandingsStage;
   startTimes: Map<string, string>;
+  finalMatchId?: string;
 }): React.ReactElement {
   // The feed repeats the stage name on a single-section stage ("Knockouts /
   // Knockouts"); saying it twice reads as a mistake.
@@ -152,7 +154,10 @@ function Stage({
       {stage.kind === "table" ? (
         <StandingsTable rows={stage.rows} />
       ) : (
-        <BracketView layout={bracketLayout(stage.matches, startTimes)} />
+        <BracketView
+          layout={bracketLayout(stage.matches, startTimes)}
+          finalMatchId={finalMatchId}
+        />
       )}
     </section>
   );
@@ -186,7 +191,7 @@ export default async function TournamentPage({ params }: PageProps): Promise<Rea
   const next = upcoming.filter(inTournament).slice(0, 10);
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 md:py-14">
+    <div className="mx-auto max-w-6xl px-4 py-12 md:py-14">
       <EsportsJsonLd
         schema={{
           kind: "list",
@@ -222,6 +227,7 @@ export default async function TournamentPage({ params }: PageProps): Promise<Rea
             key={`${stage.stageName}-${stage.sectionName}-${index}`}
             stage={stage}
             startTimes={startTimes}
+            finalMatchId={champion?.matchId}
           />
         ))
       )}
