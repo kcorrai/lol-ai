@@ -10,9 +10,11 @@ import {
   isFiltered,
   pageOf,
   storefrontTotals,
+  compareRanks,
 } from "@/domains/marketplace";
+import type { CoachCard } from "@/domains/marketplace/types";
 import { Button } from "@/components/ui/button";
-import { MarketStat } from "@/domains/marketplace/components/hud/MarketStat";
+import { StorefrontHero } from "@/domains/marketplace/components/StorefrontHero";
 import { CoachCardTile } from "@/domains/marketplace/components/CoachCardTile";
 import { CoachFilters } from "@/domains/marketplace/components/CoachFilters";
 import { CoachPagination } from "@/domains/marketplace/components/CoachPagination";
@@ -60,47 +62,12 @@ export default async function CoachesPage({ searchParams }: Props) {
         )}
       />
 
-      <section className="relative overflow-hidden border-b border-line-1">
-        <span
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "radial-gradient(900px 340px at 16% 0%, rgba(198,255,61,0.10), transparent 70%), var(--bg-hero-fade)",
-          }}
-          aria-hidden
-        />
-        <span className="bg-scanline absolute inset-0" aria-hidden />
-
-        <div className="relative mx-auto grid max-w-[1240px] items-end gap-8 px-5 pb-8 pt-10 md:px-8 lg:grid-cols-[1.25fr_0.75fr]">
-          <div>
-            <p className="mb-3.5 flex items-center gap-2.5">
-              <span className="h-[7px] w-[7px] animate-pulse bg-accent" aria-hidden />
-              <span className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-accent">
-                {"// Every rank here was checked by us"}
-              </span>
-            </p>
-            <h1 className="max-w-[20ch] font-display text-[38px] font-black uppercase leading-[0.96] tracking-[0.02em] text-text md:text-[50px]">
-              Find a coach who has the rank they claim
-            </h1>
-            <p className="mt-4 max-w-[60ch] text-[15.5px] text-text-body">
-              Every rank on this page was read from the coach&apos;s own linked Riot account and is
-              shown with the date we last checked it. Nobody here typed their rank into a box.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-3 gap-px border border-border bg-line-1">
-            <div className="bg-background p-3.5">
-              <MarketStat label="Coaches listed" value={String(totals.coaches)} />
-            </div>
-            <div className="bg-background p-3.5">
-              <MarketStat label="Ranks checked" value={`${checkedPct}%`} tone="accent" />
-            </div>
-            <div className="bg-background p-3.5">
-              <MarketStat label="Sessions run" value={String(totals.sessionsRun)} />
-            </div>
-          </div>
-        </div>
-      </section>
+      <StorefrontHero
+        coaches={totals.coaches}
+        checkedPct={checkedPct}
+        sessionsRun={totals.sessionsRun}
+        tiers={heroTiers(coaches)}
+      />
 
       <div className="mx-auto max-w-[1240px] px-5 pb-16 pt-6 md:px-8">
         <Suspense fallback={<div className="notch h-40 border border-border bg-surface" />}>
@@ -164,4 +131,13 @@ export default async function CoachesPage({ searchParams }: Props) {
       </div>
     </>
   );
+}
+
+/** The distinct tiers on this page, highest first, capped at the three the hero can draw. */
+function heroTiers(coaches: CoachCard[]): string[] {
+  const badges = coaches
+    .map((c) => c.badge)
+    .filter((b): b is NonNullable<CoachCard["badge"]> => b !== null)
+    .sort((a, b) => compareRanks(b, a));
+  return Array.from(new Set(badges.map((b) => b.tier))).slice(0, 3);
 }
