@@ -11,7 +11,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="w-full max-w-[432px]">
           {/* The art panel is the brand on a wide screen. Below it, this is. */}
           <div className="mb-8 flex items-center gap-3.5 lg:hidden">
-            <Wordmark size={17} />
+            <Wordmark size={21} />
             <span className="h-4 w-px bg-line-2" />
             <span className="font-mono text-[10px] uppercase tracking-label text-text-muted">
               Ranked review

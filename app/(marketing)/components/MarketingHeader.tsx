@@ -103,7 +103,7 @@ export function MarketingHeader(): React.ReactElement {
             the same control with its words on.
 
             And gone entirely below `sm`. Even wordless it is 36px plus its gap, and the row —
-            wordmark 152, "Start free" 108, the menu button 36 — needs every one of those 44
+            wordmark 152 (98 since the LaneIQ rename), "Start free" 108, the menu button 36 — needs every one of those 44
             back to fit inside 360px, which is a Galaxy S9 and half the Android phones still in
             use. Without this the bar ran 20px past the edge and gave *every page on the site*
             a horizontal scrollbar. The drawer is one tap away and lists this with its label,

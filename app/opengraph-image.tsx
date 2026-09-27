@@ -15,7 +15,7 @@ import { renderOgImage, OG_SIZE, OG_CONTENT_TYPE } from "@/lib/og/ogImage";
  */
 export const size = OG_SIZE;
 export const contentType = OG_CONTENT_TYPE;
-export const alt = "LoL AI Coach — AI-powered League of Legends coaching";
+export const alt = "LaneIQ — AI-powered League of Legends coaching";
 
 export default function Image() {
   return renderOgImage({

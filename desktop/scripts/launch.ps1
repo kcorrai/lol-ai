@@ -54,7 +54,7 @@ $script:Ui = $null
 #>
 function Show-Splash {
     $form = New-Object System.Windows.Forms.Form
-    $form.Text            = 'LoL AI Coach'
+    $form.Text            = 'LaneIQ'
     $form.ClientSize      = New-Object System.Drawing.Size(420, 132)
     $form.FormBorderStyle = 'FixedSingle'
     $form.StartPosition   = 'CenterScreen'
@@ -67,7 +67,7 @@ function Show-Splash {
     if (Test-Path $Icon) { $form.Icon = New-Object System.Drawing.Icon($Icon) }
 
     $title = New-Object System.Windows.Forms.Label
-    $title.Text      = 'LoL AI Coach'
+    $title.Text      = 'LaneIQ'
     $title.Font      = New-Object System.Drawing.Font('Segoe UI', 15, [System.Drawing.FontStyle]::Bold)
     $title.ForeColor = $Accent
     $title.AutoSize  = $true
@@ -134,7 +134,7 @@ function Die([string]$Message) {
     # kutusunun soyledigi seyle celisir.
     Close-Splash
     [System.Windows.Forms.MessageBox]::Show(
-        $Message, 'LoL AI Coach acilamadi', 'OK', 'Error') | Out-Null
+        $Message, 'LaneIQ acilamadi', 'OK', 'Error') | Out-Null
     exit 1
 }
 
@@ -178,7 +178,7 @@ function Get-SiteState {
 }
 
 Write-Host ''
-Write-Host '  LoL AI Coach' -ForegroundColor Cyan
+Write-Host '  LaneIQ' -ForegroundColor Cyan
 Write-Host ''
 
 if (-not (Test-Path $Exe)) {
@@ -254,7 +254,7 @@ $siteState = Get-SiteState
 
 if ($siteState -eq 'foreign') {
     Die @"
-$SitePort portunu LoL AI Coach sitesi disinda bir sey tutuyor -- baska bir uygulama,
+$SitePort portunu LaneIQ sitesi disinda bir sey tutuyor -- baska bir uygulama,
 ya da yarim kalmis eski bir dev sunucusu. Uygulama cihaz jetonunu bu porta gonderdigi
 icin baslatilmiyor.
 

@@ -52,7 +52,7 @@ test.describe("Share Report", () => {
     await expect(page.getByRole("link", { name: "Get Your AI Coaching Report" })).toBeVisible();
 
     // Branding
-    await expect(page.locator("text=LoL AI Coach")).toBeVisible();
+    await expect(page.locator("text=LaneIQ")).toBeVisible();
 
     await context.close();
   });

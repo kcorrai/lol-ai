@@ -1,4 +1,4 @@
-# Product Requirements Document — LoL AI Coach
+# Product Requirements Document — LaneIQ
 
 **Version:** 1.0  
 **Status:** Draft  
@@ -8,7 +8,7 @@
 
 ## 1. Executive Summary
 
-LoL AI Coach is an AI-powered performance analytics and coaching platform for League of Legends players. The product bridges the gap between raw match data and actionable coaching insights by applying large language models on top of structured Riot API data. The result is a personalized, conversational coaching experience that makes every player feel like they have a high-elo analyst reviewing their games.
+LaneIQ is an AI-powered performance analytics and coaching platform for League of Legends players. The product bridges the gap between raw match data and actionable coaching insights by applying large language models on top of structured Riot API data. The result is a personalized, conversational coaching experience that makes every player feel like they have a high-elo analyst reviewing their games.
 
 ---
 
@@ -119,7 +119,7 @@ Millions of players are stuck in rank stagnation. They play consistently but do 
 
 ### 6.2 Competitive Positioning
 
-LoL AI Coach differentiates by:
+LaneIQ differentiates by:
 
 1. **Depth of AI analysis** — not summaries of stats but genuine narrative feedback with specific recommendations
 2. **Personalization** — adapts to playstyle, champion pool, and rank progression

@@ -133,7 +133,7 @@ function DetailNote({
     <EmptyState
       icon={CloudOff}
       tone="danger"
-      title="Cannot reach LoL AI Coach"
+      title="Cannot reach LaneIQ"
       body={state.message}
       splash={splash}
     />

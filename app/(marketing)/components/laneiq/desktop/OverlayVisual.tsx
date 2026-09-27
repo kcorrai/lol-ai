@@ -3,6 +3,7 @@ import { ChampionIcon } from "@/components/ui/ChampionIcon";
 import { ItemIcon } from "@/components/ui/ItemIcon";
 import { championSplashUrl } from "@/lib/ddragon";
 import { Bar, Chip, Illustration, Panel, Stat } from "./chrome";
+import { OVERLAY_FINAL, type OverlayFrame } from "./overlayDemoTimeline";
 
 /**
  * The overlay, over a game.
@@ -41,7 +42,29 @@ const ITEMS: readonly { id: number; name: string; done: boolean }[] = [
   { id: 3053, name: "Sterak's Gage", done: false },
 ];
 
-export function OverlayVisual({ compact = false }: { compact?: boolean } = {}): React.ReactElement {
+/**
+ * Bar lengths for the "This game" readings. The scales are the ones that put the drawing's
+ * resting numbers (7.4, 412, 4/1/3) where they have always sat — 78, 64 and 71 — so a moving
+ * frame and the still one agree.
+ */
+function thisGameBars(game: OverlayFrame): { cs: number; gold: number; kda: number } {
+  const kda = (game.kills + game.assists) / Math.max(game.deaths, 1);
+  return {
+    cs: Math.round((game.csPerMin / 9.5) * 100),
+    gold: Math.round((game.goldPerMin / 644) * 100),
+    kda: Math.round((kda / 9.86) * 100),
+  };
+}
+
+export function OverlayVisual({
+  compact = false,
+  game = OVERLAY_FINAL,
+}: {
+  compact?: boolean;
+  /** The "This game" readings. `OverlayDemo` moves them; everywhere else they rest. */
+  game?: OverlayFrame;
+} = {}): React.ReactElement {
+  const bars = thisGameBars(game);
   return (
     <Illustration
       label="The companion's overlay drawn over a running game: three panels showing this game's numbers against the player's own average, the lane matchup, and the build."
@@ -97,9 +120,24 @@ export function OverlayVisual({ compact = false }: { compact?: boolean } = {}): 
           <div className={`ml-auto grid gap-3 ${compact ? "max-w-[260px]" : "max-w-[300px]"}`}>
             <Panel title="This game" meta="vs your last 20">
               <div className="grid gap-2.5">
-                <Stat label="CS / min" value="7.4" bar={78} note="You usually finish on 6.1" />
-                <Stat label="Gold / min" value="412" bar={64} tone="info" />
-                <Stat label="KDA" value="4 / 1 / 3" bar={71} tone="accent" />
+                <Stat
+                  label="CS / min"
+                  value={game.csPerMin.toFixed(1)}
+                  bar={bars.cs}
+                  note="You usually finish on 6.1"
+                />
+                <Stat
+                  label="Gold / min"
+                  value={String(game.goldPerMin)}
+                  bar={bars.gold}
+                  tone="info"
+                />
+                <Stat
+                  label="KDA"
+                  value={`${game.kills} / ${game.deaths} / ${game.assists}`}
+                  bar={bars.kda}
+                  tone="accent"
+                />
               </div>
             </Panel>
 

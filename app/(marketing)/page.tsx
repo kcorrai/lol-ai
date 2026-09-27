@@ -19,11 +19,11 @@ import { ClosingSplash } from "./components/laneiq/ClosingSplash";
 import { ExploreTabs } from "./components/laneiq/ExploreTabs";
 
 export const metadata: Metadata = {
-  title: { absolute: "LoL AI Coach — Free LoL Tools, AI Coaching & Real Coaches" },
+  title: { absolute: "LaneIQ — Free LoL Tools, AI Coaching & Real Coaches" },
   description:
     "Paste your Riot ID and get the one habit costing you LP — or book a human coach whose rank we read from their own Riot account. Free League of Legends tools: counters, matchups, draft analysis and tier lists from real ranked data. Plus a 61-lesson academy, a fearless draft room and live esports. No login required for the tools.",
   openGraph: {
-    title: "LoL AI Coach — Free LoL Tools, AI Coaching & Real Coaches",
+    title: "LaneIQ — Free LoL Tools, AI Coaching & Real Coaches",
     description:
       "Free LoL tools from real ranked data — counters, matchups, drafts, tier lists — plus AI coaching on your own games and human coaches whose rank we checked.",
     type: "website",

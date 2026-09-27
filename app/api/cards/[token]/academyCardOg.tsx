@@ -24,7 +24,7 @@ export function AcademyCard({ d }: { d: AcademyCardData }) {
       }}
     >
       <span style={{ color: C.brand, fontSize: 16, fontWeight: 700, letterSpacing: 2 }}>
-        LOL AI COACH — ACADEMY
+        LANEIQ — ACADEMY
       </span>
 
       <div style={{ display: "flex", flexDirection: "column" }}>

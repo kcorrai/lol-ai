@@ -102,7 +102,7 @@ function NoGame(): React.ReactElement {
   return (
     <div className="notch border border-line-1 bg-surface px-4 py-3 text-center">
       <p className="font-mono text-[10px] uppercase tracking-label text-text-faint">
-        LoL AI Coach · waiting for a game
+        LaneIQ · waiting for a game
       </p>
     </div>
   );

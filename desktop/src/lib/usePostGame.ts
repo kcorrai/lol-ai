@@ -96,7 +96,7 @@ export function usePostGame(read: LiveRead<AllGameData>): {
         setState({
           status: "error",
           message:
-            err instanceof Error ? err.message : "Could not tell LoL AI Coach the game ended.",
+            err instanceof Error ? err.message : "Could not tell LaneIQ the game ended.",
         });
       });
 

@@ -43,7 +43,7 @@ export function coreRead<T>(
       if (cancelled) return;
       set({
         status: "error",
-        message: err instanceof Error ? err.message : "Could not reach LoL AI Coach.",
+        message: err instanceof Error ? err.message : "Could not reach LaneIQ.",
       });
     });
 

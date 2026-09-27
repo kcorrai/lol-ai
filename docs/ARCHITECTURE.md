@@ -1,4 +1,4 @@
-# System Architecture — LoL AI Coach
+# System Architecture — LaneIQ
 
 **Version:** 1.0  
 **Status:** Draft

@@ -3,7 +3,7 @@ import { encryptString, decryptString } from "@/lib/crypto/encrypt";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 
-const APP_NAME = "LoL AI Coach";
+const APP_NAME = "LaneIQ";
 const BACKUP_CODE_COUNT = 8;
 const BACKUP_CODE_ROUNDS = 10;
 const TOTP_OPTIONS = { algorithm: "sha1" as const, digits: 6, period: 30 };

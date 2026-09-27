@@ -30,7 +30,7 @@ export function CareerCard({ d }: { d: CareerCardData }) {
       }}
     >
       <span style={{ color: C.brand, fontSize: 16, fontWeight: 700, letterSpacing: 2 }}>
-        LOL AI COACH — CAREER TIMELINE
+        LANEIQ — CAREER TIMELINE
       </span>
 
       <div style={{ display: "flex", alignItems: "baseline", gap: 16, marginTop: 28 }}>
@@ -76,7 +76,7 @@ export function CareerCard({ d }: { d: CareerCardData }) {
       >
         <span style={{ color: C.muted, fontSize: 16 }}>lolaicoach.com</span>
         {!d.isPro && (
-          <span style={{ color: C.brandDim, fontSize: 14 }}>Made with LoL AI Coach</span>
+          <span style={{ color: C.brandDim, fontSize: 14 }}>Made with LaneIQ</span>
         )}
       </div>
     </div>

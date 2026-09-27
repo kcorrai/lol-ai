@@ -41,7 +41,7 @@ export function ReportOgCard({ report }: { report: PublicReport }) {
             marginRight: "14px",
           }}
         >
-          LoL AI Coach
+          LaneIQ
         </div>
         <span style={{ color: "#6C817B", fontSize: "13px" }}>{reportLabel}</span>
       </div>

@@ -30,7 +30,7 @@ pub enum AppError {
     #[error("the operating system's credential store refused: {0}")]
     Keychain(String),
 
-    #[error("could not reach LoL AI Coach: {0}")]
+    #[error("could not reach LaneIQ: {0}")]
     Network(String),
 
     #[error("could not open your browser: {0}")]

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Terms and conditions for using LoL AI Coach.",
+  description: "Terms and conditions for using LaneIQ.",
 };
 
 export default function TermsPage() {
@@ -15,7 +15,7 @@ export default function TermsPage() {
         <section>
           <h2 className="mb-3 font-display text-xl font-semibold text-text">Service Description</h2>
           <p>
-            LoL AI Coach (&quot;we&quot;, &quot;us&quot;, &quot;the Service&quot;) provides
+            LaneIQ (&quot;we&quot;, &quot;us&quot;, &quot;the Service&quot;) provides
             AI-generated coaching reports and performance analytics for League of Legends players.
             The Service is provided &quot;as is&quot; and is intended for personal, non-commercial
             use.
@@ -45,13 +45,13 @@ export default function TermsPage() {
             Riot Games Disclaimer
           </h2>
           <p>
-            LoL AI Coach isn&apos;t endorsed by Riot Games and doesn&apos;t reflect the views or
+            LaneIQ isn&apos;t endorsed by Riot Games and doesn&apos;t reflect the views or
             opinions of Riot Games or anyone officially involved in producing or managing Riot Games
             properties. League of Legends and Riot Games are trademarks or registered trademarks of
             Riot Games, Inc. League of Legends &copy; Riot Games, Inc.
           </p>
           <p className="mt-3">
-            LoL AI Coach uses the Riot Games API in accordance with the{" "}
+            LaneIQ uses the Riot Games API in accordance with the{" "}
             <a
               href="https://developer.riotgames.com/policies/general"
               target="_blank"
@@ -79,7 +79,7 @@ export default function TermsPage() {
             Limitation of Liability
           </h2>
           <p>
-            To the fullest extent permitted by applicable law, LoL AI Coach and its operators shall
+            To the fullest extent permitted by applicable law, LaneIQ and its operators shall
             not be liable for any indirect, incidental, special, consequential, or punitive damages
             arising out of or related to your use of the Service, including but not limited to loss
             of data, loss of profits, or any other intangible losses.

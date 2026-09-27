@@ -8,7 +8,7 @@ export interface LinkedIdentity {
 }
 
 /**
- * The LoL AI Coach account behind a Discord user, if they have linked one.
+ * The LaneIQ account behind a Discord user, if they have linked one.
  *
  * Picks the primary Riot account, falling back to the oldest connected one so a
  * user who never marked a primary still gets an answer.
@@ -42,7 +42,7 @@ export async function getLinkedIdentity(discordUserId: string): Promise<LinkedId
 export type LinkOutcome = "linked" | "taken";
 
 /**
- * Binds a Discord user to a LoL AI Coach account.
+ * Binds a Discord user to a LaneIQ account.
  *
  * `discordUserId` is unique, so a Discord account already claimed by somebody
  * else is reported rather than silently moved — that would be an account

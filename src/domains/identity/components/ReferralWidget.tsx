@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 const SHARE_TEXT =
-  "I'm climbing with LoL AI Coach — AI coaching on your own ranked games. Sign up with my link and we both get 7 days of Pro free 🎁";
+  "I'm climbing with LaneIQ — AI coaching on your own ranked games. Sign up with my link and we both get 7 days of Pro free 🎁";
 
 export function ReferralWidget() {
   const [copied, setCopied] = useState(false);
@@ -27,7 +27,7 @@ export function ReferralWidget() {
         { label: "WhatsApp", href: `https://wa.me/?text=${enc(`${SHARE_TEXT} ${shareUrl}`)}` },
         {
           label: "Reddit",
-          href: `https://www.reddit.com/submit?url=${enc(shareUrl)}&title=${enc("Free 7-day Pro on LoL AI Coach")}`,
+          href: `https://www.reddit.com/submit?url=${enc(shareUrl)}&title=${enc("Free 7-day Pro on LaneIQ")}`,
         },
       ]
     : [];
@@ -42,7 +42,7 @@ export function ReferralWidget() {
   async function handleNativeShare() {
     if (!shareUrl || typeof navigator === "undefined" || !navigator.share) return;
     try {
-      await navigator.share({ title: "LoL AI Coach", text: SHARE_TEXT, url: shareUrl });
+      await navigator.share({ title: "LaneIQ", text: SHARE_TEXT, url: shareUrl });
     } catch {
       /* user dismissed the share sheet */
     }

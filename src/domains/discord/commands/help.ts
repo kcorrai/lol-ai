@@ -12,7 +12,7 @@ const LOOKUPS = [
 ];
 
 const ACCOUNT = [
-  "`/lolai link` — connect your Discord to your LoL AI Coach account",
+  "`/lolai link` — connect your Discord to your LaneIQ account",
   "`/lolai status` — show what is currently linked",
   "`/lolai unlink` — disconnect it again",
   "`/coach` — your active habits and where to focus next",
@@ -21,7 +21,7 @@ const ACCOUNT = [
 export function helpCommand(): DiscordMessagePayload {
   return card(
     [
-      textDisplay("## LoL AI Coach"),
+      textDisplay("## LaneIQ"),
       textDisplay(
         "Look up any Riot ID — no account needed. Link yours and the `riot-id` argument becomes optional."
       ),

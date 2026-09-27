@@ -2,7 +2,8 @@
 
 import { CoachMarketVisual, CreatorVisual } from "./ArsenalVisuals";
 import { AcademyVisual, CoachVisual } from "./ArsenalMedia";
-import { DraftVisual, EsportsVisual } from "./ArsenalBoards";
+import { EsportsVisual } from "./ArsenalBoards";
+import { DraftVisual } from "./DraftDemo";
 
 export type ArsenalKey = "coach" | "coaches" | "academy" | "draft" | "esports" | "creator";
 

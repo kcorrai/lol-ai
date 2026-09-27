@@ -1,4 +1,4 @@
-# API Design — LoL AI Coach
+# API Design — LaneIQ
 
 **Version:** 1.0  
 **Base URL:** `/api` (unversioned, stable) | `/api/v1/` (versioned)  

@@ -23,7 +23,7 @@ interface PageProps {
 
 export function generateMetadata({ searchParams }: PageProps): Metadata {
   const champion = searchParams.champion?.trim();
-  // The root layout template appends " | LoL AI Coach"; repeating it here put the name in
+  // The root layout template appends " | LaneIQ"; repeating it here put the name in
   // the tab twice.
   const title = champion
     ? `${champion} Counters — Best & Worst Matchups`

@@ -65,7 +65,7 @@ export const COMMAND_DEFINITIONS: SlashCommandDefinition[] = [
   },
   {
     name: "lolai",
-    description: "LoL AI Coach — help and account linking",
+    description: "LaneIQ — help and account linking",
     options: [
       {
         type: CommandOptionType.Subcommand,
@@ -75,7 +75,7 @@ export const COMMAND_DEFINITIONS: SlashCommandDefinition[] = [
       {
         type: CommandOptionType.Subcommand,
         name: "link",
-        description: "Connect your Discord to your LoL AI Coach account",
+        description: "Connect your Discord to your LaneIQ account",
       },
       {
         type: CommandOptionType.Subcommand,
@@ -85,7 +85,7 @@ export const COMMAND_DEFINITIONS: SlashCommandDefinition[] = [
       {
         type: CommandOptionType.Subcommand,
         name: "unlink",
-        description: "Disconnect your Discord from your LoL AI Coach account",
+        description: "Disconnect your Discord from your LaneIQ account",
       },
     ],
     ...ANYWHERE,

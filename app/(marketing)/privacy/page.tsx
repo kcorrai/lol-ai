@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "How LoL AI Coach collects, uses, and protects your data.",
+  description: "How LaneIQ collects, uses, and protects your data.",
 };
 
 export default function PrivacyPage() {
@@ -31,14 +31,14 @@ export default function PrivacyPage() {
         <section>
           <h2 className="mb-3 font-display text-xl font-semibold text-text">Riot Account Data</h2>
           <p>
-            LoL AI Coach uses the Riot Games API to retrieve your match history, ranked standing,
+            LaneIQ uses the Riot Games API to retrieve your match history, ranked standing,
             and champion statistics. This data is fetched on your request and stored to power your
             coaching reports and dashboard. We only access data that is publicly available through
             the Riot Games API.
           </p>
           <p className="mt-3">
             You can disconnect your Riot account at any time from Settings. Disconnecting removes
-            the link between your LoL AI Coach account and your Riot account. Your historical match
+            the link between your LaneIQ account and your Riot account. Your historical match
             data may be retained for service continuity unless you request deletion.
           </p>
         </section>
