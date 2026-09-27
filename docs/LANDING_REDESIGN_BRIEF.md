@@ -1,7 +1,7 @@
 # Claude Design brief — LaneIQ landing page redesign
 
 Design a single, full-length landing page artboard (desktop, 1440px wide) for
-**LaneIQ / LoL AI Coach**. This is a redesign of a page that already ships, so it
+**LaneIQ / LaneIQ**. This is a redesign of a page that already ships, so it
 is a _recomposition_, not a blank page: the visual system is fixed, the content
 inventory is fixed, the arrangement and the impact are yours.
 

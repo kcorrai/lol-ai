@@ -52,7 +52,7 @@ An unverified domain means the application cannot be processed at all.
 
 ## ⚠️ Decisions only you can make
 
-### D1. Product name and domain — "LoL AI Coach"
+### D1. Product name and domain — "LaneIQ"
 
 Riot's Legal Jibber Jabber policy states you "may not register domain names,
 social media accounts, or similar stuff that uses Riot Games or any of our

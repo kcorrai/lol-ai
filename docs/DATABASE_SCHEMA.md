@@ -1,4 +1,4 @@
-# Database Schema — LoL AI Coach
+# Database Schema — LaneIQ
 
 **Version:** 1.0  
 **Database:** PostgreSQL  

@@ -1,4 +1,4 @@
-# CLAUDE.md — LoL AI Coach Project Rules
+# CLAUDE.md — LaneIQ Project Rules
 
 This file defines the rules for AI-assisted development on this project. Every rule here exists for a reason. Read before writing a single line of code.
 

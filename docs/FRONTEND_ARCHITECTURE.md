@@ -1,4 +1,4 @@
-# Frontend Architecture — LoL AI Coach
+# Frontend Architecture — LaneIQ
 
 **Version:** 1.0
 

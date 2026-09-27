@@ -1,4 +1,4 @@
-# EXECUTION_PLAN.md — LoL AI Coach
+# EXECUTION_PLAN.md — LaneIQ
 
 **Rol:** Staff Engineer / Engineering Manager  
 **Amaç:** Projeyi güvenli, kontrollü ve mimari bütünlüğü koruyarak inşa etmek.  
@@ -250,7 +250,7 @@ Eğer bir task beklenenden zorsa veya mimari karar gerektiriyorsa:
 Yeni bir oturuma başlarken Claude'a şu bilgileri ver:
 
 ```
-Proje: LoL AI Coach — Next.js, TypeScript, PostgreSQL, Prisma, TailwindCSS
+Proje: LaneIQ — Next.js, TypeScript, PostgreSQL, Prisma, TailwindCSS
 Stack: Next.js 14 App Router, Prisma ORM, NextAuth, TanStack Query, Zustand
 
 Aktif Task: TASK-XXX — [task adı]

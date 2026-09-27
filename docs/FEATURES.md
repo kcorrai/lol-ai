@@ -1,4 +1,4 @@
-# Features — LoL AI Coach
+# Features — LaneIQ
 
 **Version:** 1.0
 
