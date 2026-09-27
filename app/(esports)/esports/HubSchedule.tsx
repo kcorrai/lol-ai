@@ -8,8 +8,13 @@ import { groupByDay, zoneFor } from "@/domains/esports/dayGroups";
 import { useEsportsPrefsStore } from "@/lib/stores/esportsPrefsStore";
 import type { EsportsEvent } from "@/domains/esports";
 
-const ROW = "grid items-center gap-3.5 border-b border-line-1 px-4 py-2.5 last:border-b-0";
-const ROW_COLUMNS = "76px minmax(96px,116px) minmax(0,1fr) 56px minmax(0,1fr)";
+/**
+ * Five columns on a wide screen; on a phone, kickoff and league on one line and
+ * the fixture under them. The fixed 620px row this replaces scrolled the away
+ * team off a phone's screen.
+ */
+const ROW =
+  "grid grid-cols-[4.75rem_minmax(0,1fr)] items-center gap-x-3.5 gap-y-2 border-b border-line-1 px-4 py-2.5 last:border-b-0 sm:grid-cols-[76px_minmax(96px,116px)_minmax(0,1fr)_56px_minmax(0,1fr)]";
 
 /**
  * The next fixtures, under day headings in the reader's own calendar days.
@@ -40,9 +45,7 @@ export function HubSchedule({ events }: { events: EsportsEvent[] }): React.React
             </span>
           </div>
 
-          {/* Six columns will not fit a phone. Scrolling the block keeps the row readable
-              instead of crushing the team names to two characters each. */}
-          <div className="overflow-x-auto border border-line-1 bg-surface [&>a]:min-w-[620px]">
+          <div className="border border-line-1 bg-surface">
             {group.events.map((event) => {
               const [home, away] = event.teams;
               return (
@@ -50,7 +53,6 @@ export function HubSchedule({ events }: { events: EsportsEvent[] }): React.React
                   key={event.matchId}
                   href={`/esports/matches/${event.matchId}`}
                   className={`${ROW} border-l-2 border-l-transparent transition-colors hover:border-l-accent hover:bg-surface-2/60`}
-                  style={{ gridTemplateColumns: ROW_COLUMNS }}
                 >
                   <MatchTime
                     startTime={event.startTime}
@@ -66,15 +68,17 @@ export function HubSchedule({ events }: { events: EsportsEvent[] }): React.React
                       </span>
                     )}
                   </span>
-                  {home ? (
-                    <TeamBadge team={home} align="right" />
-                  ) : (
-                    <span className="hud-label text-right">TBD</span>
-                  )}
-                  <span className="hud-label text-center text-[10.5px]">
-                    {event.bestOf ? `Bo${event.bestOf}` : "vs"}
+                  <span className="col-span-2 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3.5 sm:contents">
+                    {home ? (
+                      <TeamBadge team={home} align="right" />
+                    ) : (
+                      <span className="hud-label text-right">TBD</span>
+                    )}
+                    <span className="hud-label text-center text-[10.5px]">
+                      {event.bestOf ? `Bo${event.bestOf}` : "vs"}
+                    </span>
+                    {away ? <TeamBadge team={away} /> : <span className="hud-label">TBD</span>}
                   </span>
-                  {away ? <TeamBadge team={away} /> : <span className="hud-label">TBD</span>}
                 </Link>
               );
             })}

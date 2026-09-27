@@ -174,7 +174,7 @@ export default async function EsportsHubPage(): Promise<React.ReactElement> {
           </p>
         </div>
       ) : (
-        <div className="mt-5 grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="mt-5 grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="grid min-w-0 gap-7">
             {live.length > 0 && <HubLive initialEvents={live} />}
 
