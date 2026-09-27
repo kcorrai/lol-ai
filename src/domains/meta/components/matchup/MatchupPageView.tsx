@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ChampionIcon } from "@/components/ui/ChampionIcon";
+import { MatchupVersus } from "./MatchupVersus";
+import { LaneTips } from "./LaneTips";
 import { Breadcrumb } from "@/components/shared/Breadcrumb";
 import { MatchupCurveCompare } from "@/domains/meta/components/MatchupCurveCompare";
 import { DataFreshness } from "@/domains/meta/components/DataFreshness";
@@ -13,7 +14,7 @@ function analysis(d: MatchupPageData): string {
   const verdictWord =
     d.verdict === "favored" ? "favourable" : d.verdict === "unfavored" ? "difficult" : "even";
   const parts = [
-    `${d.a.name} vs ${d.b.name} in ${d.laneLabel} is a ${verdictWord} matchup for ${d.a.name} on patch ${d.gamePatch}.`,
+    `${d.a.name} vs ${d.b.name} in ${d.laneLabel} is ${verdictWord === "even" ? "an" : "a"} ${verdictWord} matchup for ${d.a.name} on patch ${d.gamePatch}.`,
   ];
   if (d.games > 0) {
     parts.push(
@@ -46,8 +47,6 @@ function analysis(d: MatchupPageData): string {
 }
 
 export function MatchupPageView({ d }: { d: MatchupPageData }) {
-  const good = d.aWinRate >= 52;
-  const bad = d.aWinRate <= 48;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -82,7 +81,7 @@ export function MatchupPageView({ d }: { d: MatchupPageData }) {
   };
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12">
+    <div className="mx-auto max-w-[1100px] px-5 py-12 md:px-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdProps(jsonLd)} />
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdProps(breadcrumb)} />
 
@@ -98,7 +97,7 @@ export function MatchupPageView({ d }: { d: MatchupPageData }) {
       />
 
       <header className="mb-4">
-        <h1 className="font-display text-3xl font-black text-text md:text-4xl">
+        <h1 className="font-display text-[30px] font-black uppercase leading-[1.02] tracking-[0.02em] text-text md:text-[40px]">
           {d.a.name} vs {d.b.name} — {d.laneLabel} Matchup, Patch {d.gamePatch}
         </h1>
       </header>
@@ -111,26 +110,22 @@ export function MatchupPageView({ d }: { d: MatchupPageData }) {
       />
 
       {/* Head-to-head card */}
-      <div className="mb-8 flex items-center justify-center gap-6 rounded-2xl border border-border bg-surface/60 p-6">
-        <div className="flex flex-col items-center gap-2">
-          <ChampionIcon name={d.a.key} size={64} />
-          <span className="text-sm font-semibold text-text">{d.a.name}</span>
-        </div>
-        <div className="text-center">
-          <div
-            className={`font-display text-4xl font-black ${good ? "text-success" : bad ? "text-danger" : "text-text"}`}
-          >
-            {d.aWinRate.toFixed(1)}%
-          </div>
-          <div className="text-xs text-text-muted">{d.a.name} win rate</div>
-        </div>
-        <div className="flex flex-col items-center gap-2">
-          <ChampionIcon name={d.b.key} size={64} />
-          <span className="text-sm font-semibold text-text">{d.b.name}</span>
-        </div>
+      <div className="mb-8">
+        <MatchupVersus
+          a={d.a}
+          b={d.b}
+          aWinRate={d.aWinRate}
+          games={d.games}
+          verdict={d.verdict}
+          footnote={
+            d.games > 0
+              ? `patch ${d.gamePatch}`
+              : "No significant ranked sample for this exact pairing yet"
+          }
+        />
       </div>
 
-      <p className="mb-8 leading-relaxed text-text-muted">{analysis(d)}</p>
+      <p className="mb-8 max-w-[80ch] leading-relaxed text-text-body">{analysis(d)}</p>
 
       <div className="grid gap-5 md:grid-cols-2">
         <MatchupCurveCompare
@@ -139,28 +134,16 @@ export function MatchupPageView({ d }: { d: MatchupPageData }) {
           curveA={d.curveA}
           curveB={d.curveB}
         />
-        {d.hints.length > 0 && (
-          <div className="rounded-2xl border border-border bg-surface/60 p-5">
-            <h2 className="mb-3 font-display text-lg font-bold text-text">Lane Tips</h2>
-            <ul className="flex flex-col gap-2">
-              {d.hints.map((h, i) => (
-                <li key={i} className="flex gap-2 text-sm text-text">
-                  <span className="mt-0.5 text-accent">▸</span>
-                  <span>{h}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <LaneTips hints={d.hints} />
       </div>
 
       {/* Internal links */}
-      <div className="mt-10 flex flex-wrap gap-3 text-sm">
+      <div className="mt-10 flex flex-wrap gap-2.5">
         {[d.a, d.b].map((c) => (
           <Link
             key={c.key}
             href={`/builds/${c.key}`}
-            className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
+            className="notch-sm border border-border bg-surface px-4 py-2 font-mono text-[11px] uppercase tracking-label text-text-muted transition-colors hover:border-accent/40 hover:text-text"
           >
             {c.name} build →
           </Link>
@@ -169,7 +152,7 @@ export function MatchupPageView({ d }: { d: MatchupPageData }) {
           <Link
             key={`${c.key}-c`}
             href={`/counters/${c.key}`}
-            className="rounded-lg border border-border bg-surface px-4 py-2 text-text-muted hover:border-accent/40 hover:text-text"
+            className="notch-sm border border-border bg-surface px-4 py-2 font-mono text-[11px] uppercase tracking-label text-text-muted transition-colors hover:border-accent/40 hover:text-text"
           >
             {c.name} counters →
           </Link>

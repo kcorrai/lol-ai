@@ -16,7 +16,7 @@ function ItemRow({ items }: { items: ItemInfo[] }) {
           width={30}
           height={30}
           unoptimized
-          className="rounded-md ring-1 ring-border"
+          className="border border-line-2"
         />
       ))}
     </div>
@@ -26,9 +26,7 @@ function ItemRow({ items }: { items: ItemInfo[] }) {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="w-16 shrink-0 text-[10px] font-semibold uppercase tracking-wide text-text-muted">
-        {label}
-      </span>
+      <span className="hud-label w-16 shrink-0 text-[10px]">{label}</span>
       {children}
     </div>
   );
@@ -41,13 +39,19 @@ function SideBuild({
 }: {
   name: string;
   side: MatchupSideBuild;
-  accent: string;
+  accent: "info" | "danger";
 }) {
   if (side.coreItems.length === 0 && !side.keystone) return null;
   const spellUrls = side.summonerSpellIds.map(summonerSpellUrl).filter(Boolean);
   return (
-    <div className="space-y-2.5 rounded-2xl border border-border bg-surface/60 p-4">
-      <h3 className={`font-display text-sm font-bold ${accent}`}>{name} build</h3>
+    <div
+      className={`notch space-y-2.5 border border-l-2 border-border bg-surface p-4 ${accent === "info" ? "border-l-info" : "border-l-danger"}`}
+    >
+      <h3
+        className={`font-display text-sm font-black uppercase tracking-[0.04em] ${accent === "info" ? "text-info" : "text-danger"}`}
+      >
+        {name} build
+      </h3>
 
       {(side.keystone || spellUrls.length > 0) && (
         <Field label="Runes">
@@ -60,7 +64,7 @@ function SideBuild({
                 width={30}
                 height={30}
                 unoptimized
-                className="rounded-md ring-1 ring-border"
+                className="border border-line-2"
               />
             )}
             {spellUrls.map((url, i) => (
@@ -71,7 +75,7 @@ function SideBuild({
                 width={26}
                 height={26}
                 unoptimized
-                className="rounded ring-1 ring-border"
+                className="border border-line-2"
               />
             ))}
           </div>
@@ -95,7 +99,9 @@ function SideBuild({
       )}
       {side.skillMaxOrder.length > 0 && (
         <Field label="Skills">
-          <span className="text-sm font-semibold text-text">{side.skillMaxOrder.join(" › ")}</span>
+          <span className="font-mono text-sm font-bold text-text">
+            {side.skillMaxOrder.join(" › ")}
+          </span>
         </Field>
       )}
     </div>
@@ -116,8 +122,8 @@ export function MatchupBuildSummary({
   return (
     <div className="mt-6 space-y-5">
       <div className="grid gap-4 md:grid-cols-2">
-        <SideBuild name={nameA} side={extras.a} accent="text-info" />
-        <SideBuild name={nameB} side={extras.b} accent="text-danger" />
+        <SideBuild name={nameA} side={extras.a} accent="info" />
+        <SideBuild name={nameB} side={extras.b} accent="danger" />
       </div>
       <MatchupCurveCompare
         nameA={nameA}

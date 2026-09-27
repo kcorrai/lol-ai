@@ -11,6 +11,7 @@ import { ToolUpgradeNudge } from "../../ToolUpgradeNudge";
 import { ToolHeader } from "../../ToolHeader";
 import { ToolEmpty } from "../../ToolEmpty";
 import { ToolCta } from "../../ToolCta";
+import { HUD_LINK } from "../../hudChip";
 import { LiveGameButton } from "@/components/tools/LiveGameButton";
 
 interface PageProps {
@@ -97,12 +98,10 @@ export default async function MatchupPage({ searchParams }: PageProps) {
 
       {report && (
         <>
-          <div className="mb-6 flex items-center gap-2 text-sm text-text-muted">
-            <span className="rounded-full bg-surface-2 px-3 py-1 font-semibold text-text">
-              {POSITION_LABELS[report.position]}
-            </span>
-            <span>Patch {formatGamePatch(report.patch)}</span>
-          </div>
+          <p className="hud-label mb-4 text-[10.5px]">
+            {POSITION_LABELS[report.position]} · patch {formatGamePatch(report.patch)} · ranked
+            solo/duo
+          </p>
 
           <MatchupReportCard report={report} />
 
@@ -119,7 +118,7 @@ export default async function MatchupPage({ searchParams }: PageProps) {
           <div className="mt-6 text-center">
             <Link
               href={`/matchups/${[report.championA.key.toLowerCase(), report.championB.key.toLowerCase()].sort().join("-vs-")}`}
-              className="inline-block rounded-md border border-border px-5 py-2 text-sm font-semibold text-text-muted transition-colors hover:border-accent/50 hover:text-text"
+              className={`inline-block ${HUD_LINK}`}
             >
               Full {report.championA.name} vs {report.championB.name} guide →
             </Link>
