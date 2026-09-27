@@ -159,3 +159,41 @@ describe("objectiveMarkers", () => {
     expect(objectiveMarkers(timeline([{ seconds: 240 }, { seconds: 480 }]), 480, wide)).toEqual([]);
   });
 });
+
+describe("objectiveMarkers spreading", () => {
+  const wide: CurveBox = { left: 0, right: 1000, top: 0, bottom: 100 };
+
+  it("pushes a neighbouring sample's marker clear of a crowded one", () => {
+    // Samples 20 units apart: the first sample's pair fans to 490/510, so the
+    // next sample's marker at 520 has to move to 530.
+    const markers = objectiveMarkers(
+      timeline([
+        { seconds: 240 },
+        { seconds: 500, blue: { towers: 1, dragons: 1 } },
+        { seconds: 520, blue: { towers: 2, dragons: 1 } },
+        { seconds: 1000 },
+      ]),
+      1000,
+      wide
+    );
+
+    expect(markers.map((marker) => marker.x)).toEqual([490, 510, 530]);
+  });
+
+  it("never lets two markers in a row overlap", () => {
+    const markers = objectiveMarkers(
+      timeline([
+        { seconds: 240 },
+        { seconds: 900, red: { towers: 2, inhibitors: 1 } },
+        { seconds: 960, red: { towers: 3, inhibitors: 2, barons: 1 } },
+        { seconds: 1000, red: { towers: 4, inhibitors: 2, barons: 1, dragons: 1 } },
+      ]),
+      1000,
+      wide
+    );
+
+    const xs = markers.map((marker) => marker.x);
+    xs.slice(1).forEach((x, i) => expect(x - xs[i]).toBeGreaterThanOrEqual(MARKER_GAP));
+    expect(xs[xs.length - 1]).toBeLessThanOrEqual(1000 - MARKER_GAP / 2);
+  });
+});

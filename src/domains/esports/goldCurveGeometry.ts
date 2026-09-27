@@ -1,5 +1,5 @@
 import { goldDiff, objectiveEvents } from "@/domains/esports/timeline";
-import type { ObjectiveEvent, ObjectiveKind } from "@/domains/esports/timeline";
+import type { ObjectiveKind } from "@/domains/esports/timeline";
 import type { GameTimeline } from "@/domains/esports/types";
 
 /**
@@ -99,42 +99,57 @@ export interface ObjectiveMarker {
   count: number;
 }
 
-/** How far apart markers sharing a sample sit, in viewBox units. */
+/** The least distance between two markers' centres in one row, in viewBox units. */
 export const MARKER_GAP = 20;
 
 /**
- * One marker per objective event, at the sample it was first seen in.
+ * Spreads one row of markers so no two overlap and none leaves the chart.
  *
- * Several objectives often fall inside one four-minute window — a dragon and
- * two towers — so markers sharing a side and a sample are fanned out around
- * that sample's x instead of drawn on top of each other.
+ * Objectives cluster late in a game — a sample can hold two towers and an
+ * inhibitor, and the next sample four minutes on is barely wider than that
+ * group — so a marker that would land on its neighbour is pushed right, and a
+ * row pushed past the right edge is then walked back left.
+ */
+function spread(xs: number[], box: CurveBox): number[] {
+  const inset = MARKER_GAP / 2;
+  const out = [...xs];
+  for (let i = 0; i < out.length; i += 1) {
+    const floor = i === 0 ? box.left + inset : out[i - 1] + MARKER_GAP;
+    out[i] = Math.max(out[i], floor);
+  }
+  for (let i = out.length - 1; i >= 0; i -= 1) {
+    const ceiling = i === out.length - 1 ? box.right - inset : out[i + 1] - MARKER_GAP;
+    out[i] = Math.min(out[i], ceiling);
+  }
+  return out;
+}
+
+/**
+ * One marker per objective event, at the sample it was first seen in, laid
+ * out in a row per side. Markers sharing a sample start fanned around that
+ * sample's x before the row is spread.
  */
 export function objectiveMarkers(
   timeline: GameTimeline,
   span: number,
   box: CurveBox
 ): ObjectiveMarker[] {
-  const groups = new Map<string, ObjectiveEvent[]>();
-  for (const event of objectiveEvents(timeline)) {
-    const key = `${event.side}:${event.seconds}`;
-    groups.set(key, [...(groups.get(key) ?? []), event]);
-  }
+  const events = objectiveEvents(timeline);
 
-  return [...groups.values()].flatMap((events) => {
-    // The group moves inwards as a whole near either edge, so a fan at the
-    // final sample stays inside the chart without its markers piling up.
-    const half = ((events.length - 1) / 2) * MARKER_GAP;
-    const edge = MARKER_GAP / 2 + half;
-    const centre = Math.min(
-      box.right - edge,
-      Math.max(box.left + edge, timeToX(events[0].seconds, span, box))
-    );
+  return (["blue", "red"] as const).flatMap((side) => {
+    const row = events.filter((event) => event.side === side);
+    const wanted = row.map((event) => {
+      const group = row.filter((other) => other.seconds === event.seconds);
+      const index = group.indexOf(event);
+      return timeToX(event.seconds, span, box) + (index - (group.length - 1) / 2) * MARKER_GAP;
+    });
+    const xs = spread(wanted, box);
 
-    return events.map((event, index) => ({
-      key: `${event.side}:${event.seconds}:${event.kind}`,
-      x: centre - half + index * MARKER_GAP,
+    return row.map((event, index) => ({
+      key: `${side}:${index}`,
+      x: xs[index],
       seconds: event.seconds,
-      side: event.side,
+      side,
       kind: event.kind,
       count: event.count,
     }));
