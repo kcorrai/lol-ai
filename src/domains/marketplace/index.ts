@@ -203,9 +203,10 @@ export {
 export {
   listThreads,
   getThread,
-  openThread,
   sendMessage,
 } from "@/domains/marketplace/services/messagingService";
+export { openThread } from "@/domains/marketplace/services/threadOpenService";
+export type { CoachRef, OpenOutcome } from "@/domains/marketplace/services/threadOpenService";
 export type {
   MessageView,
   ThreadView,

@@ -36,10 +36,10 @@ export function useThread(conversationId: string | null) {
 export function useOpenThread() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (coachProfileId: string) =>
+    mutationFn: (coach: { coachProfileId: string } | { coachSlug: string }) =>
       apiFetch<{ conversationId: string }>("/api/threads", {
         method: "POST",
-        body: JSON.stringify({ coachProfileId }),
+        body: JSON.stringify(coach),
       }),
     onSuccess: () => qc.invalidateQueries({ queryKey: KEY }),
   });
