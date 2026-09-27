@@ -4,7 +4,7 @@ import { renderOgImage, OG_SIZE, OG_CONTENT_TYPE } from "@/lib/og/ogImage";
 // (counters/[champion] and matchups/[slug] override this with dynamic cards).
 export const size = OG_SIZE;
 export const contentType = OG_CONTENT_TYPE;
-export const alt = "Free LoL Tools — LoL AI Coach";
+export const alt = "Free LoL Tools — LaneIQ";
 
 export default function Image() {
   return renderOgImage({

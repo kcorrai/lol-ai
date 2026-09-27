@@ -160,7 +160,7 @@ export function ReportPDF({ data }: { data: ReportPDFData }) {
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.brandName}>LoL AI Coach</Text>
+          <Text style={styles.brandName}>LaneIQ</Text>
           <View style={styles.headerRight}>
             <Text style={styles.headerLabel}>
               {REPORT_LABELS[data.reportType] ?? data.reportType}
@@ -312,7 +312,7 @@ export function ReportPDF({ data }: { data: ReportPDFData }) {
 
         {/* Footer */}
         <View style={styles.footer} fixed>
-          <Text style={styles.footerText}>LoL AI Coach — lolaicoach.gg</Text>
+          <Text style={styles.footerText}>LaneIQ — lolaicoach.gg</Text>
           <Text style={styles.footerText}>Generated {formatDateTime(data.createdAt)}</Text>
         </View>
       </Page>

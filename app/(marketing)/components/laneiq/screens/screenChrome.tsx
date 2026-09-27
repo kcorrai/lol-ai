@@ -52,7 +52,7 @@ export function Track({
 /**
  * The frame a drawn screen sits in.
  *
- * `name` is what the screen is, not who makes it. Writing "LoL AI Coach" here would put the
+ * `name` is what the screen is, not who makes it. Writing "LaneIQ" here would put the
  * product's wordmark on the page twice and reintroduce the confusion described above.
  */
 export function Window({

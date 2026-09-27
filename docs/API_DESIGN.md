@@ -1,4 +1,4 @@
-# API Design — LoL AI Coach
+# API Design — LaneIQ
 
 **Version:** 1.0  
 **Base URL:** `/api` (unversioned, stable) | `/api/v1/` (versioned)  
@@ -1810,6 +1810,34 @@ complete for a crawler with no JavaScript; this endpoint is only ever reached by
 - A single match Riot refuses is dropped from `matches`, not turned into a `500`; `nextStart` is
   still advanced, because a bad page is a reason to offer the next one rather than to declare the
   history over.
+
+---
+
+### `POST /api/public/profile/refresh`
+
+The "Update" button on a public profile. **No auth.** Drops the profile's cached copy and reads it
+from Riot again, unless the copy is under two minutes old.
+
+```json
+{ "gameName": "kaanproak0", "tagLine": "TR1", "region": "tr1" }
+```
+
+```json
+{ "data": { "refreshed": true, "fetchedAt": "2026-09-27T12:00:00.000Z" } }
+```
+
+```json
+{ "data": { "refreshed": false, "retryAfterMs": 45000 } }
+```
+
+**Notes:**
+
+- The cooldown is the profile's own age (`fetchedAt`), so it holds across every visitor and needs
+  no counter of its own. A cooldown is a `200` with `refreshed: false`, not an error.
+- A refresh counts against the same **10 fresh lookups per IP per 10 minutes** as opening an
+  uncached profile (`FRESH_PROFILE_LOOKUPS`); over it answers `429` with `Retry-After`, and the
+  cached copy is left in place.
+- `RIOT_RATE_LIMITED` and `RIOT_API_UNAVAILABLE` map to `503`, `RIOT_NOT_FOUND` to `404`.
 
 ---
 

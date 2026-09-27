@@ -20,7 +20,7 @@ here = fso.GetParentFolderName(WScript.ScriptFullName)
 script = fso.BuildPath(here, "launch.ps1")
 
 If Not fso.FileExists(script) Then
-    MsgBox "Baslatici bulunamadi:" & vbCrLf & script, vbCritical, "LoL AI Coach acilamadi"
+    MsgBox "Baslatici bulunamadi:" & vbCrLf & script, vbCritical, "LaneIQ acilamadi"
     WScript.Quit 1
 End If
 

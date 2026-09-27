@@ -1,4 +1,4 @@
-# Roadmap — LoL AI Coach
+# Roadmap — LaneIQ
 
 **Version:** 1.0
 

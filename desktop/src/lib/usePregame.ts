@@ -144,7 +144,7 @@ export function usePregame(): Pregame {
       .catch((err: unknown) => {
         setContext({
           status: "error",
-          message: err instanceof Error ? err.message : "Could not reach LoL AI Coach.",
+          message: err instanceof Error ? err.message : "Could not reach LaneIQ.",
         });
       });
   }, [request, key]);

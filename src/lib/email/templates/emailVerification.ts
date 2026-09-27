@@ -8,7 +8,7 @@ function escapeHtml(str: string): string {
 }
 
 export function buildEmailVerificationEmail(verifyUrl: string): { subject: string; html: string } {
-  const subject = "Verify your LoL AI Coach email";
+  const subject = "Verify your LaneIQ email";
   const safeUrl = escapeHtml(verifyUrl);
 
   const html = `<!DOCTYPE html>
@@ -28,7 +28,7 @@ export function buildEmailVerificationEmail(verifyUrl: string): { subject: strin
           <tr>
             <td style="background:#0C1110;border-radius:12px 12px 0 0;padding:28px 32px;border-bottom:1px solid #20302D;">
               <span style="font-size:18px;font-weight:700;color:#C6FF3D;letter-spacing:0.04em;">
-                LoL AI Coach
+                LaneIQ
               </span>
             </td>
           </tr>
@@ -67,7 +67,7 @@ export function buildEmailVerificationEmail(verifyUrl: string): { subject: strin
               </p>
 
               <p style="margin:0;font-size:12px;line-height:1.6;color:#6C817B;">
-                If you didn&apos;t create a LoL AI Coach account, you can safely ignore this email.
+                If you didn&apos;t create a LaneIQ account, you can safely ignore this email.
               </p>
             </td>
           </tr>
@@ -76,7 +76,7 @@ export function buildEmailVerificationEmail(verifyUrl: string): { subject: strin
           <tr>
             <td style="padding:20px 0 0;text-align:center;">
               <p style="margin:0;font-size:11px;color:#485954;">
-                LoL AI Coach &mdash; AI-powered League of Legends coaching
+                LaneIQ &mdash; AI-powered League of Legends coaching
               </p>
             </td>
           </tr>

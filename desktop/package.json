@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "LoL AI Coach desktop companion. Reads Riot's Live Client Data API on the local machine, which no server-side code can reach (ADR-005, ADR-038).",
+  "description": "LaneIQ desktop companion. Reads Riot's Live Client Data API on the local machine, which no server-side code can reach (ADR-005, ADR-038).",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

@@ -6,8 +6,8 @@ import { getOnboardingState } from "@/domains/onboarding/onboardingService";
 
 export const metadata: Metadata = {
   title: {
-    default: "LoL AI Coach",
-    template: "%s | LoL AI Coach",
+    default: "LaneIQ",
+    template: "%s | LaneIQ",
   },
 };
 

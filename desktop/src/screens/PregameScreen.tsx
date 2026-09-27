@@ -178,7 +178,7 @@ function PregameEmpty({
           icon={CloudOff}
           tone="danger"
           splash={splash}
-          title="Cannot reach LoL AI Coach"
+          title="Cannot reach LaneIQ"
           body={`${state.message} Your picks are kept — press Read again when it is back.`}
         />
       );

@@ -130,7 +130,8 @@ export function Bar({
   return (
     <span className={`block w-full bg-surface-dark ${className ?? ""}`} style={{ height: 3 }}>
       <span
-        className={`block h-full ${FILL[tone]}`}
+        // The transition is for `OverlayDemo`, whose readings move; a still bar never uses it.
+        className={`block h-full transition-[width] duration-300 ease-out ${FILL[tone]}`}
         style={{ width: `${Math.max(0, Math.min(100, value))}%` }}
       />
     </span>

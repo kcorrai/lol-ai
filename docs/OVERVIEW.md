@@ -1,4 +1,4 @@
-# LoL AI Coach — What This Site Is
+# LaneIQ — What This Site Is
 
 A single, comprehensive tour of the product: what it does, who it does it for, how the
 pieces fit together, and where to look when you need more detail.
@@ -9,7 +9,7 @@ This is the map. The specialised docs listed at the end are the territory.
 
 ## 1. The product in one paragraph
 
-**LoL AI Coach** is a League of Legends coaching platform. A player connects their Riot
+**LaneIQ** is a League of Legends coaching platform. A player connects their Riot
 account, the system pulls their ranked match history, computes real metrics from it, and an
 LLM turns those metrics into a coaching report: what they are good at, what is costing them
 LP, and three things to do about it in order. Around that core sits a large free, public,

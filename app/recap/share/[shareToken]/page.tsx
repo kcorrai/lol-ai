@@ -54,7 +54,7 @@ export default async function PublicRecapPage({ params }: Props) {
     <div className="flex min-h-screen flex-col items-center bg-background px-6 py-12">
       {/* Platform header */}
       <div className="mb-8 flex items-center gap-2">
-        <span className="font-display text-xl font-bold text-accent">LoL AI Coach</span>
+        <span className="font-display text-xl font-bold text-accent">LaneIQ</span>
         <span className="text-xs text-text-muted">— {recap.seasonLabel} Recap</span>
       </div>
 

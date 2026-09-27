@@ -31,7 +31,7 @@ export function WeeklyCard({ d }: { d: WeeklyCardData }) {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <span style={{ color: C.brand, fontSize: 18, fontWeight: 700, letterSpacing: 2 }}>
-            LOL AI COACH
+            LANEIQ
           </span>
           <span style={{ color: C.text, fontSize: 32, fontWeight: 800, marginTop: 4 }}>
             {d.gameName}
@@ -89,7 +89,7 @@ export function WeeklyCard({ d }: { d: WeeklyCardData }) {
       >
         <span style={{ color: C.muted, fontSize: 16 }}>lolaicoach.com</span>
         {!d.isPro && (
-          <span style={{ color: C.brandDim, fontSize: 14 }}>Made with LoL AI Coach</span>
+          <span style={{ color: C.brandDim, fontSize: 14 }}>Made with LaneIQ</span>
         )}
       </div>
     </div>

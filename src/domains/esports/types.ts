@@ -284,6 +284,14 @@ export interface PlayerGame {
   deaths: number;
   assists: number;
   creepScore: number;
+  /** The series' kickoff, ISO 8601 — orders games oldest to newest for a trend. */
+  startTime: string;
+  /** Whether the player's side won; null when the final frame cannot say. */
+  won: boolean | null;
+  /** Fraction 0–1, or null when the details feed published none. */
+  killParticipation: number | null;
+  /** Null when the feed published no opening frame. */
+  durationSeconds: number | null;
 }
 
 export interface PlayerChampionStat {

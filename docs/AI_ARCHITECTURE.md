@@ -1,4 +1,4 @@
-# AI Architecture — LoL AI Coach
+# AI Architecture — LaneIQ
 
 **Version:** 1.0  
 **This is the product's core differentiator. Read every section.**

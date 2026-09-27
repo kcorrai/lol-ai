@@ -25,7 +25,7 @@ export function MasteryCard({ d }: { d: MasteryCardData }) {
     >
       {/* Brand */}
       <span style={{ color: C.brand, fontSize: 16, fontWeight: 700, letterSpacing: 2 }}>
-        LOL AI COACH — CHAMPION MASTERY
+        LANEIQ — CHAMPION MASTERY
       </span>
 
       <div style={{ display: "flex", marginTop: 32, gap: 48, alignItems: "flex-start" }}>
@@ -87,7 +87,7 @@ export function MasteryCard({ d }: { d: MasteryCardData }) {
       >
         <span style={{ color: C.muted, fontSize: 16 }}>lolaicoach.com</span>
         {!d.isPro && (
-          <span style={{ color: C.brandDim, fontSize: 14 }}>Made with LoL AI Coach</span>
+          <span style={{ color: C.brandDim, fontSize: 14 }}>Made with LaneIQ</span>
         )}
       </div>
     </div>

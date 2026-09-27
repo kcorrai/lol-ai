@@ -40,7 +40,7 @@ export async function reportGameEnded(): Promise<PostGame | null> {
     return await invoke<PostGame | null>("post_game");
   } catch (err) {
     throw new PostGameError(
-      typeof err === "string" ? err : "Could not tell LoL AI Coach the game ended."
+      typeof err === "string" ? err : "Could not tell LaneIQ the game ended."
     );
   }
 }

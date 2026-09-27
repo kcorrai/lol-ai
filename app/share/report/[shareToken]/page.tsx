@@ -74,7 +74,7 @@ export default async function ShareReportPage({ params }: Props) {
         {/* Branding */}
         <div className="mb-8 flex items-center justify-between">
           <Link href="/" className="font-display text-sm font-bold text-accent">
-            LoL AI Coach
+            LaneIQ
           </Link>
           <span className="rounded-full bg-surface-2 px-3 py-1 text-xs text-text-muted">
             {REPORT_TYPE_LABEL[report.reportType] ?? report.reportType}

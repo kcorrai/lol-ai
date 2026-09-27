@@ -43,7 +43,7 @@ export async function linkCommand(req: BotRequest): Promise<DiscordMessagePayloa
 export async function statusCommand(req: BotRequest): Promise<DiscordMessagePayload> {
   const identity = await getLinkedIdentity(req.discordUserId);
   if (!identity) {
-    return errorCard("Not linked", "Run `/lolai link` to connect your LoL AI Coach account.");
+    return errorCard("Not linked", "Run `/lolai link` to connect your LaneIQ account.");
   }
 
   return card(

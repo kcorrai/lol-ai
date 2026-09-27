@@ -30,8 +30,8 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "LoL AI Coach — AI-Powered League of Legends Coaching",
-    template: "%s | LoL AI Coach",
+    default: "LaneIQ — AI-Powered League of Legends Coaching",
+    template: "%s | LaneIQ",
   },
   description:
     "Connect your Riot account. Get specific, honest feedback on what's holding you back. Stop being hardstuck.",
@@ -39,14 +39,14 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
   openGraph: {
     type: "website",
-    siteName: "LoL AI Coach",
-    title: "LoL AI Coach — AI-Powered League of Legends Coaching",
+    siteName: "LaneIQ",
+    title: "LaneIQ — AI-Powered League of Legends Coaching",
     description:
       "Free LoL tools and AI coaching: counters, matchups, drafts and tier lists from real ranked data.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "LoL AI Coach — AI-Powered League of Legends Coaching",
+    title: "LaneIQ — AI-Powered League of Legends Coaching",
     description:
       "Free LoL tools and AI coaching: counters, matchups, drafts and tier lists from real ranked data.",
   },

@@ -1,6 +1,6 @@
 # OPTIMIZATIONS.md
 
-Full optimization audit — LoL AI Coach.
+Full optimization audit — LaneIQ.
 
 **Scope audited:** `src/domains/**`, `src/lib/**`, `app/**`, `prisma/schema.prisma`, `next.config.mjs`, `middleware.ts`.
 **Codebase size:** 1671 TS/TSX files, 19 domains, 181 API routes, 665 TSX (343 client components), 537 Prisma call sites.

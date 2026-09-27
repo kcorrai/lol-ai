@@ -78,7 +78,7 @@ export function ShareReportButton({ reportId }: Props) {
 
         {shareUrl && (
           <a
-            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("My AI coaching report from LoL AI Coach is ready! Check it out 👇")}&url=${encodeURIComponent(shareUrl)}`}
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("My AI coaching report from LaneIQ is ready! Check it out 👇")}&url=${encodeURIComponent(shareUrl)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 rounded-md border border-border bg-transparent px-3 py-1.5 text-xs font-medium text-text-muted transition-colors hover:border-accent/50 hover:text-text"

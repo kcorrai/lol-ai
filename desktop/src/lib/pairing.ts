@@ -89,7 +89,7 @@ export async function startPairing(): Promise<OpenedPairing> {
   try {
     return await invoke<OpenedPairing>("start_pairing");
   } catch (err) {
-    throw coreError(err, "Could not reach LoL AI Coach to start pairing. Try again.");
+    throw coreError(err, "Could not reach LaneIQ to start pairing. Try again.");
   }
 }
 

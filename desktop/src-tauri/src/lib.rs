@@ -212,7 +212,7 @@ pub fn run() {
                 }
             }
 
-            let open = MenuItem::with_id(app, "open", "Open LoL AI Coach", true, None::<&str>)?;
+            let open = MenuItem::with_id(app, "open", "Open LaneIQ", true, None::<&str>)?;
             let overlay = MenuItem::with_id(
                 app,
                 "overlay",
@@ -227,7 +227,7 @@ pub fn run() {
                 .icon(app.default_window_icon().cloned().ok_or(
                     "the bundle must carry a window icon for the tray to reuse",
                 )?)
-                .tooltip("LoL AI Coach")
+                .tooltip("LaneIQ")
                 .menu(&menu)
                 // The menu is for the right button; a left click is the shortcut everyone
                 // expects, and showing the menu on both makes the common action the slow one.

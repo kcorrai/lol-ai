@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::error::{AppError, AppResult};
 
-/// The client that talks to LoL AI Coach itself, as opposed to the game.
+/// The client that talks to LaneIQ itself, as opposed to the game.
 ///
 /// Deliberately a second client rather than a second use of `LiveClient`. That one trusts
 /// Riot's certificate authority and refuses every public one, which is exactly right for
@@ -256,7 +256,7 @@ impl ApiClient {
                 return Ok(None);
             }
             return Err(AppError::Api(
-                "LoL AI Coach answered this pairing request in a way this version could not read"
+                "LaneIQ answered this pairing request in a way this version could not read"
                     .into(),
             ));
         };
@@ -312,7 +312,7 @@ pub(crate) async fn read<T: serde::de::DeserializeOwned>(
     let envelope: Envelope<T> = response
         .json()
         .await
-        .map_err(|_| AppError::Api("LoL AI Coach sent an answer this version could not read".into()))?;
+        .map_err(|_| AppError::Api("LaneIQ sent an answer this version could not read".into()))?;
 
     if let Some(data) = envelope.data {
         return Ok(data);
@@ -320,7 +320,7 @@ pub(crate) async fn read<T: serde::de::DeserializeOwned>(
 
     Err(match envelope.error {
         Some(body) => AppError::Api(body.message),
-        None => AppError::Api(format!("LoL AI Coach answered with status {}", status.as_u16())),
+        None => AppError::Api(format!("LaneIQ answered with status {}", status.as_u16())),
     })
 }
 
