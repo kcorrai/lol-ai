@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { LayoutDashboard, Menu, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { PlayerSearchBar } from "@/components/search/PlayerSearchBar";
@@ -36,6 +37,9 @@ const HEADER_CTA =
 export function MarketingHeader(): React.ReactElement {
   const [open, setOpen] = useState(false);
   const { isAuthenticated } = useAuth();
+  // The landing hero is itself a search box. Two on one screen asked a first-time visitor
+  // to choose between them, and the hero's is the one that also runs the AI preview.
+  const showSearch = usePathname() !== "/";
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-[var(--surface-glass)] backdrop-blur-[14px]">
@@ -61,12 +65,16 @@ export function MarketingHeader(): React.ReactElement {
         </nav>
 
         {/* Search is the product's front door, so it sits in the nav on every marketing page —
-            not only on the landing hero. Hidden below xl, where the drawer carries it instead. */}
-        <div className="ml-auto hidden w-full max-w-[280px] xl:block">
-          <PlayerSearchBar placeholder="Search a player" />
-        </div>
+            except the landing page, whose hero is one. Hidden below xl, where the drawer carries it. */}
+        {showSearch && (
+          <div className="ml-auto hidden w-full max-w-[280px] xl:block">
+            <PlayerSearchBar placeholder="Search a player" />
+          </div>
+        )}
 
-        <div className="ml-auto hidden items-center gap-4 xl:ml-0 xl:flex">
+        <div
+          className={`ml-auto hidden items-center gap-4 xl:flex ${showSearch ? "xl:ml-0" : ""}`}
+        >
           {/* Ahead of "Log in", because the desktop app is a thing to want and logging in is
               a thing to do once you already do. It is the same destination the bar used to
               carry as a word in the nav; what changed is that it now looks like an offer. */}
