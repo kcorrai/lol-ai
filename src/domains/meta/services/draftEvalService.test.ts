@@ -12,7 +12,7 @@ vi.mock("@/lib/ddragon/championsData", () => ({
   fetchAllChampions: vi.fn(),
 }));
 
-import { evaluateDraft, dedupeDraft } from "./draftEvalService";
+import { evaluateDraft, dedupeDraft, laneTally } from "./draftEvalService";
 import { getMetaSnapshot, findChampionStats } from "@/domains/meta/services/metaStatsService";
 import {
   getChampionCounters,
@@ -164,6 +164,24 @@ describe("evaluateDraft", () => {
     const top = result!.laneEdges.find((e) => e.position === "TOP");
     expect(top!.favored).toBe("blue");
     expect(top!.blueWinRate).toBe(60);
+  });
+
+  it("names the side favoured in most lanes once three or more lanes are filled", async () => {
+    // Blue wins top, jungle and mid; bot and support have no sample and read as even.
+    const blueWins = new Set([86, 254, 157]);
+    mockCounters.mockImplementation(async (id: number, pos: CanonicalPosition) => {
+      if (!blueWins.has(id)) return [];
+      const opponent = STATS[RED[pos as keyof typeof RED]].championId;
+      return [{ opponentId: opponent, games: 2000, subjectWins: 1100, subjectWinRate: 55 }];
+    });
+    const result = await evaluateDraft(BLUE, RED);
+    expect(laneTally(result!.laneEdges)).toEqual({ blue: 3, red: 0, even: 2 });
+    expect(result!.verdict).toMatch(/Blue is favoured in 3 of 5 lanes/);
+  });
+
+  it("leaves lanes out of the verdict with fewer than three head-to-heads", async () => {
+    const result = await evaluateDraft({ TOP: "Garen" }, { TOP: "Teemo" });
+    expect(result!.verdict).not.toMatch(/lanes/);
   });
 
   it("derives scaling from the real aggregated game-length curve when available", async () => {
