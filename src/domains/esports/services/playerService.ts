@@ -2,6 +2,7 @@ import { getLeagues } from "@/domains/esports/services/leagueService";
 import { getTeams, getTeamMatches } from "@/domains/esports/services/teamService";
 import { getMatch } from "@/domains/esports/services/matchService";
 import { getGameStats } from "@/domains/esports/services/gameStatsService";
+import { gameWinner } from "@/domains/esports/gameOutcome";
 import type {
   EsportsLeague,
   EsportsPlayer,
@@ -131,6 +132,7 @@ export async function getPlayerGames(entry: PlayerEntry): Promise<PlayerGame[]> 
 
       const stats = await getGameStats(game.id, { completed: true });
       if (!stats) continue;
+      const winner = gameWinner(stats);
 
       for (const side of [stats.blue, stats.red] as const) {
         for (const participant of side.participants) {
@@ -145,6 +147,10 @@ export async function getPlayerGames(entry: PlayerEntry): Promise<PlayerGame[]> 
             deaths: participant.deaths,
             assists: participant.assists,
             creepScore: participant.creepScore,
+            startTime: event.startTime,
+            won: winner === null ? null : winner === side.side,
+            killParticipation: participant.killParticipation,
+            durationSeconds: stats.durationSeconds,
           };
           if (matchesPlayer(entry.player.handle, entry.player.id, candidate)) {
             games.push(candidate);

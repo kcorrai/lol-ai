@@ -321,6 +321,7 @@
 
    [data-spoiler]          a score or winner — masked behind a "?" chip
    [data-spoiler-outcome]  winner/loser styling — flattened to one look
+                           ("flat" also evens weight, "fill" a bar's colour)
    [data-spoiler-rail]     a row's win/loss edge colour — cleared
    [data-spoiler-block]    a whole section — swapped for its placeholder */
 html[data-hide-scores="true"] [data-spoiler]:not([data-revealed], [data-revealed] *) {
@@ -360,6 +361,9 @@ html[data-hide-scores="true"]
 }
 html[data-hide-scores="true"] [data-spoiler-outcome="flat"]:not([data-revealed] *) * {
   font-weight: inherit !important;
+}
+html[data-hide-scores="true"] [data-spoiler-outcome="fill"]:not([data-revealed] *) {
+  background-color: var(--fg-3) !important;
 }
 html[data-hide-scores="true"] [data-spoiler-rail]:not([data-revealed], [data-revealed] *) {
   border-left-color: transparent !important;

@@ -1,3 +1,4 @@
+import { PlayerForm } from "@/domains/esports/components/PlayerForm";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -144,6 +145,8 @@ export default async function PlayerPage({ params }: PageProps): Promise<React.R
       />
 
       <PlayerHeader entry={entry} />
+
+      <PlayerForm games={games} />
 
       <section>
         <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
