@@ -1,4 +1,4 @@
-import { logger } from "@/lib/utils/logger";
+import { raiseRiotAlarm } from "@/lib/riot/alarms";
 import type { RateWindow } from "@/lib/riot/rateLimitPolicy";
 
 // Where the Riot budget is counted.
@@ -105,8 +105,6 @@ export class UpstashWindowStore implements WindowStore {
 
 /** Upstash when it answers, memory when it does not. */
 export class FallbackWindowStore implements WindowStore {
-  private warned = false;
-
   constructor(
     private readonly primary: WindowStore | null,
     private readonly fallback: WindowStore
@@ -134,12 +132,10 @@ export class FallbackWindowStore implements WindowStore {
   }
 
   private warnOnce(err: unknown): void {
-    if (this.warned) return;
-    this.warned = true;
-    logger.warn(
-      "[riot] shared rate-limit store failed — counting Riot calls per instance until it recovers",
-      err
-    );
+    // Throttled inside raiseRiotAlarm, so a Redis outage is one report per window, not per call.
+    raiseRiotAlarm("shared-counter-down", "all", {
+      error: err instanceof Error ? err.message : String(err),
+    });
   }
 }
 

@@ -55,6 +55,16 @@ Steps that cannot be automated — verify before/after each production deploy.
 - [ ] Copy DSN to `NEXT_PUBLIC_SENTRY_DSN`
 - [ ] Create Auth Token (Settings → Auth Tokens) with `project:write` scope → `SENTRY_AUTH_TOKEN`
 - [ ] Source maps upload is configured in `next.config.ts` via `withSentryConfig`
+- [ ] Alerts → Create Alert → Issues, filter **tag `riot_alarm` is set**, action: email.
+      The Riot client raises three of these, each at most once per region per 10 minutes
+      per instance (`src/lib/riot/alarms.ts`):
+  - `app-rate-limited` (warning) — Riot throttled the whole key; repeated, it leads to a blacklist
+  - `key-rejected` (fatal) — 401/403 on the key: expired, revoked or blacklisted; the site's
+    Riot pages are down until it is replaced
+  - `shared-counter-down` (error) — Upstash unreachable; every instance is counting the Riot
+    budget on its own again (ADR-056)
+- [ ] Free-plan quotas: turn on the usage emails that Sentry, Neon and Upstash offer on their
+      free plans, so a quota running out is a warning in the inbox rather than an outage
 
 ### Neon PostgreSQL
 
@@ -92,6 +102,14 @@ rather than a failed build. If the push contains anything under
 - [ ] Verify cron is registered in Vercel dashboard → Settings → Crons
   - `/api/cron/weekly-digest` — every Monday 09:00 UTC
   - `/api/cron/match-sync` — every hour
+
+## Before Expected Traffic
+
+- [ ] Load test a preview deployment (or `next build` + `next start` locally):
+      `npm run load:test -- --base <url> --concurrency 50 --seconds 30`.
+      Every tool page should show 100% cache hits and no errors; anything under 100% is being
+      rendered per request (ADR-059, ADR-061). Public profiles are deliberately not in the
+      default list — each fresh one spends Riot budget.
 
 ---
 

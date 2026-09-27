@@ -1,6 +1,7 @@
 import { riotCache, type CacheStore } from "@/lib/riot/cache";
 import { getRiotRateLimiter, type RiotRateLimiter } from "@/lib/riot/rateLimit";
 import { rateLimitScope } from "@/lib/riot/rateLimitPolicy";
+import { raiseRiotAlarm } from "@/lib/riot/alarms";
 import { withRetry } from "@/lib/riot/retry";
 import { normalizeRiotError } from "@/lib/riot/errors";
 import { isRiotMocked, riotFixtureFor } from "@/lib/riot/e2eFixtures";
@@ -116,7 +117,11 @@ export class RiotHttpClient {
       // service 429 is Riot's own capacity — neither is a reason to stop calling other endpoints.
       const limitType = response.headers.get("X-Rate-Limit-Type");
       if (response.status === 429 && limitType === "application" && limiter && scope) {
+        raiseRiotAlarm("app-rate-limited", scope, { retryAfterSeconds });
         await limiter.pause(scope, (retryAfterSeconds ?? 1) * 1000);
+      }
+      if (response.status === 401 || response.status === 403) {
+        raiseRiotAlarm("key-rejected", scope ?? rateLimitScope(url), { status: response.status });
       }
       throw normalizeRiotError(response.status, retryAfterSeconds);
     }
