@@ -5,7 +5,7 @@ import { ExploreTabs, type ExploreTab } from "./ExploreTabs";
 const TABS: readonly ExploreTab[] = [
   { key: "tools", label: "Free tools", hint: "Counters", content: <p>Counter picker</p> },
   { key: "academy", label: "Academy", hint: "Lessons", content: <p>61 lessons</p> },
-  { key: "daily", label: "Daily game", hint: "Quiz", content: <p>Today's quiz</p> },
+  { key: "daily", label: "Daily game", hint: "Quiz", content: <p>{"Today's quiz"}</p> },
 ];
 
 describe("ExploreTabs", () => {
