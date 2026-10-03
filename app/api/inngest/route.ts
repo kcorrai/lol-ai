@@ -33,11 +33,10 @@ import { referralReward } from "@/inngest/functions/referralReward";
 import { teamWeeklyReport } from "@/inngest/functions/teamWeeklyReport";
 import { cartAbandonmentReminder } from "@/inngest/functions/cartAbandonment";
 import { rtbfComplianceChecker } from "@/inngest/functions/rtbfComplianceChecker";
-import { refreshCoachRanks } from "@/inngest/functions/refreshCoachRanks";
-import { marketplaceSweeps } from "@/inngest/functions/marketplaceSweeps";
 import { academyAssignmentChecker } from "@/inngest/functions/academyAssignmentChecker";
 import { academyDecayChecker } from "@/inngest/functions/academyDecayChecker";
 import { discordInteractionWorker } from "@/inngest/functions/discordInteraction";
+import { marketplaceSchedules } from "@/inngest/marketplaceSchedules";
 
 const handlers = serve({
   client: inngest,
@@ -71,8 +70,7 @@ const handlers = serve({
     cartAbandonmentReminder,
     rtbfComplianceChecker,
     warmEsportsCache,
-    refreshCoachRanks,
-    marketplaceSweeps,
+    ...marketplaceSchedules(),
     academyAssignmentChecker,
     academyDecayChecker,
     discordInteractionWorker,
