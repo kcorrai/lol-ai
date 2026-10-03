@@ -150,6 +150,7 @@ export const getProSample = perRequest(async function getProSample({
     version: SAMPLE_SHAPE_VERSION,
     ttlDays: TTL.standings,
     force,
+    memo: true,
     compute: async (): Promise<ProSample> => {
       const [games, items] = await Promise.all([
         collectSample(leagueId, series),
@@ -183,6 +184,7 @@ export const getProSample = perRequest(async function getProSample({
  */
 export const getCachedProSample = perRequest(
   async function getCachedProSample(): Promise<ProSample | null> {
-    return cachedValue<ProSample>("pro-sample:all", SAMPLE_SHAPE_VERSION);
+    // Memoised: every prerendered champion build page reads this 250KB sample.
+    return cachedValue<ProSample>("pro-sample:all", SAMPLE_SHAPE_VERSION, TTL.standings);
   }
 );

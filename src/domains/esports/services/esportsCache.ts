@@ -1,5 +1,6 @@
 import type { z } from "zod";
 import { fixturesEnabled } from "@/domains/esports/services/esportsFixtures";
+import { memoized } from "@/domains/esports/services/freshMemo";
 import { getCached, setCached } from "@/lib/ai/aiCache";
 import { logger } from "@/lib/utils/logger";
 
@@ -46,11 +47,18 @@ export const LAST_GOOD_TTL_DAYS = 365;
  * to the last-good copy, because a stale pro strip beside a ranked build is
  * still useful and its absence is the only alternative.
  */
-export async function cachedValue<TValue>(key: string, version = 1): Promise<TValue | null> {
+export async function cachedValue<TValue>(
+  key: string,
+  version = 1,
+  memoTtlDays?: number
+): Promise<TValue | null> {
   const scoped = cacheKey(key, version);
-  const fresh = (await cacheGet(`${scoped}:fresh`)) as TValue | null;
-  if (fresh !== null) return fresh;
-  return (await cacheGet(`${scoped}:last-good`)) as TValue | null;
+  const read = async (): Promise<TValue | null> => {
+    const fresh = (await cacheGet(`${scoped}:fresh`)) as TValue | null;
+    if (fresh !== null) return fresh;
+    return (await cacheGet(`${scoped}:last-good`)) as TValue | null;
+  };
+  return memoTtlDays === undefined ? read() : memoized(scoped, memoTtlDays, false, read);
 }
 
 /**
@@ -123,6 +131,8 @@ interface CachedComputationOptions<TValue> {
    * point of warming (TASK-305).
    */
   force?: boolean;
+  /** Also hold the value in process memory; for resources most pages read (freshMemo). */
+  memo?: boolean;
 }
 
 /**
@@ -135,6 +145,14 @@ interface CachedComputationOptions<TValue> {
  * fetch does.
  */
 export async function cachedComputation<TValue>(
+  options: CachedComputationOptions<TValue>
+): Promise<TValue | null> {
+  if (!options.memo) return computeThroughCache(options);
+  const scoped = cacheKey(options.key, options.version ?? 1);
+  return memoized(scoped, options.ttlDays, !!options.force, () => computeThroughCache(options));
+}
+
+async function computeThroughCache<TValue>(
   options: CachedComputationOptions<TValue>
 ): Promise<TValue | null> {
   const scoped = cacheKey(options.key, options.version ?? 1);
@@ -174,6 +192,7 @@ interface CachedResourceOptions<TRaw, TValue> {
   version?: number;
   /** Refetch even when the cached copy is still fresh. Set by the warm job only. */
   force?: boolean;
+  memo?: boolean;
 }
 
 /**
@@ -188,6 +207,14 @@ interface CachedResourceOptions<TRaw, TValue> {
  * more frequent than writes, so the mapping is paid once.
  */
 export async function cachedResource<TRaw, TValue>(
+  options: CachedResourceOptions<TRaw, TValue>
+): Promise<TValue | null> {
+  if (!options.memo) return fetchThroughCache(options);
+  const scoped = cacheKey(options.key, options.version ?? 1);
+  return memoized(scoped, options.ttlDays, !!options.force, () => fetchThroughCache(options));
+}
+
+async function fetchThroughCache<TRaw, TValue>(
   options: CachedResourceOptions<TRaw, TValue>
 ): Promise<TValue | null> {
   const scoped = cacheKey(options.key, options.version ?? 1);

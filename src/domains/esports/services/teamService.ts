@@ -86,6 +86,8 @@ export async function getTeams(): Promise<EsportsTeam[]> {
     key: "teams",
     type: CACHE_TYPE,
     ttlDays: TTL.static,
+    // 1.3MB, and every team and player page reads it — LA-136.
+    memo: true,
     schema: TeamsResponseSchema,
     fetcher: () => esportsFetch("getTeams"),
     map: (parsed) => parsed.data.teams.map(mapTeam),

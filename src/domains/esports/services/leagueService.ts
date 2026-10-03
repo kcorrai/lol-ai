@@ -113,6 +113,8 @@ export async function getLeagues(): Promise<EsportsLeague[]> {
     key: "leagues",
     type: CACHE_TYPE,
     ttlDays: TTL.static,
+    // Read by nearly every esports page; see freshMemo.
+    memo: true,
     schema: LeaguesResponseSchema,
     fetcher: () => esportsFetch("getLeagues"),
     map: mapLeagues,

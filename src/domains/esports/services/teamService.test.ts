@@ -10,6 +10,7 @@ vi.mock("@/lib/utils/logger", () => ({
 
 import { getTeams, resolveTeamBySlug, indexableTeams, isThinTeam, recentForm } from "./teamService";
 import type { EsportsEvent, EsportsTeam } from "@/domains/esports/types";
+import { __resetFreshMemo } from "./freshMemo";
 
 function rawTeam(over: Record<string, unknown> = {}): unknown {
   return {
@@ -50,7 +51,10 @@ function team(over: Partial<EsportsTeam> = {}): EsportsTeam {
 }
 
 describe("getTeams", () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+    __resetFreshMemo();
+  });
 
   it("maps players, joins the real name and upgrades images", async () => {
     mockFeed([

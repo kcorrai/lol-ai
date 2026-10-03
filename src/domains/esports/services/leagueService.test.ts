@@ -14,6 +14,7 @@ import {
   getTournamentsForLeague,
   pickCurrentTournament,
 } from "./leagueService";
+import { __resetFreshMemo } from "./freshMemo";
 
 function league(
   slug: string,
@@ -39,7 +40,10 @@ function mockFeed(body: unknown): ReturnType<typeof vi.fn> {
 }
 
 describe("getLeagues", () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+    __resetFreshMemo();
+  });
 
   it("orders by display band, then position, matching Riot's own client", async () => {
     mockFeed({
@@ -89,7 +93,10 @@ describe("getLeagues", () => {
 });
 
 describe("getLeague", () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+    __resetFreshMemo();
+  });
 
   it("looks a league up by slug, case-insensitively", async () => {
     mockFeed({ data: { leagues: [league("lec", "selected", 0)] } });
@@ -105,7 +112,10 @@ describe("getLeague", () => {
 });
 
 describe("getTournamentsForLeague", () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+    __resetFreshMemo();
+  });
 
   it("flattens the league wrapper, sorts newest first and attaches the league id", async () => {
     mockFeed({
