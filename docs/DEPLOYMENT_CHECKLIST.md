@@ -91,7 +91,11 @@ is current — which means an unmigrated schema now surfaces as a runtime error
 rather than a failed build. If the push contains anything under
 `prisma/migrations/`, confirm it was applied.
 
-- [ ] `git push origin main` — Vercel auto-deploys
+- [ ] `git push origin main` — this does **not** deploy. `vercel.json` sets
+      `git.deploymentEnabled: false`, because every build prerenders pages from
+      Neon and pushes are far more frequent than releases.
+- [ ] Deploy deliberately: Vercel dashboard → Deployments → Create Deployment
+      → branch `main`, or `vercel --prod` from a linked checkout
 - [ ] If the push added migrations: check the **Migrate Production** workflow run.
       If it skipped (no `PRODUCTION_DATABASE_URL` secret), apply them yourself:
       `DATABASE_URL="<production url>" npx prisma migrate deploy`
